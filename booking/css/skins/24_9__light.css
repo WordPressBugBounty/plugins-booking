@@ -83,18 +83,21 @@ div.wpbc-cell-box .wpbc-diagonal-el svg polygon {
     padding: 0;
     margin: 0;
     position: relative;
-    width: calc( 100% - var( --wpbc_cal-day-cell-border-width ) - var( --wpbc_cal-day-cell-border-width ) );
-/*!     height: calc( 100% - 4px ); */
-/*!     padding-bottom: calc( 50% - 4px ); */
-/*!     padding-top: calc( 100% - 4px ); */
-/*!     height: calc(100% - 4px ); */
-    height:auto;
     border-radius: var( --wpbc_cal-day-cell-border-radius );
-    aspect-ratio: 1 / 1;
     display: flex;
     flex-flow:column nowrap;
     justify-content: center;
     align-items: center;
+    /*! Important settings for showing 'Perfect Square Dates' */
+    width: calc( 100% - var( --wpbc_cal-day-cell-border-width ) - var( --wpbc_cal-day-cell-border-width ) );
+    height:auto;
+    aspect-ratio: 1 / 1;
+}
+/*! == Safari Only ==   Required Hack for showing 'Perfect Square Dates' on Safari and on iOS */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+    .datepick-inline td.datepick-days-cell .wpbc-cell-box {
+        height:100%;
+    }
 }
 /* Center Day Number */
 .datepick-inline .datepick-days-cell .date-cell-content span, .datepick-inline .datepick-days-cell .date-cell-content a {
@@ -596,7 +599,8 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 /* Firstly we define background of the day cells background as available */
 .datepick-inline td.datepick-days-cell.check_in_time .wpbc-cell-box,
 .datepick-inline td.datepick-days-cell.check_out_time  .wpbc-cell-box{
-    background-color: var(--wpbc_cal-available-day-color);
+        /*background-color: var(--wpbc_cal-available-day-color);*/
+    background: rgb( from var(--wpbc_cal-available-day-color) r g b / var( --wpbc_cal-day-bg-color-opacity ) );
 }
 /* C e l l   O V E R   Dates */
 .datepick-inline td.datepick-days-cell.check_in_time.datepick-days-cell-over .wpbc-cell-box,

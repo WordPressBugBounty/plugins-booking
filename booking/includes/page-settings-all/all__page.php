@@ -326,11 +326,11 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 		?><span class="wpdevelop"><?php                                         		// BS UI CSS Class
 
 			wpbc_js_for_bookings_page();                                            	// JavaScript functions
-
+			/*
 			?><div id="toolbar_booking_setup_plugin" class="wpbc_ajx_toolbar"><?php
 					?><div class="wpbc_ajx_setup_plugin_toolbar_container"></div><?php //This Div Required for bottom border radius in container
 			?></div><?php
-
+			*/
 //		    wpbc_ajx_setup_plugin__toolbar( $escaped_request_params_arr );
 
 		?></span><?php
@@ -338,8 +338,8 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 		?><div id="wpbc_log_screen" class="wpbc_log_screen"></div><?php
 
         // Content  ////////////////////////////////////////////////////////////
+		wpbc_clear_div();
         ?>
-        <div class="clear" style="margin-bottom:10px;"></div>
         <span class="metabox-holder">
             <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" >
                 <?php
@@ -349,7 +349,11 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 
 				//wpbc_ajx_booking_modify_container_show();					// Container for showing Edit ajx_booking and define Edit and Delete ajx_booking JavaScript vars.
 
-				wpbc_clear_div();
+				wpbc_ui_settings__panel__statistic();
+
+				?><div class="clear" style="margin-bottom:10px;"></div><?php
+
+
 
 				wpbc_settings_all__content_html();
 
@@ -635,74 +639,91 @@ display: flex;
 }
 
 
-function wpbc_page_show_left_navigation_custom__settings_all(){
+function wpbc_page_show_left_navigation_custom__settings_all() {
 	?>
-					<div id="wpbc_general_settings_calendar_tab" class="wpbc_settings_navigation_item wpbc_settings_navigation_item_active">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" href="javascript:void(0);">
-							<span>Calendar Settings</span>
-<i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc-bi-calendar2-range"></i>
-						</a>
-					</div>
+	<div id="wpbc_general_settings_calendar_tab"
+		 class="wpbc_settings_navigation_item wpbc_settings_navigation_item_active">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );"
+		   href="javascript:void(0);">
+			<span>Calendar Settings</span>
+			<i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc-bi-calendar2-range"></i>
+		</a>
+	</div>
 
 
+	<div id="wpbc_settings__form_layout_tab" class="wpbc_settings_navigation_item">
+		<a onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_settings__form_layout_metabox', '.wpbc_container_hide__on_left_nav_click' );"
+		   href="javascript:void(0);">
+			<span>Booking Form</span>
+			<i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_dashboard"></i>
+		</a>
+	</div>
 
-					<div id="wpbc_settings__form_layout_tab" class="wpbc_settings_navigation_item">
-						<a onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_settings__form_layout_metabox', '.wpbc_container_hide__on_left_nav_click' );" href="javascript:void(0);">
-							<span>Booking Form</span>
-							<i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_dashboard"></i>
-						</a>
-					</div>
+	<div id="wpbc_general_settings_time_slots_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
 
-					<div id="wpbc_general_settings_time_slots_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
+	</div>
+	<div id="wpbc_general_settings_booking_confirmation_tab" class="wpbc_settings_navigation_item">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_confirmation_metabox,#wpbc_general_settings_booking_confirmation_left_metabox,#wpbc_general_settings_booking_confirmation_right_metabox,#wpbc_general_settings_booking_confirmation_help_metabox' );"
+		   href="javascript:void(0);">
+			<span>Booking Confirmation</span>
+		</a>
+	</div>
 
-					</div>
-					<div id="wpbc_general_settings_booking_confirmation_tab" class="wpbc_settings_navigation_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_confirmation_metabox,#wpbc_general_settings_booking_confirmation_left_metabox,#wpbc_general_settings_booking_confirmation_right_metabox,#wpbc_general_settings_booking_confirmation_help_metabox' );" href="javascript:void(0);">
-							<span>Booking Confirmation</span>
-						</a>
-					</div>
-
-					<div id="wpbc_general_settings_booking_timeline_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border0">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_timeline_metabox' );" href="javascript:void(0);">
-							<span>Notifications</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_mail_outline"></i>
-						</a>
-					</div>
-											<div id="wpbc_general_settings_bookings_options_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_bookings_options_metabox' );" href="javascript:void(0);">
-								<span>Sync</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_sync_alt"></i>
-							</a>
-						</div>
-
-
-
-
-											<div id="wpbc_general_settings_multiuser_tab" class="wpbc_settings_navigation_item">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_multiuser_metabox' );" href="javascript:void(0);">
-								<span>Payment Setup</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_payment"></i>
-							</a>
-						</div>
-
-					<div id="wpbc_general_settings_booking_listing_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border0">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_listing_metabox' );" href="javascript:void(0);">
-							<span>Search Availability</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_search"></i>
-						</a>
-					</div>
+	<div id="wpbc_general_settings_booking_timeline_tab"
+		 class="wpbc_settings_navigation_item wpbc_navigation_top_border0">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_timeline_metabox' );"
+		   href="javascript:void(0);">
+			<span>Notifications</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_mail_outline"></i>
+		</a>
+	</div>
+	<div id="wpbc_general_settings_bookings_options_tab"
+		 class="wpbc_settings_navigation_item wpbc_navigation_top_border">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_bookings_options_metabox' );"
+		   href="javascript:void(0);">
+			<span>Sync</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_sync_alt"></i>
+		</a>
+	</div>
 
 
+	<div id="wpbc_general_settings_multiuser_tab" class="wpbc_settings_navigation_item">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_multiuser_metabox' );"
+		   href="javascript:void(0);">
+			<span>Payment Setup</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_payment"></i>
+		</a>
+	</div>
+
+	<div id="wpbc_general_settings_booking_listing_tab"
+		 class="wpbc_settings_navigation_item wpbc_navigation_top_border0">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_listing_metabox' );"
+		   href="javascript:void(0);">
+			<span>Search Availability</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_search"></i>
+		</a>
+	</div>
 
 
-					<div id="wpbc_general_settings_advanced_tab" class="wpbc_settings_navigation_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_advanced_metabox' );" href="javascript:void(0);">
-							<span>MultiUser Accounts</span><i class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_people_alt"></i>
-						</a>
-					</div>
+	<div id="wpbc_general_settings_advanced_tab" class="wpbc_settings_navigation_item">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_advanced_metabox' );"
+		   href="javascript:void(0);">
+			<span>MultiUser Accounts</span><i
+				class="wpbc_set_nav__right_icon menu_icon icon-1x wpbc_icn_people_alt"></i>
+		</a>
+	</div>
 
 
-
-											<div id="wpbc_general_settings_help_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item" style="display: none;">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_help_metabox' );" href="javascript:void(0);">
-								<span>Tools</span>
-							</a>
-						</div>
+	<div id="wpbc_general_settings_help_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item"
+		 style="display: none;">
+		<a class="" original-title=""
+		   onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_help_metabox' );"
+		   href="javascript:void(0);">
+			<span>Tools</span>
+		</a>
+	</div>
 	<?php
 }

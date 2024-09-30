@@ -119,9 +119,11 @@ class WPBC_Tour_01 {
 	 * Define HOOKs for loading CSS and  JavaScript files
 	 */
 	public function init_load_css_js() {
-		// JS & CSS
-		add_action( 'wpbc_enqueue_js_files', array(  $this, 'js_load_files' ),      50 );
-		add_action( 'wpbc_enqueue_css_files', array( $this, 'enqueue_css_files' ),  50 );
+
+
+//TODO: Uncomment this:     // JS & CSS Load in all Plugins menus
+//		add_action( 'wpbc_enqueue_js_files', array(  $this, 'js_load_files' ),      50 );
+//		add_action( 'wpbc_enqueue_css_files', array( $this, 'enqueue_css_files' ),  50 );
 
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_tour_in_plugins' ) );

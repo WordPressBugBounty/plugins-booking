@@ -392,7 +392,10 @@ function wpbc_calendar_show( resource_id ){
 	 */
 	function wpbc__calendar__on_hover_days( string_date, date, calendar_params_arr, datepick_this ) {
 
-		if ( null === date ){ return false; }
+		if ( null === date ) {
+			wpbc_calendars__clear_days_highlighting( ('undefined' !== typeof (calendar_params_arr[ 'resource_id' ])) ? calendar_params_arr[ 'resource_id' ] : '1' );		//FixIn: 10.5.2.4
+			return false;
+		}
 
 		var class_day     = wpbc__get__td_class_date( date );																					// '1-9-2023'
 		var sql_class_day = wpbc__get__sql_class_date( date );																					// '2023-01-09'

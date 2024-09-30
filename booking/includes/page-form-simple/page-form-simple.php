@@ -19,6 +19,7 @@ require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__submit.
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__timeslots.php' );         						// Timeslots Generator
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__preview.php' );         						// Preview
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__preview_templates.php' );  	 				// Templates - Simple Booking Form
+require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__auto_show_timeslots.php' );  	 				// Auto Load Time Slots -- Editing or Adding form
 
 /**
 	 * Show Content

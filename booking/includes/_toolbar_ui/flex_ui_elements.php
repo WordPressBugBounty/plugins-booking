@@ -664,7 +664,11 @@ function wpbc_flex_checkbox( $item ) {
 	}
 
 	if ( ( ! empty( $item_params['label'] ) ) && ( 'left' == $item_params['label']['position'] ) ) {
-		wpbc_flex_label( array( 'id' => $item_params['id'], 'label' => $item_params['label']['title'] ) );
+		$label_params = array( 'id' => $item_params['id'], 'label' => $item_params['label']['title'] );
+		if ( ! empty( $item_params['label']['class'] ) ) {
+			$label_params['class'] = $item_params['label']['class'];
+		}
+		wpbc_flex_label( $label_params );
 	}
 
     ?><input    type="<?php echo esc_attr( $item_params['type'] ); ?>"
@@ -694,7 +698,11 @@ function wpbc_flex_checkbox( $item ) {
         /><?php
 
 	if ( ( ! empty( $item_params['label'] ) ) && ( 'right' == $item_params['label']['position'] ) ) {
-		wpbc_flex_label( array( 'id' => $item_params['id'], 'label' => $item_params['label']['title'] ) );
+		$label_params = array( 'id' => $item_params['id'], 'label' => $item_params['label']['title'] );
+		if ( ! empty( $item_params['label']['class'] ) ) {
+			$label_params['class'] = $item_params['label']['class'];
+		}
+		wpbc_flex_label( $label_params );
 	}
 }
 
@@ -1755,3 +1763,136 @@ function wpbc_flex_dropdown__options( $params, $args = array() ) {
 		?></li><?php
 	}
 }
+
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+//  Radio Containers
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Show FLEX    == Radio Container    ==
+ *
+ * @param array $item
+ *
+ *  Example:
+ *                $params_radio = array(
+ *                                          'id'       => 'wpbc_swp_booking_types__changeover_multi_dates_bookings'                                // HTML ID  of element
+ *                                        , 'name'     => 'wpbc_swp_booking_types'
+ *                                        , 'value'    => 'changeover_multi_dates_bookings'                                                        // Some Value from optins array that selected by default
+ *                                        , 'label'    => array( 'title' => __('Changeover multi dates bookings','booking') , 'position' => 'right', 'class' => 'wpbc_ui_radio_choice_title' )
+ *                                        , 'text_description'  => __('Receive and manage bookings for chosen times on selected date(s). Time-slots selection in booking form.','booking')
+ *                                        , 'label_after_right' => '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank"><strong class="wpbc_ui_radio_text_right">Pro</strong></a>'
+ *                                        , 'footer_text'      => sprintf(__('Find more information about this feature on %sthis page%s.','booking'), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
+ *                                        , 'style'    => ''                                                                                // CSS of select element
+ *                                        , 'class'    => ''                                                                                // CSS Class of select element
+ *                                        , 'disabled' => !false
+ *                                        , 'attr'     => array()                                                                        // Any  additional attributes, if this radio | checkbox element
+ *                                        , 'legend'   => ''                                                                                // aria-label parameter
+ *                                        , 'selected' => false                                                                            // Selected or not
+ *                                        , 'onfocus' =>  "console.log( 'ON FOCUS:',  jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"                    // JavaScript code
+ *                                        , 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).val() , 'in element:' , jQuery( this ) );"                            // JavaScript code
+ *                                    );
+ *				  ?><div class="wpbc_ui_radio_section wpbc_ui_radio_section_as_row"><?php
+ *                    wpbc_flex_radio_container( $params_radio );
+ *                ?></div><?php
+ *
+ *
+ *  It generate this HTML Content:
+ *						<div class="wpbc_ui_radio_container"   >
+ *							<div class="wpbc_ui_radio_choice">
+ *								<input 	class="wpbc_ui_radio_choice_input"
+ *									   type="radio"
+ *									   disabled="disabled"
+ *									   name="wpbc_swp_booking_types"
+ *									     id="wpbc_swp_booking_types__changeover_multi_dates_bookings"
+ *									   						  value="changeover_multi_dates_bookings"
+ *								/>
+ *								<label for="wpbc_swp_booking_types__changeover_multi_dates_bookings" class="wpbc_ui_radio_choice_title"><?php _e('Changeover multi dates bookings','booking'); ?></label>
+ *								<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank"><strong class="wpbc_ui_radio_text_right">Pro</strong></a>
+ *								<p class="wpbc_ui_radio_choice_description"><?php _e('Manage multidays bookings with changeover days for check in/out dates, marked with diagonal or vertical lines. Split days bookings.','booking'); ?></p>
+ *							</div>
+ *							<div class="wpbc_ui_radio_choice wpbc_ui_radio_footer">
+ *								<p class="wpbc_ui_radio_choice_description"><?php printf(__('Find more information about this feature on %sthis page%s.','booking'),
+ *									'<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>') ; ?></p>
+ *							</div>
+ *						</div>
+ *
+ *  CSS located in: ../includes/__css/admin/ui_el__radio_container.css
+ */
+function wpbc_flex_radio_container( $args = array() ) {
+
+	// $milliseconds = round( microtime( true ) * 1000 );
+
+    $defaults = array(
+						  'type' => 'checkbox'
+						, 'id' => ''                        // HTML ID  of element
+						, 'name' => ''
+						, 'label' => ''      				// Label	Example: 'label' => array( 'title' => __('Select status' ,'booking') , 'position' => 'left' )
+						, 'style' => ''                     // CSS of select element
+						, 'class' => ''                     // CSS Class of select element
+						, 'disabled' => false
+						, 'attr' => array()                 // Any  additional attributes, if this radio | checkbox element
+						, 'legend' => ''                    // aria-label parameter
+						, 'value' => ''                     // Some Value from options array that selected by default
+						, 'selected' => false               // Selected or not
+						, 'onfocus' => ''					// JavaScript code
+						, 'onchange' => ''					// JavaScript code
+						, 'is_use_toggle' => false          // Show checkbox  as toggle
+						, 'hint' => ''                      // , 'hint' => array( 'title' => __('Select status' ,'booking') , 'position' => 'bottom' )
+
+						// Text at Right side of Label, e.g.	'Pro'
+						, 'label_after_right' => ''			// '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank"><strong class="wpbc_ui_radio_text_right">Pro</strong></a>'
+
+						// Text at Right side of Label, e.g.	'Pro'
+						, 'text_description' => ''			// __('Receive and manage bookings for chosen times on selected date(s). Time-slots selection in booking form.','booking')
+
+						// Footer Text  separated by line
+						, 'footer_text' => ''				// sprintf(__('Find more information about this feature on %sthis page%s.','booking'), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
+                    );
+    $params = wp_parse_args( $args, $defaults );
+
+
+	$params['type']          = 'radio';
+	$params['is_use_toggle'] = false;
+	if ( ( ! empty( $params['label'] ) ) && ( empty( $params['label']['position'] ) ) ) {
+		$params['label']['position'] = 'right';
+		$params['label']['class'] = 'wpbc_ui_radio_choice_title';
+	}
+
+	$params['class'] .= ' wpbc_ui_radio_choice_input';
+
+
+	// Should start  with <div class="wpbc_ui_radio_section wpbc_ui_radio_section_as_row">  | <div class="wpbc_ui_radio_section">
+
+	?>
+	<div class="wpbc_ui_radio_container">
+		<div class="wpbc_ui_radio_choice">
+			<?php
+
+				wpbc_flex_checkbox( $params );
+
+				if ( ! empty( $params['label_after_right'] ) ) {
+					echo $params['label_after_right'];
+				}
+
+				if ( ! empty( $params['text_description'] ) ) {
+					?><p class="wpbc_ui_radio_choice_description"><?php echo $params['text_description']; ?></p><?php
+				}
+
+			?>
+		</div><?php
+
+		if ( ! empty( $params['footer_text'] ) ) {
+			?><div class="wpbc_ui_radio_choice wpbc_ui_radio_footer">
+				<p class="wpbc_ui_radio_choice_description"><?php echo $params['footer_text']; ?></p>
+			</div><?php
+		}
+
+		?>
+	</div>
+	<?php
+
+	// Should end with </div>
+}
+

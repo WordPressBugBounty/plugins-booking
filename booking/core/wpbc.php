@@ -241,16 +241,6 @@ public function define_admin_menu(){
                                                                             )
                                                 );
 
-    self::$instance->admin_menu['settings'] = new WPBC_Admin_Menus(
-                                                    'wpbc-settings' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => __('Settings', 'booking')
-                                                  , 'page_header'   => __('General Settings','booking')
-                                                  , 'browser_header'=> __('Settings', 'booking') . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_settings' )
-                                                                            )
-                                                );
-
 	if ( ! class_exists( 'wpdev_bk_personal' ) ) {            //FixIn: 10.1.3.1
 	    //FixIn: 9.8.15.7
         self::$instance->admin_menu['resources']    = new WPBC_Admin_Menus(
@@ -264,15 +254,25 @@ public function define_admin_menu(){
                                                 );
 	}
 
-	//FixIn: 10.2.0.1
-	if ( WPBC_setup_plugin ) {
-    	self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus(												//FixIn: 9.8.0.1
-                                                    'wpbc-setup' , array (
+
+    self::$instance->admin_menu['settings'] = new WPBC_Admin_Menus(
+                                                    'wpbc-settings' , array (
                                                     'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => wpbc_get_plugin_menu_title__setup()
-                                                  , 'page_header'   => ucwords( __('Setup','booking') )
-                                                  , 'browser_header'=> ucwords( __('Setup', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_customize_plugin' )				//FixIn: 9.8.15.2.6
+                                                  , 'menu_title'    => __('Settings', 'booking')
+                                                  , 'page_header'   => __('General Settings','booking')
+                                                  , 'browser_header'=> __('Settings', 'booking') . ' - ' . __('Booking Calendar', 'booking')
+                                                  , 'user_role' => get_bk_option( 'booking_user_role_settings' )
+                                                                            )
+                                                );
+
+	if ( ( WPBC_setup_plugin ) && ( ! wpbc_setup_wizard_page__db__is_all_steps_completed() ) ) {						//FixIn: 10.2.0.1
+    	self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus(													//FixIn: 9.8.0.1
+                                                    'wpbc-setup' , array (
+                                                    'in_menu'        => 'wpbc'
+                                                  , 'menu_title'     => wpbc_get_plugin_menu_title__setup_progress()
+                                                  , 'page_header'    => ucwords( __('Setup','booking') )
+                                                  , 'browser_header' => ucwords( __('Setup', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
+                                                  , 'user_role' 	 => get_bk_option( 'booking_user_role_settings' )				//FixIn: 9.8.15.2.6
                                                                             )
                                                 );
 	}
@@ -370,7 +370,14 @@ public function define_admin_menu(){
         
         if (  ( defined( 'DOING_AJAX' ) )  && ( DOING_AJAX )  ){                        // New A J A X    R e s p o n d e r
 
-            if ( class_exists('wpdev_bk_personal')) { $wpdev_bk_personal_in_ajax = new wpdev_bk_personal(); }            
+	        if ( 1 ) {
+		        $wpdev_booking_obj_in_ajax = new wpdev_booking();                                    // GO
+	        } else {
+		        if ( class_exists( 'wpdev_bk_personal' ) ) {
+			        $wpdev_bk_personal_in_ajax = new wpdev_bk_personal();
+		        }
+	        }
+
             require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-ajax.php';                        // Ajax 
             
             return false;

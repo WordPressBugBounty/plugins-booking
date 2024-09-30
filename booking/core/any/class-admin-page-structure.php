@@ -621,7 +621,7 @@ abstract class WPBC_Page_Structure {
 	    }
 
 	    if ( ! $this->is_use_left_navigation ) {
-		    ?><span class="wpdevelop wpdvlp-nav-tabs-container">
+		    ?><span class="wpdevelop wpdvlp-nav-tabs-container wpbc_top_tabs_sub_menu">
 			<div class="clear"></div><?php
 	    }
 
@@ -680,7 +680,7 @@ abstract class WPBC_Page_Structure {
 					$el_arr   = wp_parse_args( $el_arr, $defaults );
 
 					$tag = 'span';
-					if (  in_array( $el_arr['tag'], array( 'a', 'span', 'div', '>' ) ) ) {
+					if (  in_array( $el_arr['tag'], array( 'a', 'span', 'div', '>', '|' ) ) ) {
 						$tag = $el_arr['tag'];
 					}
 
@@ -690,12 +690,25 @@ abstract class WPBC_Page_Structure {
 							$el_arr['html'] = '<i class="menu_icon icon-1x wpbc_icn_navigate_next"></i>';
 							$el_arr['attr'] = array( 'style' => 'padding-left: 0;padding-right: 0;' );
 					}
+					if ( '|' === $tag ) {
+							$tag  = 'div';
+							$el_arr['html'] = '<div style="border-left: 2px solid #00000012;width: 0;height: 100%;margin: 0 10px;">&nbsp;</div>';
+							$el_arr['attr'] = array( 'style' => 'padding-left: 0;padding-right: 0;' );
+					}
 
 					echo '<' . $tag;
 
-					// URL
-					if ( ! empty( $el_arr['url'] ) ) {
-						echo ' href="' . esc_url( $el_arr['url'] ) . '" ';
+					if ( ! empty( $el_arr['action'] ) ) {
+
+						echo ' onclick="javascript:' . $el_arr['action'] .'" ';
+
+						// URL
+						echo ' href="javascript:void(0);" ';
+					} else {
+						// URL
+						if ( ! empty( $el_arr['url'] ) ) {
+							echo ' href="' . esc_url( $el_arr['url'] ) . '" ';
+						}
 					}
 
 					// Hints

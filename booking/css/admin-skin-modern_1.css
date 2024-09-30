@@ -34,6 +34,9 @@
 .wpdvlp-top-tabs .nav-tab .menu_icon::before {
   font-size: 18px;
 }
+.wpdvlp-top-tabs .nav-tab [class*=" wpbc-bi-"]::before{
+	vertical-align:-.16em;
+}
 /* Active navigation tab */
 .wpdvlp-top-tabs .nav-tab-active,
 .wpdvlp-top-tabs a.nav-tab-active:hover,
@@ -410,6 +413,12 @@ body[class*="page_wpbc"] #wpcontent .wrap.wpbc_page{
 	box-shadow: 0 1px 1px #f0f0f0;
   	background: #fcfcfc;
   	border-bottom: 1px solid #ddd;
+}
+/* Hide Notice Messages from other plugins in header on Booking Calendar pages. It will prevents of interruption of normal workflow of the pages in Booking Calendar by messages from other plugins. //FixIn: 10.5.2.2 */
+.wpbc_header ~ .error,
+.wpbc_header ~ .updated,
+.wpbc_header ~ .notice {
+	display: none !important;
 }
 @media (max-width: 782px) {
 	.wpbc_page_top h1.wpbc_header{

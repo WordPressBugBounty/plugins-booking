@@ -1,0 +1,146 @@
+<?php
+/**
+ * @version 1.0
+ * @package Booking Calendar
+ * @subpackage  DB - checking if table, field or index exists
+ * @category    Functions
+ *
+ * @author wpdevelop
+ * @link https://wpbookingcalendar.com/
+ * @email info@wpbookingcalendar.com
+ *
+ * @modified 2024-09-03
+ */
+
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
+
+// =====================================================================================================================
+// ==  DB - checking if table, field or index exists  ==
+// =====================================================================================================================
+
+/**
+ * Check if table exist
+ *
+ * @global  $wpdb
+ * @param string $tablename
+ * @return 0|1
+ */
+function wpbc_is_table_exists( $tablename ) {
+
+	global $wpdb;
+
+	if (
+		   ( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
+		|| ( '_' == $wpdb->prefix )																					//FixIn: 8.7.3.16
+	) {
+		$tablename = $wpdb->prefix . $tablename;
+	}
+
+	if ( 0 ) {
+		$sql_check_table = $wpdb->prepare( "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE (TABLE_SCHEMA = '{$wpdb->dbname}') AND (TABLE_NAME = %s);", $tablename );
+
+		$res = $wpdb->get_results( $sql_check_table );
+
+		return count( $res );
+
+	} else {
+
+		$sql_check_table = $wpdb->prepare("SHOW TABLES LIKE %s" , $tablename ); 									//FixIn: 5.4.3
+
+		$res = $wpdb->get_results( $sql_check_table );
+
+		return count( $res );
+	}
+
+}
+
+
+//FixIn: 10.0.0.1
+/**
+ * Check  if we are in playground.wordpress.net ,  where used 'sqlite' DB
+ *
+ * @return bool
+ */
+function wpbc_is_this_wp_playground_db(){
+
+	return false;
+
+	if (
+		   ( ( function_exists( 'sqlite_open' ) ) || ( class_exists( 'SQLite3' ) ) )
+		&& ( ! class_exists( 'wpdev_bk_personal' ) )
+	){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+/**
+ * Check if table exist
+ *
+ * @global  $wpdb
+ * @param string $tablename
+ * @param  $fieldname
+ * @return 0|1
+ */
+function wpbc_is_field_in_table_exists( $tablename , $fieldname) {
+
+	if ( wpbc_is_this_wp_playground_db() ) {
+		return 1;		// Probably  we are in playground.wordpress.net --> So  then all  such fields already  was created			//FixIn: 10.0.0.1
+	}
+
+	global $wpdb;
+
+	if (
+		   ( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
+		|| ( '_' == $wpdb->prefix )																					//FixIn: 8.7.3.16
+	) {
+		$tablename = $wpdb->prefix . $tablename;
+	}
+
+	if ( 0 ) {
+
+		$sql_check_table = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='{$tablename}' AND TABLE_SCHEMA='{$wpdb->dbname}' ";
+
+		$res = $wpdb->get_results( $sql_check_table );
+
+		foreach ( $res as $fld ) {
+			if ( $fieldname === $fld->COLUMN_NAME ) {
+				return 1;
+			}
+		}
+
+	} else {
+
+		$sql_check_table = "SHOW COLUMNS FROM {$tablename}";
+
+		$res = $wpdb->get_results( $sql_check_table );
+
+		foreach ( $res as $fld ) {
+			if ( $fld->Field == $fieldname ) {
+				return 1;
+			}
+		}
+	}
+
+	return 0;
+}
+
+
+/**
+ * Check if index exist
+ *
+ * @global  $wpdb
+ * @param string $tablename
+ * @param  $fieldindex
+ * @return 0|1
+ */
+function wpbc_is_index_in_table_exists( $tablename , $fieldindex) {
+	global $wpdb;
+	if ( (! empty($wpdb->prefix) ) && ( strpos($tablename, $wpdb->prefix) === false ) ) $tablename = $wpdb->prefix . $tablename ;
+	$sql_check_table = $wpdb->prepare("SHOW INDEX FROM {$tablename} WHERE Key_name = %s", $fieldindex );
+	$res = $wpdb->get_results( $sql_check_table );
+	if (count($res)>0) return 1;
+	else               return 0;
+}

@@ -1,5 +1,5 @@
 var time_buffer_value = 0;					// Customization of bufer time for DAN
-var is_check_start_time_gone = false;		// Check  start time or end time for the time, which is gone already TODAY.
+var is_check_start_time_gone = true;		// Check  start time or end time for the time, which is gone already TODAY.	//FixIn: 10.5.2.3
 var start_time_checking_index;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

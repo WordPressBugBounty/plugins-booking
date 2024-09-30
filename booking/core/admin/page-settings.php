@@ -83,7 +83,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
                     );
 
         $subtabs = array();
-		$subtabs['wpbc-settings-info'] = array( 'type' => 'html', 'html' => wpbc_get_flex_dashboard_info() );
+		// $subtabs['wpbc-settings-info'] = array( 'type' => 'html', 'html' => wpbc_get_flex_dashboard_info() );
 
 if (0){
         $subtabs['wpbc-settings-calendar'] = array(   'type' => 'goto-link'
@@ -204,140 +204,196 @@ if (0){
 			</script><?php
 	    }
 
+	    if ( ( isset( $_GET['wpbc_setup_wizard'] ) ) && ( 'reset' === $_GET['wpbc_setup_wizard'] ) ) {
+
+		    ?><div class="wpdvlp-sub-tabs wpbc_redirection_message" style="margin: 20px 0;padding: 1em;font-size: 14px;"><a href="<?php echo wpbc_get_setup_wizard_page_url()  ;?>">Redirect</a> after <span class="wpbc_countdown">1</span> second...</div><?php
+
+			wpbc_redirect( wpbc_get_setup_wizard_page_url() );
+	    }
+
         // JavaScript: Tooltips, Popover, Datepick (js & css) //////////////////
         echo '<span class="wpdevelop">';
         wpbc_js_for_bookings_page();                                        
         echo '</span>';
 
+		wpbc_ui_settings__top_path();
 
         // Content  ////////////////////////////////////////////////////////////
         ?>
-        <div class="clear" style="margin-bottom:10px;"></div>
+        <div class="clear" ></div>
 		<div class="wpbc_settings_flex_container">
 
 			<div class="wpbc_settings_flex_container_left">
 
 				<div class="wpbc_settings_navigation_column">
 
-					<div id="wpbc_general_settings_calendar_tab" class="wpbc_settings_navigation_item wpbc_settings_navigation_item_active">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Calendar', 'booking' ) ?></span>
-						</a>
+					<div id="wpbc_general_settings_dashboard_tab" class="wpbc_settings_navigation_item wpbc_settings_navigation_item_active">
+						<?php
+							$title   = esc_attr__( 'Dashboard', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_dashboard_tab a' ,'#wpbc_general_settings_dashboard_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
+					</div>
+					<div id="wpbc_general_settings_calendar_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
+						<?php
+							$title   = esc_attr__( 'Calendar', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_calendar_tab a' ,'#wpbc_general_settings_calendar_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_days_tooltips_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_days_tooltips_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Tooltips in days', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Tooltips in days', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_days_tooltips_tab a' ,'#wpbc_general_settings_days_tooltips_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_availability_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_availability_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Availability', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Availability', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_availability_tab a' ,'#wpbc_general_settings_availability_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_capacity_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_capacity_metabox,#wpbc_general_settings_capacity_upgrade_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Capacity', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Capacity', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_capacity_tab a' ,'#wpbc_general_settings_capacity_metabox,#wpbc_general_settings_capacity_upgrade_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_form_tab" class="wpbc_settings_navigation_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_form_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Form Options', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Form Options', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_form_tab a' ,'#wpbc_general_settings_form_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_time_slots_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_time_slots_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Time Slots', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Time Slots', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_time_slots_tab a' ,'#wpbc_general_settings_time_slots_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_booking_confirmation_tab" class="wpbc_settings_navigation_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_confirmation_metabox,#wpbc_general_settings_booking_confirmation_left_metabox,#wpbc_general_settings_booking_confirmation_right_metabox,#wpbc_general_settings_booking_confirmation_help_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Booking Confirmation', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Booking Confirmation', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_booking_confirmation_tab a' ,'#wpbc_general_settings_booking_confirmation_metabox,#wpbc_general_settings_booking_confirmation_left_metabox,#wpbc_general_settings_booking_confirmation_right_metabox,#wpbc_general_settings_booking_confirmation_help_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 
 					<div id="wpbc_general_settings_booking_timeline_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_timeline_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Timeline (front-end)', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Timeline (front-end)', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_booking_timeline_tab a' ,'#wpbc_general_settings_booking_timeline_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<?php if ( class_exists('wpdev_bk_personal') ) { ?>
 						<div id="wpbc_general_settings_bookings_options_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_bookings_options_metabox' );" href="javascript:void(0);">
-								<span><?php _e( 'Manage Bookings', 'booking' ) ?></span>
-							</a>
+							<?php
+								$title   = esc_attr__( 'Manage Bookings', 'booking' );
+								$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_bookings_options_tab a' ,'#wpbc_general_settings_bookings_options_metabox', '" . $title . "' );";
+							?>
+							<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 						</div>
 					<?php } ?>
 
 					<?php if ( class_exists('wpdev_bk_biz_s') ) { ?>
-						<div id="wpbc_general_settings_auto_cancelation_approval_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_auto_cancelation_approval_metabox' );" href="javascript:void(0);">
-								<span><?php _e( 'Auto Cancellation / Auto Approval', 'booking' ) ?></span>
-							</a>
+							<div id="wpbc_general_settings_auto_cancelation_approval_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
+							<?php
+								$title   = esc_attr__( 'Auto Cancellation / Auto Approval', 'booking' );
+								$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_auto_cancelation_approval_tab a' ,'#wpbc_general_settings_auto_cancelation_approval_metabox', '" . $title . "' );";
+							?>
+							<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 						</div>
 					<?php } ?>
 
 
 					<?php if ( class_exists('wpdev_bk_multiuser') ) { ?>
 						<div id="wpbc_general_settings_multiuser_tab" class="wpbc_settings_navigation_item">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_multiuser_metabox' );" href="javascript:void(0);">
-								<span><?php _e( 'Multiuser options', 'booking' ) ?></span>
-							</a>
+							<?php
+								$title   = esc_attr__( 'Multiuser options', 'booking' );
+								$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_multiuser_tab a' ,'#wpbc_general_settings_multiuser_metabox', '" . $title . "' );";
+							?>
+							<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 						</div>
 					<?php } ?>
 
 					<div id="wpbc_general_settings_booking_listing_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_listing_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Admin Panel', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Admin Panel', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_booking_listing_tab a' ,'#wpbc_general_settings_booking_listing_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_booking_calendar_overview_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_booking_calendar_overview_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Timeline View', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Timeline View', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_booking_calendar_overview_tab a' ,'#wpbc_general_settings_booking_calendar_overview_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_datestimes_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_datestimes_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Date / Time Formats', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Date / Time Formats', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_datestimes_tab a' ,'#wpbc_general_settings_datestimes_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_permissions_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_permissions_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Plugin Menu / Permissions', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Plugin Menu / Permissions', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_permissions_tab a' ,'#wpbc_general_settings_permissions_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_translations_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_translations_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Translations', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Translations', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_translations_tab a' ,'#wpbc_general_settings_translations_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_advanced_tab" class="wpbc_settings_navigation_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_advanced_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Advanced', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Advanced', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_advanced_tab a' ,'#wpbc_general_settings_advanced_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_uninstall_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_uninstall_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Uninstall / deactivation', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Uninstall / deactivation', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_uninstall_tab a' ,'#wpbc_general_settings_uninstall_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_information_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_information_metabox' );" href="javascript:void(0);">
-							<span><?php _e( 'Info / News', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Info / News', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_information_tab a' ,'#wpbc_general_settings_information_metabox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
-
 					<?php if ( ( class_exists('wpdev_bk_personal') ) && ( ! wpbc_is_this_demo() ) ) { ?>
 						<div id="wpbc_general_settings_help_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-							<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_help_metabox' );" href="javascript:void(0);">
-								<span><?php _e( 'Tools', 'booking' ) ?></span>
-							</a>
+							<?php
+								$title   = esc_attr__( 'Tools', 'booking' );
+								$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_help_tab a' ,'#wpbc_general_settings_help_metabox', '" . $title . "' );";
+							?>
+							<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 						</div>
 					<?php } ?>
 
 					<div id="wpbc_general_settings_all_tab" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
-						<a class="" original-title="" onclick="javascript:wpbc_navigation_click_show_section(this,'.postbox' );" href="javascript:void(0);">
-							<span><?php _e( 'Show All Settings', 'booking' ) ?></span>
-						</a>
+						<?php
+							$title   = esc_attr__( 'Show All Settings', 'booking' );
+							$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_all_tab a' ,'.postbox', '" . $title . "' );";
+						?>
+						<a onclick="<?php echo $onclick; ?>" href="javascript:void(0);"><span><?php echo $title; ?></span></a>
 					</div>
 
 				</div>
@@ -357,7 +413,20 @@ if (0){
 
 						<div class="wpbc_settings_row wpbc_settings_row_full_width" >
 
-							<?php wpbc_open_meta_box_section( 'wpbc_general_settings_calendar', __('Calendar', 'booking'), array( 'is_section_visible_after_load' => true, 'is_show_minimize' => false ) ); ?>
+							<div id="wpbc_general_settings_dashboard_metabox" class="postbox"
+								 style="background: transparent;border: 0;box-shadow: none;"><?php //wpbc_open_meta_box_section( 'wpbc_general_settings_dashboard', __('Dashboard'), array( 'is_section_visible_after_load' => true, 'is_show_minimize' => false ) ); ?>
+								<?php
+
+								wpbc_ui_settings__panel__statistic();
+
+								wpbc_ui_settings__panel__all_settings_panels();
+
+								wpbc_ui_settings__panel__plugin_version();
+
+						    ?></div><?php //wpbc_close_meta_box_section(); ?>
+
+
+							<?php wpbc_open_meta_box_section( 'wpbc_general_settings_calendar', __('Calendar', 'booking'), array( 'is_section_visible_after_load' => false, 'is_show_minimize' => false ) ); ?>
 
 							<?php $this->settings_api()->show( 'calendar' ); ?>
 
@@ -519,11 +588,11 @@ if (0){
 							<?php wpbc_close_meta_box_section(); ?>
 
 
-							<?php wpbc_open_meta_box_section( 'wpbc_general_settings_information', __('Information', 'booking'), array( 'is_section_visible_after_load' => false, 'is_show_minimize' => false ) ); ?>
+							<?php  wpbc_open_meta_box_section( 'wpbc_general_settings_information', __('Information', 'booking'), array( 'is_section_visible_after_load' => false, 'is_show_minimize' => false ) ); ?>
 
-							<?php $this->settings_api()->show( 'information' ); ?>
+							<?php  $this->settings_api()->show( 'information' ); ?>
 
-							<?php wpbc_close_meta_box_section(); ?>
+							<?php  wpbc_close_meta_box_section(); ?>
 
 
 

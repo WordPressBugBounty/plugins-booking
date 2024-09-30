@@ -1541,7 +1541,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
   color: #444444e0;
   border-radius: 0.375em;
   padding: 0 2.2em;
-  line-height: calc( var(--wpbc_form-button-light-size-height) - 2px );
+  line-height: calc( var(--wpbc_form-button-light-size-height) - 3px );
   text-decoration: none;
   cursor: pointer;
   outline: none;
@@ -1565,6 +1565,45 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
     /*background: rgb(255 255 255);*/
     /*color: #5f5f5f;*/
 }
+
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary {
+    background: var(--wpbc_form-button-background-color, #066aab);
+    color: #fff;
+}
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:focus{
+    background: var(--wpbc_form-button-background-color, #066aab);
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 0px 2px var(--wpbc_form-button-background-color, #066aab);
+}
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:active,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:focus {
+    color: #ccc;
+    border:2px solid #eeeeeeb5;
+    cursor: not-allowed;
+    /*pointer-events: none;*/
+}
+
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger {
+  background: #de605c;
+  border-color: #de605c;
+  color: #f7f7f7;
+  text-shadow: 0 0px #ba5956;
+}
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger:focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger:focus{
+    background: #e65d59;
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 0px 2px #de605c;
+}
+
 /* ================================================================================================================== */
 /* Stripe */
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe {

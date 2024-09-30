@@ -1592,6 +1592,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                  
         
         // <editor-fold     defaultstate="collapsed"                        desc=" Information "  >
+if(1){
         if (  function_exists( 'wpbc_get_dashboard_info' ) ) {
             $this->fields['booking_information'] = array(   
                                'type'              => 'html'
@@ -1600,6 +1601,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                              , 'group'             => 'information'
                      ); 
         }
+}
         // </editor-fold>
 
         
@@ -1789,6 +1791,21 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 								            . wpbc_get_settings_url()
 								            . '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&reset=custom_forms#wpbc_general_settings_system_info_metabox">'
 								            . 'Reset custom forms'
+							            . '</a>';
+
+
+	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
+								            . wpbc_get_settings_url()
+								            . '&wpbc_setup_wizard=reset&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'">'
+								            . 'Reset Setup Wizard'
+							            . '</a>';
+//	            if ( ( isset( $_GET['wpbc_setup_wizard'] ) ) && ( 'reset' === $_GET['wpbc_setup_wizard'] ) ) {
+//		            $my_system_buttons .= '<script type="text/javascript"> window.location.href = "' . esc_url( wpbc_get_setup_wizard_page_url() ) . '"; </script>';
+//	            }
+	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
+								            . wpbc_get_settings_url()
+								            . '&wpbc_setup_wizard=completed&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'">'
+								            . 'Set Setup Wizard as Completed'
 							            . '</a>';
             }
 

@@ -1,4 +1,14 @@
 <?php  function wpbc_all_translations2() { $wpbc_all_translations = array(); 
+ $wpbc_all_translations[] = __('Customize booking costs by seasonal daily pricing and booking duration, with features for partial payments and early/late check-in discounts.', 'booking'); 
+ $wpbc_all_translations[] = __('Costs and Rates Settings', 'booking'); 
+ $wpbc_all_translations[] = __('Set Rate', 'booking'); 
+ $wpbc_all_translations[] = __('Set Deposit Amount', 'booking'); 
+ $wpbc_all_translations[] = __('Early / Late Booking', 'booking'); 
+ $wpbc_all_translations[] = __('Set Early / Late Booking Amount', 'booking'); 
+ $wpbc_all_translations[] = __('Costs and Rates', 'booking'); 
+ $wpbc_all_translations[] = __('Set different daily prices based on seasons', 'booking'); 
+ $wpbc_all_translations[] = __('Set flexible costs based on the number of selected days, such as offering a discount for a week or longer stay', 'booking'); 
+ $wpbc_all_translations[] = __('Enable customers to pay a partial of the booking cost upfront.', 'booking'); 
  $wpbc_all_translations[] = __('Configure discounts based on the interval between the booking date and check-in day.', 'booking'); 
  $wpbc_all_translations[] = __('Early / Late Check-in Discounts', 'booking'); 
  $wpbc_all_translations[] = __('Customization of Season Filters', 'booking'); 
@@ -964,10 +974,6 @@
  $wpbc_all_translations[] = __('Previous dates', 'booking'); 
  $wpbc_all_translations[] = __('All dates', 'booking'); 
  $wpbc_all_translations[] = __('Today check in/out', 'booking'); 
- $wpbc_all_translations[] = __('Check in - Today', 'booking'); 
- $wpbc_all_translations[] = __('Check out - Today', 'booking'); 
- $wpbc_all_translations[] = __('Check in - Tomorrow', 'booking'); 
- $wpbc_all_translations[] = __('Check out - Tomorrow', 'booking'); 
  $wpbc_all_translations[] = __('Prior', 'booking'); 
  $wpbc_all_translations[] = __('Filter bookings by booking status', 'booking'); 
  $wpbc_all_translations[] = __('Any', 'booking'); 
@@ -990,10 +996,4 @@
  $wpbc_all_translations[] = __('Reload bookings listing', 'booking'); 
  $wpbc_all_translations[] = __('Approve selected bookings', 'booking'); 
  $wpbc_all_translations[] = __('Set selected bookings as pending', 'booking'); 
- $wpbc_all_translations[] = __('Do you really want to set booking as pending ?', 'booking'); 
- $wpbc_all_translations[] = __('Reject booking - move selected bookings to trash', 'booking'); 
- $wpbc_all_translations[] = __('Restore selected bookings', 'booking'); 
- $wpbc_all_translations[] = __('Delete selected bookings', 'booking'); 
- $wpbc_all_translations[] = __('Reason of action', 'booking'); 
- $wpbc_all_translations[] = __('Read All', 'booking'); 
  } 

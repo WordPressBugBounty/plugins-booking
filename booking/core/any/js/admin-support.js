@@ -11,22 +11,43 @@
  * @modified 2015-04-09
   */
 
+function wpbc_ui_settings__panel__click( left_vert_nav_menu_a, section_id_to_show, text_for_path ){
+
+    // Update text in Top Menu
+    jQuery( '.wpbc_settings_path_el_active' ).html(
+      '<a onclick="javascript:wpbc_ui_settings__panel__click( \''+ left_vert_nav_menu_a +'\', \''+ section_id_to_show +'\', \''+ text_for_path +'\' );" href="javascript:void(0);">' + text_for_path + '</a>'
+    );
+
+    // Show / Hide section  and enable Left Vert Menu item
+    wpbc_navigation_click_show_section( left_vert_nav_menu_a, section_id_to_show , '.postbox' , false);
+
+    //wpbc_scroll_to( '.wpbc_settings_path_el_active' );        // Scroll  to  path
+    wpbc_scroll_to( '.wpbc_page_top__header_tabs' );            // Scroll  to  Top
+}
+
+
 /**
  * When  click  on Navigation Column menu
  */
 function wpbc_navigation_click_show_section( _this, section_id_to_show ){
     var container_to_hide_class = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '.postbox';
+    var is_scroll = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
+    // -- Set Left Nav Active ------------------------------------------------------------------------------------------
     jQuery( _this ).parents( '.wpbc_settings_flex_container' ).find( '.wpbc_settings_navigation_item_active' ).removeClass( 'wpbc_settings_navigation_item_active' );
     jQuery( _this ).parents( '.wpbc_settings_navigation_item' ).addClass( 'wpbc_settings_navigation_item_active' );
+    // -- Hide all  and show selected ----------------------------------------------------------------------------------
     jQuery( _this ).parents( '.wpbc_settings_flex_container' ).find( container_to_hide_class ).hide();
     jQuery( '.wpbc_container_always_hide__on_left_nav_click' ).hide();
     jQuery( section_id_to_show ).show();
 
+    // -- Scroll -------------------------------------------------------------------------------------------------------
     //jQuery( _this ).trigger( 'blur' );
-    wpbc_scroll_to( section_id_to_show );
+    if ( is_scroll ) {
+        var targetOffset = wpbc_scroll_to( section_id_to_show );
+    }
 
-    //FixIn: 9.8.6.1
+    // -- Set Value to Input about selected Nav element  ---------------------------------------------------------------       //FixIn: 9.8.6.1
     var section_id_tab = section_id_to_show.substring( 0, section_id_to_show.length - 8 ) + '_tab';
     if ( container_to_hide_class == section_id_to_show ){
         section_id_tab = '#wpbc_general_settings_all_tab'
@@ -52,7 +73,9 @@ function wpbc_scroll_to( object_name ) {
         if ( jQuery('#wpadminbar').length > 0 ) targetOffset = targetOffset - 50;
         else  targetOffset = targetOffset - 20;
         jQuery('html,body').animate({scrollTop: targetOffset}, 500);
+        return targetOffset;
     }
+    return 0;
 }
 
 jQuery( document ).ready(function(){

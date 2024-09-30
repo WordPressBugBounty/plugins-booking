@@ -4,6 +4,95 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 
+function wpbc_welcome_section_10_6( $obj ){
+
+	$section_param_arr = array( 'version_num' => '10.6', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+
+
+	//$obj->asset_path = 'http://beta/assets/';	// TODO: 2024-06-01 comment this
+
+
+	// <editor-fold     defaultstate="collapsed"                        desc=" = F R E E = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = F R E E =
+	// -----------------------------------------------------------------------------------------------------------------
+	?><div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<!-- <h2>--><?php //echo wpbc_replace_to_strong_symbols( 'New Modern Calendar Themes and More!' ); ?><!--</h2>-->
+			<div class="wpbc_wn_col">
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'New Structured Settings Dashboard!' ); ?></h3>
+				<ul>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Structured Settings Dashboard**: We’ve introduced a new, organized settings dashboard with brief descriptions for each feature. This update makes it easier to find and configure the settings you\'re looking for.' ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col">
+				<img src="<?php echo $obj->section_img_url( '10.6/wp_booking_calendar_settings_dashboard_04.png' ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+	</div>
+	<?php
+
+	// </editor-fold>
+
+	// <editor-fold     defaultstate="collapsed"                        desc="  = M I X E D = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = M I X E D =
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wpbc_replace_to_strong_symbols( 'Additional Improvements in Free and Pro versions' ); ?></h2>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col">
+				<ul>
+					<?php // Free ?>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Refactored Code**: We’ve refactored the code for improved efficiency and maintainability.' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Email Deliverability**: The "From" email address is now automatically set to the website\'s "Administration Email Address" for all newly activated regular users. This change helps prevent emails from being marked as spam when the user\'s email is not from the website domain. *(MultiUser)*' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Translation**. Local German translation update' ); ?></li>
+				</ul>
+				<!--
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'Improvements in Pro Versions' ); ?></h3>
+				<ul>
+					<?php // Pro ?>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; Enhanced Spinners for Cost and Date Hints! The spinners in the booking form for cost and date hints have been updated for a smoother and more intuitive user experience. *(Business Medium/Large, MultiUser)*' ); ?></li>
+				</ul>
+				<div style="clear:both;height:20px;"></div>
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'Translations' ); ?></h3>
+				<ul>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; Korean Translation! The translation has been updated and is now 96% complete, courtesy of modelaid.' ); ?></li>
+				</ul>
+				-->
+			</div>
+
+		</div>
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col">
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'Bug Fixes' ); ?></h3>
+				<ul>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Calendar Behavior**: We’ve removed the highlighting of days in the calendar when the mouse cursor moves outside the calendar container for a smoother user experience. (10.5.2.4)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Timeline Navigation**: We’ve fixed an issue where the dropdown list would auto-close after selecting the start date in the navigation panel on the Timeline view. (10.5.2.1)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Page Workflow**: Notice messages from other plugins are now hidden in the header on Booking Calendar pages. This prevents interruptions to the normal workflow caused by messages from other plugins. (10.5.2.2)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Start Time Validation**: We’ve added a fix to check the start time and prevent the selection of times that have already passed for today. (10.5.2.3)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '**Pro Versions:**' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Submit Button Color Issue Resolved**: We’ve fixed an issue where the color of the "Send" button wasn’t saving correctly after a second click on dates, when the range dates selection mode was enabled. (10.5.2.3)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Date/Time Hints Display**: Resolved an issue where date/time hints were not showing in the booking form if no date was selected. Previously, a "0" would display if only the time was selected. (10.5.2.7)' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div><?php
+	// </editor-fold>
+
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
+
 function wpbc_welcome_section_10_5( $obj ){
 
 	$section_param_arr = array( 'version_num' => '10.5', 'show_expand' => false );

@@ -599,9 +599,15 @@ div.wpbc_container.wpbc_form input[type=radio]:checked:before {
   margin: 0;
   border-width: var(--wpbc_form-field-border-size);
   border-style: solid;
-  border-color: var(--wpbc_form-button-background-color);
-  box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color), 0px 1px 2px rgba(0, 0, 0, 0.15);
+    border-color: var(--wpbc_form-field-border-color);
+    /*border-color: var(--wpbc_form-button-background-color);*/
+    /*box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color), 0px 1px 2px rgba(0, 0, 0, 0.15);*/
   outline: none;
+}
+div.wpbc_container.wpbc_form input[type=checkbox]:checked:before:focus,
+div.wpbc_container.wpbc_form input[type=radio]:checked:before:focus {
+    border-color: var(--wpbc_form-button-background-color);
+    box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color), 0px 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 div.wpbc_container.wpbc_form input[type=checkbox]:focus,

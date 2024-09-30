@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.6
-Stable tag: 10.5.1
+Stable tag: 10.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -270,7 +270,7 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 
 == Screenshots ==
 1. **Time-Slot Appointment Bookings**: This screenshot displays the front-end booking form, configured in a 2-column layout with light theme. It allows users to select **single day** in the calendar and **time slots** in the booking form.
-2. **Full-Day Bookings**: In this screenshot, you can see the front-end booking form. It enables users to select and **book multiple days in the calendar**.
+2. **Full-Day Bookings**: In this screenshot, you can see the front-end booking form, configured in a centered layout with a dark theme. It enables users to select and **book multiple days in the calendar**.
 3. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
 4. **Calendar Availability**: Select dates, choose the available/unavailable status, and apply it. It's that simple to set dates as unavailable.
 5. **Calendar Overview**: Get a clear overview of all your bookings.
@@ -287,9 +287,22 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 16. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
 17. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
-19. **Full-Day Bookings in Legacy Calendar Theme**: In this screenshot, you can see the front-end booking form, configured in a centered layout with a dark theme. It enables users to select and **book multiple days in the calendar**.
 
 == Changelog ==
+= 10.6 =
+- Changes in **all** versions:
+	* **New** Implemented a structured settings dashboard with brief descriptions for each feature. This update enhances user navigation, making it easier to locate and configure the desired settings.
+	* **Improvement** Refactored code for improved efficiency and maintainability.
+	* **Translation**. Local German translation updated by Christian Hölscher.
+	* **Fix** Removed the highlighting of days in the calendar when the mouse cursor moves out of the calendar container. (10.5.2.4)
+	* **Fix** Resolved an issue with the dropdown list auto-closing after selecting the start date in the navigation panel on the Timeline view. (10.5.2.1)
+	* **Fix** Hidden notice messages from other plugins in the header on Booking Calendar pages to avoid interruptions to the normal workflow. (10.5.2.2)
+	* **Fix** Implemented validation to check the start time, ensuring that users cannot select times that have already passed for the current day. (10.5.2.3)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+ 	* **Improvement** Replaced the "From" email address with the website's "Administration Email Address" for all newly activated regular users. This prevents emails from being marked as spam if the user's email is not from the website's domain. (10.5.2.5)  *(MultiUser)*
+ 	* **Fix** Resolved an issue with saving the correct color of the "Send" button after the second click on dates while using the range dates selection mode. (10.5.2.3)
+ 	* **Fix** Resolved the issue of date/time hints not displaying in the booking form when no date was selected. Previously, '0' would be shown if only the time was selected. (10.5.2.7)
+
 = 10.5.1 =
 - Changes in **all** versions:
 	* **New** Calendar skin themes - '24_9__light_2', '24_9__light_simple_1', '24_9__dark_2', '24_9__light_traditional_1' based on new '24_9__light' calendar skin  with  rounded day cells.
@@ -443,9 +456,12 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 9.8 =
- - Get ready for our biggest update yet! Enjoy a new booking engine, improved performance, structured settings, an enhanced UI, and a smoother booking process with the new booking confirmation section. Paid versions bring features like time-slot capacity for multiple bookings per time-slot and more. Find more at [this page](https://wpbookingcalendar.com/updates/whats-new-in-booking-calendar-update-9-8/) 
+ - Get ready for our biggest update yet! Enjoy a new booking engine, improved performance, structured settings, an enhanced UI, and a smoother booking process with the new booking confirmation section. Paid versions bring features like time-slot capacity for multiple bookings per time-slot and more. Find more at [this page](https://wpbookingcalendar.com/updates/whats-new-in-booking-calendar-update-9-8/)
 
 == Upgrade Notice ==
+= 10.6 =
+Implemented a structured settings dashboard with brief descriptions for each feature. This update enhances user navigation, making it easier to locate and configure the desired settings.
+
 = 10.5 =
 New calendar skin with rounded day cells. Updated UI of booking form fields setup. Ability to create and use multiple custom booking forms while setup in "Simple Form" mode in Pro versions.
 

@@ -14,9 +14,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-////////////////////////////////////////////////////////////////////////////////
-//   L O A D   F I L E S
-////////////////////////////////////////////////////////////////////////////////
+// =====================================================================================================================
+// ==  L O A D   F I L E S  ==
+// =====================================================================================================================
+
 require_once( WPBC_PLUGIN_DIR . '/core/wpbc-debug.php' );                       // Debug                                            = Package: WPBC =
 require_once( WPBC_PLUGIN_DIR . '/core/wpbc-core.php' );                        // Core
 
@@ -26,16 +27,28 @@ require_once( WPBC_PLUGIN_DIR . '/core/any/class-admin-page-structure.php' );   
 require_once( WPBC_PLUGIN_DIR . '/core/any/class-admin-menu.php' );             // CLASS. Menus of plugin
 require_once( WPBC_PLUGIN_DIR . '/core/any/admin-bs-ui.php' );                  // Functions. Toolbar BS UI Elements
 if( is_admin() ) {
-    require_once WPBC_PLUGIN_DIR . '/core/class/wpbc-class-dismiss.php';        // Class - Dismiss                 
     require_once WPBC_PLUGIN_DIR . '/core/class/wpbc-class-notices.php';        // Class - Showing different messages and alerts. Including some predefined static messages.    
     require_once WPBC_PLUGIN_DIR . '/core/class/wpbc-class-welcome.php';        // Class - Welcome Page - info  about  new version.
 }
 
+// =====================================================================================================================
 // Functions
+// =====================================================================================================================
 require_once( WPBC_PLUGIN_DIR . '/includes/_functions/nonce_func.php' );                // Nonce functions - front-end excluding
-require_once( WPBC_PLUGIN_DIR . '/includes/_functions/regex_str.php' );                 // String and Regex functions for shortcodes
-require_once( WPBC_PLUGIN_DIR . '/includes/_functions/parse_booking_data.php' );        // Booking form data parsing and replacement
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/str_regex.php' );                 // String and Regex functions for shortcodes
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/is_table_exist.php' );            // Is DB Tables Exists
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/is_dismissed.php' );              // Is Dismissed
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/booking_data__parse.php' );       // Booking form data parsing and replacement
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/booking_data__get.php' );         // Booking details | replace / fields functions
 require_once( WPBC_PLUGIN_DIR . '/includes/_functions/simple_html_tags.php' );          // Simple HTML Tags             -   Custom Shortcodes
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/admin_menu_url.php' );            // Admin Menu Pages & URLs
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/admin_top_bar.php' );             // Admin Top Bar
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/news_version.php' );              // News, Version
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/versions.php' );                  // Versions
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/sanitizing.php' );                // Sanitizing
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/request.php' );                   // Class for sanitizing $_REQUEST parameters and saving or getting it from  DB         //FixIn: 9.3.1.2
+require_once( WPBC_PLUGIN_DIR . '/includes/_functions/city_list.php' );                 // City list
+
 require_once( WPBC_PLUGIN_DIR . '/core/wpbc_functions.php' );                   // Functions
 require_once( WPBC_PLUGIN_DIR . '/core/wpbc_functions_dates.php' );             // Function Dates                       New in 9.8
 require_once( WPBC_PLUGIN_DIR . '/core/form_parser.php' );                      // Parser for booking form              New in 9.8
@@ -101,14 +114,13 @@ require_once( WPBC_PLUGIN_DIR . '/core/admin/wpbc-dashboard.php' );             
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //FixIn: 9.2.1      //FixIn: 9.6.3.5
-
-require_once( WPBC_PLUGIN_DIR . '/includes/_request/wpbc_request.php' );                                            //FixIn: 9.3.1.2        // Class for sanitizing $_REQUEST parameters and saving or getting it from  DB
 require_once( WPBC_PLUGIN_DIR . '/includes/_booking_hash/booking_hash.php' );                                       //FixIn: 9.2.3.3
 
 require_once( WPBC_PLUGIN_DIR . '/includes/_news/wpbc_news.php' );
 
 // UI Elements
 require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/flex_ui_elements.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/ui__settings_panel.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/toolbar_ui.php' );
 
 // Booking Listing

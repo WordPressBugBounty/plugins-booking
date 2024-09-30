@@ -481,8 +481,15 @@ select option.wpbc_child_resource{
     margin-left: auto;
     margin-top: 3px;
 }
+.wpbc_settings_navigation_column .wpbc_settings_navigation_item a .wpbc_set_nav__left_icon.wpbc_set_nav__icon_on,
 .wpbc_settings_navigation_column .wpbc_settings_navigation_item a .wpbc_set_nav__right_icon.wpbc_set_nav__icon_on {
     color: #036aab
+}
+
+.wpbc_settings_navigation_column .wpbc_settings_navigation_item a .wpbc_set_nav__left_icon {
+    margin-left: 0px;
+    margin-right: 10px;
+    margin-top: 0px;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

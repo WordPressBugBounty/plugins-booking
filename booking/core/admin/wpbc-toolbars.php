@@ -1712,7 +1712,7 @@ if(0){
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * Load support JavaScript for "Bookings" page
+ * Load support JavaScript for "Bookings" page  ::  JS Tooltips, Popover, Datepicker
  */
 function wpbc_js_for_bookings_page() {
 

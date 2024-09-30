@@ -483,6 +483,7 @@
 /* ================================================================================================================== */
 /* Folders											                                                                  */
 /* ================================================================================================================== */
+.wpbc_flextable_col_folder_structure,
 .wpbc_flextable .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_folder_structure {
 	flex: 0 0 30px;
 	align-self: stretch;

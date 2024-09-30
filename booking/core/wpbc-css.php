@@ -61,6 +61,8 @@ class WPBC_CSS extends WPBC_JS_CSS{
         if ( $where_to_load == 'admin' ) {                                                                              // Admin CSS files
 			wp_enqueue_style( 'wpbc-bootstrap-icons',       wpbc_plugin_url( '/assets/libs/bootstrap-icons/bootstrap-icons.css' ),          array(), WP_BK_VERSION_NUM );           //FixIn: 9.0.1.1
 
+	        wp_enqueue_style( 'wpbc-all-admin',             wpbc_plugin_url( '/_dist/all/_out/wpbc_all_admin.min.css' ),                    array(), WP_BK_VERSION_NUM);
+
             wp_enqueue_style( 'wpbc-chosen',                wpbc_plugin_url( '/assets/libs/chosen/chosen.css' ),        array(), WP_BK_VERSION_NUM);
             wp_enqueue_style( 'wpbc-admin-support',         wpbc_plugin_url( '/core/any/css/admin-support.css' ),       array(), WP_BK_VERSION_NUM);            
             wp_enqueue_style( 'wpbc-admin-menu',            wpbc_plugin_url( '/core/any/css/admin-menu.css' ),          array(), WP_BK_VERSION_NUM);
@@ -102,7 +104,7 @@ class WPBC_CSS extends WPBC_JS_CSS{
 		        }
 	        } else {
 
-		        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-child(4) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";         //FixIn: 10.1.3.1
+		        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-child(4) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";              //FixIn: 10.1.3.1
 		        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";         //FixIn: 10.1.3.1
 	        }
 
@@ -170,7 +172,6 @@ class WPBC_CSS extends WPBC_JS_CSS{
 	            wp_dequeue_style( 'fontawesome-style' );                                //FixIn: 8.2.1.22
 	            wp_dequeue_style( 'bootstrap-style' );                                  //FixIn: 8.2.1.22
 	            wp_dequeue_style( 'bootstrap-theme-style' );                            //FixIn: 8.2.1.22
-
             } 
         }
     }
@@ -183,36 +184,45 @@ class WPBC_CSS extends WPBC_JS_CSS{
  * @return string - URL to  calendar skin
  */
 function wpbc_get_calendar_skin_url() {
-    
-    // Calendar Skin ///////////////////////////////////////////////////////
-    $calendar_skin_path = false;
 
-    //FixIn: 8.7.11.11
+    // -- Old 'inc' path -> Re-update                                                                                  //FixIn: 8.7.11.11
 	$check_skin_path = get_bk_option( 'booking_skin' );
 	if ( false !== strpos( $check_skin_path, 'inc/skins/' ) ) {
 		$check_skin_path = str_replace( 'inc/skins/', 'css/skins/', $check_skin_path );
 		update_bk_option( 'booking_skin', $check_skin_path );
 	}
-	//FixIn: 8.9.4.8
+	// -- Absolute Path - Remove                                                                                        //FixIn: 8.9.4.8
 	if ( false !== strpos( $check_skin_path, WPBC_PLUGIN_DIR ) ) {
 		$check_skin_path = str_replace( WPBC_PLUGIN_DIR, '', $check_skin_path );
 		update_bk_option( 'booking_skin', $check_skin_path );
 	}
 
-    // Check if this skin exist in the plugin  folder //////////////////////
+
+	$calendar_skin_path = false;
+	// -----------------------------------------------------------------------------------------------------------------
+    // Check if this skin exist in Usual folder
+	// -----------------------------------------------------------------------------------------------------------------
     if ( file_exists( WPBC_PLUGIN_DIR . str_replace( WPBC_PLUGIN_URL, '', get_bk_option( 'booking_skin') ) ) ) {
         $calendar_skin_path = WPBC_PLUGIN_URL . str_replace( WPBC_PLUGIN_URL, '', get_bk_option( 'booking_skin') );
     }
 
-    // Check  if this skin exist  in the Custom User folder at  the http://example.com/wp-content/uploads/wpbc_skins/
+	// -----------------------------------------------------------------------------------------------------------------
+    // Check if skin exist in the Custom User folder at  the        http://example.com/wp-content/uploads/wpbc_skins/
+	// -----------------------------------------------------------------------------------------------------------------
     $upload_dir = wp_upload_dir();
     $custom_user_skin_folder = $upload_dir['basedir'] ;
-    $custom_user_skin_url    = $upload_dir['baseurl'] ;
-	//$custom_user_skin_url = str_replace( 'http:', 'https:', $custom_user_skin_url );
+    $custom_user_skin_url    = $upload_dir['baseurl'] ;             //$custom_user_skin_url = str_replace( 'http:', 'https:', $custom_user_skin_url );
 
     if ( file_exists( $custom_user_skin_folder . str_replace(  array( WPBC_PLUGIN_URL , $custom_user_skin_url ), '', get_bk_option( 'booking_skin') ) ) ) {
         $calendar_skin_path = $custom_user_skin_url . str_replace( array(WPBC_PLUGIN_URL, $custom_user_skin_url ), '', get_bk_option( 'booking_skin') );
     }
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// If still no file, then Default
+	// -----------------------------------------------------------------------------------------------------------------
+	if ( empty( $calendar_skin_path ) ) {
+		$calendar_skin_path = WPBC_PLUGIN_URL . '/css/skins/24_9__light.css';
+	}
 
     return $calendar_skin_path;
 }
@@ -225,7 +235,7 @@ function wpbc_get_time_picker_skin_url(){                                       
 
 	// Just  default value,  if previously  was not saved any  options.
 	if ( empty( get_bk_option( 'booking_timeslot_picker_skin' ) ) ) {
-		update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/grey.css' );
+		// update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/grey.css' );
 		update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/light__24_8.css' );      	            //FixIn: 10.4.0.1
 	}
 
