@@ -27,10 +27,10 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'calendar_scroll_to' , " . $calendar_scroll_to . " ); ";
 
 	// Max months to  scroll -------------------------------------------------------------------------------------------
-	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_max_monthes_in_calendar' , '" . get_bk_option( 'booking_max_monthes_in_calendar' ) . "' ); ";
+	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_max_monthes_in_calendar' , '" . esc_js( get_bk_option( 'booking_max_monthes_in_calendar' ) ) . "' ); ";        //FixIn: 10.6.1.3
 
 	// Start of WeekDay  -----------------------------------------------------------------------------------------------
-	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_start_day_weeek' , '" . get_bk_option( 'booking_start_day_weeek' ) . "' ); ";
+	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_start_day_weeek' , '" . esc_js( get_bk_option( 'booking_start_day_weeek' ) ) . "' ); ";        //FixIn: 10.6.1.3
 
 	// Number of visible months  -----------------------------------------------------------------------------------------------
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'calendar_number_of_months' , '" . $params['calendar_number_of_months'] . "' ); ";
@@ -74,7 +74,7 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 		$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_is_dissbale_booking_for_different_sub_resources' , '" . get_bk_option( 'booking_is_dissbale_booking_for_different_sub_resources' ) . "' ); ";
 	}
 	if ( class_exists( 'wpdev_bk_biz_s' ) ) {
-		$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_recurrent_time' , '" . get_bk_option( 'booking_recurrent_time' ) . "' ); ";
+		$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_recurrent_time' , '" . esc_js( get_bk_option( 'booking_recurrent_time' ) ) . "' ); ";        //FixIn: 10.6.1.3
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

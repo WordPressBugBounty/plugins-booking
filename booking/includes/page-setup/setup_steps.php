@@ -60,7 +60,7 @@ function wpbc_setup_wizard_page__get_steps_arr() {
 	//$steps_arr[ $step_name ]['show_section_left']  = true;
 	$steps_arr[ $step_name ]['show_section_right'] = true;
 	$steps_arr[ $step_name ]['do_action'] 	= 'save_and_continue__calendar_days_selection';
-	$steps_arr[ $step_name ]['prior'] 	= 'general_info';
+	$steps_arr[ $step_name ]['prior'] 	= 'bookings_types';
 	$steps_arr[ $step_name ]['next'] 	= 'calendar_skin';
 
 	// Step #5

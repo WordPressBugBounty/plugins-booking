@@ -1522,6 +1522,19 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
         line-height: 1em;
         margin: 7px 0px;
 }
+/* iDeal Payment form showing. Fix. //FixIn: 10.6.1.1 */
+table.wpbc_ideal_payment_table {
+    margin:10px 0;
+    width:100%;
+    border: none;
+}
+.wpbc_ideal_payment_table td {
+    padding:10px 0;
+    border: none;
+}
+.wpbc_ideal_payment_table td label{
+    font-weight: 600;
+}
 /* ================================================================================================================== */
 /* == Buttons ==                                                                                                      */
 /* ================================================================================================================== */

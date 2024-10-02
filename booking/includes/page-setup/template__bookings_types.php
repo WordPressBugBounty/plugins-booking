@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 // -------------------------------------------------------------------------------------------------------------
-// == Main - General Info ==
+// == Main - Booking Types ==
 // -------------------------------------------------------------------------------------------------------------
 /**
  * Template - General Info - Step 01
@@ -157,12 +157,89 @@ function wpbc_template__stp_wiz__main_section__bookings_types(){
 
 				</div>
 			</div>
-
 		</div>
-		<style type="text/css">
-			.wpbc_setup_wizard_page_container .wpbc_swp_section__bookings_types {max-width: 440px}
-		</style>
 	</div>
+	<?php
+	// -----------------------------------------------------------------------------------------------------------------
+	// Buttons
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_ajx_page__section wpbc_setup_wizard_page__section_footer		wpbc_ajx_page__section_footer wpbc_ajx_page__section_footer__internal">
+		<div class="wpbc__container_place__footer_buttons 		wpbc_container    wpbc_form    wpbc_container_booking_form">
+
+			<div class="wpbc__form__div">
+				<hr>
+				<div class="wpbc__row">
+					<?php /* ?>
+					<div class="wpbc__field">
+						<input type="button" value="<?php esc_attr_e('Reset Wizard and Start from Beginning','booking'); ?>"
+							   class="wpbc_button_light wpbc_button_danger tooltip_top "  style=""
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params(  { 'do_action': 'make_reset' }  ); ">
+					</div>
+					<?php */ ?>
+					<div class="wpbc__field">
+						<#  if ( '' != data['steps'][ data['current_step'] ]['prior'] ) { #>
+						<a     class="wpbc_button_light"  style="margin-left:auto;margin-right:10px;" tabindex="0"
+							   id="btn__toolbar__buttons_prior"
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
+																									'current_step': '{{data.steps[ data.current_step ].prior}}',
+																									'do_action': 'none',
+																									'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
+																								} );
+										wpbc_button_enable_loading_icon( this );
+										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php _e('Go Back','booking'); ?></span></a>
+
+						<# } else { #>
+							<span style="margin-left:auto;"></span>
+						<# } #>
+						<a	   class="wpbc_button_light button-primary" tabindex="0"
+							   id="btn__toolbar__buttons_next"
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
+																									'current_step': '{{data.steps[ data.current_step ].next}}',
+																									   'do_action': '{{data.steps[ data.current_step ].do_action}}',
+																									'ui_clicked_element_id': 'btn__toolbar__buttons_next',
+																									   'step_data':{
+																												'wpbc_swp_booking_types': jQuery( '[name=\'wpbc_swp_booking_types\']:checked').val()
+																											}
+
+																								} );
+
+										wpbc_button_enable_loading_icon( this );
+										wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+					</div>
+				</div>
+				<div class="wpbc__row">
+					<div class="wpbc__field">
+						<p class="wpbc_exit_link_small">
+							<a href="javascript:void(0)" tabindex="-1"
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
+							   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
+							><?php
+								_e('Exit and skip the setup wizard','booking');
+							?></a>
+							<?php  ?>
+							<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;" tabindex="-1"
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
+							   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
+							><?php
+								_e('Reset Wizard','booking');
+							?></a>
+							<?php /**/ ?>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+	// -----------------------------------------------------------------------------------------------------------------
+	// End Buttons
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<style type="text/css">
+		.wpbc_setup_wizard_page_container .wpbc_swp_section__bookings_types {max-width: 440px}
+		.wpbc_ajx_page__container .wpbc_ajx_page__section_footer:not(.wpbc_ajx_page__section_footer__internal){ display: none;}
+	</style>
 	</script><?php
 }
 

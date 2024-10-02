@@ -204,7 +204,7 @@ if ( 	( false !== $escaped_request_params_arr )
 
 		// During initial load of the page,  we need to  reset  'dates_selection' value in our saved parameter
 		 $escaped_request_params_arr['dates_selection'] = '';
-		 $escaped_request_params_arr['calendar__start_week_day'] = get_bk_option( 'booking_start_day_weeek' );
+		 $escaped_request_params_arr['calendar__start_week_day'] = intval(get_bk_option( 'booking_start_day_weeek' ));
 
 
         // Submit  /////////////////////////////////////////////////////////////

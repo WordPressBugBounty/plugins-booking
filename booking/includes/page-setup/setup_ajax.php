@@ -225,9 +225,6 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 				$data_arr['ajx_after_action_message'] = __( 'Start Setup from Beginning', 'booking' );
 
-				// Clear here DATES selection in $cleaned_request_params['dates_selection'] to  not save such  selection
-
-
 				$data_arr ['current_step'] = 'welcome';
 
 				wpbc_setup_wizard_page__db__set_all_steps_as( false );      // Clear All Steps      Mark as Undone
@@ -248,10 +245,24 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__bookings_types':
 
+				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
+					$cleaned_data = wpbc_template__bookings_types__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					wpbc_setup__update__bookings_types( $cleaned_data );
+				}
+
 				wpbc_setup_wizard_page__db__set_step_as_completed( 'bookings_types' );
 				break;
 
 			case 'save_and_continue__general_info':
+
+				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
+					$cleaned_data = wpbc_template__general_info__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					if ( 'On' === $cleaned_data['wpbc_swp_accept_send'] ) {
+						wpbc_setup_feedback__send_email( $cleaned_data );
+					}
+
+					wpbc_setup__update__general_info( $cleaned_data );
+				}
 
 				wpbc_setup_wizard_page__db__set_step_as_completed( 'general_info' );
 				break;
@@ -262,7 +273,6 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				break;
 
 			case 'save_and_continue__calendar_skin':
-
 
 				wpbc_setup_wizard_page__db__set_step_as_completed( 'calendar_skin' );
 				break;

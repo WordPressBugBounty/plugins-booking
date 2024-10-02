@@ -320,7 +320,7 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
                 case '7':
                     if (empty($_REQUEST['scroll_start_date']))  $start_day = date("d");
                     $start_week_day_num = date("w");
-                    $start_day_weeek  = get_bk_option( 'booking_start_day_weeek' ); //[0]:Sun .. [6]:Sut
+                    $start_day_weeek  = esc_js(get_bk_option( 'booking_start_day_weeek' )); //[0]:Sun .. [6]:Sut
                     if ($start_week_day_num != $start_day_weeek) {
                         for ($d_inc = 1; $d_inc < 8; $d_inc++) {                // Just get week  back
 	                        $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) - intval( $d_inc ) ), intval( $start_year ) );
@@ -382,7 +382,7 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
 
                     if (empty($_REQUEST['scroll_start_date'])) $start_day = date("d");
                     $start_week_day_num = date("w");
-                    $start_day_weeek  = get_bk_option( 'booking_start_day_weeek' ); //[0]:Sun .. [6]:Sut
+                    $start_day_weeek  = esc_js(get_bk_option( 'booking_start_day_weeek' )); //[0]:Sun .. [6]:Sut
 
                     if ($start_week_day_num != $start_day_weeek) {
                         for ($d_inc = 1; $d_inc < 8; $d_inc++) {                // Just get week  back

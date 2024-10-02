@@ -38,7 +38,7 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 
 	$script .= "_wpbc.set_other_param( 'calendars__on_this_page', [] ); ";
 
-	$script .= "_wpbc.set_other_param( 'calendars__first_day', '"   . esc_js( get_bk_option( 'booking_start_day_weeek' ) )   . "' ); ";                             //."\n";
+	$script .= "_wpbc.set_other_param( 'calendars__first_day', '"   . intval( get_bk_option( 'booking_start_day_weeek' ) )   . "' ); ";                             //."\n";
 	$script .= "_wpbc.set_other_param( 'calendars__max_monthes_in_calendar', '"   . esc_js( get_bk_option( 'booking_max_monthes_in_calendar' ) )   . "' ); ";
 	$script .= "_wpbc.set_other_param( 'availability__unavailable_from_today', '" . esc_js( get_bk_option( 'booking_unavailable_days_num_from_today' ) ) . "' ); ";    //Default: 0 '           Old JS: block_some_dates_from_today'		_wpbc.get_other_param( 'availability__unavailable_from_today' )
 	if ( class_exists( 'wpdev_bk_biz_m' ) ) {

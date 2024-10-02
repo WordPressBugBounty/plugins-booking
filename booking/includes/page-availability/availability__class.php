@@ -102,7 +102,7 @@ class WPBC_AJX__Availability {
  			, 'ui_usr__availability_selected_toolbar'   => array( 'validate' => array( 'info', 'calendar_settings' ),     'default' => 'info' )
 
 			// Calendar settings
-			, 'calendar__start_week_day' 		=> array( 'validate' => array( '0','1','2','3','4','5','6' ),	'default' => get_bk_option( 'booking_start_day_weeek' ) )
+			, 'calendar__start_week_day' 		=> array( 'validate' => array( '0','1','2','3','4','5','6' ),	'default' => intval(get_bk_option( 'booking_start_day_weeek' )) )
 			, 'calendar__days_selection_mode' 	=> array( 'validate' => array( 'multiple', 'dynamic' ),     	'default' => 'dynamic' )
 			, 'calendar__view__visible_months' 	=> array( 'validate' => 'd',  	'default' => 12 )
 			, 'calendar__view__months_in_row' 	=> array( 'validate' => 'd',  	'default' => 4 )

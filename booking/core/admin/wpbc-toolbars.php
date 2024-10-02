@@ -1748,7 +1748,7 @@ function wpbc_datepicker_js() {
 						showStatus      : false,
 						multiSeparator  : ', ',
 						closeAtTop      : null,																			//!false,
-						firstDay        :<?php echo get_bk_option( 'booking_start_day_weeek' ); ?>,
+						firstDay        :<?php echo intval(get_bk_option( 'booking_start_day_weeek' )); ?>,
 						gotoCurrent     : false,
 						hideIfNoPrevNext: true,
 						useThemeRoller  : false,

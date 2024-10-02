@@ -64,7 +64,7 @@ function wpbc_template__stp_wiz__main_section__general_info(){
 			<div class="wpbc__row">
 				<div class="wpbc__field">
 					<label><?php _e('What industry is your booking business in?','booking'); ?></label><br>
-					<select name="industry">
+					<select name="wpbc_swp_industry">
 						<option value="---">---</option>
 
 						<optgroup label="Hospitality & Property">
@@ -209,19 +209,21 @@ function wpbc_template__stp_wiz__main_section__general_info(){
 			</div-->
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:40px;margin-bottom:5px;border-bottom:1px solid #ccc;"></div>
 			<div class="wpbc__row wpbc_setup_wizard_page__section_footer">
-				<div class="wpbc__field"><span
-						class="wpbc_wrap_checkbox wpdev-form-control-wrap term_and_condition4"><span
-							autocomplete="term_and_condition" class="wpdev-validates-as-required wpdev-checkbox"><span
-								class="wpdev-list-item"><input style="margin-top: 0px;"
-															   class="wpdev-validates-as-required wpdev-checkbox"
-															   id="checkboxid172525991208628"
-															   type="checkbox" name="term_and_condition4[]"
-															   checked="checked"
-															   value="I Accept term and conditions"><label
-									for="checkboxid172525991208628" class="wpdev-list-item-label"
-								style="font-size: 12px;font-weight: 400;">
-									<?php _e('By checking this box, I agree to share data from this page to personalize my setup experience, receive more relevant content, and help improve WP Booking Calendar for all users.', 'booking'); ?>
-									</label></span></span></span>
+				<div class="wpbc__field">
+					<span class="wpdev-list-item">
+						<input 	type="checkbox"
+								style="margin-top: 0px;"
+							   	class="wpdev-validates-as-required wpdev-checkbox"
+							   	id="wpbc_swp_accept_send"
+							   	name="wpbc_swp_accept_send"
+							   	checked="checked"
+							   	value="I accept sending data">
+						<label for="wpbc_swp_accept_send"
+							   class="wpdev-list-item-label"
+							   style="font-size: 12px;font-weight: 400;">
+							<?php _e('By checking this box, I agree to share data from this page to personalize my setup experience, receive more relevant content, and help improve WP Booking Calendar for all users.', 'booking'); ?>
+						</label>
+					</span>
 				</div>
 				<div class="wpbc__field wpbc_container wpbc_container_booking_form">
 					<a	  style="margin-left: auto;"
@@ -230,7 +232,14 @@ function wpbc_template__stp_wiz__main_section__general_info(){
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
 																								'current_step': '{{data.steps[ data.current_step ].next}}',
 																								   'do_action': '{{data.steps[ data.current_step ].do_action}}',
-																								'ui_clicked_element_id': 'btn__toolbar__buttons_next'
+																								'ui_clicked_element_id': 'btn__toolbar__buttons_next',
+																								'step_data':{
+																												'wpbc_swp_business_name':     jQuery( '[name=\'wpbc_swp_business_name\']').val(),
+																												'wpbc_swp_booking_who_setup': jQuery( '[name=\'wpbc_swp_booking_who_setup\']').val(),
+																												'wpbc_swp_industry':          jQuery( '[name=\'wpbc_swp_industry\']').val(),
+																												'wpbc_swp_email':             jQuery( '[name=\'wpbc_swp_email\']').val(),
+																												'wpbc_swp_accept_send':       jQuery( '[name=\'wpbc_swp_accept_send\']').is( ':checked' ) ? 'On' : 'Off'
+																											}
 																							} );
 									wpbc_button_enable_loading_icon( this );
 									wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>

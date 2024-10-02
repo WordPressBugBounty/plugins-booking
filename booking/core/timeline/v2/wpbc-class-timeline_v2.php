@@ -2415,7 +2415,7 @@ if(1)
                     if ( empty( $this->request_args['scroll_start_date'] ) )
                         $start_day = wpbc_datetime__no_wp_timezone( "d" );
                     $start_week_day_num = wpbc_datetime__no_wp_timezone( "w" );
-                    $start_day_weeek = get_bk_option( 'booking_start_day_weeek' ); //[0]:Sun .. [6]:Sut
+                    $start_day_weeek = esc_js(get_bk_option( 'booking_start_day_weeek' )); //[0]:Sun .. [6]:Sut
 
                     if ( $start_week_day_num != $start_day_weeek ) {
                         for ( $d_inc = 1; $d_inc < 8; $d_inc++ ) {                // Just get week  back
@@ -2454,7 +2454,7 @@ if(1)
                     if ( empty( $this->request_args['scroll_start_date'] ) )
                         $start_day = wpbc_datetime__no_wp_timezone( "d" );
                     $start_week_day_num = wpbc_datetime__no_wp_timezone( "w" );
-                    $start_day_weeek = get_bk_option( 'booking_start_day_weeek' ); //[0]:Sun .. [6]:Sut
+                    $start_day_weeek = esc_js(get_bk_option( 'booking_start_day_weeek' )); //[0]:Sun .. [6]:Sut
 
                     if ( $start_week_day_num != $start_day_weeek ) {
                         for ( $d_inc = 1; $d_inc < 8; $d_inc++ ) {                // Just get week  back

@@ -1954,7 +1954,7 @@ if(1){
         
         ////////////////////////////////////////////////////////////////////////
         // Set  correct  value for dates format,  depend on from selection of radio buttons
-        $booking_date_format = get_bk_option( 'booking_date_format');       
+        $booking_date_format = esc_js( get_bk_option( 'booking_date_format') );                                         //FixIn: 10.6.1.2
         // On initial Load set correct text value and correct radio button
         $js_script .= " 
                         // Select by  default Custom  value, later  check all other predefined values
@@ -1990,7 +1990,7 @@ if(1){
         
 	    ////////////////////////////////////////////////////////////////////////
 	    // Set  correct  value for Time Format,  depend on from selection of radio buttons
-	    $booking_time_format = get_bk_option( 'booking_time_format');
+	    $booking_time_format = esc_js( get_bk_option( 'booking_time_format') );                                         //FixIn: 10.6.1.2
 	    // Function  to  load on initial stage of page loading, set correct value of text and select correct radio button.
 	    $js_script .= " 
 	                    // Select by  default Custom  value, later  check all other predefined values
