@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 ) {
 
 	ob_start();
-	if ( 1 ) {
+	if ( 0 ) {
 		?><div style="width: auto;margin: auto;min-width: 341px;"><?php		//margin-top:-10px;
 			echo do_shortcode( '[bookingcalendar resource_id=' . $resource_id . ']' );
 		?></div><?php
@@ -42,7 +42,16 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 ) {
 		</script><?php
 
 	} else {
-		?><div style="width: 100%;margin-top:calc( -1.7em - calc(0.25em + 8px) );"><?php
+
+
+		// If we use the [bookingcalendar] shortcode,  then  we remove this tag,  for ability to  select  dates in calendar.
+		?><script tye="text/javascript">
+			jQuery(document).ready(function(){
+				_wpbc.set_other_param( 'calendars__on_this_page', [] );
+			});
+		</script><?php
+
+		?><div style="width: 100%;max-width: 880px;min-width: 341px;margin: auto;margin-top:calc( -1.7em - calc(0.25em + 8px) );"><?php
 			echo do_shortcode( '[booking resource_id=' . $resource_id . ']' );
 		?></div><?php
 	}

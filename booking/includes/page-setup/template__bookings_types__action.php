@@ -69,22 +69,27 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 	if ( ! empty( $cleaned_data['wpbc_swp_booking_types'] ) ) {
 
 		switch ( $cleaned_data['wpbc_swp_booking_types'] ) {
+
 		    case 'full_days_bookings':
 
-		        // update_bk_option( 'booking_form', str_replace('\\n\\','', wpbc_get_default_booking_form() ) );
-		        // update_bk_option( 'booking_form_show', str_replace('\\n\\','', wpbc_get_default_booking_form_show() ) );
+			    if ( class_exists( 'wpdev_bk_personal' ) ) {
+				    update_bk_option( 'booking_form',       str_replace( '\\n\\', '', wpbc_get__booking_form__template( '2_columns' ) ) );
+				    update_bk_option( 'booking_form_show',  str_replace( '\\n\\', '', wpbc_get__booking_data__template( '2_columns' ) ) );
+			    } else {
+				    // Free
+			    }
 
 				if ( class_exists('wpdev_bk_biz_s')) {
-				    update_bk_option( 'booking_type_of_day_selections' , 'range' );
-			        update_bk_option( 'booking_range_selection_type', 'dynamic');
-			        update_bk_option( 'booking_range_selection_days_count','1');
+				    update_bk_option( 'booking_type_of_day_selections' ,    'range' );
+			        update_bk_option( 'booking_range_selection_type',       'dynamic');
+			        update_bk_option( 'booking_range_selection_days_count', '1');
 			        update_bk_option( 'booking_range_selection_days_max_count_dynamic',30);
 			        update_bk_option( 'booking_range_selection_days_specific_num_dynamic','');
-			        update_bk_option( 'booking_range_start_day' , '-1' );
+			        update_bk_option( 'booking_range_start_day' ,           '-1' );
 			        update_bk_option( 'booking_range_selection_days_count_dynamic','1');
-			        update_bk_option( 'booking_range_start_day_dynamic' , '-1' );
+			        update_bk_option( 'booking_range_start_day_dynamic' ,   '-1' );
 				} else {
-					update_bk_option( 'booking_type_of_day_selections', 'multiple' );
+					update_bk_option( 'booking_type_of_day_selections',     'multiple' );
 				}
 		        update_bk_option( 'booking_range_selection_time_is_active', 'Off');              // Changeover
 
@@ -95,8 +100,12 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 		    case 'time_slots_appointments':
 
-		        // update_bk_option( 'booking_form', str_replace('\\n\\','', wpbc_get_default_booking_form() ) );
-		        // update_bk_option( 'booking_form_show', str_replace('\\n\\','', wpbc_get_default_booking_form_show() ) );
+			    if ( class_exists( 'wpdev_bk_personal' ) ) {
+				    update_bk_option( 'booking_form',       str_replace( '\\n\\', '', wpbc_get__booking_form__template( '2_columns_times_30_minutes_wizard' ) ) );
+				    update_bk_option( 'booking_form_show',  str_replace( '\\n\\', '', wpbc_get__booking_data__template( '2_columns_times_30_minutes_wizard' ) ) );
+			    } else {
+				    // Free
+			    }
 
 				update_bk_option( 'booking_type_of_day_selections' , 'single' );
 				update_bk_option( 'booking_range_selection_time_is_active', 'Off');              // Changeover
@@ -110,8 +119,12 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 		    case 'changeover_multi_dates_bookings':
 
-		        //update_bk_option( 'booking_form', str_replace('\\n\\','',       wpbc_get_default_booking_form() ) );
-		        //update_bk_option( 'booking_form_show', str_replace('\\n\\','',  wpbc_get_default_booking_form_show() ) );
+			    if ( class_exists( 'wpdev_bk_personal' ) ) {
+				    update_bk_option( 'booking_form',       str_replace( '\\n\\', '', wpbc_get__booking_form__template( '2_columns' ) ) );
+				    update_bk_option( 'booking_form_show',  str_replace( '\\n\\', '', wpbc_get__booking_data__template( '2_columns' ) ) );
+			    } else {
+				    // Free
+			    }
 
 			    update_bk_option( 'booking_type_of_day_selections' , 'range' );
 		        update_bk_option( 'booking_range_selection_type', 'dynamic');

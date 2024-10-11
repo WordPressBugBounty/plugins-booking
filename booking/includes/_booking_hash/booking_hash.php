@@ -138,7 +138,7 @@ function wpbc_get_dates_selection_js_code( $to_select__dates_sql_arr, $resource_
 		$string__dates_sql_arr = array_unique($string__dates_sql_arr);
 		$string__dates_sql_str = implode( ',', $string__dates_sql_arr );
 
-	$dates_selection_js_code .= " 		wpbc_auto_select_dates_in_calendar( select_dates_in_calendar_id, [" . $string__dates_sql_str . "] ); ";
+	$dates_selection_js_code .= " 		setTimeout( function (){ wpbc_auto_select_dates_in_calendar( select_dates_in_calendar_id, [" . $string__dates_sql_str . "] ); }, 500 );";
 	$dates_selection_js_code .= " 	} ";
 	$dates_selection_js_code .= " } ); ";
 

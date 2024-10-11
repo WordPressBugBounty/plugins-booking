@@ -66,7 +66,6 @@ function wpbc_template__general_info__action_validate_data( $post_data ){
 			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
 	}
 
-
 	return $escaped_data;
 }
 

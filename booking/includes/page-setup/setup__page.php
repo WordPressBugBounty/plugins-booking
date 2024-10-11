@@ -11,17 +11,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_templates.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__welcome.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__bookings_types.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__bookings_types__action.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__general_info.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__general_info__action.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__bookings_types.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__bookings_types__action.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__days_selection.php' );
-
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_steps.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_ajax.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_support.php' );
-
 
 /** Show Content
  *  Update Content

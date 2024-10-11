@@ -1618,7 +1618,7 @@ function wpbc_ui_settings__panel__statistic(){
 		?></div><?php
 
 				//foreach ( array("all","new","pending","approved","booking_today","was_made_today","check_in_today","check_out_today","check_in_tomorrow","check_out_tomorrow") as $card_name ) {
-				foreach ( array("all","new","pending","approved"/*,"booking_today"*/ /*,"was_made_today"*/) as $card_name ) {
+				foreach ( array( "all", "new", "pending", "approved" ) as $card_name ) {			//FixIn: 10.6.2.2
 					wpbc_ui_settings_panel__card__statistic( $card_name , $statistic_cards_arr );
 				}
 		 wpbc_ui_settings__panel_end();
