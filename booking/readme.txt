@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.6
-Stable tag: 10.6.3
+Stable tag: 10.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -290,21 +290,8 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
-= 10.6.3 =
-- Changes in **all** versions:
-	* **Fix** Resolving issue of showing booking titles in Timeline View in some situations of multiple bookings on the same date. (10.6.3.1)
-	* **Fix** Resolving issue in classic widgets for legacy themes of correctly escaping titles. Thank you for Dmitrii Ignatyev (cleantalk).
-
-= 10.6.2 =
-- Changes in **all** versions:
-	* **Fix** Remove the comments from the foreach() statement to prevent causing a false positive issues on hosting platform. (10.6.2.2)
-
-= 10.6.1 =
-- Changes in **all** versions:
-	* **Fix** Resolved XSS vulnerability relative date\time formats, if attacker has access to booking settings page. (10.6.1.2)
-	* **Fix** Resolved XSS vulnerability relative start day of week, if attacker has access to booking settings page. (10.6.1.3)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **Fix** Resolving of not showing iDeal payment form  at some servers,  because of block CSS at such servers. (10.6.1.1)
+= 10.6.1 - 10.6.4 =
+- Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 10.6 =
 - Changes in **all** versions:

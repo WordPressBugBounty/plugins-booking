@@ -110,6 +110,7 @@ function wpbc_booking_confirmation( $params_arr ){
 	$title_after_reservation = html_entity_decode( esc_js(  wpbc_lang( get_bk_option( 'booking_title_after_reservation' ) ) ) );
 	$title_after_reservation = wpbc_replace_booking_shortcodes( $title_after_reservation, $replace_arr, ' --- ' );
 	$title_after_reservation = stripslashes( $title_after_reservation );
+	$title_after_reservation = wp_kses_post( $title_after_reservation );                                                //FixIn: 10.6.4.2
 	$confirmation['ty_message'] = $title_after_reservation;                                                             // 'Thank you for booking!'
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -123,6 +124,7 @@ function wpbc_booking_confirmation( $params_arr ){
 	}
 	$confirmation['ty_message_booking_id'] = wpbc_replace_booking_shortcodes( $confirmation['ty_message_booking_id'], $replace_arr, ' --- ' );
 	$confirmation['ty_message_booking_id'] = stripslashes( $confirmation['ty_message_booking_id'] );
+	$confirmation['ty_message_booking_id'] = wp_kses_post( $confirmation['ty_message_booking_id'] );                                                //FixIn: 10.6.4.2
 			//$confirmation['ty_message_booking_id'] = str_replace( '[booking_id]', $params_arr['booking_id'], $confirmation['ty_message_booking_id'] );
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -141,6 +143,7 @@ function wpbc_booking_confirmation( $params_arr ){
 		$confirmation['ty_customer_details'] = str_replace( array( "\\n", "\n" ), '<br>', $confirmation['ty_customer_details'] );
 		$confirmation['ty_customer_details'] = wpbc_replace_booking_shortcodes( $confirmation['ty_customer_details'], $replace_arr, ' --- ' );
 	}
+	$confirmation['ty_customer_details'] = wp_kses_post( $confirmation['ty_customer_details'] );                                                //FixIn: 10.6.4.2
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// -- Booking details --
@@ -157,7 +160,7 @@ function wpbc_booking_confirmation( $params_arr ){
 		$confirmation['ty_booking_details'] = wpbc_replace_booking_shortcodes( $confirmation['ty_booking_details'], $replace_arr, ' --- ' );
 	}
 
-
+	$confirmation['ty_booking_details'] = wp_kses_post( $confirmation['ty_booking_details'] );                                                //FixIn: 10.6.4.2
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// -- Costs text --
