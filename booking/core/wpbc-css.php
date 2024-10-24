@@ -120,7 +120,7 @@ class WPBC_CSS extends WPBC_JS_CSS{
 	            || ( ( wpbc_is_settings_page() ) && ( strpos( $_SERVER['REQUEST_URI'], 'tab=payment' ) !== false ) )
         ){                                       // Client or Add New Booking page
 
-			if ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) {                                                //FixIn: 8.7.11.10
+	        if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || ( wpbc_is_setup_wizard_page() ) ) {                                                //FixIn: 8.7.11.10
 				wp_enqueue_style( 'wpbc-time_picker',        wpbc_plugin_url( '/css/wpbc_time-selector.css' ),          array(), WP_BK_VERSION_NUM );
 
 		        $time_picker_skin_path = wpbc_get_time_picker_skin_url();

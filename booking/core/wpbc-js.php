@@ -204,7 +204,7 @@ function wpbc_js_load_files( $where_to_load ) {
 	    wp_enqueue_script( 'wpbc-main-client',  wpbc_plugin_url( '/js/client.js' ),                                  array( 'wpbc-datepick' ), WP_BK_VERSION_NUM );             // Client
 	    wp_enqueue_script( 'wpbc_capacity',     wpbc_plugin_url( '/includes/_capacity/_out/create_booking.js' ),     array( 'wpbc-main-client' ), WP_BK_VERSION_NUM );          // Add new bookings   //FixIn: 9.8.0.3
 	    wp_enqueue_script( 'wpbc-times',        wpbc_plugin_url( '/js/wpbc_times.js' ),                              array( 'wpbc-main-client' ), WP_BK_VERSION_NUM );          // FixIn: TimeFree 2 //UnComment it for Booking Calendar Free version
-	    if ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) {
+	    if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || ( wpbc_is_setup_wizard_page() ) ) {
 			wp_enqueue_script( 'wpbc-time-selector',    wpbc_plugin_url( '/js/wpbc_time-selector.js'),               array( 'wpbc-times' ),     WP_BK_VERSION_NUM);             //FixIn: 8.7.11.10
 	    }
     }

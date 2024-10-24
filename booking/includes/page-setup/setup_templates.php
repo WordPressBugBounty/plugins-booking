@@ -81,10 +81,16 @@ class WPBC_AJX__Setup_Wizard__Templates {
 
 				$this->wpbc_template__stp_wiz__main_content();
 
-				wpbc_template__stp_wiz__welcome();
-				wpbc_template__stp_wiz__main_section__bookings_types();
-				wpbc_template__stp_wiz__main_section__general_info();
-				wpbc_template__stp_wiz__main_section__days_selection();
+				wpbc_stp_wiz__template__welcome();
+				wpbc_stp_wiz__template__general_info();
+				wpbc_stp_wiz__template__date_time_formats();
+				wpbc_stp_wiz__template__bookings_types();
+				wpbc_stp_wiz__template__form_structure();
+				wpbc_stp_wiz__template__cal_availability();
+				wpbc_stp_wiz__template__color_theme();
+
+
+					wpbc_template__stp_wiz__days_selection();
 
 				$this->wpbc_template__stp_wiz__left_navigation();
 				$this->wpbc_template__stp_wiz__left_navigation_item();
@@ -149,23 +155,40 @@ class WPBC_AJX__Setup_Wizard__Templates {
 								switch ( data.current_step ) {
 
 									case 'welcome':
-										template__main_section = wp.template( 'wpbc_template__stp_wiz__welcome' );
-										break;
-
-									case 'bookings_types':
-										template__main_section = wp.template( 'wpbc_template__stp_wiz__main_section__bookings_types' );
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__welcome' );
 										break;
 
 									case 'general_info':
-										template__main_section = wp.template( 'wpbc_template__stp_wiz__main_section__general_info' );
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__general_info' );
 										break;
 
+									case 'date_time_formats':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__date_time_formats' );
+										break;
+
+									case 'bookings_types':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__bookings_types' );
+										break;
+
+									case 'form_structure':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__form_structure' );
+										break;
+
+									case 'cal_availability':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__cal_availability' );
+										break;
+
+									case 'color_theme':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__color_theme' );
+										break;
+
+
 									case 'calendar_days_selection':
-										template__main_section = wp.template( 'wpbc_template__stp_wiz__main_section__days_selection' );
+										template__main_section = wp.template( 'wpbc_template__stp_wiz__days_selection' );
 										break;
 									default:
 									   // Default
-									   template__main_section = wp.template( 'wpbc_template__stp_wiz__main_section__general_info' );
+									   template__main_section = wp.template( 'wpbc_stp_wiz__template__general_info' );
 								}
 
 							<?php if(0){ ?></script><?php } echo '#>'; ?>
@@ -195,7 +218,7 @@ class WPBC_AJX__Setup_Wizard__Templates {
 
 
 		// -------------------------------------------------------------------------------------------------------------
-		// == Timeline Steps ==
+		// == Timeline Steps  -  Line with Checked Dots  ==
 		// -------------------------------------------------------------------------------------------------------------
 		private function wpbc_template__timeline_steps(){
 

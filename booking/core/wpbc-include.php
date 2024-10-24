@@ -171,11 +171,16 @@ require_once( WPBC_PLUGIN_DIR . '/core/admin/wpbc-gutenberg.php' );             
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Functions from  Free form that can  be use in paid versions in Wizard Setup
+
+require_once(WPBC_PLUGIN_DIR. '/includes/page-form-simple/form_templates.php' );									// Booking Form  Templates //FixIn: 10.6.2.1
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__default.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__get_data.php' );
 
 if ( file_exists( WPBC_PLUGIN_DIR.'/inc/_ps/personal.php' ) ){   
-    require_once WPBC_PLUGIN_DIR . '/inc/_ps/personal.php';  
+    require_once WPBC_PLUGIN_DIR . '/inc/_ps/personal.php';
 } else {
-
 	require_once( WPBC_PLUGIN_DIR . '/includes/page-resource-free/page-resource-free.php' );        // Resource page for Free version
 	require_once( WPBC_PLUGIN_DIR . '/core/admin/page-up.php' );                                    // Up               //FixIn: 8.0.1.6
 	require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/page-form-simple.php' );            // Booking Form Simple

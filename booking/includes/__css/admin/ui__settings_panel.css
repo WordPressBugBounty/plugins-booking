@@ -274,3 +274,101 @@ a.wpbc_ui_settings__text_pro:hover {
 	position: relative;
 	z-index: 999;
 }
+
+
+/* ================================================================================================================== */
+/* == Buttons only  in admin  panel  e.g.  .wpbc_settings_flex_container_right * ==                                                                                                      */
+/* ================================================================================================================== */
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right {
+    --wpbc_form-button-light-size-height: 43px;
+	--wpbc_form-button-background-color: #066aab;
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:hover{
+  font-size: 1.18em;
+	font-weight: 600;
+  border: 2px solid #eeeeeeb5;
+  box-shadow: 0 2px 10px 2px #ffffff54;
+  background: #fdfdfd;
+  color: #444444e0;
+  border-radius: 0.375em;
+  padding: 0 2.2em;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: var(--wpbc_form-button-light-size-height);
+  box-sizing: border-box;
+  text-shadow: none;
+	transition: all .2s;
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:hover {
+    border: 2px solid rgb(77, 145, 205);
+    /*box-shadow: 0 5px 10px #f0f0f8;*/
+    /*background: rgb(255 255 255);*/
+    /*color: #5f5f5f;*/
+}
+
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.button-primary {
+    background: var(--wpbc_form-button-background-color, #06ab09);
+    color: #fff;
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.button-primary:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.button-primary:focus{
+    background: var(--wpbc_form-button-background-color, #066aab);
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 0px 2px var(--wpbc_form-button-background-color, #066aab);
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:active,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled:focus {
+    color: #ccc;
+    border:2px solid #eeeeeeb5;
+    cursor: not-allowed;
+    /*pointer-events: none;*/
+}
+
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_danger {
+  background: #de605c;
+  border-color: #de605c;
+  color: #f7f7f7;
+  text-shadow: 0 0px #ba5956;
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_danger:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_danger:focus{
+    background: #e65d59;
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 0px 2px #de605c;
+}
+
+
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_green {
+	background: #27b400;
+  border-color: #ffffff17;
+  color: #fff;
+  text-shadow: none;
+  box-shadow: 0 0 0 2px #039f0630;
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_green:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_green:focus {
+	background: #00b703;
+	color: #fff;
+	border-color: #fff;
+	box-shadow: 0 0 0 2px #00b703;
+}

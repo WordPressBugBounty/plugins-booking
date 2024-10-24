@@ -90,7 +90,10 @@ function wpbc_setup_wizard_page__update_plugin_menu_progress( plugin_menu__setup
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// ==  Steps Number Functions  ==
+// ==  Steps Number Functions ==
+// 					Gets data in   			_wpbc_settings.get_all_params__setup_wizard().steps
+// 					which  defined in   	setup_ajax.php     															Ajax
+// 					as 						$data_arr ['steps'] =  new WPBC_SETUP_WIZARD_STEPS();  $this->get_steps_arr();  			from 		setup_steps.php		structure.
 // ---------------------------------------------------------------------------------------------------------------------
 
 function wpbc_setup_wizard_page__get_steps_count() {
@@ -120,8 +123,9 @@ function wpbc_setup_wizard_page__update_steps_status( steps_is_done_arr ){
 	var params_arr = _wpbc_settings.get_all_params__setup_wizard().steps
 
 	_.each( steps_is_done_arr, function ( p_val, p_key, p_data ) {
-
-		params_arr[ p_key ].is_done = ( true === steps_is_done_arr[ p_key ] );
+		if ( "undefined" !== typeof ( params_arr[ p_key ] ) ) {
+			params_arr[ p_key ].is_done = (true === steps_is_done_arr[ p_key ]);
+		}
 	} );
 
 	return params_arr;

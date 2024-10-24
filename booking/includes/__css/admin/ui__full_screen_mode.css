@@ -30,7 +30,10 @@
 .wpbc_admin_full_screen #wpadminbar,
 .wpbc_admin_full_screen #wpfooter,
 .wpbc_admin_full_screen .components-modal__screen-overlay{
-  display:none
+  display:none;
+}
+.wpbc_admin_full_screen .wpbc_header_news{
+  display:none !important;
 }
 /* Booking Calendar Top Messages */
 .wpbc_admin_full_screen #ajax_working > [id^="wpbc_notice_"]{

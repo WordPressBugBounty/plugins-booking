@@ -1880,7 +1880,7 @@ if(1)
 				if ( ! $this->is_bookings_use_check_in_out( $bookings_in_cell, $row_settings['bookings'] ) ) {
 					$bk_a_title__text = '<sup>[' . count( $bookings_in_cell ) . ']</sup> ' . $bk_a_title__text;
 				} else {
-					//return;      //FixIn: 10.6.3.1
+					//return;		//FixIn: 10.6.3.1
 				}
 
 			}

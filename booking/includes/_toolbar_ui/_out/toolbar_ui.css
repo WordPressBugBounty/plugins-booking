@@ -983,6 +983,7 @@ div.wpbc_ajx_toolbar.wpbc_no_borders {
   width: 100%;
   text-align: center;
   line-height: 2em;
+  z-index: 99;
   left: 50%;
   -ms-transform: translate(-50%) translateY(-50%);
   transform: translate(-50%) translateY(-50%)

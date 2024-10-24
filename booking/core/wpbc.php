@@ -265,16 +265,22 @@ public function define_admin_menu(){
                                                                             )
                                                 );
 
-	if ( ( WPBC_setup_plugin ) && ( ! wpbc_setup_wizard_page__db__is_all_steps_completed() ) ) {						//FixIn: 10.2.0.1
-    	self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus(													//FixIn: 9.8.0.1
+	if  ( WPBC_setup_plugin ) {
+
+		 $setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+
+		 if ( ! $setup_steps->db__is_all_steps_completed() ) {						//FixIn: 10.2.0.1
+
+    		self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus(
                                                     'wpbc-setup' , array (
                                                     'in_menu'        => 'wpbc'
-                                                  , 'menu_title'     => wpbc_get_plugin_menu_title__setup_progress()
+                                                  , 'menu_title'     => $setup_steps->get_plugin_menu_title__setup_progress()
                                                   , 'page_header'    => ucwords( __('Setup','booking') )
                                                   , 'browser_header' => ucwords( __('Setup', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
                                                   , 'user_role' 	 => get_bk_option( 'booking_user_role_settings' )				//FixIn: 9.8.15.2.6
                                                                             )
                                                 );
+		}
 	}
 
 

@@ -1639,8 +1639,8 @@ function wpbc_ui_settings__panel__statistic(){
 	function wpbc_ui_settings_panel__card__setup_wizard() {
 		?>
 		<div class="wpbc_ui_settings__card wpbc_ui_settings__card_divider_right">
-			<div class="wpbc_ui_settings__center ">
-				<a class="button button-primary"
+			<div class="wpbc_ui_settings__center  wpbc_container wpbc_container_booking_form">
+				<a class="wpbc_button_light button-primary wpbc_button_green" style="padding: 12px 24px;"
 				   title="<?php echo esc_attr( sprintf(__('Start Setup Wizard Guide','booking'), 'WP Booking Calendar') );?>"
 				   href="<?php echo wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ); ?>"><?php
 					_e( 'Start Setup Wizard', 'booking' )

@@ -526,7 +526,7 @@ display: flex;
 
 							<i class="menu_icon icon-1x wpbc_icn_flip"></i>
 	<div class="wpbc_text_inside">
-	<div class="wpbc_flex_settings_title"><div>Change Over Days</div><div>Pro</div></div><div class="wpbc_flex_settings_description">Manage Split Days</div></div>
+	<div class="wpbc_flex_settings_title"><div>Change Over Days</div><div><span class="wpbc_pro_label">Pro</span></div></div><div class="wpbc_flex_settings_description">Manage Split Days</div></div>
 						</a>
 					</div><div id="wpbc_general_settings_calendar_tab" class="wpbc_settings_navigation_item wpbc_settings_navigation_item_active" style="">
 

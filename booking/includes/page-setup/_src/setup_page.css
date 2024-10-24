@@ -269,6 +269,10 @@ div.wpbc_container.wpbc_form .wpbc_swp_section label {
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* TODO: delete this */
 
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* ==  Section  Windows  ==  */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
 .wpbc_widgets {
   width: 100%;
   display: flex;
@@ -276,15 +280,18 @@ div.wpbc_container.wpbc_form .wpbc_swp_section label {
   justify-content: flex-start;
   align-items: flex-start;
 }
+
 .wpbc_widgets .wpbc_widget {
-  margin: 0 0 20px;
-  width: 100%;
-  flex: 1 1 100%;
+    margin: 0 0 20px;
+    width: 100%;
+    flex: 1 1 100%;
+    border: 1px solid #ccc;
+    border-radius: 0 0 2px 2px;
 }
 .wpbc_widget .wpbc_widget_header {
   width: 100%;
   height: 44px;
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   background: #fff;
   font-weight: 600;
   text-shadow: none;
@@ -303,4 +310,74 @@ div.wpbc_container.wpbc_form .wpbc_swp_section label {
   border-left: 1px solid #ccc;
   padding: 5px 10px;
   color: #0e70b7;
+}
+.wpbc_widget .wpbc_widget_content {
+  padding: 10px 15px;
+}
+.wpbc_widget_preview_booking_form.wpbc_widget .wpbc_widget_content {
+  padding-bottom: 70px;
+}
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* ==  Container for shortcodes      ==     e.g.:   [booking resource_id=1]     */
+/* ------------------------------------------------------------------------------------------------------------------ */
+.wpbc_shortcode_container {
+    width: 100%;
+    max-width: 880px;
+    min-width: 341px;
+    margin: auto;
+    /*margin-top: calc(-1.7em - calc(0.25em + 8px));*/
+}
+/* Stripes Background */
+.wpbc_widget_preview_booking_form .wpbc_widget_content {
+    /*background: repeating-linear-gradient(135deg, #fff, #fff 4px, #eaeaeb 4px, #eaeaeb 8px);*/
+    /*background: repeating-linear-gradient(135deg, #fff, #fff 4px, #f5f5ef 4px, #f5f5cf 8px);*/
+    /*background: repeating-linear-gradient(-45deg, #eee 0 3px, var(--wpbc_cal-main-background-color,#fff) 3px 8px);*/
+    /*background: repeating-linear-gradient(-45deg, #f9f8f7 0 7px, var(--wpbc_cal-main-background-color,#fff) 7px 12px);*/
+    /*background: repeating-linear-gradient(-45deg, #f9f9f8 0 3px, var(--wpbc_cal-main-background-color,#fff) 3px 5px);*/
+    background: repeating-linear-gradient(-45deg,#f9f9f8 0 3px, #fff 3px 5px);
+}
+/* Mobile Buttons */
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_a{
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0 5px;
+    color: #6b96ce;
+}
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_a.active,
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_a.active:focus{
+    color: #52595f;
+}
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_a:hover,
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_a:focus {
+    color: #2f76d3;
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+}
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_icon::before{
+    font-size: 20px;
+}
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_icon.wpbc-bi-display::before,
+.wpbc_section_preview_mobile_btn_bar .wpbc_preview_icon.wpbc_icn_computer::before{
+    font-size: 21px;
+}
+.wpbc_message_wrapper.wpbc__version__free {
+  /*display: none;*/
+}
+/* Dark  theme */
+.wpbc_center_preview.wpbc_theme_dark_1,
+.wpbc_widget_preview_booking_form .wpbc_widget_content.wpbc_theme_dark_1     {
+    /*Black Color*/
+    background: #272727;
+    background: repeating-linear-gradient(-45deg, #383838 0 3px,#2f2f2f 3px 5px);
+    color:#fff;
+}
+
+.wpbc_widget_preview_booking_form .wpbc_widget_content.wpbc_theme_dark_1 .wpbc-settings-notice {
+    color: #d7d7ca;
+    background: #595959;
+    box-shadow: 0 1px 3px #313131;
+    border: 0;
+    border-left: 4px solid #9580aa;
 }

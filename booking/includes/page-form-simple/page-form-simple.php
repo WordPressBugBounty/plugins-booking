@@ -13,8 +13,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__toolbar_free.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__default.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__get_data.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__submit.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__timeslots.php' );         						// Timeslots Generator
 require_once( WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__preview.php' );         						// Preview

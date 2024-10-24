@@ -569,6 +569,9 @@ div#datepick-div textarea {
     max-width: 100%;                        /* FixIn: 9.5.0.3  */
     margin: 7px 15px 7px 0;
 }
+.wpdev_hint_with_text .datepick-inline td.datepick-days-cell .wpbc-cell-box {
+  /*width: 100%;*/
+}
 /* Vertical orientation of Legend items */
 .block_hints_vertical.block_hints .wpdev_hint_with_text {
     flex: 0 0 100%;
@@ -627,6 +630,9 @@ div#datepick-div textarea {
     text-shadow:none;
     position: relative;
 }
+.datepick-inline .datepick-days-cell div.date-content-top div{
+    line-height: 50%;
+}
 /*******************************************************************************/
 /* Responsive Design For Mobile Devices ****************************************/
 /*******************************************************************************/
@@ -670,7 +676,29 @@ div#datepick-div textarea {
 .datepick-inline .datepick-days-cell .date-cell-content .date-content-bottom {
     flex: 1 1 35%;
     line-height: normal;
+
+    display: flex;
+    flex-flow:column nowrap;
+    justify-content: space-between;
+    align-items: center;
 }
+/** == In date hint - Availability  == ------------------------------------------------------------------------------ */
+.datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__availability {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: baseline;
+  overflow: hidden;
+}
+.datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__cost,
+.datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__availability * {
+    font-size: Max(8px, var(--wpbc_cal-text-cost-size, 0.7em));
+    line-height: 1.1;
+}
+.datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__availability .wpbc_in_date_hint__availability_number{
+    font-weight: 600;
+}
+/** == End In date hint - Availability  == -------------------------------------------------------------------------- */
 .datepick-inline .datepick-days-cell .date-cell-content a,
 .datepick-inline .datepick-days-cell .date-cell-content span {
     flex: 1 1 30%;

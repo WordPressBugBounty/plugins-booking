@@ -1176,6 +1176,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 .wpbc_center_preview ,
 .wpbc_center_preview .wpbc__form__div *{
     font-size:16px;
+    line-height: 2;
 }
 /* WP Booking Calendar > Add Booking page */
     .add_booking_page_content,

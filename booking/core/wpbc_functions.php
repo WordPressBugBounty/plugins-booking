@@ -432,6 +432,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 							   wpbc_can_i_load_on__resources_page()
 						&& ( ! wpbc_can_i_load_on__searchable_resources_page() )
 					)
+				|| wpbc_is_setup_wizard_page()
 			){
 				return true;
 			} else {

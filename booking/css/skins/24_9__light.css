@@ -142,10 +142,15 @@ div.block_hints.datepick * {
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height{
   width: 40px !important;
   height:  40px !important;
+    width: calc(42px + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
+    height: calc(42px + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
 }
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .wpbc_calendar_legend_day_cell_height {
   height: 40px !important;
   border-width: 0;
+}
+.block_hints.datepick .datepick-inline {
+    margin-top: -3px;
 }
 .block_hints .datepick-inline,
 .block_hints .datepick-inline .datepick {

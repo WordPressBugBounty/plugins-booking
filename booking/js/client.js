@@ -586,8 +586,11 @@ function wpbc_wizard_step( el, step_num, step_from ){
     }
 }
 
-//FixIn: 10.1.3.2
-jQuery( document ).ready( function (){
+
+/**
+ *  Init Buttons in Booking form Wizard
+ */
+function wpbc_hook__init_booking_form_wizard_buttons() {
 
     // CSS classes in Wizard Next / Prior links can  be like this:  <a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">Step 1</a>   |  <a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2">Step 2</a>
 
@@ -606,7 +609,11 @@ jQuery( document ).ready( function (){
             }
         }
     } );
+}
 
+//FixIn: 10.1.3.2
+jQuery( document ).ready( function (){
+    wpbc_hook__init_booking_form_wizard_buttons();
 } );
 
 

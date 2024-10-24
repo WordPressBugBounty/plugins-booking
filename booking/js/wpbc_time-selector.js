@@ -99,25 +99,28 @@
 })( jQuery );
 
 
+/**
+ *  Init  time selector
+ */
+function wpbc_hook__init_timeselector(){
+
+	// Load after page loaded
+	jQuery( 'select[name^="rangetime"]' ).wpbc_timeselector();
+	jQuery( 'select[name^="starttime"]' ).wpbc_timeselector();
+	jQuery( 'select[name^="endtime"]' ).wpbc_timeselector();
+	jQuery( 'select[name^="durationtime"]' ).wpbc_timeselector();
+
+	// This hook loading after each day selection																//FixIn: 8.7.11.9
+	jQuery( ".booking_form_div" ).on( 'wpbc_hook_timeslots_disabled', function ( event, bk_type, all_dates ){
+		jQuery( '#booking_form_div' + bk_type + ' select[name^="rangetime"]' ).wpbc_timeselector();
+		jQuery( '#booking_form_div' + bk_type + ' select[name^="starttime"]' ).wpbc_timeselector();
+		jQuery( '#booking_form_div' + bk_type + ' select[name^="endtime"]' ).wpbc_timeselector();
+		jQuery( '#booking_form_div' + bk_type + ' select[name^="durationtime"]' ).wpbc_timeselector();
+	} );
+}
 
 jQuery(document).ready(function(){
-
 //	 setTimeout( function ( ) {					// Need to  have some delay  for loading of all  times in Garbage
-
-			// Load after page loaded
-			jQuery( 'select[name^="rangetime"]' ).wpbc_timeselector();
-			jQuery( 'select[name^="starttime"]' ).wpbc_timeselector();
-			jQuery( 'select[name^="endtime"]' ).wpbc_timeselector();
-			jQuery( 'select[name^="durationtime"]' ).wpbc_timeselector();
-
-			// This hook loading after each day selection																//FixIn: 8.7.11.9
-			jQuery( ".booking_form_div" ).on( 'wpbc_hook_timeslots_disabled', function ( event, bk_type, all_dates ){
-				jQuery( '#booking_form_div' + bk_type + ' select[name^="rangetime"]' ).wpbc_timeselector();
-				jQuery( '#booking_form_div' + bk_type + ' select[name^="starttime"]' ).wpbc_timeselector();
-				jQuery( '#booking_form_div' + bk_type + ' select[name^="endtime"]' ).wpbc_timeselector();
-				jQuery( '#booking_form_div' + bk_type + ' select[name^="durationtime"]' ).wpbc_timeselector();
-			} );
-
+	wpbc_hook__init_timeselector();
 //	}, 1000 );
-
 });

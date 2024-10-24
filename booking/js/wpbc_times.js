@@ -71,18 +71,83 @@ function wpbc_show_date_info_top( param_calendar_id, my_thisDateTime ){
 	return dot_content;
 }
 
-
+/**
+ * Show Date Info at  bottom  of the  Day Cell
+ *
+ * @param param_calendar_id		'calendar_booking1'
+ * @param my_thisDateTime		56567557757
+ * @returns {string}
+ */
 function wpbc_show_date_info_bottom( param_calendar_id, my_thisDateTime ) {
 
-	if ( typeof( wpbc_show_day_cost_in_date_bottom ) == 'function' ) {
+	var bottom_hint_arr = [];
 
-		return wpbc_show_day_cost_in_date_bottom( param_calendar_id, my_thisDateTime );
+	// Cost Hint
+	if ( typeof (wpbc_show_day_cost_in_date_bottom) == 'function' ) {
+		var cost_hint = wpbc_show_day_cost_in_date_bottom( param_calendar_id, my_thisDateTime );
+		if ( '' !== cost_hint ) {
+			bottom_hint_arr.push( wpbc_show_day_cost_in_date_bottom( param_calendar_id, my_thisDateTime ) );
+		}
+	}
 
+	// Availability Hint		//FixIn: 10.6.4.1
+	var availability = wpbc_get_in_date_availability_hint( param_calendar_id, my_thisDateTime )
+	if ( '' !== availability ) {
+		bottom_hint_arr.push( availability );
+	}
+
+	var bottom_hint = bottom_hint_arr.join( '' );
+	return bottom_hint;
+}
+
+/**
+ * Get Availability Hint for in Day Cell
+ *
+ * @param param_calendar_id
+ * @param my_thisDateTime
+ * @returns {string}
+ */
+function wpbc_get_in_date_availability_hint( param_calendar_id, my_thisDateTime ) {								        //FixIn: 10.6.4.1
+
+	/*
+	var sql_date 	= wpbc__get__sql_class_date( new Date( my_thisDateTime ) );						// '2023-08-21'
+	var resource_id = parseInt( param_calendar_id.replace( "calendar_booking", '' ) );				// 1
+	var day_availability_obj = _wpbc.bookings_in_calendar__get_for_date( resource_id, sql_date );	// obj
+
+	if ( 'undefined' !== typeof (day_availability_obj.day_availability) ) {
+		return '<strong>' + day_availability_obj.day_availability + '</strong> ' + 'available';
 	} else {
 		return '';
 	}
-}
+	*/
 
+	var resource_id = parseInt( param_calendar_id.replace( "calendar_booking", '' ) );
+
+	// console.log( _wpbc.bookings_in_calendar__get( resource_id ) );		// for debug
+
+	// 1. Get child booking resources  or single booking resource  that  exist  in dates :	[1] | [1,14,15,17]
+	// var child_resources_arr = wpbc_clone_obj( _wpbc.booking__get_param_value( resource_id, 'resources_id_arr__in_dates' ) );
+
+	// '2023-08-21'
+	var sql_date = wpbc__get__sql_class_date( new Date( my_thisDateTime ) );
+
+    var hint__in_day__availability = '';
+
+    var get_for_date_obj = _wpbc.bookings_in_calendar__get_for_date( resource_id, sql_date );
+
+    if ( false !== get_for_date_obj ){
+
+        if (
+               (undefined != get_for_date_obj[ 'summary' ])
+            && (undefined != get_for_date_obj[ 'summary' ].hint__in_day__availability)
+        ){
+            hint__in_day__availability = get_for_date_obj[ 'summary' ].hint__in_day__availability;		// "5 available"
+        }
+
+    }
+
+    return hint__in_day__availability;
+}
 
 
 /**

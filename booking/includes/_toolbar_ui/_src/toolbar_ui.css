@@ -1196,6 +1196,7 @@ div#wh_booking_type_chosen   .chzn-container.chzn-container-multi	.chzn-with-dro
 	text-align: center;
 
 	line-height: 2em;
+	z-index: 99;
 }
 .wpbc_upgrade_note a {
 	text-decoration: none;

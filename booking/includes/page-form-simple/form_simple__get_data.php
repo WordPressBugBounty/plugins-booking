@@ -449,6 +449,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
 
 			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+			$submit_button_title = wp_kses_post( $submit_button_title );                                                //FixIn: 10.6.5.2
 
 			$html_form .= '   	<r>' . "\n";
 			$html_form .= '   		<c> <p>'
@@ -662,6 +663,8 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 					$submit_button_title = $form_field['label'];
 				}
 				$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( $submit_button_title ) ) );
+
+				$submit_button_title = wp_kses_post( $submit_button_title );                                                //FixIn: 10.6.5.2
 
 				$my_form .= '<button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' .
 				                $submit_button_title .

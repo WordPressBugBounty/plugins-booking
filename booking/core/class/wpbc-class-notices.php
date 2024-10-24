@@ -21,24 +21,28 @@ class WPBC_Notices {
     private $messages = array();
     
     function __construct() {
-        
-        $this->messages['updated_paid_to_free'] = '<strong>'. __('Warning!' ,'booking') . '</strong> ' 
-                                                . sprintf( __('Probably you updated your paid version of Booking Calendar by free version or update process failed. You can request the new update of your paid version at %1sthis page%2s.')
-                                                           , '<a href="https://wpbookingcalendar.com/request-update/" target="_blank">', '</a>' );
-//$this->messages['updated_paid_to_free'] = '';	// TODO: 2023-11-06 comment this
         $this->hooks();
     }
 
-    
+
     private function hooks(){
+		add_action( 'init', array( $this, 'set_messages' ) );              												//FixIn: 10.6.5.1
 
         add_action('wpbc_hook_booking_page_header',     array( $this, 'show_system_messages') );
         add_action('wpbc_hook_add_booking_page_header', array( $this, 'show_system_messages') );
-        
+
         add_action('wpbc_hook_settings_page_header',    array( $this, 'show_system_messages') );
     }
-    
-  
+
+  	//FixIn: 10.6.5.1
+    public function set_messages(){
+
+        $this->messages['updated_paid_to_free'] = '<strong>'. __('Warning!' ,'booking') . '</strong> '
+                                                . sprintf( __('Probably you updated your paid version of Booking Calendar by free version or update process failed. You can request the new update of your paid version at %1sthis page%2s.')
+                                                           , '<a href="https://wpbookingcalendar.com/request-update/" target="_blank">', '</a>' );
+    }
+
+
     /**
      * Define secion for the system messages at the admin panel  and show System Messages.
      * 

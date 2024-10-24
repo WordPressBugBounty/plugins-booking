@@ -9,13 +9,61 @@
 //FixIn: 10.2.0.1
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
+/**
+ *  ==  How to add a new step ?  ==
+ *
+ *  1. Create and include (bellow) a new files:
+ * 							require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/form_structure__tpl.php' );
+ * 							require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/form_structure__action.php' );
+ *
+ *  2) ../includes/page-setup/setup_steps.php
+ *  	- Add a new step  structure    in 	init_steps_data()
+ *
+ *  3)../includes/page-setup/setup_ajax.php
+ *  	- Add validation  option 'save_and_continue__form_structure'   in 	wpbc_setup_wizard_page__request_rules_structure()
+ *  	- Add save action in ajax_WPBC_AJX_SETUP_WIZARD_PAGE :
+ *                                                            case 'save_and_continue__form_structure':
+ *                                                                if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
+ *                                                                    $cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+ *                                                                    wpbc_setup__update__form_structure( $cleaned_data );
+ *                                                                }
+ *                                                                $setup_steps->db__set_step_as_completed( 'form_structure' );
+ *                                                                break;
+ * 		- Optional. Add loading booking form:
+ * 																switch ( $cleaned_request_params['current_step'] ) {
+ *																	case 'form_structure':
+ *  4) ../includes/page-setup/setup_templates.php
+ *  - Add loading template in function wpbc_template__stp_wiz__main_content() {
+ * 									 									case 'form_structure':
+ * 																			template__main_section = wp.template( 'wpbc_stp_wiz__template__form_structure' );
+ * 																			break;
+ *  - include template in function hook__load_templates_at_footer( $page ):
+ * 																		wpbc_stp_wiz__template__form_structure();
+ */
+
+
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_templates.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__welcome.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__general_info.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__general_info__action.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__bookings_types.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__bookings_types__action.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/template__days_selection.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/01.welcome__tpl.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/02.general_info__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/02.general_info__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/03.date_time_formats__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/03.date_time_formats__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/04.bookings_types__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/04.bookings_types__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/05.form_structure__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/05.form_structure__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/06.cal_availability__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/06.cal_availability__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/07.color_theme__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/07.color_theme__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/days_selection__tpl.php' );
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_steps.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_ajax.php' );
@@ -278,7 +326,10 @@ function wpbc_setup_wizard_page__force_in_get() {
 
 	// Se it as DONE
 	if ( isset( $_REQUEST['wpbc_setup_wizard'] ) && 'completed' === $_REQUEST['wpbc_setup_wizard'] ) {
-		wpbc_setup_wizard_page__db__set_all_steps_as( true );
+
+		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+		$setup_steps->db__set_all_steps_as( true );
+
 		return true;
 	}
 
@@ -298,7 +349,8 @@ function wpbc_setup_wizard_page__force_in_get() {
 		$is_reseted = $user_request->user_request_params__db_delete();
 
 		// Clear All Steps      Mark as Undone
-		wpbc_setup_wizard_page__db__set_all_steps_as( false );
+		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+		$setup_steps->db__set_all_steps_as( false );
 
 		return true;
 	}

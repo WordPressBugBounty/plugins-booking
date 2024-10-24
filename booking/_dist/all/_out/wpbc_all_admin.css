@@ -143,6 +143,9 @@
 .wpbc_admin_full_screen .components-modal__screen-overlay {
   display: none
 }
+.wpbc_admin_full_screen .wpbc_header_news {
+  display: none!important
+}
 .wpbc_admin_full_screen #ajax_working > [id^=wpbc_notice_] {
   top: 0
 }
@@ -534,4 +537,92 @@ a.wpbc_ui_settings__text_pro:hover {
 .wpbc_dismiss_x__in_panel .wpbc_x_dismiss_btn {
   position: relative;
   z-index: 999
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right {
+  --wpbc_form-button-light-size-height: 43px;
+  --wpbc_form-button-background-color: #066aab
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:hover {
+  font-size: 1.18em;
+  font-weight: 600;
+  border: 2px solid #eeeeeeb5;
+  box-shadow: 0 2px 10px 2px #ffffff54;
+  background: #fdfdfd;
+  color: #444444e0;
+  border-radius: .375em;
+  padding: 0 2.2em;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  outline: 0;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: 0;
+  height: var(--wpbc_form-button-light-size-height);
+  box-sizing: border-box;
+  text-shadow: none;
+  transition: .2s
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:hover,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right input.wpbc_button_light:hover {
+  border: 2px solid #4d91cd
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.button-primary {
+  background: var(--wpbc_form-button-background-color,#06ab09);
+  color: #fff
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.button-primary:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.button-primary:hover {
+  background: var(--wpbc_form-button-background-color,#066aab);
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--wpbc_form-button-background-color,#066aab)
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:active,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light:disabled:hover {
+  color: #ccc;
+  border: 2px solid #eeeeeeb5;
+  cursor: not-allowed
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_danger {
+  background: #de605c;
+  border-color: #de605c;
+  color: #f7f7f7;
+  text-shadow: 0 0 #ba5956
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_danger:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_danger:hover {
+  background: #e65d59;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #de605c
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_green {
+  background: #27b400;
+  border-color: #ffffff17;
+  color: #fff;
+  text-shadow: none;
+  box-shadow: 0 0 0 2px #039f0630
+}
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_green:focus,
+.wp-core-ui .wpbc_page .wpbc_settings_flex_container_right .wpbc_button_light.wpbc_button_green:hover {
+  background: #00b703;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #00b703
 }

@@ -1765,6 +1765,99 @@ function wpbc_flex_dropdown__options( $params, $args = array() ) {
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------------
+//   < >  Buttons
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Button - Select Prior Skin in select-box
+ * @return void
+ */
+function wpbc_smpl_form__ui__selectbox_prior_btn( $dropdown_id, $is_apply_rotating_icon = true ){
+
+	$params_button = array(
+			  'type' => 'button'
+			, 'title' => ''	                 																			// Title of the button
+			// , 'hint'  => array( 'title' => __('Previous' ,'booking') , 'position' => 'top' )
+			, 'link' => 'javascript:void(0)'    																		// Direct link or skip  it
+			, 'action' => // "console.log( 'ON CLICK:', jQuery( '[name=\"set_days_customize_plugin\"]:checked' ).val() , jQuery( 'textarea[id^=\"date_booking\"]' ).val() );"                    // Some JavaScript to execure, for example run  the function
+						  " var is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).prev(); "
+						  . " if ( is_selected.length == 0 ){ "
+						  . "    if (  ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prop('nodeName').toLowerCase() ) "
+						  . "       && ( jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().length )  "
+						  . "       && ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().prop('nodeName').toLowerCase() )   ){ "
+						  . "         is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().find('option').last(); "
+						  . "    } "
+						  . " } "
+						  . " jQuery( '#" . $dropdown_id . " option:selected' ).prop('selected', false); "
+						  . " if ( is_selected.length == 0 ){ "
+						  . "    is_selected = jQuery( '#" . $dropdown_id . " option' ).last(); "
+						  . " } "
+						  . " if ( is_selected.length > 0 ){ "
+						  .	"    is_selected.prop('selected', true).trigger('change'); "
+						  . 	 ( ( $is_apply_rotating_icon ) ? "		wpbc_button_enable_loading_icon( this ); " : "" )
+						  . " } else { "
+						  . "    jQuery( this ).addClass( 'disabled' ); "
+						  . " } "
+			, 'class' => 'wpbc_ui_button'     				  															// wpbc_ui_button  | wpbc_ui_button_primary
+			//, 'icon_position' => 'left'         																		// Position  of icon relative to Text: left | right
+			, 'icon' 			   => array(
+										'icon_font' => 'wpbc_icn_arrow_back_ios', 										// 'wpbc_icn_check_circle_outline',
+										'position'  => 'left',
+										'icon_img'  => ''
+									)
+			, 'style' => ''                     																		// Any CSS class here
+			, 'mobile_show_text' => false       																		// Show  or hide text,  when viewing on Mobile devices (small window size).
+			, 'attr' => array()
+	);
+
+	wpbc_flex_button( $params_button );
+}
+
+/**
+ * Button - Select Next Skin in select-box
+ * @return void
+ */
+function wpbc_smpl_form__ui__selectbox_next_btn( $dropdown_id, $is_apply_rotating_icon = true ){
+
+	$params_button = array(
+			  'type' => 'button'
+			, 'title' => ''	                 // Title of the button
+			// , 'hint'  => array( 'title' => __('Next' ,'booking') , 'position' => 'top' )
+			, 'link' => 'javascript:void(0)'    // Direct link or skip  it
+			, 'action' => //"console.log( 'ON CLICK:', jQuery( '[name=\"set_days_customize_plugin\"]:checked' ).val() , jQuery( 'textarea[id^=\"date_booking\"]' ).val() );"                    // Some JavaScript to execure, for example run  the function
+						  " var is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).next(); "
+						  . " if ( is_selected.length == 0 ){ "
+						  . "    if (  ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prop('nodeName').toLowerCase() ) "
+						  . "       && ( jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().length )  "
+						  . "       && ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().prop('nodeName').toLowerCase() )   ){ "
+						  . "         is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().find('option').first(); "
+						  . "    } "
+						  . " } "
+						  . " jQuery( '#" . $dropdown_id . " option:selected' ).prop('selected', false); "
+						  . " if ( is_selected.length == 0 ){ "
+						  . "    is_selected = jQuery( '#" . $dropdown_id . " option' ).first(); "
+						  . " } "
+						  . " if ( is_selected.length > 0 ){ "
+						  .	"    is_selected.prop('selected', true).trigger('change'); "
+						  . 	 ( ( $is_apply_rotating_icon ) ? "		wpbc_button_enable_loading_icon( this ); " : "" )
+						  . " } else { "
+						  . "    jQuery( this ).addClass( 'disabled' ); "
+						  . " } "
+			, 'class' => 'wpbc_ui_button'     				  // wpbc_ui_button  | wpbc_ui_button_primary
+			//, 'icon_position' => 'left'         // Position  of icon relative to Text: left | right
+			, 'icon' 			   => array(
+										'icon_font' => 'wpbc_icn_arrow_forward_ios', // 'wpbc_icn_check_circle_outline',
+										'position'  => 'right',
+										'icon_img'  => ''
+									)
+			, 'style' => ''                     // Any CSS class here
+			, 'mobile_show_text' => false       // Show  or hide text,  when viewing on Mobile devices (small window size).
+			, 'attr' => array()
+	);
+
+	wpbc_flex_button( $params_button );
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 //  Radio Containers
@@ -1849,6 +1942,7 @@ function wpbc_flex_radio_container( $args = array() ) {
 
 						// Footer Text  separated by line
 						, 'footer_text' => ''				// sprintf(__('Find more information about this feature on %sthis page%s.','booking'), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
+						, 'bottom_html' => ''
                     );
     $params = wp_parse_args( $args, $defaults );
 
@@ -1888,7 +1982,7 @@ function wpbc_flex_radio_container( $args = array() ) {
 				<p class="wpbc_ui_radio_choice_description"><?php echo $params['footer_text']; ?></p>
 			</div><?php
 		}
-
+		echo $params['bottom_html'];
 		?>
 	</div>
 	<?php

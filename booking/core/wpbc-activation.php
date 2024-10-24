@@ -1482,7 +1482,14 @@ if ( WPBC_customize_plugin ){
         $default_options['booking_is_show_availability_in_tooltips'] = 'On';                                            //FixIn: 8.1.3.8
      $mu_option4delete[]='booking_is_show_availability_in_tooltips';                 
         $default_options['booking_highlight_availability_word'] = __( 'Available: ', 'booking' );
-     $mu_option4delete[]='booking_highlight_availability_word';                 
+     $mu_option4delete[]='booking_highlight_availability_word';
+
+        $default_options['booking_is_show_availability_in_date_cell'] = 'Off';                                          //FixIn: 10.6.4.1
+     $mu_option4delete[]='booking_is_show_availability_in_date_cell';
+        $default_options['booking_highlight_availability_word_in_date_cell'] = __( 'available', 'booking' );
+     $mu_option4delete[]='booking_highlight_availability_word_in_date_cell';
+
+
         $default_options['booking_is_dissbale_booking_for_different_sub_resources'] = 'Off';
      $mu_option4delete[]='booking_is_dissbale_booking_for_different_sub_resources';                 
         $default_options['booking_is_resource_no_update__during_editing'] = 'On';										//FixIn: 9.4.2.3

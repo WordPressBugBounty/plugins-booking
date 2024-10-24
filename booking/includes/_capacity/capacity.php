@@ -1088,9 +1088,8 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		$availability_per_this_day['summary']['tooltip_availability']    = wpbc_support_capacity__tooltip__summary__availability( $availability_per_this_day, $my_day_tag, $resource_id_arr );
 
 
-
-
-		$availability_per_this_day['summary']['hint__in_day__cost'] = wpbc_support_capacity__in_day_hint__summary__day_cost( $availability_per_this_day, $my_day_tag, $resource_id_arr );
+		$availability_per_this_day['summary']['hint__in_day__cost']         = wpbc_support_capacity__in_day_hint__summary__day_cost( $availability_per_this_day, $my_day_tag, $resource_id_arr );
+		$availability_per_this_day['summary']['hint__in_day__availability'] = wpbc_support_capacity__in_day_hint__summary__availability( $availability_per_this_day, $my_day_tag, $resource_id_arr );       //FixIn: 10.6.4.1
 
 		// -------------------------------------------------------------------------------------------------------------
 		// ['summary']['status_for_day']
@@ -1310,11 +1309,54 @@ function wpbc_get_availability_per_days_arr( $params ) {
 					$cost_text = str_replace( array( 'CURRENCY_SYMBOL', '&' ), array( $cur_sym, '&amp;' ), $cost_text );
 					$cost_text = html_entity_decode($cost_text);
 
-					$tooltip =  $cost_text;
+					$tooltip =  '<span class="wpbc_in_date_hint__cost">' . $cost_text . '</span>';;
 				}
 			}
 			return $tooltip;
 		}
+
+		//FixIn: 10.6.4.1
+		/**
+		 * Get availability  for in Day cells
+		 *
+		 * @param $availability_per_this_day
+		 * @param $my_day_tag
+		 * @param $resource_id_arr
+		 *
+		 * @return string
+		 */
+		function wpbc_support_capacity__in_day_hint__summary__availability( $availability_per_this_day, $my_day_tag, $resource_id_arr ){
+
+			$tooltip = '';
+
+            if (
+					( 'On' == get_bk_option( 'booking_is_show_availability_in_date_cell' ) ) &&
+					( $availability_per_this_day['max_capacity'] > 1 )
+            ) {
+
+				$tooltip_title_word = get_bk_option( 'booking_highlight_availability_word_in_date_cell' );
+				$tooltip_title_word = wpbc_lang( $tooltip_title_word );
+				$tooltip_title_word = ( empty( $tooltip_title_word ) )
+										? ''
+										: '<span class="wpbc_in_date_hint__availability_title">' . $tooltip_title_word . '</span>';
+
+
+				if ( ! empty( $availability_per_this_day['day_availability'] ) ) {
+
+					$tooltip = '<span class="wpbc_in_date_hint__availability">'
+									. '<span class="wpbc_in_date_hint__availability_number">'
+											. intval( $availability_per_this_day['day_availability'] )
+					                        . '&nbsp;'
+									. '</span>'
+				                    . $tooltip_title_word
+					           . '</span>';
+					$tooltip = html_entity_decode($tooltip);
+				}
+			}
+			return $tooltip;
+		}
+
+
 
 		/**
 		 * Set tooltip summary  -- Booking Details

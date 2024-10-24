@@ -12,6 +12,13 @@ function wpbc_calendar__load_data__ajx( params ){
 
 	//FixIn: 9.8.6.2
 	wpbc_calendar__loading__start( params['resource_id'] );
+
+	// Trigger event for calendar before loading Booking data,  but after showing Calendar.
+	if ( jQuery( '#calendar_booking' + params['resource_id'] ).length > 0 ){
+		var target_elm = jQuery( 'body' ).trigger( "wpbc_calendar_ajx__before_loaded_data", [params['resource_id']] );
+		 //jQuery( 'body' ).on( 'wpbc_calendar_ajx__before_loaded_data', function( event, resource_id ) { ... } );
+	}
+
 	if ( wpbc_balancer__is_wait( params , 'wpbc_calendar__load_data__ajx' ) ){
 		return false;
 	}
