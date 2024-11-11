@@ -360,10 +360,12 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 
 
 			foreach ( $all_plugins as $path => $plugin ) {
-				if ( is_plugin_active( $path ) ) {
+				if ( ( ! empty( $plugin['Name'] ) ) && ( ! empty( $plugin['Version'] ) ) ) {
+					if ( is_plugin_active( $path ) ) {
 						$system_info['active_plugins'][ $plugin['Name'] ] = $plugin['Version'];
-				} else {
+					} else {
 						$system_info['inactive_plugins'][ $plugin['Name'] ] = $plugin['Version'];
+					}
 				}
 			}
 

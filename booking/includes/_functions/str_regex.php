@@ -499,3 +499,29 @@ function wpbc_shortcode_with_name_and_options__find( $content, $shortcode_to_sea
 	return $shortcodes_arr;
 }
 
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Replace <script> tags to <#
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * Replace <script> tags to <#
+ *
+ * @param $result
+ *
+ * @return array|string|string[]|null
+ */
+function wpbc_replace__js_scripts__to__tpl_scripts( $result ){
+
+	// Replace <script> tags to <#
+	$pattern = '/<script\s*(type=[\'"]+text\/javascript[\'"]+)?\s*>/i';
+	$result  = preg_replace( $pattern, '<#', $result );
+
+	// Replace </script> tags to #>
+	$pattern = '/<\/script>/i';
+	$result  = preg_replace( $pattern, '#>', $result );
+
+	return $result;
+}

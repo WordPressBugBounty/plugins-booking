@@ -2022,9 +2022,11 @@ function wpbc_bs_javascript_tooltips() {
 			return true;
 		}
 
-		jQuery( document ).ready( function (){
+		//jQuery( document ).ready( function (){
+		<?php echo wpbc_jq_ready_start();	//FixIn: 10.6.6.1 ?>
 			wpbc_define_tippy_tooltips( '' );
-		} );
+		<?php echo wpbc_jq_ready_end(); ?>
+		//} );
     </script><?php 
 }
     

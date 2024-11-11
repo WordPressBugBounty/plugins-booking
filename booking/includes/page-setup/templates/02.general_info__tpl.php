@@ -41,7 +41,7 @@ function wpbc_stp_wiz__template__general_info(){
 			<div class="wpbc__row">
 				<div class="wpbc__field">
 					<h1 class="wpbc_swp_section_header" ><?php _e( 'Tell Us About Your Business', 'booking' ); ?></h1>
-					<p class="wpbc_swp_section_header_description"><?php _e('This information will help customize your experience.','booking'); ?></p>
+					<p class="wpbc_swp_section_header_description"><?php _e('This will help customize your experience.','booking'); ?></p>
 				</div>
 			</div>
 			<div class="wpbc__row">
@@ -217,7 +217,9 @@ function wpbc_stp_wiz__template__general_info(){
 							   	id="wpbc_swp_accept_send"
 							   	name="wpbc_swp_accept_send"
 							   	checked="checked"
-							   	value="I accept sending data">
+							   	value="I accept sending data"
+							    onclick=" if (jQuery(this ).is( ':checked' )) { jQuery( '#btn__toolbar__buttons_next').text( '<?php esc_attr_e( 'Save and Continue', 'booking' ); ?>' ); } else { jQuery( '#btn__toolbar__buttons_next').text( '<?php esc_attr_e( 'Skip', 'booking' ); ?>' );  } "
+						/>
 						<label for="wpbc_swp_accept_send"
 							   class="wpdev-list-item-label"
 							   style="font-size: 12px;font-weight: 400;">

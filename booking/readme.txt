@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.6.5
+Stable tag: 10.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,22 @@ Plugin provides an **easy-to-use** booking system for displaying **calendar avai
 Moreover, with the ability to **sync bookings** with other services Booking Calendar offers you be up-to-date to avoid duplicate bookings.
 
 [Features](https://wpbookingcalendar.com/features/ "Features Overview of Booking Calendar") | [See Demos](https://wpbookingcalendar.com/demo/ "Live demos of premium versions") | [FAQ](https://wpbookingcalendar.com/FAQ/ "Booking Calendar - FAQ") | [Video Guides](https://wpbookingcalendar.com/help/ "Youtube Video Tutorials") | [Get Support](https://wpbookingcalendar.com/support/ "Get support for Booking Calendar plugin" )
+
+= New Setup Wizard! =
+> <strong>Easy Time Appointments Configuration for your Bookings</strong><br />
+> Set up **appointment booking system** in less than 2.5 minutes. Designed with a user-friendly flow, the wizard takes you step-by-step through key settings, including booking type selection, calendar appearance, availability preferences, and more. This step-by-step setup helps you get your booking system ready for your business quickly and easily.
+
+https://www.youtube.com/watch?v=GYJWZJBFwXw
+
+> <strong>Full Day Bookings - Setup Wizard</strong><br />
+> Easily configure Booking Calendar for full-day bookings with the new step-by-step Setup Wizard. Get your booking system ready for full day bookings in just a few minutes.
+
+https://www.youtube.com/watch?v=NJ88lGD5iJ0
+
+> <strong>Changeover Multi-Day Bookings - Setup Wizard (Pro)</strong><br />
+> Configure multi-day bookings with specific check-in and check-out days, clearly marked with diagonal or vertical lines. Perfect for bookings that require split days. <br>**This feature available in Pro versions**.
+
+https://www.youtube.com/watch?v=uCQ9JmHR8w4
 
 = Perfect solution for any booking logic =
 
@@ -290,8 +306,41 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
-= 10.6.1 - 10.6.5 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
+= 10.7 =
+- Changes in **all** versions:
+ 	* **New** **Easy Setup Wizard** for quick booking calendar configuration of essential booking settings.
+ 	* **Enhanced** Step-by-step guide for booking types, calendar look, availability, and form settings.
+ 	* **Enhanced** Updated 'Get started' dialog at Booking Listing and Timeline View pages.
+ 	* **Added** Quick access to **Setup Wizard**, from Settings General page.
+ 	* **Fix** Showing warning message at some servers: "WPBC Error. JavaScript library "datepick" was not defined.". (10.6.6.1)
+ 	* **Fix** Resolved issue of generating payment request links at some servers. (10.6.6.3)
+
+= 10.6.5 =
+- Changes in **all** versions:
+	* **Fix** Notice: Function _load_textdomain_just_in_time was called incorrectly. in WordPress 6.7 RC1 (10.6.5.1)
+	* **Fix** Additional escaping of Send button title in booking form. Thank you for Dmitrii Ignatyev (cleantalk) (10.6.5.2)
+
+= 10.6.4 =
+- Changes in **all** versions:
+	* **Fix** Additional escaping of text  data at the Booking Confirmation section. Thank you for Dmitrii Ignatyev (cleantalk) (10.6.4.2)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+ 	* **New** Ability to display the available number of booking resources (slots) in the date cells in the calendar(s). (10.6.4.1)
+
+= 10.6.3 =
+- Changes in **all** versions:
+	* **Fix** Resolving issue of showing booking titles in Timeline View in some situations of multiple bookings on the same date. (10.6.3.1)
+	* **Fix** Resolving issue in classic widgets for legacy themes of correctly escaping titles. Thank you for Dmitrii Ignatyev (cleantalk).
+
+= 10.6.2 =
+- Changes in **all** versions:
+	* **Fix** Remove the comments from the foreach() statement to prevent causing a false positive issues on hosting platform. (10.6.2.2)
+
+= 10.6.1 =
+- Changes in **all** versions:
+	* **Fix** Resolved XSS vulnerability relative date\time formats, if attacker has access to booking settings page. (10.6.1.2)
+	* **Fix** Resolved XSS vulnerability relative start day of week, if attacker has access to booking settings page. (10.6.1.3)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+ 	* **Fix** Resolving of not showing iDeal payment form  at some servers,  because of block CSS at such servers. (10.6.1.1)
 
 = 10.6 =
 - Changes in **all** versions:
@@ -463,6 +512,9 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  - Get ready for our biggest update yet! Enjoy a new booking engine, improved performance, structured settings, an enhanced UI, and a smoother booking process with the new booking confirmation section. Paid versions bring features like time-slot capacity for multiple bookings per time-slot and more. Find more at [this page](https://wpbookingcalendar.com/updates/whats-new-in-booking-calendar-update-9-8/)
 
 == Upgrade Notice ==
+= 10.7 =
+Easy Setup Wizard for quick booking calendar configuration of essential booking settings.
+
 = 10.6 =
 Implemented a structured settings dashboard with brief descriptions for each feature. This update enhances user navigation, making it easier to locate and configure the desired settings.
 

@@ -19,10 +19,16 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 	public function __construct() {
 
-		$this->init_steps_data();
+		if ( WPBC()->is_wp_inited() ) {
+			$this->init_steps_data();
+		} else {
+			add_action( 'init', array( $this, 'init_steps_data' ) );
+		}
 
 		add_action( 'wpbc_after_wpbc_page_top__header_tabs', array( $this, 'show_top_right_wizard_button' ), 10, 3 );
+
 	}
+
 
 	/**
 	 * Define Steps Data Structure  -  Init
@@ -37,7 +43,9 @@ class WPBC_SETUP_WIZARD_STEPS {
 										'is_done'            => false,
 										'do_action'          => 'none',
 										'prior'              => '',
-										'next'               => ''
+										'next'               => '',
+										'prior_title' 		 => __( 'Go Back', 'booking' ),
+										'next_title' 		 => __( 'Save and Continue', 'booking' )
 									);
 		$steps_arr = array();
 
@@ -47,6 +55,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 		$steps_arr[ $step_name ] = $step_default_params;
 		$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__welcome';
 		$steps_arr[ $step_name ]['next'] = ( wpbc_is_this_demo() ) ? 'date_time_formats' : 'general_info';
+		//$steps_arr[ $step_name ]['next_title'] = __( 'Let\'s Get Started', 'booking' );
 
 		if ( ! wpbc_is_this_demo() ) {
 			// Step #2
@@ -79,6 +88,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 		$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__form_structure';
 		$steps_arr[ $step_name ]['prior']  = 'bookings_types';
 		$steps_arr[ $step_name ]['next']   = 'cal_availability';
+		$steps_arr[ $step_name ]['next_title'] = __( 'Continue', 'booking' );
 
 		// Step #6
 		$step_name = 'cal_availability';
@@ -86,32 +96,46 @@ class WPBC_SETUP_WIZARD_STEPS {
 		$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__cal_availability';
 		$steps_arr[ $step_name ]['prior']  = 'form_structure';
 		$steps_arr[ $step_name ]['next']   = 'color_theme';
+		$steps_arr[ $step_name ]['next_title'] = __( 'Continue', 'booking' );
 
 		// Step #7
 		$step_name = 'color_theme';
 		$steps_arr[ $step_name ] = $step_default_params;
 		$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__color_theme';
 		$steps_arr[ $step_name ]['prior']  = 'cal_availability';
-		$steps_arr[ $step_name ]['next']   = 'calendar_days_selection';
+		$steps_arr[ $step_name ]['next']   = 'optional_other_settings';
 
-		// Step #
-		$step_name = 'calendar_days_selection';
+		// Step #8
+		$step_name = 'optional_other_settings';
 		$steps_arr[ $step_name ] = $step_default_params;
 		//$steps_arr[ $step_name ]['show_section_left']  = true;
-		$steps_arr[ $step_name ]['show_section_right'] = true;
-		$steps_arr[ $step_name ]['do_action'] 	= 'save_and_continue__calendar_days_selection';
+		//$steps_arr[ $step_name ]['show_section_right'] = true;
+		$steps_arr[ $step_name ]['do_action'] 	= 'save_and_continue__optional_other_settings';
 		$steps_arr[ $step_name ]['prior'] 	= 'color_theme';
-		$steps_arr[ $step_name ]['next'] 	= 'calendar_skin';
+		$steps_arr[ $step_name ]['next'] 	= ( wpbc_is_this_demo() ) ? 'get_started' : 'wizard_publish';
+		$steps_arr[ $step_name ]['next_title'] = __( 'Continue', 'booking' );
 
-		// Step #
-		$step_name = 'calendar_skin';
+		if ( ! wpbc_is_this_demo() ) {
+			// Step #9
+			$step_name               = 'wizard_publish';
+			$steps_arr[ $step_name ] = $step_default_params;
+			//$steps_arr[ $step_name ]['show_section_left']  = true;
+			//$steps_arr[ $step_name ]['show_section_right'] = true;
+			$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__wizard_publish';
+			$steps_arr[ $step_name ]['prior']     = 'optional_other_settings';
+			$steps_arr[ $step_name ]['next']      = 'get_started';
+			$steps_arr[ $step_name ]['next_title'] = __( 'Continue', 'booking' );
+		}
+
+		// Step #10
+		$step_name = 'get_started';
 		$steps_arr[ $step_name ] = $step_default_params;
-		$steps_arr[ $step_name ]['show_section_left']  = true;
-		$steps_arr[ $step_name ]['show_section_right'] = true;
-		$steps_arr[ $step_name ]['do_action'] 	= 'save_and_continue__calendar_skin';
-		$steps_arr[ $step_name ]['prior'] 	= 'calendar_days_selection';
+		//$steps_arr[ $step_name ]['show_section_left']  = true;
+		//$steps_arr[ $step_name ]['show_section_right'] = true;
+		$steps_arr[ $step_name ]['do_action'] 	= 'save_and_continue__get_started';
+		$steps_arr[ $step_name ]['prior'] 	= ( wpbc_is_this_demo() ) ? 'optional_other_settings' : 'wizard_publish';
 		$steps_arr[ $step_name ]['next'] 	= 'welcome';
-
+		//$steps_arr[ $step_name ]['next_title'] = __( 'Complete', 'booking' );
 
 		$this->steps_arr = $steps_arr;
 	}
@@ -130,7 +154,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 	// =================================================================================================================
 
 	/**
-	 * Actual Step Number  -> 'general_info'        or      'calendar_days_selection'
+	 * Actual Step Number  -> 'general_info'        or      'optional_other_settings'
 	 *
 	 * @return int
 	 */
@@ -392,7 +416,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 		if ( ! wpbc_is_setup_wizard_page() ){
 
-			if ( $this->db__is_all_steps_completed() ) {
+			if (
+				( ! wpbc_is_user_can_access_wizard_page() ) ||
+				( $this->db__is_all_steps_completed() )
+			){
 				return false;
 			}
 
@@ -465,6 +492,23 @@ class WPBC_SETUP_WIZARD_STEPS {
 	}
 
 }
+function wpbc_init_setup_wizard(){
+	$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+}
+// $setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+add_action( 'init',   'wpbc_init_setup_wizard'  );
 
-$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
-// $setup_steps->get_steps_arr();
+
+
+/**
+* On plugin  activation set all steps as completed in Live Demos
+* @return void
+*/
+function wpbc_booking_activate_plugin__wizard() {
+	if ( wpbc_is_this_demo() ) {
+		$setup_steps  = new WPBC_SETUP_WIZARD_STEPS();
+		$is_completed = true;
+		$setup_steps->db__set_all_steps_as( $is_completed );
+	}
+}
+add_bk_action( 'wpbc_other_versions_activation',  'wpbc_booking_activate_plugin__wizard'  );

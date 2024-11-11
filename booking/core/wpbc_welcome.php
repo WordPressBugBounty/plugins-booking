@@ -15,296 +15,213 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 
+// <editor-fold     defaultstate="collapsed"                        desc="  ==  Welcome Content  2 ==  2024-11-06 "  >
 
-// <editor-fold     defaultstate="collapsed"                        desc="  ==  Welcome Content  ==  "  >
+function wpbc_welcome_panel() {
 
-	/**
-		 * Show Welcome Panel with  links
-	 *
-	 * @global type $wpbc_Dismiss
-	 */
-	function wpbc_welcome_panel() {
+	if ( ! wpbc_is_user_can_access_wizard_page() ){
+		return;
+	}
 
-		?>
-		<style type="text/css" media="screen">
-			/*<![CDATA[*/
-			/* WPBC Welcome Panel */
-			/* //FixIn: 8.9.3.6 */
-			.wpbc-panel .welcome-panel .welcome-panel-column-container {
-				display: block;
-				margin-top: 0px;
-				padding: 0px;
-				background: #fff;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-panel-column ul {
-				margin: 1.8em 1em 1em 0;
-			}
-
-			.wpbc-panel .welcome-panel {
-				background-blend-mode: overlay;
-				font-size: 14px;
-				line-height: 1.3;
-			}
-
-			.wpbc-panel .welcome-panel-column {
-				display: block;
-			}
-
-			.wpbc-panel .welcome-panel::before {
-				content: none;
-			}
-
-			.wpbc-panel .welcome-panel-content {
-				min-height: 100px;
-			}
-
-			/* End //FixIn: 8.9.3.6 */
-			.wpbc-panel .welcome-panel {
-				background: #fff;
-				border-color: #DFDFDF;
-				position: relative;
-				overflow: auto;
-				margin: 5px 0 20px;
-				padding: 23px 10px 12px;
-				border-width: 1px;
-				border-style: solid;
-				border-radius: 3px;
-				font-size: 13px;
-				line-height: 2.1em;
-			}
-
-			.wpbc-panel .welcome-panel h3 {
-				margin: 0;
-				font-size: 21px;
-				font-weight: 400;
-				line-height: 1.2;
-			}
-
-			.wpbc-panel .welcome-panel h4 {
-				margin: 0.8rem 0;
-				  font-weight: 600;
-				  font-size: 1.1rem;
-				  color: #7a7a7a;
-			}
-			.wpbc-panel .welcome-panel a {
-				color: #21759B;
-			}
-			.wpbc-panel .welcome-panel .about-description {
-				margin: -10px 0 5px;
-				color: #7a7a7a;
-				font-size: 20px;
-				font-weight: 600;
-				border-bottom: 1px solid #eee;
-				padding-bottom: 10px;
-				padding-left: 0.5em;
-			}
-
-			.wpbc-panel .welcome-panel .button.button-hero {
-				margin: 15px 0 3px;
-			}
-
-			.wpbc-panel .welcome-panel-content {
-				display: flex;
-				flex-flow: row wrap;
-				justify-content: flex-start;
-				align-items: flex-start;
-				align-content: flex-start;
-			}
-			.wpbc-panel .welcome-panel-content > * {
-				flex: 1 1 auto;
-			}
-			.wpbc-panel .welcome-panel .welcome-panel-column-container {
-				clear: both;
-				overflow: hidden;
-				position: relative;
-
-				display: flex;
-				flex-flow: row wrap;
-				justify-content: space-between;
-				align-items: flex-start;
-				align-content: flex-start;
-				padding: 0 1em;
-			}
-			.wpbc-panel .welcome-panel .welcome-panel-column:first-child {
-			   flex: 1 1 40%;
-			}
-			.wpbc-panel .welcome-panel .welcome-panel-column {
-			   flex: 1 1 30%;
-			   min-width: 18em;
-			}
-			.wpbc-panel .welcome-panel .welcome-panel-column:last-child {
-			   flex: 1 1 20%;
-			}
-				/*.welcome-panel-column.welcome-panel-last h4{*/
-				/*	font-size: 1.1em;*/
-				/*}*/
-				/*.wpbc-panel .welcome-panel .welcome-panel-column.welcome-panel-last .welcome-icon{*/
-				/*	font-size: 1em;*/
-				/*}*/
-				/*.wpbc-panel .welcome-panel .welcome-panel-column.welcome-panel-last li{*/
-				/*	padding:0;*/
-				/*}*/
-			.wpbc-panel .welcome-panel-column p {
-				margin-top: 7px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-icon {
-				background: #fff;
-				padding: 0 1em 0 0;
-                font-size: 15px;
-                line-height: 1.84em;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-add-page {
-				background-position: 0 2px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-edit-page {
-				background-position: 0 -90px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-learn-more {
-				background-position: 0 -136px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-comments {
-				background-position: 0 -182px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-view-site {
-				background-position: 0 -274px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-widgets-menus {
-				line-height: 14px;
-                font-size: 0.8rem;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-write-blog {
-				background-position: 0 -44px;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-panel-column ul {
-				margin: 0.8em 1em 1em 0;
-			}
-
-			.wpbc-panel .welcome-panel .welcome-panel-column li {
-				line-height: 1.8em;
-				list-style-type: none;
-			}
-
-			.wpbc_panel_get_started_dismiss:hover,
-			.wpbc_panel_get_started_dismiss:active,
-			.wpbc_panel_get_started_dismiss:focus,
-			.wpbc_panel_get_started_dismiss {
-				position: absolute;
-				right: 12px;
-				top: 12px;
-				box-shadow: none;
-				outline: none;
-			}
-
-			@media screen and (max-width: 870px) {
-				.wpbc-panel .welcome-panel .welcome-panel-column,
-				.wpbc-panel .welcome-panel .welcome-panel-column:first-child {
-					display: block;
-					float: none;
-					width: 100%;
-				}
-
-				.wpbc-panel .welcome-panel .welcome-panel-column li {
-					display: inline-block;
-					margin-right: 13px;
-				}
-
-				.wpbc-panel .welcome-panel .welcome-panel-column ul {
-					margin: 0.4em 0 0;
-				}
-
-				.wpbc-panel .welcome-panel .welcome-icon {
-					/*padding-left: 25px;*/
-				}
-			}
-
-			/*]]>*/
-		</style>
-		<script type="text/javascript">
+	?><script type="text/javascript">
 			jQuery( document ).ready( function (){
 				setTimeout( function (){
-					if ( jQuery( '#wpbc-panel-get-started' ).is( ':visible' ) ){
-						jQuery( '#wpbc-panel-get-started' ).slideUp( 1000 );
+					if ( jQuery( '#wpbc_welcome_panel__version2' ).is( ':visible' ) ){
+						jQuery( '#wpbc_welcome_panel__version2' ).slideUp( 1000 );
 					}
 				}, 60000 );
 			} );
 		</script>
-		<div id="wpbc-panel-get-started" class="wpbc-panel" style="display:none;">
-			<div class="welcome-panel"><?php
-
-				$is_panel_visible = wpbc_is_dismissed( 'wpbc-panel-get-started', array(
+		<div id="wpbc_welcome_panel__version2" style="display:none;">
+			<?php
+				$is_panel_visible = wpbc_is_dismissed( 'wpbc_welcome_panel__version2', array(
 														'title' => '<i class="menu_icon icon-1x wpbc_icn_close"></i> ',
 														'hint'  => __( 'Dismiss', 'booking' ),
-														'class' => 'wpbc_panel_get_started_dismiss',
-														'css'   => 'background: #fff;border-radius: 7px;'
+														'class' => 'wpbc_panel_get_started_dismiss0',
+														'css'   => 'text-decoration: none;font-weight: 600;float:right;background: #fff;border-radius: 7px;z-index: 1;position: relative;margin: 16px 15px 0 -32px;'
 													));
 				if ( $is_panel_visible ) {
-					wpbc_welcome_panel_content();
+					wpbc_welcome_panel__version2__content();
 				}
+			?>
+		</div><?php
+}
 
-				?> </div>
-		</div> <?php
+function wpbc_welcome_panel__version2__content() {
+
+	?><div class="wpbc_welcome_panel" style="margin: 0 0 20px;"><?php
+
+		wpbc_ui_settings__panel__welcome();
+
+	?></div><?php
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+//  Panel  == Plugin Version | & Buttons ==
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Show Settings Statistic | Agenda Panel
+ *
+ * @return void
+ */
+function wpbc_ui_settings__panel__welcome(){
+
+
+	?><style type="text/css">
+		.wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar.wpbc_no_borders{
+			margin-top: 5px !important;
+		}
+		.wpbc_ui_settings__panel__welcome .wpbc_ui_settings__card_text_small h1{
+			line-height: 1.2;
+			margin: 0;
+		}
+		.wpbc_ui_settings__panel__welcome .about-description {
+			flex: 100%;
+			margin: 0;
+			color: #8a8a8a;
+			font-size: 20px;
+			font-weight: 600;
+			border-bottom: 1px solid #eee;
+			padding: 10px 20px;
+		}
+		.wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar .ui_container.ui_container_small .ui_group .ui_element .wpbc_ui_button {
+			white-space: wrap;
+			flex-flow: row nowrap;
+			height: auto;
+			padding: 5px 15px;
+			line-height: 1.74;
+		}
+		.wpbc_ui_settings__panel__welcome .wpbc_ui_settings__panel h1 {
+			margin: 0;
+		}
+	</style><?php
+
+	?><div class="wpbc_ui_settings__flex_container wpbc_ui_settings__panel__welcome"><?php
+
+		wpbc_ui_settings__panel_start();
+
+			wpbc_ui_settings__panel__welcome__header();
+
+			if ( WPBC_setup_plugin ) {
+				wpbc_ui_settings_panel__card__setup_wizard();
+			}
+
+			wpbc_ui_settings_panel__card__version();
+
+			wpbc_ui_settings_panel__card__welcome__have_questions();
+
+			//Info: If needs to show "Shortcode Popup Dialog" and create new Pages, please uncomment all rows marked with: //FixIn: 10.6.6.2
+			// wpbc_ui_settings_panel__card__publish_into_new( array() );			//FixIn: 10.6.6.2
+
+			?><div style="flex:100%;border-bottom: 1px solid #eeeff1;"></div><?php		// Divider
+
+			if ( ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() ) ) {
+				wpbc_ui_settings_panel__card__publish_into_exist( array() );
+			}
+
+			wpbc_ui_settings_panel__card__integreate_into_new();
+			wpbc_ui_settings_panel__card__shortcodes_help();
+
+			//wpbc_ui_settings_panel__card__welcome__next_steps();
+
+
+
+
+
+		wpbc_ui_settings__panel_end();
+
+	?></div><?php
+}
+
+
+	function wpbc_ui_settings__panel__welcome__header() {
+
+		?><p class="about-description"><?php
+			_e( 'We&#8217;ve assembled some links to get you started:', 'booking' );
+		?></p><?php
 	}
 
 
 	/**
-		 * Content of Welcome Panel with  links
+	 * Show   == Dashboard Card  -  integreate into new  ==
 	 *
+	 * @return void
 	 */
-	function wpbc_welcome_panel_content() {
+	function wpbc_ui_settings_panel__card__integreate_into_new(){
 
-		?>
-		<div class="welcome-panel-content">
-			<p class="about-description"><?php _e( 'We&#8217;ve assembled some links to get you started:','booking'); ?></p>
-			<div class="welcome-panel-column-container">
-				<div class="welcome-panel-column">
-					<h4><?php _e( 'Get Started','booking'); ?></h4>
+
+
+		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__publish_into_new">
+			<div class="wpbc_ui_settings__text_row">
+				<i class="menu_icon icon-1x wpbc-bi-box-arrow-in-down-left"></i>
+				<h1>
+					<span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Insert shortcode in a page', 'booking' ); ?></span>
+					</span>
+				</h1>
+			</div>
+			<div class="wpbc_ui_settings__text_row">
+				<span class="wpbc_ui_settings__text_color__black">
+					<?php
+					 	printf( __( 'Integrate booking form into a page on your website.', 'booking' ), '', '' );
+					?>
+				</span>
+			</div>
+			<div style="align-self:center;margin: 0px 0 0;" class="wpbc_flextable_col">
+				<?php
+
+				?>
+				<div class="wpbc_ajx_toolbar wpbc_no_borders" style="margin: 0 auto;margin-top: 15px;">
+					<div class="ui_container ui_container_small">
+						<div class="ui_group ui_group__publish_btn"  style="align-items: center;">
+							<div class="ui_element" style="margin: 0 15px 0 0;">
+								<a href="<?php echo esc_url( wpbc_get_resources_url() ); ?>"
+								   id="ui_btn_publish_into_exist" class="wpbc_ui_control wpbc_ui_button wpbc_ui_button_danger0 tooltip_top "
+								   title="<?php echo esc_attr(
+																sprintf( __( 'Integrate booking form into a page on your website.', 'booking' ), '', '' )
+										); ?>"  >
+										<span><?php _e('Integrate booking form', 'booking'); ?>&nbsp;&nbsp;&nbsp;</span>
+										<i class="menu_icon icon-1x wpbc-bi-arrow-right-short" style="margin: 0;"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php
+
+				?>
+			</div>
+
+		</div><?php
+	}
+
+
+	/**
+	 * Show   == Dashboard Card  -  Shortcodes Help  ==
+	 *
+	 * @return void
+	 */
+	function wpbc_ui_settings_panel__card__shortcodes_help(){
+
+		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__publish_into_new">
+			<div class="wpbc_ui_settings__text_row">
+				<i class="menu_icon icon-1x wpbc_icn_code"></i>
+				<h1>
+					<span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Shortcodes', 'booking' ); ?></span>
+					</span>
+				</h1>
+			</div>
+			<div class="wpbc_ui_settings__text_row">
+				<span class="wpbc_ui_settings__text_color__black">
 					<ul>
-						<?php
-						$is_wp_post_booking = false;
-						$wp_post_booking = get_page_by_path( 'wpbc-booking' );
-						if ( empty( ! $wp_post_booking ) ) {
-
-							$wp_post_booking_absolute = get_permalink( $wp_post_booking->ID );
-
-							if ( ! empty( $wp_post_booking_absolute ) ) {
-
-								$wp_post_booking_relative = wpbc_make_link_relative( $wp_post_booking_absolute );
-								if ( wpbc_is_shortcode_exist_in_page( $wp_post_booking_relative, '[booking' ) ) {
-									$is_wp_post_booking = true;
-									?>
-									<li>
-										<div class="welcome-icon" style="margin: 25px 0 15px;"><?php
-											printf( __( 'Start by using the %spre-configured booking page%s we have set up.', 'booking' )
-												, '<strong><a href="' . esc_url( $wp_post_booking_absolute ) . '" class="button button-secondary"  target="_blank">', '</a></strong>'
-											);
-										?></div>
-									</li><?php
-								}
-							}
-						}
-						?><li>
-						<div class="welcome-icon" style="margin-bottom: 15px;"><?php
-							printf( __( '%sIntegrate booking form%s into a page on your website in just a few clicks.', 'booking' )
-								, '<strong><a href="' . esc_url( wpbc_get_resources_url() )  . '" class="button button-primary">', '</a></strong>'
-							);
-							?></div>
-						</li><?php
-
-						?><li><span class="welcome-icon" style="font-size: 0.95em;"><?php
+						<li style="font-size: 0.94em;"><span class="welcome-icon"><?php
 							printf( __('Learn how to %sAdd the Booking Form or Calendar to your page%s in WordPress Block Editor, Elementor, or other non-standard editors.','booking')
 									, '<strong><a href="https://wpbookingcalendar.com/faq/insert-booking-calendar-into-page/" target="_blank">', '</a></strong>'
 									);
-							echo '</span><span class="welcome-icon" style="font-size: 0.95em;">';
+							echo '</span> <span class="welcome-icon">';
 						    printf( __('See %sall shortcodes%s of the Booking Calendar that you can use in pages.','booking')
 									, '<strong><a href="https://wpbookingcalendar.com/faq/#shortcodes" target="_blank">', '</a></strong>'
 //									, '<a href="' . admin_url( 'edit.php?post_type=page' ) . '">', '</a>'
@@ -312,9 +229,30 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 									);
 						?></span></li>
 					</ul>
-				</div>
-				<div class="welcome-panel-column welcome-panel-last">
-					<h4><?php _e( 'Next Steps','booking'); ?></h4>
+				</span>
+			</div>
+		</div><?php
+	}
+
+
+	/**
+	 * Show   == Dashboard Card  -  Next Steps  ==
+	 *
+	 * @return void
+	 */
+	function wpbc_ui_settings_panel__card__welcome__next_steps(){
+
+		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__welcome__next_steps">
+			<div class="wpbc_ui_settings__text_row">
+				<i class="menu_icon icon-1x wpbc_icn_code"></i>
+				<h1>
+					<span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Next Steps', 'booking' ); ?></span>
+					</span>
+				</h1>
+			</div>
+			<div class="wpbc_ui_settings__text_row">
+				<span class="wpbc_ui_settings__text_color__black">
 					<ul>
 
 						<?php if ( ! empty( $wp_post_booking_absolute ) ) { ?>
@@ -340,17 +278,36 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 									);
 						?></div></li>
 					</ul>
-<?php /* ?>
-				</div>
-				<div class="welcome-panel-column welcome-panel-last">
- <?php */ ?>
-					<h4><?php _e( 'Have a questions?','booking'); ?></h4>
+				</span>
+			</div>
+		</div><?php
+	}
+
+
+	/**
+	 * Show   == Dashboard Card  -  Have a questions?  ==
+	 *
+	 * @return void
+	 */
+	function wpbc_ui_settings_panel__card__welcome__have_questions(){
+
+		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right0 wpbc_ui_settings_panel__card__welcome__have_questions">
+			<div class="wpbc_ui_settings__text_row">
+				<i class="menu_icon icon-1x wpbc_icn_help_outline"></i>
+				<h1>
+					<span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Have a questions?', 'booking' ); ?></span>
+					</span>
+				</h1>
+			</div>
+			<div class="wpbc_ui_settings__text_row">
+				<span class="wpbc_ui_settings__text_color__black">
 					<ul>
 						<li><span class="welcome-icon"><?php
 							printf( __( 'See %sFAQ%s.' ,'booking'),
 								'<a href="https://wpbookingcalendar.com/faq/" target="_blank">',
 								'</a>' );
-							echo '</span><span class="welcome-icon">';
+							echo '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="welcome-icon">';
 							printf( __( 'Contact %sSupport%s.','booking'),
 								'<a href="https://wpbookingcalendar.com/support/" target="_blank">',
 								'</a>' );
@@ -367,17 +324,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 								'</a>' );
 */
 						?></span></li>
-					</ul>
-				</div>
+				</span>
 			</div>
-			<div class="welcome-icon welcome-widgets-menus" style="text-align:right;"><?php
-				printf( __( 'Need even more functionality? Check %s Pro Versions %s.','booking'),
-						'<a href="https://wpbookingcalendar.com/features/" target="_blank">',
-						'</a>'
-					); ?>
-			</div>
-		</div>
-		<?php
+		</div><?php
 	}
 
+
+
 // </editor-fold>
+
+

@@ -386,7 +386,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 			$pages_where_load = array( 'post-new.php', 'page-new.php', 'post.php', 'page.php', 'widgets.php', 'customize.php' );
 
-			if ( in_array( basename( $_SERVER['PHP_SELF'] ), $pages_where_load ) ) {
+			if ( ( in_array( basename( $_SERVER['PHP_SELF'] ), $pages_where_load ) )
+				 || ( wpbc_is_setup_wizard_page() )
+			) {
 				return true;
 			}
 
@@ -433,6 +435,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 						&& ( ! wpbc_can_i_load_on__searchable_resources_page() )
 					)
 				|| wpbc_is_setup_wizard_page()
+				// || wpbc_is_bookings_page()		//FixIn: 10.6.6.2
 			){
 				return true;
 			} else {

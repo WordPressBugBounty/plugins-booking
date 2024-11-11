@@ -77,7 +77,7 @@ class WPBC_AJX__Setup_Wizard__Templates {
 		public function hook__load_templates_at_footer( $page ){
 
 			// Hook  from ../includes/page-setup/setup__page.php
-			if ( 'wpbc-ajx_booking_setup_wizard'  === $page ) {
+			if ( 'wpbc-ajx_booking_setup_wizard' === $page ) {
 
 				$this->wpbc_template__stp_wiz__main_content();
 
@@ -88,9 +88,9 @@ class WPBC_AJX__Setup_Wizard__Templates {
 				wpbc_stp_wiz__template__form_structure();
 				wpbc_stp_wiz__template__cal_availability();
 				wpbc_stp_wiz__template__color_theme();
-
-
-					wpbc_template__stp_wiz__days_selection();
+				wpbc_stp_wiz__template__optional_other_settings();
+				wpbc_stp_wiz__template__wizard_publish();
+				wpbc_stp_wiz__template__get_started();
 
 				$this->wpbc_template__stp_wiz__left_navigation();
 				$this->wpbc_template__stp_wiz__left_navigation_item();
@@ -182,10 +182,19 @@ class WPBC_AJX__Setup_Wizard__Templates {
 										template__main_section = wp.template( 'wpbc_stp_wiz__template__color_theme' );
 										break;
 
+									case 'optional_other_settings':
 
-									case 'calendar_days_selection':
-										template__main_section = wp.template( 'wpbc_template__stp_wiz__days_selection' );
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__optional_other_settings' );
 										break;
+
+									case 'wizard_publish':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__wizard_publish' );
+										break;
+
+									case 'get_started':
+										template__main_section = wp.template( 'wpbc_stp_wiz__template__get_started' );
+										break;
+
 									default:
 									   // Default
 									   template__main_section = wp.template( 'wpbc_stp_wiz__template__general_info' );
@@ -290,7 +299,7 @@ class WPBC_AJX__Setup_Wizard__Templates {
 			?><script type="text/html" id="tmpl-wpbc_template__stp_wiz__footer_buttons">
 				<div class="wpbc__form__div">
 					<hr>
-					<div class="wpbc__row">
+					<div class="wpbc__row wpbc__row__btn_prior_next">
 						<?php /* ?>
 						<div class="wpbc__field">
 							<input type="button" value="<?php esc_attr_e('Reset Wizard and Start from Beginning','booking'); ?>"
@@ -308,7 +317,7 @@ class WPBC_AJX__Setup_Wizard__Templates {
 								   																		'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
 								   																	} );
 								   			wpbc_button_enable_loading_icon( this );
-											wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php _e('Go Back','booking'); ?></span></a>
+											wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;{{data.steps[ data.current_step ].prior_title}}</span></a>
 
 							<# } else { #>
 								<span style="margin-left:auto;"></span>
@@ -321,10 +330,10 @@ class WPBC_AJX__Setup_Wizard__Templates {
 								   																		'ui_clicked_element_id': 'btn__toolbar__buttons_next'
 								   																	} );
 								   			wpbc_button_enable_loading_icon( this );
-											wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+											wpbc_admin_show_message_processing( '' );" ><span>{{data.steps[ data.current_step ].next_title}}&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 						</div>
 					</div>
-					<div class="wpbc__row">
+					<div class="wpbc__row wpbc__row__btn_skip_exist">
 						<div class="wpbc__field">
 							<p class="wpbc_exit_link_small">
 								<a href="javascript:void(0)" tabindex="-1"

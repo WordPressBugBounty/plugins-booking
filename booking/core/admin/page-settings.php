@@ -206,6 +206,8 @@ if (0){
 
 	    if ( ( isset( $_GET['wpbc_setup_wizard'] ) ) && ( 'reset' === $_GET['wpbc_setup_wizard'] ) ) {
 
+			wpbc_setup_wizard_page__force_in_get();
+
 		    ?><div class="wpdvlp-sub-tabs wpbc_redirection_message" style="margin: 20px 0;padding: 1em;font-size: 14px;"><a href="<?php echo wpbc_get_setup_wizard_page_url()  ;?>">Redirect</a> after <span class="wpbc_countdown">1</span> second...</div><?php
 
 			wpbc_redirect( wpbc_get_setup_wizard_page_url() );

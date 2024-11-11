@@ -63,7 +63,14 @@ require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/06.cal_availabil
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/07.color_theme__tpl.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/07.color_theme__action.php' );
 
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/days_selection__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/08.optional_other_settings__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/08.optional_other_settings__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/09.wizard_publish__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/09.wizard_publish__action.php' );
+
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/10.get_started__tpl.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/10.get_started__action.php' );
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_steps.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_ajax.php' );
@@ -226,7 +233,6 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
 		?></form><?php
 
-
 		// -------------------------------------------------------------------------------------------------------------
 		// JS :: Tooltips, Popover, Datepicker
 		// -------------------------------------------------------------------------------------------------------------
@@ -234,7 +240,10 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
 		?><div id="wpbc_log_screen" class="wpbc_log_screen"></div><?php
 
-
+		?><div class="wpbc_page_publish_notice_section"><?php
+			// This is required for submit of Embed shortcodes into  New or Existing pages !
+			do_action( 'wpbc_hook_settings_page_before_content_table', 'resources' );      									// Define Notices Section and show some static messages, if needed
+		?></div><?php
 		// -------------------------------------------------------------------------------------------------------------
         // ==  Content  ==
 		// -------------------------------------------------------------------------------------------------------------
@@ -277,7 +286,7 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
 		/**
 		 *   JS Examples of showing specific Step:
-		 * 												wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'calendar_days_selection' } );
+		 * 												wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'optional_other_settings' } );
 		 *
 		 * 												wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'general_info' } );
 		 */

@@ -307,6 +307,7 @@ if (
 	   	&& ( $_REQUEST['page'] == 'wpbc-resources' ) )                  // Check  if this Booking > Resources page
 		)
 	 || wpbc_is_setup_wizard_page()
+	 // || wpbc_is_bookings_page() 										//FixIn: 10.6.6.2
  ){
 	//FixIn: 10.6.5.1
     new WPBC_TinyMCE_Buttons(

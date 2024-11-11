@@ -416,3 +416,48 @@ function wpbc_get_upgrade_widget( $params ) {
 	return $upgrade_content_arr;
 
 }
+
+
+/**
+ * How old ago was installed plugin,  based on first booking
+ *
+ * @return int			if -1,  then  no bookings!
+ */
+function wpbc_how_old_in_days() {
+
+	$how_old = wpbc_get_info__about_how_old();
+
+	if ( ! empty( $how_old ) ) {
+		return intval( $how_old['days'] );
+	} else {
+		// Unknown. Maybe no bookings
+		return -1;
+	}
+}
+
+/**
+ * Get date info about first booking.
+ * @return array|false
+ */
+function wpbc_get_info__about_how_old() {
+	global $wpdb;
+
+	$sql = "SELECT modification_date FROM  {$wpdb->prefix}booking as bk ORDER by booking_id  LIMIT 0,1";
+
+	$res = $wpdb->get_results( $sql );
+
+	if ( ! empty( $res ) ) {
+
+		$first_booking_date = wpbc_datetime_localized( date( 'Y-m-d H:i:s', strtotime( $res[0]->modification_date ) ), 'Y-m-d H:i:s' );
+
+		$dif_days = wpbc_get_difference_in_days( date( 'Y-m-d 00:00:00', strtotime( 'now' ) ), date( 'Y-m-d 00:00:00', strtotime( $res[0]->modification_date ) ) );
+
+		return array(
+			'date_ymd_his' => $res[0]->modification_date,
+			'date_echo'    => $first_booking_date,
+			'days'         => $dif_days
+		);
+	}
+
+	return false;
+}

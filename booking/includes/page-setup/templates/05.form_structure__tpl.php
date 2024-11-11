@@ -44,7 +44,7 @@ function wpbc_stp_wiz__template__form_structure(){
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 0 auto;flex-flow: column;margin:0 0 10px;">
 						<h1 class="wpbc_swp_section_header" ><?php _e( 'Booking Form Structure', 'booking' ); ?></h1>
-						<p class="wpbc_swp_section_header_description"><?php _e('Customize your Booking Form Structure.','booking'); ?></p>
+						<p class="wpbc_swp_section_header_description"><?php _e('Customize the structure of your booking form.','booking'); ?></p>
 					</div>
 					<div class="wpbc__field">
 						<#
@@ -374,11 +374,8 @@ function wpbc_stp_wiz__ui__form_structure__help(){
 
 	// Help message
 	?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 0 0 1.5em;">
-		<?php printf( __( 'You can configure form fields in your booking form at the %s page.', 'booking' ),
-			'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>',
-			'<a href="https://wpbookingcalendar.com/faq/no-emails/">', '</a>' );
-			echo ' ';
-			_e( 'You can always change this later', 'booking' );
+		<?php printf( __( 'You can configure form fields later in %s', 'booking' ),
+			'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>' );
 		?>
 	</div><?php
 }

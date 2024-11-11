@@ -32,6 +32,8 @@ final class Booking_Calendar {
     public $js;
     public $css;
 
+	private $is_wp_inited = false;
+
 /** Get Single Instance of this Class and Init Plugin */
 public static function init() {
     
@@ -40,6 +42,8 @@ public static function init() {
         self::$instance = new Booking_Calendar;
         self::$instance->includes();
         self::$instance->define_version();
+
+		add_action( 'init', array( self::$instance, 'wp_inited' ) );
 
         if ( class_exists( 'WPBC_BookingInstall' ) ) {                                 									// Check if we need to run Install / Uninstal process.
             new WPBC_BookingInstall();
@@ -80,6 +84,22 @@ public static function init() {
     return self::$instance;        
 }
 
+/**
+ * Set WordPress was inited
+ *
+ * @return void
+ */
+public function wp_inited(){
+    self::$instance->is_wp_inited = true;
+}
+
+/**
+ * Check  if WP was inited
+ * @return mixed
+ */
+public function is_wp_inited(){
+    return self::$instance->is_wp_inited;
+}
 
 /** Define Admin Menu items */
 public function define_admin_menu(){
@@ -267,9 +287,13 @@ public function define_admin_menu(){
 
 	if  ( WPBC_setup_plugin ) {
 
-		 $setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 
-		 if ( ! $setup_steps->db__is_all_steps_completed() ) {						//FixIn: 10.2.0.1
+		if (
+			( wpbc_is_user_can_access_wizard_page() ) &&
+			( ! wpbc_setup_wizard_page__is_all_steps_completed() )
+		){
+
+		 	$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 
     		self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus(
                                                     'wpbc-setup' , array (

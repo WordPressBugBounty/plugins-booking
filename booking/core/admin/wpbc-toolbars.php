@@ -1727,7 +1727,8 @@ function wpbc_js_for_bookings_page() {
 function wpbc_datepicker_js() {
 
     ?><script type="text/javascript">
-        jQuery(document).ready( function(){
+        //jQuery(document).ready( function(){
+		<?php echo wpbc_jq_ready_start();	//FixIn: 10.6.6.1 ?>
 			if ( 'function' === typeof( jQuery('input.wpdevbk-filters-section-calendar').datepick ) ) {
 				jQuery( 'input.wpdevbk-filters-section-calendar' ).datepick(
 					{
@@ -1758,7 +1759,8 @@ function wpbc_datepicker_js() {
 			} else {
 				alert( 'WPBC Error. JavaScript library "datepick" was not defined.' );
 			}
-        });
+		<?php echo wpbc_jq_ready_end(); ?>
+        //});
         </script><?php
 }
 

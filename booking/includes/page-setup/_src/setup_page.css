@@ -118,6 +118,17 @@
     line-height: 2.21;
     align-items: first baseline;
 }
+/* required for rotating around center dot */
+.wpbc_setup_wizard_page__section_footer .wpbc_container .wpbc_button_light .wpbc_spin{
+    line-height: 50%;
+    align-self: center;
+}
+@media screen and (max-width: 782px) {
+    .wpbc__container_place__footer_buttons.wpbc_container.wpbc_container_booking_form {
+      flex: 1 1 100%;
+    }
+}
+
 /* Small  links at  the bottom  of the wizard */
 .wpbc_exit_link_small {
     width:100%;
@@ -381,3 +392,4 @@ div.wpbc_container.wpbc_form .wpbc_swp_section label {
     border: 0;
     border-left: 4px solid #9580aa;
 }
+

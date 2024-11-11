@@ -118,7 +118,7 @@ function wpbc_stp_wiz__widget__cal_availability__weekdays(){
 	?>
 	<div class="wpbc_widget wpbc_widget__cal_availability__weekdays">
 		<div class="wpbc_widget_header">
-			<span class="wpbc_widget_header_text"><?php _e('Unavailable week days','booking'); ?></span>
+			<span class="wpbc_widget_header_text"><?php _e('Unavailable Weekdays','booking'); ?></span>
 		</div>
 		<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
 			<div class="ui_container">
@@ -205,7 +205,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 			wpbc_flex_label( array(  'id' 	  => $el_id
 									, 'style'=>'height: auto;line-height: 1.75em;'
 									, 'label' => '<span class="" style="font-weight:400;">' .
-												 __( 'Check unavailable days in calendars. This option will overwrite all other settings.', 'booking' ).
+												 __( 'Select weekdays to be marked as unavailable in calendars.', 'booking' ).
 												 '</span>'
 							) );
 		?></div><?php
@@ -257,7 +257,6 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 				wpbc_flex_toggle( $params_checkbox );
 			?></div><?php
 
-
 			// Set checked specific Radio button,  depends on  last action  from  user
 			?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 				jQuery( document ).ready( function (){
@@ -306,6 +305,16 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		?><div class="ui_element ui_nowrap" style="margin-left:auto;"><?php
 			wpbc_flex_button( $params_button_save );
 		?></div><?php
+
+		?><div style="flex:1 1 100%;height:0;border-top:1px solid #dfdfdf;margin: 10px 0;"></div><?php
+
+			wpbc_flex_label( array(  'id' 	  => $el_id
+									, 'style'=>'height: auto;line-height: 1.75em;font-size:10px;'
+									, 'label' => '<span class="" style="font-weight:400;">' .
+												 __( 'This setting will override all other availability settings.', 'booking' ).
+												 '</span>'
+							) );
+
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

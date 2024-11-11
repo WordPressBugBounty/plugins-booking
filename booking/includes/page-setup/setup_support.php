@@ -13,6 +13,68 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 
+/**
+ * Do we need to start 'Setup Wizard' ?
+ *
+ * @return bool
+ */
+function wpbc_setup_wizard_page__is_need_start(){
+
+	if ( wpbc_setup_wizard_page__is_all_steps_completed() ) {
+		return false;        // Wizard Completed!
+	}
+
+	// Some steps were not completed or wizard was not started at all
+
+	$days_num_ago = wpbc_how_old_in_days();
+
+	// No bookings, so maybe need to start
+	if ( - 1 === $days_num_ago ) {
+		return true;
+	}
+
+	// If older than 3 days ago,  then no need to  start !
+	if (  $days_num_ago < 3 ){
+		return true;
+	}
+
+	// No need to  start,  because this installation  already OLD
+	return false;
+}
+
+/**
+ * Do we need to Continue 'Setup Wizard' or all steps already  completed ?
+ *
+ * @return bool
+ */
+function wpbc_setup_wizard_page__is_all_steps_completed() {
+
+	$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+
+	$is_all_steps_completed =  $setup_steps->db__is_all_steps_completed();
+
+	return $is_all_steps_completed;
+}
+
+/**
+ * Is user  can  access Wizard Setup  page ?
+ * @return bool
+ */
+function wpbc_is_user_can_access_wizard_page() {
+	$is_user_can_access_wizard_page = true;
+	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
+
+		$real_current_user_id = get_current_user_id();                                                                  // Is current user suer booking admin  and if this user was simulated log in
+		$is_user_super_admin  = apply_bk_filter( 'is_user_super_admin', $real_current_user_id );
+		if ( ! $is_user_super_admin ) {
+			$is_user_can_access_wizard_page = false;
+		}
+	}
+
+	return $is_user_can_access_wizard_page;
+}
+
+
 // =====================================================================================================================
 // ==  Shortcodes Content  ==
 // =====================================================================================================================
@@ -56,11 +118,11 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 	} else {
 
 		// Help message
-		?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="padding: 8px 20px;font-size: 14px;margin: 0 auto;max-width: Min(50em,100%);">
-			<strong><?php _e('Note!','booking'); ?></strong>
+		?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="padding: 8px 20px;font-size: 14px;margin: 0 auto;max-width: Min(54em,100%);">
+			<strong><?php _e('Note','booking'); ?>: </strong>
 			<?php
-				_e( 'This is preview of your booking form.', 'booking' ); echo ' ';
-				_e( 'You can setup parameters in widgets at right side of the page.', 'booking' );
+				_e( 'This is a preview of your booking form.', 'booking' ); echo ' ';
+				_e( 'You can adjust settings in the widgets on the right side of the page.', 'booking' );
 				//echo '<a href="'. esc_attr( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab' ).'">Settings > Availability</a>';
 			?>
 		</div><?php
@@ -141,12 +203,12 @@ function wpbc_setup_wizard_page__get_left_navigation_menu_arr(){
 													)
 
 											);
-	$navigation_menu_arr['calendar_days_selection'] = array(
+	$navigation_menu_arr['optional_other_settings'] = array(
 												'title'  => __( 'Bookings Type', 'booking' ),
 												'icon'   => 'wpbc-bi-calendar2-range 0wpbc_icn_radio_button_checked',
 												'class'  => '',
 												//'a_style'  => 'color: var(--wpbc_settings__nav_menu_left__active_border_color);',
-												'action' => "wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'calendar_days_selection' } );"
+												'action' => "wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'optional_other_settings' } );"
 											);
 	$navigation_menu_arr['next_step'] = array(
 												'title'  => '',//__( 'Bookings Type', 'booking' ),

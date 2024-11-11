@@ -10,7 +10,6 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 require_once WPBC_PLUGIN_DIR . '/core/class/welcome_current.php';
-require_once WPBC_PLUGIN_DIR . '/core/class/welcome_old.php';
 
 
 class WPBC_Welcome {
@@ -478,6 +477,8 @@ if(0){
 
 			$this->section_9_8_css();
 
+			wpbc_welcome_section_10_7( $this );
+
 			wpbc_welcome_section_10_6( $this );
 
 			wpbc_welcome_section_10_5( $this );
@@ -495,46 +496,6 @@ if(0){
 			wpbc_welcome_section_9_9( $this );
 
 			wpbc_welcome_section_9_8( $this );
-
-if (0) {
-	wpbc_welcome_section_9_7( $this );
-
-	wpbc_welcome_section_9_6( $this );
-
-	wpbc_welcome_section_9_5( $this );
-
-	wpbc_welcome_section_9_4( $this );
-
-	wpbc_welcome_section_9_3( $this );
-
-	wpbc_welcome_section_9_2( $this );
-
-	wpbc_welcome_section_9_1( $this );
-
-	wpbc_welcome_section_9_0( $this );
-
-	wpbc_welcome_section_8_9( $this );
-
-	wpbc_welcome_section_8_8( $this );
-
-	wpbc_welcome_section_8_7( $this );
-
-	wpbc_welcome_section_8_6( $this );
-
-	wpbc_welcome_section_8_5( $this );
-
-	wpbc_welcome_section_8_4( $this );
-
-	wpbc_welcome_section_8_3( $this );
-
-	wpbc_welcome_section_8_2( $this );
-
-	wpbc_welcome_section_8_1( $this );
-
-	wpbc_welcome_section_8_0( $this );
-
-	wpbc_welcome_section_7_1_7_2( $this );
-}
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// Footer

@@ -45,7 +45,7 @@ function wpbc_stp_wiz__template__welcome(){
 			</div>
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<p style="font-size:15px;line-height: 2.2;"><?php printf( __('We\'ll guide you through the steps to fully set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ); ?></p>
+					<p style="font-size:15px;line-height: 2.2;"><?php printf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ); ?></p>
 				</div>
 			</div>
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:20px;margin-bottom:20px;border-bottom:1px solid #ccc;"></div>

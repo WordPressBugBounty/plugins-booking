@@ -80,7 +80,6 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
         wpbc_js_for_bookings_page();                                            // JavaScript functions
         
         wpbc_welcome_panel();                                                   // Welcome Panel (links)
-        
 
         make_bk_action( 'wpbc_check_request_param__wh_booking_type' );          // Setting $_REQUEST['wh_booking_type'] - remove empty and duplicates ID of booking resources in this list        
         

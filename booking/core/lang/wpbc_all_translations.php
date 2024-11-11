@@ -56,8 +56,8 @@
  $wpbc_all_translations[] = __('Select the skin of the time picker', 'booking'); 
  $wpbc_all_translations[] = __('Do not change background color for partially booked days', 'booking'); 
  $wpbc_all_translations[] = __('Show partially booked days with same background as in legend item', 'booking'); 
- $wpbc_all_translations[] = __('Unavailable week days', 'booking'); 
- $wpbc_all_translations[] = __('Check unavailable days in calendars. This option will overwrite all other settings.', 'booking'); 
+ $wpbc_all_translations[] = __('Unavailable Weekdays', 'booking'); 
+ $wpbc_all_translations[] = __('Select weekdays to be marked as unavailable in calendars. This setting will override all other availability settings.', 'booking'); 
  $wpbc_all_translations[] = __('Unavailable days from today', 'booking'); 
  $wpbc_all_translations[] = __('Select number of unavailable days in calendar start from today.', 'booking'); 
  $wpbc_all_translations[] = __('Color Theme', 'booking'); 

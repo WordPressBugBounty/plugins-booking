@@ -39,9 +39,9 @@ function wpbc_setup_wizard_page__request_rules_structure() {
 								'load_form_template',
 								'save_and_continue__cal_availability',
 								'save_and_continue__color_theme',
-
-								'save_and_continue__calendar_days_selection',
-								'save_and_continue__calendar_skin'
+								'save_and_continue__optional_other_settings',
+								'save_and_continue__wizard_publish',
+								'save_and_continue__get_started'
 						),
 			'default'  => 'none'
 		),
@@ -210,7 +210,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 		//--------------------------------------------------------------------------------------------------------------
 		$data_arr['current_step']  = ( ! empty( $cleaned_request_params['current_step'] )
 										? $cleaned_request_params['current_step']
-										: $setup_steps->get_active_step_name() );       // e.g. 'general_info' or 'calendar_days_selection'
+										: $setup_steps->get_active_step_name() );       // e.g. 'general_info' or 'optional_other_settings'
 		$data_arr['steps'] = $setup_steps->get_steps_arr();
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -367,15 +367,31 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				$setup_steps->db__set_step_as_completed( 'color_theme' );
 				break;
 
-			//TODO: not finished steps, yet.
-			case 'save_and_continue__calendar_days_selection':
+			case 'save_and_continue__optional_other_settings':
 
-				$setup_steps->db__set_step_as_completed( 'calendar_days_selection' );
+				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
+					$cleaned_data = wpbc_template__optional_other_settings__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					wpbc_setup__update__optional_other_settings( $cleaned_data );
+				}
+				$setup_steps->db__set_step_as_completed( 'optional_other_settings' );
 				break;
 
-			case 'save_and_continue__calendar_skin':
+			case 'save_and_continue__wizard_publish':
 
-				$setup_steps->db__set_step_as_completed( 'calendar_skin' );
+				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
+					$cleaned_data = wpbc_template__wizard_publish__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					wpbc_setup__update__wizard_publish( $cleaned_data );
+				}
+				$setup_steps->db__set_step_as_completed( 'wizard_publish' );
+				break;
+
+			case 'save_and_continue__get_started':
+
+				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
+					$cleaned_data = wpbc_template__get_started__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					wpbc_setup__update__get_started( $cleaned_data );
+				}
+				$setup_steps->db__set_step_as_completed( 'get_started' );
 				break;
 
 
@@ -499,8 +515,16 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				$data_arr['ui']['booking_timeslot_picker_skin'] = get_bk_option( 'booking_timeslot_picker_skin' );
 				break;
 
-			case 'calendar_days_selection':
-				 $data_arr['calendar_force_load'] = wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
+			case 'optional_other_settings':
+				 $data_arr['calendar_force_load'] = '';//wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
+				break;
+
+			case 'wizard_publish':
+				 $data_arr['calendar_force_load'] = '';//wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
+				break;
+
+			case 'get_started':
+				 $data_arr['calendar_force_load'] = '';//wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
 				break;
 
 			default:
@@ -518,6 +542,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 		$data_arr['booking_wizard_data'] = $booking_wizard_data_arr;
 		// -------------------------------------------------------------------------------------------------------------
 
+//TODO: delete this ?
 if(0){
 
 		$data_arr['customize_steps'] = array();

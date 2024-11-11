@@ -147,12 +147,6 @@ if ( WPBC_customize_plugin ) {      //FixIn: 9.8.0.2
 	require_once( WPBC_PLUGIN_DIR . '/includes/page-customize/customize__page.php' );
 }
 
-// Booking > Setup page                                                         //FixIn: 10.2.0.1
-if ( WPBC_setup_plugin ) {      //FixIn: 9.8.0.2
-	require_once( WPBC_PLUGIN_DIR . '/includes/_tour/wpbc_tour.php' );          //FixIn: 10.4.0.1
-	require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup__page.php' );
-}
-
 if ( WPBC_settings_all ) {
 	require_once( WPBC_PLUGIN_DIR . '/includes/page-settings-all/all__page.php' );                                      //FixIn: 10.4.0.2
 }
@@ -196,6 +190,12 @@ if ( file_exists( WPBC_PLUGIN_DIR.'/inc/_ps/personal.php' ) ){
 	require_once( WPBC_PLUGIN_DIR . '/core/admin/page-ics-import.php' );        // Import ICS Help Settings page			//FixIn: 8.0
 	require_once( WPBC_PLUGIN_DIR . '/core/admin/page-ics-export.php' );        // Export ICS Feeds Settings page			//FixIn: 8.0
     require_once( WPBC_PLUGIN_DIR . '/core/admin/page-import-gcal.php' );       // Import from  Google Calendar Settings page 
+}
+
+// Booking > Setup page                                                         //FixIn: 10.2.0.1
+if ( WPBC_setup_plugin ) {      //FixIn: 9.8.0.2
+	require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup__page.php' );
+	require_once( WPBC_PLUGIN_DIR . '/includes/_tour/wpbc_tour.php' );          //FixIn: 10.4.0.1
 }
 
 require_once( WPBC_PLUGIN_DIR . '/includes/_feedback/feedback.php');                                                    //FixIn: 9.2.3.6

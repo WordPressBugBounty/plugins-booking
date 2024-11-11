@@ -120,7 +120,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 					?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 20px 20px 5px 2px;">
 						<?php
 						 	echo '<strong>' . __('Note!' ,'booking') . '</strong> ' .
-								 __( 'This step will update booking form configuration.', 'booking' ) . ' ';
+								 __( 'This step will update the booking form configuration.', 'booking' ) . ' ';
 							echo __( 'You can always change this later', 'booking' ) . '. ';
 							printf( __( 'Configure it at the %s page.', 'booking' ),
 							'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>',

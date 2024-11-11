@@ -119,6 +119,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 					update_bk_option( 'booking_type_of_day_selections',     'multiple' );
 				}
 		        update_bk_option( 'booking_range_selection_time_is_active', 'Off');              // Changeover
+				update_bk_option( 'booking_recurrent_time' , 'On');                             // Use selected times for each booking date
 
 		        update_bk_option( 'booking_legend_is_show_item_partially', 'Off');              // Legend Item
 				update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );
@@ -153,6 +154,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 				update_bk_option( 'booking_type_of_day_selections' , 'single' );
 				update_bk_option( 'booking_range_selection_time_is_active', 'Off');              // Changeover
+				update_bk_option( 'booking_recurrent_time' , 'Off');                              // Use selected times for each booking date
 
 				update_bk_option( 'booking_legend_text_for_item_partially', __( 'Partially booked', 'booking' ) );
 				update_bk_option( 'booking_legend_is_show_item_partially', 'On');              // Legend Item
@@ -185,6 +187,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				    update_bk_option( 'booking_form_show',  wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ) );
 			    }
 
+
 			    update_bk_option( 'booking_type_of_day_selections' , 'range' );
 		        update_bk_option( 'booking_range_selection_type', 'dynamic');
 		        update_bk_option( 'booking_range_selection_days_count','2');
@@ -197,6 +200,8 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 		        update_bk_option( 'booking_range_selection_time_is_active', 'On');              // Changeover
 		        update_bk_option( 'booking_range_selection_start_time',     '14:00');
 		        update_bk_option( 'booking_range_selection_end_time',       '12:00');
+
+				update_bk_option( 'booking_recurrent_time' , 'Off');                             // Use selected times for each booking date
 
 				update_bk_option( 'booking_legend_text_for_item_partially', __( 'Changeover', 'booking' ) );
 				update_bk_option( 'booking_legend_is_show_item_partially', 'On');              // Legend Item

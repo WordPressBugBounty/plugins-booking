@@ -946,10 +946,14 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
     $is_demo = wpbc_is_this_demo();    
     $blg_title = str_replace( array( '"', "'" ), '', get_option( 'blogname' ) );
         
-    $default_options  = array();                                                 
+    $default_options  = array();
+
+	// If this option here, then system get this option from "Super Admin" options configuration for "Regular" users.
     $mu_option4delete = array();
 
 	//FixIn: 9.6.3.5
+	$default_options['booking_setup_wizard_page_steps_is_done'] = '';
+ $mu_option4delete[]='booking_setup_wizard_page_steps_is_done';
 
     $default_options['booking_admin_cal_count'] = ($is_demo) ? '3' : '2';       
  $mu_option4delete[]='booking_admin_cal_count';                                 // $multiuser_general_option[] = implode( '', array_keys( array_slice( $default_options, -1 ) ) );

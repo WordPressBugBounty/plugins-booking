@@ -47,19 +47,19 @@ function wpbc_template__general_info__action_validate_data( $post_data ){
 
 	$key = 'wpbc_swp_business_name';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+			$escaped_data[ $key ] = 'Business_name: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_booking_who_setup';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+			$escaped_data[ $key ] = 'Who_setup: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_industry';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+			$escaped_data[ $key ] = 'Industry: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_email';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+			$escaped_data[ $key ] = 'Email: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_accept_send';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
@@ -104,23 +104,17 @@ function wpbc_setup_feedback__send_email( $feedback_description_arr ) {
 
 	$message .= 'Booking Calendar ' . wpbc_feedback_01_get_version()  . "\n";
 
-	global $wpdb;
-	$sql = "SELECT modification_date FROM  {$wpdb->prefix}booking as bk ORDER by booking_id  LIMIT 0,1";
-	$res = $wpdb->get_results( $sql );
-	if ( ! empty( $res ) ) {
-		$first_booking_date = wpbc_datetime_localized( date( 'Y-m-d H:i:s', strtotime( $res[0]->modification_date ) ), 'Y-m-d H:i:s' );
+	$how_old_info_arr = wpbc_get_info__about_how_old();
+	if ( ! empty( $how_old_info_arr ) ) {
 		$message .= "\n";
-		$message .= 'From: ' . $first_booking_date;
-
-		$dif_days = wpbc_get_difference_in_days( date( 'Y-m-d 00:00:00', strtotime( 'now' ) ), date( 'Y-m-d 00:00:00', strtotime( $res[0]->modification_date ) ) );
-		$message .= ' - ' . $dif_days . ' days ago.';
+		$message .= 'From: ' . $how_old_info_arr['date_echo'];
+		$message .= ' - ' . $how_old_info_arr['days'] . ' days ago.';
 	}
 
 	$message .="\n";
 	$message .= '---------------------------------------------' . "\n";
 	$message .= '[' .  date_i18n( get_bk_option( 'booking_date_format' ) ) . ' ' .  date_i18n( get_bk_option( 'booking_time_format' ) ) . ']'. "\n";
 	$message .= home_url() ;
-
 
 	$headers = '';
 

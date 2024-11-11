@@ -51,7 +51,10 @@ function wpbc_get_prepared_shortcode( $resource_id = 1 ) {
  */
 function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 
-	if ( 'resources' !== $page_name ) {
+	if (
+		 ( 'resources' !== $page_name )
+		 // && ( 'wpbc-ajx_booking_setup_wizard' !== $page_name )
+	){
 		return false;
 	}
 
@@ -165,13 +168,13 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 														);
 
 		} elseif ( false === $add_shortcode_result_arr ) {
-			wpbc_show_notice__for_page_resource_publish( 'Error: You may not have chosen the correct page name.', 'warning' );
+			wpbc_show_notice__for_page_resource_publish( 'Error: You may not have chosen the correct page name.', 'error' );
 			wpbc_show_notice__for_page_resource_publish(
 														sprintf(	__('Find more information at the %sFAQ page%s','booking'),
 																	'<a href="https://wpbookingcalendar.com/faq/#shortcodes">', '</a>'
 														), 'info');
 		}else {
-			wpbc_show_notice__for_page_resource_publish( $add_shortcode_result_arr['message'], 'warning' );
+			wpbc_show_notice__for_page_resource_publish( $add_shortcode_result_arr['message'], 'error' );
 			wpbc_show_notice__for_page_resource_publish(
 														sprintf(	__('Find more information at the %sFAQ page%s','booking'),
 																	'<a href="https://wpbookingcalendar.com/faq/#shortcodes">', '</a>'
@@ -197,7 +200,13 @@ function wpbc_show_notice__for_page_resource_publish( $message, $message_type='s
 /** Publish Layout - Modal Window structure */
 function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 
-	if ( 'resources' !== $page_name ) { return false; }
+	if (
+		 ( 'resources' !== $page_name ) &&
+		 ( 'wpbc-ajx_booking_setup_wizard' !== $page_name )
+		 // && ( 'wpbc-ajx_booking' !== $page_name )        //FixIn: 10.6.6.2
+	){
+		return false;
+	}
 
 	?><span class="wpdevelop"><?php
 

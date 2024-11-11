@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.6.5
+Version: 10.7
 */
 
 /*  Copyright 2009 - 2024  www.wpbookingcalendar.com  (email: info@wpbookingcalendar.com),
@@ -29,8 +29,8 @@ Version: 10.6.5
 if ( ! defined( 'ABSPATH' ) ) die( '<h3>Direct access to this file do not allow!</h3>' );                               // Exit if accessed directly
 
 
-if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {       define( 'WP_BK_VERSION_NUM',    '10.6.5' ); }
-if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {      define( 'WP_BK_MINOR_UPDATE',      true    ); }
+if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {       define( 'WP_BK_VERSION_NUM',    '10.7' ); }
+if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {      define( 'WP_BK_MINOR_UPDATE',      !true    ); }
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ if ( true ) {
 }
 
 if ( ! defined( 'WPBC_customize_plugin' ) ) {   define( 'WPBC_customize_plugin',  false ); }
-if ( ! defined( 'WPBC_setup_plugin' ) ) {       define( 'WPBC_setup_plugin',      false ); }
+if ( ! defined( 'WPBC_setup_plugin' ) ) {       define( 'WPBC_setup_plugin',      !false ); }
 if ( ! defined( 'WPBC_settings_all' ) ) {       define( 'WPBC_settings_all',      false ); }                           //FixIn: 10.4.0.2
 // ---------------------------------------------------------------------------------------------------------------------
 // ==  Go  ==

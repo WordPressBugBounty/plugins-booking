@@ -154,9 +154,10 @@ abstract class WPBC_Install {
 
 			if ( WPBC_setup_plugin ) {
 				$links = array_merge( $links, array(
-						'<a class="wpbc_plugins_links__start_tour" title="' . "Start Tour." . '" href="'
-						. esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) )
-						. '">' . "Start Tour" . '</a>'
+						'<a class="wpbc_plugins_links__start_tour" title="' . esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ) . '" href="'
+						 . wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' )
+						//. esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) )
+						. '">' . esc_attr__( 'Start Setup Wizard', 'booking' ) . '</a>'
 					)
 				);
 			}

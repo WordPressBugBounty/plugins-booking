@@ -41,7 +41,7 @@ function wpbc_stp_wiz__template__date_time_formats(){
 			<div class="wpbc__row">
 				<div class="wpbc__field">
 					<h1 class="wpbc_swp_section_header" ><?php _e( 'Dates and times preferences', 'booking' ); ?></h1>
-					<p class="wpbc_swp_section_header_description"><?php _e('Customize the display format for dates and times.','booking'); ?></p>
+					<p class="wpbc_swp_section_header_description"><?php _e('Customize how dates and times are displayed.','booking'); ?></p>
 				</div>
 			</div>
 			<div class="wpbc__row">
@@ -77,7 +77,7 @@ function wpbc_stp_wiz__template__date_time_formats(){
 			</div>
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<label><?php _e('Select your start day of the week','booking'); ?></label><br>
+					<label><?php _e('Start day of the week','booking'); ?></label><br>
 					<?php
 					$booking_start_day_weeek = get_bk_option( 'booking_start_day_weeek' );
 					$booking_start_day_weeek_arr = array(
@@ -97,9 +97,10 @@ function wpbc_stp_wiz__template__date_time_formats(){
 						}
 						?>
 					</select>
+					<span style="font-size:12px;"><?php _e('Select which day the week starts on.','booking'); ?></span>
 				</div>
 				<div class="wpbc__field">
-					<label><?php _e('Select the default view for dates on the booking tables','booking'); ?></label><br>
+					<label><?php _e('Default view for dates in booking tables','booking'); ?></label><br>
 					<?php
 					$booking_start_day_weeek = get_bk_option( 'booking_date_view_type' );
 					$booking_start_day_weeek_arr = array(
@@ -118,6 +119,7 @@ function wpbc_stp_wiz__template__date_time_formats(){
 					update_bk_option( 'booking_date_format', 'j M Y' );
 					$dates_comma = wpbc_get_comma_seprated_dates_from_to_day( date_i18n( "d.m.Y", strtotime( 'now' ) ), date_i18n( "d.m.Y", strtotime( '+3 days' ) ) );
 					?>
+					<span style="font-size:12px;"><?php _e('Example','booking'); ?>: &nbsp; </span>
 					<span style="font-size:12px;width:25em;<?php echo ( 'wide'  == $booking_start_day_weeek ) ? 'display:none' : ''; ?>" class="view_dates view_dates_short"><?php
 						echo wpbc_get_dates_short_format( $dates_comma ); ?></span>
 					<span style="font-size:12px;width:25em;<?php echo ( 'short' == $booking_start_day_weeek ) ? 'display:none' : ''; ?>" class="view_dates view_dates_wide"><?php

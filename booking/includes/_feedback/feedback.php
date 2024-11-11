@@ -480,16 +480,11 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 
 	$message .= 'Booking Calendar ' . wpbc_feedback_01_get_version()  . "\n";
 
-	global $wpdb;
-	$sql = "SELECT modification_date FROM  {$wpdb->prefix}booking as bk ORDER by booking_id  LIMIT 0,1";
-	$res = $wpdb->get_results( $sql );
-	if ( ! empty( $res ) ) {
-		$first_booking_date = wpbc_datetime_localized( date( 'Y-m-d H:i:s', strtotime( $res[0]->modification_date ) ), 'Y-m-d H:i:s' );
+	$how_old_info_arr = wpbc_get_info__about_how_old();
+	if ( ! empty( $how_old_info_arr ) ) {
 		$message .= "\n";
-		$message .= 'From: ' . $first_booking_date;
-
-		$dif_days = wpbc_get_difference_in_days( date( 'Y-m-d 00:00:00', strtotime( 'now' ) ), date( 'Y-m-d 00:00:00', strtotime( $res[0]->modification_date ) ) );
-		$message .= ' - ' . $dif_days . ' days ago.';
+		$message .= 'From: ' . $how_old_info_arr['date_echo'];
+		$message .= ' - ' . $how_old_info_arr['days'] . ' days ago.';
 	}
 
 	$message .="\n";
@@ -533,7 +528,7 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 		 */
 		function wpbc_feedback_01_get_version(){
 
-			if ( substr( WPDEV_BK_VERSION, 0, 3 ) == '10.' ) {
+			if ( substr( WPDEV_BK_VERSION, 0, 3 ) == '11.' ) {
 				$show_version = substr( WPDEV_BK_VERSION, 3 );
 				if ( substr( $show_version, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) ) ) === WP_BK_VERSION_NUM ) {
 					$show_version = substr( $show_version, 0, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) - 1 ) );

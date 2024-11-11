@@ -3,6 +3,11 @@
  */
 function wpbc_set_shortcode(){
 
+    if ( 0 === jQuery( '#wpbc_shortcode_type' ).length ) {
+        console.log( 'WPBC :: Error! Element #wpbc_shortcode_type not exist!' );
+        return;
+    }
+
     var wpbc_shortcode = '[';
     var shortcode_id = jQuery( '#wpbc_shortcode_type' ).val().trim();
 
