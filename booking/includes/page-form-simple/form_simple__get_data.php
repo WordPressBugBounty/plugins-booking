@@ -127,12 +127,65 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		    $booking_form_structure = 'vertical';
 	    }
 
-	    $html_form = '';
 	    // -------------------------------------------------------------------------------------------------------------
 	    // Booking Form
 	    // -------------------------------------------------------------------------------------------------------------
+	    $html_form = '';
 	    $skip_already_exist_field_types = array();                                                                  // 'calendar', 'submit', 'captcha' );
 	    $exist_fields_arr               = array();
+
+		//FixIn: 10.7.1.7
+	    if ( 'wizard_2columns' == $booking_form_structure ) {
+
+		    $skip_already_exist_field_types[] = 'submit';
+
+		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1">' . "\n";
+		    $html_form .= '    <r>' . "\n";
+
+			$calendar_field_arr = wpbc_simple_form__visual__get_calendar( $visual_form_structure );
+			if ( ! empty( $calendar_field_arr ) ) {
+				$html_form .= '		<c style="margin-top:0;"> ' . "\n";
+			    // Get HTML content of All  Fields in booking form
+			    list( $html_all_fields, $calendar_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( array(
+															    'visual_form_structure'          => array( $calendar_field_arr ),
+															    'skip_already_exist_field_types' => array(),
+														    ) );
+				$html_form .= $html_all_fields;
+			    $html_form .= '		</c>' . "\n";
+				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $calendar_exist_fields_arr );
+			} else {
+				$html_form .= ' 	<c> <l>Select Date:</l><br /> [calendar] </c>' . "\n";
+				$skip_already_exist_field_types[] = 'calendar';
+			}
+
+
+		    $rangetime_field_arr = wpbc_simple_form__visual__get_rangetime( $visual_form_structure );
+		    if ( ! empty( $rangetime_field_arr ) ) {
+
+			    $html_form .= '			<c style="margin-top:0;"> ' . "\n";
+			    // Get HTML content of All  Fields in booking form
+			    list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( array(
+															    'visual_form_structure'          => array( $rangetime_field_arr ),
+															    'skip_already_exist_field_types' => array(),
+														    ) );
+				$html_form .= $html_all_fields;
+			    $html_form .= '		</c>' . "\n";
+				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
+		    }
+
+		    $html_form .= '    </r>' . "\n";
+		    $html_form .= '    <hr><r>' . "\n";
+		    $html_form .= '			<div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
+		    $html_form .= '     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" >' . "\n";
+		    $html_form .= '				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2' . "\n";
+		    $html_form .= '				</a>' . "\n";
+		    $html_form .= '			</div>' . "\n";
+		    $html_form .= '    </r>' . "\n";
+		    $html_form .= '  </div>' . "\n";
+		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
+
+
+	    }
 
 	    if ( 'form_right' == $booking_form_structure ) {
 		    $html_form .= '<r>'             . "\n";
@@ -142,125 +195,19 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		    $html_form .= '  <c>'           . "\n";
 
 		    $skip_already_exist_field_types[] = 'calendar';
-		    $exist_fields_arr[]               = 'calendar';
 	    }
 
 	    $html_form .= '<div class="wpbc__form__div">' . "\n";
 
-		// Fields
-        foreach ( $visual_form_structure as $key => $form_field ) {
-            $defaults = array(
-                                'type'     => 'text'
-                              , 'name'     => 'unique_name'
-                              , 'obligatory' => 'Off'
-                              , 'active'   => 'On'
-                              , 'required' => 'Off'
-                              , 'label'    => ''
-                              , 'value'    => ''
-            );
-            $form_field = wp_parse_args( $form_field, $defaults );
-
-	        if (
-		        ( ! in_array( $form_field['type'], $skip_already_exist_field_types ) ) &&
-		        ( ( $form_field['active'] != 'Off' ) || ( $form_field['obligatory'] == 'On' ) )
-	        ) {
-
-		        if ( in_array( $form_field['type'], array( 'calendar', 'captcha', 'submit' ) ) ) {
-			        $exist_fields_arr[] = $form_field['type'];
-		        } else {
-			        $exist_fields_arr[] = $form_field['name'];
-		        }
-
-				$field_css_class = 'wpbc_r_' . $exist_fields_arr[ count( $exist_fields_arr ) - 1 ];
-				$html_form .= '	<r class="' . esc_attr( $field_css_class ) . '">' . "\n";
-				$html_form .= '		<c> ';
-
-	            // -----------------------------------------------------------------------------------------------------
-	            // L abel
-	            // -----------------------------------------------------------------------------------------------------
-	            $form_field['label'] = wpbc_lang( $form_field['label'] );
-	            if ( function_exists( 'icl_translate' ) ) {                             								// WPML
-		            $form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] );
-	            }
-
-	            if (
-						( $form_field['type'] != 'checkbox' ) &&
-						( $form_field['type'] != 'submit' )
-	            ){
-		            $html_form .= ' <l>' . $form_field['label'] .
-								( ( ! empty( $form_field['label'] ) )
-									            ? ( ( ( $form_field['required'] == 'On' ) ? '*' : '' ) . ':' )
-									            : '' )
-								. '</l><br>';
-	            }
-
-				// -----------------------------------------------------------------------------------------------------
-                // Field Shortcode
-				// -----------------------------------------------------------------------------------------------------
-
-				if ( $form_field['type'] == 'calendar' ) {
-					$html_form .= '[calendar]';
-				}
-
-	            if ( $form_field['type'] == 'captcha' ){
-		            $html_form .= '[captcha]';
-	            }
-
-	            if ( $form_field['type'] == 'submit' ) {
-		            $submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( $form_field['label'] ) ) );
-		            $html_form .= '[submit class:btn "' . esc_attr( $submit_button_title ) . '"]';
-	            }
+		// Get HTML content of All  Fields in booking form
+	    list( $html_all_fields, $exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( array(
+															    'visual_form_structure'          => $visual_form_structure,
+															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
+														    ) );
+	    $exist_fields_arr  = array_merge( $exist_fields_arr, $skip_already_exist_field_types );
+	    $html_form        .= $html_all_fields;
 
 
-				if ( $form_field['type'] == 'text' )  {                      // Text
-					$html_form .= '[text'
-								. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
-								. ' '. $form_field['name']
-								.']';
-	            }
-
-				if ( $form_field['type'] == 'email' ){                       // Email
-					$html_form .= '[email'
-								. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
-								. ' '. $form_field['name']
-								.']';
-	            }
-
-				if ( ( $form_field['type'] == 'selectbox' ) || ( $form_field['type'] == 'select' ) ){                    // Select
-					$html_form .= '[selectbox'
-								. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
-								. ' '. $form_field['name'];
-
-						$form_field['value'] = preg_split( '/\r\n|\r|\n/', $form_field['value'] );
-						foreach ($form_field['value'] as $select_option) {
-
-							$select_option = str_replace(array("'",'"'), '', $select_option);
-
-							$html_form.='  "' . $select_option . '"';
-						}
-
-					$html_form .= ']';
-				}
-
-				if ( $form_field['type'] == 'textarea' ){                    // Textarea
-					$html_form .= '[textarea'
-								. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
-								. ' '. $form_field['name']
-								.']';
-	            }
-
-				if ( $form_field['type'] == 'checkbox' ) {                    // Checkbox
-					$html_form .= '[checkbox'
-								. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
-								. ' '. $form_field['name'];
-					$html_form .= ' use_label_element';
-					$html_form .= ' "' . str_replace( array('"', "'"), '', $form_field['label'] ) .'"]';
-				}
-
-	            $html_form .= '</c>' . "\n";
-				$html_form .= '	</r>' . "\n";
-            }
-        }
 		// -------------------------------------------------------------------------------------------------------------
 	    // Double recheck if these fields NOT exist.  This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
 	    // -------------------------------------------------------------------------------------------------------------
@@ -297,6 +244,25 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			$html_form .= '	</c>' . "\n";
 			$html_form .= '	</r>' . "\n";
 		}
+	    //FixIn: 10.7.1.7
+	    if ( 'wizard_2columns' == $booking_form_structure ) {
+
+		    $html_form .= '    <hr><r>' . "\n";
+		    $html_form .= '      <div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
+		    $html_form .= '			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp;' . "\n";
+
+			$submit_button_title = ( ! empty( $booking_data__parsed_fields ) )
+									? __( 'Change your Booking', 'booking' )
+									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+
+			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+			$submit_button_title = wp_kses_post( $submit_button_title );
+			$html_form .= '[submit class:btn "' . esc_attr( $submit_button_title ) . '"]';
+
+		    $html_form .= '      </div>' . "\n";
+		    $html_form .= '    </r>' . "\n";
+		    $html_form .= '  </div>' . "\n";
+	    }
 
 
 		$form_css_class_arr = array();
@@ -314,10 +280,209 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		// Form Width
 		$form_layout_width       = get_bk_option( 'booking_form_layout_width' );
 		$form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
+		//FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar
 		$html_form = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar, .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
 
         return $html_form;
     }
+
+		// -------------------------------------------------------------------------------------------------------------
+		// -> PAID. When  works in paid version  in simple mode,  system  get  data from  here
+		// -------------------------------------------------------------------------------------------------------------
+
+		/**
+		 * Get SHORTCODES  Content of ALL booking form fields  and  exist field names in this booking form
+		 *
+		 * @param $params array(
+		 *                           'visual_form_structure'          => wpbc_simple_form__db__get_visual_form_structure(),
+		 *                           'skip_already_exist_field_types' => array(),            // field TYPES,  like 'calendar',  which  we need to  skip
+		 *                 )
+		 *
+		 * @return array        // array( $html_form, $exist_fields_arr )
+		 */
+		function wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( $params ){
+
+            $defaults = array(
+					    'visual_form_structure'          => wpbc_simple_form__db__get_visual_form_structure(),
+					    'skip_already_exist_field_types' => array(),            // field TYPES,  like 'calendar',  which  we need to  skip
+				);
+			$params   = wp_parse_args( $params, $defaults );
+
+			$skip_already_exist_field_types = $params['skip_already_exist_field_types'];
+
+			$exist_fields_arr = array();
+			$html_form        = '';
+
+			//FixIn: 10.7.1.6
+			$rows_arr = array();    // All rows
+			$curr_row_num = 0;          // Current row number
+			$max_col = max( intval( get_bk_option( 'booking_form_layout_max_cols' ) ), 1 );           // Maximum  number of columns
+
+			// Fields
+			foreach ( $params['visual_form_structure'] as $key => $form_field ) {
+
+	            $defaults = array(
+	                                'type'     => 'text'
+	                              , 'name'     => 'unique_name'
+	                              , 'obligatory' => 'Off'
+	                              , 'active'   => 'On'
+	                              , 'required' => 'Off'
+	                              , 'label'    => ''
+	                              , 'value'    => ''
+	            );
+	            $form_field = wp_parse_args( $form_field, $defaults );
+
+		        if (
+			        ( ! in_array( $form_field['type'], $skip_already_exist_field_types ) ) &&
+			        ( ! in_array( $form_field['name'], $skip_already_exist_field_types ) ) &&
+			        ( ( $form_field['active'] != 'Off' ) || ( $form_field['obligatory'] == 'On' ) )
+		        ) {
+
+			        if ( in_array( $form_field['type'], array( 'calendar', 'captcha', 'submit' ) ) ) {
+				        $exist_fields_arr[] = $form_field['type'];
+			        } else {
+				        $exist_fields_arr[] = $form_field['name'];
+			        }
+
+					$field_css_class = 'wpbc_r_' . $exist_fields_arr[ count( $exist_fields_arr ) - 1 ];
+//						$html_form .= '	<r>' . "\n";                                                        //FixIn: 10.7.1.6
+					$html_form .= '				<c class="' . esc_attr( $field_css_class ) . '">';                             //FixIn: 10.7.1.6
+
+		            // -----------------------------------------------------------------------------------------------------
+		            // L abel
+		            // -----------------------------------------------------------------------------------------------------
+		            $form_field['label'] = wpbc_lang( $form_field['label'] );
+		            if ( function_exists( 'icl_translate' ) ) {                             								// WPML
+			            $form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] );
+		            }
+
+		            if (
+							( $form_field['type'] != 'checkbox' ) &&
+							( $form_field['type'] != 'submit' )
+		            ){
+			            $html_form .= ' <l>' . $form_field['label'] .
+									( ( ! empty( $form_field['label'] ) )
+										            ? ( ( ( $form_field['required'] == 'On' ) ? '*' : '' ) . ':' )
+										            : '' )
+									. '</l><br>';
+		            }
+
+					// -----------------------------------------------------------------------------------------------------
+	                // Field Shortcode
+					// -----------------------------------------------------------------------------------------------------
+
+					if ( $form_field['type'] == 'calendar' ) {
+						$html_form .= '[calendar]';
+					}
+
+		            if ( $form_field['type'] == 'captcha' ){
+			            $html_form .= '[captcha]';
+		            }
+
+		            if ( $form_field['type'] == 'submit' ) {
+			            $submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( $form_field['label'] ) ) );
+			            $html_form .= '[submit class:btn "' . esc_attr( $submit_button_title ) . '"]';
+		            }
+
+
+					if ( $form_field['type'] == 'text' )  {                      // Text
+						$html_form .= '[text'
+									. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
+									. ' '. $form_field['name']
+									.']';
+		            }
+
+					if ( $form_field['type'] == 'email' ){                       // Email
+						$html_form .= '[email'
+									. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
+									. ' '. $form_field['name']
+									.']';
+		            }
+
+					if ( ( $form_field['type'] == 'selectbox' ) || ( $form_field['type'] == 'select' ) ){                    // Select
+						$html_form .= '[selectbox'
+									. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
+									. ' '. $form_field['name'];
+
+							$form_field['value'] = preg_split( '/\r\n|\r|\n/', $form_field['value'] );
+							foreach ($form_field['value'] as $select_option) {
+
+								$select_option = str_replace(array("'",'"'), '', $select_option);
+
+								$html_form.='  "' . $select_option . '"';
+							}
+
+						$html_form .= ']';
+					}
+
+					if ( $form_field['type'] == 'textarea' ){                    // Textarea
+						$html_form .= '[textarea'
+									. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
+									. ' '. $form_field['name']
+									.']';
+		            }
+
+					if ( $form_field['type'] == 'checkbox' ) {                    // Checkbox
+						$html_form .= '[checkbox'
+									. ( ( $form_field['required'] == 'On' ) ? '*' : '' )
+									. ' '. $form_field['name'];
+						$html_form .= ' use_label_element';
+						$html_form .= ' "' . str_replace( array('"', "'"), '', $form_field['label'] ) .'"]';
+					}
+
+		            $html_form .= ' </c>' . "\n";
+//						$html_form .= '	</r>' . "\n";                                       //FixIn: 10.7.1.6
+
+
+			        // -------------------------------------------------------------------------------------------------
+			        // Set content by columns
+			        // -------------------------------------------------------------------------------------------------
+			        //FixIn: 10.7.1.6
+					if ( ! isset( $rows_arr[ $curr_row_num ] ) ) {
+						$rows_arr[ $curr_row_num ] = array();
+					}
+			        if (
+							( count( $rows_arr[ $curr_row_num ] ) >= $max_col )
+			             || ( in_array( $form_field['type'],array( 'textarea', 'calendar', 'submit' ) ) )
+			             || ( ( in_array( $form_field['name'], array( 'rangetime' ) ) ) && ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) )
+			        ){
+						$curr_row_num++;
+						$rows_arr[ $curr_row_num ] = array();
+			        }
+					// ----------------------------------------------
+					$rows_arr[ $curr_row_num ][] = $html_form;
+					$html_form = '';
+					// ----------------------------------------------
+					if(
+						   ( in_array( $form_field['type'],array( 'textarea', 'calendar', 'submit' ) ) )
+						|| ( ( in_array( $form_field['name'], array( 'rangetime' ) ) ) && ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) )
+					){
+						$curr_row_num++;
+						$rows_arr[ $curr_row_num ] = array();
+					}
+					// -------------------------------------------------------------------------------------------------
+
+	            } //active if
+	        } //loop
+
+
+			$html_form = '';
+			foreach ( $rows_arr as $colls_arr ) {
+				$columns_html = implode( "\n", $colls_arr );
+				if ( empty( $columns_html ) ) {
+					continue;
+				}
+				$html_form .= ( false !== strpos( $columns_html, '[calendar]' ) )
+								? '			<r class="wpbc_r_calendar">' . "\n"
+								: '			<r>' . "\n";
+				$html_form .= $columns_html;
+				$html_form .= '			</r>' . "\n";
+			}
+
+
+			return array( $html_form, $exist_fields_arr );
+		}
+
 
 
 
@@ -359,9 +524,63 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 	    // Booking Form
 	    // -------------------------------------------------------------------------------------------------------------
 	    $html_form = '';
-
 		$skip_already_exist_field_types = array();                                                                  // 'calendar', 'submit', 'captcha' );
-		$exist_fields_arr = array();
+
+		//FixIn: 10.7.1.7
+	    if ( 'wizard_2columns' == $booking_form_structure ) {
+
+		    $skip_already_exist_field_types[] = 'submit';
+
+		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1">' . "\n";
+		    $html_form .= '		<r>' . "\n";
+
+			$calendar_field_arr = wpbc_simple_form__visual__get_calendar( $visual_form_structure );
+			if ( ! empty( $calendar_field_arr ) ) {
+			    $html_form .= '			<c style="margin-top:0;"> ' . "\n";
+			    // Get HTML content of All  Fields in booking form
+			    list( $html_all_fields, $calendar_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( array(
+															    'visual_form_structure'          => array( $calendar_field_arr ),
+															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
+															    'resource_id'                    => $resource_id,
+															    'booking_data__parsed_fields'    => $booking_data__parsed_fields
+														    ) );
+				$html_form .= $html_all_fields;
+			    $html_form .= '		</c>' . "\n";
+				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $calendar_exist_fields_arr );
+			} else {
+		        $html_form .= '			<c> <l>Select Date:</l><br /> [calendar] </c>' . "\n";
+				$skip_already_exist_field_types[] = 'calendar';
+			}
+
+
+
+		    $rangetime_field_arr = wpbc_simple_form__visual__get_rangetime( $visual_form_structure );
+		    if ( ! empty( $rangetime_field_arr ) ) {
+
+			    $html_form .= '			<c style="margin-top:0;"> ' . "\n";
+			    // Get HTML content of All  Fields in booking form
+			    list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( array(
+															    'visual_form_structure'          => array( $rangetime_field_arr ),
+															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
+															    'resource_id'                    => $resource_id,
+															    'booking_data__parsed_fields'    => $booking_data__parsed_fields
+														    ) );
+				$html_form .= $html_all_fields;
+			    $html_form .= '		</c>' . "\n";
+				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
+		    }
+
+		    $html_form .= '		</r>' . "\n";
+		    $html_form .= '		<hr><r>' . "\n";
+		    $html_form .= '			<div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
+		    $html_form .= '     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" >' . "\n";
+		    $html_form .= '				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2' . "\n";
+		    $html_form .= '				</a>' . "\n";
+		    $html_form .= '			</div>' . "\n";
+		    $html_form .= '		</r>' . "\n";
+		    $html_form .= '  </div>' . "\n";
+		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
+	    }
 
 	    if ( 'form_right' == $booking_form_structure ) {
 		    $html_form .= '<r>'             . "\n";
@@ -371,62 +590,20 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		    $html_form .= '  <c>'           . "\n";
 
 		    $skip_already_exist_field_types[] = 'calendar';
-		    $exist_fields_arr[]               = 'calendar';
+
 	    }
-	    $html_form .= '   <div class="wpbc__form__div">' . "\n";
+	    $html_form .= '    <div class="wpbc__form__div">' . "\n";
 
-		// Fields
-		foreach ( $visual_form_structure as $key => $form_field ) {
 
-			$defaults   = array(
-				'type'       => 'text',
-				'name'       => 'unique_name',
-				'obligatory' => 'Off',
-				'active'     => 'On',
-				'required'   => 'Off',
-				'label'      => '',
-				'value'      => ''
-			);
-			$form_field = wp_parse_args( $form_field, $defaults );
-
-			if ( ( ! in_array( $form_field['type'], $skip_already_exist_field_types ) ) && ( ( $form_field['active'] != 'Off' ) || ( $form_field['obligatory'] == 'On' ) ) ) {
-
-		        if ( in_array( $form_field['type'], array( 'calendar', 'captcha', 'submit' ) ) ) {
-			        $exist_fields_arr[] = $form_field['type'];
-		        } else {
-			        $exist_fields_arr[] = $form_field['name'];
-		        }
-
-				$field_css_class = 'wpbc_r_' . $exist_fields_arr[ count( $exist_fields_arr ) - 1 ];
-				$html_form .= '    <r class="' . esc_attr( $field_css_class ) . '">' . "\n";
-				$html_form .= '      <c> ';
-
-				// -----------------------------------------------------------------------------------------------------
-				// L abel
-				// -----------------------------------------------------------------------------------------------------
-				$form_field['label'] = wpbc_lang( $form_field['label'] );
-				if ( function_exists( 'icl_translate' ) ) {                                                             // WPML
-					$form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] );
-				}
-				if (
-					( $form_field['type'] != 'checkbox' ) &&
-					( $form_field['type'] != 'submit' ) &&
-					( ! empty( $form_field['label'] ) )
-				) {
-					$html_form .= ' <l for="'. $form_field['name'] . $resource_id . '" >' .
-						              $form_field['label'] . ( ( ( $form_field['required'] == 'On' ) ? '*' : '' ) . ':' ) .
-								  '</l><br>';
-				}
-
-				// -----------------------------------------------------------------------------------------------------
-				// Field Shortcode
-				// -----------------------------------------------------------------------------------------------------
-				$html_form .= wpbc_simple_form__get_html_form_input( $form_field, $booking_data__parsed_fields, $resource_id );
-
-				$html_form .= '</c>' . "\n";
-				$html_form .= '    </r>' . "\n";
-			}
-		}
+		// Get HTML content of All  Fields in booking form
+	    list( $html_all_fields, $exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( array(
+															    'visual_form_structure'          => $visual_form_structure,
+															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
+															    'resource_id'                    => $resource_id,
+															    'booking_data__parsed_fields'    => $booking_data__parsed_fields
+														    ) );
+	    $exist_fields_arr  = array_merge( $exist_fields_arr, $skip_already_exist_field_types );
+	    $html_form        .= $html_all_fields;
 
 		// -------------------------------------------------------------------------------------------------------------
 	    // Double recheck if these fields NOT exist.  This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
@@ -464,14 +641,34 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		// -------------------------------------------------------------------------------------------------------------
 
 
-	    $html_form .= '   </div>' . "\n";
+	    $html_form .= '    </div>' . "\n";
 
 	    if ( 'form_right' == $booking_form_structure ) {
 		    $html_form .= '  </c>' . "\n";
 		    $html_form .= '</r>' . "\n";
 	    }
 
+	    //FixIn: 10.7.1.7
+	    if ( 'wizard_2columns' == $booking_form_structure ) {
 
+		    $html_form .= '    <hr><r>' . "\n";
+		    $html_form .= '		<div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
+		    $html_form .= '			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp;' . "\n";
+
+			$submit_button_title = ( ! empty( $booking_data__parsed_fields ) )
+									? __( 'Change your Booking', 'booking' )
+									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+
+			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+			$submit_button_title = wp_kses_post( $submit_button_title );
+		    $html_form .= '         <button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >'
+										. $submit_button_title
+									. '</button>';
+
+		    $html_form .= '		</div>' . "\n";
+		    $html_form .= '    </r>' . "\n";
+		    $html_form .= '  </div>' . "\n";
+	    }
 	    // -------------------------------------------------------------------------------------------------------------
 	    // ==  Booking Form  ::  Structure  ==
 	    // -------------------------------------------------------------------------------------------------------------
@@ -489,6 +686,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 	    // Form Width
 	    $form_layout_width       = get_bk_option( 'booking_form_layout_width' );
 	    $form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
+		//FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar
 	    $html_form               = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar,  .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
 
 
@@ -507,6 +705,147 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 
         return $booking_form;
     }
+
+
+		// -------------------------------------------------------------------------------------------------------------
+		// -> FREE. When  works in free version  in simple mode,  system  get  data from  here
+		// -------------------------------------------------------------------------------------------------------------
+
+		/**
+		 * Get HTML Content of booking form fields  and  exist field names in this booking form
+		 *
+		 * @param $params array(
+		 *                           'visual_form_structure'          => wpbc_simple_form__db__get_visual_form_structure(),
+		 *                           'skip_already_exist_field_types' => array(),            // field TYPES,  like 'calendar',  which  we need to  skip
+		 *                           'resource_id'                    => 1,
+		 *                           'booking_data__parsed_fields'    => array()             // It is $booking_data->parsed_fields;  in case if we edit the booking form,  otherwise array()
+		 *                 )
+		 *
+		 * @return array        // array( $html_form, $exist_fields_arr )
+		 */
+		function wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( $params ) {
+
+			$defaults = array(
+							    'visual_form_structure'          => wpbc_simple_form__db__get_visual_form_structure(),
+							    'skip_already_exist_field_types' => array(),            // field TYPES,  like 'calendar',  which  we need to  skip
+							    'resource_id'                    => 1,
+							    'booking_data__parsed_fields'    => array()             // It is $booking_data->parsed_fields;  in case if we edit the booking form,  otherwise array()
+						);
+			$params   = wp_parse_args( $params, $defaults );
+
+
+			$exist_fields_arr = array();
+			$html_form        = '';
+
+			//FixIn: 10.7.1.6
+			$rows_arr = array();    // All rows
+			$curr_row_num = 0;          // Current row number
+			$max_col = max( intval( get_bk_option( 'booking_form_layout_max_cols' ) ), 1 );           // Maximum  number of columns
+
+			// Fields
+			foreach ( $params['visual_form_structure'] as $key => $form_field ) {
+
+				$defaults   = array(
+					'type'       => 'text',
+					'name'       => 'unique_name',
+					'obligatory' => 'Off',
+					'active'     => 'On',
+					'required'   => 'Off',
+					'label'      => '',
+					'value'      => ''
+				);
+				$form_field = wp_parse_args( $form_field, $defaults );
+
+				if (
+					 ( ! in_array( $form_field['type'], $params['skip_already_exist_field_types'] ) ) &&
+					 ( ! in_array( $form_field['name'], $params['skip_already_exist_field_types'] ) ) &&
+				     ( ( $form_field['active'] != 'Off' ) || ( $form_field['obligatory'] == 'On' ) )
+				){
+
+			        if ( in_array( $form_field['type'], array( 'calendar', 'captcha', 'submit' ) ) ) {
+				        $exist_fields_arr[] = $form_field['type'];
+			        } else {
+				        $exist_fields_arr[] = $form_field['name'];
+			        }
+
+					$field_css_class = 'wpbc_r_' . $exist_fields_arr[ count( $exist_fields_arr ) - 1 ];
+//					$html_form .= '    <r>' . "\n";                                                    //FixIn: 10.7.1.6
+					$html_form .= '      <c class="' . esc_attr( $field_css_class ) . '"> ';                            //FixIn: 10.7.1.6
+
+					// -----------------------------------------------------------------------------------------------------
+					// L abel
+					// -----------------------------------------------------------------------------------------------------
+					$form_field['label'] = wpbc_lang( $form_field['label'] );
+					if ( function_exists( 'icl_translate' ) ) {                                                             // WPML
+						$form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] );
+					}
+					if (
+						( $form_field['type'] != 'checkbox' ) &&
+						( $form_field['type'] != 'submit' ) &&
+						( ! empty( $form_field['label'] ) )
+					) {
+						$html_form .= ' <l for="'. $form_field['name'] . $params['resource_id'] . '" >' .
+							              $form_field['label'] . ( ( ( $form_field['required'] == 'On' ) ? '*' : '' ) . ':' ) .
+									  '</l><br>';
+					}
+
+					// -----------------------------------------------------------------------------------------------------
+					// Field Shortcode
+					// -----------------------------------------------------------------------------------------------------
+					$html_form .= wpbc_simple_form__get_html_form_input( $form_field, $params['booking_data__parsed_fields'], $params['resource_id'] );
+
+					$html_form .= '</c>' . "\n";
+//					$html_form .= '    </r>' . "\n";            //FixIn: 10.7.1.6
+
+
+			        // -------------------------------------------------------------------------------------------------
+			        // Set content by columns
+			        // -------------------------------------------------------------------------------------------------
+			        //FixIn: 10.7.1.6
+					if ( ! isset( $rows_arr[ $curr_row_num ] ) ) {
+						$rows_arr[ $curr_row_num ] = array();
+					}
+			        if (
+						   ( count( $rows_arr[ $curr_row_num ] ) >= $max_col )
+						|| ( in_array( $form_field['type'],array( 'textarea', 'calendar', 'submit' ) ) )
+				        || ( ( in_array( $form_field['name'], array( 'rangetime' ) ) ) && ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) )
+			        ){
+						$curr_row_num++;
+						$rows_arr[ $curr_row_num ] = array();
+			        }
+					// ----------------------------------------------
+					$rows_arr[ $curr_row_num ][] = $html_form;
+					$html_form = '';
+					// ----------------------------------------------
+					if (
+						   ( in_array( $form_field['type'],array( 'textarea', 'calendar', 'submit' ) ) )
+						|| ( ( in_array( $form_field['name'], array( 'rangetime' ) ) ) && ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) )
+					){
+						$curr_row_num++;
+						$rows_arr[ $curr_row_num ] = array();
+					}
+					// -------------------------------------------------------------------------------------------------
+
+	            } //active if
+	        } //loop
+
+			$html_form = '';
+			foreach ( $rows_arr as $colls_arr ) {
+				$columns_html = implode( "\n", $colls_arr );
+				if ( empty( $columns_html ) ) {
+					continue;
+				}
+				$html_form .= ( false !== strpos( $columns_html, '[calendar]' ) )
+								? '	<r class="wpbc_r_calendar">' . "\n"
+								: '	<r>' . "\n";
+				$html_form .= $columns_html;
+				$html_form .= '	</r>' . "\n";
+			}
+
+
+			return array( $html_form, $exist_fields_arr );
+		}
+
 
 
 		/**
@@ -698,4 +1037,40 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			}
 
 			return $button_title;
+		}
+
+		/**
+		 * Get Range Time Field structure,  if this field exist and if this field enabled
+		 *
+		 * @param $visual_form_structure
+		 *
+		 * @return mixed|string
+		 */
+		function wpbc_simple_form__visual__get_rangetime( $visual_form_structure ) {
+
+			foreach ( $visual_form_structure as $field_arr ) {
+				if ( ( 'rangetime' === $field_arr['name'] ) && ( 'On' == $field_arr['active'] ) ) {
+					return $field_arr;
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Get Calendar Field structure,  if this field exist and if this field enabled
+		 *
+		 * @param $visual_form_structure
+		 *
+		 * @return mixed|string
+		 */
+		function wpbc_simple_form__visual__get_calendar( $visual_form_structure ) {
+
+			foreach ( $visual_form_structure as $field_arr ) {
+				if ( 'calendar' === $field_arr['type'] ) {
+					return $field_arr;
+				}
+			}
+
+			return false;
 		}

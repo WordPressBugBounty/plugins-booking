@@ -516,6 +516,10 @@ function wpbc_get_availability_per_days_arr( $params ) {
     			);
 	$params   = wp_parse_args( $params, $defaults );
 
+	//FixIn: 10.7.1.2
+	if ( false !== strpos( $params['request_uri'], 'allow_past' ) ) {
+		$params['dates_to_check'] = 'ALL';
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// R e s o u r c e (s)    D a t a
@@ -610,6 +614,12 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	// - Is this Booking > Add booking page ? --------------------------------------------------------------------------
 	$is_this_bap_page  = ( false !== strpos( $params['request_uri'], 'page=wpbc-new' ) ) ? true : false;
 	$is_this_hash_page = ( false !== strpos( $params['request_uri'], 'booking_hash' ) ) ? true : false;                // Set it to TRUE for adding booking in past at Booking > Add booking page
+
+	//FixIn: 10.7.1.2
+	if ( ! $is_this_hash_page ) {
+		$is_this_hash_page = ( false !== strpos( $params['request_uri'], 'allow_past' ) ) ? true : false;
+	}
+
 	if ( ( $is_this_bap_page ) && ( $is_this_hash_page ) ) {        // Start  days in calendar  from        = PAST
 		$params['dates_to_check'] = 'ALL';
 	}

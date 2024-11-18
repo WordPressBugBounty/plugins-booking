@@ -315,6 +315,17 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
                                                                         , 'close'  => false
                                                                         , 'title'  => '&nbsp;' . __('Standard Forms' ,'booking')
                                                                     )
+														//FixIn: 10.7.1.7
+                                                        , 'wizard_2columns' => array(
+                                                                          'title' => __('Wizard (several steps)', 'booking')
+                                                                        , 'id' => ''
+                                                                        , 'name' => ''
+                                                                        , 'style' => ''
+                                                                        , 'class' => ''
+                                                                        , 'disabled' => false
+                                                                        , 'selected' => false
+                                                                        , 'attr' => array()
+                                                                    )
                                                         , 'vertical' => array(
                                                                         'title' => __('Form under calendar', 'booking')
                                                                         , 'id' => ''
@@ -387,6 +398,38 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 
 											, 'value'             => $field_value_or_default
 											, 'options'           => $field_options
+											, 'attr' => array( 'onchange' => "javascript: if( 'wizard_2columns' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_width' ).val( '100' ); jQuery( '#booking_form_layout_width_px_pr' ).val( '%' ); jQuery( '#booking_form_layout_max_cols' ).val( '2' ); } "
+																			 		  . " if( 'vertical' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_max_cols' ).val( '2' ); jQuery( '#booking_form_layout_width' ).val( '100' ); jQuery( '#booking_form_layout_width_px_pr' ).val( '%' ); } "
+																			 		  . " if( 'form_right' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_max_cols' ).val( '1' ); jQuery( '#booking_form_layout_width' ).val( '440' ); jQuery( '#booking_form_layout_width_px_pr' ).val( 'px' ); } "
+																			 		  . " if( 'form_center' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_max_cols' ).val( '1' ); jQuery( '#booking_form_layout_width' ).val( '440' ); jQuery( '#booking_form_layout_width_px_pr' ).val( 'px' ); } "
+															  )
+										)
+							);
+
+
+			$field_value_or_default = ( empty( get_bk_option( 'booking_form_layout_max_cols' ) ) ? $default_options_values['booking_form_layout_max_cols'] : get_bk_option( 'booking_form_layout_max_cols' ) );
+			WPBC_Settings_API::field_select_row_static( 'booking_form_layout_max_cols'
+									, array(
+											  'type'              => 'select'
+											, 'title'             => __( 'Columns', 'booking' )
+											, 'label'             => ''
+											, 'disabled'          => false
+											, 'disabled_options'  => array()
+											, 'multiple'          => false
+
+											, 'description'       => __('Set number of columns in booking form','booking')
+											, 'description_tag'   => 'span'
+
+											, 'group'             => 'form_layout'
+											, 'tr_class'          => ''
+											, 'class'             => ''
+											, 'css'               => 'width:auto;max-width:100%;'
+											, 'only_field'        => false
+											, 'attr'              => array()
+
+											, 'value'             => $field_value_or_default
+											, 'options'           => array( 1 => 1, 2 => 2, 3 => 3 )
+											//, 'attr' => array( 'onchange' => "javascript: if( 'wizard_2columns' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_width' ).val( '100' ); jQuery( '#booking_form_layout_width_px_pr' ).find( 'option' ).prop( 'selected', false );	jQuery( '#booking_form_layout_width_px_pr' ).val( '%' ); } " )
 										)
 							);
 

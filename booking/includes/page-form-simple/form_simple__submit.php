@@ -37,6 +37,7 @@ function wpbc_simple_form__page_save_submit(){
 		}
 
 		update_bk_option( 'booking_form_structure_type',  'vertical'  );
+		update_bk_option( 'booking_form_layout_max_cols',  1  );
 
 		$visual_form_structure = wpbc_simple_form__visual__get_default_form();              // We are importing old structure to  have default booking form.
 		update_bk_option( 'booking_form_visual',  $visual_form_structure  );
@@ -49,6 +50,7 @@ function wpbc_simple_form__page_save_submit(){
 	// -------------------------------------------------------------------------------------------------------------
     // Update booking form structure
     update_bk_option( 'booking_form_structure_type',  	WPBC_Settings_API::validate_text_post_static( 'booking_form_structure_type' )  );
+    update_bk_option( 'booking_form_layout_max_cols',  	max( intval(WPBC_Settings_API::validate_text_post_static( 'booking_form_layout_max_cols' )),1)  );
 	// -------------------------------------------------------------------------------------------------------------
 	// Update Color Theme and skins/picker not in MU versions
 	if ( isset( $_POST[ 'booking_form_theme' ] ) ) {

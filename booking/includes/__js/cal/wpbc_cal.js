@@ -88,8 +88,11 @@ function wpbc_calendar_show( resource_id ){
 	// local__max_date = cal_last_day_in_month;			//FixIn: 10.0.0.26
 
 	if (   ( location.href.indexOf('page=wpbc-new') != -1 )
-		&& ( location.href.indexOf('booking_hash') != -1 )                  // Comment this line for ability to add  booking in past days at  Booking > Add booking page.
-		){
+		&& (
+			  ( location.href.indexOf('booking_hash') != -1 )                  // Comment this line for ability to add  booking in past days at  Booking > Add booking page.
+		   || ( location.href.indexOf('allow_past') != -1 )                //FixIn: 10.7.1.2
+		)
+	){
 		local__min_date = null;
 		local__max_date = null;
 	}

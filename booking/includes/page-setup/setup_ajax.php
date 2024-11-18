@@ -263,8 +263,12 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
 					$cleaned_data = wpbc_template__general_info__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+
 					if ( 'On' === $cleaned_data['wpbc_swp_accept_send'] ) {
-						wpbc_setup_feedback__send_email( $cleaned_data );
+						//wpbc_setup_feedback__send_email( $cleaned_data );		//FixIn: 10.7.1.3
+						update_bk_option( 'booking_feedback__send_email', $cleaned_data );
+					} else {
+						delete_bk_option( 'booking_feedback__send_email' );
 					}
 
 					wpbc_setup__update__general_info( $cleaned_data );
@@ -289,6 +293,16 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 					$cleaned_data = wpbc_template__bookings_types__action_validate_data( $_POST['all_ajx_params']['step_data'] );
 					wpbc_setup__update__bookings_types( $cleaned_data );
 
+					//FixIn: 10.7.1.3
+					$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__send_email' );
+					if (! empty($cleaned_data_booking_feedback_arr)){
+						if ( 'On' === $cleaned_data_booking_feedback_arr['wpbc_swp_accept_send'] ) {
+							$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr , array( 'type' => 'Type: ' . $cleaned_data ['wpbc_swp_booking_types'] ) );
+							wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
+							delete_bk_option( 'booking_feedback__send_email' );
+						}
+					}
+
 					// -------------------------------------------------------------------------------------------------
 					// Save selected option  at the next  step  for paid versions
 					// -------------------------------------------------------------------------------------------------
@@ -298,7 +312,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|hints-dev';
 						}
 						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|wizard_times30';
+							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    //FixIn: 10.7.1.4
 						}
 						if ( 'changeover_multi_dates_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
 							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|wizard';

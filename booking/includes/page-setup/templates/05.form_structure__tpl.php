@@ -229,8 +229,8 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 	//  Templates
 	// ---------------------------------------------------------------------------------------------------------
 	$templates = array(
-
 		'optgroup_sf_free_s' => array( 'optgroup' => true, 'close' => false, 'title' => '&nbsp;' . __( 'Simple Form', 'booking' ) . ' (' . __( 'Free Version', 'booking' ) . ')' ),
+		'free|wizard_2columns' => array( 'title' => __('Wizard (several steps)', 'booking') ),
 		'free|vertical'      => array( 'title' => __( 'Form under calendar', 'booking' ) ),
 		'free|form_right'    => array( 'title' => __( 'Form at right side of calendar', 'booking' ) ),
 		'free|form_center'   => array( 'title' => __( 'Form and calendar are centered', 'booking' ) ),
@@ -238,6 +238,7 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 	);
 	// ---------------------------------------------------------------------------------------------------------
 	$templates[ 'pro|optgroup_sf_s'] = array( 'optgroup' => true, 'close' => false, 'title' => '&nbsp;' . __( 'Advanced Form', 'booking' ) . ' (' . __( 'Pro Versions', 'booking' ) . ')'  );
+	$templates[ 'pro|appointments30' ] = array( 'title' => __('Time-Based Appointments', 'booking') .  ' ('.  ' 30 ' . __( 'minutes', 'booking' ) . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
 	$templates['pro|wizard'] = array( 'title' => __( 'Wizard (several steps)', 'booking' ) . ' - ' . __('No times','booking'), 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
 	$templates[ 'pro|wizard_times30' ] = array( 'title' => __('Wizard', 'booking') .  ' ('.__('Time slots', 'booking') . ' 30 ' . __( 'minutes', 'booking' ) . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
 
@@ -327,9 +328,9 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 		){
 			jQuery(document).ready(function(){
 				if ( 'time_slots_appointments' === data.booking_wizard_data.save_and_continue__bookings_types.wpbc_swp_booking_types ) {
-					jQuery( '#<?php echo $el_id; ?> option[value="free|form_right"]' ).prop('selected', true);
+					jQuery( '#<?php echo $el_id; ?> option[value="free|wizard_2columns"]' ).prop('selected', true);
 				} else {
-					jQuery( '#<?php echo $el_id; ?> option[value="free|form_center"]' ).prop('selected', true);
+					jQuery( '#<?php echo $el_id; ?> option[value="free|form_right"]' ).prop('selected', true);
 				}
 			});
 		}

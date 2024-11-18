@@ -250,16 +250,6 @@ public function define_admin_menu(){
                                                 );
 	}
 
-	if ( WPBC_customize_plugin )
-    self::$instance->admin_menu['customize_plugin']    = new WPBC_Admin_Menus(												//FixIn: 9.8.0.1
-                                                    'wpbc-customize_plugin' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => ucwords( __('Customize', 'booking') )
-                                                  , 'page_header'   => ucwords( __('Customize','booking') )
-                                                  , 'browser_header'=> ucwords( __('Customize', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_customize_plugin' )				//FixIn: 9.8.15.2.6
-                                                                            )
-                                                );
 
 	if ( ! class_exists( 'wpdev_bk_personal' ) ) {            //FixIn: 10.1.3.1
 	    //FixIn: 9.8.15.7
@@ -285,7 +275,7 @@ public function define_admin_menu(){
                                                                             )
                                                 );
 
-	if  ( WPBC_setup_plugin ) {
+
 
 
 		if (
@@ -305,7 +295,7 @@ public function define_admin_menu(){
                                                                             )
                                                 );
 		}
-	}
+
 
 
 	$simulate_user_id = wpbc_mu__is_simulated_login_as_user();

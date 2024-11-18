@@ -360,18 +360,19 @@ function wpbc_bs_dropdown_menu_help() {
                                       , 'font_icon' => 'wpbc_icn_support'												//FixIn: 9.0.1.4	'glyphicon glyphicon-question-sign'
                                       , 'position' => 'right'
                                       , 'items' => array(
-                                               array( 'type' => 'link', 'title' => "What's New"/*__('Get Started')*/, 'url' => esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) ) )
+                                               array( 'type' => 'link', 'title' => __('FAQ', 'booking'), 'url' => 'https://wpbookingcalendar.com/faq/' )
+                                             , array( 'type' => 'link', 'title' => __('Support Forum', 'booking'), 'url' => 'https://wpbookingcalendar.com/support/' )
+											 , array( 'type' => 'divider' )
+                                             , array( 'type' => 'link', 'title' => __('Contact Support', 'booking'), 'url'  => 'mailto:support@wpbookingcalendar.com'
+																												   , 'attr' => array( 'style' => 'font-weight: 600;' ) )
                                              , array( 'type' => 'divider' )
-                                             , array( 'type' => 'link', 'title' => __('Help', 'booking'), 'url' => 'https://wpbookingcalendar.com/help/' )
-                                             , array( 'type' => 'link', 'title' => __('FAQ', 'booking'), 'url' => 'https://wpbookingcalendar.com/faq/' )
-                                             , array( 'type' => 'link', 'title' => __('Technical Support', 'booking'), 'url' => 'https://wpbookingcalendar.com/support/' )
-                                             , array( 'type' => 'divider' )
-                                             , array( 'type' => 'link', 'title' => __('About Booking Calendar', 'booking')
+                                             , array( 'type' => 'link', 'title' => "What's New"/*__('Get Started')*/, 'url' => esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) ) )
+                                             , array( 'type' => 'link', 'title' => __('About', 'booking')
 																		// , 'url' => wpbc_up_link()
-																		, 'url' =>  esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about-premium' ), 'index.php' ) ) )
+																		, 'url' =>  'https://wpbookingcalendar.com/' //esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about-premium' ), 'index.php' ) ) )
                                                                         , 'attr' => array(
                                                                             //  'target' => '_blank'
-                                                                            'style' => 'font-weight: 600;font-size: 1em;'
+                                                                            // 'style' => 'font-weight: 600;'
                                                                         )
                                                     )
                                         )

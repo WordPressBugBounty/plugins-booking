@@ -52,7 +52,7 @@
     }
     .wpbc_booking_form_structure.wpbc_form_center .wpbc_times_selector ,
     .wpbc_booking_form_structure.wpbc_form_center .wpbc-form-element-checkbox {
-        max-width: 24em;
+        max-width: Max(24em, 440px);
         justify-content:  flex-start;
     }
 @media (max-width: 782px) {
@@ -1057,6 +1057,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
         flex:0 1 auto;
         padding:0;
         margin: 0;
+        display: inline-block;
     }
     .wpbc__field.wpbc__cal {
         /*! display: block; */

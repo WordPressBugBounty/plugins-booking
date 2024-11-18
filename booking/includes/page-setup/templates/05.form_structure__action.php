@@ -111,9 +111,21 @@ function wpbc_setup__update__form_structure( $cleaned_data ){
 			//$visual_form_structure = get_bk_option( 'booking_form_visual' );
 
 			$visual_form_structure = ( 'time_slots_appointments' === $wpbc_swp_booking_types )
-									? wpbc_simple_form__visual__get_default_form()
+									? wpbc_simple_form__visual__get_default_form__times_30min()
 									: wpbc_simple_form__visual__get_default_form__without_times();
 
+			if ( 'wizard_2columns' === $booking_form_structure ) {
+				update_bk_option( 'booking_form_layout_max_cols', 2 );
+			    update_bk_option( 'booking_form_layout_width', '100' );
+			    update_bk_option( 'booking_form_layout_width_px_pr', '%' );
+			} else {
+				update_bk_option( 'booking_form_layout_max_cols', ( ( 'vertical' === $booking_form_structure ) ? 2 : 1 ) );
+				update_bk_option( 'booking_form_layout_width',  ( ( 'vertical' === $booking_form_structure ) ? '740': '440') );
+				update_bk_option( 'booking_form_layout_width_px_pr', 'px' );
+			}
+			// update_bk_option( 'booking_form_layout_max_cols', ( ( 'time_slots_appointments' === $wpbc_swp_booking_types ) ? 2 : 1 ) );
+
+			update_bk_option( 'booking_form_visual',  $visual_form_structure  );
 			update_bk_option( 'booking_form',       wpbc_simple_form__get_booking_form__as_shortcodes(  $visual_form_structure ) );
 			update_bk_option( 'booking_form_show',  wpbc_simple_form__get_form_show__as_shortcodes(     $visual_form_structure ) );
 		} else {

@@ -1133,11 +1133,6 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 		$default_options['booking_user_role_prices'] = ( $is_demo ) ? 'subscriber' : 'editor';
 	 $mu_option4delete[]='booking_user_role_prices';
 }
-//FixIn: 9.8.15.2.6
-if ( WPBC_customize_plugin ){
-		$default_options['booking_user_role_customize_plugin'] = ( $is_demo ) ? 'subscriber' : 'editor';
-	 $mu_option4delete[]='booking_user_role_customize_plugin';
-}
 
     // New admin ///////////////////////////////////////////////////////////////
     
@@ -1260,6 +1255,7 @@ if ( WPBC_customize_plugin ){
 
 	$default_options['booking_form_layout_width'] 		= '440';
 	$default_options['booking_form_layout_width_px_pr'] = 'px';
+	$default_options['booking_form_layout_max_cols'] = 1;
 
     ////////////////////////////////////////////////////////////////////////////
     // PS
@@ -1346,6 +1342,9 @@ if ( WPBC_customize_plugin ){
     if ( class_exists( 'wpdev_bk_biz_s' ) ) {
         
      //$mu_option4delete[]='booking_paypal_price_period';                         // No need to  delete,  this option, because different users can  have different settings. During init defined at ../booking/inc/gateways/page-gateways.php
+
+		$default_options['booking_gateways_order'] = 'stripe_v3,paypal_std_co,paypal,authorizenet,sage,bank_transfer,pay_cash,ipay88,ideal';   //     Default Original Payment Gateways
+	//$mu_option4delete[]='booking_gateways_order';        	// No need to delete ^
 
 		//FixIn: 8.1.3.29
 		$default_options['booking_ics_import_add_change_over_time'] = 'On';

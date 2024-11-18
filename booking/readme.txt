@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.7
+Stable tag: 10.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,7 +35,7 @@ https://www.youtube.com/watch?v=GYJWZJBFwXw
 https://www.youtube.com/watch?v=NJ88lGD5iJ0
 
 > <strong>Changeover Multi-Day Bookings - Setup Wizard (Pro)</strong><br />
-> Configure multi-day bookings with specific check-in and check-out days, clearly marked with diagonal or vertical lines. Perfect for bookings that require split days. <br>**This feature available in Pro versions**.
+> Configure multi-day bookings with specific check-in and check-out days, clearly marked with diagonal or vertical lines. Perfect for bookings that require split days. <br>**Available Pro versions**.
 
 https://www.youtube.com/watch?v=uCQ9JmHR8w4
 
@@ -306,6 +306,18 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.8 =
+- Changes in **all** versions:
+ 	* **New** Added the ability to configure the booking form structure as a multi-step wizard in the Booking Calendar Free version. This feature enables users to complete the booking process in several steps for improved usability. (10.7.1.7)
+ 	* **New** Added the ability to define the number of columns in the booking form in the Booking Calendar Free version. Configure the column layout at WP Booking Calendar > Settings > Booking Form page under the "Form Layout" section. (10.7.1.6)
+ 	* **New** Added a 20-minute time-slot interval template for faster configuration of time slots. Access this feature on the WP Booking Calendar > Settings > Booking Form page.
+	* **Under hood** Enabled the use of 'allow_past' URL parameter to show past bookings and scroll through past months on the Booking > Add Booking page in the admin panel. (10.7.1.2)
+	* **Enhanced** Added new  skins: "Black-2", "Green-01", "Light-01", and "Traditional-times" to the legacy calendar skin group. (10.7.1.5)
+	* **Enhanced** Disabled auto-selection of legacy calendar skins. (10.7.1.5.1)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+ 	* **New** Added a new **"Time-Based Appointments" form template** in a multi-step wizard style. Please reset your booking form by selecting this template from the dropdown list in the toolbar at Settings > Booking Form page. (10.7.1.4)
+ 	* **New** Introduced shortcodes [search_days_number] and [search_nights_number] for use in search results. Available on the WP Booking Calendar > Settings > Search page. (10.7.1.1)   *(Business Large, MultiUser)*
+
 = 10.7 =
 - Changes in **all** versions:
  	* **New** **Easy Setup Wizard** for quick booking calendar configuration of essential booking settings.
@@ -512,6 +524,9 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  - Get ready for our biggest update yet! Enjoy a new booking engine, improved performance, structured settings, an enhanced UI, and a smoother booking process with the new booking confirmation section. Paid versions bring features like time-slot capacity for multiple bookings per time-slot and more. Find more at [this page](https://wpbookingcalendar.com/updates/whats-new-in-booking-calendar-update-9-8/)
 
 == Upgrade Notice ==
+= 10.8 =
+Configure the booking form structure as a multi-step wizard to guide users through the booking process step-by-step and define the number of columns in the booking form (in free version).
+
 = 10.7 =
 Easy Setup Wizard for quick booking calendar configuration of essential booking settings.
 

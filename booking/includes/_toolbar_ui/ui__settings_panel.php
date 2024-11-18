@@ -1720,9 +1720,7 @@ function wpbc_ui_settings__panel__plugin_version(){
 
 		wpbc_ui_settings__panel_start();
 
-			if ( WPBC_setup_plugin ) {
-				wpbc_ui_settings_panel__card__setup_wizard();
-			}
+			wpbc_ui_settings_panel__card__setup_wizard();
 
 			wpbc_ui_settings_panel__card__transaltion_download();
 

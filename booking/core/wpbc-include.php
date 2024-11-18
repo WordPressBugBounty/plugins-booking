@@ -140,12 +140,6 @@ require_once( WPBC_PLUGIN_DIR . '/includes/page-availability/availability__class
 require_once( WPBC_PLUGIN_DIR . '/includes/page-availability/availability__resource.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.php' );
 
-// Booking > Customize page                                                     //FixIn: 9.8.0.1
-if ( WPBC_customize_plugin ) {      //FixIn: 9.8.0.2
-	require_once( WPBC_PLUGIN_DIR . '/includes/page-customize/customize__templates.php' );
-	require_once( WPBC_PLUGIN_DIR . '/includes/page-customize/customize__ajax_request.php' );
-	require_once( WPBC_PLUGIN_DIR . '/includes/page-customize/customize__page.php' );
-}
 
 if ( WPBC_settings_all ) {
 	require_once( WPBC_PLUGIN_DIR . '/includes/page-settings-all/all__page.php' );                                      //FixIn: 10.4.0.2
@@ -193,10 +187,10 @@ if ( file_exists( WPBC_PLUGIN_DIR.'/inc/_ps/personal.php' ) ){
 }
 
 // Booking > Setup page                                                         //FixIn: 10.2.0.1
-if ( WPBC_setup_plugin ) {      //FixIn: 9.8.0.2
-	require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup__page.php' );
-	require_once( WPBC_PLUGIN_DIR . '/includes/_tour/wpbc_tour.php' );          //FixIn: 10.4.0.1
-}
+//FixIn: 9.8.0.2
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup__page.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/_tour/wpbc_tour.php' );          //FixIn: 10.4.0.1
+
 
 require_once( WPBC_PLUGIN_DIR . '/includes/_feedback/feedback.php');                                                    //FixIn: 9.2.3.6
 

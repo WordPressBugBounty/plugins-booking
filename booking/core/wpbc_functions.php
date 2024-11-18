@@ -191,8 +191,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 					'premium-steel.css',
 					'standard.css',
 					'traditional-light.css',
-					//'traditional-times.css',
 					'traditional.css'
+					//FixIn: 10.7.1.5
+					, 'traditional-times.css'
+					, 'black-2.css'
+					, 'green-01.css'
+					, 'light-01.css'
 			);
 
 			return in_array( $skin_name, $legacy_skins );

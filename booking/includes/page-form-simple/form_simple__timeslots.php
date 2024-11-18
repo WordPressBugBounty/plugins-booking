@@ -201,6 +201,7 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_2hours button">2 <?php _e( 'hours' ,'booking');  ?></a> <?php
 				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_60min button">1 <?php _e( 'hour' ,'booking');  ?></a> <?php
 				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_30min button">30 <?php _e( 'minutes' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_20min button">20 <?php _e( 'minutes' ,'booking');  ?></a> <?php
 				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_15min button">15 <?php _e( 'minutes' ,'booking');  ?></a> <?php
 				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_5min button">5 <?php _e( 'minutes' ,'booking');  ?></a> <?php
 
@@ -468,6 +469,17 @@ function wpbc_timeslots_table_config_js() {
 				}, 10);
 			});
 
+			jQuery('.fill_timetable_20min' ).on( 'click', function() {
+				jQuery( '.wpbc_table_form_free_timeslots' ).html( '<tfoot><tr><th colspan="4" style="font-weight: 600;text-align: left;padding: 10px;font-size: 1em;"><?php echo esc_js( __('Processing' ,'booking') ) ?>...</th></tr></tfoot>' );
+				setTimeout(function(){
+					jQuery( '.wpbc_table_form_free_timeslots' ).html( '<tfoot><tr><th colspan="4"><?php echo esc_js( __('Processing' ,'booking') ) ?></th></tr></tfoot>' );
+					var tslots = wpbc_get_timeslot_list( 20, 6, 22 , 1);
+					jQuery( '#rangetime_field_generator_value' ).val( tslots );
+					wpbc_check_typed_values('rangetime_field_generator'); 													// Update textareas - titles / options
+					wpbc_timeslots_table__fill_rows();
+				}, 10);
+			});
+
 			jQuery('.fill_timetable_5min' ).on( 'click', function() {
 				jQuery( '.wpbc_table_form_free_timeslots' ).html( '<tfoot><tr><th colspan="4" style="font-weight: 600;text-align: left;padding: 10px;font-size: 1em;"><?php echo esc_js( __('Processing' ,'booking') ) ?>...</th></tr></tfoot>' );
 				setTimeout(function(){
@@ -540,9 +552,13 @@ function wpbc_timeslots_table_config_js() {
 		 *
 		 * Create time-slots table from  initial Data
    		 */
-		jQuery(document).ready(function(){
+		jQuery( document ).ready( function () {
 
-			var timetable_rows = [
+			var timetable_rows = wpbc_get_timeslots_arr_from__field_values_string();
+
+			// If error, and we do not have field with  time slot values ???d
+			if ( 0 === timetable_rows.length ) {
+			 	timetable_rows = [
 				                  { selected_time_slot: "09:00 - 10:00", time_label: "9:00 AM - 10:00 AM" }
 								, { selected_time_slot: "10:00 - 11:00", time_label: "10:00 AM - 11:00 AM" }
 								, { selected_time_slot: "11:00 - 12:00", time_label: "11:00 AM - 12:00 PM (Noon)" }
@@ -554,6 +570,7 @@ function wpbc_timeslots_table_config_js() {
 								, { selected_time_slot: "17:00 - 18:00", time_label: "5:00 PM - 6:00 PM" }
 								, { selected_time_slot: "18:00 - 19:00", time_label: "6:00 PM - 7:00 PM" }
 								];
+			}
 
 			wpbc_fill_timeslots_table_by_rows( timetable_rows );
 		});

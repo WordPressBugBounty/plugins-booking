@@ -104,9 +104,7 @@ function wpbc_ui_settings__panel__welcome(){
 
 			wpbc_ui_settings__panel__welcome__header();
 
-			if ( WPBC_setup_plugin ) {
-				wpbc_ui_settings_panel__card__setup_wizard();
-			}
+			wpbc_ui_settings_panel__card__setup_wizard();
 
 			wpbc_ui_settings_panel__card__version();
 
@@ -306,10 +304,11 @@ function wpbc_ui_settings__panel__welcome(){
 						<li><span class="welcome-icon"><?php
 							printf( __( 'See %sFAQ%s.' ,'booking'),
 								'<a href="https://wpbookingcalendar.com/faq/" target="_blank">',
-								'</a>' );
+								'</a> , ' . '<a href="https://wpbookingcalendar.com/support/" target="_blank">' . __( 'Support Forum','booking') . '</a>'
+							);
 							echo '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="welcome-icon">';
 							printf( __( 'Contact %sSupport%s.','booking'),
-								'<a href="https://wpbookingcalendar.com/support/" target="_blank">',
+								'<a href="mailto:support@wpbookingcalendar.com" target="_blank">',
 								'</a>' );
 /*
 						?></div></li>

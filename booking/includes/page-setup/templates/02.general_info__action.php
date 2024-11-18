@@ -38,24 +38,32 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 function wpbc_template__general_info__action_validate_data( $post_data ){
 
 	$escaped_data = array(
-		'wpbc_swp_business_name'     => '',
-		'wpbc_swp_booking_who_setup' => '',
 		'wpbc_swp_industry'          => '',
+		'type'                       => '',         //FixIn: 10.7.1.3
+		'days'                       => '',
+		'version'                    => 'V: ' .wpbc_feedback_01_get_version(),
+		'wpbc_swp_booking_who_setup' => '',
+		'wpbc_swp_business_name'     => '',
 		'wpbc_swp_email'             => '',
 		'wpbc_swp_accept_send'       => 'Off'
 	);
 
-	$key = 'wpbc_swp_business_name';
+	$how_old_info_arr = wpbc_get_info__about_how_old();
+	if ( ! empty( $how_old_info_arr ) ) {
+		$escaped_data['days'] = 'Days: ' . $how_old_info_arr['days'];
+	}
+
+	$key = 'wpbc_swp_industry';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = 'Business_name: ' . wpbc_clean_text_value( $post_data[ $key ] );
+			$escaped_data[ $key ] = 'Industry: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_booking_who_setup';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
 			$escaped_data[ $key ] = 'Who_setup: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
-	$key = 'wpbc_swp_industry';
+	$key = 'wpbc_swp_business_name';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = 'Industry: ' . wpbc_clean_text_value( $post_data[ $key ] );
+			$escaped_data[ $key ] = 'Business_name: ' . wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_email';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
@@ -93,7 +101,7 @@ function wpbc_setup_feedback__send_email( $feedback_description_arr ) {
 	$subject = 'WPBC - Initial Setup';
 
 
-	$message = '=============================================' . "\n";
+	$message  = '';// '=============================================' . "\n";
 	$message .= $feedback_description . "\n";
 	$message .= '=============================================' . "\n";
 	$message .="\n";

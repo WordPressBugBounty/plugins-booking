@@ -1782,16 +1782,17 @@ function wpbc_smpl_form__ui__selectbox_prior_btn( $dropdown_id, $is_apply_rotati
 			, 'link' => 'javascript:void(0)'    																		// Direct link or skip  it
 			, 'action' => // "console.log( 'ON CLICK:', jQuery( '[name=\"set_days_customize_plugin\"]:checked' ).val() , jQuery( 'textarea[id^=\"date_booking\"]' ).val() );"                    // Some JavaScript to execure, for example run  the function
 						  " var is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).prev(); "
-						  . " if ( is_selected.length == 0 ){ "
-						  . "    if (  ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prop('nodeName').toLowerCase() ) "
-						  . "       && ( jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().length )  "
-						  . "       && ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().prop('nodeName').toLowerCase() )   ){ "
-						  . "         is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().find('option').last(); "
-						  . "    } "
-						  . " } "
+//						  . " if ( is_selected.length == 0 ){ "															//FixIn: 10.7.1.5.1
+//						  . "    if (  ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prop('nodeName').toLowerCase() ) "
+//						  . "       && ( jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().length )  "
+//						  . "       && ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().prop('nodeName').toLowerCase() )   ){ "
+//						  . "         is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().prev().find('option').last(); "
+//						  . "    } "
+//						  . " } "
 						  . " jQuery( '#" . $dropdown_id . " option:selected' ).prop('selected', false); "
 						  . " if ( is_selected.length == 0 ){ "
-						  . "    is_selected = jQuery( '#" . $dropdown_id . " option' ).last(); "
+//						  . "    is_selected = jQuery( '#" . $dropdown_id . " option' ).last(); "													//FixIn: 10.7.1.5.1
+						  . "    is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().find('option').last(); "					//FixIn: 10.7.1.5.1
 						  . " } "
 						  . " if ( is_selected.length > 0 ){ "
 						  .	"    is_selected.prop('selected', true).trigger('change'); "
@@ -1827,13 +1828,13 @@ function wpbc_smpl_form__ui__selectbox_next_btn( $dropdown_id, $is_apply_rotatin
 			, 'link' => 'javascript:void(0)'    // Direct link or skip  it
 			, 'action' => //"console.log( 'ON CLICK:', jQuery( '[name=\"set_days_customize_plugin\"]:checked' ).val() , jQuery( 'textarea[id^=\"date_booking\"]' ).val() );"                    // Some JavaScript to execure, for example run  the function
 						  " var is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).next(); "
-						  . " if ( is_selected.length == 0 ){ "
-						  . "    if (  ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prop('nodeName').toLowerCase() ) "
-						  . "       && ( jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().length )  "
-						  . "       && ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().prop('nodeName').toLowerCase() )   ){ "
-						  . "         is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().find('option').first(); "
-						  . "    } "
-						  . " } "
+//						  . " if ( is_selected.length == 0 ){ "															//FixIn: 10.7.1.5.1
+//						  . "    if (  ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().prop('nodeName').toLowerCase() ) "
+//						  . "       && ( jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().length )  "
+//						  . "       && ( 'optgroup' == jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().prop('nodeName').toLowerCase() )   ){ "
+//						  . "         is_selected = jQuery( '#" . $dropdown_id . " option:selected' ).parent().next().find('option').first(); "
+//						  . "    } "
+//						  . " } "
 						  . " jQuery( '#" . $dropdown_id . " option:selected' ).prop('selected', false); "
 						  . " if ( is_selected.length == 0 ){ "
 						  . "    is_selected = jQuery( '#" . $dropdown_id . " option' ).first(); "

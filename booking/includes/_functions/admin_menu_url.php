@@ -358,21 +358,7 @@ function wpbc_is_availability_page( $server_param = 'REQUEST_URI' ) {
 	return false;
 }
 
-/**
- * Check if this Booking > Customize page
- * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
- * @return boolean true | false
- */
-function wpbc_is_customize_plugin_page( $server_param = 'REQUEST_URI' ) {                                            //FixIn: 9.8.0.1
 
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-customize_plugin') !== false )
-		) {
-		return true;
-	}
-	return false;
-}
 
 /**
  * Check if this Booking > Setup page

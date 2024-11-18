@@ -286,31 +286,31 @@ class WPBC_Welcome {
                 $this->minimum_capability, 'wpbc-about',
                 array( $this, 'content_whats_new' )
         );
-        // Getted Started
-        add_dashboard_page(
-                sprintf( 'Get Started - Booking Calendar' ),
-                sprintf( 'Get Started' ),
-                $this->minimum_capability, 'wpbc-getting-started',
-                array( $this, 'content_getted_started' )
-        );
-        // Pro
-        add_dashboard_page(
-                sprintf( 'Get Premium - Booking Calendar' ),
-                sprintf( 'Get Premium' ),
-                $this->minimum_capability, 'wpbc-about-premium',
-                array( $this, 'content_premium' )
-        );
+		//        // Getted Started
+		//        add_dashboard_page(
+		//                sprintf( 'Get Started - Booking Calendar' ),
+		//                sprintf( 'Get Started' ),
+		//                $this->minimum_capability, 'wpbc-getting-started',
+		//                array( $this, 'content_getted_started' )
+		//        );
+		//        // Pro
+		//        add_dashboard_page(
+		//                sprintf( 'Get Premium - Booking Calendar' ),
+		//                sprintf( 'Get Premium' ),
+		//                $this->minimum_capability, 'wpbc-about-premium',
+		//                array( $this, 'content_premium' )
+		//        );
         //FixIn: 8.5.1.2
  		remove_submenu_page( 'index.php', 'wpbc-about' );
-        remove_submenu_page( 'index.php', 'wpbc-getting-started' );
-        remove_submenu_page( 'index.php', 'wpbc-about-premium' );
+        //remove_submenu_page( 'index.php', 'wpbc-getting-started' );
+        //remove_submenu_page( 'index.php', 'wpbc-about-premium' );
     }
 
     // Head
     public function admin_head() {
         remove_submenu_page( 'index.php', 'wpbc-about' );
-        remove_submenu_page( 'index.php', 'wpbc-getting-started' );
-        remove_submenu_page( 'index.php', 'wpbc-about-premium' );
+        //remove_submenu_page( 'index.php', 'wpbc-getting-started' );
+        //remove_submenu_page( 'index.php', 'wpbc-about-premium' );
     }
 
     // Title
@@ -462,13 +462,13 @@ if(0){
                         <!--Thank you for updating to the latest version. <strong><code><?php echo $display_version; ?></code></strong>
                         <br/>Booking Calendar has become more polished, powerful and easy to use than ever before.-->
                     </td>
-                    <td style="width:10%">
+                    <!--td style="width:10%">
                         <a  href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-getting-started' ), 'index.php' ) ) ); ?>"
                             style="float: right; height: 36px; line-height: 34px;" 
                             class="button-primary"
                             >&nbsp;<strong>Get Started</strong> <span style="font-size: 20px;line-height: 18px;padding-left: 5px;">&rsaquo;&rsaquo;&rsaquo;</span>
                         </a>
-                    </td>
+                    </td-->
                 </tr>
             </table>
             <?php
@@ -476,6 +476,8 @@ if(0){
             $this->maintence_section();
 
 			$this->section_9_8_css();
+
+			wpbc_welcome_section_10_8( $this );
 
 			wpbc_welcome_section_10_7( $this );
 
@@ -506,13 +508,13 @@ if(0){
                     <td>
 
                     </td>
-                    <td style="width:10%">
+                    <!--td style="width:10%">
                         <a  href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-getting-started' ), 'index.php' ) ) ); ?>"
                             style="float: right; height: 36px; line-height: 34px;" 
                             class="button-primary"
                             >&nbsp;<strong>Get Started</strong> <span style="font-size: 20px;line-height: 18px;padding-left: 5px;">&rsaquo;&rsaquo;&rsaquo;</span>
                         </a>
-                    </td>
+                    </td-->
                 </tr>
             </table>
   

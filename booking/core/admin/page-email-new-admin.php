@@ -931,7 +931,7 @@ function wpbc__get_replace_shortcodes__email_new_admin( $booking_id, $bktype, $f
 																										)
 																			) );
 	$replace['add_to_google_cal_url']    = htmlspecialchars_decode( esc_url( $google_calendar_link ) );
-	$replace['add_to_google_cal_button'] = '<a href="' . esc_attr( $replace['add_to_google_cal_url'] ) . '" target="_blank" rel="nofollow">Add to Google Calendar</a>';
+	$replace['add_to_google_cal_button'] = '<a href="' . esc_attr( $replace['add_to_google_cal_url'] ) . '" target="_blank" rel="nofollow">' . esc_attr__( 'Add to Google Calendar', 'booking' ) . '</a>';
 
 
 	// Get additional  replace paramaters to the email shortcodes
