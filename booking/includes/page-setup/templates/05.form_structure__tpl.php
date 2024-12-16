@@ -58,8 +58,11 @@ function wpbc_stp_wiz__template__form_structure(){
 		<?php
 		// == Main Section ==
 		?>
-		<div class="wpbc_ajx_page__section_main">
+		<div class="wpbc_ajx_page__section_main"><?php
 
+			wpbc_maybe_show_warning_conflict__wordfence();
+
+			?>
 			<div class="wpbc_widgets">
 
 				<div class="wpbc_widget             wpbc_widget_preview_booking_form">

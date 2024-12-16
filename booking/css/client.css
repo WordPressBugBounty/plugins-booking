@@ -74,6 +74,7 @@
     color:#ddd;
 }
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form input[type="text"],
+.wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form input[type="email"],
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form textarea,
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form select{
     color:#000;
@@ -141,6 +142,7 @@ form.booking_form {
 /* TEXT, SELECT, TEXTAREA *****************************************************/
 .booking_form_div textarea,
 .booking_form_div input[type="text"],
+.booking_form_div input[type="email"],
 .booking_form_div select {
     border-color: #DFDFDF;
     -moz-border-radius: 4px;
@@ -150,33 +152,6 @@ form.booking_form {
     border-width: 1px;
     vertical-align: baseline;
 }
-/*.resource_selection_div select,                                                       !* FixIn: 7.2.0.2 *!*/
-/*.booking_form_div select,                                                       !* FixIn: 7.2.0.2 *!*/
-/*.booking_form_div textarea,*/
-/*.booking_form_div input[type="text"] {*/
-/*    box-sizing: content-box;*/
-/*    -mox-box-sizing: content-box;*/
-/*    -webkit-box-sizing: content-box;*/
-/*    height:28px;*/
-/*    padding:2px 8px;    */
-/*}*/
-/* Height */
-/*.booking_form_div textarea,  */
-/*.booking_form_div select[multiple], */
-/*.booking_form_div select[size]{*/
-/*    height:auto;*/
-/*}*/
-
-/* Width */
-
-/*
-.booking_form .form-group .controls select,
-.booking_form select,
-.booking_form textarea,
-.booking_form input[type="text"]{
-    width:250px;
-}
- */
 
 /* Time inputs at the form */
 .booking_form input.wpdev-validates-as-time {
@@ -822,6 +797,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 /* Mobile *********************************************************************/
 @media (max-width: 782px) {
     .wpdevelop input[type="text"],
+    .wpdevelop input[type="email"],
     .wpdevelop select{
         font-size: 1.1em;
         height: 36px;                                                           /* FixIn: 7.2.0.2 */
@@ -936,7 +912,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
                 }
                 .booking_form .wpbc_form_columns .form-group .controls select,
                 .booking_form .wpbc_form_columns select,
-                .booking_form .wpbc_form_columns input[type="text"] {
+                .booking_form .wpbc_form_columns input[type="text"],
+                .booking_form .wpbc_form_columns input[type="email"] {
                     width: 95%;
                 }
                 .booking_form .wpbc_form_columns textarea {
@@ -1089,7 +1066,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
     }
     .wpbc_container_booking_form .wpbc__field .form-group .controls select,
     .wpbc_container_booking_form .wpbc__field select,
-    .wpbc_container_booking_form .wpbc__field input[type="text"] {
+    .wpbc_container_booking_form .wpbc__field input[type="text"],
+    .wpbc_container_booking_form .wpbc__field input[type="email"] {
         width: 100%;
     }
     .wpbc_container_booking_form .wpbc__field textarea,
@@ -1159,6 +1137,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
     /* == W i d t h == */
     .wpbc_container_booking_form select,
     .wpbc_container_booking_form input[type="text"],
+    .wpbc_container_booking_form input[type="email"],
     .wpbc_container_booking_form textarea{
         max-width: 100%;
         max-width: Min(30em, 100%);
@@ -1231,6 +1210,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
     }
     div .wpbc_container_booking_form select,
     div .wpbc_container_booking_form input[type="text"],
+    div .wpbc_container_booking_form input[type="email"],
     div .wpbc_container_booking_form textarea{
         max-width: 98%;
         width: 98%;
@@ -1240,6 +1220,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 /* In case we use columns,  then max width 100% */
 .wpbc_container_booking_form .wpbc__field select,
 .wpbc_container_booking_form .wpbc__field input[type="text"],
+.wpbc_container_booking_form .wpbc__field input[type="email"],
 .wpbc_container_booking_form .wpbc__field textarea {
     max-width: 100%;
 }
@@ -1248,7 +1229,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 .wpbc_container_booking_form :is(.wpbc_form_center, .wpbc_form_right) textarea,
 .wpbc_container_booking_form :is(.wpbc_form_center, .wpbc_form_right) select,
 */
-.wpbc_container_booking_form :is(.wpbc_form_center, .wpbc_form_right) input[type="text"]{
+.wpbc_container_booking_form :is(.wpbc_form_center, .wpbc_form_right) input[type="text"],
+.wpbc_container_booking_form :is(.wpbc_form_center, .wpbc_form_right) input[type="email"]{
     /*width: Min(340px, 100%);*/
 }
 .wpbc_container_booking_form :is(.wpbc_form_center, .wpbc_form_right) textarea,
@@ -1272,6 +1254,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 .resource_selection_div select,
 .wpbc_container.wpbc_container_booking_form select/*,
 .wpbc_container.wpbc_container_booking_form input[type="text"],
+.wpbc_container.wpbc_container_booking_form input[type="email"],
 .wpbc_container.wpbc_container_booking_form textarea */{
     height:auto;
     font-size: 1rem;

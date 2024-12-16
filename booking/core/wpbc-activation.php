@@ -1343,7 +1343,7 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
         
      //$mu_option4delete[]='booking_paypal_price_period';                         // No need to  delete,  this option, because different users can  have different settings. During init defined at ../booking/inc/gateways/page-gateways.php
 
-		$default_options['booking_gateways_order'] = 'stripe_v3,paypal_std_co,paypal,authorizenet,sage,bank_transfer,pay_cash,ipay88,ideal';   //     Default Original Payment Gateways
+		$default_options['booking_gateways_order'] = 'stripe_v3,paypal_std_co,paypal,authorizenet,sage,redsys,bank_transfer,pay_cash,ipay88,ideal';   //     Default Original Payment Gateways
 	//$mu_option4delete[]='booking_gateways_order';        	// No need to delete ^
 
 		//FixIn: 8.1.3.29

@@ -147,7 +147,7 @@ function wpbc_admin_show_message_processing( message_type ){
     if ( message == 'undefined' )  
         message = 'Processing'
       
-    message = ' <span class="wpdevelop"><span class="wpbc_icn_rotate_right wpbc_spin wpbc_ajax_icon wpbc_processing"  aria-hidden="true"></span></span> ' + message + '...';
+    message = ' <span class="wpdevelop"><span class="wpbc_icn_rotate_right wpbc_spin wpbc_ajax_icon wpbc_processing wpbc_icn_autorenew"  aria-hidden="true"></span></span> ' + message + '...';
     
     wpbc_admin_show_message( message, 'info', 10000 );
 }

@@ -92,7 +92,7 @@ class WPBC_AJX__Availability {
 		$default_resource_id = wpbc_get_default_resource();
 
 		return  array(
-			  'do_action'	    	=> array( 'validate' => array( 'none', 'set_availability', 'make_reset', 'erase_availability' ),     'default' => 'none' )
+			  'do_action'	    	=> array( 'validate' => array( 'none', 'set_availability', 'make_reset', 'erase_availability', 'change_month_number_in_row' ),     'default' => 'none' )			//FixIn: 10.8.1.5
 
 		    , 'resource_id' 		=> array( 'validate' => 'd',  	'default' => $default_resource_id )	    	// 'digit_or_csd' can check about 'digit_or_csd' in arrays, as well         // if ['0'] - All  booking resources
 			, 'dates_selection' 	=> array( 'validate' => 's', 	'default' => '' )
@@ -105,7 +105,7 @@ class WPBC_AJX__Availability {
 			, 'calendar__start_week_day' 		=> array( 'validate' => array( '0','1','2','3','4','5','6' ),	'default' => intval(get_bk_option( 'booking_start_day_weeek' )) )
 			, 'calendar__days_selection_mode' 	=> array( 'validate' => array( 'multiple', 'dynamic' ),     	'default' => 'dynamic' )
 			, 'calendar__view__visible_months' 	=> array( 'validate' => 'd',  	'default' => 12 )
-			, 'calendar__view__months_in_row' 	=> array( 'validate' => 'd',  	'default' => 4 )
+			, 'calendar__view__months_in_row' 	=> array( 'validate' => 'd',  	'default' => 3 )						//FixIn: 10.8.1.5
 			, 'calendar__view__width' 			=> array( 'validate' => 's',  	'default' => '100%' )
 			, 'calendar__view__max_width' 		=> array( 'validate' => 's',  	'default' => '' )			// default ''   it's will be set  as 341px,
 			, 'calendar__view__cell_height' 	=> array( 'validate' => 's',  	'default' => '38px' )			// '48px' || ''
@@ -165,7 +165,7 @@ class WPBC_AJX__Availability {
 				$this->template__main_page_content();
 
 				$this->template_toolbar_select_booking_resource();
-
+				$this->template_toolbar_select_month_number_in_row();        //FixIn: 10.8.1.5
 				$this->template__widget_available_unavailable();
 				$this->template__widget_calendar_legend();
 			}
@@ -208,6 +208,10 @@ class WPBC_AJX__Availability {
 
 							var wpbc_widget__available_unavailable = wp.template( 'wpbc_ajx_widget_available_unavailable' );
 							var wpbc_widget__calendar_legend       = wp.template( 'wpbc_ajx_widget_calendar_legend' );
+
+							//FixIn: 10.8.1.5
+							var wpbc_ajx_select_month_number_in_row = wp.template( 'wpbc_ajx_select_month_number_in_row' );
+							jQuery( '#wpbc_template__select_month_number_in_row').html( wpbc_ajx_select_month_number_in_row( data	) );
 
 						<?php if (0) { ?></script><?php } ?>
 						#>
@@ -423,6 +427,60 @@ class WPBC_AJX__Availability {
 			?></script><?php
 		}
 
+
+
+		private function template_toolbar_select_month_number_in_row(){                                                 //FixIn: 10.8.1.5
+
+			// Template
+			?><script type="text/html" id="tmpl-wpbc_ajx_select_month_number_in_row"><?php
+
+				/*
+				?><# console.log( ' == TEMPLATE PARAMS "wpbc_ajx_change_month_number_in_row" == ', data ); #><?php
+				*/
+				$booking_action = 'select_month_number_in_row';
+
+				$el_id = 'ui_btn_' . $booking_action;
+
+				?><div class="ui_element"><?php
+					?><div class="wpbc_ui_separtor" style="margin-left: 8px;"></div><?php
+				?></div><?php
+
+				?><div class="ui_element"><?php
+
+					wpbc_flex_label(
+										array(
+											  'id' 	  => $el_id
+											, 'label' => '<span class="" style="font-weight:600;">' . __( 'Number of months in a row', 'booking' ) . ':</span>'
+										)
+								   );
+
+					?><select class="wpbc_ui_control wpbc_ui_select change_month_number_in_row_selectbox"
+							  id="<?php echo $el_id; ?>" name="<?php echo $el_id; ?>"
+
+							  <?php /* ?>onfocus="javascript:console.log( 'ON FOCUS:', jQuery( this ).val(), 'in element:' , jQuery( this ) );"<?php /**/ ?>
+
+							  onchange="javascript:wpbc_admin_show_message_processing( '' );wpbc_ajx_availability__send_request_with_params( {
+																									  'calendar__view__months_in_row': jQuery( '.change_month_number_in_row_selectbox option:selected' ).val()
+																									, 'do_action': 'change_month_number_in_row'
+																								} );"
+					  ><#
+						for (var month_index = 2; month_index < 7; month_index++ ){
+						#><option value="{{month_index}}"
+									  <#
+										if ( data.ajx_cleaned_params.calendar__view__months_in_row == month_index ) {
+											#> selected="SELECTED" <#
+										}
+									  #>
+							>{{month_index}}</option><#
+						}
+						#>
+					</select><?php
+
+				?></div><?php
+
+			?></script><?php
+		}
+
 	// </editor-fold>
 
 
@@ -556,7 +614,12 @@ class WPBC_AJX__Availability {
 
 			}
 
-
+			//FixIn: 10.8.1.5
+			if ( 'change_month_number_in_row' == $request_params['do_action'] ) {
+				// $request_params['calendar__view__months_in_row'];		// Saving this parameter
+				$data_arr['ajx_after_action_message'] = sprintf( __( 'Set month number in a row as %s', 'booking' ), '<strong>' . $request_params['calendar__view__months_in_row'] . '</strong>' );
+				$data_arr['ajx_after_action_result']  = 1;
+			}
 
 			$data_arr['booked_dates'] = wpbc__sql__get_booked_dates( array(
 																			'resource_id' => $request_params['resource_id']

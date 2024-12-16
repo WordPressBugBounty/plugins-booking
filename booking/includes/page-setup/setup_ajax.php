@@ -462,20 +462,42 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				// -----------------------------------------------------------------------------------------------------
 				// ==  UNAVAILABLE  Today days  ==
 				// -----------------------------------------------------------------------------------------------------
-				$data_arr['ui']['booking_unavailable_days_num_from_today'] = intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) );
+				//FixIn: 10.8.1.4
+				if ( 'm' === substr( get_bk_option( 'booking_unavailable_days_num_from_today' ), - 1 ) ) {
+					// -------------------------------------------------------------------------------------------------
+					// == Minutes ==
+					// -------------------------------------------------------------------------------------------------
+					$data_arr['ui']['booking_unavailable_days_num_from_today'] = intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) );
 
-				// Hints
-				$last_unavailable_date = '';
-				$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': <span style="text-transform: lowercase;font-size:0.9em;">'
-				                                                                                                . __( 'None', 'booking' ) . '</span>';
+					// Hints
+					$last_unavailable_date = '';
+					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': <span style="text-transform: lowercase;font-size:0.9em;">'
+																													. __( 'None', 'booking' ) . '</span>';
+					if ( ! empty( $data_arr['ui']['booking_unavailable_days_num_from_today'] ) ) {
+						$last_unavailable_date = wp_date( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $data_arr['ui']['booking_unavailable_days_num_from_today'] ) - 1 ) . ' minutes' ) );
+						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M, H:i' ) . ' - ' . wp_date( 'd M, H:i', strtotime( $last_unavailable_date ) );
+						//$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wpbc_datetime__use_wp_timezone( 'd M, H:i' ) . ' - ' . wpbc_datetime__use_wp_timezone( 'd M, H:i', strtotime( $last_unavailable_date ) );
+					}
+					$data_arr['ui']['booking_unavailable_days_num_from_today'] .= 'm';
+				} else {
+					// -------------------------------------------------------------------------------------------------
+					// == Days ==
+					// -------------------------------------------------------------------------------------------------
+					$data_arr['ui']['booking_unavailable_days_num_from_today'] = intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) );
 
-				if ( 1 == $data_arr['ui']['booking_unavailable_days_num_from_today'] ){
-					$last_unavailable_date = wp_date( 'Y-m-d 00:00:00' );
-					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M', strtotime( $last_unavailable_date ) );
-				}
-				if ( $data_arr['ui']['booking_unavailable_days_num_from_today'] > 1 ){
-					$last_unavailable_date = wp_date( 'Y-m-d 00:00:00', strtotime( '+' . ( $data_arr['ui']['booking_unavailable_days_num_from_today'] - 1 ) . ' days' ) );
-					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M' ) . ' - ' . wp_date( 'd M', strtotime( $last_unavailable_date ) );
+					// Hints
+					$last_unavailable_date = '';
+					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': <span style="text-transform: lowercase;font-size:0.9em;">'
+																													. __( 'None', 'booking' ) . '</span>';
+
+					if ( 1 == $data_arr['ui']['booking_unavailable_days_num_from_today'] ){
+						$last_unavailable_date = wp_date( 'Y-m-d 00:00:00' );
+						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M', strtotime( $last_unavailable_date ) );
+					}
+					if ( $data_arr['ui']['booking_unavailable_days_num_from_today'] > 1 ){
+						$last_unavailable_date = wp_date( 'Y-m-d 00:00:00', strtotime( '+' . ( $data_arr['ui']['booking_unavailable_days_num_from_today'] - 1 ) . ' days' ) );
+						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M' ) . ' - ' . wp_date( 'd M', strtotime( $last_unavailable_date ) );
+					}
 				}
 
 				// -----------------------------------------------------------------------------------------------------

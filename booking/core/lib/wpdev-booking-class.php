@@ -540,7 +540,7 @@ class wpdev_booking {
                                     for (var bk_af_i=0; bk_af_i<bk_af_count; bk_af_i++)   {
                                         bk_af_element = bk_af_submit_form.elements[bk_af_i];
                                         //FixIn: 9.4.3.4
-                                        if    ( bk_af_element.type == "text" ) 
+                                        if  (  ( bk_af_element.type == "text" ) ||   ( bk_af_element.type == "email" ) ) 
                                             if    ( bk_af_element.name !== ("date_booking' . $resource_id . '" ) )
                                             {
                                                 // NickName	//FixIn: 8.6.1.2

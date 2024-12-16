@@ -130,6 +130,8 @@ function wpbc_stp_wiz__template__bookings_types(){
 						?>
 					</div><?php
 
+					wpbc_maybe_show_warning_conflict__wordfence('margin: 20px 20px 5px 2px;');
+
 				?>
 				</div>
 			</div>

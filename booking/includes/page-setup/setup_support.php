@@ -238,3 +238,52 @@ function wpbc_setup_wizard_page__get_left_navigation_menu_arr(){
 }
 
 
+/**
+ * Show Warning Conflict with "Wordfence" plugin
+ *
+ * @return void
+ */
+function wpbc_maybe_show_warning_conflict__wordfence( $style = '' ) {
+	if ( class_exists( 'wordfence' ) ) {
+
+		$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_show_warning_wordfence' );        //FixIn: 9.9.0.8
+		if ( $is_panel_visible ) {
+			?><div id="wpbc_show_warning_wordfence" class="wpbc-settings-notice notice-error notice-helpful-info0"
+				   style="max-width: Min(450px, 100%);margin: auto;padding: 4px 15px 7px 20px;font-size: 14px;line-height: 28px;margin-bottom: 25px; display: flex;flex-flow:row nowrap;justify-content: space-between;align-items: flex-start;border-left-color: #e2892b;<?php echo $style; ?>"
+			   >
+				<div>
+				   <span style="margin: 0 5px 0 0;color: #e2892b;" ><i class="menu_icon icon-1x wpbc_icn_warning_amber"></i></span>
+					<?php
+					echo '<strong>' . __('Important!' ,'booking') . '</strong> ' ;
+
+					printf( __( 'We detect that you use %s plugin.', 'booking' ), '<strong>Wordfence</strong>', );
+
+					echo '<br>';
+
+					printf( __( 'If you encounter any issues, follow this %stroubleshooting instruction%s.', 'booking' ),
+							'<a href="https://wpbookingcalendar.com/faq/setup-wizard-on-step-4-keeps-going-to-blank-page/" target="_blank" style="font-weight:600;text-underline-offset: 3px;text-decoration-thickness: 0px;text-decoration-style: dashed;">', '</a>' );
+				?>
+				</div>
+				<div><?php
+				ob_start();
+				$is_panel_visible = wpbc_is_dismissed( 'wpbc_show_warning_wordfence', array(
+												'title' => '<i class="menu_icon icon-1x wpbc_icn_close"></i> ',
+												'hint'  => __( 'Dismiss', 'booking' ),
+												'class' => 'wpbc_panel_get_started_dismiss',
+												'css'   => 'background: #fff;border-radius: 7px;'
+											));
+
+				$dismiss_x_button = ob_get_clean();
+
+				echo wpbc_replace__js_scripts__to__tpl_scripts(  $dismiss_x_button );
+
+			?></div>
+			</div><?php
+		}
+
+
+
+	}
+}
+
+

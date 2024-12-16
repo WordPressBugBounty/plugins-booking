@@ -73,6 +73,10 @@ function wpbc_ajx_availability__toolbar( $escaped_search_request_params ) {
 
 			?></div><?php
 
+			?><div class="ui_group"  id="wpbc_template__select_month_number_in_row"><?php
+				//FixIn: 10.8.1.5
+			?></div><?php
+
 			?><div class="ui_group" style="flex:1 1 auto;"><?php
 
 					//	Reset Button

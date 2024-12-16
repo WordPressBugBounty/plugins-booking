@@ -594,13 +594,32 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         
         //  Unavailable days from today  ///////////////////////////////////////
         $field_options = array();
-        for ($ii = 0; $ii < 92; $ii++) { $field_options[ $ii ] = $ii; }
+
+
+		//FixIn: 10.8.1.4
+		$field_options[0] = ' - ';
+		foreach ( range( 5, 55 , 5 ) as $extra_num) {                                           // Each 5 minutes
+		    $field_options[ $extra_num . 'm' ] = $extra_num . ' ' . __( 'minutes', 'booking' );
+		}
+		$field_options[ '60' . 'm' ] =  '1 ' . __( 'hour', 'booking' );
+		foreach ( range( 65, 115 , 5 ) as $extra_num) {                                         // 1 hour + Each 5 minutes
+		    $field_options[ $extra_num . 'm' ] =  '1 ' . __( 'hour', 'booking' ) . ' ' . ($extra_num - 60 ) . ' ' . __( 'minutes', 'booking' );
+		}
+		foreach ( range( 120, 1380 , 60 ) as $extra_num) {                                      // Each Hour based on minutes
+		    $field_options[ $extra_num . 'm' ] = ($extra_num / 60) . ' ' . __( 'hours', 'booking' );
+		}
+
+
+		$field_options[ 1 ] = 1  . ' ' . __( 'day', 'booking' );
+	    for ( $ii = 2; $ii < 92; $ii ++ ) {
+		    $field_options[ $ii ] = $ii . ' ' . __( 'days', 'booking' );
+	    }
         
         $this->fields['booking_unavailable_days_num_from_today'] = array(   
                                     'type'          => 'select'
                                     , 'default'     => $default_options_values['booking_unavailable_days_num_from_today']                                  //'0'            
-                                    , 'title'       => __('Unavailable days from today', 'booking')
-                                    , 'description' => __('Select number of unavailable days in calendar start from today.' ,'booking')
+                                    , 'title'       => __('Unavailable time from current time', 'booking')
+                                    , 'description' => __('Select an unavailable time interval on the calendar, starting from today\'s current time.' ,'booking')
                                     , 'options'     => $field_options
                                     , 'group'       => 'availability'
                             );

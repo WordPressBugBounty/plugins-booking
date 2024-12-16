@@ -1172,7 +1172,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		 */
 		function wpbc_db__booking_approve( $booking_id ) {
 		
-			$booking_id = wpbc_clean_digit_or_csd( $booking_id );                   // Check  paramter  if it number or comma separated list  of numbers
+			$booking_id = wpbc_clean_digit_or_csd( $booking_id );                   									// Check  parameter  if it number or comma separated list  of numbers
 		
 			global $wpdb;
 		
@@ -1181,7 +1181,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 			if ( false === $wpdb->query( $update_sql ) ) {
 				return false;
 			}
-		
+
+			// In case if the booking was in Trash,  then  restore it. 													//FixIn: 10.8.1.1
+			if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking AS bk SET bk.trash = 0 WHERE booking_id IN ({$booking_id})" ) ){
+				//return false;
+			}
+
 			return true;
 		}
 		

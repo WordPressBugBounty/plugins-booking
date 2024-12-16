@@ -46,7 +46,7 @@ function wpbc_template__cal_availability__action_validate_data( $post_data ){
 
 	$escaped_data = array(
 		'wpbc_swp_cal_availability__weekdays'     => '',// '999',
-		'booking_unavailable_days_num_from_today' => intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) ),
+		'booking_unavailable_days_num_from_today' => get_bk_option( 'booking_unavailable_days_num_from_today' ),
 		'booking_available_days_num_from_today'   => intval( get_bk_option( 'booking_available_days_num_from_today' ) ),
 		'booking_unavailable_extra_in_out'        => get_bk_option( 'booking_unavailable_extra_in_out' ),
 		'booking_unavailable_extra_minutes_in'    => get_bk_option( 'booking_unavailable_extra_minutes_in' ),
@@ -64,9 +64,13 @@ function wpbc_template__cal_availability__action_validate_data( $post_data ){
 		$escaped_data[ $key ] = implode( ',', $post_data_arr );
 	}
 	// -----------------------------------------------------------------------------------------------------------------
+	//FixIn: 10.8.1.4
 	$key = 'booking_unavailable_days_num_from_today';
 	if ( ( isset( $post_data[ $key ] ) ) ) {
 		$escaped_data[ $key ] = intval( $post_data[ $key ] );
+		if ( 'm' === substr( $post_data[ $key ], - 1 ) ) {
+			$escaped_data[ $key ] .= 'm';
+		}
 	}
 	// -----------------------------------------------------------------------------------------------------------------
 	$key = 'booking_available_days_num_from_today';

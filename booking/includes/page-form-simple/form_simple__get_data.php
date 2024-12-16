@@ -874,7 +874,8 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			}
 
 			if ( $form_field['type'] == 'email' ) {
-				$my_form.='   <input type="text" name="'. $form_field['name'] . $resource_id . '" id="' . $form_field['name'] . $resource_id . '" class="input-xlarge wpdev-validates-as-email'
+				//FixIn: 10.8.1.2
+				$my_form.='   <input type="email" name="'. $form_field['name'] . $resource_id . '" id="' . $form_field['name'] . $resource_id . '" class="input-xlarge wpdev-validates-as-email'
 								. ( ( $form_field['required'] == 'On' ) ? ' wpdev-validates-as-required' : '' )
 								. ' wpdev-validates-as-required'        //FixIn: 7.0.1.22
 							  .'" '

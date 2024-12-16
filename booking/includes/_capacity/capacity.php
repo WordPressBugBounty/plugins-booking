@@ -1644,12 +1644,25 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		 */
 		function wpbc_support_capacity__day_status__from_today_unavailable( $availability_per_day, $my_day_tag, $resource_id ){
 
+			//FixIn: 10.8.1.4
+
 			// -----------------------------------------------------------------------------------------------------        // from_today_unavailable
 			// 2. Unavailable days from today
 			$unavailable_days_num_from_today = get_bk_option( 'booking_unavailable_days_num_from_today' );
 
+			//FixIn: 10.8.1.4
+			if ( ! empty( $unavailable_days_num_from_today ) ) {
+				if ( 'm' === substr( $unavailable_days_num_from_today, - 1 ) ) {
+					$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' minutes' );                // + 0 days
+				} else {
+					$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                   // + 0 days
+				}
+			} else {
+				$unavailable_time_from_today = '0';
+				$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                   // + 0 days
+			}
+
 			//FixIn: 9.9.0.17
-			$start_date_unix       = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                   // + 0 days
 			$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( date( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
 			$today_timestamp_wp_timezone  = strtotime( $date_with_wp_timezone );
 			$days_number = intval( (  $today_timestamp_wp_timezone - strtotime( $my_day_tag ) ) / 86400 );

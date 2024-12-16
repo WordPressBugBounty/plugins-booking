@@ -74,7 +74,7 @@ class WPBC_Page_SettingsUp extends WPBC_Page_Structure {
 		</script>
 		<?php
 		//	//FixIn: 10.1.3.1
-		//do_action( 'wpbc_premium_content_overview' );
+
 		wpbc_redirect( 'https://wpbookingcalendar.com/features/#content' );
 	}
 

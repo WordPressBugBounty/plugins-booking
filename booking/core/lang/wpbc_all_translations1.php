@@ -1,4 +1,12 @@
 <?php  function wpbc_all_translations2() { $wpbc_all_translations = array(); 
+ $wpbc_all_translations[] = __('%s and %s terms have higher priority than a range %s days.', 'booking'); 
+ $wpbc_all_translations[] = __('%s - definition of check-out date.', 'booking'); 
+ $wpbc_all_translations[] = __('Specific cost will take affect, only if it active (the box at the left side is checked) and if "Check In" (start) date belong to selected season filter or if set "Any days".', 'booking'); 
+ $wpbc_all_translations[] = __(' for all days!', 'booking'); 
+ $wpbc_all_translations[] = __('from the cost of 1 day ', 'booking'); 
+ $wpbc_all_translations[] = __('per 1 day', 'booking'); 
+ $wpbc_all_translations[] = __('to', 'booking'); 
+ $wpbc_all_translations[] = __('Additional cost in %s per 1 day', 'booking'); 
  $wpbc_all_translations[] = __('Customize booking costs by seasonal daily pricing and booking duration, with features for partial payments and early/late check-in discounts.', 'booking'); 
  $wpbc_all_translations[] = __('Costs and Rates Settings', 'booking'); 
  $wpbc_all_translations[] = __('Set Rate', 'booking'); 
@@ -988,12 +996,4 @@
  $wpbc_all_translations[] = __('Imported', 'booking'); 
  $wpbc_all_translations[] = __('Plugin bookings', 'booking'); 
  $wpbc_all_translations[] = __('Filter bookings by creation booking date', 'booking'); 
- $wpbc_all_translations[] = __('Filter bookings by payment status', 'booking'); 
- $wpbc_all_translations[] = __('Any Status', 'booking'); 
- $wpbc_all_translations[] = __('Unknown Status', 'booking'); 
- $wpbc_all_translations[] = __('Payment status', 'booking'); 
- $wpbc_all_translations[] = __('min-max', 'booking'); 
- $wpbc_all_translations[] = __('Reload bookings listing', 'booking'); 
- $wpbc_all_translations[] = __('Approve selected bookings', 'booking'); 
- $wpbc_all_translations[] = __('Set selected bookings as pending', 'booking'); 
  } 

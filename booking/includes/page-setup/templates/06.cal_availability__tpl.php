@@ -347,6 +347,27 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 			//  Options
 			$dropdown_options = range( 0, 31 );
 
+			//FixIn: 10.8.1.4
+			$field_options = array();
+
+			$field_options[0] = ' - ';
+			foreach ( range( 5, 55 , 5 ) as $extra_num) {                                           // Each 5 minutes
+				$field_options[ $extra_num . 'm' ] = $extra_num . ' ' . __( 'minutes', 'booking' );
+			}
+			$field_options[ '60' . 'm' ] =  '1 ' . __( 'hour', 'booking' );
+			foreach ( range( 65, 115 , 5 ) as $extra_num) {                                         // 1 hour + Each 5 minutes
+				$field_options[ $extra_num . 'm' ] =  '1 ' . __( 'hour', 'booking' ) . ' ' . ($extra_num - 60 ) . ' ' . __( 'minutes', 'booking' );
+			}
+			foreach ( range( 120, 1380 , 60 ) as $extra_num) {                                      // Each Hour based on minutes
+				$field_options[ $extra_num . 'm' ] = ($extra_num / 60) . ' ' . __( 'hours', 'booking' );
+			}
+			$field_options[ 1 ] = 1  . ' ' . __( 'day', 'booking' );
+			for ( $ii = 2; $ii < 92; $ii ++ ) {
+				$field_options[ $ii ] = $ii . ' ' . __( 'days', 'booking' );
+			}
+			$dropdown_options = $field_options;
+
+
 			$params_select = array(
 								  'id'       => $el_id 				// HTML ID  of element
 								, 'name'     => $booking_action
@@ -865,6 +886,8 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 				echo '<a href="'. esc_attr( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab' ).'">Settings > Availability</a>';
 			?>
 		</div><?php
+
+		wpbc_maybe_show_warning_conflict__wordfence('margin: 20px 0;');
 	}
 
 
