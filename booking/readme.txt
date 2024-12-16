@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.9
+Stable tag: 10.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -306,6 +306,10 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.9.1 =
+- Changes in **all** versions:
+ 	* **Fix**  An error of type E_PARSE was caused in line 259 of the file ..booking/includes/page-setup/setup_support.php. Error message: syntax error, unexpected ')' (10.9.1.1)
+
 = 10.9 =
 - Changes in **all** versions:
 	* **New**: Added the ability to define unavailable intervals for specific hours and minutes starting from the current time, in addition to defining unavailable dates starting from today. (10.8.1.4)

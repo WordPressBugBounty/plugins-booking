@@ -7,10 +7,10 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.9
+Version: 10.9.1
 */
 
-/*  Copyright 2009 - 2024  www.wpbookingcalendar.com  (email: info@wpbookingcalendar.com),
+/*  Copyright 2009 - 2025  www.wpbookingcalendar.com  (email: info@wpbookingcalendar.com),
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ Version: 10.9
 if ( ! defined( 'ABSPATH' ) ) die( '<h3>Direct access to this file do not allow!</h3>' );                               // Exit if accessed directly
 
 
-if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {       define( 'WP_BK_VERSION_NUM',    '10.9' ); }
-if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {      define( 'WP_BK_MINOR_UPDATE',       ! true    ); }
+if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {       define( 'WP_BK_VERSION_NUM',    '10.9.1' ); }
+if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {      define( 'WP_BK_MINOR_UPDATE',       true    ); }
 
 
 // ---------------------------------------------------------------------------------------------------------------------

@@ -255,8 +255,8 @@ function wpbc_maybe_show_warning_conflict__wordfence( $style = '' ) {
 				   <span style="margin: 0 5px 0 0;color: #e2892b;" ><i class="menu_icon icon-1x wpbc_icn_warning_amber"></i></span>
 					<?php
 					echo '<strong>' . __('Important!' ,'booking') . '</strong> ' ;
-
-					printf( __( 'We detect that you use %s plugin.', 'booking' ), '<strong>Wordfence</strong>', );
+					//FixIn: 10.9.1.1
+					printf( __( 'We detect that you use %s plugin.', 'booking' ), '<strong>Wordfence</strong>' );
 
 					echo '<br>';
 
