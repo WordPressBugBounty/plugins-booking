@@ -333,7 +333,15 @@ function wpbc_ui_settings__panel__publish_into_new( $params = array() ){
 function wpbc_stp_wiz__is_exist_published_page_with_booking_form() {
 
 	$is_wp_post_booking = false;
-	$wp_post_booking = get_page_by_path( 'wpbc-booking' );
+
+	//FixIn: 10.9.2.5
+	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url
+		$post_name_slug = 'wp-booking-calendar';
+	} else {                                                    // Old page already was Created     - Use old url
+		$post_name_slug = 'wpbc-booking';
+	}
+	$wp_post_booking = get_page_by_path( $post_name_slug );
+
 
 	if ( empty( ! $wp_post_booking ) ) {
 

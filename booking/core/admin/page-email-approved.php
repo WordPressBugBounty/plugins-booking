@@ -864,6 +864,7 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 
     // Resources ///////////////////////////////////////////////////////////////
     $bk_title = wpbc_get_resource_title( $bktype );
+	$parent_resource_title = wpbc_get_parent_resource_title( $bktype );        //FixIn: 10.9.2.4
 
     // Dates ///////////////////////////////////////////////////////////////////
     $my_dates4emeil = wpbc_db__get_sql_dates__in_booking__as_str( $booking_id );
@@ -907,6 +908,7 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 	$replace['cost_digits_only'] = $booking_cost_digits_only;
     $replace[ 'siteurl' ]       = htmlspecialchars_decode( '<a href="' . home_url() . '">' . home_url() . '</a>' );
     $replace[ 'resource_title'] = wpbc_lang( $bk_title );
+	$replace[ 'parent_resource_title'] = wpbc_lang( $parent_resource_title );														//FixIn: 10.9.2.4
     $replace[ 'bookingtype' ]   = $replace[ 'resource_title'];
     $replace[ 'remote_ip'     ] = wpbc_get_user_ip();   //FixIn:7.1.2.4                      // The IP address from which the user is viewing the current page. 
     $replace[ 'user_agent'    ] = $_SERVER['HTTP_USER_AGENT'];                  // Contents of the User-Agent: header from the current request, if there is one. 

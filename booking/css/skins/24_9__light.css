@@ -139,7 +139,9 @@ div.block_hints.datepick * {
   justify-content: center;
   align-content: center;
 }
-.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height{
+.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height,
+.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height table{
+  min-width: 40px;  /* //FixIn: 10.9.2.3 */
   width: 40px !important;
   height:  40px !important;
     width: calc(42px + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
@@ -228,11 +230,20 @@ div.datepick-inline table.datepick td {
   border-radius: 4px;
   padding: 0;
 }
+/* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2 */
+table.wpbc_calendar tr:nth-child(2n) > td,
+table.wpbc_calendar tr:nth-child(2n+1) > td {
+  background-color: transparent;
+  /*background-color: var( --wpbc_cal-main-background-color );*/
+}
 /* Background of one calendar month */
 .datepick-inline .datepick-one-month {
     padding: 3px;
 }
-.datepick-inline .datepick{
+/* //FixIn: 10.9.2.2 */
+.datepick-inline .datepick,
+.datepick-inline:not(.wpbc_calendar_legend_table_width_height) .datepick thead,
+.datepick-inline:not(.wpbc_calendar_legend_table_width_height) .datepick tbody{
   background: var( --wpbc_cal-main-background-color );
 }
 /* Previous & Next links  and TITLE BACKGROUND */

@@ -237,7 +237,13 @@ function wpbc_get_email_help_shortcodes( $skip_shortcodes = array() , $email_exa
 			$fields[] = sprintf( $icn, '<code>[resource_title]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( '%s or %s - inserting the title of the booking resource ', 'booking' ), '[resource_title]', '[bookingtype]' ) ) );
 		}
 	}
-    
+	//FixIn: 10.9.2.4
+	if ( class_exists( 'wpdev_bk_biz_l' ) ) {
+		if ( ! in_array( 'bookingtype', $skip_shortcodes ) ) {
+			$fields[] = sprintf( $icn, '<code>[parent_resource_title]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( '%s - inserting the title of the parent booking resource ', 'booking' ), '[parent_resource_title]' ) ) );
+		}
+	}
+
         
     // [cost]    
     if ( class_exists('wpdev_bk_biz_s') )     

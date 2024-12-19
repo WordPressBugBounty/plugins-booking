@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.9.1
+Stable tag: 10.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -306,6 +306,15 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.9.2 =
+- Changes in **all** versions:
+ 	* **Improvement** Centering Calendar in a row, if used "Wizard Form" style and simple booking form  configuration,  for more clean  look at wide screens.(10.9.2.1)
+	* **Fix**: Resolving CSS conflict of calendar legend items showing in some themes. (10.9.2.3)
+	* **Fix**: Resolving issue of incorrectly  showing unavailable dates at the Days Availability page and in Search Form,  if used "Unavailable time from current time" less then 1 day.	 (10.9.2.6)
+ 	* **Under Hood** During initial activation  of the plugin,  create default page with  booking form slug: "wp-booking-calendar" instead of "wpbc-booking" (10.9.2.5)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Shortcode [parent_resource_title] in the emails for showing booked "parent" booking resource, if booked some child booking resource. Useful in situation to show name/type of booked room instead of room number. (10.9.2.4)
+
 = 10.9.1 =
 - Changes in **all** versions:
  	* **Fix**  An error of type E_PARSE was caused in line 259 of the file ..booking/includes/page-setup/setup_support.php. Error message: syntax error, unexpected ')' (10.9.1.1)

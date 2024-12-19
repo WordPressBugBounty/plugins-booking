@@ -65,7 +65,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 
 		$my_partially .= '<span class="' . $booking_timeslot_day_bg_as_available . '">';
 		$my_partially .= '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     //FixIn: 9.3.1.4
-		$my_partially .= '<table class="datepick" style=""><tbody><tr>';
+		$my_partially .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
 		if ( ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time() ) ) {                                                   //FixIn: 8.9.4.10
 			$my_partially .= '<td class="datepick-days-cell date_available date_approved timespartly check_in_time check_in_time_date_approved wpbc_calendar_legend_day_cell_height">';
 		} else {
@@ -90,7 +90,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 	// Unavailable
 	if (1){
 		$my_unavailable = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     //FixIn: 9.3.1.4
-		$my_unavailable .= '<table class="datepick" style=""><tbody><tr>';
+		$my_unavailable .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
 		$my_unavailable .= '<td class="datepick-days-cell datepick-unselectable date_user_unavailable wpbc_calendar_legend_day_cell_height">';
 		$my_unavailable .= '<div class="wpbc-cell-box">';
 		$my_unavailable .= '	<div class="date-cell-content">';
@@ -106,7 +106,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 	// Resource Unavailable
 	if (1){
 		$my_resource_unavailable = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     //FixIn: 9.3.1.4
-		$my_resource_unavailable .= '<table class="datepick" style=""><tbody><tr>';
+		$my_resource_unavailable .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
 		$my_resource_unavailable .= '<td class="datepick-days-cell resource_unavailable date_user_unavailable wpbc_calendar_legend_day_cell_height">';
 		$my_resource_unavailable .= '<div class="wpbc-cell-box">';
 		$my_resource_unavailable .= '	<div class="date-cell-content">';

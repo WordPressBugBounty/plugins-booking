@@ -35,6 +35,7 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	if ( ! empty( $unavailable_time_from_today ) ) {
 		if ( 'm' === substr( $unavailable_time_from_today, - 1 ) ) {
 			$gmt_time = date( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $unavailable_time_from_today ) - 1 ) . ' minutes' ) );
+			$unavailable_time_from_today = '0'; //FixIn: 10.9.2.6
 		}
 	} else {
 		$unavailable_time_from_today = '0';

@@ -221,6 +221,13 @@ class wpdev_booking {
 			$calendar_css_class_outer .= ' wpbc_change_over_triangle';
         }
 
+
+		// filenames,  such  as 'multidays.css'
+	    $calendar_skin_name = basename( get_bk_option( 'booking_skin' ) );
+		if ( wpbc_is_calendar_skin_legacy( $calendar_skin_name ) ) {
+			$calendar_css_class_outer .= ' wpbc_calendar_skin_legacy'; //. wpbc_get_slug_format( get_bk_option( 'booking_skin' ) );
+		}
+
 	    $calendar = '<div class="' . esc_attr( $calendar_css_class_outer ) . '">' . $calendar . '</div>';
 
         return $calendar;

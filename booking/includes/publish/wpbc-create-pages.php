@@ -319,17 +319,22 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
-
-	$wp_post = get_page_by_path( 'wpbc-booking' );
-
 	$post_url = '';
+
+	//FixIn: 10.9.2.5
+	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url
+		$post_name_slug = 'wp-booking-calendar';
+	} else {                                                    // Old page already was Created     - Use old url
+		$post_name_slug = 'wpbc-booking';
+	}
+	$wp_post = get_page_by_path( $post_name_slug );
 
 	if ( empty( $wp_post ) ) {                                                                                          // No default page.  Create it.
 
 		$page_params = array(
 			'post_title'   => esc_html( __( 'Booking Form', 'booking' ) ),
 			'post_content' => '[booking resource_id=1]',
-			'post_name'    => 'wpbc-booking'
+			'post_name'    => $post_name_slug
 		);
 		$post_id = wpbc_create_page( $page_params );
 

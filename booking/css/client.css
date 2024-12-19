@@ -1191,9 +1191,21 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 .datepick-inline .datepick-days-cell div.date-content-top{
     font-size: 0.7em;
 }
-
 .wpbc_booking_form_simple .wpbc__form__div{
     width:100%;
+}
+/* Simple booking form as Wizard - Calendar centered //FixIn: 10.9.2.1 */
+.wpbc_booking_form_simple .wpbc_wizard_step .wpbc_r_calendar.wpbc__field label,
+.wpbc_booking_form_simple .wpbc_wizard_step .wpbc_r_calendar.wpbc__field .wpbc_calendar_wraper {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+/* Simple booking form as Wizard - Calendar Legend aligning  //FixIn: 10.9.2.1 */
+.wpbc_booking_form_simple .wpbc_wizard_step .wpbc_r_calendar.wpbc__field .block_hints{
+    max-width: 400px;
+    justify-content: space-around;
 }
 .wpbc_container_booking_form  .wpbc_booking_form_simple .wpbc__field label{
     flex: 1 1 100%;

@@ -41,6 +41,34 @@ function wpbc_get_resource_title( $resource_id = 1 ) {
 	return $resource_title;
 }
 
+
+/**
+ * Get parent booking resource title (translated/localized)
+ *
+ * @param $resource_id
+ *
+ * @return string
+ */
+function wpbc_get_parent_resource_title( $resource_id = 1 ) {                                                           //FixIn: 10.9.2.4
+
+	$resource_title = '';
+
+	if ( ( function_exists( 'wpbc_is_this_child_resource' ) ) && ( wpbc_is_this_child_resource( $resource_id ) ) ) {
+		$resource_id = wpbc_get_parent_resource( $resource_id );
+	}
+
+	if ( function_exists( 'wpbc_db__get_resource_title' ) ) {
+
+		$resource_title = wpbc_db__get_resource_title( $resource_id );
+
+		if (! empty($resource_title)) {
+			$resource_title = wpbc_lang( $resource_title );
+		}
+	}
+
+	return $resource_title;
+}
+
 /**
  * Check, if exist booking for this hash. If existed, get Email of this booking
  *
