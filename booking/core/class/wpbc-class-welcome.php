@@ -444,6 +444,8 @@ if(0){
 
 			$this->section_9_8_css();
 
+			//wpbc_welcome_section_10_9_3( $this );
+
 			wpbc_welcome_section_10_9( $this );
 
 			wpbc_welcome_section_10_8( $this );

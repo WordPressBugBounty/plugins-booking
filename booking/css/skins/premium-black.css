@@ -154,6 +154,9 @@ div.wpbc_ajx_availability_container .datepick-inline .datepick-unselectable,
 .block_hints .date_approved.block_check_in_out, 
 .block_hints .block_booked, 
 .datepick-inline .date_approved,
+/* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2 */
+table.wpbc_calendar tr:nth-child(2n) > td.date_approved,
+table.wpbc_calendar tr:nth-child(2n+1) > td.date_approved,
 /* A P P R O V E D  - BACKGROUND for Check In Pending & Check Out Approved ||  Check Out Pending & Check In Approved   Dates    //FixIn: 6.0.1.2 */
 td.timespartly.check_in_time.check_out_time.check_in_time_date2approve.check_out_time_date_approved div.check-in-div, 
 td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in_time_date_approved div.check-out-div {    
@@ -184,6 +187,9 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 .block_hints .date2approve.block_check_in_out, 
 .block_hints .block_pending, 
 .datepick-inline .date2approve, 
+/* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2 */
+table.wpbc_calendar tr:nth-child(2n) > td.date2approve,
+table.wpbc_calendar tr:nth-child(2n+1) > td.date2approve,
 /* P E N D I N G  - BACKGROUND for Check In Approved & Check Out Pending ||  Check Out Approved & Check In Pending    Dates     //FixIn: 6.0.1.2  */
 td.timespartly.check_in_time.check_out_time.check_in_time_date_approved.check_out_time_date2approve div.check-in-div, 
 td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_in_time_date2approve div.check-out-div {    

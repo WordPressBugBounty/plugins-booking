@@ -1204,7 +1204,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 }
 /* Simple booking form as Wizard - Calendar Legend aligning  //FixIn: 10.9.2.1 */
 .wpbc_booking_form_simple .wpbc_wizard_step .wpbc_r_calendar.wpbc__field .block_hints{
-    max-width: 400px;
+    /*max-width: 400px;*/
+    max-width: 550px;
     justify-content: space-around;
 }
 .wpbc_container_booking_form  .wpbc_booking_form_simple .wpbc__field label{

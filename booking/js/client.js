@@ -3,7 +3,7 @@
 // Check fields at form and then send request
 function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
 
-    var target_elm = jQuery( ".booking_form_div" ).trigger( "booking_form_submit_click", [bk_type, submit_form, wpdev_active_locale] );     //FixIn: 8.8.3.13
+    var target_elm = jQuery( ".booking_form_div" ).trigger( "booking_form_submit_click", [bk_type, submit_form, wpdev_active_locale] );     // FixIn: 8.8.3.13.
     if  (
             ( jQuery( target_elm ).find( 'input[name="booking_form_show_summary"]' ).length > 0 )
          && ( 'pause_submit' === jQuery( target_elm ).find( 'input[name="booking_form_show_summary"]' ).val() )
@@ -12,14 +12,14 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
         return false;
     }
 
-    //FixIn: 8.4.0.2
+    // FixIn: 8.4.0.2.
     var is_error = wpbc_check_errors_in_booking_form( bk_type );
     if ( is_error ) { return false; }
 
     // Show message if no selected days in Calendar(s)
     if (document.getElementById('date_booking' + bk_type).value == '')  {
 
-        var arr_of_selected_additional_calendars = wpbc_get_arr_of_selected_additional_calendars( bk_type );            //FixIn: 8.5.2.26
+        var arr_of_selected_additional_calendars = wpbc_get_arr_of_selected_additional_calendars( bk_type );            // FixIn: 8.5.2.26.
 
         if ( arr_of_selected_additional_calendars.length == 0 ) {
             wpbc_front_end__show_message__error_under_element( '#booking_form_div' + bk_type + ' .bk_calendar_frame', _wpbc.get_message( 'message_check_no_selected_dates' ), 3000 );
@@ -34,7 +34,7 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
     var el_type;
 
 
-    //FixIn:6.1.1.3
+    // FixIn: 6.1.1.3.
     if( typeof( wpbc_is_this_time_selection_not_available ) == 'function' ) {
 
         if ( document.getElementById('date_booking' + bk_type).value == '' )  {         // Primary calendar not selected.
@@ -63,11 +63,11 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
 
 
     // Serialize form here
-    for ( var i = 0; i < count; i++ ){  //FixIn: 9.1.5.1
+    for ( var i = 0; i < count; i++ ){  // FixIn: 9.1.5.1.
         element = submit_form.elements[i];
 
         if ( jQuery( element ).closest( '.booking_form_garbage' ).length ) {
-            continue;       // Skip elements from garbage                                           //FixIn: 7.1.2.14
+            continue;       // Skip elements from garbage                                           // FixIn: 7.1.2.14.
         }
 
         if (
@@ -75,7 +75,7 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
             && ( element.type !== 'hidden' )
             && ( element.name !== ( 'date_booking' + bk_type ) )
             // && ( jQuery( element ).is( ':visible' ) )                                            //FixIn: 7.2.1.12.2 // Its prevent of saving hints,  and some other hidden element
-        ) {           // Skip buttons and hidden element - type                                     //FixIn: 7.2.1.12
+        ) {           // Skip buttons and hidden element - type                                     // FixIn: 7.2.1.12.
 
 
             // Get Element Value
@@ -95,11 +95,11 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
                 } else {
                         // Check  if this radio required,  and if it does not check,  then show warning, otherwise if it is not required or some other option checked skip this loop
                         // We need to  check  it here, because radio have the several  options with  same name and type, and otherwise we will save several options with  selected and empty values.
-                    if (                                                        //FixIn: 7.0.1.62
+                    if (                                                        // FixIn: 7.0.1.62.
                            ( element.className.indexOf('wpdev-validates-as-required') !== -1 )
                         && ( jQuery( element ).is( ':visible' ) )                                            //FixIn: 7.2.1.12.2 // Its prevent of saving hints,  and some other hidden element
                         && ( ! jQuery(':radio[name="'+element.name+'"]', submit_form).is(":checked") ) ) {
-                        wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_radio_box' ) );   		//FixIn: 8.5.1.3
+                        wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_radio_box' ) );   		// FixIn: 8.5.1.3.
                         return;
                     }
                     continue;
@@ -140,19 +140,19 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
                 if ( element.className.indexOf('wpdev-validates-as-required') !== -1 ){
                     if  ((element.type =='checkbox') && ( element.checked === false)) {
                         if ( ! jQuery(':checkbox[name="'+element.name+'"]', submit_form).is(":checked") ) {
-                            wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_required_for_check_box' ) );   		//FixIn: 8.5.1.3
+                            wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_required_for_check_box' ) );   		// FixIn: 8.5.1.3.
                             return;
                         }
                     }
                     if  (element.type =='radio') {
                         if ( ! jQuery(':radio[name="'+element.name+'"]', submit_form).is(":checked") ) {
-                            wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_required_for_radio_box' ) );   		//FixIn: 8.5.1.3
+                            wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_required_for_radio_box' ) );   		// FixIn: 8.5.1.3.
                             return;
                         }
                     }
 
-                    if (  (element.type != 'checkbox') && (element.type != 'radio') && ( '' === wpbc_trim( inp_value ) )  ){       //FixIn: 8.8.1.3   //FixIn:7.0.1.39       //FixIn: 8.7.11.12
-                        wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_required' ) );   		//FixIn: 8.5.1.3
+                    if (  (element.type != 'checkbox') && (element.type != 'radio') && ( '' === wpbc_trim( inp_value ) )  ){       //FixIn: 8.8.1.3   //FixIn:7.0.1.39       // FixIn: 8.7.11.12.
+                        wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_required' ) );   		// FixIn: 8.5.1.3.
                         return;
                     }
                 }
@@ -163,7 +163,7 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
                     var reg = /^([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,})$/;
                     if ( inp_value != '' )
                         if(reg.test(inp_value) == false) {
-                            wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_email' ) );   		//FixIn: 8.5.1.3
+                            wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_email' ) );   		// FixIn: 8.5.1.3.
                             return;
                         }
                 }
@@ -181,13 +181,13 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
 
                             // Recheck the values of the both emails, if they do  not equla show warning
                             if ( jQuery('[name="' + primary_email_name + bk_type + '"]').val() !== inp_value ) {
-                                wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_same_email' )  );   		//FixIn: 8.5.1.3
+                                wpbc_front_end__show_message__warning( element , _wpbc.get_message( 'message_check_same_email' )  );   		// FixIn: 8.5.1.3.
                                 return;
                             }
                         }
                     }
                     // Skip one loop for the email veryfication field
-                    continue;                                                                                           //FixIn: 8.1.2.15
+                    continue;                                                                                           // FixIn: 8.1.2.15.
                 }
 
             }
@@ -249,12 +249,12 @@ function form_submit_send( bk_type, formdata, captcha_chalange, user_captcha ,wp
 
     var is_send_emeils = 1;
     if ( jQuery('#is_send_email_for_pending').length ) {
-        is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       //FixIn: 8.7.9.5
+        is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       // FixIn: 8.7.9.5.
         if ( false === is_send_emeils ) { is_send_emeils = 0; }
         else                            { is_send_emeils = 1; }
     }
 
-    if ( document.getElementById( 'date_booking' + bk_type ).value != '' ){        //FixIn:6.1.1.3
+    if ( document.getElementById( 'date_booking' + bk_type ).value != '' ){        // FixIn: 6.1.1.3.
         send_ajax_submit( bk_type, formdata, captcha_chalange, user_captcha, is_send_emeils, my_booking_hash, my_booking_form, wpdev_active_locale ); // Ajax sending request
     } else {
         jQuery( '#booking_form_div' + bk_type ).hide();
@@ -271,12 +271,21 @@ function form_submit_send( bk_type, formdata, captcha_chalange, user_captcha ,wp
 
         id_additional_str = document.getElementById('additional_calendars' + bk_type).value;                            //Loop have to be here based on , sign
         id_additional_arr = id_additional_str.split(',');
-
+        //FixIn: 10.9.4.1.
+        for ( var ia = 0; ia < id_additional_arr.length; ia++ ) {
+            id_additional_arr[ia] = parseInt( id_additional_arr[ia] );
+        }
         if ( ! jQuery( '#booking_form_div' + bk_type ).is( ':visible' ) ) {
             wpbc_booking_form__spin_loader__show( bk_type );                                                            // Show Spinner
         }
 
         for ( var ia = 0; ia < id_additional_arr.length; ia++ ){
+            //FixIn: 10.9.4.1.
+            if ( id_additional_arr[ia] <=0 ) {
+                continue;
+            }
+
+
             formdata_additional_arr = formdata;
             formdata_additional = '';
             id_additional = id_additional_arr[ia];
@@ -300,7 +309,7 @@ function form_submit_send( bk_type, formdata, captcha_chalange, user_captcha ,wp
                 jQuery('#gateway_payment_forms' + bk_type).after('<div id="gateway_payment_forms'+id_additional+'"></div>');
                 jQuery('#gateway_payment_forms' + bk_type).after('<div id="ajax_respond_insert'+id_additional+'" style="display:none;"></div>');
             }
-            //FixIn: 8.5.2.17
+            // FixIn: 8.5.2.17.
             send_ajax_submit( id_additional ,formdata_additional,captcha_chalange,user_captcha,is_send_emeils,my_booking_hash,my_booking_form ,wpdev_active_locale  );  // Submit
         }
     }
@@ -337,14 +346,14 @@ function send_ajax_submit( resource_id, formdata, captcha_chalange, user_captcha
 // Hint labels inside of input boxes
 jQuery(document).ready( function(){
 
-    jQuery('div.inside_hint').on( 'click', function(){                   //FixIn: 8.7.11.12
-            jQuery(this).css('visibility', 'hidden').siblings('.has-inside-hint').trigger( 'focus' );   //FixIn: 8.7.11.12
+    jQuery('div.inside_hint').on( 'click', function(){                   // FixIn: 8.7.11.12.
+            jQuery(this).css('visibility', 'hidden').siblings('.has-inside-hint').trigger( 'focus' );   // FixIn: 8.7.11.12.
     });
 
-    jQuery('input.has-inside-hint').on( 'blur', function(){                   //FixIn: 8.7.11.12
+    jQuery('input.has-inside-hint').on( 'blur', function(){                   // FixIn: 8.7.11.12.
         if ( this.value == '' )
             jQuery(this).siblings('.inside_hint').css('visibility', '');
-    }).on( 'focus', function(){                                                 //FixIn: 8.7.11.12
+    }).on( 'focus', function(){                                                 // FixIn: 8.7.11.12.
             jQuery(this).siblings('.inside_hint').css('visibility', 'hidden');
     });
 
@@ -352,7 +361,7 @@ jQuery(document).ready( function(){
 });
 
 
-//FixIn: 8.4.0.2
+// FixIn: 8.4.0.2.
 /**
  * Check errors in booking form  fields, and show warnings if some errors exist.
  * Check  errors,  like not selected dates or not filled requred form  fields, or not correct entering email or phone fields,  etc...
@@ -383,12 +392,12 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
                     // Show Warning only  if the calendar visible ( we are at step with  calendar)
                     if (
                             (  ( jQuery( '#calendar_booking' + bk_type ).is( ':visible' )  ) && ( '' == jQuery( el ).val() )  )
-                         && ( wpbc_get_arr_of_selected_additional_calendars( bk_type ).length == 0 )                    //FixIn: 8.5.2.26
-                    ){            //FixIn: 8.4.4.5
+                         && ( wpbc_get_arr_of_selected_additional_calendars( bk_type ).length == 0 )                    // FixIn: 8.5.2.26.
+                    ){            // FixIn: 8.4.4.5.
 
                         var notice_message_id = wpbc_front_end__show_message__error_under_element( '#booking_form_div' + bk_type + ' .bk_calendar_frame', _wpbc.get_message( 'message_check_no_selected_dates' ) , 3000 );
 
-						//wpbc_do_scroll('#calendar_booking' + bk_type);            // Scroll to the calendar    		//FixIn: 8.5.1.3
+						//wpbc_do_scroll('#calendar_booking' + bk_type);            // Scroll to the calendar    		// FixIn: 8.5.1.3.
 						is_error_in_field = true;    // Error
                     }
                 }
@@ -405,7 +414,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 
                             if (
                                     ( ! jQuery( el ).is( ':checked' ))
-                                 && ( ! jQuery( ':checkbox[name="' + el.name + '"]', my_form ).is( ":checked" ) )       //FixIn: 8.5.2.12
+                                 && ( ! jQuery( ':checkbox[name="' + el.name + '"]', my_form ).is( ":checked" ) )       // FixIn: 8.5.2.12.
                             ){
                                 var checkbox_parent_element;
 
@@ -441,7 +450,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 
 							var inp_value = jQuery( el ).val();
 
-                            if ( '' === wpbc_trim( inp_value ) ){                                                       //FixIn: 8.8.1.3        //FixIn: 8.7.11.12
+                            if ( '' === wpbc_trim( inp_value ) ){                                                       //FixIn: 8.8.1.3        // FixIn: 8.7.11.12.
 
                                 var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_required' ) );
 
@@ -544,7 +553,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
         } );
 
         if ( fields_with_errors_arr.length > 0 ){
-            jQuery( fields_with_errors_arr[ 0 ] ).trigger( 'focus' );    //FixIn: 9.3.1.9
+            jQuery( fields_with_errors_arr[ 0 ] ).trigger( 'focus' );    // FixIn: 9.3.1.9.
         }
 	}
 
@@ -552,7 +561,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 }
 
 
-//FixIn: 8.6.1.15
+// FixIn: 8.6.1.15.
 /**
  * Go to next  specific step in Wizard style booking form, with
  * check all required elements specific step, otherwise show warning message!
@@ -564,9 +573,9 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 function wpbc_wizard_step( el, step_num, step_from ){
     var br_id = jQuery( el ).closest( 'form' ).find( 'input[name^="bk_type"]' ).val();
 
-    //FixIn: 8.8.1.5
+    // FixIn: 8.8.1.5.
     if ( ( undefined == step_from ) || ( step_num > step_from ) ){
-        if ( 1 != step_num ){                                                                       //FixIn: 8.7.7.8
+        if ( 1 != step_num ){                                                                       // FixIn: 8.7.7.8.
             var is_error = wpbc_check_errors_in_booking_form( br_id );
             if ( is_error ){
                 return false;
@@ -611,13 +620,13 @@ function wpbc_hook__init_booking_form_wizard_buttons() {
     } );
 }
 
-//FixIn: 10.1.3.2
+// FixIn: 10.1.3.2.
 jQuery( document ).ready( function (){
     wpbc_hook__init_booking_form_wizard_buttons();
 } );
 
 
-//FixIn: 8.6.1.15
+// FixIn: 8.6.1.15.
 /**
  * Check if at least  one element from  array  of  elements names in booking form  visible  or not.
  * Usage Example:   if ( wpbc_is_some_elements_visible( br_id, ['rangetime', 'durationtime', 'starttime', 'endtime'] ) ){ ... }
@@ -738,7 +747,7 @@ function get_last_day_of_selection(dates) {
  * @param int bk_type
  * @returns array
  */
-function wpbc_get_arr_of_selected_additional_calendars( bk_type ){                                                      //FixIn: 8.5.2.26
+function wpbc_get_arr_of_selected_additional_calendars( bk_type ){                                                      // FixIn: 8.5.2.26.
 
     var selected_additionl_calendars = [];
 

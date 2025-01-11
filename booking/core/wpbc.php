@@ -212,7 +212,7 @@ public function define_admin_menu(){
     self::$instance->admin_menu['new']    = new WPBC_Admin_Menus(
                                                     'wpbc-new' , array (
                                                     'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => ucwords( __('Add booking', 'booking') )
+                                                  , 'menu_title'    => '+ ' . ucwords( __('Add booking', 'booking') )	//FixIn: 10.9.3.1
                                                   , 'page_header'   => ucwords( __('Add booking','booking') )
                                                   , 'browser_header'=> ucwords( __('Add booking', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
                                                   , 'user_role' => get_bk_option( 'booking_user_role_addbooking' )

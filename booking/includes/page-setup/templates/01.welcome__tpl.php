@@ -46,6 +46,16 @@ function wpbc_stp_wiz__template__welcome(){
 			<div class="wpbc__row">
 				<div class="wpbc__field">
 					<p style="font-size:15px;line-height: 2.2;"><?php printf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ); ?></p>
+
+					<div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 20px 20px 5px 2px;">
+						<?php
+						 	echo '<strong>' . __('Note!' ,'booking') . '</strong> ';
+							printf( __( 'If you have previously configured the Booking Calendar, this setup will override some of your settings. In this case, you can %sskip setup%s.', 'booking' ),
+								  '<a href="javascript:void(0)" onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { \'do_action\': \'skip_wizard\' } ); ">'
+								, '</a>' );
+							echo ' ';
+						?>
+					</div>
 				</div>
 			</div>
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:20px;margin-bottom:20px;border-bottom:1px solid #ccc;"></div>

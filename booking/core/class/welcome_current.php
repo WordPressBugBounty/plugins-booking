@@ -4,6 +4,117 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 
+function wpbc_welcome_section_10_9_3( $obj ){
+
+	$section_param_arr = array( 'version_num' => '10.9', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+
+
+	//$obj->asset_path = 'http://beta/assets/';	// TODO: 2024-06-01 comment this
+
+
+	// <editor-fold     defaultstate="collapsed"                        desc=" = F R E E = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = F R E E =
+	// -----------------------------------------------------------------------------------------------------------------
+	?><div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<!-- <h2>--><?php //echo wpbc_replace_to_strong_symbols( 'New Modern Calendar Themes and More!' ); ?><!--</h2>-->
+			<!--h3><?php echo wpbc_replace_to_strong_symbols( 'New: Multi-Step Wizard for Booking Forms (Free Version)!' ); ?></h3-->
+			<div class="wpbc_wn_col" style="flex: 1 1 33%;">
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'New: Calendar Color Themes' ); ?></h3>
+				<ul>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; Added 1 dark  and 4 light Calendar Skins' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="margin-top: -3em;">
+			<div class="wpbc_wn_col">
+				 <img src="<?php echo $obj->section_img_url( '10.9.3/24_9_dark_3_availability_page.png' ); ?>" style="margin:10px 0;width:98%;" />
+				 <img src="<?php echo $obj->section_img_url( '10.9.3/24_9_green_3_availability_page.png' ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+			<div class="wpbc_wn_col">
+				 <img src="<?php echo $obj->section_img_url( '10.9.3/24_9_green_2_availability_page.png' ); ?>" style="margin:10px 0;width:98%;" />
+				 <img src="<?php echo $obj->section_img_url( '10.9.3/24_9_green_4_availability_page.png' ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+	</div>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<!-- <h2>--><?php //echo wpbc_replace_to_strong_symbols( 'New Modern Calendar Themes and More!' ); ?><!--</h2>-->
+			<div class="wpbc_wn_col" style="flex: 1 1 33%;">
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'New: **Redsys Payment Gateway** Support!' ); ?></h3>
+				<ul>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; Added integration with the **Redsys payment gateway** using the **Redsys Redirection** method. This feature is ideal for Spanish users, enabling them to seamlessly receive payments for bookings.' ); ?></li>
+					<li><span style="font-size: 0.9em;font-style: italic;"><?php echo wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ); ?></span></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col">
+				 <img src="<?php echo $obj->section_img_url( '10.9/wp-booking-calendar__redsys_settings.png' ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+	</div>
+	<?php
+
+
+	// </editor-fold>
+
+	// <editor-fold     defaultstate="collapsed"                        desc="  = M I X E D = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = M I X E D =
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wpbc_replace_to_strong_symbols( 'Additional Improvements in Free and Pro versions' ); ?></h2>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col">
+				<ul>
+					<?php // Free ?>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **New**: You can now select the "Number of months in a row" value from the Options toolbar on the WP Booking Calendar > Availability > Days Availability page. This feature improves the clarity of calendar day displays in certain calendar skins. The default value is set to 3 months.' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved**: Setup Wizard Troubleshooting for Wordfence Users! A warning message now appears at the 4th and 5th steps of the Setup Wizard if the Wordfence plugin is installed, along with a link to troubleshoot the issue. This ensures smoother configuration and guides users in resolving potential conflicts.' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improvement** Now, when approving a booking that was previously in the Trash, the system will automatically restore it, streamlining the approval process.' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improvement** The email fields now use the HTML input type email, ensuring better validation and user experience when entering email addresses.' ); ?></li>
+				</ul>
+
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'Improvements in Pro Versions' ); ?></h3>
+				<ul>
+					<?php // Pro ?>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; We\'ve addressed an issue where the "real-time" cost wasn\'t displayed correctly based on selected days and other options. This occurred occasionally due to multiple requests causing server response delays. (10.8.1.3)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; Fixed a warning issue that occurred on the WP Booking Calendar > Availability > Season Availability page.' ); ?></li>
+				</ul>
+
+			</div>
+
+		</div>
+		<?php /* ?>
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col">
+				<h3><?php echo wpbc_replace_to_strong_symbols( 'Bug Fixes' ); ?></h3>
+				<ul>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Calendar Behavior**: We’ve removed the highlighting of days in the calendar when the mouse cursor moves outside the calendar container for a smoother user experience. (10.5.2.4)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Timeline Navigation**: We’ve fixed an issue where the dropdown list would auto-close after selecting the start date in the navigation panel on the Timeline view. (10.5.2.1)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Page Workflow**: Notice messages from other plugins are now hidden in the header on Booking Calendar pages. This prevents interruptions to the normal workflow caused by messages from other plugins. (10.5.2.2)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Start Time Validation**: We’ve added a fix to check the start time and prevent the selection of times that have already passed for today. (10.5.2.3)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '**Pro Versions:**' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Submit Button Color Issue Resolved**: We’ve fixed an issue where the color of the "Send" button wasn’t saving correctly after a second click on dates, when the range dates selection mode was enabled. (10.5.2.3)' ); ?></li>
+					<li><?php echo wpbc_replace_to_strong_symbols( '&bull; **Improved Date/Time Hints Display**: Resolved an issue where date/time hints were not showing in the booking form if no date was selected. Previously, a "0" would display if only the time was selected. (10.5.2.7)' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<?php */ ?>
+	</div><?php
+	// </editor-fold>
+
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
 function wpbc_welcome_section_10_9( $obj ){
 
 	$section_param_arr = array( 'version_num' => '10.9', 'show_expand' => false );

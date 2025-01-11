@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.9.2
+Stable tag: 10.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -306,6 +306,13 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.9.3 =
+- Changes in **all** versions:
+	* **New**: Added 4 "Calendar Color Themes": 24_9__green_1, 24_9__green_2, 24_9__green_3, 24_9__green_4, 24_9__dark_3
+ 	* **Improvement** Change name of "Add booking" menu  to  "+ Add booking" (10.9.3.1)
+	* **Fix**: Showing calendar days padding in some WordPress Themes. (10.9.4.3)
+	* **Fix**: Additional escaping of "additional calendar ID" in the Booking Calendar shortcode.
+
 = 10.9.2 =
 - Changes in **all** versions:
  	* **Improvement** Centering Calendar in a row, if used "Wizard Form" style and simple booking form  configuration,  for more clean  look at wide screens.(10.9.2.1)
