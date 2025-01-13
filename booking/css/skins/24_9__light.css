@@ -230,12 +230,12 @@ div.datepick-inline table.datepick td {
   border-radius: 4px;
   padding: 0;
 }
-/* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2 */
+/* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2
 table.wpbc_calendar tr:nth-child(2n) > td,
 table.wpbc_calendar tr:nth-child(2n+1) > td {
   background-color: transparent;
-  /*background-color: var( --wpbc_cal-main-background-color );*/
 }
+*/
 /* Background of one calendar month */
 .datepick-inline .datepick-one-month {
     padding: 3px;
