@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ==  Ajax Response on creation of new booking
@@ -21,7 +21,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 	// Security  ------------------------------------------------------------------------------------------------------ // in Ajax Post:   'nonce': _wpbc.get_secure_param( 'nonce' ),
 	$action_name    = 'wpbc_calendar_load_ajx' . '_wpbcnonce';
 	$nonce_post_key = 'nonce';
-	if ( wpbc_is_use_nonce_at_front_end() ) {           //FixIn: 10.1.1.2
+	if ( wpbc_is_use_nonce_at_front_end() ) {           // FixIn: 10.1.1.2.
 		$result_check = check_ajax_referer( $action_name, $nonce_post_key );
 	}
 
@@ -30,10 +30,10 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 	$ajx_data_arr['status'] = 'ok';
 
 	$admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );                                         // 'wp-admin/admin.php?'
-
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 	// Local parameters
 	$local_params                        = array();
-	$local_params['is_from_admin_panel'] = ( false !== strpos( $_SERVER['HTTP_REFERER'], $admin_uri ) );                                                            // true | false
+	$local_params['is_from_admin_panel'] = ( false !== strpos( $server_http_referer_uri, $admin_uri ) );                                                            // true | false
 	$local_params['user_id']             = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) ) ? intval( $_REQUEST['wpbc_ajx_user_id'] ) : wpbc_get_current_user_id();       // 1
 
 	// Request parameters
@@ -45,7 +45,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 
 																					'aggregate_resource_id_arr' => array( 'validate' => 'digit_or_csd', 'default' => '' ),
 
-																					'dates_ddmmyy_csv' => array( 'validate' => 'csv_dates', 'default' => '' ),     //FixIn: 9.9.1.1
+																					'dates_ddmmyy_csv' => array( 'validate' => 'csv_dates', 'default' => '' ),     // FixIn: 9.9.1.1.
 																					'formdata'         => array( 'validate' => 'strong', 'default' => '' ),
 																					'booking_hash'     => array( 'validate' => 'strong', 'default' => '' ),
 																					'custom_form'      => array( 'validate' => 'strong', 'default' => '' ),
@@ -64,28 +64,32 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 //$_REQUEST['calendar_request_params']['dates_ddmmyy_csv'] .= "'%2b(select+'box'+from(select+sleep(2)+from+dual+where+1=1*)a)%2b'-02-21+00:00:00";
 
 	$request_params = $user_request->get_sanitized__in_request__value_or_default( $request_prefix );                    // NOT Direct: 	$_REQUEST['calendar_request_params']['resource_id']
-
-	$request_params['request_uri'] = $_SERVER['HTTP_REFERER'];      // Parameter needed for Error in booking saving and reloading calendar again  with  these actual  parameters.
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$request_params['request_uri'] = $server_http_referer_uri;      // Parameter needed for Error in booking saving and reloading calendar again  with  these actual  parameters.
 
 	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  CAPTCHA "  >
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	wpbc_captcha__in_ajx__check( $request_params, $local_params['is_from_admin_panel'], $_REQUEST[ $request_prefix ] );
 	// </editor-fold>
 
 	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  BOOKING_RESOURCE  ID "  >
 	if ( $request_params['resource_id'] <= 0 ) {
-		$ajx_data_arr['status']                          = 'error';
-		$ajx_data_arr['status_error']                    = 'resource_id_incorrect';
+		$ajx_data_arr['status']       = 'error';
+		$ajx_data_arr['status_error'] = 'resource_id_incorrect';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$ajx_data_arr['ajx_after_action_message']        = 'Wrong ID of booking resource: ' . ' [ request ID: ' . $_REQUEST['calendar_request_params']['resource_id'] . ' | parsed ID: ' . $request_params['resource_id'] . ' ]';
 		$ajx_data_arr['ajx_after_action_message_status'] = 'error';
-		wp_send_json( array( 'ajx_data'           => $ajx_data_arr,
-		                     'ajx_search_params'  => $_REQUEST[ $request_prefix ],
-		                     'ajx_cleaned_params' => $request_params,
-		                     'resource_id'        => $request_params['resource_id']
-		) );
+		wp_send_json( array(
+				'ajx_data'           => $ajx_data_arr,
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				'ajx_search_params'  => $_REQUEST[ $request_prefix ],
+				'ajx_cleaned_params' => $request_params,
+				'resource_id'        => $request_params['resource_id'],
+			) );
 	}
 	// </editor-fold>
 
-
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 	$request_save_params = array(
 									'resource_id'               => $request_params['resource_id'],
 									'dates_ddmmyy_csv'          => $request_params['dates_ddmmyy_csv'],
@@ -98,7 +102,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 									'is_emails_send'       => $request_params['is_emails_send'],
 									'is_show_payment_form' => 1,
 									'user_id'              => $local_params['user_id'],
-									'request_uri'          => $_SERVER['HTTP_REFERER']
+									'request_uri'          => $server_http_referer_uri
 							);
 	$booking_save_arr = wpbc_booking_save( $request_save_params );
 
@@ -106,6 +110,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 	if ( 'ok' !== $booking_save_arr['ajx_data']['status'] ) {
 
 		wp_send_json( array( 'ajx_data'           => $booking_save_arr['ajx_data'],
+							 // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		                     'ajx_search_params'  => $_REQUEST[ $request_prefix ],
 		                     'ajx_cleaned_params' => $request_params,
 		                     'resource_id'        => $request_params['resource_id']
@@ -128,13 +133,13 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 
 	//	$ajx_data_arr['ajx_after_action_message'] .= __( 'Booking was created with ID: ' . $booking_save_arr[ 'booking_id' ] , 'booking' );
 	//	$ajx_data_arr['ajx_after_action_message'] .= '<hr>Total time: <strong>' . $booking_save_arr['php_performance']['total'] . ' s. </strong>';
-	//	$ajx_data_arr['ajx_after_action_message'] .= str_replace( array( ',', '{', '}' ), '<br>', json_encode( $booking_save_arr['php_performance'] ) );
+	//	$ajx_data_arr['ajx_after_action_message'] .= str_replace( array( ',', '{', '}' ), '<br>', wp_json_encode( $booking_save_arr['php_performance'] ) );
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 	/*  if admin edit ?
-                var my_message = '<?php echo html_entity_decode( esc_js( __('Updated successfully' ,'booking') ),ENT_QUOTES) ; ?>';
+                var my_message = '<?php echo esc_js( __('Updated successfully' ,'booking') ) ; ?>';
                 wpbc_admin_show_message( my_message, 'success', 3000 );
 				location.href='<?php echo wpbc_get_bookings_url() ;?>&view_mode=vm_listing&tab=actions&wh_booking_id=<?php echo  $is_edit_booking['booking_id'] ; ?>';
     */
@@ -231,19 +236,21 @@ function wpbc_booking_save( $request_params ){
 	// -----------------------------------------------------------------------------------------------------------------
 	// 1. Direct Clean Params
 	// -----------------------------------------------------------------------------------------------------------------
+	$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 	$validate_arr_rules = array(
 								'resource_id'           => array( 'validate' => 'd',      'default' => 1 ),             // INT
-								'dates_ddmmyy_csv'      => array( 'validate' => 'csv_dates', 'default' => '' ),         //FixIn: 9.9.1.1
+								'dates_ddmmyy_csv'      => array( 'validate' => 'csv_dates', 'default' => '' ),         // FixIn: 9.9.1.1.
 								'form_data'             => array( 'validate' => 'strong', 'default' => '' ),
 								'booking_hash'          => array( 'validate' => 'strong', 'default' => '' ),
 								'custom_form'           => array( 'validate' => 'strong', 'default' => '' ),
 								'is_emails_send'        => array( 'validate' => 'd',      'default' => 1 ),             // 0 | 1
 								'is_show_payment_form'  => array( 'validate' => 'd',      'default' => 1 ),             // 0 | 1
 								'user_id'               => array( 'validate' => 'd',      'default' => wpbc_get_current_user_id() ),        // INT
-								'request_uri'           => array( 'validate' => 'strong', 'default'  => ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'] ),     //  front-end: $_SERVER['REQUEST_URI'] | ajax: $_SERVER['HTTP_REFERER']
+								'request_uri'           => array( 'validate' => 'strong', 'default'  => ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ),     //  front-end: $server_request_uri | ajax: $server_http_referer_uri
 								// Really Optional:
 								'aggregate_resource_id_arr'         => array( 'validate' => 'digit_or_csd', 'default' => '' ),
-								//TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        //FixIn: 10.0.0.7
+								//TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.
 								'aggregate_type'                    => array( 'validate' => 'strong', 'default' => 'bookings_only' ),    // Optional. 'all' | 'bookings_only'  <- it is depends on shortcode parameter:   options="{aggregate type=bookings_only}"
 								'is_approve_booking'                => array( 'validate' => 'd',      'default' => 0 ),       // 0 | 1
 								'save_booking_even_if_unavailable'  => array( 'validate' => 'd',      'default' => 0 ),       // 0 | 1
@@ -293,7 +300,7 @@ function wpbc_booking_save( $request_params ){
 
 	$local_params['is_show_payment_form'] = $re_cleaned_params["is_show_payment_form"];
 
-	//FixIn: 9.9.0.35
+	// FixIn: 9.9.0.35.
 	if ( $local_params['is_show_payment_form'] ) {
 		$local_params['is_show_payment_form'] = ( false !== strpos( $re_cleaned_params['request_uri'], 'is_show_payment_form=Off' ) )
 												? 0
@@ -374,8 +381,8 @@ function wpbc_booking_save( $request_params ){
 										'is_use_booking_recurrent_time' => $local_params['is_use_booking_recurrent_time'],      // true | false
 										'as_single_resource'            => false,                                                // false
 										'aggregate_resource_id_arr'     => $local_params['aggregate_resource_id_arr'],           // Optional  can  be ''
-										'aggregate_type'                => $re_cleaned_params['aggregate_type'],                 //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        //FixIn: 10.0.0.7
-										'custom_form'                   => $re_cleaned_params['custom_form']                     //FixIn: 10.0.0.10
+										'aggregate_type'                => $re_cleaned_params['aggregate_type'],                 //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.
+										'custom_form'                   => $re_cleaned_params['custom_form']                     // FixIn: 10.0.0.10.
 								    ));
 		// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  NO SLOTS TO SAVE "  >
 		if ( 'error' == $where_to_save_booking['result'] ) {
@@ -447,7 +454,7 @@ function wpbc_booking_save( $request_params ){
 	}
 	// </editor-fold>
 
-	//FixIn: 9.9.0.36
+	// FixIn: 9.9.0.36.
 	if (
 		   ( 0 !== $create_params['is_edit_booking'] )               // If edit booking
 		&& ( 1 != $create_params['is_duplicate_booking'] )          // If not duplicate
@@ -489,7 +496,7 @@ function wpbc_booking_save( $request_params ){
 	$payment_params['is_from_admin_panel']  = $create_params['is_from_admin_panel'];            //           => false    true | false
 	$payment_params['is_show_payment_form'] = $create_params['is_show_payment_form'];           //           => 1        0 | 1
 	if ( $payment_params['is_from_admin_panel'] ) {
-		// $payment_params['is_show_payment_form'] = 0;                     //FixIn: 9.9.0.21
+		// $payment_params['is_show_payment_form'] = 0;                     // FixIn: 9.9.0.21.
 	}
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
 	$php_performance = php_performance_START( 'wpbc_maybe_get_payment_form' , $php_performance );
@@ -549,7 +556,7 @@ function wpbc_booking_save( $request_params ){
 
 		if (
 			    ( 0 === $local_params['is_edit_booking'] )
-		     || ( 1 === $local_params['is_duplicate_booking'] )         //FixIn: 10.0.0.42
+		     || ( 1 === $local_params['is_duplicate_booking'] )         // FixIn: 10.0.0.42.
 		){
 
 			// New booking to Admin
@@ -589,7 +596,7 @@ function wpbc_booking_save( $request_params ){
 
 		if ( ! empty( $errors_on_email_sending_html ) ) {
 			// Show these messages as warning after creation  of the booking
-			$errors_on_email_sending_html = strip_tags( $errors_on_email_sending_html );
+			$errors_on_email_sending_html = wp_strip_all_tags( $errors_on_email_sending_html );
 			$errors_on_email_sending_html = esc_attr( $errors_on_email_sending_html );
 			$errors_on_email_sending_html = str_replace( "\\n", '', $errors_on_email_sending_html );
 
@@ -706,7 +713,7 @@ function wpbc_booking_save( $request_params ){
 
 		$confirmation_params_arr['ty_is_redirect'] = 'message';                                                         // Do not make redirect,  if it's in admin panel!
 
-		// But if we edit / duplicate the booking, then do redirection to Booking Listing page                          //FixIn: 9.9.0.3
+		// But if we edit / duplicate the booking, then do redirection to Booking Listing page                          // FixIn: 9.9.0.3.
 		if (
 			   (  0 !== $local_params['is_edit_booking'] )
 			// && ( empty( $local_params['is_duplicate_booking'] ) )
@@ -848,8 +855,8 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 		&& ( ! empty( $create_params['dates_only_sql_arr'] ) )
 		&& ( count( $create_params['dates_only_sql_arr'] ) > 1 )
 	) {
-		unset( $create_params['dates_only_sql_arr'][ ( count( $create_params['dates_only_sql_arr'] ) - 1 ) ] );                    // Remove LAST selected day in calendar //FixIn: 6.2.3.6
-		// Delete last  item    //FixIn: 9.9.0.19
+		unset( $create_params['dates_only_sql_arr'][ ( count( $create_params['dates_only_sql_arr'] ) - 1 ) ] );                    // Remove LAST selected day in calendar // FixIn: 6.2.3.6.
+		// Delete last  item    // FixIn: 9.9.0.19.
 		$resources_in_dates_last_key = key( array_slice( $where_to_save_booking['resources_in_dates'], - 1, 1, true ) );
 		unset( $where_to_save_booking['resources_in_dates'][ $resources_in_dates_last_key ] );
 	}
@@ -917,7 +924,7 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 	 		add_filter( 'wpbc_get_booking_resources_arr_to_auto_approve', 'my_wpbc_get_booking_resources_arr_to_auto_approve' );
 	 */
 	$booking_resources_to_approve = array();
-	$booking_resources_to_approve = apply_filters( 'wpbc_get_booking_resources_arr_to_auto_approve', $booking_resources_to_approve );       //FixIn: 8.5.2.27
+	$booking_resources_to_approve = apply_filters( 'wpbc_get_booking_resources_arr_to_auto_approve', $booking_resources_to_approve );       // FixIn: 8.5.2.27.
 	if ( in_array( $create_params['resource_id'], $booking_resources_to_approve ) ) {
 		$is_approved_dates = 1;
 	}
@@ -925,8 +932,17 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 	if (
 			( $create_params['is_from_admin_panel'] )                                                                   // true | false
 	     && ( get_bk_option( 'booking_auto_approve_bookings_if_added_in_admin_panel' ) == 'On' )
-	){                                                                                                                  //FixIn: 8.1.3.27
+	){                                                                                                                  // FixIn: 8.1.3.27.
 		$is_approved_dates = 1;
+	}
+
+	// If the booking auto-approved, then  we need to  mark  it as "Read".
+	if ( $is_approved_dates ) {
+		$sql_field_arr[] = array(
+			'name'  => 'is_new',
+			'type'  => '%d',
+			'value' => 0,
+		);
 	}
 
 	// <editor-fold     defaultstate="collapsed"                        desc="  ==  Save Booking  ==  "  >
@@ -939,15 +955,19 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 	$sql_field_arr[] = array( 'name' => 'booking_type',      'type' => '%d',        'value' => $create_params['resource_id'] );
 	$sql_field_arr[] = array( 'name' => 'modification_date', 'type' => '%s',        'value' =>  gmdate( 'Y-m-d H:i:s' ) );
 	$sql_field_arr[] = array( 'name' => 'sort_date',         'type' => '%s',        'value' => $create_params['dates_only_sql_arr'][0] . ' ' . $create_params['time_as_his_arr'][0] );
-	$sql_field_arr[] = array( 'name' => 'hash',              'type' => 'MD5(%s)',   'value' => time() . '_' . rand( 1000, 1000000 ) );
+	$sql_field_arr[] = array( 'name' => 'hash',              'type' => 'MD5(%s)',   'value' => time() . '_' . wp_rand( 1000, 1000000 ) );
 
 
 	if (
-		   ( 0 == $create_params['is_edit_booking'] )               // If not edit,  then INSERT
-		|| ( 1 == $create_params['is_duplicate_booking'] )          // If duplicate, then INSERT
-	){
+		( 0 == $create_params['is_edit_booking'] ) ||               // If not edit,  then INSERT.
+		( 1 == $create_params['is_duplicate_booking'] )             // If duplicate, then INSERT.
+	) {
 		// Saved only  for new booking creation.
-		$sql_field_arr[] = array( 'name' => 'creation_date',     'type' => '%s',        'value' =>  gmdate( 'Y-m-d H:i:s' ) );
+		$sql_field_arr[] = array(
+			'name'  => 'creation_date',
+			'type'  => '%s',
+			'value' => gmdate( 'Y-m-d H:i:s' ),
+		);
 
 		$sql_prepare_arr = array();
 		$sql_prepare_arr['name']  = array_map( function ( $value ) { return $value['name']; },  $sql_field_arr );
@@ -956,15 +976,11 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 
 		$sql_prepare_arr['name'] = implode( ', ', $sql_prepare_arr['name'] );
 		$sql_prepare_arr['type'] = implode( ', ', $sql_prepare_arr['type'] );
-
-		$sql = $wpdb->prepare(  "INSERT INTO {$wpdb->prefix}booking "
-										. "			  ( {$sql_prepare_arr['name']} )"
-										. "	  VALUES  ( {$sql_prepare_arr['type']} )"
-										, $sql_prepare_arr['value']
-									);
-
+		/* phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
+		$sql = $wpdb->prepare( "INSERT INTO {$wpdb->prefix}booking " . "			  ( {$sql_prepare_arr['name']} )" . "	  VALUES  ( {$sql_prepare_arr['type']} )", $sql_prepare_arr['value'] );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		if ( false === $wpdb->query( $sql ) ) {
-			return array( 'status'  => 'error','message' => 'Error. INSERT New Data in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $sql );
+			return array( 'status' => 'error', 'message' => 'Error. INSERT New Data in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $sql );
 		}
 		// Get ID of booking
 		$booking_id = (int) $wpdb->insert_id;
@@ -979,25 +995,27 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 
 		$sql_prepare_arr['set'] = implode( ', ', $sql_prepare_arr['set'] );
 
-		$sql = $wpdb->prepare(  "UPDATE {$wpdb->prefix}booking SET "
-		                        . " {$sql_prepare_arr['set']} "
-		                        . " WHERE booking_id={$booking_id};"
-								, $sql_prepare_arr['value']
-							);
-        if ( false === $wpdb->query( $sql  ) ){
-			return array( 'status'  => 'error','message' => 'Error. UPDATE Exist Data in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $sql );
-        }
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET  {$sql_prepare_arr['set']}  WHERE booking_id={$booking_id};", $sql_prepare_arr['value'] );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		if ( false === $wpdb->query( $sql ) ) {
+			return array( 'status'  => 'error',
+						  'message' => 'Error. UPDATE Exist Data in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $sql,
+			);
+		}
 
 		// Check if dates previously was approved.
 		$slct_sql = "SELECT approved FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id}) LIMIT 0,1";
-		$slct_sql_results = $wpdb->get_results( $slct_sql );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$slct_sql_results  = $wpdb->get_results( $slct_sql );
 		$is_approved_dates = ( count( $slct_sql_results ) > 0 ) ? $slct_sql_results[0]->approved : $is_approved_dates;
 
 
         $delete_sql = "DELETE FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id})";
-        if ( false === $wpdb->query( $delete_sql  ) ){
-			return array( 'status'  => 'error','message' => 'Error. DELETE Old Dates in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $delete_sql );
-        }
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		if ( false === $wpdb->query( $delete_sql ) ) {
+			return array( 'status' => 'error', 'message' => 'Error. DELETE Old Dates in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $delete_sql );
+		}
 	}
 	// </editor-fold>
 
@@ -1085,9 +1103,9 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 	}
 
 	$dates_sql .= implode( ', ', $insert_dates_arr );
-
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	if ( false === $wpdb->query( $dates_sql ) ) {
-		return array( 'status'  => 'error','message' => 'Error. INSERT "D A T E S" in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $dates_sql );
+		return array( 'status' => 'error', 'message' => 'Error. INSERT "D A T E S" in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $dates_sql );
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -1156,8 +1174,8 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 				$is_edit_booking['booking_id']  = intval( $my_booking_id_type[0] );
 				$is_edit_booking['resource_id'] = intval( $my_booking_id_type[1] );
 
-				//TODO: test it. Check situation when  we have editing "child booking resource",  so  need to  re-update calendar and form  to have it for parent resource.        //FixIn: 6.1.1.9
-				if ( strpos( $server_request_url, 'resource_no_update' ) === false ) {                                  //FixIn: 9.4.2.3
+				//TODO: test it. Check situation when  we have editing "child booking resource",  so  need to  re-update calendar and form  to have it for parent resource.        // FixIn: 6.1.1.9.
+				if ( strpos( $server_request_url, 'resource_no_update' ) === false ) {                                  // FixIn: 9.4.2.3.
 
 					if ( ( function_exists( 'wpbc_is_this_child_resource' ) ) && ( wpbc_is_this_child_resource( $is_edit_booking['resource_id'] ) ) ) {
 						$bk_parent_br_id = wpbc_get_parent_resource( $is_edit_booking['resource_id'] );

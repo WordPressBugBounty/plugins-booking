@@ -12,7 +12,7 @@
  * @modified 2024-02-17
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 // =====================================================================================================================
 //  Shortcode [bookingselect ... ]
@@ -27,7 +27,7 @@ function wpbc_shortcode_config__content__bookingselect() {
 
 	$shortcode_name = 'bookingselect';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		//--------------------------------------------------------------------------------------------------------------
 		// 'Upgrade to Pro' widget
@@ -41,6 +41,7 @@ function wpbc_shortcode_config__content__bookingselect() {
 								'versions'           => 'paid versions',
 								'css'                => 'transform: translate(0) translateY(190px);'
 							) );
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $upgrade_content_arr['content'];
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -85,8 +86,10 @@ function wpbc_shortcode_config__content__bookingselect() {
 					?>
 					<tr><td></td><td>
 						<div class="wpbc-settings-notice notice-warning">
-							<span><?php printf(__( 'If you choose the %s form, the system will load either the standard form or the default custom booking form (configured on the Resources page). Alternatively, selecting a specific custom booking form here will ensure that all booking resources use only the form you have chosen.', 'booking' ),
-								'<strong>\'Standard\'</strong>' ); ?></span>
+							<span><?php
+								/* translators: 1: ... */
+								echo wp_kses_post( sprintf( __(  'If you choose the %s form, the system will load either the standard form or the default custom booking form (configured on the Resources page). Alternatively, selecting a specific custom booking form here will ensure that all booking resources use only the form you have chosen.', 'booking' ),
+								'<strong>\'Standard\'</strong>' ) ); ?></span>
 						</div>
 					</td></tr>
 					<?php
@@ -292,7 +295,7 @@ function wpbc_shortcode_config__content__bookingselect() {
 			?>
 			<div class="clear"></div>
 			<div class="wpbc-settings-notice0 notice-info notice-header" style="font-size: 15px;font-weight: 600;margin: 15px 0 15px 15px;">
-				<label for="<?php echo esc_attr($id); ?>"><?php _e( 'Set Up Booking Resource(s)', 'booking' ); ?></label>
+				<label for="<?php echo esc_attr($id); ?>"><?php esc_html_e( 'Set Up Booking Resource(s)', 'booking' ); ?></label>
 			</div>
 
 			<div class="wpbc_shortcode_config__rules_container">
@@ -329,20 +332,20 @@ function wpbc_shortcode_config__content__bookingselect() {
 				<div class="wpbc_shortcode_config__rules__help_section" style="margin-top: 8px;">
 					<div class="wpbc-settings-notice notice-info notice-list">
 						<ol>
-							<li>
-								<?php _e( 'Configure the shortcode to show Timeline.', 'booking' ); ?>
+							<li> <?php esc_html_e( 'Configure the shortcode to show Timeline.', 'booking' ); ?>
 							</li>
 							<li>
-								<?php echo    __( 'To set this up, choose all or multiple booking resources in the multi-select box.', 'booking' )
+								<?php echo esc_html__( 'To set this up, choose all or multiple booking resources in the multi-select box.', 'booking' )
 											. '<br>'
-											. __( 'Hold down the Ctrl button to make multiple selections.', 'booking' );
+											. esc_html__( 'Hold down the Ctrl button to make multiple selections.', 'booking' );
 								?>
 							</li>
  							<li>
 								<?php
-								printf( __( 'Refer to the FAQ for detailed information on %sshortcode configuration%s.', 'booking' )
+								/* translators: 1: ... */
+								echo wp_kses_post( sprintf( __( 'Refer to the FAQ for detailed information on %1$sshortcode configuration%2$s.', 'booking' )
 										, '<a href="https://wpbookingcalendar.com/faq/shortcode-timeline/" target="_blank">', '</a>'
-									  );
+									  ) );
 								?>
 							</li>
 						</ol>
@@ -401,7 +404,7 @@ function wpbc_shortcode_config__content__bookingselect() {
 											  'type'              => 'text'
 											, 'placeholder'       => __( 'Example', 'booking' ). ': ' . __( 'Please select', 'booking' )
 											, 'title'             => __('Title for first option', 'booking')
-											, 'description'       =>  __('The first option in the dropdown list.' ,'booking') . ' <span>' . __('Please leave it empty if you want to skip it.' ,'booking') . '</span>'
+											, 'description'       =>  __('The first option in the dropdown list.' ,'booking') . ' <span>' . esc_html__('Please leave it empty if you want to skip it.' ,'booking') . '</span>'
 
 											, 'description_tag'   => 'span'
 											, 'label'             => ''

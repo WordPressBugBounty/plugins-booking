@@ -94,7 +94,7 @@ class WPBC_Pagination {
 
 			//wp_enqueue_script( 'wpbc-live_search', wpbc_plugin_url( '/_out/js/live_search.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc-pagination'
-				, trailingslashit( plugins_url( '', __FILE__ ) ) . 'pagination.js'         /* wpbc_plugin_url( '/_out/js/codemirror.js' ) */
+				, trailingslashit( plugins_url( '', __FILE__ ) ) . 'pagination.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 				, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
 			/**
@@ -154,9 +154,11 @@ class WPBC_Pagination {
 				<div class="ui_element">
 					<a class="wpbc_ui_control wpbc_ui_button <# if ( 1 == data.page_active ) { #> disabled<# } #>"
 					   href="javascript:void(0)"
-						<# if ( 1 != data.page_active ) { #> onclick="javascript:<?php echo $this->get_settings( 'on_click' ); ?>( parseInt(  {{ data.page_active }} ) - 1 );" <# } #>
+						<# if ( 1 != data.page_active ) { #> onclick="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $this->get_settings( 'on_click' ); ?>( parseInt(  {{ data.page_active }} ) - 1 );" <# } #>
 					 >
-						<?php _e('Prev', 'booking'); ?>
+						<?php esc_html_e('Prev', 'booking'); ?>
 					</a>
 				</div>
 				<# }
@@ -174,7 +176,9 @@ class WPBC_Pagination {
 						   ) )
 						{
 							#> <div class="ui_element"><a  class="wpbc_ui_control wpbc_ui_button <# if ( pg_num == data.page_active ) { #> active<# } #>"
-								href="javascript:void(0)" onclick="javascript:<?php echo $this->get_settings( 'on_click' ); ?>( {{pg_num}} );" >
+								href="javascript:void(0)" onclick="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $this->get_settings( 'on_click' ); ?>( {{pg_num}} );" >
 						{{pg_num}}</a></div> <#
 
 									if ( ( data.pages_count > ( num_closed_steps * 4) )
@@ -191,9 +195,11 @@ class WPBC_Pagination {
 				<div class="ui_element">
 					<a 	class="wpbc_ui_control wpbc_ui_button <# if ( data.pages_count == data.page_active ) { #> disabled<# } #>"
 						href="javascript:void(0)"
-						<# if ( data.pages_count != data.page_active ) { #> onclick="javascript:<?php echo $this->get_settings( 'on_click' ); ?>( parseInt(  {{ data.page_active }} ) + 1 );" <# } #>
+						<# if ( data.pages_count != data.page_active ) { #> onclick="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $this->get_settings( 'on_click' ); ?>( parseInt(  {{ data.page_active }} ) + 1 );" <# } #>
 					>
-						<?php _e('Next', 'booking'); ?>
+						<?php esc_html_e('Next', 'booking'); ?>
 					</a>
 				</div>
 				<# } #>
@@ -219,7 +225,7 @@ class WPBC_Pagination {
 					</select>
 				</div>
 				<div class="ui_element">
-					<label class="wpbc_ui_control_label"><?php _e('per page','booking') ?></label>
+					<label class="wpbc_ui_control_label"><?php esc_html_e('per page','booking'); ?></label>
 				</div>
 				<?php
 
@@ -292,7 +298,7 @@ class WPBC_Pagination {
 
 			jQuery( document ).ready( function (){
 
-				wpbc_pagination_echo( '<?php echo $this->get_settings( 'container' ); ?>', <?php
+				wpbc_pagination_echo( '<?php echo esc_attr( $this->get_settings( 'container' ) ); ?>', <?php
 					echo wp_json_encode(
 						array(
 							'page_active' => $params['page_active'],

@@ -12,7 +12,7 @@
  * @modified 2024-02-17
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 // =====================================================================================================================
 //  Shortcode [bookingtimeline ... ]
@@ -27,7 +27,7 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 
 	$shortcode_name = 'bookingtimeline';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		wpbc_shortcode_config__bookingtimeline__top_tabs();
 
@@ -269,8 +269,8 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 			////////////////////////////////////////////////////////////////////
 			// Start Month
 			////////////////////////////////////////////////////////////////////
-			?><tr valign="top" class="<?php echo $group_key . '_standard_section'; ?> wpbc_sub_settings_grayed0">
-				<th scope="row" style="vertical-align: middle;"><label for="<?php echo $id; ?>_active" class="wpbc-form-text"><?php  _e('Start date:', 'booking'); ?></label></th>
+			?><tr valign="top" class="<?php echo esc_attr( $group_key . '_standard_section' ); ?> wpbc_sub_settings_grayed0">
+				<th scope="row" style="vertical-align: middle;"><label for="<?php echo esc_attr( $id ); ?>_active" class="wpbc-form-text"><?php esc_html_e('Start date:', 'booking'); ?></label></th>
 				<td class=""><fieldset><?php
 
 					WPBC_Settings_API::field_checkbox_row_static( $id . '_active'
@@ -304,8 +304,8 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 																		, 'css'               => 'width:5em;'
 																		, 'only_field'        => true
 																		, 'attr'              => array()
-																		, 'value'             => date( 'Y' )
-																		, 'options'           => array_combine( range( ( date('Y') - 1 ), ( date('Y') + 10 ) ), range( ( date('Y') - 1 ), ( date('Y') + 10 ) )  )
+																		, 'value'             => gmdate( 'Y' )
+																		, 'options'           => array_combine( range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) ), range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) )  )
 																	)
 									);
 
@@ -324,7 +324,7 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 																		, 'css'               => 'width:4em;'
 																		, 'only_field'        => true
 																		, 'attr'              => array()
-																		, 'value'             => date('n')
+																		, 'value'             => gmdate('n')
 																		, 'options'           => array_combine( range( 1, 12 ), range( 1, 12 ) )
 																	)
 									);
@@ -344,12 +344,12 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 																		, 'css'               => 'width:4em;'
 																		, 'only_field'        => true
 																		, 'attr'              => array()
-																		, 'value'             => date('j')
+																		, 'value'             => gmdate('j')
 																		, 'options'           => array_combine( range( 1, 31 ), range( 1, 31 ) )
 																	)
 									);
 
-					?><span class="description"> <?php _e('Select start date' ,'booking'); ?></span></fieldset></td>
+					?><span class="description"> <?php esc_html_e('Select start date' ,'booking'); ?></span></fieldset></td>
 			</tr><?php
 
 	}
@@ -368,11 +368,11 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 			////////////////////////////////////////////////////////////////////
 			// Start Month
 			////////////////////////////////////////////////////////////////////
-			?><tr valign="top" class="<?php echo $group_key . '_standard_section'; ?> wpbc_sub_settings_grayed0 bookingtimeline_view_times">
-				<th scope="row" style="vertical-align: middle;"><label for="<?php echo $id; ?>_active" class="wpbc-form-text"><?php  _e('Show:', 'booking'); ?></label></th>
+			?><tr valign="top" class="<?php echo esc_attr( $group_key . '_standard_section' ); ?> wpbc_sub_settings_grayed0 bookingtimeline_view_times">
+				<th scope="row" style="vertical-align: middle;"><label for="<?php echo esc_attr( $id ); ?>_active" class="wpbc-form-text"><?php esc_html_e('Show:', 'booking'); ?></label></th>
 				<td class=""><fieldset><?php
 
-					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> <?php _e('from','booking') ?> </span><?php
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> <?php esc_html_e('from', 'booking' ); ?> </span><?php
 
 					WPBC_Settings_API::field_select_row_static(  $id . '_starttime'
 																, array(
@@ -392,7 +392,7 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 																	)
 									);
 
-					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> <?php _e('to','booking') ?> </span><?php
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> <?php esc_html_e('to', 'booking' ); ?> </span><?php
 
 					WPBC_Settings_API::field_select_row_static(  $id . '_endtime'
 																, array(
@@ -412,7 +412,7 @@ function wpbc_shortcode_config__content__bookingtimeline() {
 																	)
 									);
 
-					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> <?php _e('hours','booking') ?> </span><?php
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> <?php esc_html_e('hours', 'booking' ); ?> </span><?php
 
 					?></fieldset></td>
 			</tr><?php

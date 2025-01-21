@@ -1,5 +1,5 @@
 var time_buffer_value = 0;					// Customization of bufer time for DAN
-var is_check_start_time_gone = true;		// Check  start time or end time for the time, which is gone already TODAY.	//FixIn: 10.5.2.3
+var is_check_start_time_gone = true;		// Check  start time or end time for the time, which is gone already TODAY.	// FixIn: 10.5.2.3.
 var start_time_checking_index;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -13,17 +13,21 @@ var start_time_checking_index;
  * @param my_thisDateTime				timestamp of date
  * @returns {string}
  */
-function wpbc_show_date_info_top( param_calendar_id, my_thisDateTime ){
+function wpbc_show_date_info_top( param_calendar_id, my_thisDateTime ) {
 
-	var resource_id = parseInt( param_calendar_id.replace( "calendar_booking", '' ) );
+	var resource_id = parseInt(param_calendar_id.replace("calendar_booking", ''));
+
+	if (isNaN(resource_id)) {
+		return '';  // FixIn: 10.9.5.2.
+	}
 
 	// console.log( _wpbc.bookings_in_calendar__get( resource_id ) );		// for debug
 
 	// 1. Get child booking resources  or single booking resource  that  exist  in dates :	[1] | [1,14,15,17]
-	var child_resources_arr = wpbc_clone_obj( _wpbc.booking__get_param_value( resource_id, 'resources_id_arr__in_dates' ) );
+	var child_resources_arr = wpbc_clone_obj(_wpbc.booking__get_param_value(resource_id, 'resources_id_arr__in_dates'));
 
 	// '2023-08-21'
-	var sql_date = wpbc__get__sql_class_date( new Date( my_thisDateTime ) );
+	var sql_date = wpbc__get__sql_class_date(new Date(my_thisDateTime));
 
 	var child_resource_id;
 	var merged_seconds;
@@ -31,34 +35,33 @@ function wpbc_show_date_info_top( param_calendar_id, my_thisDateTime ){
 
 	var dots_in__resources = [];
 
-	// Loop all resources ID
-	for ( var res_key in child_resources_arr ){
+	// Loop all resources ID.
+	if (child_resources_arr !== null) {
+		for (child_resource_id of child_resources_arr) {                                                                    // FixIn: 10.9.5.1.
 
-		child_resource_id = child_resources_arr[ res_key ];
+			// _wpbc.bookings_in_calendar__get_for_date(2,'2023-08-21')[12].booked_time_slots.merged_seconds		= [ "07:00:11 - 07:30:02", "10:00:11 - 00:00:00" ]
+			// _wpbc.bookings_in_calendar__get_for_date(2,'2023-08-21')[2].booked_time_slots.merged_seconds			= [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
 
-		// _wpbc.bookings_in_calendar__get_for_date(2,'2023-08-21')[12].booked_time_slots.merged_seconds		= [ "07:00:11 - 07:30:02", "10:00:11 - 00:00:00" ]
-		// _wpbc.bookings_in_calendar__get_for_date(2,'2023-08-21')[2].booked_time_slots.merged_seconds			= [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
-
-		if ( false !== _wpbc.bookings_in_calendar__get_for_date( resource_id, sql_date ) ){
-			merged_seconds = _wpbc.bookings_in_calendar__get_for_date( resource_id, sql_date )[ child_resource_id ].booked_time_slots.merged_seconds;		// [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
-		} else {
-			merged_seconds = [];
-		}
-
-		if ( 0 === merged_seconds.length ){
-			return ''; 																		// Day available
-		}
-
-		for ( var i = 0; i < merged_seconds.length; i++ ){
-			if ( ! wpbc_is_this_timeslot__full_day_booked( merged_seconds[i] ) ){			// Check  if this fully  booked date. If yes,  then  do not count it
-				dots_count++;
+			if (false !== _wpbc.bookings_in_calendar__get_for_date(resource_id, sql_date)) {
+				merged_seconds = _wpbc.bookings_in_calendar__get_for_date(resource_id, sql_date)[child_resource_id].booked_time_slots.merged_seconds;		// [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
+			} else {
+				merged_seconds = [];
 			}
+
+			if (0 === merged_seconds.length) {
+				return ''; 																		// Day available
+			}
+
+			for (var i = 0; i < merged_seconds.length; i++) {
+				if (!wpbc_is_this_timeslot__full_day_booked(merged_seconds[i])) {			// Check  if this fully  booked date. If yes,  then  do not count it
+					dots_count++;
+				}
+			}
+
+			dots_in__resources.push(dots_count);
+			dots_count = 0;
 		}
-
-		dots_in__resources.push( dots_count );
-		dots_count = 0;
 	}
-
 	var dots_count_max = Math.max.apply( Math, dots_in__resources );						// Get maximum value in array [ 1, 5, 3]  ->  5
 
 	var dot_content = '';
@@ -90,7 +93,7 @@ function wpbc_show_date_info_bottom( param_calendar_id, my_thisDateTime ) {
 		}
 	}
 
-	// Availability Hint		//FixIn: 10.6.4.1
+	// Availability Hint		// FixIn: 10.6.4.1.
 	var availability = wpbc_get_in_date_availability_hint( param_calendar_id, my_thisDateTime )
 	if ( '' !== availability ) {
 		bottom_hint_arr.push( availability );
@@ -107,7 +110,7 @@ function wpbc_show_date_info_bottom( param_calendar_id, my_thisDateTime ) {
  * @param my_thisDateTime
  * @returns {string}
  */
-function wpbc_get_in_date_availability_hint( param_calendar_id, my_thisDateTime ) {								        //FixIn: 10.6.4.1
+function wpbc_get_in_date_availability_hint( param_calendar_id, my_thisDateTime ) {								        // FixIn: 10.6.4.1.
 
 	/*
 	var sql_date 	= wpbc__get__sql_class_date( new Date( my_thisDateTime ) );						// '2023-08-21'
@@ -154,7 +157,7 @@ function wpbc_get_in_date_availability_hint( param_calendar_id, my_thisDateTime 
  * Hide Tippy tooltip on scroll, to prevent issue on mobile touch devices of showing tooltip at top left corner!
  * @param evt
  */
-jQuery( window ).on( 'scroll', function ( event ){													//FixIn: 9.2.1.5	//FixIn: 9.4.3.3
+jQuery( window ).on( 'scroll', function ( event ){													//FixIn: 9.2.1.5	// FixIn: 9.4.3.3.
 	if ( 'function' === typeof( wpbc_tippy ) ){
 		wpbc_tippy.hideAll();
 	}
@@ -167,7 +170,7 @@ jQuery( window ).on( 'scroll', function ( event ){													//FixIn: 9.2.1.5	
  * @param form_elements
  * @returns {boolean}
  */
-function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){											//FixIn: 8.2.1.28
+function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){											// FixIn: 8.2.1.28.
 
 	var count = form_elements.length;
 	var start_time = false;
@@ -183,13 +186,13 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 		element = form_elements[ i ];
 
 		// Skip elements from garbage
-		if ( jQuery( element ).closest( '.booking_form_garbage' ).length ){											//FixIn: 7.1.2.14
+		if ( jQuery( element ).closest( '.booking_form_garbage' ).length ){											// FixIn: 7.1.2.14.
 			continue;
 		}
 
 		if (
 			   ( element.name != undefined )
-			&& ( element.name.indexOf( 'hint' ) !== -1 )				//FixIn: 9.5.5.2
+			&& ( element.name.indexOf( 'hint' ) !== -1 )				// FixIn: 9.5.5.2.
 		){
 			var my_element = element.name; //.toString();
 			if ( my_element.indexOf( 'rangetime' ) !== -1 ){                       	// Range Time
@@ -252,13 +255,13 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 			element = form_elements[ i ];
 
 			// Skip elements from garbage
-			if ( jQuery( element ).closest( '.booking_form_garbage' ).length ){											//FixIn: 7.1.2.14
+			if ( jQuery( element ).closest( '.booking_form_garbage' ).length ){											// FixIn: 7.1.2.14.
 				continue;
 			}
 
 			if (
 				   ( element.name != undefined )
-				&& ( element.name.indexOf( 'hint' ) === -1 )				//FixIn: 9.5.5.2		//FixIn: 9.6.3.9
+				&& ( element.name.indexOf( 'hint' ) === -1 )				//FixIn: 9.5.5.2		// FixIn: 9.6.3.9.
 			){
 				var my_element = element.name; //.toString();
 				if ( my_element.indexOf( 'rangetime' ) !== -1 ){                       	// Range Time
@@ -343,8 +346,8 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 				}
 
 			if ( valid_time !== true ){
-				//return false;                                                  // do not show warning for setting pending days selectable,  if making booking for time-slot   //FixIn: 7.0.1.23
-				if ( (_wpbc.get_other_param( 'is_enabled_change_over' )) && (element_start !== false) && (element_end !== false) ){      //FixIn:6.1.1.1
+				//return false;                                                  // do not show warning for setting pending days selectable,  if making booking for time-slot   // FixIn: 7.0.1.23.
+				if ( (_wpbc.get_other_param( 'is_enabled_change_over' )) && (element_start !== false) && (element_end !== false) ){      // FixIn: 6.1.1.1.
 					wpbc_front_end__show_message__warning_under_element( '#date_booking' + resource_id, _wpbc.get_message( 'message_check_no_selected_dates' )  );
 				}
 				if ( element_rangetime !== false ){ wpbc_front_end__show_message__warning_under_element( element_rangetime, _wpbc.get_message( 'message_error_range_time' ) ); }
@@ -396,7 +399,7 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 
 		if ( my_dates_str.indexOf( ' - ' ) != 0 ){
 
-			my_dates_str = my_dates_str.replace( ' - ', ', ' );										//FixIn: 10.2.3.2
+			my_dates_str = my_dates_str.replace( ' - ', ', ' );										// FixIn: 10.2.3.2.
 		}
 
 		return checkTimeInsideProcess( mytime, is_start_time, bk_type, my_dates_str );
@@ -429,7 +432,7 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 
 // Function check start and end time at selected days
 	function checkTimeInsideProcess( mytime, is_start_time, bk_type, my_dates_str ){
-		var i, h, s, m;	//FixIn: 9.1.5.1
+		var i, h, s, m;	// FixIn: 9.1.5.1.
 
 		var date_array = my_dates_str.split( ", " );
 		if ( date_array.length == 2 ){ // This recheck is need for editing booking, with single day
@@ -595,7 +598,7 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 
 		var matchArray = timeStr.match( timePat );
 		if ( matchArray == null ){
-			return false; //("<?php _e('Time is not in a valid format. Use this format HH:MM or HH:MM AM/PM'); ?>");
+			return false; //("<?php esc_html_e('Time is not in a valid format. Use this format HH:MM or HH:MM AM/PM'); ?>");
 		}
 		var hour = matchArray[ 1 ];
 		var minute = matchArray[ 2 ];
@@ -605,14 +608,14 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 			ampm = null
 		}
 
-		if ( hour < 0 || hour > 24 ){		//FixIn: 8.3.1.1
-			return false; //("<?php _e('Hour must be between 1 and 12. (or 0 and 23 for military time)'); ?>");
+		if ( hour < 0 || hour > 24 ){		// FixIn: 8.3.1.1.
+			return false; //("<?php esc_html_e('Hour must be between 1 and 12. (or 0 and 23 for military time)'); ?>");
 		}
 		if ( hour > 12 && ampm != null ){
-			return false; //("<?php _e('You can not specify AM or PM for military time.'); ?>");
+			return false; //("<?php esc_html_e('You can not specify AM or PM for military time.'); ?>");
 		}
 		if ( minute < 0 || minute > 59 ){
-			return false; //("<?php _e('Minute must be between 0 and 59.'); ?>");
+			return false; //("<?php esc_html_e('Minute must be between 0 and 59.'); ?>");
 		}
 		return true;
 	}

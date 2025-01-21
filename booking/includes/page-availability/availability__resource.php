@@ -58,7 +58,7 @@ function wpbc_resource__get_unavailable_dates( $resource_id = 1 ){
 													   array(    1 => array( "2023-08-03" , "2023-08-04" ),
 																 8 => array( "2023-08-03" ), ...
  */
-function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $search_dates = 'CURDATE' ) {                 //FixIn: 9.7.3.11
+function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $search_dates = 'CURDATE' ) {                 // FixIn: 9.7.3.11.
 
 	// Booking resources -----------------------------------------------------------------------------------------------
 	$resource_id_csd  = implode( ',', $resource_id_arr );       //  '9,13,5,6,7,1,2,10,11,12,3,4,8'
@@ -134,7 +134,7 @@ function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $searc
 */
 function wpbc_availability__get_dates_status__sql( $params ){
 
-	// CACHE - GET    ::    check if such request was cached and get it  -----------------------------------------------    //FixIn: 9.7.3.14
+	// CACHE - GET    ::    check if such request was cached and get it  -----------------------------------------------    // FixIn: 9.7.3.14.
 	$params_for_cache_key = $params;
 	if ( isset( $params_for_cache_key['resource_id'] ) ) {
 		$params_for_cache_key['resource_id'] = (string) $params_for_cache_key['resource_id'];
@@ -148,7 +148,7 @@ function wpbc_availability__get_dates_status__sql( $params ){
 
 
 	$defaults = array(
-						  'calendar_date' => 'CURDATE',                                 // 'CURDATE' | 'ALL'  | '2023-07-15 00:00:00,2023-07-21 00:00:00'           //FixIn: 9.7.3.11
+						  'calendar_date' => 'CURDATE',                                 // 'CURDATE' | 'ALL'  | '2023-07-15 00:00:00,2023-07-21 00:00:00'           // FixIn: 9.7.3.11.
 		                  'prop_name'     => 'date_status',                             // 'rate', 'allow_start_day_selection', 'allow_days_number_to_select', 'availability_count', ...
 		                  'prop_value'    => 'unavailable',                             // 'unavailable', 'available', 'pending', 'approved'
 						  'resource_id'   => 1                                          // int or dcv
@@ -186,7 +186,7 @@ function wpbc_availability__get_dates_status__sql( $params ){
 
 	if ( '' != $params['calendar_date'] ) {
 
-		//FixIn: 9.7.3.11
+		// FixIn: 9.7.3.11.
 		if ( 'ALL' == $params['calendar_date'] ) {
 																					// All  dates
 		} else if ( 'CURDATE' == $params['calendar_date'] ) {
@@ -248,16 +248,10 @@ function wpbc_availability__get_dates_status__sql( $params ){
 			}
 	 *
 	 */
-    $sql_prepared = $wpdb->prepare(
-									  $sql['start_select']
-									. $sql['from']
-									. $sql['where']
-									. $sql['order']
-									. $sql['limit']
-								, $sql_args
-                        );
-
-    $bookings_sql_obj = $wpdb->get_results($sql_prepared);
+	/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
+	$sql_prepared = $wpdb->prepare( $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit'], $sql_args );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$bookings_sql_obj = $wpdb->get_results( $sql_prepared );
 
 	// CACHE - SAVE ::  ------------------------------------------------------------------------------------------------
 	$cache_result = wpbc_cache__save( 'wpbc_availability__get_dates_status__sql', $params_for_cache, $bookings_sql_obj );
@@ -351,9 +345,10 @@ function wpbc_availability__update_dates_status__sql( $params ){
 			$sql     .= $sub_sql;
 			$sql     .= " )";
 		}
-
+		/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 		$sql_prepared = $wpdb->prepare( $sql, $sql_args );
-		$row_number   = $wpdb->query( $sql_prepared );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$row_number = $wpdb->query( $sql_prepared );
 
 
 		// If we set the dates as 'available', then we skip INSERT into DB, because previously we have already deleted all 'unavailable' dates status for such dates
@@ -378,9 +373,10 @@ function wpbc_availability__update_dates_status__sql( $params ){
 
 		$sub_sql = implode( ',', $sub_sql );
 		$sql     .= $sub_sql;
-
+		/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 		$sql_prepared = $wpdb->prepare( $sql, $sql_args );
-		$row_number   = $wpdb->query( $sql_prepared );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$row_number = $wpdb->query( $sql_prepared );
 	}
 
 	return $row_number;
@@ -475,9 +471,10 @@ function wpbc_availability__delete_dates_status__sql( $params ){
 			$sql     .= " )";
 		}
 	}
-
+	/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 	$sql_prepared = $wpdb->prepare( $sql, $sql_args );
-	$row_number   = $wpdb->query( $sql_prepared );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$row_number = $wpdb->query( $sql_prepared );
 
 	return $row_number;
 }

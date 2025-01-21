@@ -13,9 +13,9 @@
  * We are not guarantee correct work and support of Booking Calendar, if some file(s) was modified by someone else then wpdevelop.
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
-
-//FixIn: 8.0
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}                                             // Exit if accessed directly
 
 /**
 	 * Show Content
@@ -65,11 +65,12 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-	                        , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			//FixIn: 9.6.1.4
-                            , 'default' =>  ! true                                // Is this sub tab activated by default or not: true || false.		//FixIn: 8.1.1.10
+	                        , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
+                            , 'default' =>  ! true                                // Is this sub tab activated by default or not: true || false.		// FixIn: 8.1.1.10.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
+							//, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
                         );
         
         $tabs[ 'sync' ]['subtabs'] = $subtabs;
@@ -110,6 +111,7 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
         
         //$this->get_api()->validated_form_id = $submit_form_name;             // Define ID of Form for ability to  validate fields (like required field) before submit.
         
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if ( isset( $_POST['is_form_sbmitted_'. $submit_form_name ] ) ) {
 
             // Nonce checking    {Return false if invalid, 1 if generated between, 0-12 hours ago, 2 if generated between 12-24 hours ago. }
@@ -148,11 +150,11 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
         ?>
         <div class="clear" style="margin-bottom:0px;"></div>
         <span class="metabox-holder">
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" autocomplete="off">
+            <form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" autocomplete="off">
                 <?php 
                    // N o n c e   field, and key for checking   S u b m i t 
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php                 
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
                 ?><div class="clear"></div><?php 
                 
                 ?><div class="clear" style="height:10px;"></div><?php 
@@ -161,16 +163,15 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
 					?>
 					<div class="clear" style="height:15px;"></div>
 					<div class="wpbc-settings-notice notice-error" style="text-align:left;font-size: 16px;padding: 5px 20px;">
-						<strong><?php _e('Important!' ,'booking'); ?></strong> <?php 
+						<strong><?php esc_html_e('Important!' ,'booking'); ?></strong> <?php
 
-							printf( __( 'This feature require %s plugin. You can install %s plugin from this %spage%s.', 'booking' )
-									    , '<strong><a class="" href="'. home_url() .'/wp-admin/plugin-install.php?s=booking+manager+by+oplugins&tab=search&type=term">'
-									 // , '<strong><a class="thickbox open-plugin-details-modal" href="'. home_url() .'/wp-admin/plugin-install.php?tab=plugin-information&plugin=booking-manager&TB_iframe=true&width=772&height=741"  target="_blank">'																	
-										  . 'Booking Manager' . '</a></strong> '  . ' <strong>' .$wpbm_minimum_version.'</strong> ('. __('or newer','booking') . ') '
-										,  '<strong>' . 'Booking Manager' . '</strong>'	
-										, '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/">'
-										, '</a>'
-								);
+						/* translators: 1: ... */
+						echo wp_kses_post( sprintf( __( 'This feature require %1$s plugin. You can install %2$s plugin from this %3$spage%4$s.', 'booking' )
+							, '<strong><a class="" href="' . esc_url( home_url() ) . '/wp-admin/plugin-install.php?s=booking+manager+by+oplugins&tab=search&type=term">' . 'Booking Manager' . '</a></strong> ' . ' <strong>' . esc_html( $wpbm_minimum_version ) . '</strong> (' . esc_html__( 'or newer', 'booking' ) . ') '
+							, '<strong>' . 'Booking Manager' . '</strong>'
+							, '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/">'
+							, '</a>'
+						) );
 						?>
 					</div>
 					<div class="clear" style="height:25px;"></div><?php
@@ -202,7 +203,7 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
 					
 					<div class="clear"></div>
 
-					<!--input type="submit" value="<?php _e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" /-->  
+					<!--input type="submit" value="<?php esc_attr_e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" /-->
 				<?php 
 				}
 				?>
@@ -420,8 +421,8 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
 		// Parameters for Ajax: 
 		
 		?><div  class="wpbc_import_ics_bar"	 id="wpbc_import_ics_bar"		 
-				data-nonce="<?php echo wp_create_nonce( $nonce_name = 'wpbc_import_ics_nonce_actn' ); ?>"	
-				data-user-id="<?php echo wpbc_get_current_user_id(); ?>"
+				data-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_name = 'wpbc_import_ics_nonce_actn' ) ); ?>"
+				data-user-id="<?php echo esc_attr( wpbc_get_current_user_id() ); ?>"
 			 ><?php
 
 			if ( function_exists( 'wpbc_get_br_as_objects' ) ) {
@@ -448,7 +449,7 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
 							$option_class = 'wpbc_single_resource';
 						}
 
-						?><option value="<?php echo $res->id; ?>" class="<?php echo  $option_class; ?>" ><?php echo $res_title; ?></option><?php 
+						?><option value="<?php echo esc_attr( $res->id ); ?>" class="<?php echo esc_attr( $option_class ); ?>" ><?php echo esc_html( $res_title ); ?></option><?php
 
 					} 
 
@@ -459,16 +460,16 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
 			<div class="wpbc_import_div">
 				<input type="text" 
 					   class="wpbc_import_url" name="wpbc_import_url" id="wpbc_import_url" 
-					   placeholder="<?php _e( 'Enter URL to .ics feed', 'booking' ) ?>"				   
+					   placeholder="<?php esc_attr_e( 'Enter URL to .ics feed', 'booking' ) ?>"
 					   value="" wrap="off" 
 					   />
 				<?php if ( function_exists( 'wpbm_upload' ) ) {  ?>
 					<a href="javascript:void(0)" class="button button-secondary wpbc_upload_btn"
 							data-modal_title="<?php echo esc_attr( __( 'Choose file', 'booking' ) ); ?>" 
 							data-btn_title="<?php echo esc_attr( __( 'Insert file URL', 'booking' ) ); ?>" 						   
-						><?php _e('Upload / Select ', 'booking' ); ?> <strong>(.ics)</strong></a>
+						><?php esc_html_e('Upload / Select ', 'booking' ); ?> <strong>(.ics)</strong></a>
 				<?php } ?>
-				<a class="button button-primary wpbc_import_btn" href="javascript:void(0)"><?php _e('Import', 'booking'); ?></a>				
+				<a class="button button-primary wpbc_import_btn" href="javascript:void(0)"><?php esc_html_e('Import', 'booking'); ?></a>
 			</div>
 			<?php 
 			if ( function_exists( 'wpbm_upload' ) ) {																	// Get WPBM_Upload obj. instance
@@ -505,13 +506,14 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 			<?php 
 				$message_ics = sprintf( __( 'What does .ics feeds import/export mean?', 'booking' ) );
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics; 
+				echo wp_kses_post( $message_ics );
 			?>						
 		</h4>
 		<p  class="code" >
 			<?php 
 				$message_ics = sprintf( 
-						__( 'Its useful, if you need to import/export bookings from/to external websites, like %s', 'booking' ), 
+					/* translators: 1: ... */
+						__( 'Its useful, if you need to import/export bookings from/to external websites, like %s', 'booking' ),
 						' <br/><em><strong><a href="https://www.airbnb.com/help/article/99/how-do-i-sync-my-airbnb-calendar-with-another-calendar" target="_blank">Airbnb</a></strong>, '
 						. '<strong><a href="https://partner.booking.com/en-gb/help/rates-availability/extranet-calendar/syncing-your-bookingcom-calendar-third-party-calendars" target="_blank">Booking.com</a></strong>, '
 						. '<strong><a href="https://rentalsupport.tripadvisor.com/articles/FAQ/noc-How-does-calendar-sync-work" target="_blank">TripAdvisor</a></strong>, '
@@ -524,7 +526,7 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 						. '</em>.<br/>'					
 					);
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics; 
+				echo wp_kses_post( $message_ics );
 			?>
 		</p>
 		<div class="clear" style="margin:20px 0;"></div>
@@ -533,6 +535,7 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 			 >
 			<?php
 				$message_ics = sprintf( 
+					/* translators: 1: ... */
 						__( '.ics - is a file format of iCalendar standard for exchanging calendar and scheduling information between different sources %s Using a common calendar format (.ics), you can keep all your calendars updated and synchronized.', 'booking' )
 						, '<br/>' /*
 						'<br/><em>(<strong><a href="https://www.airbnb.com/help/article/99/how-do-i-sync-my-airbnb-calendar-with-another-calendar" target="_blank">Airbnb</a></strong>, '
@@ -547,7 +550,7 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 						. ')</em>.<br/>' */
 					);
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics;
+				echo wp_kses_post( $message_ics );
 			?>
 		</div>
 		<?php if ( $is_import ) { ?>
@@ -556,7 +559,7 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 				// FixIn: 8.4.2.12
 				$message_ics = sprintf( __( 'Is it automatic process?', 'booking' ) );
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics;
+				echo wp_kses_post( $message_ics );
 			?>
 		</h4>
 		<div class="wpbc-settings-notice notice-warning"
@@ -578,52 +581,57 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 						. ')</em>.<br/>' */
 					);
 				$message_ics = str_replace( array( '.ics', 'iCalendar' , 'CRON'), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' , '<a target="_blank" href="https://wpbookingcalendar.com/faq/cron-script/"><strong>CRON</strong></a>' ), $message_ics );
-				echo $message_ics;
+				echo wp_kses_post( $message_ics );
 			?>
 		</div>
 		<h4 style="font-size:1.1em;">
 			<?php 
 				$message_ics = sprintf( __( 'How to start import of .ics feeds (files)?', 'booking' ) );
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics; 
+				echo wp_kses_post( $message_ics );
 			?>						
 		</h4>
 		<ol style="list-style-type: decimal !important;list-style-position: inside;margin-left: 15px;">
-			<li><?php 				
-				printf( __( 'Install %s plugin.', 'booking' ) 
-				, '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a>' );
+			<li><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( 'Install %s plugin.', 'booking' ),
+					'<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a>' )
+				);
 			?></li>
-			<li><?php 
-				printf( __( 'Insert %s shortcode into  some post(s) or page(s). Check more info about this %sshortcode configuration%s', 'booking' ) 
+			<li><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( 'Insert %1$s shortcode into  some post(s) or page(s). Check more info about this %2$sshortcode configuration%3$s', 'booking' )
 				, '<code>[booking-manager-import ...]</code>'
 				, '<a target="_blank" href="https://oplugins.com/plugins/wp-booking-manager/booking-manager-help/#events-import">'
 				, '</a>'
-				);
+				) );
 			?>.
 				<div class="wpbc-settings-notice notice-info" 
 					 style='margin-left:25px;text-align:left;border-top:1px solid #f0f0f0;border-right:1px solid #f0f0f0;'><?php
 					 
+					/* translators: 1: ... */
 					$message_ics = sprintf( __( 'Using such shortcodes in pages give a great flexibility to import from  different .ics feeds (sources) into the same resource.%sAlso  its possible to define different CRON parameters for accessing such different pages with  different time intervals.', 'booking' )
 											, '<br/>'
 											);
 					$message_ics = str_replace( array( '.ics', 'CRON' ), array( '<strong>.ics</strong>', '<a target="_blank" href="https://wpbookingcalendar.com/faq/cron-script/"><strong>CRON</strong></a>' ), $message_ics );
-					echo $message_ics; 					 
+					echo wp_kses_post( $message_ics );
 				?>					
 				</div>
 				<span style="padding:0 15px;">
 				<?php 
 					$message_ics = sprintf( __( 'Or you can import .ics feed or file directly at current page.', 'booking' ) );
 					$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-					echo $message_ics; 
+					echo wp_kses_post( $message_ics );
 				?>											
 				</span>
 			</li>
 			<li>				<?php 
+					/* translators: 1: ... */
 					$message_ics = sprintf( __( 'If you have inserted import shortcodes from %s, then  you can configure your CRON for periodically access these pages and import .ics feeds.', 'booking' )
 											, '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a> <code>[booking-manager-import ...]</code>'
 										);
 					$message_ics = str_replace( array( '.ics', 'CRON' ), array( '<strong>.ics</strong>', '<a target="_blank" href="https://wpbookingcalendar.com/faq/cron-script/"><strong>CRON</strong></a>' ), $message_ics );
-					echo $message_ics; 
+					echo wp_kses_post( $message_ics );
 				?>											
 			</li>
 		</ol>
@@ -632,24 +640,24 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 			<?php 
 				$message_ics = sprintf( __( 'How to start export of .ics feeds (files)?', 'booking' ) );
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics; 
+				echo wp_kses_post( $message_ics );
 			?>						
 		</h4>
 		<ol style="list-style-type: decimal !important;list-style-position: inside;margin-left: 15px;">
-			<li><?php 				
-				printf( __( 'Install %s plugin.', 'booking' ) 
-				, '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a>' );
+			<li><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( 'Install %s plugin.', 'booking' ), '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a>' ) );
 			?></li>
-			<li>
-				<?php _e( 'Configure ULR feed(s) at this settings page.', 'booking' );  ?>
+			<li> <?php esc_html_e( 'Configure ULR feed(s) at this settings page.', 'booking' ); ?>
 				<div class="wpbc-settings-notice notice-info" 
 					 style='margin-left:25px;text-align:left;border-top:1px solid #f0f0f0;border-right:1px solid #f0f0f0;'>
 				<?php 
 					$message_ics = sprintf( 
+									/* translators: 1: ... */
 										__( 'Using such URL(s) you can import .ics feeds, from  interface of other websites. %sCheck  more info  about how to import .ics feeds into other websites at the support pages of sepcific website.',  'booking' )
 										, '<br/>');
 					$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-					echo $message_ics; 
+					echo wp_kses_post( $message_ics );
 				?>						
 				</div>
 			</li>
@@ -657,7 +665,7 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 			<?php 
 				$message_ics = sprintf( __( 'Visit these (previously configured URL feeds) pages for downloading .ics files.', 'booking' ) );
 				$message_ics = str_replace( array( '.ics', 'iCalendar' ), array( '<strong>.ics</strong>', '<strong>iCalendar</strong>' ), $message_ics );
-				echo $message_ics; 
+				echo wp_kses_post( $message_ics );
 			?>						
 			</li>
 		</ol>		
@@ -708,11 +716,11 @@ function wpbc_ics_import_ajax_js() {
 											nonce:      params_obj.nonce,
 											params:		params_obj
 										},                                            
-								function ( response_data, textStatus, jqXHR ) {                             // success	
-									
-									var my_message = '<?php echo html_entity_decode( esc_js( __('Done' ,'booking') ),ENT_QUOTES) ; ?>';
+								function ( response_data, textStatus, jqXHR ) {                             // success
+
+									var my_message = '<?php echo  esc_js( __('Done' ,'booking') ); ?>';
 									wpbc_admin_show_message( my_message, 'info', 10000 , false );
-								
+
 									//console.log( response_data ); console.log( textStatus); console.log( jqXHR );        // Debug
 									//jQuery( '.wpbc_system_info_log' ).show();				//Show Debug info
 									jQuery( '.wpbc_system_info_log' ).html( response_data );                                     // For ability to show response, add such  DIV element to page
@@ -733,9 +741,10 @@ function wpbc_ics_import_ajax_js() {
 }
 
 
-/** Ajax Response */
+/** Ajax Response $ */
 function wpbc_ajax_WPBC_IMPORT_ICS_URL() {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ! isset( $_POST['params'] ) || empty( $_POST['params'] ) ) {
 			exit;
 		}
@@ -754,14 +763,12 @@ function wpbc_ajax_WPBC_IMPORT_ICS_URL() {
 		//////////////////////////////////////////////////////////////////////
 		// Import events from .ics feed to specific booking resource
 		//////////////////////////////////////////////////////////////////////
-		do_action( 'wpbm_ics_import_start'
-							, array(
-									'url' => esc_url_raw( $_POST['params']['wpbc_import_url'] )
-								  , 'resource_id' => intval( $_POST['params']['wpbc_import_br_selection'] )
-								  , 'import_conditions' => ''													// Check dates availability and process only  
-																												// if dates available in specific booking resource!
-							) 
-				);
+	do_action( 'wpbm_ics_import_start', array(
+			'url'               => esc_url_raw( $_POST['params']['wpbc_import_url'] ),			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			'resource_id'       => intval( $_POST['params']['wpbc_import_br_selection'] ),		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			'import_conditions' => '',
+			// Check dates availability and process only  if dates available in specific booking resource!
+		) );
 		
 		if ( $is_show_debug_info )		
 			remove_action( 'wpbc_show_debug', 'wpbc_start_showing_debug', 10 );

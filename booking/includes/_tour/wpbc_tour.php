@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }                                             // Exit if accessed directly
 
-//FixIn: 10.4.0.1
+// FixIn: 10.4.0.1.
 
 class WPBC_Tour_01 {
 
@@ -42,6 +42,7 @@ class WPBC_Tour_01 {
 	 */
 	public function ajax_WPBC_AJX_Response() {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ! isset( $_POST['action_params'] ) || empty( $_POST['action_params'] ) ) {
 			exit;
 		}
@@ -53,7 +54,7 @@ class WPBC_Tour_01 {
 		$nonce_post_key = 'nonce';
 		$result_check   = check_ajax_referer( $action_name, $nonce_post_key );
 
-		$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) ) ? intval( $_REQUEST['wpbc_ajx_user_id'] ) : wpbc_get_current_user_id();
+		$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) ) ? intval( $_REQUEST['wpbc_ajx_user_id'] ) : wpbc_get_current_user_id();  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 		/**
 		 * SQL  ---------------------------------------------------------------------------
@@ -89,6 +90,7 @@ class WPBC_Tour_01 {
 		$defaults      = array(
 			'new_listing_params'   => false,        // required for Import Google Calendar bookings
 			'after_action_result'  => false,
+			/* translators: 1: ... */
 			'after_action_message' => sprintf( __( 'No actions %s has been processed.', 'booking' )
 				, ' <strong>' . $request_params['booking_action'] . '</strong> ' )
 		);
@@ -104,6 +106,7 @@ class WPBC_Tour_01 {
 		//------------------------------------------------------------------------------------------------------------------
 		// Send JSON. Its will make "wp_json_encode" - so pass only array, and This function call wp_die( '', '', array( 'response' => null, ) )		Pass JS OBJ: response_data in "jQuery.post( " function on success.
 		wp_send_json( array(
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			'ajx_action_params'                      => $_REQUEST['action_params'],                     // Do not clean input parameters
 			'ajx_cleaned_params'                     => $request_params,	                            // Cleaned input parameters
 			'ajx_after_action_message'               => $action_result['after_action_message'],	        // Message to  show
@@ -158,8 +161,8 @@ class WPBC_Tour_01 {
 
 			$tour_data = array(
 				'plugins_page'    => array(
+					/* translators: 1: ... */
 					'title'  => sprintf( __( 'Welcome to %s', 'booking' ), '<strong>WP Booking Calendar</strong>' ),
-					//'text'   => sprintf( __( 'This quick product tour will show you how %s help you to manage bookings.', 'booking' ), '<strong>WP Booking Calendar</strong>' ),
 					'text'   => sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ),
 					'button' => array(
 						'text' => __( 'Let\'s go', 'booking' ),

@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Check  where to  save the booking
@@ -26,8 +26,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc__where_to_save_booking( $local_params ){
 
+	$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 	$defaults = array(
-					'request_uri'                   => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'] ), //  front-end: $_SERVER['REQUEST_URI'] | ajax: $_SERVER['HTTP_REFERER']                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages
+					'request_uri'                   => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ), //  front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages
 					'as_single_resource'            => false,
 					'is_use_booking_recurrent_time' => ( 'On' === get_bk_option( 'booking_recurrent_time' ) ),
 					'aggregate_resource_id_arr'     => array(),
@@ -55,15 +57,15 @@ function wpbc__where_to_save_booking( $local_params ){
 	}
 	// [ "dates": [ "2023-11-05": [ "day_availability":4, ... "2": [ "is_day_unavailable":false, ...]], '2023-11-06':[...] ] ,"resources_id_arr__in_dates":[2,12,10,11]}
 	$availability_per_days = wpbc_get_availability_per_days_arr( array(
-																		'resource_id'        => $local_params['resource_id'],
-																		'skip_booking_id'    => $local_params['skip_booking_id'],
-																		'dates_to_check'     => $maybe_extended__dates_to_check_arr,
-																		'request_uri'        => $local_params['request_uri'],
-																		'as_single_resource' => $local_params['as_single_resource'],     // default FALSE  ::  get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources'
-																		'additional_bk_types' => $local_params['aggregate_resource_id_arr'],
-																		'aggregate_type'      => $local_params['aggregate_type'],                  //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        //FixIn: 10.0.0.7
-																	    'custom_form'         => $local_params['custom_form']                      //FixIn: 10.0.0.10
-																	) );
+		'resource_id'         => $local_params['resource_id'],
+		'skip_booking_id'     => $local_params['skip_booking_id'],
+		'dates_to_check'      => $maybe_extended__dates_to_check_arr,
+		'request_uri'         => $local_params['request_uri'],
+		'as_single_resource' => $local_params['as_single_resource'],                                                            // default FALSE  ::  get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources' .
+		'additional_bk_types' => $local_params['aggregate_resource_id_arr'],
+		'aggregate_type'      => empty( $local_params['aggregate_type'] ) ? 'bookings_only' : $local_params['aggregate_type'],  //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.
+		'custom_form'         => $local_params['custom_form'],                                                                  // FixIn: 10.0.0.10.
+	) );
 
 	// Get value of how many  booking resources to  book
 	$how_many_items_to_book = $local_params['how_many_items_to_book'];
@@ -128,14 +130,14 @@ function wpbc__where_to_save_booking( $local_params ){
 							                             .'jQuery( this).hide();'
 														 .'jQuery( this ).parents(\'.wpbc_alert_message\').parent().on(\'hide\',function(even){jQuery(this).show();});'
 			                                    .'">'
-							             .    __( 'Show more details' )
+							             .    __( 'Show more details', 'booking' )
 							             . '</a>'
 							             . ' <div style="display:none;">'
 							                    . '<p><hr><code>'
-							                    . json_encode( $available_slots )
+							                    . wp_json_encode( $available_slots )
 							                    . '</code></p>'
 							             . '</div>'
-							             . ' <div style="display:none;">' . json_encode( $available_slots ) . '</div>'
+							             . ' <div style="display:none;">' . wp_json_encode( $available_slots ) . '</div>'
 						);
 		}
 
@@ -175,14 +177,15 @@ function wpbc__where_to_save_booking( $local_params ){
 							                             .'jQuery( this).hide();'
 														 .'jQuery( this ).parents(\'.wpbc_alert_message\').parent().on(\'hide\',function(even){jQuery(this).show();});'
 			                                    .'">'
-							             .    __( 'Show more details' )
+							             .    __( 'Show more details', 'booking' )
 							             . '</a>'
 							             . ' <div style="display:none;">'
 							                    . '<p><strong>'
-									            . sprintf( __( 'Booking can not be saved in this date %s, number of available (single or child) booking resource(s) (%d) less than required (%d).', 'booking' )
+									            /* translators: 1: ... */
+									            . sprintf( __( 'Booking can not be saved in this date %1$s, number of available (single or child) booking resource(s) (%2$d) less than required (%3$d).', 'booking' )
 															, $day_sql_key2, count( $available_res_in_day_arr ), $how_many_items_to_book )
 												. '</strong><hr><code>'
-							                    . json_encode( $available_slots )
+							                    . wp_json_encode( $available_slots )
 							                    . '</code></p>'
 							             . '</div>'
 

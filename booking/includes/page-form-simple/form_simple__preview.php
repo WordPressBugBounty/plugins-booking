@@ -180,7 +180,7 @@ function wpbc_show_preview__form(){
 
 		?>
 		<div class='meta-box'>
-			<div	id="<?php echo $my_close_open_win_id; ?>"
+			<div	id="<?php echo esc_attr( $my_close_open_win_id ); ?>"
 					class="wpbc_section_preview_container <?php echo esc_attr( $params['css_class'] ); ?> <?php
 										if ( $params['is_show_minimize'] ) {
 											if ( '1' == get_user_option( 'booking_win_' . $my_close_open_win_id ) ) {
@@ -192,7 +192,9 @@ function wpbc_show_preview__form(){
 				<div class="wpbc_section_preview_header postbox-header">
 					<h3 class='hndle'>
 					  <span><?php  echo wp_kses_post( $title ); ?></span>
-					  <?php echo $params['dismiss_button']; ?>
+					  <?php
+					  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					  echo $params['dismiss_button']; ?>
 					</h3>
 					<div class="wpbc_section_preview_mobile_btn_bar">
 						<a class="wpbc_preview_a active" href="javascript:void(0)" onclick="javascript:jQuery( '.wpbc_center_preview').css({'max-width': '90%', 'width': 'auto'});jQuery('.wpbc_preview_a' ).removeClass('active');jQuery(this).addClass('active');">
@@ -206,8 +208,8 @@ function wpbc_show_preview__form(){
 						</a>
 					</div>
 					<?php if ( $params['is_show_minimize'] ) { ?>
-					<div  	title="<?php _e('Click to toggle','booking'); ?>" class="handlediv"
-							onclick="javascript:wpbc_verify_window_opening(<?php echo wpbc_get_current_user_id(); ?>, '<?php echo $my_close_open_win_id; ?>');"
+					<div  	title="<?php esc_attr_e('Click to toggle','booking'); ?>" class="handlediv"
+							onclick="javascript:wpbc_verify_window_opening(<?php echo esc_attr( wpbc_get_current_user_id() ); ?>, '<?php echo esc_attr( $my_close_open_win_id ); ?>');"
 					><br/></div>
 					<?php } ?>
 				</div>
@@ -223,16 +225,18 @@ function wpbc_show_preview__form(){
  */
 function wpbc_show_preview_help_notice(){
 
-	$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_show_preview_help_notice_id' );        //FixIn: 9.9.0.8
+	$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_show_preview_help_notice_id' );        // FixIn: 9.9.0.8.
 	if ( $is_panel_visible ) {
 		?><div id="wpbc_show_preview_help_notice_id" class="wpbc-settings-notice notice-warning notice-helpful-info"
 			   style="max-width: Min(400px, 100%);margin: auto;padding: 4px 20px 7px;font-size: 14px;line-height: 28px;margin-bottom: 25px;"
 		   >
 			   <a style="margin: 0 7px 0 0;" href="javascript:void(0)" onclick="javascript:jQuery('.wpbc_submit_button_trigger').trigger('click');"
 					data-original-title="<?php echo esc_attr(__('Update','booking')); ?>" class="tooltip_top "><i class="menu_icon icon-1x wpbc_icn_rotate_right wpbc_spin wpbc_animation_pause"></i><span></span></a>
-			<?php printf( __( 'To update preview, please click on %sSave Changes%s button.', 'booking' ),
-				'<a href="javascript:void(0)" onclick="javascript:jQuery(\'.wpbc_submit_button_trigger\').trigger(\'click\');" style="font-weight:600;text-underline-offset: 3px;text-decoration-thickness: 0px;text-decoration-style: dashed;">', '</a>' ); ?>
 			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.WP.I18n.MissingTranslatorsComment
+			echo sprintf( __( 'To update preview, please click on %1$sSave Changes%2$s button.', 'booking' ),
+				'<a href="javascript:void(0)" onclick="javascript:jQuery(\'.wpbc_submit_button_trigger\').trigger(\'click\');" style="font-weight:600;text-underline-offset: 3px;text-decoration-thickness: 0px;text-decoration-style: dashed;">',
+				'</a>' );
 
  			$is_panel_visible = wpbc_is_dismissed( 'wpbc_show_preview_help_notice_id', array(
 											'title' => '<i class="menu_icon icon-1x wpbc_icn_close"></i> ',

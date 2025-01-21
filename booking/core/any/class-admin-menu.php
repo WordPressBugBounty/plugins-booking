@@ -175,7 +175,7 @@ class WPBC_Admin_Menus {
          */
 
 
-	    //FixIn: 9.0.1.7
+	    // FixIn: 9.0.1.7.
 
 	    // The url to the icon to be used for this menu. Using 'none' would leave div.wp-menu-image empty so an icon can be added as background with CSS.
 

@@ -12,7 +12,7 @@
  * @modified 2024-02-17
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 // =====================================================================================================================
 //  Shortcode [bookingcalendar ... ]
@@ -27,7 +27,7 @@ function wpbc_shortcode_config__content__bookingcalendar() {
 
 	$shortcode_name = 'bookingcalendar';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		wpbc_shortcode_config__bookingcalendar__top_tabs();
 

@@ -64,7 +64,7 @@ function wpbc_bf__replace_custom_html_shortcodes( $html_original_content ){
 			//$regex                 = '%<\s*' . $rx_shortcode . '\s*>%';                                               // ? $regex = '%<\s*(' . $rx_shortcode . ')\s*|\s+[^>]*>%';
 			//$full_text_content = preg_replace( $regex, $replacement, $full_text_content );
 
-			$found_shortcodes_count = preg_match_all( '%<\s*' . $rx_shortcode . '(\s+[^\<\>]+)*' . '\s*>%', $full_text_content, $matches_shortoces, PREG_SET_ORDER );   //FixIn: 10.1.0.1
+			$found_shortcodes_count = preg_match_all( '%<\s*' . $rx_shortcode . '(\s+[^\<\>]+)*' . '\s*>%', $full_text_content, $matches_shortoces, PREG_SET_ORDER );   // FixIn: 10.1.0.1.
 			foreach ( $matches_shortoces as $index => $found_shortcode ) {
 				$found_shortcode_to_replace = $found_shortcode[0];                                                      // <r id="first_row" class="sr_booking_info" style="background:red;">
 				$found_shortcode_attributes_to_replace = ( isset( $found_shortcode[1] ) ) ? $found_shortcode[1] : '';   //  id="first_row" class="sr_booking_info" style="background:red;"

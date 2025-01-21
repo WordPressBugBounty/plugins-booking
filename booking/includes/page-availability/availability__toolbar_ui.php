@@ -74,7 +74,7 @@ function wpbc_ajx_availability__toolbar( $escaped_search_request_params ) {
 			?></div><?php
 
 			?><div class="ui_group"  id="wpbc_template__select_month_number_in_row"><?php
-				//FixIn: 10.8.1.5
+				// FixIn: 10.8.1.5.
 			?></div><?php
 
 			?><div class="ui_group" style="flex:1 1 auto;"><?php
@@ -104,7 +104,8 @@ function wpbc_ajx_avy__ui__info( $escaped_search_request_params, $defaults ){
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        =>   sprintf( __('%sSelect days%s in calendar then select %sAvailable%s / %sUnavailable%s status and click %sApply%s availability button.' ,'booking')
+						/* translators: 1: ... */
+						, 'html'        =>   sprintf( __( '%1$sSelect days%2$s in calendar then select %3$sAvailable%4$s / %5$sUnavailable%6$s status and click %7$sApply%8$s availability button.', 'booking' )
 														, '<strong>', '&nbsp;</strong>'
 														, '<strong>&nbsp;', '&nbsp;</strong>'
 														, '<strong>&nbsp;', '&nbsp;</strong>'
@@ -152,7 +153,7 @@ function wpbc_ajx_avy__ui__available_radio(){
 
 		wpbc_flex_vertical_color( array(	'vertical_line' => 'border-left: 4px solid #11be4c;' 	) );				// Green line
 
-		?><span class="wpbc_ui_control wpbc_ui_button <?php echo $el_id . '__outer_button'; ?>" style="padding-right: 8px;"><?php
+		?><span class="wpbc_ui_control wpbc_ui_button <?php echo esc_attr( $el_id . '__outer_button' ); ?>" style="padding-right: 8px;"><?php
 			$params_radio = array(
 							  'id'       => $el_id 				// HTML ID  of element
 							, 'name'     => $booking_action
@@ -188,7 +189,7 @@ function wpbc_ajx_avy__ui__unavailable_radio(){
 
 		wpbc_flex_vertical_color( array(	'vertical_line' => 'border-left: 4px solid #e43939;' 	) );				// Green line
 
-		?><span class="wpbc_ui_control wpbc_ui_button <?php echo $el_id . '__outer_button'; ?>" style="padding-right: 8px;"><?php
+		?><span class="wpbc_ui_control wpbc_ui_button <?php echo esc_attr( $el_id . '__outer_button' ); ?>" style="padding-right: 8px;"><?php
 			$params_radio = array(
 							  'id'       => $el_id 				// HTML ID  of element
 							, 'name'     => $booking_action

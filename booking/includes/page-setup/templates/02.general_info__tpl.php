@@ -40,30 +40,30 @@ function wpbc_stp_wiz__template__general_info(){
 		<div class="wpbc__form__div wpbc_swp_section wpbc_swp_section__general_info">
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<h1 class="wpbc_swp_section_header" ><?php _e( 'Tell Us About Your Business', 'booking' ); ?></h1>
-					<p class="wpbc_swp_section_header_description"><?php _e('This will help customize your experience.','booking'); ?></p>
+					<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Tell Us About Your Business', 'booking' ); ?></h1>
+					<p class="wpbc_swp_section_header_description"><?php esc_html_e('This will help customize your experience.','booking'); ?></p>
 				</div>
 			</div>
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<label><?php _e('What\'s the name of your business?','booking'); ?></label><br>
+					<label><?php esc_html_e('What\'s the name of your business?','booking'); ?></label><br>
 					<input type="text" name="wpbc_swp_business_name"  size="40"
 						   value="<?php echo esc_attr( get_option( 'blogname' ) ); ?>"
 						   placeholder="<?php echo esc_attr( __( 'Example', 'booking' ) ) . ': ' . esc_attr( get_option( 'blogname' ) ); ?>"
 					/>
 				</div>
 				<div class="wpbc__field">
-					<label><?php _e('Which one of these best describes you?','booking'); ?></label><br>
+					<label><?php esc_html_e('Which one of these best describes you?','booking'); ?></label><br>
 					<select name="wpbc_swp_booking_who_setup" onchange="javascript:console.log( this );" >
-						<option value="starting"><?php _e('I\'m just starting my business','booking'); ?></option>
-						<option value="in_business"><?php _e('I\'m already in business','booking'); ?></option>
-						<option value="setup_for_client"><?php _e('I\'m setting up a plugin for a client','booking'); ?></option>
+						<option value="starting"><?php esc_html_e('I\'m just starting my business','booking'); ?></option>
+						<option value="in_business"><?php esc_html_e('I\'m already in business','booking'); ?></option>
+						<option value="setup_for_client"><?php esc_html_e('I\'m setting up a plugin for a client','booking'); ?></option>
 					</select>
 				</div>
 			</div>
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<label><?php _e('What industry is your booking business in?','booking'); ?></label><br>
+					<label><?php esc_html_e('What industry is your booking business in?','booking'); ?></label><br>
 					<select name="wpbc_swp_industry">
 						<option value="---">---</option>
 
@@ -195,12 +195,12 @@ function wpbc_stp_wiz__template__general_info(){
 					</select>
 				</div>
 				<div class="wpbc__field">
-					<label><?php _e('Your Booking Email Address','booking'); ?></label><br>
+					<label><?php esc_html_e('Your Booking Email Address','booking'); ?></label><br>
 					<input type="text" name="wpbc_swp_email"  size="40"
 						   value="<?php echo   esc_attr( get_option( 'admin_email' ) ); ?>"
 						   placeholder="<?php echo esc_attr( __( 'Example', 'booking' ) ) . ': ' . esc_attr( get_option( 'admin_email' ) ); ?>"
 					/>
-					<span style="font-size:12px;"><?php _e('You can always change this later','booking'); ?>!</span>
+					<span style="font-size:12px;"><?php esc_html_e('You can always change this later','booking'); ?>!</span>
 				</div>
 			</div>
 			<!--div class="wpbc__row">
@@ -223,7 +223,7 @@ function wpbc_stp_wiz__template__general_info(){
 						<label for="wpbc_swp_accept_send"
 							   class="wpdev-list-item-label"
 							   style="font-size: 12px;font-weight: 400;">
-							<?php _e('By checking this box, I agree to share data from this page to personalize my setup experience, receive more relevant content, and help improve WP Booking Calendar for all users.', 'booking'); ?>
+							<?php esc_html_e('By checking this box, I agree to share data from this page to personalize my setup experience, receive more relevant content, and help improve WP Booking Calendar for all users.', 'booking'); ?>
 						</label>
 					</span>
 				</div>
@@ -244,7 +244,7 @@ function wpbc_stp_wiz__template__general_info(){
 																											}
 																							} );
 									wpbc_button_enable_loading_icon( this );
-									wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+									wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 				</div>
 			</div>
 			<?php /**/ ?>
@@ -255,14 +255,14 @@ function wpbc_stp_wiz__template__general_info(){
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
 						><?php
-							_e('Exit and skip the setup wizard','booking');
+							esc_html_e('Exit and skip the setup wizard','booking');
 						?></a>
 						<?php /* ?>
 						<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
 						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
 						><?php
-							_e('Reset Wizard','booking');
+							esc_html_e('Reset Wizard','booking');
 						?></a>
 						<?php */ ?>
 					</p>

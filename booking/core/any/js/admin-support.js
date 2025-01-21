@@ -47,7 +47,7 @@ function wpbc_navigation_click_show_section( _this, section_id_to_show ){
         var targetOffset = wpbc_scroll_to( section_id_to_show );
     }
 
-    // -- Set Value to Input about selected Nav element  ---------------------------------------------------------------       //FixIn: 9.8.6.1
+    // -- Set Value to Input about selected Nav element  ---------------------------------------------------------------       // FixIn: 9.8.6.1.
     var section_id_tab = section_id_to_show.substring( 0, section_id_to_show.length - 8 ) + '_tab';
     if ( container_to_hide_class == section_id_to_show ){
         section_id_tab = '#wpbc_general_settings_all_tab'
@@ -161,9 +161,9 @@ function wpbc_admin_show_message_processing( message_type ){
  * @param {bool} is_append (default true) - append notice instead of replacing
  * @returns {undefined}
  */
-function wpbc_admin_show_message( message, m_type, m_delay, is_append ){                     //FixIn: 7.2.1.16
+function wpbc_admin_show_message( message, m_type, m_delay, is_append ){                     // FixIn: 7.2.1.16.
 
-	if ( is_append === undefined) {                                             //FixIn: 8.0.1.100
+	if ( is_append === undefined) {                                             // FixIn: 8.0.1.100.
 		is_append = true;
 	}
 
@@ -289,7 +289,7 @@ function wpbc_admin_show_message( message, m_type, m_delay, is_append ){        
 /**
  * End:   Dropdown BS List elements  -------------------------------------------------------------------------------- */
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 /* Mark rows in listing as selected by adding specific CLASS*/
 ( function( $ ){            
@@ -599,7 +599,7 @@ function wpbc_show_error_message( element , errorMessage) {
     jQuery(".wpbc-near-field-message")
             .animate( {opacity: 1}, 10000 )
             .fadeOut( 2000 );
-    jQuery( element).trigger( 'focus' );    //FixIn: 8.7.11.12
+    jQuery( element).trigger( 'focus' );    // FixIn: 8.7.11.12.
     return;
 
 }
@@ -642,7 +642,7 @@ function wpbc_reload_page_with_paramater( url, param, value ) {
 }
 
 // jQuery(window).load(function(){
-jQuery( window ).on( "load", function (){       //FixIn: 8.7.9.7
+jQuery( window ).on( "load", function (){       // FixIn: 8.7.9.7.
 
 
     // Color Text picker ///////////////////////////////////////////////////////
@@ -658,7 +658,7 @@ jQuery( window ).on( "load", function (){       //FixIn: 8.7.9.7
         } ).each( function() {
             jQuery(this).css( { backgroundColor: jQuery(this).val() } );
         })
-        .on( 'click', function(){                   //FixIn: 8.7.11.12
+        .on( 'click', function(){                   // FixIn: 8.7.11.12.
             jQuery('.iris-picker').hide();
             jQuery(this).closest('div').find('.iris-picker').show();
         });
@@ -676,19 +676,19 @@ jQuery( window ).on( "load", function (){       //FixIn: 8.7.9.7
         } ).each( function() {
             jQuery(this).css( { backgroundColor: jQuery(this).val() } );
         })
-        .on( 'click', function(){                   //FixIn: 8.7.11.12
+        .on( 'click', function(){                   // FixIn: 8.7.11.12.
             jQuery('.iris-picker').hide();
             jQuery(this).closest('div').find('.iris-picker').show();
         });
-        //FixIn: 8.7.11.12
+        // FixIn: 8.7.11.12.
         jQuery('.field-text-color, .field-background-color' ).on( 'click', function(event){
             event.stopPropagation();
         });
     }
 
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // General Color picker in settings table //////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     if ( jQuery('.wpbc_colorpick').length > 0 ) {
         jQuery('.wpbc_colorpick').iris( {
             change: function(event, ui){
@@ -700,7 +700,7 @@ jQuery( window ).on( "load", function (){       //FixIn: 8.7.9.7
         } ).each( function() {
             jQuery(this).css( { backgroundColor: jQuery(this).val() } );
         })
-        .on( 'click', function(){                   //FixIn: 8.7.11.12
+        .on( 'click', function(){                   // FixIn: 8.7.11.12.
             jQuery('.iris-picker').hide();
             jQuery(this).closest('td').find('.iris-picker').show();
         });
@@ -708,7 +708,7 @@ jQuery( window ).on( "load", function (){       //FixIn: 8.7.9.7
         jQuery('body' ).on( 'click', function() {
             jQuery('.iris-picker').hide();
         });
-        //FixIn: 8.7.11.12
+        // FixIn: 8.7.11.12.
         jQuery('.wpbc_colorpick' ).on( 'click', function(event){
             event.stopPropagation();
         });
@@ -729,7 +729,7 @@ jQuery( window ).on( "load", function (){       //FixIn: 8.7.9.7
  */
 function wpbc_reset_wp_editor_content( editor_textarea_id, editor_textarea_content ) {
 
-        //FixIn: 8.4.7.18
+        // FixIn: 8.4.7.18.
 
     if  ( (typeof WPBC_CM !== 'undefined') && ( WPBC_CM.is_defined( '#' + editor_textarea_id ) ) ){
 

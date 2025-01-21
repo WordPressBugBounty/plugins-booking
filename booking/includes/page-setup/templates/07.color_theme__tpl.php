@@ -44,8 +44,8 @@ function wpbc_stp_wiz__template__color_theme(){
 			<div class="wpbc__form__div wpbc_container_booking_form wpbc_swp_section wpbc_swp_section__color_theme">
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 0 auto;flex-flow: column;margin:0 0 10px;">
-						<h1 class="wpbc_swp_section_header" ><?php _e( 'Calendar Appearance', 'booking' ); ?></h1>
-						<p class="wpbc_swp_section_header_description"><?php _e('Select a color theme for your booking form that matches the look of your website.','booking'); ?></p>
+						<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Calendar Appearance', 'booking' ); ?></h1>
+						<p class="wpbc_swp_section_header_description"><?php esc_html_e('Select a color theme for your booking form that matches the look of your website.','booking'); ?></p>
 					</div>
 					<div class="wpbc__field">
 						<#
@@ -63,7 +63,7 @@ function wpbc_stp_wiz__template__color_theme(){
 			<div class="wpbc_widgets">
 				<div class="wpbc_widget             wpbc_widget_preview_booking_form">
 					<div class="wpbc_widget_header">
-						<span class="wpbc_widget_header_text"><?php _e( 'Preview', 'booking' ); echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> '; _e( 'Booking Form', 'booking' ); ?></span>
+						<span class="wpbc_widget_header_text"><?php esc_html_e( 'Preview', 'booking' ); echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> '; esc_html_e( 'Booking Form', 'booking' ); ?></span>
 						<?php wpbc_stp_wiz__ui__form_structure__mobile_buttons(); ?>
 					</div>
 					<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
@@ -141,7 +141,7 @@ function wpbc_stp_wiz__ui__color_theme__bottom_buttons(){
 																									'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
 																								} );
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php _e('Go Back','booking'); ?></span></a>
+										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php esc_html_e('Go Back','booking'); ?></span></a>
 						<# } else { #>
 							<span style="margin-left:auto;"></span>
 						<# } #>
@@ -160,7 +160,7 @@ function wpbc_stp_wiz__ui__color_theme__bottom_buttons(){
 																								} );
 
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+										wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 					</div>
 				</div>
 				<div class="wpbc__row">
@@ -170,14 +170,14 @@ function wpbc_stp_wiz__ui__color_theme__bottom_buttons(){
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 							   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
 							><?php
-								_e('Exit and skip the setup wizard','booking');
+								esc_html_e('Exit and skip the setup wizard','booking');
 							?></a>
 							<?php  ?>
 							<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;" tabindex="-1"
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
 							   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
 							><?php
-								_e('Reset Wizard','booking');
+								esc_html_e('Reset Wizard','booking');
 							?></a>
 						</p>
 					</div>
@@ -206,7 +206,7 @@ function wpbc_stp_wiz__widget__color_theme__skins(){
     ?>
 	<div class="wpbc_widget wpbc_widget__color_theme__skins">
 		<div class="wpbc_widget_header">
-			<span class="wpbc_widget_header_text"><?php _e('Appearance', 'booking'); ?></span>
+			<span class="wpbc_widget_header_text"><?php esc_html_e('Appearance', 'booking'); ?></span>
 			<!--a href="https://wpbookingcalendar.com/features/#availability-from-today" target="_blank" class="wpbc_widget_header_settings_link"><span class="wpbc_pro_label">Pro</span></i></a-->
 		</div>
 		<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders" style="margin:0 0 0px;">
@@ -258,7 +258,7 @@ function wpbc_stp_wiz__ui__color_theme__calendar_skins(){
 	?><div class="ui_element ui_nowrap"><?php
 
 
-		//FixIn: 10.3.0.5
+		// FixIn: 10.3.0.5.
 		//  Calendar Skin  /////////////////////////////////////////////////////
 		$cal_arr = wpbc_get_calendar_skin_options( WPBC_PLUGIN_URL );
 
@@ -325,7 +325,7 @@ function wpbc_stp_wiz__ui__color_theme__calendar_skins(){
 		// Set selected option  in dropdown list based on  data. value
 		jQuery( document ).ready( function (){
 
-			jQuery( '#<?php echo $el_id; ?> option[value$="' + data.ui.booking_skin + '"]' ).prop( 'selected', true );
+			jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value$="' + data.ui.booking_skin + '"]' ).prop( 'selected', true );
 
 			/**
 			 * Change calendar skin view
@@ -336,7 +336,7 @@ function wpbc_stp_wiz__ui__color_theme__calendar_skins(){
 			});
 
 
-			//wpbc__css__change_skin( '<?php //echo WPBC_PLUGIN_URL; ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
+			//wpbc__css__change_skin( '<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
 			/**
 			 * Change Time Picker Skin
 			 */
@@ -380,12 +380,12 @@ function wpbc_stp_wiz__ui__color_theme__timepicker_skins(){
 
         // Skins in the Custom User folder (need to create it manually):    http://example.com/wp-content/uploads/wpbc_skins/ ( This folder do not owerwrited during update of plugin )
         $upload_dir = wp_upload_dir();
-	    //FixIn: 8.9.4.8
+	    // FixIn: 8.9.4.8.
 		$files_in_folder = wpbc_dir_list( array(  WPBC_PLUGIN_DIR . '/css/time_picker_skins/', $upload_dir['basedir'].'/wpbc_time_picker_skins/' ) );  // Folders where to look about Time Picker skins
 
         foreach ( $files_in_folder as $skin_file ) {                                                                            // Example: $skin_file['/css/skins/standard.css'] => 'Standard';
 
-            //FixIn: 8.9.4.8    //FixIn: 9.1.2.10
+            //FixIn: 8.9.4.8    // FixIn: 9.1.2.10.
 			$skin_file[1] = str_replace( array( WPBC_PLUGIN_DIR, WPBC_PLUGIN_URL , $upload_dir['basedir'] ), '', $skin_file[1] );                 // Get relative path for calendar skin
             $time_pickers_options[ WPBC_PLUGIN_URL . $skin_file[1] ] = $skin_file[2];
         }
@@ -430,7 +430,7 @@ function wpbc_stp_wiz__ui__color_theme__timepicker_skins(){
 		// Set selected option  in dropdown list based on  data. value
 		jQuery( document ).ready( function (){
 
-			jQuery( '#<?php echo $el_id; ?> option[value$="' + data.ui.booking_timeslot_picker_skin + '"]' ).prop( 'selected', true );
+			jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value$="' + data.ui.booking_timeslot_picker_skin + '"]' ).prop( 'selected', true );
 
 			/**
 			 * Change Time Picker Skin
@@ -441,8 +441,8 @@ function wpbc_stp_wiz__ui__color_theme__timepicker_skins(){
 			});
 
 			// // Set selected option  in dropdown list based on  data. value
-			//jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php //echo WPBC_PLUGIN_URL; ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
-			//wpbc__css__change_skin( '<?php //echo WPBC_PLUGIN_URL; ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
+			//jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
+			//wpbc__css__change_skin( '<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
 
 			/**
 			 * Change Time Picker Skin
@@ -530,8 +530,8 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
 		// Set selected option  in dropdown list based on  data. value
 		jQuery( document ).ready( function (){
 
-			jQuery( '#<?php echo $el_id; ?> option[value="' + data.ui.booking_form_theme + '"]' ).prop( 'selected', true );
-			jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).addClass( jQuery( '#<?php echo $el_id; ?> option:selected').val() );
+			jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="' + data.ui.booking_form_theme + '"]' ).prop( 'selected', true );
+			jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).addClass( jQuery( '#<?php echo esc_attr( $el_id ); ?> option:selected').val() );
 
 			/**
 			 * Change Time Picker Skin
@@ -547,18 +547,18 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
 					jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).addClass( 'wpbc_theme_dark_1' );
 
 
-					wpbc_cal_dark_skin_path = '<?php echo WPBC_PLUGIN_URL; ?>/css/skins/24_9__dark_1.css';
+					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/skins/24_9__dark_1.css';
 					jQuery( '#ui_btn_cstm__set_calendar_skins' ).find( 'option' ).prop( 'selected', false );
 					jQuery( '#ui_btn_cstm__set_calendar_skins' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
-					wpbc_cal_dark_skin_path = '<?php echo WPBC_PLUGIN_URL; ?>/css/time_picker_skins/black.css';
+					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/time_picker_skins/black.css';
 					jQuery( '#ui_btn_cstm__set_time_picker_skin' ).find( 'option' ).prop( 'selected', false );
 					jQuery( '#ui_btn_cstm__set_time_picker_skin' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
 				} else {
 					jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).removeClass( 'wpbc_theme_dark_1' );
-					wpbc_cal_dark_skin_path = '<?php echo WPBC_PLUGIN_URL; ?>/css/skins/24_9__light_square_1.css';
+					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/skins/24_9__light_square_1.css';
 					jQuery( '#ui_btn_cstm__set_calendar_skins' ).find( 'option' ).prop( 'selected', false );
 					jQuery( '#ui_btn_cstm__set_calendar_skins' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
-					wpbc_cal_dark_skin_path = '<?php echo WPBC_PLUGIN_URL; ?>/css/time_picker_skins/light__24_8.css';
+					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/time_picker_skins/light__24_8.css';
 					jQuery( '#ui_btn_cstm__set_time_picker_skin' ).find( 'option' ).prop( 'selected', false );
 					jQuery( '#ui_btn_cstm__set_time_picker_skin' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
 				}
@@ -566,8 +566,8 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
 
 
 			// // Set selected option  in dropdown list based on  data. value
-			//jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php //echo WPBC_PLUGIN_URL; ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
-			//wpbc__css__change_skin( '<?php //echo WPBC_PLUGIN_URL; ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
+			//jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
+			//wpbc__css__change_skin( '<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
 
 			/**
 			 * Change Time Picker Skin

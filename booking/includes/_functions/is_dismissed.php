@@ -52,7 +52,7 @@ function wpbc_is_dismissed_panel_visible( $element_html_id ) {
  *             									   'css'   => ''
  * 											));
  */
-function wpbc_is_dismissed( $element_html_id, $params = array() ){														//FixIn: 8.1.3.10
+function wpbc_is_dismissed( $element_html_id, $params = array() ){														// FixIn: 8.1.3.10.
 
 	$defaults = array(
 						  'title' => '&times;'
@@ -162,20 +162,21 @@ class WPBC_Dismiss {
 			 title="<?php echo esc_attr( $this->hint ); ?>"
 			 href="javascript:void(0)"
              onclick="javascript: if ( typeof( wpbc_hide_window ) == 'function' ) {
-				 	wpbc_hide_window('<?php echo $this->element_id; ?>');
-				 	wpbc_dismiss_window(<?php echo wpbc_get_current_user_id(); ?>, '<?php echo $this->element_id; ?>');
+				 	wpbc_hide_window('<?php echo esc_attr( $this->element_id ); ?>');
+				 	wpbc_dismiss_window(<?php echo esc_attr( wpbc_get_current_user_id() ); ?>, '<?php echo esc_attr( $this->element_id ); ?>');
 				 	jQuery( this ).hide(); <?php
 				 	if ( ! empty( $this->dismiss_css_class ) ) {
 					    echo "jQuery('" . esc_attr($this->dismiss_css_class) . "').slideUp(500);";
 				    }
 			 		?>
 				 } else {  <?php
-             		echo "jQuery('#" . $this->element_id . "').slideUp(500);";
+             		echo "jQuery('#" . esc_attr( $this->element_id ) . "').slideUp(500);";
 				 	if ( ! empty( $this->dismiss_css_class ) ) {
 					    echo "jQuery('" . esc_attr($this->dismiss_css_class) . "').slideUp(500);";
 				    }
 			  ?> }"
-          ><?php echo  $this->title; ?></a><?php
+          ><?php
+		echo wp_kses_post( $this->title ); ?></a><?php
 
 	    return true;
     }

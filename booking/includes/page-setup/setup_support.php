@@ -119,10 +119,10 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 
 		// Help message
 		?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="padding: 8px 20px;font-size: 14px;margin: 0 auto;max-width: Min(54em,100%);">
-			<strong><?php _e('Note','booking'); ?>: </strong>
+			<strong><?php esc_html_e('Note','booking'); ?>: </strong>
 			<?php
-				_e( 'This is a preview of your booking form.', 'booking' ); echo ' ';
-				_e( 'You can adjust settings in the widgets on the right side of the page.', 'booking' );
+				esc_html_e( 'This is a preview of your booking form.', 'booking' ); echo ' ';
+				esc_html_e( 'You can adjust settings in the widgets on the right side of the page.', 'booking' );
 				//echo '<a href="'. esc_attr( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab' ).'">Settings > Availability</a>';
 			?>
 		</div><?php
@@ -135,8 +135,8 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 				wpbc_hook__init_timeselector();
 				<?php } ?>
 				wpbc_hook__init_booking_form_wizard_buttons();
-			  	// wpbc__calendar__change_skin( '<?php echo WPBC_PLUGIN_URL . get_bk_option( 'booking_skin' ); ?>' );
-			  	// wpbc__css__change_skin( '<?php echo WPBC_PLUGIN_URL . get_bk_option( 'booking_timeslot_picker_skin' ); ?>' );
+			  	// wpbc__calendar__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL . get_bk_option( 'booking_skin' ) ); ?>' );
+			  	// wpbc__css__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL . get_bk_option( 'booking_timeslot_picker_skin' ) ); ?>' );
 				<?php if ('wpbc_theme_dark_1' === get_bk_option( 'booking_form_theme' ) ){  ?>
 				jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).addClass( 'wpbc_theme_dark_1' );
 				<?php } ?>
@@ -246,22 +246,24 @@ function wpbc_setup_wizard_page__get_left_navigation_menu_arr(){
 function wpbc_maybe_show_warning_conflict__wordfence( $style = '' ) {
 	if ( class_exists( 'wordfence' ) ) {
 
-		$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_show_warning_wordfence' );        //FixIn: 9.9.0.8
+		$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_show_warning_wordfence' );        // FixIn: 9.9.0.8.
 		if ( $is_panel_visible ) {
 			?><div id="wpbc_show_warning_wordfence" class="wpbc-settings-notice notice-error notice-helpful-info0"
-				   style="max-width: Min(450px, 100%);margin: auto;padding: 4px 15px 7px 20px;font-size: 14px;line-height: 28px;margin-bottom: 25px; display: flex;flex-flow:row nowrap;justify-content: space-between;align-items: flex-start;border-left-color: #e2892b;<?php echo $style; ?>"
+				   style="max-width: Min(450px, 100%);margin: auto;padding: 4px 15px 7px 20px;font-size: 14px;line-height: 28px;margin-bottom: 25px; display: flex;flex-flow:row nowrap;justify-content: space-between;align-items: flex-start;border-left-color: #e2892b;<?php echo esc_attr( $style ); ?>"
 			   >
 				<div>
 				   <span style="margin: 0 5px 0 0;color: #e2892b;" ><i class="menu_icon icon-1x wpbc_icn_warning_amber"></i></span>
 					<?php
-					echo '<strong>' . __('Important!' ,'booking') . '</strong> ' ;
-					//FixIn: 10.9.1.1
-					printf( __( 'We detect that you use %s plugin.', 'booking' ), '<strong>Wordfence</strong>' );
+					echo '<strong>' . esc_html__('Important!' ,'booking') . '</strong> ' ;
+					// FixIn: 10.9.1.1.
+					/* translators: 1: ... */
+					echo wp_kses_post( sprintf( __( 'We detect that you use %s plugin.', 'booking' ), '<strong>Wordfence</strong>' ) );
 
 					echo '<br>';
 
-					printf( __( 'If you encounter any issues, follow this %stroubleshooting instruction%s.', 'booking' ),
-							'<a href="https://wpbookingcalendar.com/faq/setup-wizard-on-step-4-keeps-going-to-blank-page/" target="_blank" style="font-weight:600;text-underline-offset: 3px;text-decoration-thickness: 0px;text-decoration-style: dashed;">', '</a>' );
+					/* translators: 1: ... */
+					echo wp_kses_post( sprintf( __( 'If you encounter any issues, follow this %1$stroubleshooting instruction%2$s.', 'booking' ),
+							'<a href="https://wpbookingcalendar.com/faq/setup-wizard-on-step-4-keeps-going-to-blank-page/" target="_blank" style="font-weight:600;text-underline-offset: 3px;text-decoration-thickness: 0px;text-decoration-style: dashed;">', '</a>' ) );
 				?>
 				</div>
 				<div><?php
@@ -275,7 +277,8 @@ function wpbc_maybe_show_warning_conflict__wordfence( $style = '' ) {
 
 				$dismiss_x_button = ob_get_clean();
 
-				echo wpbc_replace__js_scripts__to__tpl_scripts(  $dismiss_x_button );
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wpbc_replace__js_scripts__to__tpl_scripts( $dismiss_x_button );
 
 			?></div>
 			</div><?php

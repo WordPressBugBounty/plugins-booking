@@ -1,4 +1,4 @@
-//FixIn: 8.7.11.10
+// FixIn: 8.7.11.10.
 (function ( $ ){
 
 	$.fn.extend( {
@@ -81,7 +81,7 @@
 									+ el_item.title
 							 + '</div>'
 			} else {
-				// Uncomment row bellow to Show booked time slots as unavailable RED slots		//FixIn: 9.9.0.2
+				// Uncomment row bellow to Show booked time slots as unavailable RED slots		// FixIn: 9.9.0.2.
 				// select_div += '<div class="wpbc_time_picker_disabled">' + el_item.title + '</div>';
 			}
 
@@ -110,7 +110,7 @@ function wpbc_hook__init_timeselector(){
 	jQuery( 'select[name^="endtime"]' ).wpbc_timeselector();
 	jQuery( 'select[name^="durationtime"]' ).wpbc_timeselector();
 
-	// This hook loading after each day selection																//FixIn: 8.7.11.9
+	// This hook loading after each day selection																// FixIn: 8.7.11.9.
 	jQuery( ".booking_form_div" ).on( 'wpbc_hook_timeslots_disabled', function ( event, bk_type, all_dates ){
 		jQuery( '#booking_form_div' + bk_type + ' select[name^="rangetime"]' ).wpbc_timeselector();
 		jQuery( '#booking_form_div' + bk_type + ' select[name^="starttime"]' ).wpbc_timeselector();

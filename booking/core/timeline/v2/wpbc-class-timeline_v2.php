@@ -32,15 +32,15 @@ class WPBC_TimelineFlex {
     private $current_user_id;
     
     private $html_client_id;        // ID of border element at  client side.
-    public $options;                                                            //FixIn:7.0.1.50
+    public $options;                                                            // FixIn: 7.0.1.50.
 
-	private $data_in_previous_cell;	//FixIn: 8.5.2.6
+	private $data_in_previous_cell;	// FixIn: 8.5.2.6.
 
     public function __construct(){// $bookings, $booking_types ) {
 
     	$this->reset_data_in_previous_cell();
 
-        $this->options = array();                                               //FixIn:7.0.1.50
+        $this->options = array();                                               // FixIn: 7.0.1.50.
         
         $this->html_client_id = false;
         
@@ -48,7 +48,7 @@ class WPBC_TimelineFlex {
         
         $this->is_frontend = false;
 
-	    //FixIn: 8.1.3.31
+	    // FixIn: 8.1.3.31.
         $calendar_overview_start_time = get_bk_option( 'booking_calendar_overview_start_time' );
         $calendar_overview_end_time   = get_bk_option( 'booking_calendar_overview_end_time' );
 		$hours_limit = ( empty( $calendar_overview_start_time ) ? '0' : $calendar_overview_start_time )
@@ -63,8 +63,8 @@ class WPBC_TimelineFlex {
                                     , 'scroll_month' => 0
                                     , 'wh_trash' => ''
                                     , 'limit_hours' => $hours_limit        									// '0,24'      //FixIn: 7.0.1.14  if ( ! ( ( $tt >= $start_hour_for_1day_view ) && ( $tt <= $end_hour_for_1day_view ) ) ) continue;
-                                    , 'only_booked_resources' => ( isset( $_REQUEST['only_booked_resources'] ) ) ? 1 : 0              //FixIn: 7.0.1.51
-                                    , 'booking_hash' => ( isset( $_REQUEST['booking_hash'] ) ) ? $_REQUEST['booking_hash'] : ''              //FixIn: 8.1.3.5
+                                    , 'only_booked_resources' => ( isset( $_REQUEST['only_booked_resources'] ) ) ? 1 : 0              /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */
+                                    , 'booking_hash' => ( isset( $_REQUEST['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['booking_hash'] ) ) : '', /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */
 
         ); 
 
@@ -85,7 +85,7 @@ class WPBC_TimelineFlex {
                                             , 6 => __( 'Saturday', 'booking' )
                                             , 7 => __( 'Sunday', 'booking' ) 
                                             )
-                                        , '3' => array(                         //FixIn: 7.0.1.11
+                                        , '3' => array(                         // FixIn: 7.0.1.11.
                                               1 =>  __( 'Mon', 'booking' )
                                             , 2 =>  __( 'Tue', 'booking' )
                                             , 3 =>  __( 'Wed', 'booking' )
@@ -94,7 +94,7 @@ class WPBC_TimelineFlex {
                                             , 6 =>  __( 'Sat', 'booking' )
                                             , 7 =>  __( 'Sun', 'booking' )
                                             )
-                                        , '1' => array(                         //FixIn: 7.0.1.11						//FixIn: 8.7.7.14
+                                        , '1' => array(                         //FixIn: 7.0.1.11						// FixIn: 8.7.7.14.
                                               1 => mb_substr( __( 'Mon', 'booking' ), 0, -1 )
                                             , 2 => mb_substr( __( 'Tue', 'booking' ), 0, -1 )
                                             , 3 => mb_substr( __( 'Wed', 'booking' ), 0, -1 )
@@ -130,8 +130,7 @@ class WPBC_TimelineFlex {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-
+	// -----------------------------------------------------------------------------------------------------------------
     /**
 	 * Init Timeline From page shortcode
      * 
@@ -148,11 +147,11 @@ class WPBC_TimelineFlex {
 
         $this->is_frontend = true;
 
-        //FixIn:7.0.1.50
+        // FixIn: 7.0.1.50.
         if ( isset( $attr['options'] ) ) {
 
             $bk_otions = $attr['options'];
-	        $bk_otions = html_entity_decode( $bk_otions );                                //FixIn: 9.8.15.6
+	        $bk_otions = html_entity_decode( $bk_otions );                                // FixIn: 9.8.15.6.
             $custom_params = array();
             if (! empty($bk_otions)) {
                 $param ='\s*([^\s]+)=[\'"]{1}([^\'"]+)[\'"]{1}\s*';      // Find all possible options
@@ -177,7 +176,7 @@ class WPBC_TimelineFlex {
 
 //debuge($this->options);
         }
-        //FixIn:7.0.1.50
+        // FixIn: 7.0.1.50.
 
 
         //Ovverride some parameters
@@ -199,7 +198,7 @@ class WPBC_TimelineFlex {
         $args = $this->wpbc_get_clean_paramas_from_request_for_timeline();
 
 
-		//FixIn: 8.1.3.5
+		// FixIn: 8.1.3.5.
 		/**	Client - Page first load
 		 *
 		 * If provided valid request_args['booking_hash']
@@ -241,7 +240,7 @@ class WPBC_TimelineFlex {
 
 
         //$milliseconds = round(microtime(true) * 1000);                       //FixIn: 7.0.Beta.18
-        $milliseconds = rand( 10000, 99999 );
+        $milliseconds = wp_rand( 10000, 99999 );
 
         $this->html_client_id = 'wpbc_timeline_' . $milliseconds;
 
@@ -257,7 +256,7 @@ class WPBC_TimelineFlex {
      */
     public function ajax_init( $attr ) {
 
-	    if ( ! defined( 'WPBC_TIMELINE_AJAX' ) ) { define( 'WPBC_TIMELINE_AJAX', true ); }        //FixIn: 8.4.7.13
+	    if ( ! defined( 'WPBC_TIMELINE_AJAX' ) ) { define( 'WPBC_TIMELINE_AJAX', true ); }        // FixIn: 8.4.7.13.
 
         $this->is_frontend = (bool) $attr['is_frontend'];;
 
@@ -279,7 +278,7 @@ class WPBC_TimelineFlex {
                     if ( isset( $this->request_args['scroll_day'] ) ) $scroll_day = intval( $this->request_args['scroll_day'] );
                     else                                              $scroll_day = 0;
 
-					//FixIn: 8.9.4.3
+					// FixIn: 8.9.4.3.
 					// Here we need to define number of days to scroll depends from selected number of days to show.
 					$days_num_to_scroll = intval( get_bk_option( 'booking_timeline__month_mode__days_number_show' ) );
 					if ( empty( $days_num_to_scroll ) ) {
@@ -431,7 +430,7 @@ class WPBC_TimelineFlex {
         $args = $this->wpbc_get_clean_paramas_from_request_for_timeline();
 
 
-		//FixIn: 8.1.3.5
+		// FixIn: 8.1.3.5.
 	    /**
 	     * If provided valid ['booking_hash'] in timeline_obj in JavaScript param during Ajax request,
 	     * then check, if exist booking for this hash. If exist, get Email of this booking,  and
@@ -451,8 +450,8 @@ class WPBC_TimelineFlex {
 				//Set keyword for showing bookings ony  relative to this email
 				$args['wh_keyword'] = $booking_details_email;															// 'jo@wpbookingcalendar.com';
 			}
-			if ( ( empty( $booking_details_email ) ) && ( ! empty( $attr['booking_hash'] ) ) ) {						 //FixIn: 8.4.6.1
-				//FixIn: 8.4.5.13
+			if ( ( empty( $booking_details_email ) ) && ( ! empty( $attr['booking_hash'] ) ) ) {						 // FixIn: 8.4.6.1.
+				// FixIn: 8.4.5.13.
 				$this->request_args['only_booked_resources'] = 1;
 				$args['wh_keyword'] = '``^`````^^````^`````````';
 			}
@@ -510,42 +509,45 @@ class WPBC_TimelineFlex {
         $this->dates_array = $bookings_date_time[0];
         $this->time_array_new = $bookings_date_time[1];
     }
-    
-    
-    public function client_navigation( $param ) {		
-        ?>
-        <script type="text/javascript">
-            wpbc_timeline_obj["<?php echo  $this->html_client_id; ?>"] = {     
-                                        is_frontend: "<?php       echo  ( $this->is_frontend ? '1' : '0' ); ?>"
-                                        , html_client_id: "<?php    echo  $this->html_client_id; ?>"
-                                        , wh_booking_type: "<?php   echo  $this->request_args['wh_booking_type']; ?>"
-                                        , is_matrix: "<?php         echo  ( $this->request_args['is_matrix'] ? '1' : '0' ); ?>"
-                                        , view_days_num: "<?php     echo  $this->request_args['view_days_num']; ?>"
-                                        , scroll_start_date: "<?php echo  $this->request_args['scroll_start_date']; ?>"
-                                        , scroll_day: "<?php        echo  $this->request_args['scroll_day']; ?>"
-                                        , scroll_month: "<?php      echo  $this->request_args['scroll_month']; ?>"
-                                      , 'header_column1': "<?php    echo esc_js( $this->timeline_titles['header_column1'] ); ?>"
-                                      , 'header_column2': "<?php    echo esc_js( $this->timeline_titles['header_column2'] ); ?>"
-                                      , 'header_title': "<?php      echo esc_js( $this->timeline_titles['header_title'] ); ?>"
-                                      , 'wh_trash': "<?php          echo esc_js( $this->request_args['wh_trash'] ); ?>"
-                                      , 'limit_hours': "<?php           echo esc_js( $this->request_args['limit_hours'] ); ?>"              //FixIn: 7.0.1.14
-                                      , 'only_booked_resources': "<?php echo esc_js( $this->request_args['only_booked_resources'] ); ?>"    //FixIn: 7.0.1.51
-									  , 'options': '<?php 				echo  wp_json_encode( $this->options ); ?>' 						//FixIn: 9.2.1.8	//FixIn: 7.2.1.14
-				  				      , 'booking_hash': "<?php          echo esc_js( $this->request_args['booking_hash'] ); ?>"				//FixIn: 8.1.3.5
-                                    };
-        </script>
-        <div class="flex_tl_nav">
-            <div class="flex_tl_prev" href="javascript:void(0)" onclick="javascript:wpbc_flextimeline_nav( wpbc_timeline_obj['<?php echo  $this->html_client_id; ?>'], -1 );"><a>&laquo;</a></div>
-            <div class="flex_tl_title"><?php echo $param['title'] ?></div>
-            <div class="flex_tl_next" href="javascript:void(0)" onclick="javascript:wpbc_flextimeline_nav( wpbc_timeline_obj['<?php echo  $this->html_client_id; ?>'],  1 );"><a>&raquo;</a></div>
-        </div>
-       <?php 
-    }
-    
-    ////////////////////////////////////////////////////////////////////////////
-    //  S u p p o r t
-    ////////////////////////////////////////////////////////////////////////////        
 
+
+	public function client_navigation( $param ) {
+		?>
+		<script type="text/javascript">
+			wpbc_timeline_obj["<?php echo esc_js( $this->html_client_id ); ?>"] = {
+				is_frontend            : "<?php echo esc_js( $this->is_frontend ? '1' : '0' ); ?>",
+				html_client_id         : "<?php echo esc_js( $this->html_client_id ); ?>",
+				wh_booking_type        : "<?php echo esc_js( $this->request_args['wh_booking_type'] ); ?>",
+				is_matrix              : "<?php echo esc_js( $this->request_args['is_matrix'] ? '1' : '0' ); ?>",
+				view_days_num          : "<?php echo esc_js( $this->request_args['view_days_num'] ); ?>",
+				scroll_start_date      : "<?php echo esc_js( $this->request_args['scroll_start_date'] ); ?>",
+				scroll_day             : "<?php echo esc_js( $this->request_args['scroll_day'] ); ?>",
+				scroll_month           : "<?php echo esc_js( $this->request_args['scroll_month'] ); ?>",
+				'header_column1'       : "<?php echo esc_js( $this->timeline_titles['header_column1'] ); ?>",
+				'header_column2'       : "<?php echo esc_js( $this->timeline_titles['header_column2'] ); ?>",
+				'header_title'         : "<?php echo esc_js( $this->timeline_titles['header_title'] ); ?>",
+				'wh_trash'             : "<?php echo esc_js( $this->request_args['wh_trash'] ); ?>",
+				'limit_hours'          : "<?php echo esc_js( $this->request_args['limit_hours'] ); ?>",
+				'only_booked_resources': "<?php echo esc_js( $this->request_args['only_booked_resources'] ); ?>",
+				'options'              : '<?php echo wp_json_encode( $this->options ); ?>',
+				'booking_hash'         : "<?php echo esc_js( $this->request_args['booking_hash'] ); ?>"
+			};
+		</script>
+		<div class="flex_tl_nav">
+			<div class="flex_tl_prev" href="javascript:void(0)"
+				 onclick="javascript:wpbc_flextimeline_nav( wpbc_timeline_obj['<?php echo esc_js( $this->html_client_id ); ?>'], -1 );">
+				<a>&laquo;</a></div>
+			<div class="flex_tl_title"><?php echo esc_html( $param['title'] ); ?></div>
+			<div class="flex_tl_next" href="javascript:void(0)"
+				 onclick="javascript:wpbc_flextimeline_nav( wpbc_timeline_obj['<?php echo esc_js( $this->html_client_id ); ?>'], 1 );">
+				<a>&raquo;</a></div>
+		</div>
+		<?php
+	}
+    
+	// -----------------------------------------------------------------------------------------------------------------
+    //  S u p p o r t
+	// -----------------------------------------------------------------------------------------------------------------
     /**
 	 * Get array of cleaned (limited number) paramas from request for getting bookings by "wpbc_get_bookings_objects"
      * 
@@ -553,7 +555,7 @@ class WPBC_TimelineFlex {
      */
     public function wpbc_get_clean_paramas_from_request_for_timeline() {
 
-        //Replacing in this file from date( to  date_i18n(   to wpbc_datetime__no_wp_timezone(			//FixIn: 9.9.0.18
+        //Replacing in this file from gmdate( to  date_i18n(   to wpbc_datetime__no_wp_timezone(			// FixIn: 9.9.0.18.
         $start_year  = intval( wpbc_datetime__no_wp_timezone( "Y" ) );
         $start_month = intval( wpbc_datetime__no_wp_timezone( "m" ) );
         $start_day = 1;
@@ -749,7 +751,7 @@ class WPBC_TimelineFlex {
             'page_num' => '1',
             'wh_trash' => $this->request_args['wh_trash'], 
             'limit_hours' => $this->request_args['limit_hours'], 
-            'only_booked_resources' => $this->request_args['only_booked_resources'],    //FixIn: 7.0.1.51
+            'only_booked_resources' => $this->request_args['only_booked_resources'],    // FixIn: 7.0.1.51.
             'page_items_count' => '100000'
         );
 //debuge('8.',$args);
@@ -762,59 +764,101 @@ class WPBC_TimelineFlex {
 	 */
     public function define_request_view_params() {
 
-		// All  other sanitizing and escaping are inside of this function wpbc_check_request_paramters(), which  executing before.  //FixIn: 8.9.2.1
+		// All  other sanitizing and escaping are inside of this function wpbc_check_request_paramters(), which  executing before.  // FixIn: 8.9.2.1.
 
 		// Used once for comma seperated resources only.
+	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	    if ( isset( $_REQUEST['wh_booking_type'] ) ) {
-		    $this->request_args['wh_booking_type'] = wpbc_clean_digit_or_csd( $_REQUEST['wh_booking_type'] );           //FixIn: 8.9.2.1
+		    $this->request_args['wh_booking_type'] = wpbc_clean_digit_or_csd( $_REQUEST['wh_booking_type'] );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized           // FixIn: 8.9.2.1.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	    } elseif ( isset( $_GET['booking_type'] ) ) {
-		    $this->request_args['wh_booking_type'] = wpbc_clean_digit_or_csd( $_GET['booking_type'] );					//FixIn: 8.9.2.1
+		    $this->request_args['wh_booking_type'] = wpbc_clean_digit_or_csd( $_GET['booking_type'] );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized					// FixIn: 8.9.2.1.
 	    }
-        
-        if (  ( isset( $_REQUEST['wh_booking_type'] ) ) && ( strpos( $_REQUEST['wh_booking_type'], ',' ) !== false )  ) 
-                                                        $this->request_args['is_matrix'] = true;                    
-        if ( isset( $_REQUEST['view_days_num'] ) )      $this->request_args['view_days_num'] = $_REQUEST['view_days_num'];        
-        if ( isset( $_REQUEST['scroll_start_date'] ) )  $this->request_args['scroll_start_date'] = $_REQUEST['scroll_start_date'];                
-        if ( isset( $_REQUEST['scroll_day'] ) )         $this->request_args['scroll_day'] = $_REQUEST['scroll_day'];        
-        if ( isset( $_REQUEST['scroll_month'] ) )       $this->request_args['scroll_month'] = $_REQUEST['scroll_month'];        
-        if ( isset( $_REQUEST['wh_trash'] ) )           $this->request_args['wh_trash'] = $_REQUEST['wh_trash'];
-        
-        if ( isset( $_REQUEST['limit_hours'] ) )            $this->request_args['limit_hours'] = $_REQUEST['limit_hours'];                      //FixIn: 7.0.1.14
-        if ( isset( $_REQUEST['only_booked_resources'] ) )  $this->request_args['only_booked_resources'] = 1;//$_REQUEST['only_booked_resources'];  //FixIn: 7.0.1.51
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		if ( ( isset( $_REQUEST['wh_booking_type'] ) ) && ( strpos( $_REQUEST['wh_booking_type'], ',' ) !== false ) ) {
+			$this->request_args['is_matrix'] = true;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['view_days_num'] ) ) {
+			$this->request_args['view_days_num'] = sanitize_text_field( wp_unslash( $_REQUEST['view_days_num'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['scroll_start_date'] ) ) {
+			$this->request_args['scroll_start_date'] = sanitize_text_field( wp_unslash( $_REQUEST['scroll_start_date'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['scroll_day'] ) ) {
+			$this->request_args['scroll_day'] = sanitize_text_field( wp_unslash( $_REQUEST['scroll_day'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['scroll_month'] ) ) {
+			$this->request_args['scroll_month'] = sanitize_text_field( wp_unslash( $_REQUEST['scroll_month'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['wh_trash'] ) ) {
+			$this->request_args['wh_trash'] = sanitize_text_field( wp_unslash( $_REQUEST['wh_trash'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['limit_hours'] ) ) {
+			$this->request_args['limit_hours'] = sanitize_text_field( wp_unslash( $_REQUEST['limit_hours'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		}                      // FixIn: 7.0.1.14.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['only_booked_resources'] ) ) {
+			$this->request_args['only_booked_resources'] = 1;
+		}                      //$_REQUEST['only_booked_resources'];  // FixIn: 7.0.1.51.
     }
-     
-    
-    /**
+
+
+	/**
 	 * Define Request View Params
-     * 
-     * @param array $param = = array(                                     
-                                      'wh_booking_type' => ''            
-                                    , 'is_matrix' => false
-                                    , 'view_days_num' => '30'
-                                        , 'scroll_start_date' => ''
-                                        , 'scroll_day' => 0
-                                        , 'scroll_month' => 0
-                                );    
-     */
-    public function define_request_view_params_from_params( $param ) {
-        //debuge(  $param , $this->options , maybe_unserialize( wp_unslash( $param['options'] ) ) );die;
-        if ( isset( $param['wh_booking_type'] ) )    $this->request_args['wh_booking_type'] = $param['wh_booking_type'];          // Used once for comma seperated resources only.            
-        
-        if (  ( isset( $param['wh_booking_type'] ) ) && ( strpos( $param['wh_booking_type'], ',' ) !== false )  ) 
-                                                     $this->request_args['is_matrix'] = true;                    
-        if ( isset( $param['view_days_num'] ) )      $this->request_args['view_days_num'] = $param['view_days_num'];        
-        if ( isset( $param['scroll_start_date'] ) )  $this->request_args['scroll_start_date'] = $param['scroll_start_date'];                
-        if ( isset( $param['scroll_day'] ) )         $this->request_args['scroll_day'] = $param['scroll_day'];        
-        if ( isset( $param['scroll_month'] ) )       $this->request_args['scroll_month'] = $param['scroll_month'];        
-        if ( isset( $param['wh_trash'] ) )           $this->request_args['wh_trash'] = $param['wh_trash'];
-        if ( isset( $param['limit_hours'] ) )        $this->request_args['limit_hours'] = $param['limit_hours'];                                //FixIn: 7.0.1.14
-        if ( isset( $param['only_booked_resources'] ) )  $this->request_args['only_booked_resources'] = $param['only_booked_resources'];        //FixIn: 7.0.1.14
-        if ( isset( $param['booking_hash'] ) )  	 $this->request_args['booking_hash'] = $param['booking_hash'];        						//FixIn: 8.1.3.5
-		if ( ( empty( $this->options ) ) && ( isset( $param['options'] ) )  ) {
-			$this->options = json_decode( wp_unslash( $param['options'] ),  true );						//FixIn: 9.2.1.8
-        }
-			
-    }
+	 *
+	 * @param array $param = = array(
+	 *                     'wh_booking_type' => ''
+	 *                     , 'is_matrix' => false
+	 *                     , 'view_days_num' => '30'
+	 *                     , 'scroll_start_date' => ''
+	 *                     , 'scroll_day' => 0
+	 *                     , 'scroll_month' => 0
+	 *                     );
+	 */
+	public function define_request_view_params_from_params( $param ) {
+		//debuge(  $param , $this->options , maybe_unserialize( wp_unslash( $param['options'] ) ) );die;
+		if ( isset( $param['wh_booking_type'] ) ) {
+			$this->request_args['wh_booking_type'] = $param['wh_booking_type'];
+		}          // Used once for comma seperated resources only.
+
+		if ( ( isset( $param['wh_booking_type'] ) ) && ( strpos( $param['wh_booking_type'], ',' ) !== false ) ) {
+			$this->request_args['is_matrix'] = true;
+		}
+		if ( isset( $param['view_days_num'] ) ) {
+			$this->request_args['view_days_num'] = $param['view_days_num'];
+		}
+		if ( isset( $param['scroll_start_date'] ) ) {
+			$this->request_args['scroll_start_date'] = $param['scroll_start_date'];
+		}
+		if ( isset( $param['scroll_day'] ) ) {
+			$this->request_args['scroll_day'] = $param['scroll_day'];
+		}
+		if ( isset( $param['scroll_month'] ) ) {
+			$this->request_args['scroll_month'] = $param['scroll_month'];
+		}
+		if ( isset( $param['wh_trash'] ) ) {
+			$this->request_args['wh_trash'] = $param['wh_trash'];
+		}
+		if ( isset( $param['limit_hours'] ) ) {
+			$this->request_args['limit_hours'] = $param['limit_hours'];
+		}                                // FixIn: 7.0.1.14.
+		if ( isset( $param['only_booked_resources'] ) ) {
+			$this->request_args['only_booked_resources'] = $param['only_booked_resources'];
+		}                                // FixIn: 7.0.1.14.
+		if ( isset( $param['booking_hash'] ) ) {
+			$this->request_args['booking_hash'] = $param['booking_hash'];
+		}                                // FixIn: 8.1.3.5.
+		if ( ( empty( $this->options ) ) && ( isset( $param['options'] ) ) ) {
+			$this->options = json_decode( wp_unslash( $param['options'] ), true );                        // FixIn: 9.2.1.8.
+		}
+
+	}
     
 
     /**
@@ -895,7 +939,7 @@ class WPBC_TimelineFlex {
 				        $is_started++;
 				        break;
 				    case '2':		// End
-				    case '8':       //FixIn: 9.0.1.2
+				    case '8':       // FixIn: 9.0.1.2.
 				        $is_started--;
 				        break;
 				    case '0':    	// Full
@@ -919,9 +963,9 @@ class WPBC_TimelineFlex {
 
 			if ( 0 != $is_started ) {
 				?><div class="warning_check_in_out_not_equal"><?php
-					//FixIn: 9.2.4.5
+					// FixIn: 9.2.4.5.
 					?><div style="margin:0 10px 10px;font-weight:600;font-size:1.1em;"><?php
-						printf( 'Warning! Structure of your booking dates has an issue.');
+						echo( 'Warning! Structure of your booking dates has an issue.');
 					?></div><?php
 					?><div style="margin:0 10px 30px;font-weight:400;font-size:1.1em;"><?php
 						printf( 'Number of check in times != check out times in a booking, or check-in time is older than the check-out time on the same date in the same booking.' );
@@ -933,16 +977,14 @@ class WPBC_TimelineFlex {
 					for( $day_i = 0; $day_i <= ( count( $dates_to_check ) - 1 ); $day_i++) {
 					  $bookings_to_del[] = $dates_to_check[$day_i]->booking_id;
 					}
-					$bookings_to_del = array_unique ( $bookings_to_del );
-					for( $bk_i = 0; $bk_i <= ( count( $bookings_to_del ) - 1 ); $bk_i++) {
-					  	$booking_id__to_del = $bookings_to_del [ $bk_i ];
+					$bookings_to_del = array_unique( $bookings_to_del );
+					for ( $bk_i = 0; $bk_i <= ( count( $bookings_to_del ) - 1 ); $bk_i ++ ) {
+						$booking_id__to_del = $bookings_to_del [ $bk_i ];
 
 						?><div style="margin:10px;font-weight:600;font-size:1.05em;"><?php
 
-							printf( 'Delete booking with %s',   htmlspecialchars_decode(
-																		    '<strong></strong><a href="' .
-																		esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id__to_del )
-																		    . '">' . 'ID = ' . $booking_id__to_del . '</a></strong>' ) );
+						echo wp_kses_post( sprintf( 'Delete booking with %s', htmlspecialchars_decode( '<strong></strong><a href="' . esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id__to_del ) . '">' . 'ID = ' . $booking_id__to_del . '</a></strong>' ) ) );
+
 						?></div><?php
 					}
 
@@ -961,7 +1003,7 @@ class WPBC_TimelineFlex {
                 $dt->booking_date = trim( $dt->booking_date );
                 $dta = explode( ' ', $dt->booking_date );
                 $tms = $dta[1];
-//FixIn: 8.2.1.21
+// FixIn: 8.2.1.21.
 //if ( substr( $dta[1], - 1 ) == '2' ) { continue; }
                 $tms = explode( ':', $tms );                                        // array('13','30','40')
                 $dta = $dta[0];
@@ -988,7 +1030,7 @@ class WPBC_TimelineFlex {
                 $my_time_index = explode( ':', $my_time );
                 $my_time_index = (int) ($my_time_index[0] * 60 * 60 + $my_time_index[1] * 60 + $my_time_index[2]);
 
-                $my_time = strtotime( $my_time );                     //FixIn: 8.1.1.6
+                $my_time = strtotime( $my_time );                     // FixIn: 8.1.1.6.
 
                 if ( !isset( $time_array[$my_date] ) ) {
                     $time_array[$my_date] = array( $my_time_index => array( $my_time => array( 'id' => $bk->booking_id, 'resource' => $date_bk_res_id ) ) );
@@ -1127,7 +1169,7 @@ class WPBC_TimelineFlex {
 	             *  this booking #77 does not exist  at  all !!!
 				 * 	so  we nee to  remove this booking(s)  from  array $fill_this_date
 	             */
-	            //FixIn: 8.7.1.1
+	            // FixIn: 8.7.1.1.
 if(1){
 				////////////////////////////////////////////////////////////////////////////////////////////////////////
 				// Search  to  remove
@@ -1197,7 +1239,7 @@ if(1){
 							// was booked for entire day,  and last  day  booking, have the end time.
 							// So  in this case at  day  with  end time we need to  fill  all  "round times" with  End time data
 							*/
-//FixIn: 8.7.1.1
+// FixIn: 8.7.1.1.
 if(1)
 							if ( empty( $fill_this_date_keys_to_delete ) ) {
 		                        // Fill  the date by data $toDelete
@@ -1237,10 +1279,9 @@ if(1)
     }
 
 
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     //  C a l e n d a r    T i m e l i n e       ///////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
+	// -----------------------------------------------------------------------------------------------------------------
     private function wpbc_dates_only_of_specific_resource( $booked_dates_array, $resource_id, $bookings ) {
 
         foreach ( $booked_dates_array as $key => $value ) {
@@ -1308,17 +1349,16 @@ if(1)
     }    
 
     
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     //  Header
-    ////////////////////////////////////////////////////////////////////////////
-
+	// -----------------------------------------------------------------------------------------------------------------
     /** Header */
     public function wpbc_show_timeline_header_row( $start_date = false ) {
 
 	    $current_resource_id      = '';
 	    $is_matrix                = $this->request_args['is_matrix'];
 	    $view_days_num            = $this->request_args['view_days_num'];
-	    $start_hour_for_1day_view = 0;                                          //FixIn: 7.0.1.14
+	    $start_hour_for_1day_view = 0;                                          // FixIn: 7.0.1.14.
 	    $end_hour_for_1day_view   = 24;
 	    $limit_hours              = 24;
 
@@ -1330,7 +1370,7 @@ if(1)
                     $days_num = 1;
                     $dwa = $this->week_days_titles['full'];
                     $time_selles_num = 24;
-                    if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     //FixIn: 7.0.1.14
+                    if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     // FixIn: 7.0.1.14.
                         $limit_hours = explode(',',$this->request_args[ 'limit_hours' ]);
                         $start_hour_for_1day_view = intval( $limit_hours[0] );
                         $end_hour_for_1day_view   = intval( $limit_hours[1] );
@@ -1345,7 +1385,7 @@ if(1)
                     break;
                 case '30':
                     $days_num = 31;
-                    $days_num = intval( wpbc_datetime__no_wp_timezone('t',$start_date) );           // num of days in the specific  month,  wchih  relative to $real_date from  header        //FixIn: 7.0.1.47
+                    $days_num = intval( wpbc_datetime__no_wp_timezone('t',$start_date) );           // num of days in the specific  month,  wchih  relative to $real_date from  header        // FixIn: 7.0.1.47.
                     $dwa = $this->week_days_titles['1'];
                     $time_selles_num = 1;
                     break;
@@ -1371,8 +1411,8 @@ if(1)
                     $time_selles_num = 1;
                     break;
                 case '365':
-                    $days_num = 31;        //FixIn: 8.7.6.5
-                    //$days_num = intval( wpbc_datetime__no_wp_timezone('t',$start_date) );           // num of days in the specific  month,  wchih  relative to $real_date from  header        //FixIn: 7.0.1.47
+                    $days_num = 31;        // FixIn: 8.7.6.5.
+                    //$days_num = intval( wpbc_datetime__no_wp_timezone('t',$start_date) );           // num of days in the specific  month,  wchih  relative to $real_date from  header        // FixIn: 7.0.1.47.
                     $dwa = $this->week_days_titles['3'];
                     $time_selles_num = 1;
                     break;
@@ -1380,7 +1420,7 @@ if(1)
                     $days_num = 1;
                     $dwa = $this->week_days_titles['full'];
                     $time_selles_num = 24;
-                    if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     //FixIn: 7.0.1.14
+                    if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     // FixIn: 7.0.1.14.
                         $limit_hours = explode(',',$this->request_args[ 'limit_hours' ]);
                         $start_hour_for_1day_view = intval( $limit_hours[0] );
                         $end_hour_for_1day_view   = intval( $limit_hours[1] );
@@ -1438,31 +1478,30 @@ if(1)
 				<div class="<?php  echo implode(' ', array(
 									'flex_tl_day_cell',
 									'flex_tl_day_cell_header',
-									'flex_time_in_days_num_' . $view_days_num,
-									$month_class
+									'flex_time_in_days_num_' . esc_attr( $view_days_num ),
+									esc_attr( $month_class )
 					 )); ?>"
 				><?php
-						// New Month !
-						if ($month_title != '') {
-							?><div class="in_cell_month_year"><?php
+					// New Month !
+					if ( $month_title != '' ) {
+						?>
+						<div class="in_cell_month_year"><?php
 
-								if ( $is_matrix ) {
+						if ( $is_matrix ) {
 
-									echo $dd . ' ' . $month_title .', ' . $yy ;
+							echo esc_attr( $dd . ' ' . $month_title . ', ' . $yy );
 
-									if ( '1' == $view_days_num ) {
-										echo ' &nbsp; (' . $day_week . ')';
-									}
+							if ( '1' == $view_days_num ) {
+								echo ' &nbsp; (' . esc_attr( $day_week ) . ')';
+							}
 
-								} else {
-									if ( '30' == $view_days_num ) {
-										//echo '(' . $day_week . ') &nbsp; ' . $dd . ' ';
-									}
-								}
-
-
-							?></div><?php
+						} else {
+							if ( '30' == $view_days_num ) {
+								//echo '(' . esc_attr($day_week) . ') &nbsp; ' . esc_attr($dd) . ' ';
+							}
 						}
+						?></div><?php
+					}
 				?> </div> <?php
 			}
 		?>
@@ -1472,8 +1511,8 @@ if(1)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Dates / Times  Line
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		?><div class="flex_tl_dates_bar <?php echo $is_matrix ? ' flex_tl_matrix_resources ' : ' flex_tl_single_resource '; ?>"
-			 id="timeline_scroller<?php echo $current_resource_id; ?>"
+		?><div class="flex_tl_dates_bar <?php echo esc_attr( $is_matrix ? ' flex_tl_matrix_resources ' : ' flex_tl_single_resource ' ); ?>"
+			 id="timeline_scroller<?php echo esc_attr( $current_resource_id ); ?>"
 				 ><?php
                     $previous_month = '';
 
@@ -1497,7 +1536,7 @@ if(1)
                         $day_title = $dd . ' ' . $day_week;
                         if ( $is_matrix ) {
                             if ( $view_days_num == 1 ) {
-	                            $day_title = '<div class="in_cell_day_num">' . __( 'Times', 'booking' ) . '</div>';
+	                            $day_title = '<div class="in_cell_day_num">' . esc_html__( 'Times', 'booking' ) . '</div>';
                             }
                             if ( $view_days_num == 7 ) {
                                 $day_title =   '<div class="in_cell_day_num">' . $dd . '</div><div class="in_cell_day_week">' . $day_week . '</div>';
@@ -1510,7 +1549,7 @@ if(1)
                             }
                         } else {
                             if ( $view_days_num == 30 ) {
-                                $day_title = '<div class="in_cell_day_num">' . __( 'Times', 'booking' )  . '</div>';
+                                $day_title = '<div class="in_cell_day_num">' . esc_html__( 'Times', 'booking' )  . '</div>';
                             }
                             if ( $view_days_num == 90 ) {
                                 $day_title =   '<div class="in_cell_day_week">' . $day_week . '</div>';
@@ -1529,25 +1568,25 @@ if(1)
                         }
                      
                         ?>
-                        <div id="cell_<?php  echo $current_resource_id . '_' . $day_filter_id ; ?>" 
-                             class="<?php  echo implode(' ', array(
+                        <div id="cell_<?php echo esc_attr( $current_resource_id . '_' . $day_filter_id  ); ?>"
+                             class="<?php  echo esc_attr( implode(' ', array(
 							 				'flex_tl_day_cell',
 											'flex_tl_day_cell_header',
 											'flex_time_in_days_num_' . $view_days_num,
 											'flex_tl_weekday' . $ww,
 											$day_filter_id,
 											$month_class
-							 )); ?>"
+							 ))); ?>"
 					    ><?php
 
 	                    		if ( ( $is_matrix ) && ( ( $view_days_num == 30 ) || ( $view_days_num == 60 ) ) ) {
 
-                                	?><div class="in_cell_date_container day_num<?php echo $d_inc ?>"><?php
+                                	?><div class="in_cell_date_container day_num<?php echo esc_attr( $d_inc ); ?>"><?php
 
 										if ( ! $this->is_frontend ) {
-											?><a href='<?php echo $bk_admin_url_today . '&scroll_start_date=' . $yy . '-' . $mm . '-' . $dd; ?>'><?php
+											?><a href='<?php echo esc_url( $bk_admin_url_today . '&scroll_start_date=' . $yy . '-' . $mm . '-' . $dd ); ?>'><?php
 										}
-											echo $day_title;
+											echo wp_kses_post( $day_title );
 
 										if ( ! $this->is_frontend ) {
 											?></a><?php
@@ -1556,7 +1595,8 @@ if(1)
 									?></div><?php
 
                                 } else {
-                                    ?><div class="in_cell_date_container day_num<?php echo $d_inc ?>"><?php echo $day_title;?></div><?php
+									?>
+									<div class="in_cell_date_container day_num<?php echo esc_attr( $d_inc ); ?>"><?php echo wp_kses_post( $day_title ); ?></div><?php
                                 }
 
 	                    		////////////////////////////////////////////////////////////////////////////////////////
@@ -1564,17 +1604,17 @@ if(1)
 								////////////////////////////////////////////////////////////////////////////////////////
                                 $tm = floor( 24 / $time_selles_num );
                                 if ( $time_selles_num > 1 ) {
-									?><div class="<?php  echo implode(' ', array(
+									?><div class="<?php  echo esc_attr( implode(' ', array(
 																				'in_cell_time_section_in_day',
 																				'flex_time_section_in_day_header',
 																				'flex_time_in_days_num_' . $view_days_num
-										 )); ?>"><?php
+										 ) ) ); ?>"><?php
 
 												for ( $tt = 0; $tt < $time_selles_num; $tt++ ) { ?>
 
 													<?php  if ( ( $tt < $start_hour_for_1day_view ) || ( $tt > $end_hour_for_1day_view ) ) { continue; } //FixIn: 7.0.1.14 ?>
 
-													<div class="<?php  echo 'in_cell_time_hour time_hour' . ( $tt * $tm ); ?>" ><?php
+													<div class="<?php echo esc_attr( 'in_cell_time_hour time_hour' . ( $tt * $tm ) ); ?>" ><?php
 
 														$this->show_time_number_in_correct_format( $tt * $tm , $view_days_num );
 
@@ -1622,7 +1662,7 @@ if(1)
 						break;
 					case '365':
 						$row_settings['days_num'] = 31;
-						//$row_settings['days_num'] = intval( wpbc_datetime__no_wp_timezone('t',$row_settings['start_date']) );           		// num of days in the specific  month,  wchih  relative to $row_settings['real_date'] from  header        //FixIn: 7.0.1.47
+						//$row_settings['days_num'] = intval( wpbc_datetime__no_wp_timezone('t',$row_settings['start_date']) );           		// num of days in the specific  month,  wchih  relative to $row_settings['real_date'] from  header        // FixIn: 7.0.1.47.
 						$row_settings['dwa'] = $this->week_days_titles['1'];
 						$row_settings['time_selles_num']  = 1;
 						break;
@@ -1631,7 +1671,7 @@ if(1)
 						$row_settings['dwa'] = $this->week_days_titles['3'];
 						$row_settings['time_selles_num']  = 24;//25;
 
-						if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     //FixIn: 7.0.1.14
+						if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     // FixIn: 7.0.1.14.
 							$row_settings['limit_hours'] = explode(',',$this->request_args[ 'limit_hours' ]);
 							$row_settings['start_hour_for_1day_view'] = intval( $row_settings['limit_hours'][0] );
 							$row_settings['end_hour_for_1day_view']   = intval( $row_settings['limit_hours'][1] );
@@ -1651,7 +1691,7 @@ if(1)
 						$row_settings['dwa'] = $this->week_days_titles['full'];
 						$row_settings['time_selles_num']  = 24;
 
-						if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     //FixIn: 7.0.1.14
+						if ( isset( $this->request_args[ 'limit_hours' ] ) ) {     // FixIn: 7.0.1.14.
 							$row_settings['limit_hours'] = explode(',',$this->request_args[ 'limit_hours' ]);
 							$row_settings['start_hour_for_1day_view'] = intval( $row_settings['limit_hours'][0] );
 							$row_settings['end_hour_for_1day_view']   = intval( $row_settings['limit_hours'][1] );
@@ -1677,7 +1717,7 @@ if(1)
 
 					default:  // 30
 						$row_settings['days_num'] = 32;
-						$row_settings['days_num'] = intval( wpbc_datetime__no_wp_timezone('t',$row_settings['start_date']) );           // num of days in the specific  month,  wchih  relative to $row_settings['real_date'] from  header        //FixIn: 7.0.1.47
+						$row_settings['days_num'] = intval( wpbc_datetime__no_wp_timezone('t',$row_settings['start_date']) );           // num of days in the specific  month,  wchih  relative to $row_settings['real_date'] from  header        // FixIn: 7.0.1.47.
 						$row_settings['dwa'] = $this->week_days_titles['3'];
 						$row_settings['time_selles_num']  = 1;//25;
 						break;
@@ -1688,86 +1728,86 @@ if(1)
 		}
 
 
-		/**
-		 * Show time in correct  format - showing in Header,  and in time CELLs
-		 *
-		 * @param $time_milliseconds
-		 * @param $view_days_num
-		 */
-		private function show_time_number_in_correct_format( $time_milliseconds , $view_days_num ){
+	/**
+	 * Show time in correct  format - showing in Header,  and in time CELLs
+	 *
+	 * @param $time_milliseconds
+	 * @param $view_days_num
+	 */
+	private function show_time_number_in_correct_format( $time_milliseconds, $view_days_num ) {
 
-			//FixIn: 8.1.3.34
-			$bc_time_format = get_bk_option( 'booking_time_format' );
-			if ( ! empty( $bc_time_format ) ) {                            //FixIn: 8.2.1.2
-				$time_show = wpbc_datetime__no_wp_timezone( str_replace( ':i', '', get_bk_option( 'booking_time_format' ) ), mktime( intval($time_milliseconds), 0, 0 ) );
-				echo ( $view_days_num < 31 ) ? $time_show : '';
-			} else {
-				echo( ( $view_days_num < 31 ) ? ( ( ( $time_milliseconds ) < 10 ? '0' : '' ) . ( $time_milliseconds ) . '<sup>:00</sup>' ) : '' );
-			}
-
+		// FixIn: 8.1.3.34.
+		$bc_time_format = get_bk_option( 'booking_time_format' );
+		if ( ! empty( $bc_time_format ) ) {                            // FixIn: 8.2.1.2.
+			$time_show = wpbc_datetime__no_wp_timezone( str_replace( ':i', '', get_bk_option( 'booking_time_format' ) ), mktime( intval( $time_milliseconds ), 0, 0 ) );
+			echo wp_kses_post( ( $view_days_num < 31 ) ? $time_show : '' );
+		} else {
+			echo wp_kses_post( ( $view_days_num < 31 ) ? ( ( ( $time_milliseconds ) < 10 ? '0' : '' ) . ( $time_milliseconds ) . '<sup>:00</sup>' ) : '' );
 		}
+	}
 
 
-		/**
-		 * Is show Day View ( showing days || times )
-		 * @param $row_settings
-		 *
-		 * @return bool
-		 */
-		private function is_show_day_view( $row_settings ){
-		    if (
-					   ( ( 30 == $row_settings['view_days_num'] ) && ( ! $row_settings['is_matrix'] ) )			// Day View for Single
-					|| ( (  1 == $row_settings['view_days_num'] ) && (   $row_settings['is_matrix'] ) )			// Day View for Matrix
-				) {
-		    	return  true;
-			} else {
-		    	return  false;
-			}
+	/**
+	 * Is show Day View ( showing days || times )
+	 *
+	 * @param $row_settings
+	 *
+	 * @return bool
+	 */
+	private function is_show_day_view( $row_settings ) {
+		if (
+			( ( 30 == $row_settings['view_days_num'] ) && ( ! $row_settings['is_matrix'] ) )            // Day View for Single
+			|| ( ( 1 == $row_settings['view_days_num'] ) && ( $row_settings['is_matrix'] ) )            // Day View for Matrix
+		) {
+			return true;
+		} else {
+			return false;
 		}
+	}
 
 
-		/**
-		 * Check, if starting new booking (something changed) relative to  previous CELL
-		 *
-		 * @param array $bookings_in_cell
-		 * @param array $previous_bookings_in_cell
-		 *
-		 * @return bool
-		 */
-		private function is_start_new_booking_cell( $bookings_in_cell, $previous_bookings_in_cell ) {
+	/**
+	 * Check, if starting new booking (something changed) relative to  previous CELL
+	 *
+	 * @param array $bookings_in_cell
+	 * @param array $previous_bookings_in_cell
+	 *
+	 * @return bool
+	 */
+	private function is_start_new_booking_cell( $bookings_in_cell, $previous_bookings_in_cell ) {
 
-			$bookings_in_cell          = implode( '|', $bookings_in_cell );
-			$previous_bookings_in_cell = implode( '|', $previous_bookings_in_cell );
+		$bookings_in_cell          = implode( '|', $bookings_in_cell );
+		$previous_bookings_in_cell = implode( '|', $previous_bookings_in_cell );
 
-			if ( $bookings_in_cell !== $previous_bookings_in_cell ) {
-				return true;
-			} else {
-				return false;
-			}
+		if ( $bookings_in_cell !== $previous_bookings_in_cell ) {
+			return true;
+		} else {
+			return false;
 		}
+	}
 
 
-		/**
-		 * Check method 2, if starting new booking (something changed) relative to  previous CELL
-		 *
-		 * @param array $bookings_in_cell
-		 * @param array $previous_bookings_in_cell
-		 *
-		 * @return bool
-		 */
-		private function is_start_new_booking_cell2( $bookings_in_cell, $previous_bookings_in_cell ) {
+	/**
+	 * Check method 2, if starting new booking (something changed) relative to  previous CELL
+	 *
+	 * @param array $bookings_in_cell
+	 * @param array $previous_bookings_in_cell
+	 *
+	 * @return bool
+	 */
+	private function is_start_new_booking_cell2( $bookings_in_cell, $previous_bookings_in_cell ) {
 
-			$bookings_in_cell          = implode( '|', $bookings_in_cell );
-			$previous_bookings_in_cell = implode( '|', $previous_bookings_in_cell );
+		$bookings_in_cell          = implode( '|', $bookings_in_cell );
+		$previous_bookings_in_cell = implode( '|', $previous_bookings_in_cell );
 
-			$bookings_in_cell_arr          = explode( '|', $bookings_in_cell );
-			$previous_bookings_in_cell_arr = explode( '|', $previous_bookings_in_cell );
+		$bookings_in_cell_arr          = explode( '|', $bookings_in_cell );
+		$previous_bookings_in_cell_arr = explode( '|', $previous_bookings_in_cell );
 
-			$is_check1 = empty( array_diff( $bookings_in_cell_arr, $previous_bookings_in_cell_arr ) );
-			$is_check2 = empty( array_diff( $previous_bookings_in_cell_arr, $bookings_in_cell_arr ) );
+		$is_check1 = empty( array_diff( $bookings_in_cell_arr, $previous_bookings_in_cell_arr ) );
+		$is_check2 = empty( array_diff( $previous_bookings_in_cell_arr, $bookings_in_cell_arr ) );
 
-			return ( ( ! $is_check1 ) && (  ! $is_check2 ) );
-		}
+		return ( ( ! $is_check1 ) && ( ! $is_check2 ) );
+	}
 
 		/**
 		 * Get Text for booking Title in PIPELINE
@@ -1785,15 +1825,15 @@ if(1)
 			else                      $what_show_in_day_template = get_bk_option( 'booking_default_title_in_day_for_calendar_view_mode' );
 
 			if ( function_exists( 'get_title_for_showing_in_day' ) ) {
-				$text_in_day_cell .= esc_textarea( get_title_for_showing_in_day( $bk_id, $bookings, $what_show_in_day_template ) );						//FixIn: 7.1.1.2
+				$text_in_day_cell .= esc_textarea( get_title_for_showing_in_day( $bk_id, $bookings, $what_show_in_day_template ) );						// FixIn: 7.1.1.2.
 			} else {
 				if ( ! $this->is_frontend ) {
-					 // Default Free		//FixIn: 7.1.1.2
+					 // Default Free		// FixIn: 7.1.1.2.
 					$text_in_day_cell .= $bk_id . ':' ;
 					if ( isset( $bookings[ $bk_id ]->form_data['_all_fields_']['name'] ) ) {
 						$text_in_day_cell .= ' ' . esc_textarea( $bookings[ $bk_id ]->form_data['_all_fields_']['name'] );
 					}
-					//FixIn: 10.0.0.24
+					// FixIn: 10.0.0.24.
 					if ( isset( $bookings[ $bk_id ]->form_data['_all_fields_']['secondname'] ) ) {
 						$text_in_day_cell .= ' ' . esc_textarea( $bookings[ $bk_id ]->form_data['_all_fields_']['secondname'] );
 					}
@@ -1815,7 +1855,7 @@ if(1)
 		 */
 		private function show_booking_title_for_pipeline_bar( $booking_id, $row_settings ){
 
-			//FixIn: 8.7.1.4
+			// FixIn: 8.7.1.4.
 			$bk_title = '';
 
 			$is_date = wpbc_get_date_in_correct_format( wpbc_datetime__no_wp_timezone( "Y-m-d", $row_settings['real_date'] ) );
@@ -1825,11 +1865,11 @@ if(1)
 
 			$bk_title .= " \n" . $this->get_booking_title_for_timeline( $booking_id, $row_settings['bookings'] );
 
-			$bk_title .= " \n" . strip_tags( wpbc_get_short_dates_formated_to_show( $row_settings['bookings'][ $booking_id ]->dates_short ) )  ;
+			$bk_title .= " \n" . wp_strip_all_tags( wpbc_get_short_dates_formated_to_show( $row_settings['bookings'][ $booking_id ]->dates_short ) )  ;
 
 			?><a  href="javascript:void(0)"
 				  class="in_cell_date_booking_pipeline_a"
-				  title="<?php echo str_replace( '"', "", $bk_title ); ?>"
+				  title="<?php echo esc_attr(  $bk_title ); ?>"
 			><?php
 					?><div class="in_cell_date_booking_pipeline_a_sizer"></div><?php
 			?></a><?php
@@ -1848,12 +1888,12 @@ if(1)
 			$popup_content_arr = array();
 			$popup_title_arr = array();
 
-			$is_show_popover_in_timeline  = wpbc_is_show_popover_in_flex_timeline( $this->is_frontend, $this->request_args['booking_hash'] );    	//FixIn: 8.1.3.5
+			$is_show_popover_in_timeline  = wpbc_is_show_popover_in_flex_timeline( $this->is_frontend, $this->request_args['booking_hash'] );    	// FixIn: 8.1.3.5.
 
 			foreach ( $bookings_in_cell as $booking_id ) {
 
 				$bk_a_title = $this->get_booking_title_for_timeline( $booking_id, $row_settings['bookings'] );
-				$bk_a_title = htmlspecialchars_decode( $bk_a_title, ENT_NOQUOTES );        //FixIn: 8.7.11.5
+				$bk_a_title = htmlspecialchars_decode( $bk_a_title, ENT_NOQUOTES );        // FixIn: 8.7.11.5.
 				$bk_a_title_arr[] = $bk_a_title;
 
 				$title_in_day =  $title =  $title_hint = '';
@@ -1866,7 +1906,7 @@ if(1)
 					//FixIn: 9.7.4.1	-	escape coded html/xss
 					$popup_content_arr[] = '<div class="popover-title">' . esc_html($popup_content['title']) . '</div><div class="popover-content">' . esc_html( $popup_content['content'] ) . '</div>';
 				}
-				//$popup_content_arr[] = $bk_a_title . ': ' .  strip_tags( wpbc_get_short_dates_formated_to_show( $row_settings['bookings'][ $booking_id ]->dates_short ) )  ;
+				//$popup_content_arr[] = $bk_a_title . ': ' .  wp_strip_all_tags( wpbc_get_short_dates_formated_to_show( $row_settings['bookings'][ $booking_id ]->dates_short ) )  ;
 			}
 
 			// Title A link
@@ -1880,7 +1920,7 @@ if(1)
 				if ( ! $this->is_bookings_use_check_in_out( $bookings_in_cell, $row_settings['bookings'] ) ) {
 					$bk_a_title__text = '<sup>[' . count( $bookings_in_cell ) . ']</sup> ' . $bk_a_title__text;
 				} else {
-					//return;		//FixIn: 10.6.3.1
+					//return;		// FixIn: 10.6.3.1.
 				}
 
 			}
@@ -1895,20 +1935,20 @@ if(1)
 
 			// Booking CELL Title
 			?><a href="javascript:void(0)"
-			 	 class="<?php  echo implode(' ', array(
+			 	 class="<?php  echo esc_attr( implode(' ', array(
 									'in_cell_date_booking_title',
 									( $is_show_popover_in_timeline ) ? 'popover_bottom' : '',
 									( $is_show_popover_in_timeline ) ? 'popover_click' : '',
 					 				( count( $bookings_in_cell ) > 1 ) ? 'several_bookings_in_cell' : ''
-						 )); ?>"
+						 ))); ?>"
 				 <?php
-					//FixIn: 8.9.3.3
+					// FixIn: 8.9.3.3.
 					if ( $is_show_popover_in_timeline ) { ?>
 					 data-content="<?php echo esc_html( str_replace( '"', "", $popup_content_arr ) ); ?>"
 					 data-original-title="<?php echo esc_html( str_replace( '"', "", $popup_title_arr ) ); ?>"
 				 <?php } ?>
 			><?php
-				echo $bk_a_title__text;
+				echo wp_kses_post( $bk_a_title__text );
 			?></a><?php
 		}
 
@@ -2048,7 +2088,7 @@ if(1)
 				}
 				/////////////////////////////////////////////////////////////////
 
-				$css_class_additional = apply_filters( 'wpbc_timeline_booking_header_css', '', $booking_id, $bookings );           //FixIn: 7.0.1.41
+				$css_class_additional = apply_filters( 'wpbc_timeline_booking_header_css', '', $booking_id, $bookings );           // FixIn: 7.0.1.41.
                 $class_arr[] = $css_class_additional;
 			}
 
@@ -2137,8 +2177,8 @@ if(1)
 			// </editor-fold>
 
 
-			?><div  id="cell_<?php  echo $row_settings[ 'current_resource_id' ] . '_' . $row_settings['day_filter_id'] ; ?>"
-					class="<?php  echo implode(' ', $cell_css ); ?>"
+			?><div  id="cell_<?php echo esc_attr( $row_settings[ 'current_resource_id' ] . '_' . $row_settings['day_filter_id']  ); ?>"
+					class="<?php  echo esc_attr( implode(' ', $cell_css ) ); ?>"
 			><?php
 
 				////////////////////////////////////////////////////////////////////////////////////////
@@ -2148,11 +2188,11 @@ if(1)
 				$tm              = floor( 24 / $time_selles_num );
 
 
-				?><div class="<?php  echo implode(' ', array(
+				?><div class="<?php  echo esc_attr(implode(' ', array(
 															'in_cell_time_section_in_day',
 															'flex_time_section_in_day_booking',
 															'flex_time_in_days_num_' . $row_settings['view_days_num']
-					 				)); ?>"
+					 				)) ); ?>"
 				><?php
 
 						for ( $tt = 0; $tt < $time_selles_num; $tt++ ) {
@@ -2182,7 +2222,7 @@ if(1)
 							}
 
 
-							$today_time_css_class='';        //FixIn: 10.0.0.40
+							$today_time_css_class='';        // FixIn: 10.0.0.40.
 							if ( wpbc_datetime__use_wp_timezone( 'Y.m.d' ) == wpbc_datetime__use_wp_timezone( "Y.m.d", $row_settings[ 'real_date' ] ) ) {
 								if ( $this->is_show_day_view( $row_settings ) ) {
 									if ( ( wpbc_datetime__use_wp_timezone( 'm.d.Y' ) == wpbc_datetime__use_wp_timezone( "m.d.Y", $row_settings[ 'real_date' ] ) )    // Today Date
@@ -2193,18 +2233,17 @@ if(1)
 
 							}
 
-							?><div class="<?php  echo 'in_cell_time_hour time_hour' . ( $tt * $tm ).  ' ' . $today_time_css_class; ?>" ><?php
-
+							?><div class="<?php echo esc_attr( 'in_cell_time_hour time_hour' . ( $tt * $tm ) . ' ' . $today_time_css_class ); ?>" ><?php
 
 								if ( 'show_dates' == $row_settings['what_to_show'] ) {
 
 									 ?>
-									 <div class="in_cell_date_container in_cell_date_container_<?php echo $row_settings['what_to_show'] ?>"><?php
+									 <div class="in_cell_date_container in_cell_date_container_<?php echo esc_attr( $row_settings['what_to_show'] ); ?>"><?php
 									 //if ( empty( $bookings_in_day_cell ) ) {
 										if ( $this->is_show_day_view( $row_settings ) ) {
 											$this->show_time_number_in_correct_format( $tt * $tm , $row_settings['view_days_num'] );
 										} else {
-											echo $dd;
+											echo esc_html( $dd );
 										}
 									 //}
 									 ?></div><?php
@@ -2218,9 +2257,9 @@ if(1)
 										$booking_id_title = array();
 
 										?>
-										<div class="in_cell_date_container in_cell_date_container_<?php echo $row_settings['what_to_show'];
+										<div class="in_cell_date_container in_cell_date_container_<?php echo esc_attr( $row_settings['what_to_show'] );
 
-										//FixIn: 10.5.0.1
+										// FixIn: 10.5.0.1.
 										if (count($bookings_in_day_cell)>1){
 											echo ' in_cell_date_container_has_several_bookings ';
 										}
@@ -2238,12 +2277,12 @@ if(1)
 												}
 
 												?>
-												<div  class="<?php echo implode( ' ', array(
+												<div  class="<?php echo esc_attr( implode( ' ', array(
 																			'booking_id',
 																			'booking_id_' . $booking_id,
 																			//$is_start_new_booking ? 'start_new_booking' : '',
-														) );
-														echo ' ' . implode( ' ', $booking_css_class_arr );
+														) ) );
+														echo ' ' . esc_attr( implode( ' ', $booking_css_class_arr ) );
 														?>"
 												><?php
 
@@ -2264,12 +2303,12 @@ if(1)
 										// Title of new booking(s)
 										if ( $is_start_new_booking ) {
 
-											?><div  class="<?php echo implode( ' ', array(
+											?><div  class="<?php echo esc_attr( implode( ' ', array(
 																			'in_cell_date_container',
 																			'in_cell_date_container_booking_id_title',
 																			'in_cell_date_container_' . $row_settings['what_to_show']
-														) );
-														echo ' booking_id_' . implode( '_', $bookings_in_day_cell );
+														) ) );
+														echo esc_attr( ' booking_id_' . implode( '_', $bookings_in_day_cell ) );
 													?>"
 											><?php
 
@@ -2325,12 +2364,12 @@ if(1)
 
 			$this->data_in_previous_cell = $saved_previos_data_cell;
 
-		    ?><div id="flex_resource_row_<?php echo $what_to_show . '_' . $booking_arr['current_resource_id']; ?>"
-				   class="<?php  echo implode(' ', array(
+		    ?><div id="flex_resource_row_<?php echo esc_attr( $what_to_show . '_' . $booking_arr['current_resource_id'] ); ?>"
+				   class="<?php  echo esc_attr( implode(' ', array(
 								'flex_tl_dates_bar', 'flex_tl_row_height',
 								'flex_tl_row_bar_' . $what_to_show ,
 								$row_settings['is_matrix'] ? 'flex_tl_matrix_resources' : 'flex_tl_single_resource'
-						) ); ?>"
+						) ) ); ?>"
 			 ><?php
 
 					for ( $d_inc = 0; $d_inc < $row_settings['days_num']; $d_inc ++ ) {
@@ -2398,7 +2437,7 @@ if(1)
                     if ( isset( $this->request_args['scroll_day'] ) )
                         $scroll_day = $this->request_args['scroll_day'];
                     if ( empty( $this->request_args['scroll_start_date'] ) )
-                        $start_day = wpbc_datetime__no_wp_timezone( "d" );                          //FixIn: 7.0.1.13
+                        $start_day = wpbc_datetime__no_wp_timezone( "d" );                          // FixIn: 7.0.1.13.
                     break;
 
                 case '30':
@@ -2487,7 +2526,7 @@ if(1)
                     else
                         $scroll_day = 0;
 
-	                //FixIn: 8.9.4.3
+	                // FixIn: 8.9.4.3.
 					if ( $this->is_frontend ) {
 						$max_rows_number = intval( get_bk_option( 'booking_timeline__month_mode__days_number_show' ) );
 					} else {
@@ -2498,27 +2537,27 @@ if(1)
 					}
 
                     if ( empty( $this->request_args['scroll_start_date'] ) )
-                        $start_day = wpbc_datetime__no_wp_timezone( "d" );                          //FixIn: 7.0.1.13
+                        $start_day = wpbc_datetime__no_wp_timezone( "d" );                          // FixIn: 7.0.1.13.
                     break;
             }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
-		//FixIn: 10.0.0.25
+		// FixIn: 10.0.0.25.
 		if ( ! $this->is_frontend ){
 			$this->show_timeline_header_start__admin_panel();
 		}
-		// New Spinner Loader 		//FixIn: 10.0.0.25
+		// New Spinner Loader 		// FixIn: 10.0.0.25.
 		?><div class="flex_tl_table_loading wpbc_spins_loading_container">
 				<div class="wpbc_booking_form_spin_loader"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spins_loader_mini"></div></div></div>
 				<?php // echo '<span class="0glyphicon 0glyphicon-refresh wpbc_icn_autorenew wpbc_spin"></span>' ?>
-				<span><?php _e('Loading','booking'); ?>...</span>
+				<span><?php esc_html_e('Loading','booking'); ?>...</span>
 		</div><?php
 
 
         ?><div class="flex_timeline_frame<?php
-						if ( $this->is_frontend ) echo ' wpbc_timeline_front_end' ?> flex_frame_view_days_num_<?php echo $view_days_num;
+						if ( $this->is_frontend ) echo ' wpbc_timeline_front_end' ?> flex_frame_view_days_num_<?php echo esc_attr( $view_days_num );
 						 if ($is_matrix) { echo ' flex_tl_matrix_resources '; } else { echo ' flex_tl_single_resource '; }
 				   ?>">
             <div class="flex_tl_table">
@@ -2539,11 +2578,13 @@ if(1)
                         ?>
                         <div class="flex_tl_collumn_1"><?php
                                 $title =  wpbc_lang( $this->timeline_titles['header_column1'] );
-                                echo $title;          // Resources
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                echo $title;          // Resources .
                         ?></div>
                         <div class="flex_tl_collumn_2"><?php
                             $title =  wpbc_lang( $this->timeline_titles['header_column2'] );
-							echo $title;              // Dates
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo $title;              // Dates.
                         ?></div>
                     <?php } ?>
                 </div><?php
@@ -2578,20 +2619,22 @@ if(1)
 												?> "><?php
 													if ( $this->is_frontend ) {
 
-														if ( ( isset( $this->options['resource_link'] ) ) && ( isset( $this->options['resource_link'][ $resource_value->booking_type_id ] ) ) ){        //FixIn: 7.0.1.50
+														if ( ( isset( $this->options['resource_link'] ) ) && ( isset( $this->options['resource_link'][ $resource_value->booking_type_id ] ) ) ){        // FixIn: 7.0.1.50.
 
-															?><a href="<?php echo $this->options['resource_link'][ $resource_value->booking_type_id ]; ?>" ><?php //FixIn: 7.2.1.14
+															?><a href="<?php echo esc_url( $this->options['resource_link'][ $resource_value->booking_type_id ] ); ?>" ><?php // FixIn: 7.2.1.14.
 														}
 
-														echo wpbc_lang( $resource_value->title );       //FixIn: 7.0.1.11
+														// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+														echo wpbc_lang( $resource_value->title );       // FixIn: 7.0.1.11.
 
-														if ( ( isset( $this->options['resource_link'] ) ) && ( isset( $this->options['resource_link'][ $resource_value->booking_type_id ] ) ) ){        //FixIn: 7.0.1.50
+														if ( ( isset( $this->options['resource_link'] ) ) && ( isset( $this->options['resource_link'][ $resource_value->booking_type_id ] ) ) ){        // FixIn: 7.0.1.50.
 															?></a><?php
 														}
 													} else {
-													?><a href="<?php echo $bk_admin_url . '&wh_booking_type=' . $bk_resources_id[$d_inc]; ?>"
-														 title="<?php echo wpbc_lang( $resource_value->title ); ?>"
+													?><a href="<?php echo esc_url( $bk_admin_url . '&wh_booking_type=' . $bk_resources_id[$d_inc] ); ?>"
+														 title="<?php echo esc_attr( wpbc_lang( $resource_value->title ) ); ?>"
 													  ><?php
+														// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 														echo wpbc_lang( $resource_value->title );
 													?></a><?php
 													}
@@ -2605,21 +2648,27 @@ if(1)
 												case '90':
 													$end_real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + intval( $d_inc ) * 7 + intval( $scroll_day ) ) + 6, intval( $start_year ) );
 													$date_format = ' j, Y'; //get_bk_option( 'booking_date_format');
-													echo __( wpbc_datetime__no_wp_timezone( "M", $real_date ) ) . wpbc_datetime__no_wp_timezone( $date_format, $real_date ) . ' - ' . __( wpbc_datetime__no_wp_timezone( "M", $end_real_date ) ) . wpbc_datetime__no_wp_timezone( $date_format, $end_real_date );
+													// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+													echo wpbc_datetime__no_wp_timezone( "M", $real_date ) . wpbc_datetime__no_wp_timezone( $date_format, $real_date ) . ' - ' . wpbc_datetime__no_wp_timezone( "M", $end_real_date ) . wpbc_datetime__no_wp_timezone( $date_format, $end_real_date );
 													break;
 
 												case '365':
-													echo __( wpbc_datetime__no_wp_timezone( "F", $real_date ) ) . ', ' . wpbc_datetime__no_wp_timezone( "Y", $real_date );
+													// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+													echo wpbc_datetime__no_wp_timezone( "F", $real_date ) . ', ' . wpbc_datetime__no_wp_timezone( "Y", $real_date );
 													break;
 
 												default:  // 30
 													//$date_format = 'd / m / Y';
-													$date_format = get_bk_option( 'booking_date_format' );                           //FixIn:5.4.5.13
+													$date_format = get_bk_option( 'booking_date_format' );                           // FixIn: 5.4.5.13.
 													$ww = wpbc_datetime__no_wp_timezone( "N", $real_date );    //7
 													?>
 														<div class="flex_tl_resource_title_dates_container">
-															<div class="flex_tl_resource_title_dates_days  flex_tl_weekday<?php echo $ww; ?>"><?php echo  wpbc_datetime__no_wp_timezone( $date_format, $real_date ); ?></div>
-															<div class="flex_tl_resource_title_dates_weeks flex_tl_weekday<?php echo $ww; ?>"><?php echo __( wpbc_datetime__no_wp_timezone( "D", $real_date ) ); ?></div>
+															<div class="flex_tl_resource_title_dates_days  flex_tl_weekday<?php echo esc_attr( $ww ); ?>"><?php
+																// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+																echo  wpbc_datetime__no_wp_timezone( $date_format, $real_date ); ?></div>
+															<div class="flex_tl_resource_title_dates_weeks flex_tl_weekday<?php echo esc_attr( $ww ); ?>"><?php
+																// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+																echo  wpbc_datetime__no_wp_timezone( "D", $real_date ); ?></div>
 														</div>
 													<?php
 													break;
@@ -2747,7 +2796,7 @@ if(1)
 
 
 		if ( ! $this->is_frontend ){
-			$this->show_timeline_header_end__admin_panel();		//FixIn: 10.0.0.25
+			$this->show_timeline_header_end__admin_panel();		// FixIn: 10.0.0.25.
 		}
 
     }
@@ -2816,28 +2865,32 @@ if(1)
 
 		//FixIn: 10.0.0.25		// removed loader text  from  here
 
-	    //FixIn: 9.1.2.4
+	    // FixIn: 9.1.2.4.
 		echo '<script type="text/javascript"> 
 				if ( ( document.readyState !== "loading" ) &&  ( ( "undefined" !== typeof jQuery ) &&  ( window.jQuery ) ) ){ 
 					jQuery( ".flex_tl_table_loading").hide();
 					jQuery( ".flex_tl_table" ).show();
-				} else { ' . wpbc_jq_ready_start();                                 //FixIn: 10.1.3.7
+				} else { ' ;
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wpbc_jq_ready_start();                                 // FixIn: 10.1.3.7.
         ?>  jQuery( '.flex_tl_table_loading').hide();
 			jQuery( '.flex_tl_table' ).show();
 		<?php
-		echo wpbc_jq_ready_end() . ' } </script>';                                                          //FixIn: 10.1.3.7
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wpbc_jq_ready_end() . ' } </script>';                                                          // FixIn: 10.1.3.7.
     }
 
 	/**
 	 * Show Header for Timeline in Calendar Overview page in admin panel. Header contain switches of modes and novigation  buttons
 	 * @return void
 	 */
-	public function show_timeline_header_start__admin_panel(){			//FixIn: 10.0.0.25
+	public function show_timeline_header_start__admin_panel(){			// FixIn: 10.0.0.25.
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$is_show_resources_matrix = ( ( isset( $_REQUEST['wh_booking_type'] ) ) && ( strpos( $_REQUEST['wh_booking_type'], ',' ) !== false ) )
 			? true : false;
 
-		$view_days_num = ( isset( $_REQUEST['view_days_num'] ) ) ? intval( $_REQUEST['view_days_num'] ) : get_bk_option( 'booking_view_days_num' );
+		$view_days_num = ( isset( $_REQUEST['view_days_num'] ) ) ? intval( $_REQUEST['view_days_num'] ) : get_bk_option( 'booking_view_days_num' );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 		$bk_admin_url = wpbc_get_params_in_url( wpbc_get_bookings_url( false ), array( 'view_days_num' ) );
 
@@ -2849,34 +2902,34 @@ if(1)
 								?>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=1' ); ?>"
 								   class="nav-tab <?php echo ( 1 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar-event"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo __('Day', 'booking') ; ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo esc_html__('Day', 'booking') ; ?></span>
 								</a>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=7' ); ?>"
 								   class="nav-tab <?php echo ( 7 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar-week"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo __('Week', 'booking'); ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo esc_html__('Week', 'booking'); ?></span>
 								</a>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=30' ); ?>"
 								   class="nav-tab <?php echo ( 30 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar3"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo __('Month', 'booking'); ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo esc_html__('Month', 'booking'); ?></span>
 								</a>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=60' ); ?>"
 								   class="nav-tab <?php echo ( 60 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar2-week"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;2 <?php echo __('Months', 'booking'); ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;2 <?php echo esc_html__('Months', 'booking'); ?></span>
 								</a>
 								<?php
 							} else {
 								?>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=30' ); ?>"
 								   class="nav-tab <?php echo ( 30 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar-event"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo __('Day', 'booking') ; ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo esc_html__('Day', 'booking') ; ?></span>
 								</a>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=90' ); ?>"
 								   class="nav-tab <?php echo ( 90 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar-week"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo __('Week', 'booking'); ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo esc_html__('Week', 'booking'); ?></span>
 								</a>
 								<a href="<?php echo esc_url( $bk_admin_url . '&view_days_num=365' ); ?>"
 								   class="nav-tab <?php echo ( 365 == $view_days_num ) ? 'nav-tab-active' : ''; ?>"><i class="menu_icon icon-1x wpbc-bi-calendar3"></i>
-									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo __('Month', 'booking'); ?></span>
+									<span class="nav-tab-text">&nbsp;&nbsp;<?php echo esc_html__('Month', 'booking'); ?></span>
 								</a>
 								<?php
 							}
@@ -2894,7 +2947,7 @@ if(1)
 	 		<?php
 	}
 
-	function show_timeline_header_end__admin_panel(){				//FixIn: 10.0.0.25
+	function show_timeline_header_end__admin_panel(){				// FixIn: 10.0.0.25.
 		?></div><?php		// End: .wpbc_calendar_overview__container
 	}
 
@@ -2919,7 +2972,7 @@ if(1)
     public function wpbc_get_booking_info_4_popover( $bk_id, $bookings, $booking_types ){
 
 		if ( isset( $bookings[ $bk_id ] ) ) {
-			//$bookings[ $bk_id ]->form_show = str_replace( "&amp;", '&', $bookings[ $bk_id ]->form_show );				//FixIn:7.1.2.12
+			//$bookings[ $bk_id ]->form_show = str_replace( "&amp;", '&', $bookings[ $bk_id ]->form_show );				// FixIn: 7.1.2.12.
 			// We escaping at other place: wpbc__legacy__get_form_content_arr()
 		}
 
@@ -2957,10 +3010,10 @@ if(1)
 						$bk_hash = (isset( $bookings[$bk_id]->hash )) ? $bookings[$bk_id]->hash : '';
 						$bk_booking_type = $bookings[$bk_id]->booking_type;
 						$edit_booking_url = $bk_url_add . '&booking_type=' . $bk_booking_type . '&booking_hash=' . $bk_hash . '&parent_res=1';
-						$edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        //FixIn: 9.4.2.3
+						$edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
 						if ( ! empty( $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'] ) ) {
-							$edit_booking_url .= '&booking_form=' . $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'];					//FixIn: 9.4.3.12
+							$edit_booking_url .= '&booking_form=' . $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'];					// FixIn: 9.4.3.12.
 						}
 
 						$header_title .= '<a 	class=\'button button-secondary\' 
@@ -2972,13 +3025,13 @@ if(1)
 					}
 					// Trash
 					//$header_title .= '<a class=\'button button-secondary\' href=\'javascript:;\' onclick=\'javascript:delete_booking(' . $bk_id . ', ' . $this->current_user_id . ', &quot;' . wpbc_get_maybe_reloaded_booking_locale() . '&quot; , 1   );\' ><i class=\'wpbc_icn_delete_outline\'></i></a>';
-					//FixIn: 6.1.1.10
+					// FixIn: 6.1.1.10.
 					$is_trash = $bookings[$bk_id]->trash;
 
 					// Trash
 					$header_title .= '<a class=\'button button-secondary trash_bk_link'.(( $is_trash)?' hidden_items ':'').'\'  
 										 title=\'' . esc_attr( str_replace( "'", '', __( 'Trash / Reject', 'booking' ) ) ) . '\'
-										 href=\'javascript:;\' onclick=\'javascript:if ( wpbc_are_you_sure_popup() ) trash__restore_booking(1,' . $bk_id . ', ' . $this->current_user_id . ', &quot;' . wpbc_get_maybe_reloaded_booking_locale() . '&quot; , 1   );\' ><i class=\'wpbc_icn_delete_outline\'></i></a>';		//FixIn: 8.4.7.14
+										 href=\'javascript:;\' onclick=\'javascript:if ( wpbc_are_you_sure_popup() ) trash__restore_booking(1,' . $bk_id . ', ' . $this->current_user_id . ', &quot;' . wpbc_get_maybe_reloaded_booking_locale() . '&quot; , 1   );\' ><i class=\'wpbc_icn_delete_outline\'></i></a>';		// FixIn: 8.4.7.14.
 					// Restore
 					$header_title .= '<a 	class=\'button button-secondary restore_bk_link'.((!$is_trash)?' hidden_items ':'').'\'  
 											title=\'' . esc_attr( str_replace( "'", '', __( 'Restore', 'booking' ) ) ) . '\'
@@ -2986,7 +3039,7 @@ if(1)
 					// Delete
 					$header_title .= '<a 	class=\'button button-secondary delete_bk_link'.((!$is_trash)?' hidden_items ':'').'\'  
 											title=\'' . esc_attr( str_replace( "'", '', __( 'Delete', 'booking' ) ) ) . '\'
-											href=\'javascript:;\' onclick=\'javascript:if ( wpbc_are_you_sure_popup() ) delete_booking(' . $bk_id . ', ' . $this->current_user_id . ', &quot;' . wpbc_get_maybe_reloaded_booking_locale() . '&quot; , 1   );\' ><i class=\'wpbc_icn_close\'></i></a>';				//FixIn: 8.4.7.14
+											href=\'javascript:;\' onclick=\'javascript:if ( wpbc_are_you_sure_popup() ) delete_booking(' . $bk_id . ', ' . $this->current_user_id . ', &quot;' . wpbc_get_maybe_reloaded_booking_locale() . '&quot; , 1   );\' ><i class=\'wpbc_icn_close\'></i></a>';				// FixIn: 8.4.7.14.
 					//End FixIn: 6.1.1.10
 
 					// Approve | Decline
@@ -3000,7 +3053,7 @@ if(1)
 
 				}
 
-				else if ( ( $this->is_frontend ) && ( ! empty( $this->request_args['booking_hash'] ) ) ) {							//FixIn: 8.1.3.5
+				else if ( ( $this->is_frontend ) && ( ! empty( $this->request_args['booking_hash'] ) ) ) {							// FixIn: 8.1.3.5.
 					// Valid or not valid hash  we was checked at beginning of function.
 
 					//Edit
@@ -3009,8 +3062,8 @@ if(1)
 						// $edit_booking_url_admin = wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&view_mode=vm_listing&tab=actions';
 						// $trash_booking_url_admin = wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&view_mode=vm_listing&tab=actions';
 
-						$is_change_hash_after_approvement = get_bk_option( 'booking_is_change_hash_after_approvement' );    //FixIn: 8.6.1.6
-						if ( ( ! $is_approved ) || ( 'On' != $is_change_hash_after_approvement ) ) {                                                                 //FixIn: 8.2.1.14
+						$is_change_hash_after_approvement = get_bk_option( 'booking_is_change_hash_after_approvement' );    // FixIn: 8.6.1.6.
+						if ( ( ! $is_approved ) || ( 'On' != $is_change_hash_after_approvement ) ) {                                                                 // FixIn: 8.2.1.14.
 							$visitorbookingediturl   = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingediturl]', $bk_id );
 							$visitorbookingcancelurl = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingcancelurl]', $bk_id );
 							$visitorbookingpayurl    = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingpayurl]', $bk_id );
@@ -3063,7 +3116,7 @@ if(1)
 					}
 
 					$content_text .= '<div class=\'flex-label flex-label-resource\'>';
-					$content_text .= '<span class=\'\'>' . esc_textarea( $bk_title ) . '</span>';	//FixIn: 7.1.1.2
+					$content_text .= '<span class=\'\'>' . esc_textarea( $bk_title ) . '</span>';	// FixIn: 7.1.1.2.
 					$content_text .= '</div>';
 				}
 
@@ -3081,7 +3134,7 @@ if(1)
 						if ( $is_payment_ok )
 							$content_text .= '<span class=\'label-prefix\'>' . esc_js( __( 'Payment', 'booking' ) ). '</span> ' . esc_js( $pay_status );
 						else {
-							$content_text .= '<span class=\'label-prefix\'>' . esc_js( __( 'Payment', 'booking' ) ) . '</span> ' . esc_js( $pay_status );        //FixIn: 7.1.1.3
+							$content_text .= '<span class=\'label-prefix\'>' . esc_js( __( 'Payment', 'booking' ) ) . '</span> ' . esc_js( $pay_status );        // FixIn: 7.1.1.3.
 						}
 
 						$content_text .= '</div>';
@@ -3090,7 +3143,7 @@ if(1)
 				if ( ! $this->is_frontend ) {
 					// Trash
 					$content_text .= '<div class=\'flex-label flex-label-trash' . ( ( ! $bookings[$bk_id]->trash ) ? ' hidden_items ' : '' ) . '\'>';
-					$content_text .= '<span class=\'\'>' . esc_js( __('Trash / Reject' ,'booking') ) . '</span>';    //FixIn: 6.1.1.10 //FixIn: 7.1.1.3
+					$content_text .= '<span class=\'\'>' . esc_js( __('Trash / Reject' ,'booking') ) . '</span>';    //FixIn: 6.1.1.10 // FixIn: 7.1.1.3.
 					$content_text .= '</div>';
 				}
 
@@ -3105,7 +3158,7 @@ if(1)
 
 			$content_text .= '<div class=\'flex-popover-cost-bar\' >';
 
-					//FixIn: 8.3.3.9
+					// FixIn: 8.3.3.9.
 					if ( floatval( $bookings[ $bk_id ]->cost ) > 0 ) {
 						// Cost
 						$booking_cost = wpbc_get_cost_with_currency_for_user( $bookings[ $bk_id ]->cost, $bookings[ $bk_id ]->booking_type );
@@ -3130,9 +3183,9 @@ if(1)
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Booking Data
-	    $content_text .= '<div class=\'clear\'></div>';        //FixIn: 8.7.9.4
-        $content_text .= '<div class=\'flex-popover-booking-data\'>' . esc_textarea( $bookings[$bk_id]->form_show ) . '</div>'; //FixIn: 7.1.1.2
-	    $content_text .= '<div class=\'clear\'></div>';        //FixIn: 8.7.9.4
+	    $content_text .= '<div class=\'clear\'></div>';        // FixIn: 8.7.9.4.
+        $content_text .= '<div class=\'flex-popover-booking-data\'>' . esc_textarea( $bookings[$bk_id]->form_show ) . '</div>'; // FixIn: 7.1.1.2.
+	    $content_text .= '<div class=\'clear\'></div>';        // FixIn: 8.7.9.4.
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Notes
@@ -3140,7 +3193,7 @@ if(1)
 
         // Notes
         if ( ! empty( $bookings[$bk_id]->remark ) ) {        
-            $content_text .= '<div class=\'wpbc-popover-booking-notes\'>' . '<strong>' . esc_js( __('Note', 'booking') ). ':</strong> ' . esc_textarea( $bookings[$bk_id]->remark ) . '</div>'; //FixIn: 7.1.1.2		//FixIn: 7.1.1.3
+            $content_text .= '<div class=\'wpbc-popover-booking-notes\'>' . '<strong>' . esc_js( __('Note', 'booking') ). ':</strong> ' . esc_textarea( $bookings[$bk_id]->remark ) . '</div>'; //FixIn: 7.1.1.2		// FixIn: 7.1.1.3.
         }
         
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3158,7 +3211,7 @@ if(1)
         $content_text .= 	  $short_dates_content;
         $content_text .= '</div>';
 
-	    //FixIn: 8.9.4.14
+	    // FixIn: 8.9.4.14.
 	    $date_format = get_bk_option( 'booking_date_format' );
 	    if ( empty( $date_format ) ) {
 		    $date_format = 'm / d / Y, D';
@@ -3201,18 +3254,18 @@ function wpbc_ajax_flex_timeline() {
                 )
      */
 
-	//FixIn: 10.5.0.2
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	foreach ( $_POST['timeline_obj'] as $tl_key => $tl_value ) {
-		$_POST['timeline_obj'][ $tl_key ] = wpbc_clean_text_value( $tl_value );
+		$_POST['timeline_obj'][ $tl_key ] = wpbc_clean_text_value( $tl_value );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 
-    $attr = $_POST['timeline_obj'];
-    $attr['nav_step'] = wpbc_clean_text_value( $_POST['nav_step'] );
+	$attr             = $_POST['timeline_obj'];                                                                         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+	$attr['nav_step'] = wpbc_clean_text_value( $_POST['nav_step'] );                                                    // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
-
-	//FixIn: 9.9.0.18
+	// FixIn: 9.9.0.18.
 	$server_zone = date_default_timezone_get();                                                                         // If in 'Theme' or 'other plugin' set  default timezone other than UTC. Save it.
-	if ( 'UTC' !== $server_zone ) {                                                                                     // Needed for WP date functions  - set timezone to  UTC
+	if ( 'UTC' !== $server_zone ) {                                                                                     // Needed for WP date functions  - set timezone to  UTC.
+		// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 		@date_default_timezone_set( 'UTC' );
 	}
 
@@ -3227,13 +3280,15 @@ function wpbc_ajax_flex_timeline() {
         $timeline->show_timeline();
 
 
-        $is_show_popover_in_timeline  = wpbc_is_show_popover_in_flex_timeline( $attr['is_frontend'], $attr['booking_hash'] );    	//FixIn: 8.1.3.5
+        $is_show_popover_in_timeline  = wpbc_is_show_popover_in_flex_timeline( $attr['is_frontend'], $attr['booking_hash'] );    	// FixIn: 8.1.3.5.
 
         if ( $is_show_popover_in_timeline ) {                                   // Update New Popovers
 
-			$html  = '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 		//FixIn: 10.1.3.7
+			$html  = '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 		// FixIn: 10.1.3.7.
 			$html .= ' wpbc_define_tippy_popover(); ';
-			$html .= wpbc_jq_ready_end() . '</script>';                                                            		//FixIn: 10.1.3.7
+			$html .= wpbc_jq_ready_end() . '</script>';                                                            		// FixIn: 10.1.3.7.
+
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $html;
 
             /* ?><script type="text/javascript"> wpbc_define_tippy_popover(); </script><?php */
@@ -3245,11 +3300,13 @@ function wpbc_ajax_flex_timeline() {
 
     ob_end_clean();
 
-	//FixIn: 9.9.0.18
+	// FixIn: 9.9.0.18.
 	if ( 'UTC' !== $server_zone ) {                                                                                     // Back  to  previos state,  if it was changed.
+		// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 		@date_default_timezone_set( $server_zone );
 	}
 
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo  $timeline_results ;    
 }
 add_bk_action('wpbc_ajax_flex_timeline', 'wpbc_ajax_flex_timeline');
@@ -3276,7 +3333,7 @@ function wpbc_is_show_popover_in_flex_timeline( $is_frontend, $booking_hash ){
 		$is_show_popover_in_timeline  =  ( get_bk_option( 'booking_is_show_popover_in_timeline_front_end' ) == 'On' ) ? true : false ;
 
 	// For customer booking listing with  ability to  edit
-	//FixIn: 8.1.3.5
+	// FixIn: 8.1.3.5.
 	if ( ( $is_frontend ) && ( ! empty( $booking_hash ) ) ) {
 
 		//In case if we have valid valid hash  then  show booking details
@@ -3325,13 +3382,13 @@ function wpbc_is_show_popover_in_flex_timeline( $is_frontend, $booking_hash ){
 function bookingflextimeline_shortcode($attr) {
 
 	if ( wpbc_is_on_edit_page() ) {
-		return wpbc_get_preview_for_shortcode( 'bookingflextimeline', $attr );      //FixIn: 9.9.0.39
+		return wpbc_get_preview_for_shortcode( 'bookingflextimeline', $attr );      // FixIn: 9.9.0.39.
 	}
 
 	$attr = wpbc_escape_shortcode_params( $attr );          //FixIn: 9.7.3.6.1
 
 	if ( '' === $attr ) {
-		$attr = array();        //FixIn: 9.9.0.30
+		$attr = array();        // FixIn: 9.9.0.30.
 	}
 
 	//if ( function_exists( 'wpbc_br_cache' ) ) $br_cache = wpbc_br_cache();  // Init booking resources cache
@@ -3363,9 +3420,10 @@ function bookingflextimeline_shortcode($attr) {
 		$attr['header_title' ] = '';
 	}
 
-	//FixIn: 9.9.0.18
+	// FixIn: 9.9.0.18.
 	$server_zone = date_default_timezone_get();                                                                         // If in 'Theme' or 'other plugin' set  default timezone other than UTC. Save it.
 	if ( 'UTC' !== $server_zone ) {                                                                                     // Needed for WP date functions  - set timezone to  UTC
+		// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 		@date_default_timezone_set( 'UTC' );
 	}
 
@@ -3381,18 +3439,19 @@ function bookingflextimeline_shortcode($attr) {
 
 	echo '<div class="wpdevelop">';
 
-		echo '<div id="'.$html_client_id.'" class="wpbc_timeline_client_border">';
+		echo '<div id="' . esc_attr( $html_client_id ) . '" class="wpbc_timeline_client_border">';
 
-			echo  wp_nonce_field( 'WPBC_FLEXTIMELINE_NAV', 'wpbc_nonce_' . $html_client_id ,  true , false );
-			echo '<div id="ajax_respond_insert'.$html_client_id.'" class="ajax_respond_insert" style="display:none;"></div>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wp_nonce_field( 'WPBC_FLEXTIMELINE_NAV', 'wpbc_nonce_' . esc_attr( $html_client_id ), true, false );
+			echo '<div id="ajax_respond_insert' . esc_attr( $html_client_id ) . '" class="ajax_respond_insert" style="display:none;"></div>';
 
 			echo '<div class="wpbc_timeline_ajax_replace">';
 				if ( ! WPBC()->booking_obj->popover_front_end_js_is_writed ) {                        //Write this JS only  once at  page
 					wpbc_bs_javascript_popover();                                       // JS Popover
 					WPBC()->booking_obj->popover_front_end_js_is_writed = true;
-				}    //FixIn: 9.2.1.3
+				}    // FixIn: 9.2.1.3.
 
-				//Define Global JavaScript Object - array of objects.		//FixIn: 9.2.1.3
+				//Define Global JavaScript Object - array of objects.		// FixIn: 9.2.1.3.
 				?>
 				<script type="text/javascript">
 					var wpbc_timeline_obj;
@@ -3425,8 +3484,9 @@ function bookingflextimeline_shortcode($attr) {
 
 	ob_end_clean();
 
-	//FixIn: 9.9.0.18
+	// FixIn: 9.9.0.18.
 	if ( 'UTC' !== $server_zone ) {                                                                                     // Back  to  previos state,  if it was changed.
+		// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 		@date_default_timezone_set( $server_zone );
 	}
 
@@ -3439,7 +3499,7 @@ add_shortcode( 'bookingflextimeline',   'bookingflextimeline_shortcode'  );
 /** JSS */
 function wpbc_timeline_js_load_files( $where_to_load ) {
 
-	//FixIn: 8.6.1.13
+	// FixIn: 8.6.1.13.
 
 	$is_in_footer = ! true;
 
@@ -3449,7 +3509,7 @@ function wpbc_timeline_js_load_files( $where_to_load ) {
 							, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/timeline_v2.js'                  /* wpbc_plugin_url( '/core/timeline/wpbc-flex-timeline.js' ) */
 							, array( 'wpbc_all' /*, 'wp-element'*/ )
 							, WP_BK_VERSION_NUM
-							, $is_in_footer
+							, array( 'in_footer' => WPBC_JS_IN_FOOTER )	//, $is_in_footer
 						);
 	}
 }
@@ -3459,14 +3519,15 @@ add_action( 'wpbc_enqueue_js_files',  'wpbc_timeline_js_load_files', 50 );
 /** CSS */
 function wpbc_timeline_enqueue_css_files( $where_to_load ) {
 
-	//FixIn: 8.6.1.13
+	// FixIn: 8.6.1.13.
 
 	if  ( in_array( $where_to_load, array( 'admin', 'both', 'client' ) ) ) {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if (    ( ( isset($_REQUEST['view_mode']) ) && ( $_REQUEST['view_mode']== 'vm_calendar' ) ) || ( 'client' == $where_to_load )  ){
 
 			wp_enqueue_style( 'wpbc-flex-timeline'
-				, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/timeline_v2.1.css'                    			/* wpbc_plugin_url( '/src/css/codemirror.css' ) */
+				, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/timeline_v2.1.css'                    			/* wpbc_plugin_url( '/src/css/code_mirror.css' ) */
 				, array()
 				, WP_BK_VERSION_NUM );
 		}

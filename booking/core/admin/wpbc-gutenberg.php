@@ -12,7 +12,7 @@
  * @modified 2018-04-22
  */
 
-//FixIn: 8.3.3.99
+// FixIn: 8.3.3.99.
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
@@ -20,11 +20,8 @@ function wpbc_gutenberg_block_booking() {
 
 	if ( function_exists( 'register_block_type' ) ) {
 
-		wp_register_script( 'gutenberg-wpbc-booking', wpbc_plugin_url( '/js/wpbc-gutenberg.js' ), array(
-			'wp-blocks',
-			'wp-element',
-			'wpbc-modal'                                                                                  //FixIn: 8.8.2.12
-		) );
+		$script_params = array( 'wp-blocks', 'wp-element', 'wpbc-modal' );
+		wp_register_script( 'gutenberg-wpbc-booking', wpbc_plugin_url( '/js/wpbc-gutenberg.js' ), $script_params, '1.0', array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 	    wp_register_style( 'gutenberg-wpbc-editor', wpbc_plugin_url( '/css/wpbc-gutenberg.css' ),
 		    array( 'wp-edit-blocks' ),
 	        filemtime( plugin_dir_path( __FILE__ ) . '../../css/wpbc-gutenberg.css' )

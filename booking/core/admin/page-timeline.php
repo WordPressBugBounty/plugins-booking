@@ -49,8 +49,8 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             , 'icon' => ''                                      // Icon - link to the real PNG img
-                            , 'font_icon' => 'wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom'             			// CSS definition  of forn Icon		//FixIn: 9.5.5.3
-                            , 'header_font_icon' => 'wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom'             	// CSS definition  of forn Icon		//FixIn: 9.5.5.3
+                            , 'font_icon' => 'wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom'             			// CSS definition  of forn Icon		// FixIn: 9.5.5.3.
+                            , 'header_font_icon' => 'wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom'             	// CSS definition  of forn Icon		// FixIn: 9.5.5.3.
                             , 'default' => false                                 // Is this tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this tab disbaled: true || false. 
                             , 'hided'   => true                                 // Is this tab hided: true || false.
@@ -67,13 +67,13 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
 
     public function content() {                
         
-        wpbc_check_request_paramters();                                         //Cleanup REQUEST parameters        //FixIn:6.2.1.4
+        wpbc_check_request_paramters();                                         //Cleanup REQUEST parameters        // FixIn: 6.2.1.4.
         
         do_action( 'wpbc_hook_booking_page_header', 'timeline' );               // Define Notices Section and show some static messages, if needed.
                                         
         if ( ! wpbc_is_mu_user_can_be_here( 'activated_user' ) ) return false;  // Check if MU user activated,  otherwise show Warning message.
 
-        if ( ! wpbc_set_default_resource_to__get() ) return false;              // Define default booking resources for $_GET  and  check if booking resource belong to user.
+        if ( ! wpbc_set_default_resource_to__get() ) return false;              // Define default booking resources for $_ GET  and  check if booking resource belong to user.
         
         ?><span class="wpdevelop"><?php                                         // BS UI CSS Class
         
@@ -94,21 +94,23 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
 
             // Show    T i m e L i n e   ///////////////////////////////////////
 
-			//FixIn: 9.9.0.18
+			// FixIn: 9.9.0.18.
 			$server_zone = date_default_timezone_get();                                                                         // If in 'Theme' or 'other plugin' set  default timezone other than UTC. Save it.
 			if ( 'UTC' !== $server_zone ) {                                                                                     // Needed for WP date functions  - set timezone to  UTC
+				// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 				@date_default_timezone_set( 'UTC' );
 			}
 
-			//FixIn: 8.6.1.13
+			// FixIn: 8.6.1.13.
 			$this->timeline = new WPBC_TimelineFlex();
 
 			$this->timeline->admin_init();                                      // Define all REQUEST parameters and get bookings
 
 			$this->timeline->show_timeline();
 
-			//FixIn: 9.9.0.18
+			// FixIn: 9.9.0.18.
 			if ( 'UTC' !== $server_zone ) {                                                                                     // Back  to  previos state,  if it was changed.
+				// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 				@date_default_timezone_set( $server_zone );
 			}
 

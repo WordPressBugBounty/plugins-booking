@@ -1,5 +1,5 @@
 <?php
-// Here you can translate countries into your languages, which is non-English                                           //FixIn: 8.9.4.9
+// Here you can translate countries into your languages, which is non-English                                           // FixIn: 8.9.4.9.
 
 // ISO 3166-1 country names and codes from https://www.iso.org/obp/ui/
 global $wpbc_booking_country_list;

@@ -26,10 +26,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return false|int - ID of the page.
  */
-function wpbc_create_page( $page_params = array() ){                                                                    //FixIn: 9.6.2.10
+function wpbc_create_page( $page_params = array() ){                                                                    // FixIn: 9.6.2.10.
 
 	global $wp_rewrite;
-	if ( is_null( $wp_rewrite ) ) {     //FixIn: 9.7.1.1
+	if ( is_null( $wp_rewrite ) ) {     // FixIn: 9.7.1.1.
 		return false;
 	}
 
@@ -222,7 +222,8 @@ function wpbc_add_shortcode_into_page( $params = array() ) {
 
 			return array( 'result'       => true,
 			              'relative_url' => $relative_post_url,
-			              'message'      => __( 'A new page has been created.', 'booking' ) . ' ' . sprintf( __( 'The booking form shortcode %s has been embedded into the page %s', 'booking' )
+			              /* translators: 1: ... */
+			              'message'      => __( 'A new page has been created.', 'booking' ) . ' ' . sprintf( __( 'The booking form shortcode %1$s has been embedded into the page %2$s', 'booking' )
 		                                    , "<code class='wpbc_inserted_shortcode_view'>{$params['shortcode']}</code>"
 							                , "<a class='wpbc_open_page_as_new_tab' href='" . esc_url( $post_url ) . "'>{$post_title}</a>"
 						                    . " <a target='_blank' class='wpbc_open_page_as_new_tab tooltip_top wpbc-bi-arrow-up-right-square' href='" . esc_url( $post_url ) . "' title='" . esc_attr( __( 'Open in new window', 'booking' ) ) . "'></a>"
@@ -262,7 +263,8 @@ function wpbc_add_shortcode_into_page( $params = array() ) {
 		if ( $is_sh_added ) {
 			return array( 'result'       => true,
 			              'relative_url' => $relative_post_url,
-			              'message'      => sprintf( __( 'The booking form shortcode %s has been embedded into the page %s', 'booking' )
+			              /* translators: 1: ... */
+			              'message'      => sprintf( __( 'The booking form shortcode %1$s has been embedded into the page %2$s', 'booking' )
 		                                    , "<code class='wpbc_inserted_shortcode_view'>{$params['shortcode']}</code>"
 							                , "<a class='wpbc_open_page_as_new_tab' href='" . esc_url( $post_url ) . "'>{$post_title}</a>"
 						                    . " <a target='_blank' class='wpbc_open_page_as_new_tab tooltip_top wpbc-bi-arrow-up-right-square' href='" . esc_url( $post_url ) . "' title='" . esc_attr( __( 'Open in new window', 'booking' ) ) . "'></a>"
@@ -272,7 +274,8 @@ function wpbc_add_shortcode_into_page( $params = array() ) {
 
 		} else {
 			return array( 'result'       => false,
-			              'message'      => sprintf( __( 'We are unable to embed the booking form shortcode %s into the page %s.', 'booking' )
+			              /* translators: 1: ... */
+			              'message'      => sprintf( __( 'We are unable to embed the booking form shortcode %1$s into the page %2$s.', 'booking' )
 		                                    , "<code class='wpbc_inserted_shortcode_view'>{$params['shortcode']}</code>"
 							                , "<a class='wpbc_open_page_as_new_tab' href='" . esc_url( $post_url ) . "'>{$post_title}</a>"
 						                    . " <a target='_blank' class='wpbc_open_page_as_new_tab tooltip_top wpbc-bi-arrow-up-right-square' href='" . esc_url( $post_url ) . "' title='" . esc_attr( __( 'Open in new window', 'booking' ) ) . "'></a>"
@@ -282,7 +285,8 @@ function wpbc_add_shortcode_into_page( $params = array() ) {
 	} else {
 
 		return array( 'result'       => false,
-		              'message'      => sprintf( __( 'The Booking Calendar shortcode %s is already present on this page %s.', 'booking' )
+		              /* translators: 1: ... */
+		              'message'      => sprintf( __( 'The Booking Calendar shortcode %1$s is already present on this page %2$s.', 'booking' )
 		                                    , "<code class='wpbc_inserted_shortcode_view'>{$params['shortcode']}</code>"
 							                , "<a class='wpbc_open_page_as_new_tab' href='" . esc_url( $post_url ) . "'>{$post_title}</a>"
 						                    . " <a target='_blank' class='wpbc_open_page_as_new_tab tooltip_top wpbc-bi-arrow-up-right-square' href='" . esc_url( $post_url ) . "' title='" . esc_attr( __( 'Open in new window', 'booking' ) ) . "'></a>"
@@ -306,10 +310,10 @@ function wpbc_add_shortcode_into_page( $params = array() ) {
  *
  * @return void
  */
-function wpbc_create_page_with_booking_form( $default_options_to_add = array() ) {                                                        //FixIn: 9.6.2.11
+function wpbc_create_page_with_booking_form( $default_options_to_add = array() ) {                                                        // FixIn: 9.6.2.11.
 
 	global $wp_rewrite;
-	if ( is_null( $wp_rewrite ) ) {                                                                                     //FixIn: 9.7.1.1
+	if ( is_null( $wp_rewrite ) ) {                                                                                     // FixIn: 9.7.1.1.
 
 		// Maybe it was not init,  yet
 		if ( ! has_action( 'init', 'wpbc_create_page_with_booking_form' ) ) {
@@ -321,7 +325,7 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 	// -----------------------------------------------------------------------------------------------------------------
 	$post_url = '';
 
-	//FixIn: 10.9.2.5
+	// FixIn: 10.9.2.5.
 	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url
 		$post_name_slug = 'wp-booking-calendar';
 	} else {                                                    // Old page already was Created     - Use old url
@@ -366,10 +370,10 @@ add_bk_action( 'wpbc_before_activation__add_options', 'wpbc_create_page_with_boo
  *
  * @return void
  */
-function wpbc_create_page_thank_you( $default_options_to_add ) {                                                        //FixIn: 9.6.2.11
+function wpbc_create_page_thank_you( $default_options_to_add ) {                                                        // FixIn: 9.6.2.11.
 
 	global $wp_rewrite;
-	if ( is_null( $wp_rewrite ) ) {                                                                                     //FixIn: 9.7.1.1
+	if ( is_null( $wp_rewrite ) ) {                                                                                     // FixIn: 9.7.1.1.
 
 		// Maybe it was not init,  yet
 		if ( ! has_action( 'init', 'wpbc_create_page_thank_you' ) ) {
@@ -385,7 +389,7 @@ function wpbc_create_page_thank_you( $default_options_to_add ) {                
 	if (   ( empty( $thank_you_page_url ) )                                                                             // If   No 'Thank you'   page in Settings, or it's set as Empty.
 		|| (
 				( '/thank-you' == wpbc_make_link_relative( get_bk_option( 'booking_thank_you_page_URL' ) ) )
-			 && ( empty( get_page_by_path( 'thank-you' ) ) )                                                            //FixIn: 9.9.0.27
+			 && ( empty( get_page_by_path( 'thank-you' ) ) )                                                            // FixIn: 9.9.0.27.
 	       )
 		|| ( '/' == wpbc_make_link_relative( get_bk_option( 'booking_thank_you_page_URL' ) ) )
 	){
@@ -436,10 +440,10 @@ add_bk_action( 'wpbc_before_activation__add_options', 'wpbc_create_page_thank_yo
  *
  * @return void
  */
-function wpbc_create_page_bookingedit(){                                                                                //FixIn: 9.6.2.10
+function wpbc_create_page_bookingedit(){                                                                                // FixIn: 9.6.2.10.
 
 	global $wp_rewrite;
-	if ( is_null( $wp_rewrite ) ) {     //FixIn: 9.7.1.1
+	if ( is_null( $wp_rewrite ) ) {     // FixIn: 9.7.1.1.
 		// Maybe it was not init,  yet
 		if ( ! has_action( 'init', 'wpbc_create_page_bookingedit' ) ) {
 			add_action( 'init', 'wpbc_create_page_bookingedit', 99 );                                                     // <- priority  to  load it last
@@ -532,10 +536,10 @@ function wpbc_create_page_bookingedit(){                                        
 }
 
 
-function wpbc_create_page_booking_payment_status(){                                                                     //FixIn: 9.6.2.13
+function wpbc_create_page_booking_payment_status(){                                                                     // FixIn: 9.6.2.13.
 
 	global $wp_rewrite;
-	if ( is_null( $wp_rewrite ) ) {     //FixIn: 9.7.1.1
+	if ( is_null( $wp_rewrite ) ) {     // FixIn: 9.7.1.1.
 		return false;
 	}
 

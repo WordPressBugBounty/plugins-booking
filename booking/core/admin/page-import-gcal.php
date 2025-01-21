@@ -58,7 +58,8 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
                                           'type'        => 'checkbox'
                                         , 'default'     => 'Off'            
                                         , 'title'       => __( 'Activate auto import', 'booking' )
-                                        , 'label'       => sprintf(__('Check this box to %sactivate%s auto import events and creation bookings from them' ,'booking'),'<b>','</b>')
+                                        /* translators: 1: ... */
+                                        , 'label'       => sprintf( __( 'Check this box to %1$sactivate%2$s auto import events and creation bookings from them', 'booking' ),'<b>','</b>')
                                         , 'description' => ''
                                         , 'group'       => 'auto_import'
 
@@ -98,17 +99,17 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
 	        $cron_info = '';
 			$readable_time_of_next_run = WPBC()->cron->get_readable_time_of_last_run( 'wpbc_import_gcal' );
 	        if ( ! empty( $readable_time_of_next_run ) ) {
-				$cron_info .= '<br/><strong>' . __( 'Last import', 'booking' ) . '</strong>: ' . $readable_time_of_next_run;
+				$cron_info .= '<br/><strong>' . esc_html__( 'Last import', 'booking' ) . '</strong>: ' . $readable_time_of_next_run;
 			}
 	        $readable_time_of_next_run = WPBC()->cron->get_readable_time_of_next_run( 'wpbc_import_gcal', '<strong>'.__( 'during', 'booking' ).'</strong> <code>' ) . '</code>';
 	        if ( ! empty( $readable_time_of_next_run ) ) {
-				$cron_info .= '<br/><strong>' . __( 'Next import', 'booking' ) . '</strong>: ' . $readable_time_of_next_run;
+				$cron_info .= '<br/><strong>' . esc_html__( 'Next import', 'booking' ) . '</strong>: ' . $readable_time_of_next_run;
 			}
 
 //	        $active_tasks_arr = WPBC()->cron->get_active_tasks_info();
 //	        if ( ! empty( $active_tasks_arr['wpbc_import_gcal'] ) ) {
-//		        $cron_info .= '<br/><strong>' . __( 'Last import', 'booking' ) . '</strong>: ' . $active_tasks_arr['wpbc_import_gcal']['last_time__run__local'];
-//		        $cron_info .= '<br/><strong>' . __( 'Next import', 'booking' ) . '</strong>: ' . $active_tasks_arr['wpbc_import_gcal']['next_time__run__local'];
+//		        $cron_info .= '<br/><strong>' . esc_html__( 'Last import', 'booking' ) . '</strong>: ' . $active_tasks_arr['wpbc_import_gcal']['last_time__run__local'];
+//		        $cron_info .= '<br/><strong>' . esc_html__( 'Next import', 'booking' ) . '</strong>: ' . $active_tasks_arr['wpbc_import_gcal']['next_time__run__local'];
 //		        $cron_info .= ' ' . __( 'during', 'booking' )   . ': <strong>' . wpbc_get_readable_time_interval( $active_tasks_arr['wpbc_import_gcal']['next_run_after_seconds'] ) . '</strong> ';
 //	        }
 
@@ -136,7 +137,8 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
                                     , 'description' => __('Please enter your Google API key. This field required to import events.' ,'booking')
                                                         . '<div class="wpbc-settings-notice notice-info" style="text-align:left;"><strong>' 
                                                             . __('Note:' ,'booking') . '</strong> '
-                                                            . sprintf( __('You can check in this %sinstruction how to generate and use your Google API key%s.' ,'booking')
+                                                            /* translators: 1: ... */
+                                                            . sprintf( __( 'You can check in this %1$sinstruction how to generate and use your Google API key%2$s.', 'booking' )
                                                                         , '<a href="https://wpbookingcalendar.com/faq/import-gc-events/">'
                                                                         ,'</a>'
                                                                     )
@@ -256,7 +258,8 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
                                                                         . __('You can specify an additional offset from you chosen start point. The offset can be negative.' ,'booking')
                                                                       . '</span>
                                                                          <span class="description wpbc_offset_datetime">' 
-                                                                        . sprintf( __('Type your date in format %s. Example: %s' ,'booking'), '<code>Y-m-d</code>', '<code>' . date_i18n( 'Y-m-d' ) . '</code>' )
+                                                                        /* translators: 1: ... */
+                                                                        . sprintf( __( 'Type your date in format %1$s. Example: %2$s', 'booking' ), '<code>Y-m-d</code>', '<code>' . date_i18n( 'Y-m-d' ) . '</code>' )
                                                                        . '</span>
                                                                            </fieldset>    
                                                                         </td>
@@ -338,7 +341,8 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
                                                                         . __('You can specify an additional offset from you chosen start point. The offset can be negative.' ,'booking')
                                                                       . '</span>
                                                                          <span class="description wpbc_offset_datetime">' 
-                                                                        . sprintf( __('Type your date in format %s. Example: %s' ,'booking'), '<code>Y-m-d</code>', '<code>' . date_i18n( 'Y-m-d' ) . '</code>' )
+                                                                        /* translators: 1: ... */
+                                                                        . sprintf( __( 'Type your date in format %1$s. Example: %2$s', 'booking' ), '<code>Y-m-d</code>', '<code>' . date_i18n( 'Y-m-d' ) . '</code>' )
                                                                        . '</span>
                                                                            </fieldset>    
                                                                         </td>
@@ -357,14 +361,16 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
                                 );
         $this->fields['booking_gcal_events_help']['value'][] = '<h4 style="margin-top:-20px;">01. ' . __('To get Google Calendar API key please follow this instruction' ,'booking') . ':</h4>';
         $this->fields['booking_gcal_events_help']['value'][] = '<ol style="list-style-type: decimal !important;margin-left: 15px;font-size:0.86em;">';
-        $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Go to Google Developer Console: %s.' ,'booking'),'<a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a>') . '</li>';
+        /* translators: 1: ... */
+        $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__( 'Go to Google Developer Console: %s.' ,'booking'),'<a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a>') . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Give your project a name and click "Create".' ,'booking')) . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('In the sidebar click on "APIs & auth".' ,'booking')) . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Click APIs and make sure "Calendar API" is set to ON.' ,'booking')) . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Now click on "Credentials" in the sidebar.' ,'booking')) . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Under the section "Public API access" click the button "Create new Key".' ,'booking')) . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('On the popup click the button "Server Key" and click "Create".' ,'booking')) . '</li>';
-        $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('You will now see a table loaded with the top item being the API Key. Copy this and paste it into %sGoogle API Key%s field at this page.' ,'booking'),'<strong>','</strong>') . '</li>';
+        /* translators: 1: ... */
+        $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf( __( 'You will now see a table loaded with the top item being the API Key. Copy this and paste it into %1$sGoogle API Key%2$s field at this page.', 'booking' ),'<strong>','</strong>') . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '</ol>';
                             
         $this->fields['booking_gcal_events_help']['value'][] = '<h4>02. ' . __('Set Your Calendar to Public' ,'booking') . ':</h4>';
@@ -379,7 +385,8 @@ class WPBC_API_SettingsImportGCal extends WPBC_Settings_API  {
         $this->fields['booking_gcal_events_help']['value'][] = '<ol style="list-style-type: decimal !important;margin-left: 15px;font-size:0.86em;">';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Navigate to your Google calendars.' ,'booking'),'<a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a>') . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Open the settings for the calendar.' ,'booking')) . '</li>';
-        $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf(__('Now copy the Calendar ID to use in the plugin settings in your WordPress admin. Make sure to %suse the Calendar ID only, not the entire XML feed URL%s.' ,'booking'),'<strong>','</strong>') . '</li>';
+        /* translators: 1: ... */
+        $this->fields['booking_gcal_events_help']['value'][] = '<li>' . sprintf( __( 'Now copy the Calendar ID to use in the plugin settings in your WordPress admin. Make sure to %1$suse the Calendar ID only, not the entire XML feed URL%2$s.', 'booking' ),'<strong>','</strong>') . '</li>';
         $this->fields['booking_gcal_events_help']['value'][] = '</ol>';
         
         ////////////////////////////////////////////////////////////////////////
@@ -452,11 +459,12 @@ class WPBC_Page_SettingsImportGCal extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			//FixIn: 9.6.1.4
+                            , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
                             , 'default' =>  false                               // Is this sub tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
+							//, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
                         );
         
         $tabs[ 'sync' ]['subtabs'] = $subtabs;
@@ -500,6 +508,7 @@ class WPBC_Page_SettingsImportGCal extends WPBC_Page_Structure {
         
         // $this->get_api()->validated_form_id = $submit_form_name;             // Define ID of Form for ability to  validate fields (like required field) before submit.
         
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if ( isset( $_POST['is_form_sbmitted_'. $submit_form_name ] ) ) {
 
             // Nonce checking    {Return false if invalid, 1 if generated between, 0-12 hours ago, 2 if generated between 12-24 hours ago. }
@@ -526,13 +535,13 @@ class WPBC_Page_SettingsImportGCal extends WPBC_Page_Structure {
         // Scroll links ////////////////////////////////////////////////////////
         ?>
         <div class="wpdvlp-sub-tabs" style="background:none;border:none;box-shadow: none;padding:0;"><span class="nav-tabs" style="text-align:right;">
-            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_settings_import_gcal_events_general_metabox' );" original-title="" class="nav-tab go-to-link"><span><?php _e('General Settings', 'booking'); ?></span></a>
+            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_settings_import_gcal_events_general_metabox' );" original-title="" class="nav-tab go-to-link"><span><?php esc_html_e('General Settings', 'booking'); ?></span></a>
             <?php  if ( wpbc_is_mu_user_can_be_here('only_super_admin') ) {  ?>
-            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_settings_import_gcal_events_auto_import_metabox' );" original-title="" class="nav-tab go-to-link"><span><?php _e('Auto import events' ,'booking'); ?></span></a>
+            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_settings_import_gcal_events_auto_import_metabox' );" original-title="" class="nav-tab go-to-link"><span><?php esc_html_e('Auto import events' ,'booking'); ?></span></a>
             <?php } ?>
-            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_settings_import_gcal_events_default_settings_metabox' );" original-title="" class="nav-tab go-to-link"><span><?php _e('Default settings for retrieving events' ,'booking'); ?></span></a>
+            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_settings_import_gcal_events_default_settings_metabox' );" original-title="" class="nav-tab go-to-link"><span><?php esc_html_e('Default settings for retrieving events' ,'booking'); ?></span></a>
             <?php  if ( class_exists('wpdev_bk_personal') ) {  ?>
-            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_resource_table_gcal_id' );" original-title="" class="nav-tab go-to-link"><span><?php _e('Resources' ,'booking'); ?></span></a>
+            <a href="javascript:void(0);" onclick="javascript:wpbc_scroll_to('#wpbc_resource_table_gcal_id' );" original-title="" class="nav-tab go-to-link"><span><?php esc_html_e('Resources' ,'booking'); ?></span></a>
             <?php } ?>
             </span></div>
         <?php
@@ -550,16 +559,16 @@ class WPBC_Page_SettingsImportGCal extends WPBC_Page_Structure {
         ?>
         <div class="clear" style="margin-bottom:0px;"></div>
         <span class="metabox-holder">
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" autocomplete="off">
+            <form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" autocomplete="off">
                 <?php 
                    // N o n c e   field, and key for checking   S u b m i t 
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php                 
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
                 ?><div class="clear"></div><?php
 
 				// Add hidden input SEARCH KEY field into  main form, if previosly was searching by ID or Title
 				if ( class_exists('wpdev_bk_personal') )
-					wpbc_hidden_search_by_id_field_in_main_form( array( 'search_get_key' => 'wh_resource_id' ) );													//FixIn: 8.0.1.12
+					wpbc_hidden_search_by_id_field_in_main_form( array( 'search_get_key' => 'wh_resource_id' ) );													// FixIn: 8.0.1.12.
 
                 ?><div class="clear" style="height:10px;"></div><?php
                      
@@ -611,7 +620,7 @@ class WPBC_Page_SettingsImportGCal extends WPBC_Page_Structure {
                 </div>
                 <div class="clear"></div>
                 <?php  } ?>
-                <input type="submit" value="<?php _e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" />  
+                <input type="submit" value="<?php esc_attr_e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" />
             </form>
         </span>
         <?php       
@@ -796,7 +805,7 @@ function wpbc_fields_after_saving_to_db__import_gcal( $fields, $page_id ) {
     
     if ( $page_id == 'import_gcal' ) {                                          // Check our API ID  relative saving of this settings page
 
-        // Update Cron                                                          //FixIn: 7.0.1.9
+        // Update Cron                                                          // FixIn: 7.0.1.9.
         if ( $fields['booking_gcal_auto_import_is_active']['value'] == 'On' ) {
 
 			$booking_gcal_auto_import_time = $fields['booking_gcal_auto_import_time']['value'];

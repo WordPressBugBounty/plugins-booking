@@ -10,7 +10,7 @@
  * @modified 2024-10-08
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit, if accessed directly           //FixIn: 10.6.2.1
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit, if accessed directly           // FixIn: 10.6.2.1.
 
 // BookingWidget Class
 class BookingWidget extends WP_Widget {
@@ -24,7 +24,7 @@ class BookingWidget extends WP_Widget {
 
         extract( $args );
 
-	    //FixIn: 6.1.1.11
+	    // FixIn: 6.1.1.11.
 	    $booking_widget_title = ( isset( $instance['booking_widget_title'] ) )
 									? apply_filters( 'widget_title', $instance['booking_widget_title'] )
 									: __( 'Booking Calendar', 'booking' );
@@ -47,28 +47,31 @@ class BookingWidget extends WP_Widget {
 	    $booking_widget_last_field = ( isset( $instance['booking_widget_last_field'] ) )
 											? $instance['booking_widget_last_field']
 											: '';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $before_widget ;
 
-        echo $before_widget;
-
+	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	    if ( isset( $_GET['booking_hash'] ) ) {
-		    _e( 'You need to use special shortcode [bookingedit] for booking editing.', 'booking' );
-		    echo $after_widget;
+		    esc_html_e( 'You need to use special shortcode [bookingedit] for booking editing.', 'booking' );
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		    echo  $after_widget ;
 		    return;
 	    }
 
 	    if ( $booking_widget_title != '' ) {
-		    echo $before_title . esc_js( $booking_widget_title ) . $after_title;
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		    echo  $before_title . wp_kses_post( $booking_widget_title )  . $after_title ;
 	    }
 
-        echo "<div class='widget_wpdev_booking wpdevelop months_num_in_row_1'>";                                        //FixIn: 8.4.2.3
+        echo "<div class='widget_wpdev_booking wpdevelop months_num_in_row_1'>";                                        // FixIn: 8.4.2.3.
 
 	    if ( $booking_widget_show == 'booking_form' ) {
 		    $my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
 		    make_bk_action( 'wpdevbk_add_form', $resource_id, $booking_widget_calendar_count, true, $my_booking_form_name );
 
 	    } else {
-		    echo "<div class='wpbc_only_calendar wpbc_container'>";                                                     //FixIn: 8.0.1.2
-		    echo "<div id='calendar_booking_unselectable" . $resource_id . "'></div>";                    				//FixIn: 6.1.1.13
+		    echo "<div class='wpbc_only_calendar wpbc_container'>";                                                     // FixIn: 8.0.1.2.
+		    echo "<div id='calendar_booking_unselectable" . esc_attr( $resource_id ) . "'></div>";                    				// FixIn: 6.1.1.13.
 		    do_action( 'wpdev_bk_add_calendar', $resource_id, $booking_widget_calendar_count );
 		    echo '</div>';
 	    }
@@ -77,7 +80,7 @@ class BookingWidget extends WP_Widget {
 		    echo '<br/>' . esc_js( $booking_widget_last_field );
 	    }
 	    echo "</div>";
-
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	    echo $after_widget;
     }
 
@@ -125,7 +128,7 @@ class BookingWidget extends WP_Widget {
 	    ?>
 
         <p>
-            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_title') ); ?>"><?php _e('Title' ,'booking'); ?>:</label><br/>
+            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_title') ); ?>"><?php esc_html_e('Title' ,'booking'); ?>:</label><br/>
             <input value="<?php echo esc_attr( $booking_widget_title ); ?>"
                    name="<?php echo esc_attr( $this->get_field_name('booking_widget_title') ); ?>"
                    id="<?php echo esc_attr( $this->get_field_id('booking_widget_title') ); ?>"
@@ -133,12 +136,12 @@ class BookingWidget extends WP_Widget {
         </p>
 
         <p>
-            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_show') ); ?>"><?php _e('Show' ,'booking'); ?>:</label><br/>
+            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_show') ); ?>"><?php esc_html_e('Show' ,'booking'); ?>:</label><br/>
             <select
                    name="<?php echo esc_attr( $this->get_field_name('booking_widget_show') ); ?>"
                    id="<?php echo esc_attr( $this->get_field_id('booking_widget_show') ); ?>" style="width:100%;line-height: 1.5em;">
-                <option <?php if($booking_widget_show == 'booking_form') echo "selected"; ?> value="booking_form"><?php _e('Booking form with calendar' ,'booking'); ?></option>
-                <option <?php if($booking_widget_show == 'booking_calendar') echo "selected"; ?> value="booking_calendar"><?php _e('Only availability calendar' ,'booking'); ?></option>
+                <option <?php if($booking_widget_show == 'booking_form') echo "selected"; ?> value="booking_form"><?php esc_html_e('Booking form with calendar' ,'booking'); ?></option>
+                <option <?php if($booking_widget_show == 'booking_calendar') echo "selected"; ?> value="booking_calendar"><?php esc_html_e('Only availability calendar' ,'booking'); ?></option>
             </select>
         </p>
 
@@ -147,7 +150,7 @@ class BookingWidget extends WP_Widget {
         if ( class_exists('wpdev_bk_personal')) {
             $types_list = wpbc_get_br_as_objects(); ?>
             <p>
-                <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_type') ); ?>"><?php _e('Booking resource' ,'booking'); ?>:</label><br/>
+                <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_type') ); ?>"><?php esc_html_e('Booking resource' ,'booking'); ?>:</label><br/>
                 <!--input id="calendar_type"  name="calendar_type" class="input" type="text" -->
                 <select
                        name="<?php echo esc_attr( $this->get_field_name('booking_widget_type') ); ?>"
@@ -156,7 +159,7 @@ class BookingWidget extends WP_Widget {
                             <?php foreach ($types_list as $tl) { ?>
                     <option  <?php if($resource_id == $tl->id ) echo "selected"; ?>
                         style="<?php if  (isset($tl->parent)) if ($tl->parent == 0 ) { echo 'font-weight:600;'; } else { echo 'font-size:11px;padding-left:20px;'; } ?>"
-                        value="<?php echo esc_attr( $tl->id ); ?>"><?php echo $tl->title; ?></option>
+                        value="<?php echo esc_attr( $tl->id ); ?>"><?php echo esc_html( $tl->title ); ?></option>
                                 <?php } ?>
                 </select>
 
@@ -164,7 +167,7 @@ class BookingWidget extends WP_Widget {
         <?php } ?>
 
         <p>
-            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_calendar_count') ); ?>"><?php _e('Visible months' ,'booking'); ?>:</label><br/>
+            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_calendar_count') ); ?>"><?php esc_html_e('Visible months' ,'booking'); ?>:</label><br/>
 
             <select style="width:100%;line-height: 1.5em;"
                     name="<?php echo esc_attr( $this->get_field_name('booking_widget_calendar_count') ); ?>"
@@ -174,28 +177,32 @@ class BookingWidget extends WP_Widget {
 					<option
 						<?php if ( $booking_widget_calendar_count == $tl ) { echo "selected"; } ?>
 						style="font-weight:600;"
-						value="<?php echo esc_attr( $tl ); ?>"><?php echo $tl; ?></option>
+						value="<?php echo esc_attr( $tl ); ?>"><?php echo esc_html( $tl ); ?></option>
 	            <?php } ?>
 			</select>
 		</p>
 
         <p>
-            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_last_field') ); ?>"><?php _e('Footer' ,'booking'); ?>:</label><br/>
+            <label for="<?php echo esc_attr( $this->get_field_id('booking_widget_last_field') ); ?>"><?php esc_html_e('Footer' ,'booking'); ?>:</label><br/>
             <input value="<?php echo esc_attr( $booking_widget_last_field ); ?>"
                    name="<?php echo esc_attr( $this->get_field_name('booking_widget_last_field') ); ?>"
                    id="<?php echo esc_attr( $this->get_field_id('booking_widget_last_field') ); ?>"
                    type="text" style="width:100%;line-height: 1.5em;" /><br/>
-            <em style="font-size:11px;"><?php printf(__("Example: %sMake booking here%s" ,'booking'),"<code>&lt;a href='". get_site_url() ."'&gt;",'&lt;/a&gt;</code>'); ?></em>
-        </p>
+			<em style="font-size:11px;"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( 'Example: %1$sMake booking here%2$s', 'booking' ), "<code>&lt;a href='" . get_site_url() . "'&gt;", '&lt;/a&gt;</code>' ) ); ?></em>
+		</p>
 
 		<p style="font-size:10px;"><?php
 
-			printf( __( "%sImportant!!!%s Please note, if you show booking calendar (inserted into post/page) with widget at the same page, then the last will not be visible.", 'booking' ), '<strong>', '</strong>' );
+		/* translators: 1: ... */
+		echo wp_kses_post( sprintf( __( '%1$sImportant!!!%2$s Please note, if you show booking calendar (inserted into post/page) with widget at the same page, then the last will not be visible.', 'booking' ), '<strong>', '</strong>' ) );
 
 			if ( ! class_exists( 'wpdev_bk_personal' ) ) {
 
 				?><em><?php
-					printf( __( "%sSeveral widgets are supported at %spaid versions%s.", 'booking' ), '<span style="">', '<a href="https://wpbookingcalendar.com/" target="_blank" style="text-decoration:none;color:#3A5670;">', '</a>', '</span>' );
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( '%1$sSeveral widgets are supported at %2$spaid versions%3$s.', 'booking' ), '<span style="">', '<a href="https://wpbookingcalendar.com/" target="_blank" style="text-decoration:none;color:#3A5670;">', '</a>', '</span>' ) );
 				?></em> <?php
 	    	}
 	    ?></p><?php
@@ -204,7 +211,7 @@ class BookingWidget extends WP_Widget {
 
 
 function register_wpbc_widget() {
-	//FixIn: 8.1.3.18
+	// FixIn: 8.1.3.18.
 	register_widget( "BookingWidget" );
 }
 add_action( 'widgets_init', 'register_wpbc_widget' );

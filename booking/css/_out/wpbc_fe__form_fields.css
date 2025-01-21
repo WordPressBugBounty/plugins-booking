@@ -489,6 +489,7 @@ div.wpbc_container.wpbc_form input[type=radio]:before {
   background-image: none;
   border-radius: 3px
 }
+div.wpbc_container.wpbc_form .wpbc_wrap_checkbox + a,
 div.wpbc_container.wpbc_form .wpdev-list-item > input[type=checkbox] + .wpdev-list-item-label,
 div.wpbc_container.wpbc_form .wpdev-list-item > input[type=radio] + .wpdev-list-item-label,
 div.wpbc_container.wpbc_form input[type=checkbox] + label,
@@ -497,7 +498,11 @@ div.wpbc_container.wpbc_form input[type=radio] + label {
   position: relative;
   padding-inline-start: var(--wpbc_form-padding-between-label-checkbox-radio);
   font-size: var(--wpbc_form-label-size-font-size);
-  vertical-align: middle
+  vertical-align: middle;
+  cursor: pointer
+}
+div.wpbc_container.wpbc_form .wpbc_wrap_checkbox + a {
+  padding-top: 3px
 }
 div.wpbc_container.wpbc_form input[type=checkbox] + label,
 div.wpbc_container.wpbc_form input[type=radio] + label {

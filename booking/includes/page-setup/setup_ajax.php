@@ -115,6 +115,7 @@ function wpbc_setup_wizard_page__get_cleaned_params__saved_request_default(){
 	// ==  O V E R R I D E    - DB params  by  the params from  REQUEST!  ==
 	// -----------------------------------------------------------------------------------------------------------------
 	$request_key = 'current_step';
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
     if ( isset( $_REQUEST[ $request_key ] ) ) {
 
 		 // Get SANITIZED REQUEST parameters together with default values
@@ -122,6 +123,7 @@ function wpbc_setup_wizard_page__get_cleaned_params__saved_request_default(){
 		$url_request_params_arr = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  );		 		// Direct: 	$_REQUEST['resource_id']
 
 		// Now get only SANITIZED values that exist in REQUEST
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		$url_request_params_only_arr = array_intersect_key( $url_request_params_arr, $_REQUEST );
 
 		// And now override our DB  $escaped_request_params_arr  by  SANITIZED $_REQUEST values
@@ -172,6 +174,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 	 */
 	public function ajax_WPBC_AJX_SETUP_WIZARD_PAGE() {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ! isset( $_POST['all_ajx_params'] ) || empty( $_POST['all_ajx_params'] ) ) { exit; }
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -181,7 +184,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 		$nonce_post_key = 'nonce';
 		$result_check   = check_ajax_referer( $action_name, $nonce_post_key );
 
-		$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();
+		$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 		// -------------------------------------------------------------------------------------------------------------
 		// ==  Request  ==          ->  $_REQUEST['all_ajx_params']['page_num'],   $_REQUEST['all_ajx_params']['page_items_count'], ...
@@ -261,11 +264,12 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__general_info':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__general_info__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__general_info__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 					if ( 'On' === $cleaned_data['wpbc_swp_accept_send'] ) {
-						//wpbc_setup_feedback__send_email( $cleaned_data );		//FixIn: 10.7.1.3
+						//wpbc_setup_feedback__send_email( $cleaned_data );		// FixIn: 10.7.1.3.
 						update_bk_option( 'booking_feedback__send_email', $cleaned_data );
 					} else {
 						delete_bk_option( 'booking_feedback__send_email' );
@@ -279,8 +283,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__date_time_formats':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__date_time_formats__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__date_time_formats__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__date_time_formats( $cleaned_data );
 				}
 
@@ -289,11 +294,12 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__bookings_types':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__bookings_types__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__bookings_types__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__bookings_types( $cleaned_data );
 
-					//FixIn: 10.7.1.3
+					// FixIn: 10.7.1.3.
 					$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__send_email' );
 					if (! empty($cleaned_data_booking_feedback_arr)){
 						if ( 'On' === $cleaned_data_booking_feedback_arr['wpbc_swp_accept_send'] ) {
@@ -312,7 +318,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|hints-dev';
 						}
 						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    //FixIn: 10.7.1.4
+							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    // FixIn: 10.7.1.4.
 						}
 						if ( 'changeover_multi_dates_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
 							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|wizard';
@@ -324,11 +330,11 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				$setup_steps->db__set_step_as_completed( 'bookings_types' );
 				break;
 
-
 			case 'save_and_continue__form_structure':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__form_structure( $cleaned_data );
 				}
 
@@ -341,21 +347,21 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 						( 'form_structure' === $data_arr['current_step'] )
 				     && ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) )
 				){
-					$cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__form_structure( $cleaned_data );
 				}
 				if (
 						( 'cal_availability' === $data_arr['current_step'] )
 				     && ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) )
 				){
-					$cleaned_data = wpbc_template__cal_availability__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__cal_availability__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__cal_availability( $cleaned_data );
 				}
 				if (
 						( 'color_theme' === $data_arr['current_step'] )
 				     && ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) )
 				){
-					$cleaned_data = wpbc_template__color_theme__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__color_theme__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__color_theme( $cleaned_data );
 				}
 
@@ -363,8 +369,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__cal_availability':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__cal_availability__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__cal_availability__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__cal_availability( $cleaned_data );
 				}
 
@@ -373,8 +380,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__color_theme':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__color_theme__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__color_theme__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__color_theme( $cleaned_data );
 				}
 
@@ -383,8 +391,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__optional_other_settings':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__optional_other_settings__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__optional_other_settings__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__optional_other_settings( $cleaned_data );
 				}
 				$setup_steps->db__set_step_as_completed( 'optional_other_settings' );
@@ -392,8 +401,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__wizard_publish':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__wizard_publish__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__wizard_publish__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__wizard_publish( $cleaned_data );
 				}
 				$setup_steps->db__set_step_as_completed( 'wizard_publish' );
@@ -401,8 +411,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 			case 'save_and_continue__get_started':
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__get_started__action_validate_data( $_POST['all_ajx_params']['step_data'] );
+					$cleaned_data = wpbc_template__get_started__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					wpbc_setup__update__get_started( $cleaned_data );
 				}
 				$setup_steps->db__set_step_as_completed( 'get_started' );
@@ -436,8 +447,8 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 					?>
 					<script type="text/javascript">
 						jQuery( document ).ready( function () {
-							wpbc__calendar__change_skin( '<?php echo WPBC_PLUGIN_URL . get_bk_option( 'booking_skin' ); ?>' );
-							wpbc__css__change_skin( '<?php echo WPBC_PLUGIN_URL . get_bk_option( 'booking_timeslot_picker_skin' ); ?>' );
+							wpbc__calendar__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL  . get_bk_option( 'booking_skin' ) ); ?>' );
+							wpbc__css__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL . get_bk_option( 'booking_timeslot_picker_skin' ) ); ?>' );
 						} );
 					</script><?php
 					$data_arr['calendar_force_load'] .= ob_get_clean();
@@ -462,21 +473,21 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				// -----------------------------------------------------------------------------------------------------
 				// ==  UNAVAILABLE  Today days  ==
 				// -----------------------------------------------------------------------------------------------------
-				//FixIn: 10.8.1.4
+				// FixIn: 10.8.1.4.
 				if ( 'm' === substr( get_bk_option( 'booking_unavailable_days_num_from_today' ), - 1 ) ) {
 					// -------------------------------------------------------------------------------------------------
 					// == Minutes ==
 					// -------------------------------------------------------------------------------------------------
 					$data_arr['ui']['booking_unavailable_days_num_from_today'] = intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) );
 
-					// Hints
+					// Hints.
 					$last_unavailable_date = '';
 					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': <span style="text-transform: lowercase;font-size:0.9em;">'
 																													. __( 'None', 'booking' ) . '</span>';
 					if ( ! empty( $data_arr['ui']['booking_unavailable_days_num_from_today'] ) ) {
 						$last_unavailable_date = wp_date( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $data_arr['ui']['booking_unavailable_days_num_from_today'] ) - 1 ) . ' minutes' ) );
-						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M, H:i' ) . ' - ' . wp_date( 'd M, H:i', strtotime( $last_unavailable_date ) );
-						//$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wpbc_datetime__use_wp_timezone( 'd M, H:i' ) . ' - ' . wpbc_datetime__use_wp_timezone( 'd M, H:i', strtotime( $last_unavailable_date ) );
+						// $data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': '                     . wp_date( 'd M, H:i' ) . ' - ' .                       wp_date( 'd M, H:i', strtotime( $last_unavailable_date ) );
+						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wpbc_datetime__no_wp_timezone( 'd M, H:i' ) . ' - ' . wpbc_datetime__no_wp_timezone( 'd M, H:i', strtotime( $last_unavailable_date ) );        // FixIn: 10.9.4.2.
 					}
 					$data_arr['ui']['booking_unavailable_days_num_from_today'] .= 'm';
 				} else {
@@ -526,7 +537,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 					} else if ( strtotime($start_available_date) == strtotime($last_available_date) ) {
 						$data_arr['ui']['booking_available_days_num_from_today__hint']  = ': ' .  wp_date( 'd M, Y', strtotime( $start_available_date ) ) ;
 					}else{
-						$data_arr['ui']['booking_available_days_num_from_today__hint'] = ': <span style="text-transform: uppercase;font-size:1.1em;">' . __( 'None', 'booking' ) . '</span>'
+						$data_arr['ui']['booking_available_days_num_from_today__hint'] = ': <span style="text-transform: uppercase;font-size:1.1em;">' . esc_html__( 'None', 'booking' ) . '</span>'
 																								 . ' - <span style="text-transform: lowercase;font-size:0.9em;">'. wp_date( 'd M, Y', strtotime( $start_available_date ) )
 						                                                                         . ' > '
 						                                                                         .  wp_date( 'd M, Y', strtotime( $last_available_date ) ) .'</span>';
@@ -636,6 +647,7 @@ if(0){
 		// -------------------------------------------------------------------------------------------------------------
 		wp_send_json( array(
 							'ajx_data'              => $data_arr,
+							// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 							'ajx_all_ajx_params'    => $_REQUEST[ $request_prefix ],			 					    // $_REQUEST[ 'all_ajx_params' ]
 							'ajx_cleaned_params'    => $cleaned_request_params
 						) );

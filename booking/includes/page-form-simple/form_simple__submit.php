@@ -19,7 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 function wpbc_simple_form__page_save_submit(){
 
 
-    if ( $_POST['reset_to_default_form'] == 'standard' ) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+    if ( isset( $_POST['reset_to_default_form'] ) && ( $_POST['reset_to_default_form']  == 'standard' ) ) {
 
 		// == Custom Forms ==  Start			// Get  Custom  booking form
 		if ( class_exists( 'wpdev_bk_biz_m' ) ) {
@@ -53,6 +54,7 @@ function wpbc_simple_form__page_save_submit(){
     update_bk_option( 'booking_form_layout_max_cols',  	max( intval(WPBC_Settings_API::validate_text_post_static( 'booking_form_layout_max_cols' )),1)  );
 	// -------------------------------------------------------------------------------------------------------------
 	// Update Color Theme and skins/picker not in MU versions
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_POST[ 'booking_form_theme' ] ) ) {
 		$wpbc_selected_theme = WPBC_Settings_API::validate_text_post_static( 'booking_form_theme' );
 		update_bk_option( 'booking_form_theme', $wpbc_selected_theme );
@@ -63,20 +65,21 @@ function wpbc_simple_form__page_save_submit(){
 			}
 			if ( '' === $wpbc_selected_theme ) {
 				//update_bk_option( 'booking_skin', '/css/skins/green-01.css' );
-                update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );               //FixIn: 10.4.0.1
+                update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );               // FixIn: 10.4.0.1.
 				//update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/grey.css' );
-				update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/light__24_8.css' );      	//FixIn: 10.4.0.1
+				update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/light__24_8.css' );      	// FixIn: 10.4.0.1.
 			}
 		//}
 	}
 
 	// -------------------------------------------------------------------------------------------------------------
     // Calendar skin
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
     if ( isset( $_POST['set_calendar_skin'] ) ) {
 
 	    $selected_calendar_skin = WPBC_Settings_API::validate_text_post_static( 'set_calendar_skin' );
 
-		//FixIn: 10.3.0.5
+		// FixIn: 10.3.0.5.
 	    $upload_dir              = wp_upload_dir();
 	    $custom_user_skin_folder = $upload_dir['basedir'];
 	    $custom_user_skin_url    = $upload_dir['baseurl'];
@@ -93,6 +96,7 @@ function wpbc_simple_form__page_save_submit(){
 
     }
     // Calendar skin
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
     if ( isset( $_POST['set_time_picker_skin'] ) ) {
 
 	    $selected_calendar_skin = WPBC_Settings_API::validate_text_post_static( 'set_time_picker_skin' );
@@ -138,45 +142,43 @@ function wpbc_simple_form__page_save_submit(){
 //                                    , 'obligatory' => 'On'
 //                                );
 
-    // Loop  all form  filds for saving them.
-    if ( isset( $_POST['form_field_name'] ) ) {
-        foreach ( $_POST['form_field_name'] as $field_key => $field_name ) {
+	// Loop  all form  filds for saving them.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_POST['form_field_name'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		foreach ( $_POST['form_field_name'] as $field_key => $field_name ) {
 
-			$form_field_type_val = wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] );
-            $form_field_type_val = ( 'select-one' === $form_field_type_val ) ? 'selectbox-one' : $form_field_type_val;
-            $form_field_type_val = ( 'select-multiple' === $form_field_type_val ) ? 'selectbox-multiple' : $form_field_type_val;
+			$form_field_type_val = wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			$form_field_type_val = ( 'select-one' === $form_field_type_val ) ? 'selectbox-one' : $form_field_type_val;
+			$form_field_type_val = ( 'select-multiple' === $form_field_type_val ) ? 'selectbox-multiple' : $form_field_type_val;
 
-            $visual_form_structure[] = array(
-                                          'type'     => $form_field_type_val
-                                        , 'name'     => wpbc_clean_text_value( $field_name )
-                                        , 'obligatory' => ( ( in_array( wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] ), $skip_obligatory_field_types  ) ) ? 'On' : 'Off' )
-                                        , 'active'   => ( ( in_array( wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] ), $skip_obligatory_field_types  ) ) ? 'On' : ( isset($_POST['form_field_active'][ $field_key ] ) ? 'On': 'Off' ) )         //FixIn: 7.0.1.22
-										//FixIn:  TimeFreeGenerator
-                                        , 'required' => (
-                                                            ( in_array( wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] ), $skip_obligatory_field_types  ) )
-															? 'On'
-															: (
-																( in_array( wpbc_clean_text_value( $field_name ), $if_exist_required  ) )
-																? 'On'
-																: ( isset($_POST['form_field_required'][ $field_key ] ) ? 'On': 'Off' )
-															  )
-														)       //FixIn: 7.0.1.22
-										, 'if_exist_required' => ( ( in_array( wpbc_clean_text_value( $field_name ), $if_exist_required  ) ) ? 'On': 'Off' ) 	//FixIn:  TimeFreeGenerator
-                                        , 'label'    => WPBC_Settings_API::validate_text_post_static( 'form_field_label', $field_key )
-                                        , 'value'    => WPBC_Settings_API::validate_text_post_static( 'form_field_value', $field_key )
-                                    );
+			$visual_form_structure[] = array(
+				'type'              => $form_field_type_val,
+				'name'              => wpbc_clean_text_value( $field_name ),
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+				'obligatory'        => ( ( in_array( wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] ), $skip_obligatory_field_types ) ) ? 'On' : 'Off' ),
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+				'active' => ( ( in_array( wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] ), $skip_obligatory_field_types ) ) ? 'On' : ( isset( $_POST['form_field_active'][ $field_key ] ) ? 'On' : 'Off' ) ),
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+				'required' => ( ( in_array( wpbc_clean_text_value( $_POST['form_field_type'][ $field_key ] ), $skip_obligatory_field_types ) )
+					? 'On'
+					// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+					: ( ( in_array( wpbc_clean_text_value( $field_name ), $if_exist_required ) ) ? 'On' : ( isset( $_POST['form_field_required'][ $field_key ] ) ? 'On' : 'Off' ) ) ),
+				'if_exist_required' => ( ( in_array( wpbc_clean_text_value( $field_name ), $if_exist_required ) ) ? 'On' : 'Off' ),
+				'label'             => WPBC_Settings_API::validate_text_post_static( 'form_field_label', $field_key ),
+				'value'             => WPBC_Settings_API::validate_text_post_static( 'form_field_value', $field_key ),
+			);
 
-            if ( 'captcha' === $visual_form_structure[ ( count( $visual_form_structure ) - 1 ) ]['type'] ) {
+			if ( 'captcha' === $visual_form_structure[ ( count( $visual_form_structure ) - 1 ) ]['type'] ) {
 				if ( wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) {
 					update_bk_option( 'booking_is_use_captcha', ( 'On' === $visual_form_structure[ ( count( $visual_form_structure ) - 1 ) ]['active'] ) ? 'On' : 'Off' );
 				} else {
 					// For regular  users we set Captcha settings from  Super booking admin.
 					$visual_form_structure[ ( count( $visual_form_structure ) - 1 ) ]['active'] = get_option( 'booking_is_use_captcha' );
 				}
-            }
-
-        }
-    }
+			}
+		}
+	}
 
 //        $visual_form_structure[] = array(
 //                                      'type'     => 'captcha'
@@ -220,11 +222,15 @@ function wpbc_simple_form__page_save_submit(){
 
 
 
-    //FixIn: 9.8.6.1
+    // FixIn: 9.8.6.1.
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
     if ( ! empty( $_POST['form_visible_section'] ) ) {
 		?><script type="text/javascript">
 			jQuery(document).ready(function(){
-				jQuery( '<?php echo esc_js( $_POST['form_visible_section'] ); ?> a' ).trigger('click');
+				jQuery( '<?php
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					echo esc_js( $_POST['form_visible_section'] );
+					?> a' ).trigger('click');
 			});
 		</script><?php
     }
@@ -233,18 +239,25 @@ function wpbc_simple_form__page_save_submit(){
     if ( class_exists( 'wpdev_bk_personal' ) ) {
 	    $is_use_simgple_form = get_bk_option( 'booking_is_use_simple_booking_form' );
 	    if ( 'Off' === $is_use_simgple_form ) {
-		    ?><script type="text/javascript"> window.location.href = '<?php echo wpbc_get_settings_url() . '&tab=form'; ?>'; </script><?php
+		    ?><script type="text/javascript"> window.location.href = '<?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo ( wpbc_get_settings_url() ) . '&tab=form'; ?>'; </script><?php
 	    }
     }
 
     wpbc_show_changes_saved_message();
 
 	// To  refresh  the Calendar skin we need to  reload the page
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
     if ( isset( $_POST['booking_form_theme'] ) ) {
 	    $url = wpbc_get_settings_url() . '&tab=form';
 	    if ( function_exists( 'wpbc_get_sanitized_custom_booking_form_name_from_url' ) ) {
 		    $url .= '&booking_form=' . wpbc_get_sanitized_custom_booking_form_name_from_url();
 	    }
-	    ?><script type="text/javascript"> window.location.href = '<?php echo $url; ?>'; </script><?php
+		?>
+		<script type="text/javascript"> window.location.href = '<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput
+				echo $url;
+				?>'; </script><?php
     }
 }

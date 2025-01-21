@@ -64,7 +64,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 //                                  'type' => 'html'
 //                                , 'html'  => 
 //                                          '<div class="wpbc-settings-notice notice-info" style="text-align:left;">' 
-//                                            . '<strong>' . __('Note!' ,'booking') . '</strong> '
+//                                            . '<strong>' . esc_html__('Note!' ,'booking') . '</strong> '
 //                                            . sprintf( __( 'If you have customized your own calendar skin, please save it to: %s Its will save your custom skin during future updates of plugin.', 'booking' ), '<code>/wp-content/uploads/wpbc_skins/</code><br/>' )                
 //                                          . '</div>'  
 //                                , 'cols'  => 2
@@ -74,7 +74,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         //  Number of months  //////////////////////////////////////////////////
         $months_options = array();
         for ($mm = 1; $mm < 12; $mm++) { $months_options[ $mm . 'm' ] = $mm . ' ' .  __('month(s)' ,'booking'); }
-		$months_options[ 18 . 'm' ] =  '18 ' .  __('month(s)' ,'booking');                                              //FixIn: 10.0.0.11
+		$months_options[ 18 . 'm' ] =  '18 ' .  __('month(s)' ,'booking');                                              // FixIn: 10.0.0.11.
         for ($yy = 1; $yy < 11; $yy++) { $months_options[ $yy . 'y' ] = $yy . ' ' .  __('year(s)' ,'booking');  }
         
         $this->fields['booking_max_monthes_in_calendar'] = array(   
@@ -139,7 +139,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         
         $this->fields = apply_filters( 'wpbc_settings_calendar_range_days_selection', $this->fields, $default_options_values );      // Range days
 
-	    //FixIn: 10.1.5.4
+	    // FixIn: 10.1.5.4.
 	    //$this->fields = apply_filters( 'wpbc_settings_calendar_recurrent_time_slots', $this->fields, $default_options_values );      // Recurent Times
 		/**
 		 * Recurrent time  - Settings ( Calendar ) page
@@ -182,13 +182,14 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 	                            , 'tr_class'    => ''
 	        );
 
-		//FixIn: 9.4.3.1
+		// FixIn: 9.4.3.1.
         $this->fields['booking_highlight_timeslot_word'] = array(
                                 'type'          => 'text'
                                 , 'default'     => $default_options_values['booking_highlight_timeslot_word']   //__('Booked Times:' ,'booking')
                                 , 'placeholder' => __('Booked Times:' ,'booking')
                                 , 'title'       => __('Title of booked timeslot(s)' ,'booking')
-                                , 'description' => sprintf(__('Type your %stitle%s, what will show in mouseover tooltip near booked timeslot(s)' ,'booking'),'<b>','</b>')
+								/* translators: 1: ... */
+                                , 'description' => sprintf( __( 'Type your %1$stitle%2$s, what will show in mouseover tooltip near booked timeslot(s)', 'booking' ),'<b>','</b>')
                                 //,'description_tag' => 'span'
                                 , 'class'       => 'regular-text'
                                 , 'group'       => 'days_tooltips'
@@ -245,7 +246,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'pure_html'
                                 , 'group'       => 'calendar'
                                 , 'html'        =>    '<p class="description" style="line-height: 1.7em;margin: 0;">'
-                                                        . sprintf(__('Activate and type your %stitle of available%s item in legend' ,'booking'),'<b>','</b>')
+                                                        /* translators: 1: ... */
+                                                        . sprintf( __( 'Activate and type your %1$stitle of available%2$s item in legend', 'booking' ),'<b>','</b>')
                                                     . '</p>
                                                            </fieldset>
                                                         </td>
@@ -282,7 +284,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'pure_html'
                                 , 'group'       => 'calendar'
                                 , 'html'        =>    '<p class="description" style="line-height: 1.7em;margin: 0;">'
-                                                        . sprintf(__('Activate and type your %stitle of pending%s item in legend' ,'booking'),'<b>','</b>')
+                                                        /* translators: 1: ... */
+                                                        . sprintf( __( 'Activate and type your %1$stitle of pending%2$s item in legend', 'booking' ),'<b>','</b>')
                                                     . '</p>
                                                            </fieldset>
                                                         </td>
@@ -319,7 +322,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'pure_html'
                                 , 'group'       => 'calendar'
                                 , 'html'        =>    '<p class="description" style="line-height: 1.7em;margin: 0;">'
-                                                        . sprintf(__('Activate and type your %stitle of approved%s item in legend' ,'booking'),'<b>','</b>')
+                                                        /* translators: 1: ... */
+                                                        . sprintf( __( 'Activate and type your %1$stitle of approved%2$s item in legend', 'booking' ),'<b>','</b>')
                                                     . '</p>
                                                            </fieldset>
                                                         </td>
@@ -359,9 +363,10 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'pure_html'
                                 , 'group'       => 'calendar'
                                 , 'html'        =>    '<p class="description" style="line-height: 1.7em;margin: 0;">'
-                                                        . sprintf(__('Activate and type your %stitle of partially booked%s item in legend' ,'booking'),'<b>','</b>')
+                                                        /* translators: 1: ... */
+                                                        . sprintf( __( 'Activate and type your %1$stitle of partially booked%2$s item in legend', 'booking' ),'<b>','</b>')
                                                     . '</p>'
-                                                    . '<p class="description" style="line-height: 1.7em;margin: 0;"><strong>' . __('Note' ,'booking') .':</strong> '
+                                                    . '<p class="description" style="line-height: 1.7em;margin: 0;"><strong>' . esc_html__('Note' ,'booking') .':</strong> '
                                                         . sprintf(__('Partially booked item - day, which is booked for the specific time-slot(s).' ,'booking'),'<b>','</b>')
                                                     . '</p>'
                                                            .'</fieldset>
@@ -371,7 +376,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         //}
 
 
-		// Unavailable Legend Item      //FixIn: 9.9.0.5
+		// Unavailable Legend Item      // FixIn: 9.9.0.5.
         $this->fields['booking_legend_is_show_item_unavailable_prefix'] = array(
                                 'type'          => 'pure_html'
                                 , 'group'       => 'calendar'
@@ -402,7 +407,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'pure_html'
                                 , 'group'       => 'calendar'
                                 , 'html'        =>    '<p class="description" style="line-height: 1.7em;margin: 0;">'
-                                                        . sprintf(__('Activate and type your %stitle of unavailable%s item in legend' ,'booking'),'<b>','</b>')
+                                                        /* translators: 1: ... */
+                                                        . sprintf( __( 'Activate and type your %1$stitle of unavailable%2$s item in legend', 'booking' ),'<b>','</b>')
                                                     . '</p>
                                                            </fieldset>
                                                         </td>
@@ -433,7 +439,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'tr_class'    => 'wpbc_calendar_legend_items wpbc_sub_settings_grayed'
                                 , 'group'       => 'calendar'
             );
-		//FixIn: 9.4.3.6
+		// FixIn: 9.4.3.6.
         $this->fields['booking_legend_is_vertical'] = array(
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_legend_is_vertical']                //'Off'
@@ -455,36 +461,19 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                             , 'group'       => 'time_slots'
 	                        , 'html' => '<tr><td colspan="2">'
 	                                    .'<div class="wpbc-general-settings-notice wpbc-settings-notice notice-info">'
-											. '<strong class="alert-heading">' . __( 'Note', 'booking' ) . '!</strong> '
-											. sprintf( __( 'You can enable or disable, as well as configure %sTime Slots%s for your booking form on the Settings > %sBooking Form%s page.', 'booking' ),
+											. '<strong class="alert-heading">' . esc_html__( 'Note', 'booking' ) . '!</strong> '
+											/* translators: 1: ... */
+											. sprintf( __( 'You can enable or disable, as well as configure %1$sTime Slots%2$s for your booking form on the Settings > %3$sBooking Form%4$s page.', 'booking' ),
 													'<strong>', '</strong>',
 												    '<strong><a href="' . esc_url( wpbc_get_settings_url( true, false ) . '&tab=form' ) . '">', '</a></strong>'
 												)
 	                                    . '</div>'
-/*
-					                    	.'<span class="wpdevelop">
-												<div class="wpbc-settings-notice notice-info '
-                                                    . ( ( '1' == get_user_option( 'booking_win_' . $my_close_open_alert_id ) ) ? 'hide' : '' )
-                                                    . '" id="' . $my_close_open_alert_id . '" style="padding: 5px 1em;">
-													<a style="margin-top: 4px;" rel="tooltip" data-dismiss="alert"
-													   href="javascript:void(0)"
-													   onclick="javascript:wpbc_verify_window_opening(' .  wpbc_get_current_user_id()
-	                                                                                                    .', \'' . $my_close_open_alert_id
-	                                                                                                    .'\');wpbc_hide_window(\'' . $my_close_open_alert_id . '\' );"
-													>&times;</a>
-													<strong class="alert-heading">' . __( 'Note', 'booking' ) . '!</strong> '
-																					. sprintf( __( 'You can add %sTime Slots%s to booking form, by activating and configure %sTime Slots%s field in booking form (below) or by adding this field from (above) toolbar.', 'booking' ),
-																						'<strong>', '</strong>',
-																						'<strong>', '</strong>'
-																					) . '
-												</div>
-											</span>'
-*/
+
 								    .'</td> </tr>'
                     );
 
 
-		//FixIn: 8.7.11.10
+		// FixIn: 8.7.11.10.
 	    $this->fields['booking_timeslot_picker'] = array(
 	                            'type'          => 'checkbox'
 	                            , 'default'     => $default_options_values['booking_timeslot_picker']   //'Off'
@@ -501,11 +490,11 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
         // Skins in the Custom User folder (need to create it manually):    http://example.com/wp-content/uploads/wpbc_skins/ ( This folder do not owerwrited during update of plugin )
         $upload_dir = wp_upload_dir();
-		//FixIn: 8.9.4.8
+		// FixIn: 8.9.4.8.
         $files_in_folder = wpbc_dir_list( array(  WPBC_PLUGIN_DIR . '/css/time_picker_skins/', $upload_dir['basedir'].'/wpbc_time_picker_skins/' ) );  // Folders where to look about Time Picker skins
 
         foreach ( $files_in_folder as $skin_file ) {                                                                            // Example: $skin_file['/css/skins/standard.css'] => 'Standard';
-			//FixIn: 8.9.4.8    //FixIn: 9.1.2.10
+			//FixIn: 8.9.4.8    // FixIn: 9.1.2.10.
             $skin_file[1] = str_replace( array( WPBC_PLUGIN_DIR, WPBC_PLUGIN_URL,  $upload_dir['basedir'] ), '', $skin_file[1] );                 // Get relative path for Time Picker skin
             $timeslot_picker_skins_options[ $skin_file[1] ] = $skin_file[2];
         }
@@ -522,13 +511,13 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
 
 
-		//FixIn: 8.2.1.27
+		// FixIn: 8.2.1.27.
 	    $this->fields['booking_timeslot_day_bg_as_available'] = array(
 	                            'type'          => 'checkbox'
 	                            , 'default'     => $default_options_values['booking_timeslot_day_bg_as_available']   //'Off'
 	                            , 'title'       => __('Do not change background color for partially booked days' ,'booking')
 	                            , 'label'       => __('Show partially booked days with same background as in legend item' ,'booking')
-	                            , 'description' => '<span class="description0" style="line-height: 1.7em;margin: 0 0 0 -10px;"><strong>' . __('Note' ,'booking') .':</strong> '
+	                            , 'description' => '<span class="description0" style="line-height: 1.7em;margin: 0 0 0 -10px;"><strong>' . esc_html__('Note' ,'booking') .':</strong> '
                                                         . sprintf(__('Partially booked item - day, which is booked for the specific time-slot(s).' ,'booking'),'<b>','</b>')
                                                    . '</span>'
 
@@ -596,7 +585,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $field_options = array();
 
 
-		//FixIn: 10.8.1.4
+		// FixIn: 10.8.1.4.
 		$field_options[0] = ' - ';
 		foreach ( range( 5, 55 , 5 ) as $extra_num) {                                           // Each 5 minutes
 		    $field_options[ $extra_num . 'm' ] = $extra_num . ' ' . __( 'minutes', 'booking' );
@@ -676,7 +665,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'title'       => __('CAPTCHA' ,'booking')
                                 , 'label'       => __('Check the box to activate CAPTCHA inside the booking form.' ,'booking')
 								, 'description' =>  '<div class="wpbc-general-settings-notice wpbc-settings-notice notice-warning" style="margin-top:-10px;">'
-												   .  '<strong>' . __('Note' ,'booking') . '!</strong> ' .
+												   .  '<strong>' . esc_html__('Note' ,'booking') . '!</strong> ' .
 								                    __( 'If your website uses a cache plugin or system, exclude pages with booking forms from caching to ensure CAPTCHA functions correctly.', 'booking' )
 												   .'</div>'
                                 , 'group'       => 'form'
@@ -692,7 +681,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
 		$this->fields['hr_calendar_after_autofill'] = array( 'type' => 'hr', 'group' => 'form' );
 
-		if ( class_exists( 'wpdev_bk_personal' ) )                                                                      //FixIn: 8.1.1.12
+		if ( class_exists( 'wpdev_bk_personal' ) )                                                                      // FixIn: 8.1.1.12.
             $this->fields['booking_is_use_simple_booking_form'] = array(
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_is_use_simple_booking_form']        //'Off'
@@ -701,7 +690,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'description' => ''
                                 , 'group'       => 'form'
             );
-		if ( class_exists( 'wpdev_bk_personal' ) )                                                                      //FixIn: 8.1.1.12
+		if ( class_exists( 'wpdev_bk_personal' ) )                                                                      // FixIn: 8.1.1.12.
             $this->fields['booking_is_use_codehighlighter_booking_form'] = array(
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_is_use_codehighlighter_booking_form']        //'Off'
@@ -712,29 +701,31 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
             );
 
 
-		//FixIn: 10.0.0.31
+		// FixIn: 10.0.0.31.
 	    if ( class_exists( 'wpdev_bk_biz_m' ) ){
 		   $this->fields['booking_number_for_pre_checkin_date_hint'] = array(
 		                                    'type'          => 'select'
 		                                    , 'default'     => $default_options_values['booking_number_for_pre_checkin_date_hint']                                  //'0'
 		                                    , 'title'       => __( 'Pre-Check-in Display Duration', 'booking' )
+		                                    /* translators: 1: ... */
 		                                    , 'description' => sprintf( __( 'Select the number of days for the %s shortcode.', 'booking' ), '<strong>[pre_checkin_date_hint]</strong>' )
 		                                                     . ' '
-		                                                     . sprintf( __( 'This shortcode is used in the booking form to display the date %sN days before%s the selected check-in date.', 'booking' )
- 					                                                    , '<a href="'.wpbc_get_settings_url() . '&tab=form">', '</a>' )
+		                                                     /* translators: 1: ... */
+		                                                     . sprintf( __( 'This shortcode is used in the booking form to display the date %1$sN days before%2$s the selected check-in date.', 'booking' )
+ 					                                                    , '<a href="'. esc_url( wpbc_get_settings_url() ) . '&tab=form">', '</a>' )
 					                                                  //, '<a href="'.wpbc_get_settings_url( true, false ) . '&scroll_to_section=wpbc_general_settings_form_tab">', '</a>' )
 		                                    , 'options'     => array_combine( range( 1, 91 ), range( 1, 91 ) )
 		                                    , 'group'       => 'form'
 		                            );
 		}
-//        if (  class_exists( 'wpdev_bk_personal' ) ){        //FixIn: 8.8.1.14
+//        if (  class_exists( 'wpdev_bk_personal' ) ){        // FixIn: 8.8.1.14.
 //
 //	        $this->fields['booking_send_button_title'] = array(
 //	                                'type'          => 'text'
 //	                                , 'default'     => $default_options_values['booking_send_button_title']             // 'Send'
 //	                                , 'placeholder' => __( 'Send', 'booking' )
 //	                                , 'title'       => __( 'Title of send button' ,'booking' )
-//	                                , 'description' => sprintf(__('Enter %stitle of submit button%s in the booking form' ,'booking'),'<b>','</b>')
+//	                                , 'description' => sprintf( __( 'Enter %1$stitle of submit button%2$s in the booking form', 'booking' ),'<b>','</b>')
 //	                                , 'description_tag' => 'p'
 //	                                , 'css'         => 'width:100%'
 //	                                , 'group'       => 'form'
@@ -770,7 +761,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 //                                , 'placeholder' => '7000'
 //                                , 'title'       => __('Time of message showing' ,'booking')
 //                                , 'description' => sprintf(__('Set duration of time (milliseconds) to show this message' ,'booking'),'<b>','</b>')
-//                                           . ' ' . sprintf(__('You can set the value to %s to display the message indefinitely.' ,'booking'),'<b>0</b>')            //FixIn: 9.6.2.2
+//                                           . ' ' . sprintf(__('You can set the value to %s to display the message indefinitely.' ,'booking'),'<b>0</b>')            // FixIn: 9.6.2.2.
 //                                , 'description_tag' => 'span'
 //                                , 'css'         => 'width:5em'
 //                                , 'group'       => 'booking_confirmation'
@@ -799,7 +790,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                                             WPBC_Settings_API::label_static( 'set_gen_booking_thank_you_page_URL'
                                                                 , array(   'title'=> __('Confirmation Page URL' ,'booking'), 'label_css' => '' ) )
                                                         .'</th>
-                                                        <td><fieldset>' . '<code style="font-size:14px;">' . home_url() . '</code>'         //FixIn: 7.0.1.20
+                                                        <td><fieldset>' . '<code style="font-size:14px;">' . home_url() . '</code>'         // FixIn: 7.0.1.20.
                         );                
         $this->fields['booking_thank_you_page_URL'] = array(   
                                 'type'          => 'text'
@@ -813,6 +804,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'pure_html'
                                 , 'group'       => 'booking_confirmation'
                                 , 'html'        =>    '<p class="description" style="line-height: 1.7em;margin: 0;">'
+                                                      /* translators: 1: ... */
                                                       . sprintf( __( 'This page should include the shortcode %s to display booking details and confirmation after a successful booking.', 'booking' )
 														        , '<strong>[booking_confirm]</strong>' )
                                                     . '</p>
@@ -822,7 +814,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                         );        
         // </editor-fold>
 
-//FixIn:10.2.0.1
+// FixIn: 10.2.0.1.
 
 	    // <editor-fold     defaultstate="collapsed"                        desc=" ==  B o o k i n g    C o n f i r m a t i o n         -       CONFIG  == "  >
 
@@ -836,7 +828,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 															? __( 'Your booking is received. We will confirm it soon. Many thanks!', 'booking' )
 															: __( 'Your booking is received. Please proceed with payment to confirm it. Many thanks!', 'booking' )
                                 , 'title'       => __( 'Message title', 'booking' )
-                                , 'description' => ''//sprintf(__('Type title of message %safter booking has done by user%s' ,'booking'),'<b>','</b>')
+                                /* translators: 1: ... */
+                                , 'description' => ''//sprintf( __( 'Type title of message %1$safter booking has done by user%2$s', 'booking' ),'<b>','</b>')
                                 ,'description_tag' => 'p'
                                 , 'css'         => 'width:100%'
                                 , 'rows' => 2
@@ -869,6 +862,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $this->fields['booking_confirmation_header'] = array(
                                   'type'        => 'text'
                                 , 'default'     => $default_options_values['booking_confirmation_header']
+                                /* translators: 1: ... */
                                 , 'placeholder' => sprintf( __( 'Your booking id: %s', 'booking' ), '<strong>[booking_id]</strong>' )
                                 , 'css'         => 'flex:1 1 auto;'
                                 , 'group'       => 'booking_confirmation'
@@ -916,7 +910,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                             );
 		$this->fields['booking_confirmation__personal_info__sufix'] = array( 'type' => 'pure_html', 'group' => 'booking_confirmation_left',
 																			 'html' => '<p style="text-align: right;font-size:12px;width:100%;">'
-												. sprintf(__('Enter %stitle%s for this section of Booking Confirmation' ,'booking'),'<b>','</b>')
+												/* translators: 1: ... */
+												. sprintf( __( 'Enter %1$stitle%2$s for this section of Booking Confirmation', 'booking' ),'<b>','</b>')
 																			           . '.</p>' . '</fieldset> </td> </tr>' );
 
 		$wpbc_metabox_id = 'confirmation_left_cont__promote_upgrade';
@@ -933,7 +928,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 															   . '</label></div>'
 											);
         $this->fields['booking_confirmation__personal_info__content'] = array(
-                                      'type'        => ( $is_use_code_mirror ? 'textarea' : 'wp_textarea' )				//FixIn: 8.4.7.18
+                                      'type'        => ( $is_use_code_mirror ? 'textarea' : 'wp_textarea' )				// FixIn: 8.4.7.18.
                                     , 'default'     => $default_options_values['booking_confirmation__personal_info__content']
 	                                                   // '[content]'
                                     //, 'placeholder' => '[content]'
@@ -960,7 +955,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 													'dismiss_css_class' => '.' . $wpbc_metabox_id . '_close_content'
 												));
 			if ( ! $is_panel_visible ) {
-				?><script type="text/javascript"> jQuery('#<?php echo $wpbc_metabox_id; ?>_close,.<?php echo $wpbc_metabox_id; ?>_close_content').hide(); </script><?php
+				?><script type="text/javascript"> jQuery('#<?php echo esc_attr( $wpbc_metabox_id ); ?>_close,.<?php echo esc_attr( $wpbc_metabox_id ); ?>_close_content').hide(); </script><?php
 			}
 			$dismiss_button_content = ob_get_clean();
 
@@ -1025,7 +1020,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                             );
 		$this->fields['booking_confirmation__booking_details__sufix'] = array( 'type' => 'pure_html', 'group' => 'booking_confirmation_right',
 																			 'html' => '<p style="text-align: right;font-size:12px;width:100%;">'
-												. sprintf(__('Enter %stitle%s for this section of Booking Confirmation' ,'booking'),'<b>','</b>')
+												/* translators: 1: ... */
+												. sprintf( __( 'Enter %1$stitle%2$s for this section of Booking Confirmation', 'booking' ),'<b>','</b>')
 																			           . '.</p>' . '</fieldset> </td> </tr>' );
 	    $this->fields['booking_confirmation__booking_details__content_before'] = array(
 												'type'  => 'pure_html',
@@ -1037,11 +1033,11 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 															   . '</label></div>'
 											);
         $this->fields['booking_confirmation__booking_details__content'] = array(
-                                      'type'        => ( $is_use_code_mirror ? 'textarea' : 'wp_textarea' )				//FixIn: 8.4.7.18
+                                      'type'        => ( $is_use_code_mirror ? 'textarea' : 'wp_textarea' )				// FixIn: 8.4.7.18.
                                     , 'default'     => $default_options_values['booking_confirmation__booking_details__content']
 													//    ( ( class_exists( 'wpdev_bk_personal' ) ) ? '<h4 class="wpbc_ty__section_text_resource">[resource_title]</h4>' : '' )
-													//  . '<div class="wpbc_ty__section_text_dates">' . __( 'Dates', 'booking' ) . ': <strong>[dates]</strong></div>'
-													//  . '<div class="wpbc_ty__section_text_times">' . __( 'Time', 'booking' ) . ': <strong>[times]</strong></div>'
+													//  . '<div class="wpbc_ty__section_text_dates">' . esc_html__( 'Dates', 'booking' ) . ': <strong>[dates]</strong></div>'
+													//  . '<div class="wpbc_ty__section_text_times">' . esc_html__( 'Time', 'booking' ) . ': <strong>[times]</strong></div>'
                                     //, 'placeholder' => '[content]'
                                     , 'title'       => __('Content', 'booking')
                                     //, 'description' => __('Example', 'booking') . ': ' . '[content]'
@@ -1091,7 +1087,9 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 		$icn = '<a 	href="https://wpbookingcalendar.com/faq/#available_shortcodes" 
 					class="tooltip_top wpbc-bi-question-circle wpbc_help_tooltip_icon_left" 				 
 					data-original-title="%2$s"></a> %1$s';
+		/* translators: 1: ... */
 		$this->fields['booking_confirmation_help_shortcodes']['value'][] = sprintf( $icn, '<code>[readable_dates]</code>', sprintf( __('%s - dates in readable format' ,'booking'), '[readable_dates]' ) );
+		/* translators: 1: ... */
 		$this->fields['booking_confirmation_help_shortcodes']['value'][] = sprintf( $icn, '<code>[readable_times]</code>', sprintf( __('%s - time in readable format' ,'booking'), '[readable_times]' ) );
 
         foreach ( $help_fields as $help_fields_key => $help_fields_value ) {
@@ -1103,7 +1101,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         // <editor-fold     defaultstate="collapsed"                        desc=" Booking Admin Panel "  >
 
         $field_options = array(
-                                  'vm_booking_listing' => __('Bookings Listing' ,'booking')                             //FixIn: 9.6.3.5
+                                  'vm_booking_listing' => __('Bookings Listing' ,'booking')                             // FixIn: 9.6.3.5.
                                 , 'vm_calendar' => __('Timeline View' ,'booking')
                             );   
         $this->fields['booking_listing_default_view_mode'] = array(   
@@ -1114,7 +1112,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'options'     => $field_options
                                 , 'group'       => 'booking_listing'
                         );
-//	    //FixIn: 9.5.5.7
+//	    // FixIn: 9.5.5.7.
 //        $this->fields['booking_admin_panel_skin'] = array(
 //                                  'type'        => 'select'
 //                                , 'default'     => $default_options_values['booking_admin_panel_skin']                  // 'modern_1'
@@ -1127,13 +1125,13 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 //                                , 'group'       => 'booking_listing'
 //                        );
 //
-//	    //FixIn: 9.6.3.5
+//	    // FixIn: 9.6.3.5.
 
         //Default booking resources 
         $this->fields = apply_filters( 'wpbc_settings_booking_listing_br_default_count', $this->fields, $default_options_values );
 
 
-		//FixIn: 8.6.1.13
+		// FixIn: 8.6.1.13.
 
         // Calendar Default View mode 
         if ( class_exists( 'wpdev_bk_personal' ) ) 
@@ -1157,10 +1155,10 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'title'       => __('Default view mode', 'booking')
                                 , 'description' => __('Select your default calendar view mode at booking calendar overview page' ,'booking')
                                 , 'options'     => $field_options
-                                , 'group'       => 'booking_calendar_overview'   //FixIn: 8.5.2.20  //FixIn: 8.9.4.4
+                                , 'group'       => 'booking_calendar_overview'   //FixIn: 8.5.2.20  // FixIn: 8.9.4.4.
                         );
 
-		//FixIn: 8.9.4.3
+		// FixIn: 8.9.4.3.
 	    $field_options = array();
 	    foreach ( range( 1, 31, 1) as $value ) {
 	        $field_options[ $value ] = $value;
@@ -1169,10 +1167,11 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 	                            'type'          => 'select'
 	                            , 'default'     => $default_options_values['booking_calendar_overview__day_mode__days_number_show']   // 31
 	                            , 'title'       => __('Days number to show in day view mode', 'booking')
-	                            , 'description' => sprintf(__('Select number of days to show in %sDay%s view mode' ,'booking'),'<b>','</b>')
+	                            /* translators: 1: ... */
+	                            , 'description' => sprintf( __( 'Select number of days to show in %1$sDay%2$s view mode', 'booking' ),'<b>','</b>')
 		                                           . ( ( class_exists( 'wpdev_bk_personal' ) ) ? ' ' . __( 'for one booking resource', 'booking' ) : '' )
 	                            , 'options'     => $field_options
-	                            , 'group'       => 'booking_calendar_overview'  //FixIn: 8.9.4.4
+	                            , 'group'       => 'booking_calendar_overview'  // FixIn: 8.9.4.4.
 	                    );
 	    $this->fields['booking_timeline__month_mode__days_number_show'] = array(
 	                            'type'          => 'select'
@@ -1188,15 +1187,16 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $this->fields = apply_filters( 'wpbc_settings_booking_listing_timeline_title_in_day', $this->fields, $default_options_values );
 
 
-	    //FixIn: 9.6.3.5
+	    // FixIn: 9.6.3.5.
 
 	    // <editor-fold     defaultstate="collapsed"                        desc="  ==  Dates : Time  ==  "  >
 		$timezone_error_message = '';
 		if ( 'UTC' !== date_default_timezone_get() ) {
 			$timezone_error_message .= '<div style="line-height: 2em;margin-bottom:2em;" class="wpbc-settings-notice notice-error">';
-			$timezone_error_message .= '<strong>' . __( 'PHP default timezone is invalid' ) . '</strong>. ';
-			$timezone_error_message .= '<a href="' . esc_url( admin_url( 'site-health.php' ) ) . '">' .  __( 'Read more' )  . '</a>' . '<br/>';
-			$timezone_error_message .= sprintf( __( 'Find additional details %shere%s', 'booking' ), '<a href="https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/">', '</a>' );
+			$timezone_error_message .= '<strong>' . esc_html__( 'PHP default timezone is invalid', 'booking' ) . '</strong>. ';
+			$timezone_error_message .= '<a href="' . esc_url( admin_url( 'site-health.php' ) ) . '">' .  __( 'Read more' , 'booking' )  . '</a>' . '<br/>';
+			/* translators: 1: ... */
+			$timezone_error_message .= sprintf( __( 'Find additional details %1$shere%2$s', 'booking' ), '<a href="https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/">', '</a>' );
 			$timezone_error_message .= '</div>';
 		}
 
@@ -1280,7 +1280,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $this->fields['booking_date_format_help'] = array(
                            'type'              => 'html'
                          , 'html'             => '<div style="line-height: 2em;">'.
-														sprintf(__('Type your date format for emails and the booking table. %sDocumentation on date formatting%s' ,'booking'),'<br/><a href="https://wordpress.org/documentation/article/customize-date-and-time-format/" target="_blank">','</a>')
+														/* translators: 1: ... */
+														sprintf( __( 'Type your date format for emails and the booking table. %1$sDocumentation on date formatting%2$s', 'booking' ),'<br/><a href="https://wordpress.org/documentation/article/customize-date-and-time-format/" target="_blank">','</a>')
                                                  .'</div>'
                          , 'class'             => ''
                          , 'css'               => 'margin:0;padding:0;border:0;'
@@ -1342,7 +1343,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $this->fields['booking_time_format_help'] = array(
                            'type'              => 'html'
                          , 'html'             => '<div style="line-height: 2em;">'.
-														sprintf(__('Type your time format for emails and the booking table. %sDocumentation on time formatting%s' ,'booking'),'<br/><a href="https://www.php.net/manual/datetime.format.php" target="_blank">','</a>')
+														/* translators: 1: ... */
+														sprintf( __( 'Type your time format for emails and the booking table. %1$sDocumentation on time formatting%2$s', 'booking' ),'<br/><a href="https://www.php.net/manual/datetime.format.php" target="_blank">','</a>')
                                                  .'</div>'
                          , 'class'             => ''
                          , 'css'               => 'margin:0;padding:0;border:0;'
@@ -1364,7 +1366,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
 
         // Show hide Notes
-        $this->fields = apply_filters( 'wpbc_settings_booking_show_hide_options', $this->fields, $default_options_values );         //FixIn: 8.1.3.32
+        $this->fields = apply_filters( 'wpbc_settings_booking_show_hide_options', $this->fields, $default_options_values );         // FixIn: 8.1.3.32.
 
 
         // </editor-fold>
@@ -1385,13 +1387,14 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_is_days_always_available']         //'On'
                                 , 'title'       => __('Allow unlimited bookings per same day(s)' ,'booking')
-                                , 'label'       => sprintf(__('Check this box, if you want to %sset any days as available%s in calendar. Your visitors will be able to make %sunlimited bookings per same date(s) in calendar and do not see any booked date(s)%s of other visitors.' ,'booking'), '<strong>', '</strong>' , '<strong>', '</strong>' )
+                                /* translators: 1: ... */
+                                , 'label'       => sprintf( __( 'Check this box, if you want to %1$sset any days as available%2$s in calendar. Your visitors will be able to make %3$sunlimited bookings per same date(s) in calendar and do not see any booked date(s)%4$s of other visitors.', 'booking' ), '<strong>', '</strong>' , '<strong>', '</strong>' )
                                 , 'description' => ''
                                 , 'group'       => 'capacity'
             );
 
 
-        //FixIn: 8.3.2.2
+        // FixIn: 8.3.2.2.
         if ( ! class_exists('wpdev_bk_biz_l') )
 		    $this->fields['booking_is_show_pending_days_as_available'] = array(
 		                            'type'          => 'checkbox'
@@ -1443,7 +1446,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 			                , 'value'     => 'On'
 		                            , 'title'       => __('Disable bookings in different booking resources' ,'booking')
 		                            , 'label'       => __('Check this box to disable reservations, which can be stored in different booking resources.' ,'booking')
-		                            , 'description' => '<strong>' . __('Note' ,'booking') . '!</strong> ' . __('When checked, all reserved days must be at same booking resource otherwise error message will show.' ,'booking')
+		                            , 'description' => '<strong>' . esc_html__('Note' ,'booking') . '!</strong> ' . __('When checked, all reserved days must be at same booking resource otherwise error message will show.' ,'booking')
 		                            , 'group'       => 'capacity_upgrade'
 			                        , 'tr_class'    => 'wpbc_blur'
 		        );
@@ -1488,7 +1491,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 //                                , 'group' => 'advanced'
 //            );
 
-	    //FixIn: 9.8.6.2
+	    // FixIn: 9.8.6.2.
 	    $balencer_options     = array_combine( range( 1, 5 ), range( 1, 5 ) );
 	    $balencer_options[99] = __( 'All', 'booking' );
         $this->fields['booking_load_balancer_max_threads'] = array(
@@ -1521,7 +1524,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'default'     => $default_options_values['booking_pages_for_load_js_css']         //''
                                 , 'placeholder' => '/booking-form/'
                                 , 'title'       => __('Relative URLs of pages, where to load plugin CSS and JS files' ,'booking')
-                                , 'description' => sprintf(__('Enter relative URLs of pages, where you have Booking Calendar elements (booking forms or availability calendars). Please enter one URL per line. Example: %s' ,'booking'),'<code>/booking-form/</code>')
+                                /* translators: 1: ... */
+                                , 'description' => sprintf(__( 'Enter relative URLs of pages, where you have Booking Calendar elements (booking forms or availability calendars). Please enter one URL per line. Example: %s' ,'booking'),'<code>/booking-form/</code>')
                                 ,'description_tag' => 'p'
                                 , 'css'         => 'width:100%'
                                 , 'rows'        => 5
@@ -1541,7 +1545,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
             );
 
 		//$this->fields['hr_booking_is_show_system_debug_log'] = array( 'type' => 'hr', 'group' => 'advanced', 'tr_class' => 'wpbc_advanced_js_loading_settings' ); // wpbc_sub_settings_grayed hidden_items' );
-		//FixIn: 7.2.1.15
+		// FixIn: 7.2.1.15.
         $this->fields[ 'booking_is_show_system_debug_log' ] = array(   
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_is_show_system_debug_log']         //'Off'            
@@ -1604,7 +1608,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'description' => ''
                                 , 'group'       => 'advanced'
                                 , 'tr_class'    => 'wpbc_is_show_powered_by_notice wpbc_sub_settings_grayed hidden_items'
-	                            , 'is_demo_safe' => wpbc_is_this_demo()                                                 //FixIn: 8.1.3.9
+	                            , 'is_demo_safe' => wpbc_is_this_demo()                                                 // FixIn: 8.1.3.9.
             );       
         
         // </editor-fold>
@@ -1667,7 +1671,7 @@ if(1){
                                 , 'group'       => 'permissions'
                                 , 'is_demo_safe' => wpbc_is_this_demo()
                         );
-        $this->fields['booking_user_role_availability'] = array(                                                        //FixIn: 9.5.2.2
+        $this->fields['booking_user_role_availability'] = array(                                                        // FixIn: 9.5.2.2.
                                 'type'          => 'select'
                                 , 'default'     => $default_options_values['booking_user_role_availability']         //'editor'
                                 , 'title'       => __('Availability', 'booking')
@@ -1772,47 +1776,47 @@ if(1){
 			$my_system_buttons = '';
 
 			$my_system_buttons .= '<a class="button button" href="'
-		                                        . wpbc_get_settings_url()
-		                                        . '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&booking_system_info=show#wpbc_general_settings_system_info_metabox">'
+		                                        . esc_url( wpbc_get_settings_url()
+		                                        . '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&booking_system_info=show#wpbc_general_settings_system_info_metabox">'
 		                                                . 'Booking System ' . __('Info' ,'booking')
 		                        . '</a>';
-			//FixIn: 8.4.7.19
+			// FixIn: 8.4.7.19.
 			$my_system_buttons .= ' <a class="button button" href="'
 		            . wpbc_get_bookings_url()
 		              . '&wh_booking_type=lost">'
 		            . 'Find Lost Bookings'
-	            . '</a>';  //FixIn: 8.5.2.19
+	            . '</a>';  // FixIn: 8.5.2.19.
 
-	        //FixIn: 9.5.3.1
+	        // FixIn: 9.5.3.1.
 			$my_system_buttons .= ' <a class="button button" href="'
 		            . wpbc_get_resources_url()
 		              . '&show_all_resources=1">'
 		            . 'Find Lost Resources'
 	            . '</a>';
 
-            if (  $_SERVER['HTTP_HOST'] === 'beta'  ) {
+			if ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( 'beta' === $_SERVER['HTTP_HOST'] ) ) {
 
 				$my_system_buttons .=  '<div style="width:100%;height:2em;border-bottom:1px dashed #777;margin-bottom:1em;"></div>';
 
 	            // Link: http://server.com/wp-admin/admin.php?page=wpbc-settings&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .' &reset=custom_forms#wpbc_general_settings_system_info_metabox
 	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
-								            . wpbc_get_settings_url()
-								            . '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&reset=custom_forms#wpbc_general_settings_system_info_metabox">'
+								            . esc_url( wpbc_get_settings_url()
+								            . '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&reset=custom_forms#wpbc_general_settings_system_info_metabox">'
 								            . 'Reset custom forms'
 							            . '</a>';
 
 
 	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
-								            . wpbc_get_settings_url()
-								            . '&wpbc_setup_wizard=reset&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'">'
+								            . esc_url( wpbc_get_settings_url()
+								            . '&wpbc_setup_wizard=reset&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'">'
 								            . 'Reset Setup Wizard'
 							            . '</a>';
 //	            if ( ( isset( $_GET['wpbc_setup_wizard'] ) ) && ( 'reset' === $_GET['wpbc_setup_wizard'] ) ) {
 //		            $my_system_buttons .= '<script type="text/javascript"> window.location.href = "' . esc_url( wpbc_get_setup_wizard_page_url() ) . '"; </script>';
 //	            }
 	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
-								            . wpbc_get_settings_url()
-								            . '&wpbc_setup_wizard=completed&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'">'
+								            . esc_url( wpbc_get_settings_url()
+								            . '&wpbc_setup_wizard=completed&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'">'
 								            . 'Set Setup Wizard as Completed'
 							            . '</a>';
             }
@@ -1857,7 +1861,8 @@ if(1){
                            'type'              => 'help'
                          , 'value'             => array(
 							 sprintf(
-								 __('The plugin tries to use translations from %s, if failed (doesn\'t exist), try using translations from %s folder. You can change this behavior with this option.', 'booking')
+								/* translators: 1: ... */
+								 __( 'The plugin tries to use translations from %1$s, if failed (doesn\'t exist), try using translations from %2$s folder. You can change this behavior with this option.', 'booking')
 							        , '"<strong>../wp-content/languages/plugins/</strong>"'
 								    , '"<strong>../wp-content/plugins/{Booking Calendar Folder}/languages/</strong>"' )
 	                                                    )
@@ -1901,7 +1906,7 @@ if(1){
                                 }
                             } ); ";
 
-	    //FixIn: 9.6.3.5
+	    // FixIn: 9.6.3.5.
 
         // Hide Legend items
         $js_script .= " 
@@ -1962,7 +1967,7 @@ if(1){
         
         ////////////////////////////////////////////////////////////////////////
         // Set  correct  value for dates format,  depend on from selection of radio buttons
-        $booking_date_format = esc_js( get_bk_option( 'booking_date_format') );                                         //FixIn: 10.6.1.2
+        $booking_date_format = esc_js( get_bk_option( 'booking_date_format') );                                         // FixIn: 10.6.1.2.
         // On initial Load set correct text value and correct radio button
         $js_script .= " 
                         // Select by  default Custom  value, later  check all other predefined values
@@ -1998,7 +2003,7 @@ if(1){
         
 	    ////////////////////////////////////////////////////////////////////////
 	    // Set  correct  value for Time Format,  depend on from selection of radio buttons
-	    $booking_time_format = esc_js( get_bk_option( 'booking_time_format') );                                         //FixIn: 10.6.1.2
+	    $booking_time_format = esc_js( get_bk_option( 'booking_time_format') );                                         // FixIn: 10.6.1.2.
 	    // Function  to  load on initial stage of page loading, set correct value of text and select correct radio button.
 	    $js_script .= " 
 	                    // Select by  default Custom  value, later  check all other predefined values
@@ -2054,7 +2059,7 @@ if(1){
                             }                            
                         } ); ";
 
-        //FixIn: 8.3.2.2
+        // FixIn: 8.3.2.2.
 	    if ( ! class_exists('wpdev_bk_biz_l') ) {
 	    	// Click on "Use pending days as available"
 	        $js_script .= " jQuery('#set_gen_booking_is_show_pending_days_as_available').on( 'change', function(){            
@@ -2134,7 +2139,7 @@ if(1){
                         ";         
 
 
-        // Select  specific Time Picker skin,  depending from  selection  of Calendar skin      //FixIn: 8.7.11.10
+        // Select  specific Time Picker skin,  depending from  selection  of Calendar skin      // FixIn: 8.7.11.10.
         $js_script .= " jQuery('#set_gen_booking_skin').on( 'change', function(){    
         
                             var wpbc_selected_skin = jQuery('select[name=\"set_gen_booking_skin\"] option:selected').val(); 
@@ -2188,7 +2193,7 @@ if(1){
 						} ); ";
 
 
-		// =============================================================================================================        //FixIn: 10.1.5.4
+		// =============================================================================================================        // FixIn: 10.1.5.4.
 		// 'Dates selection' - some options hide or show
 	    // =============================================================================================================
 
@@ -2375,7 +2380,7 @@ function wpbc_hook_settings_page_footer__define_code_mirror( $page_name ) {
 		return false;
 	}
 
-	$is_use_code_mirror = (  ( function_exists( 'wpbc_codemirror') ) && ( is_user_logged_in() && 'false' !== (wp_get_current_user()->syntax_highlighting) ) ) ? true : false;		//FixIn: 8.4.7.18
+	$is_use_code_mirror = (  ( function_exists( 'wpbc_codemirror') ) && ( is_user_logged_in() && 'false' !== (wp_get_current_user()->syntax_highlighting) ) ) ? true : false;		// FixIn: 8.4.7.18.
 
 	if ( $is_use_code_mirror ) {
 

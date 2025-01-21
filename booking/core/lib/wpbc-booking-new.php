@@ -98,7 +98,7 @@ function wpbc_check_dates_intersections( $dates_for_check, $dates_exist  ) {    
             $check_dates[] = $value;
     }
 
-    if ( count( $check_dates ) == 0 ) return $is_intersected;                   // No intersected dates at all in exist bookings. Return.       //FixIn: 6.0.1.13
+    if ( count( $check_dates ) == 0 ) return $is_intersected;                   // No intersected dates at all in exist bookings. Return.       // FixIn: 6.0.1.13.
     
     foreach ( $check_dates as $value ) {
 

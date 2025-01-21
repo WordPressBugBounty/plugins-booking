@@ -6,7 +6,7 @@
 * Version: 1.0
 * @modified 2024-08-06
 */
-//FixIn: 10.4.0.2
+// FixIn: 10.4.0.2.
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 
@@ -60,7 +60,7 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon			//FixIn: 9.6.1.4
+                            , 'header_font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
                             , 'default' 	=>  true                                // Is this sub tab activated by default or not: true || false.
                             , 'disabled' 	=> false                               // Is this sub tab deactivated: true || false.
                             , 'checkbox'  	=> false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
@@ -269,13 +269,15 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 
 			// Override parameters from DB  by  parameters from  REQUEST! ----------------------------------------------
 			$request_key = 'current_step';
+		 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		 	if ( isset( $_REQUEST[ $request_key ] ) ) {
 
 				 // Get SANITIZED REQUEST parameters together with default values
 				$request_prefix = false;
 				$url_request_params_arr = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  );		 		// Direct: 	$_REQUEST['resource_id']
 
-				// Now get only SANITIZED values that exist in REQUEST
+				// Now get only SANITIZED values that exist in REQUEST.
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				$url_request_params_only_arr = array_intersect_key( $url_request_params_arr, $_REQUEST );
 
 				// And now override our DB  $escaped_request_params_arr  by  SANITIZED $_REQUEST values
@@ -341,11 +343,11 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 		wpbc_clear_div();
         ?>
         <span class="metabox-holder">
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" >
+            <form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" >
                 <?php
                    // N o n c e   field, and key for checking   S u b m i t
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
 
 				//wpbc_ajx_booking_modify_container_show();					// Container for showing Edit ajx_booking and define Edit and Delete ajx_booking JavaScript vars.
 
@@ -377,7 +379,7 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 			$is_show_resource_unavailable_stripes = ( !true ) ? ' wpbc_ajx_availability_container' : '';
 			?>
 			<div id="ajx_nonce_calendar_section"></div>
-			<div class="wpbc_listing_container wpbc_selectable_table wpbc_ajx_setup_plugin_container wpdevelop<?php echo $is_show_resource_unavailable_stripes; ?>" wpbc_loaded="first_time">
+			<div class="wpbc_listing_container wpbc_selectable_table wpbc_ajx_setup_plugin_container wpdevelop<?php echo esc_attr( $is_show_resource_unavailable_stripes ); ?>" wpbc_loaded="first_time">
 				<style type="text/css">
 					.wpbc_calendar_loading .wpbc_icn_autorenew::before{
 						font-size: 1.2em;
@@ -390,16 +392,16 @@ class WPBC_Page_Settings_All extends WPBC_Page_Structure {
 						font-weight: 600;
 					}
 				</style>
-				<div class="wpbc_calendar_loading"><span class="wpbc_icn_autorenew wpbc_spin"></span>&nbsp;&nbsp;<span><?php _e( 'Loading', 'booking' ); ?>...</span>
+				<div class="wpbc_calendar_loading"><span class="wpbc_icn_autorenew wpbc_spin"></span>&nbsp;&nbsp;<span><?php esc_html_e( 'Loading', 'booking' ); ?>...</span>
 				</div>
 			</div>
 			<script type="text/javascript">
 				jQuery( document ).ready( function (){
 
 					// Set Security - Nonce for Ajax  - Listing
-					wpbc_ajx_setup_plugin.set_secure_param( 'nonce',   '<?php echo wp_create_nonce( 'wpbc_ajx_setup_plugin_ajx' . '_wpbcnonce' ) ?>' );
-					wpbc_ajx_setup_plugin.set_secure_param( 'user_id', '<?php echo wpbc_get_current_user_id(); ?>' );
-					wpbc_ajx_setup_plugin.set_secure_param( 'locale',  '<?php echo get_user_locale(); ?>' );
+					wpbc_ajx_setup_plugin.set_secure_param( 'nonce',   '<?php echo esc_attr( wp_create_nonce( 'wpbc_ajx_setup_plugin_ajx' . '_wpbcnonce' ) ); ?>' );
+					wpbc_ajx_setup_plugin.set_secure_param( 'user_id', '<?php echo esc_attr( wpbc_get_current_user_id() ); ?>' );
+					wpbc_ajx_setup_plugin.set_secure_param( 'locale',  '<?php echo esc_attr( get_user_locale() ); ?>' );
 
 					// Set other parameters
 					wpbc_ajx_setup_plugin.set_other_param( 'listing_container',    '.wpbc_ajx_setup_plugin_container' );

@@ -132,7 +132,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 			    update_bk_option( 'booking_timeslot_picker', ( 'On' === $cleaned_data['wpbc_swp_booking_timeslot_picker'] ) ? 'On' : 'Off' );
 
 			    if ( class_exists( 'wpdev_bk_personal' ) ) {
-					//FixIn: 10.7.1.4
+					// FixIn: 10.7.1.4.
 				    update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments30' ) ) );
 				    update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments30' ) ) );
 

@@ -64,7 +64,7 @@ function wpbc_make_table_sortable(){
 			items:'tr',
 			cursor:'move',
 			axis:'y',
-// connectWith: ".wpbc_table_form_free tbody",					////FixIn: 10.1.2.2
+// connectWith: ".wpbc_table_form_free tbody",					//// FixIn: 10.1.2.2.
 // //axis:'y',
 			scrollSensitivity:40,
 			forcePlaceholderSize: true,
@@ -85,7 +85,7 @@ function wpbc_make_table_sortable(){
 function wpbc_activate_table_row_delete( del_btn_css_class, is_confirm ){
 
 	// Delete Row
-	jQuery( del_btn_css_class ).on( 'click', function(){                   //FixIn: 8.7.11.12
+	jQuery( del_btn_css_class ).on( 'click', function(){                   // FixIn: 8.7.11.12.
 
 		if ( true === is_confirm ){
 			if ( ! wpbc_are_you_sure( 'Do you really want to do this ?' ) ){
@@ -197,7 +197,7 @@ function wpbc_show_fields_generator( selected_field_value ) {
 
 	if (selected_field_value == 'selector_hint') {
 		jQuery('.metabox_wpbc_form_field_free_generator').hide();
-		jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').show();						//FixIn: 8.7.11.7
+		jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').show();						// FixIn: 8.7.11.7.
 		jQuery( '#wpbc_settings__form_fields__toolbar').show();
 	} else {
 		jQuery('.metabox_wpbc_form_field_free_generator').show();
@@ -205,7 +205,7 @@ function wpbc_show_fields_generator( selected_field_value ) {
 		jQuery('.wpbc_field_generator_' + selected_field_value ).show();
 		jQuery('#wpbc_form_field_free_generator_metabox h3.hndle span').html( jQuery('#select_form_help_shortcode option:selected').text() );
 		jQuery('.wpbc_add_field_row').show();
-		jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').hide();						//FixIn: 8.7.11.7
+		jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').hide();						// FixIn: 8.7.11.7.
 		jQuery( '#wpbc_settings__form_fields__toolbar').hide();
 	}
 }
@@ -217,7 +217,7 @@ function wpbc_hide_fields_generators() {
 	jQuery('.metabox_wpbc_form_field_free_generator').hide();
 	jQuery('#select_form_help_shortcode>option:eq(0)').attr('selected', true);
 
-	jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').show();						//FixIn: 8.7.11.7
+	jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').show();						// FixIn: 8.7.11.7.
 	jQuery( '#wpbc_settings__form_fields__toolbar').show();
 }
 
@@ -394,7 +394,7 @@ wpbc_check_typed_values( field_name + '_field_generator' );															// Upd
 wpbc_timeslots_table__fill_rows();
 }
 
-	jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').hide();						//FixIn: 8.7.11.7
+	jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').hide();						// FixIn: 8.7.11.7.
 	jQuery( '#wpbc_settings__form_fields__toolbar').hide();
 
 	wpbc_scroll_to('#wpbc_form_field_free_generator_metabox' );

@@ -49,7 +49,7 @@ function wpbc_get_resource_title( $resource_id = 1 ) {
  *
  * @return string
  */
-function wpbc_get_parent_resource_title( $resource_id = 1 ) {                                                           //FixIn: 10.9.2.4
+function wpbc_get_parent_resource_title( $resource_id = 1 ) {                                                           // FixIn: 10.9.2.4.
 
 	$resource_title = '';
 
@@ -77,7 +77,7 @@ function wpbc_get_parent_resource_title( $resource_id = 1 ) {                   
  *
  * @return bool 					- booking data field
  */
-function wpbc_get__booking_data_field__by_booking_hash( $booking_hash, $booking_data_key = 'email' ){								//FixIn: 8.1.3.5
+function wpbc_get__booking_data_field__by_booking_hash( $booking_hash, $booking_data_key = 'email' ){								// FixIn: 8.1.3.5.
 
 	$return_val = false;
 
@@ -115,29 +115,29 @@ function wpbc_get__booking_data_field__by_booking_hash( $booking_hash, $booking_
  * @return mixed - booking details or false if not found
  * Example:
  * stdClass Object
-* (
-	* [booking_id] => 26
-	* [trash] => 0
-	* [sync_gid] =>
-	* [is_new] => 0
-	* [status] =>
-	* [sort_date] => 2018-02-27 00:00:00
-	* [modification_date] => 2018-02-18 12:49:30
-	* [form] => text^selected_short_dates_hint3^02/27/2018 - 03/02/2018~text^days_number_hint3^4~text^cost_hint3^40.250&nbsp;&#36;~text^name3^Victoria~text^secondname3^vica~email^email3^vica@wpbookingcalendar.com~text^phone3^test booking ~selectbox-one^visitors3^1
-	* [hash] => 0d55671fd055fd64423294f89d6b58e6
-	* [booking_type] => 3
-	* [remark] =>
-	* [cost] => 40.25
-	* [pay_status] => 151895097121.16
-	* [pay_request] => 0
-* )
+ * (
+ * [booking_id] => 26
+ * [trash] => 0
+ * [sync_gid] =>
+ * [is_new] => 0
+ * [status] =>
+ * [sort_date] => 2018-02-27 00:00:00
+ * [modification_date] => 2018-02-18 12:49:30
+ * [form] => text^selected_short_dates_hint3^02/27/2018 - 03/02/2018~text^days_number_hint3^4~text^cost_hint3^40.250&nbsp;&#36;~text^name3^Victoria~text^secondname3^vica~email^email3^vica@wpbookingcalendar.com~text^phone3^test booking ~selectbox-one^visitors3^1
+ * [hash] => 0d55671fd055fd64423294f89d6b58e6
+ * [booking_type] => 3
+ * [remark] =>
+ * [cost] => 40.25
+ * [pay_status] => 151895097121.16
+ * [pay_request] => 0
+ * )
  */
-function wpbc_db_get_booking_details( $booking_id ){																	//FixIn: 8.1.3.5
+function wpbc_db_get_booking_details( $booking_id ) {                                                                    // FixIn: 8.1.3.5.
 
 	global $wpdb;
 
 	$slct_sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}booking WHERE booking_id = %d LIMIT 0,1", $booking_id );
-
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	$sql_results = $wpdb->get_row( $slct_sql );
 
 	if ( ! empty( $sql_results ) ) {
@@ -155,7 +155,7 @@ function wpbc_db_get_booking_details( $booking_id ){																	//FixIn: 8.
  * @return mixed - booking dates array or false if not found
  *
  */
-function wpbc_db_get_booking_dates( $booking_id ){
+function wpbc_db_get_booking_dates( $booking_id ) {
 
 	global $wpdb;
 
@@ -166,7 +166,7 @@ function wpbc_db_get_booking_dates( $booking_id ){
 	} else {
 		$sql .= " ORDER BY booking_id, booking_date ";
 	}
-
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	$sql_results = $wpdb->get_results( $sql );
 
 	if ( ! empty( $sql_results ) ) {
@@ -178,13 +178,17 @@ function wpbc_db_get_booking_dates( $booking_id ){
 
 /**
  * Get booking modification  date from  DB
+ *
  * @param $booking_id
  *
  * @return string
  */
-function wpbc_db_get_booking_modification_date( $booking_id ){																//FixIn: 8.0.1.7
+function wpbc_db_get_booking_modification_date( $booking_id ) {
+	// FixIn: 8.0.1.7.
 	global $wpdb;
-	$modification_date = ' ' . $wpdb->get_var( $wpdb->prepare( "SELECT modification_date FROM {$wpdb->prefix}booking  WHERE booking_id = %d " , $booking_id ) );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$modification_date = ' ' . $wpdb->get_var( $wpdb->prepare( "SELECT modification_date FROM {$wpdb->prefix}booking  WHERE booking_id = %d ", $booking_id ) );
+
 	return $modification_date;
 }
 
@@ -196,17 +200,17 @@ function wpbc_db_get_booking_modification_date( $booking_id ){																//
 function wpbc_get_user_ip() {
 
 	if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-		$userIP = $_SERVER['HTTP_CLIENT_IP'];
+		$userIP = ( ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) ? sanitize_text_field( $_SERVER['HTTP_CLIENT_IP'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-		$userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		$userIP = ( ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) ? sanitize_text_field( $_SERVER['HTTP_X_FORWARDED_FOR'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} elseif ( isset( $_SERVER['HTTP_X_FORWARDED'] ) ) {
-		$userIP = $_SERVER['HTTP_X_FORWARDED'];
+		$userIP = ( ( isset( $_SERVER['HTTP_X_FORWARDED'] ) ) ? sanitize_text_field( $_SERVER['HTTP_X_FORWARDED'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} elseif ( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) ) {
-		$userIP = $_SERVER['HTTP_FORWARDED_FOR'];
+		$userIP = ( ( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) ) ? sanitize_text_field( $_SERVER['HTTP_FORWARDED_FOR'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} elseif ( isset( $_SERVER['HTTP_FORWARDED'] ) ) {
-		$userIP = $_SERVER['HTTP_FORWARDED'];
+		$userIP = ( ( isset( $_SERVER['HTTP_FORWARDED'] ) ) ? sanitize_text_field( $_SERVER['HTTP_FORWARDED'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
-		$userIP = $_SERVER['REMOTE_ADDR'];
+		$userIP = ( ( isset( $_SERVER['REMOTE_ADDR'] ) ) ? sanitize_text_field( $_SERVER['REMOTE_ADDR'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} else {
 		$userIP = "";
 	}
@@ -218,13 +222,13 @@ function wpbc_get_user_ip() {
  *
  * @return string
  */
-function wpbc_get_server_ip() {																					//FixIn: 9.8.14.3
+function wpbc_get_server_ip() {																					// FixIn: 9.8.14.3.
 
 	$ip_address = '';
 	if ( array_key_exists( 'SERVER_ADDR', $_SERVER ) ) {
-		$ip_address = $_SERVER['SERVER_ADDR'];
+		$ip_address = ( ( isset( $_SERVER['SERVER_ADDR'] ) ) ? sanitize_text_field( $_SERVER['SERVER_ADDR'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	} else if ( array_key_exists( 'LOCAL_ADDR', $_SERVER ) ) {
-		$ip_address = $_SERVER['LOCAL_ADDR'];
+		$ip_address = ( ( isset( $_SERVER['LOCAL_ADDR'] ) ) ? sanitize_text_field( $_SERVER['LOCAL_ADDR'] ) : '' );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	}
 
 	return $ip_address;
@@ -349,7 +353,7 @@ function wpbc_get_booking_different_params_arr( $booking_id, $formdata, $booking
 	$my_check_in_date  = wpbc_get_dates_comma_string_localized( $sql_dates_format_check_in_out[0] );
 	$my_check_out_date = wpbc_get_dates_comma_string_localized( $sql_dates_format_check_in_out[ count( $sql_dates_format_check_in_out ) - 1 ] );
 
-	$my_check_out_plus1day = wpbc_datetime_localized(   date(  'Y-m-d H:i:s'
+	$my_check_out_plus1day = wpbc_datetime_localized( gmdate(  'Y-m-d H:i:s'
 														, strtotime(  $sql_dates_format_check_in_out[ count( $sql_dates_format_check_in_out ) - 1 ]
 																	. " +1 day" )
 											) );
@@ -358,12 +362,12 @@ function wpbc_get_booking_different_params_arr( $booking_id, $formdata, $booking
 	$check_in_date_hint  = wpbc_date_localized( $sql_days_only_array[0] );
 	$check_out_date_hint = wpbc_date_localized( $sql_days_only_array[ ( count( $sql_days_only_array ) - 1  ) ] );
 
-	//FixIn: 9.7.3.16
-	$cancel_date_hint = wpbc_datetime_localized(   date(  'Y-m-d H:i:s'
+	// FixIn: 9.7.3.16.
+	$cancel_date_hint = wpbc_datetime_localized( gmdate(  'Y-m-d H:i:s'
 												  , strtotime( '-14 days', strtotime( $sql_days_only_array[0] ) )
 											) );
-	//FixIn: 10.0.0.31
-	$pre_checkin_date_hint = wpbc_datetime_localized( date( 'Y-m-d H:i:s'
+	// FixIn: 10.0.0.31.
+	$pre_checkin_date_hint = wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s'
 												, strtotime( '-' . intval( get_bk_option( 'booking_number_for_pre_checkin_date_hint' ) ) . ' days', strtotime( $sql_days_only_array[0] ) )
 											) );
 
@@ -383,7 +387,7 @@ function wpbc_get_booking_different_params_arr( $booking_id, $formdata, $booking
 	$start_time_hint = wpbc_time_localized( implode( ':', $start_time ) );
 	$end_time_hint   = wpbc_time_localized( implode( ':', $end_time   ) );
 
-	//FixIn: 9.5.1.3
+	// FixIn: 9.5.1.3.
 	$check_in_date_sql  = wpbc_date_localized( $sql_days_only_array[0], 'Y-m-d' );
 	$check_out_date_sql = wpbc_date_localized( $sql_days_only_array[ ( count( $sql_days_only_array ) - 1  ) ], 'Y-m-d' );
 
@@ -410,9 +414,9 @@ function wpbc_get_booking_different_params_arr( $booking_id, $formdata, $booking
 	$replace[ 'days_count' ]        = count( $sql_days_only_array );            // 1
 	$replace[ 'nights_count' ]      = ( $replace[ 'days_count' ] > 1 ) ? ( $replace[ 'days_count' ] - 1 ) : $replace[ 'days_count' ];       // 1
 
-	//FixIn: 9.7.3.16
+	// FixIn: 9.7.3.16.
 	$replace[ 'cancel_date_hint' ]      = $cancel_date_hint;                      // 11/11/2013
-	//FixIn: 10.0.0.31
+	// FixIn: 10.0.0.31.
 	$replace[ 'pre_checkin_date_hint' ] = $pre_checkin_date_hint;                 // 11/11/2013
 
 	$replace[ 'check_in_date_hint' ]  = $check_in_date_hint;                    // 11/25/2013
@@ -420,7 +424,7 @@ function wpbc_get_booking_different_params_arr( $booking_id, $formdata, $booking
 	$replace[ 'start_time_hint' ]   = $start_time_hint;                         // 10:00
 	$replace[ 'end_time_hint' ]     = $end_time_hint;                           // 12:00
 
-	//FixIn: 9.5.1.3
+	// FixIn: 9.5.1.3.
 	$replace['check_in_date_hint_sql']  = $check_in_date_sql;                    	// 2023-03-04
 	$replace['check_out_date_hint_sql'] = $check_out_date_sql;                   	// 2023-03-12
 	$replace['start_time_hint_sql']     = $start_time_sql;                         	// 10:00
@@ -432,12 +436,14 @@ $replace['selected_short_dates_hint']     =     wpbc_get_dates_short_format( $sq
 	$replace['selected_short_timedates_hint'] = wpbc_get_dates_short_format( $sql_dates_format );       		    // 11/25/2013 10:00 - 11/27/2013 12:00
 	$replace[ 'days_number_hint' ]   = $replace[ 'days_count' ];                // 3
 	$replace[ 'nights_number_hint' ] = $replace[ 'nights_count' ];              // 2
-	$replace[ 'siteurl' ]       = htmlspecialchars_decode( '<a href="' . home_url() . '">' . home_url() . '</a>' );
+	$replace[ 'siteurl' ]       = htmlspecialchars_decode( '<a href="' . esc_url( home_url() ) . '">' . home_url() . '</a>' );
 	$replace[ 'resource_title'] = wpbc_lang( $bk_title );
 	$replace[ 'bookingtype' ]   = $replace[ 'resource_title'];
 	$replace[ 'remote_ip'     ] = wpbc_get_user_ip();          													// The IP address from which the user is viewing the current page.
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	$replace[ 'user_agent'    ] = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';  	// Contents of the User-Agent: header from the current request, if there is one.
-	$replace[ 'request_url'   ] = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';        	// The address of the page (if any) where action was occured. Because we are sending it in Ajax request, we need to use the REFERER HTTP
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$replace[ 'request_url'   ] = $server_http_referer_uri;        	// The address of the page (if any) where action was occured. Because we are sending it in Ajax request, we need to use the REFERER HTTP
 	$replace[ 'current_date' ]  = date_i18n( get_bk_option( 'booking_date_format' ) );
 	$replace[ 'current_time' ]  = date_i18n( get_bk_option( 'booking_time_format' ) );
 
@@ -456,7 +462,7 @@ $replace['selected_short_dates_hint']     =     wpbc_get_dates_short_format( $sq
 	$replace[ 'moderatelink' ]  = htmlspecialchars_decode(
 														//    '<a href="' .
 															esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id )
-														//    . '">' . __('here', 'booking') . '</a>'
+														//    . '">' . esc_html__('here', 'booking') . '</a>'
 														);
 	$replace[ 'visitorbookingediturl' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingediturl]', $booking_id );
 	$replace[ 'visitorbookingslisting' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingslisting]', $booking_id );	//FixIn: 8.1.3.5.1
@@ -470,7 +476,7 @@ $replace['selected_short_dates_hint']     =     wpbc_get_dates_short_format( $sq
 
 	////////////////////////////////////////////////////////////////////////////
 
-	//FixIn: 8.0.1.7
+	// FixIn: 8.0.1.7.
 	$modification_date = wpbc_db_get_booking_modification_date( $booking_id );
 
 	// This date $values in GMT date/Time format. So  we need to switch  to  WordPress locale with TIME  sum of actual  GMT date/time value + shift  of timezone from WordPress.
@@ -481,7 +487,7 @@ $replace['selected_short_dates_hint']     =     wpbc_get_dates_short_format( $sq
 	list( $replace['modification_year'], $replace['modification_month'], $replace['modification_day'] ) = explode( '-', $modification_date[0] );
 	list( $replace['modification_hour'], $replace['modification_minutes'], $replace['modification_seconds'] ) = explode( ':', $modification_date[1] );
 
-	//FixIn: 10.0.0.34
+	// FixIn: 10.0.0.34.
 	if ( ! empty( $replace['creation_date'] ) ) {
 
 		// This date $values in GMT date/Time format. So  we need to switch  to  WordPress locale with TIME  sum of actual  GMT date/time value + shift  of timezone from WordPress.
@@ -521,7 +527,7 @@ function wpbc_replace_params_for_booking_func( $replace, $booking_id, $bktype, $
 		list( $replace['modification_hour'], $replace['modification_minutes'], $replace['modification_seconds'] ) = explode( ':', $modification_date[1] );
 	*/
 
-	//FixIn: 8.4.2.11
+	// FixIn: 8.4.2.11.
 	if ( isset( $replace['rangetime'] ) ) {
 		$replace['rangetime'] = wpbc_time_slot_in_format( $replace['rangetime'] );
 	}
@@ -532,7 +538,7 @@ function wpbc_replace_params_for_booking_func( $replace, $booking_id, $bktype, $
 		$replace['endtime'] = wpbc_time_in_format( $replace['endtime'] );
 	}
 
-	//FixIn: 8.2.1.25
+	// FixIn: 8.2.1.25.
 	$booking_data = wpbc_db_get_booking_details( $booking_id );
 
 	if ( ! empty( $booking_data ) ) {
@@ -557,7 +563,7 @@ function wpbc_replace_params_for_booking_func( $replace, $booking_id, $bktype, $
 		list( $replace['modification_year'], $replace['modification_month'], $replace['modification_day'] ) 	  = explode( '-', $modification_date[0] );
 		list( $replace['modification_hour'], $replace['modification_minutes'], $replace['modification_seconds'] ) = explode( ':', $modification_date[1] );
 	}
-	//FixIn: 10.0.0.34
+	// FixIn: 10.0.0.34.
 	if ( ! empty( $replace['creation_date'] ) ) {
 
 		// This date $values in GMT date/Time format. So  we need to switch  to  WordPress locale with TIME  sum of actual  GMT date/time value + shift  of timezone from WordPress.

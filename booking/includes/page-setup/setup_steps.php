@@ -385,17 +385,15 @@ class WPBC_SETUP_WIZARD_STEPS {
 		ob_start();
 
 		?><div class="setup_wizard_page_container" style="display: flex;flex-flow: row wrap;justify-content: flex-start;align-items: center;color: #fff;margin: 0 -5px 0 0;overflow: visible;">
-			<div class="name_item" style="margin-top: 0;white-space: nowrap;padding: 0 0 0 0;"><?php
-				_e( 'Setup', 'booking' );
-			?></div>
+			<div class="name_item" style="margin-top: 0;white-space: nowrap;padding: 0 0 0 0;"><?php esc_html_e( 'Setup', 'booking' ); ?></div>
 			<div style="margin:3px 0px 0 0;margin-left: auto;font-size: 9px;background: #2271b1;height: 15px;" class="wpbc_badge_count name_item update-plugins">
 				<span class="update-count" style="white-space: nowrap;word-wrap: normal;"><?php
-					echo $this->get_active_step_num() . ' / ' . $this->get_total_steps_count();
+					echo esc_html( $this->get_active_step_num() . ' / ' . $this->get_total_steps_count() );
 				?></span>
 			</div>
 			<div class="progress_line_container" style="width: 100%;border: 0px solid #757575;height: 3px;border-radius: 6px;margin: 7px 0 -3px -3px;overflow: hidden;background: #555;">
 				<div class="progress_line" style="font-size: 6px;font-weight: 600;word-wrap: normal;border-radius: 6px;white-space: nowrap;background: #8ECE01;width: <?php
-					echo $this->get_progess_value(); ?>%;height: 3px;"></div>
+					echo esc_html( $this->get_progess_value() ); ?>%;height: 3px;"></div>
 			</div>
 		</div><?php
 
@@ -428,6 +426,9 @@ class WPBC_SETUP_WIZARD_STEPS {
 					.ui_element.wpbc_page_top__wizard_button {
 						top: 49px !important;
 					}
+				}
+				.wpbc_header_news{
+					display: none !important;
 				}
 				.wpbc_admin_full_screen .wpbc_page_top__wizard_button {
 					display: none;
@@ -466,20 +467,19 @@ class WPBC_SETUP_WIZARD_STEPS {
 						<div class="setup_wizard_page_container"
 							 style="display: flex;flex-flow: row wrap;justify-content: flex-start;align-items: center;color: #fff;overflow: visible;flex: 1 1 auto;">
 							<div class="name_item" style="margin-top: 0;white-space: nowrap;padding: 0;margin-right: 20px;">
-								<i style="margin-right: 4px;" class="menu_icon icon-1x wpbc_icn_donut_large wpbc_icn_adjust0"></i>
-								<?php _e( 'Finish Setup', 'booking' ); ?>
+								<i style="margin-right: 4px;" class="menu_icon icon-1x wpbc_icn_donut_large wpbc_icn_adjust0"></i> <?php esc_html_e( 'Finish Setup', 'booking' ); ?>
 							</div>
 							<div
 								style="margin:2px 0px 0 9px;font-size: 9px;background: #3e3e3e;height: auto;border-radius: 5px;padding: 0px 7px 0px;margin-left: auto;"
 								class="wpbc_badge_count name_item update-plugins">
 								<span class="update-count"
-									  style="white-space: nowrap;word-wrap: normal;"><?php echo $this->get_active_step_num() . ' / ' . $this->get_total_steps_count(); ?></span>
+									  style="white-space: nowrap;word-wrap: normal;"><?php echo esc_html( $this->get_active_step_num() . ' / ' . $this->get_total_steps_count() ); ?></span>
 							</div>
 
 							<div class="progress_line_container"
 								 style="width: 100%;border: 0px solid #757575;height: 3px;border-radius: 6px;margin: 7px 0 0 0;overflow: hidden;background: #202020;">
 								<div class="progress_line"
-									 style="font-size: 6px;font-weight: 600;border-radius: 6px;word-wrap: normal;white-space: nowrap;background: #8ECE01;width: <?php echo $this->get_progess_value(); ?>%;height: 3px;"></div>
+									 style="font-size: 6px;font-weight: 600;border-radius: 6px;word-wrap: normal;white-space: nowrap;background: #8ECE01;width: <?php echo esc_attr( $this->get_progess_value() ); ?>%;height: 3px;"></div>
 							</div>
 						</div>
 						<a <?php  // onclick="javascript:jQuery( '.wpbc_page_top__wizard_button').remove();" href="javascript:void(0);"  ?>

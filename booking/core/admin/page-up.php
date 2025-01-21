@@ -12,7 +12,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-//FixIn: 8.0.1.6
+// FixIn: 8.0.1.6.
 
 /**
  * Show Content
@@ -36,7 +36,7 @@ class WPBC_Page_SettingsUp extends WPBC_Page_Structure {
 
 		$tabs[ 'upgrade' ] = array(
 			'title' => __( 'Upgrade', 'booking')                     // Title of TAB
-		, 'page_title' => ''//sprintf( __( 'Need even more functionality? Check %s higher versions %s','booking'), '', '<a href="https://wpbookingcalendar.com/features/" target="_blank" style="text-decoration: none;font-size:0.9em;">&gt;&gt;&gt;</a>' )                // Title of Page
+		, 'page_title' => ''
 		, 'hint' => ''                      // Hint
 		, 'link' => ''                      // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
 		, 'position' => 'right'             // 'left'  ||  'right'  ||  ''
@@ -73,7 +73,7 @@ class WPBC_Page_SettingsUp extends WPBC_Page_Structure {
 	        , 10 );
 		</script>
 		<?php
-		//	//FixIn: 10.1.3.1
+		//	// FixIn: 10.1.3.1.
 
 		wpbc_redirect( 'https://wpbookingcalendar.com/features/#content' );
 	}

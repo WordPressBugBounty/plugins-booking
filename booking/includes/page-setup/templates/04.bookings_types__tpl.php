@@ -41,8 +41,8 @@ function wpbc_stp_wiz__template__bookings_types(){
 		<div class="wpbc__form__div wpbc_swp_section wpbc_swp_section__bookings_types">
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<h1 class="wpbc_swp_section_header" ><?php _e( 'Select Your Booking Type', 'booking' ); ?></h1>
-					<p class="wpbc_swp_section_header_description"><?php _e('This will help customize your experience.','booking'); ?></p>
+					<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Select Your Booking Type', 'booking' ); ?></h1>
+					<p class="wpbc_swp_section_header_description"><?php esc_html_e('This will help customize your experience.','booking'); ?></p>
 				</div>
 			</div>
 			<div class="wpbc__row">
@@ -98,7 +98,8 @@ function wpbc_stp_wiz__template__bookings_types(){
 								, 'label'    => array( 'title' => __('Changeover Multi-Date Bookings','booking') )
 								, 'text_description'  => __('Manage multi-day bookings with specific check-in and check-out days, clearly marked with diagonal or vertical lines. Ideal for bookings that require split days.','booking')
 								, 'label_after_right' => '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank"><strong class="wpbc_ui_radio_text_right"><span class="wpbc_pro_label">Pro</span></strong></a>'
-								, 'footer_text' 	  => sprintf(__('Find more information about this feature on %sthis page%s.','booking'), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
+								/* translators: 1: ... */
+								, 'footer_text' 	  => sprintf( __( 'Find more information about this feature on %1$sthis page%2$s.', 'booking' ), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
 								, 'style'    => '' 																		// CSS of select element
 								, 'class'    => '' 																		// CSS Class of select element
 								, 'disabled' => ( ! class_exists( 'wpdev_bk_biz_s' ) )
@@ -119,14 +120,14 @@ function wpbc_stp_wiz__template__bookings_types(){
 					// Help message
 					?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 20px 20px 5px 2px;">
 						<?php
-						 	echo '<strong>' . __('Note!' ,'booking') . '</strong> ' .
-								 __( 'This step will update the booking form configuration.', 'booking' ) . ' ';
-							echo __( 'You can always change this later', 'booking' ) . '. ';
-							printf( __( 'Configure it at the %s page.', 'booking' ),
+						 	echo '<strong>' . esc_html__('Note!' ,'booking') . '</strong> ' .
+								 esc_html__( 'This step will update the booking form configuration.', 'booking' ) . ' ';
+							echo esc_html__( 'You can always change this later', 'booking' ) . '. ';
+							/* translators: 1: ... */
+							echo wp_kses_post( sprintf( __( 'Configure it at the %s page.', 'booking' ),
 							'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>',
-							'<a href="https://wpbookingcalendar.com/faq/no-emails/">', '</a>' );
+							'<a href="https://wpbookingcalendar.com/faq/no-emails/">', '</a>' ) );
 							echo ' ';
-
 						?>
 					</div><?php
 
@@ -165,7 +166,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 																									'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
 																								} );
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php _e('Go Back','booking'); ?></span></a>
+										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php esc_html_e('Go Back','booking'); ?></span></a>
 
 						<# } else { #>
 							<span style="margin-left:auto;"></span>
@@ -185,7 +186,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 																								} );
 
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+										wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 					</div>
 				</div>
 				<div class="wpbc__row">
@@ -195,14 +196,14 @@ function wpbc_stp_wiz__template__bookings_types(){
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 							   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
 							><?php
-								_e('Exit and skip the setup wizard','booking');
+								esc_html_e('Exit and skip the setup wizard','booking');
 							?></a>
 							<?php  ?>
 							<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;" tabindex="-1"
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
 							   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
 							><?php
-								_e('Reset Wizard','booking');
+								esc_html_e('Reset Wizard','booking');
 							?></a>
 						</p>
 					</div>
@@ -234,10 +235,10 @@ function wpbc_stp_wiz__ui__bookings_types__timeslot_picker_selectbox__get() {
 
 	ob_start();
 	?><div class="booking_timeslot_picker__get_on_off" style="max-width: 90%;margin: 0 auto;padding-bottom: 16px;">
-		<label style="margin: 0 0 8px;"><?php _e('Show time slots as','booking') ?></label>
+		<label style="margin: 0 0 8px;"><?php esc_html_e('Show time slots as','booking'); ?></label>
 		<select name="wpbc_swp_booking_timeslot_picker" >
-			<option <?php selected($booking_timeslot_picker,'On'); ?> value="On"><?php _e('Time Picker','booking'); ?></option>
-			<option <?php selected($booking_timeslot_picker,'Off'); ?> value="Off"><?php _e('Drop-down list','booking'); ?></option>
+			<option <?php selected($booking_timeslot_picker,'On'); ?> value="On"><?php esc_html_e('Time Picker','booking'); ?></option>
+			<option <?php selected($booking_timeslot_picker,'Off'); ?> value="Off"><?php esc_html_e('Drop-down list','booking'); ?></option>
 		</select>
 	</div><?php
 	$toggle_box_html = ob_get_clean();
@@ -256,10 +257,10 @@ function wpbc_stp_wiz__ui__bookings_types__change_over_selectbox__get() {
 
 	ob_start();
 	?><div class="wpbc_ui_booking_change_over__get_on_off__div" style="max-width: 90%;margin: 0 auto;padding-bottom: 16px;">
-		<label style="margin: 0 0 8px;"><?php _e('Show change over days as','booking') ?></label>
+		<label style="margin: 0 0 8px;"><?php esc_html_e('Show change over days as','booking'); ?></label>
 		<select name="wpbc_swp_booking_change_over_days_triangles" >
-			<option <?php selected($booking_change_over_days_triangles,'On'); ?> value="On"><?php _e('Triangles','booking'); ?></option>
-			<option <?php selected($booking_change_over_days_triangles,'Off'); ?> value="Off"><?php _e('Vertical Lines','booking'); ?></option>
+			<option <?php selected($booking_change_over_days_triangles,'On'); ?> value="On"><?php esc_html_e('Triangles','booking'); ?></option>
+			<option <?php selected($booking_change_over_days_triangles,'Off'); ?> value="Off"><?php esc_html_e('Vertical Lines','booking'); ?></option>
 		</select>
 	</div><?php
 	$toggle_box_html = ob_get_clean();

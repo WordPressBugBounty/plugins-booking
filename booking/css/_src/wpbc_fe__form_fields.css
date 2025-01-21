@@ -1,7 +1,7 @@
 /** 
  * Booking Form Fields  
  *   
- * //FixIn: 10.1.5.7
+ * // FixIn: 10.1.5.7.
  */
 :root {
     --wpbc_form-field-border-radius: 3px;
@@ -548,16 +548,21 @@ div.wpbc_container.wpbc_form input[type=radio]:before {
   background-image: none;
   border-radius: 3px;
 }
-
+/* //FixIn: 2025-01-17 12:10 */
 div.wpbc_container.wpbc_form input[type=checkbox] + label,
 div.wpbc_container.wpbc_form input[type=radio] + label,
 div.wpbc_container.wpbc_form .wpdev-list-item > input[type=checkbox] + .wpdev-list-item-label,
-div.wpbc_container.wpbc_form .wpdev-list-item > input[type=radio] + .wpdev-list-item-label{
-  display: inline;
-  position: relative;
-  padding-inline-start: var(--wpbc_form-padding-between-label-checkbox-radio);
-  font-size: var(--wpbc_form-label-size-font-size);
-  vertical-align: middle;
+div.wpbc_container.wpbc_form .wpdev-list-item > input[type=radio] + .wpdev-list-item-label,
+div.wpbc_container.wpbc_form .wpbc_wrap_checkbox + a {
+    display: inline;
+    position: relative;
+    padding-inline-start: var(--wpbc_form-padding-between-label-checkbox-radio);
+    font-size: var(--wpbc_form-label-size-font-size);
+    vertical-align: middle;
+    cursor: pointer;
+}
+div.wpbc_container.wpbc_form .wpbc_wrap_checkbox + a {
+    padding-top: 3px;
 }
 div.wpbc_container.wpbc_form input[type=checkbox] + label,
 div.wpbc_container.wpbc_form input[type=radio] + label{

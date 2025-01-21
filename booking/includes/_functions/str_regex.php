@@ -61,7 +61,7 @@ function wpbc_replace_to_strong_symbols( $text ){
  *
  * @return array|string|string[]
  */
-function wpbc_replace__true_false__to__yes_no( $value ) {                                                                    //FixIn: 9.8.9.1
+function wpbc_replace__true_false__to__yes_no( $value ) {                                                                    // FixIn: 9.8.9.1.
 
 	$checkbox_true_value = apply_filters( 'wpbc_checkbox_true_value', __( 'Y_E_S', 'booking' ) );
 	$value_replaced = str_replace( 'true', $checkbox_true_value, $value );
@@ -151,7 +151,7 @@ function wpbc_string__escape__then_convert__n_amp__html( $text ) {
 
 	$escaped_text = wpbc_escape_any_xss_in_string($text, $is_escape_sql );
 
-	$text_html = str_replace( array( "\\r\\n", "\\r", "\\n", "\r\n", "\r","\n" ), "<br/>", $escaped_text );            //FixIn: 8.1.3.4
+	$text_html = str_replace( array( "\\r\\n", "\\r", "\\n", "\r\n", "\r","\n" ), "<br/>", $escaped_text );            // FixIn: 8.1.3.4.
 
 	$text_html = str_replace( array( "\\&" ), '&', $text_html );
 
@@ -193,7 +193,7 @@ function wpbc_get_params_of_shortcode_in_string( $shortcode, $subject, $pos = 0,
 		return false;
 	}
 
-	$pos = strpos( $subject, '[' . $shortcode, $pos );                                   //FixIn: 7.0.1.52
+	$pos = strpos( $subject, '[' . $shortcode, $pos );                                   // FixIn: 7.0.1.52.
 
 	if ( $pos !== false ) {
 		$pos2 = strpos( $subject, ']', ( $pos + 2 ) );
@@ -205,7 +205,7 @@ function wpbc_get_params_of_shortcode_in_string( $shortcode, $subject, $pos = 0,
 
 		foreach ( $keywords as $value ) {
 			if ( count( $value ) > 1 ) {
-				$shortcode_params[ trim( $value[1] ) ] = trim( $value[2] );                                            //FixIn: 9.7.4.4
+				$shortcode_params[ trim( $value[1] ) ] = trim( $value[2] );                                            // FixIn: 9.7.4.4.
 			}
 		}
 		$shortcode_params['start'] = $pos + 1;
@@ -236,7 +236,7 @@ function wpbc_get_params_of_shortcode_in_string( $shortcode, $subject, $pos = 0,
 													)
 							)
  */
-function wpbc_get_shortcodes_in_text__as_unique_replace( $content_text, $shortcode_arr = array( 'wpbc_dismiss' ) ) {                   //FixIn: 9.6.1.8
+function wpbc_get_shortcodes_in_text__as_unique_replace( $content_text, $shortcode_arr = array( 'wpbc_dismiss' ) ) {                   // FixIn: 9.6.1.8.
 
 	$replace = array();
 
@@ -250,7 +250,7 @@ function wpbc_get_shortcodes_in_text__as_unique_replace( $content_text, $shortco
 
 				$exist_replace = substr( $content_text, $shortcode_params['start'], ( $shortcode_params['end'] - $shortcode_params['start'] ) );
 
-				$new_replace = $single_shortcode . rand( 1000, 9000 );
+				$new_replace = $single_shortcode . wp_rand( 1000, 9000 );
 
 				$pos = $shortcode_params['start'] + strlen( $new_replace );
 
@@ -329,7 +329,7 @@ function wpbc_get_select_checkbox_fields_from_booking_form( $booking_form = '' )
 	if ( empty( $booking_form )  )
 		$booking_form  = get_bk_option( 'booking_form' );
 
-	$types = 'select[*]?|selectbox[*]?|checkbox[*]?|radio[*]?';                                                                //FixIn: 8.1.3.7
+	$types = 'select[*]?|selectbox[*]?|checkbox[*]?|radio[*]?';                                                                // FixIn: 8.1.3.7.
 	$regex = '%\[\s*(' . $types . ')(\s+[a-zA-Z][0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)?((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
 
 	$fields_count = preg_match_all($regex, $booking_form, $fields_matches) ;

@@ -21,32 +21,33 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 /**
  * Check if table exist
  *
- * @global  $wpdb
  * @param string $tablename
+ *
  * @return 0|1
+ * @global       $wpdb
  */
 function wpbc_is_table_exists( $tablename ) {
 
 	global $wpdb;
 
 	if (
-		   ( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
-		|| ( '_' == $wpdb->prefix )																					//FixIn: 8.7.3.16
+		( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
+		|| ( '_' == $wpdb->prefix )                                                                                    // FixIn: 8.7.3.16.
 	) {
 		$tablename = $wpdb->prefix . $tablename;
 	}
 
 	if ( 0 ) {
 		$sql_check_table = $wpdb->prepare( "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE (TABLE_SCHEMA = '{$wpdb->dbname}') AND (TABLE_NAME = %s);", $tablename );
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql_check_table );
 
 		return count( $res );
 
 	} else {
 
-		$sql_check_table = $wpdb->prepare("SHOW TABLES LIKE %s" , $tablename ); 									//FixIn: 5.4.3
-
+		$sql_check_table = $wpdb->prepare( "SHOW TABLES LIKE %s", $tablename );                                    //FixIn: 5.4.3
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql_check_table );
 
 		return count( $res );
@@ -55,7 +56,7 @@ function wpbc_is_table_exists( $tablename ) {
 }
 
 
-//FixIn: 10.0.0.1
+// FixIn: 10.0.0.1.
 /**
  * Check  if we are in playground.wordpress.net ,  where used 'sqlite' DB
  *
@@ -84,17 +85,17 @@ function wpbc_is_this_wp_playground_db(){
  * @param  $fieldname
  * @return 0|1
  */
-function wpbc_is_field_in_table_exists( $tablename , $fieldname) {
+function wpbc_is_field_in_table_exists( $tablename, $fieldname ) {
 
 	if ( wpbc_is_this_wp_playground_db() ) {
-		return 1;		// Probably  we are in playground.wordpress.net --> So  then all  such fields already  was created			//FixIn: 10.0.0.1
+		return 1;        // Probably  we are in playground.wordpress.net --> So  then all  such fields already  was created			// FixIn: 10.0.0.1.
 	}
 
 	global $wpdb;
 
 	if (
-		   ( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
-		|| ( '_' == $wpdb->prefix )																					//FixIn: 8.7.3.16
+		( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
+		|| ( '_' == $wpdb->prefix )                                                                                    // FixIn: 8.7.3.16.
 	) {
 		$tablename = $wpdb->prefix . $tablename;
 	}
@@ -102,7 +103,7 @@ function wpbc_is_field_in_table_exists( $tablename , $fieldname) {
 	if ( 0 ) {
 
 		$sql_check_table = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='{$tablename}' AND TABLE_SCHEMA='{$wpdb->dbname}' ";
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql_check_table );
 
 		foreach ( $res as $fld ) {
@@ -114,7 +115,7 @@ function wpbc_is_field_in_table_exists( $tablename , $fieldname) {
 	} else {
 
 		$sql_check_table = "SHOW COLUMNS FROM {$tablename}";
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql_check_table );
 
 		foreach ( $res as $fld ) {
@@ -131,16 +132,24 @@ function wpbc_is_field_in_table_exists( $tablename , $fieldname) {
 /**
  * Check if index exist
  *
- * @global  $wpdb
  * @param string $tablename
- * @param  $fieldindex
+ * @param        $fieldindex
+ *
  * @return 0|1
+ * @global       $wpdb
  */
-function wpbc_is_index_in_table_exists( $tablename , $fieldindex) {
+function wpbc_is_index_in_table_exists( $tablename, $fieldindex ) {
 	global $wpdb;
-	if ( (! empty($wpdb->prefix) ) && ( strpos($tablename, $wpdb->prefix) === false ) ) $tablename = $wpdb->prefix . $tablename ;
-	$sql_check_table = $wpdb->prepare("SHOW INDEX FROM {$tablename} WHERE Key_name = %s", $fieldindex );
+	if ( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) ) {
+		$tablename = $wpdb->prefix . $tablename;
+	}
+	/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+	$sql_check_table = $wpdb->prepare( "SHOW INDEX FROM {$tablename} WHERE Key_name = %s", $fieldindex );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	$res = $wpdb->get_results( $sql_check_table );
-	if (count($res)>0) return 1;
-	else               return 0;
+	if ( count( $res ) > 0 ) {
+		return 1;
+	} else {
+		return 0;
+	}
 }

@@ -140,7 +140,7 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
 //        $newurl = "$4 ($2)";
 //        $string = preg_replace($pattern,$newurl,$string);
 
-        $newstring = preg_replace( $this->get_plain_search_array(), $this->get_plain_replace_array(), strip_tags( $string ) );
+        $newstring = preg_replace( $this->get_plain_search_array(), $this->get_plain_replace_array(), wp_strip_all_tags( $string ) );
         return $newstring;
     }
     
@@ -172,7 +172,7 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
         
         foreach ( $replace as $replace_shortcode => $replace_value ) {
 
-	        //FixIn: 8.9.3.2
+	        // FixIn: 8.9.3.2.
 			if ( is_null( $replace_value ) ) {
 				$replace_value = '';
 			};
@@ -444,7 +444,7 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
                 }
             } else {                
                 // Check about correct  format  of email
-                if( preg_match( '/([\w\.\-_]+)?\w+@[\w\-_]+(\.\w+){1,}/im', $recipient, $matches ) ) {                  //FixIn: 8.7.7.2
+                if( preg_match( '/([\w\.\-_]+)?\w+@[\w\-_]+(\.\w+){1,}/im', $recipient, $matches ) ) {                  // FixIn: 8.7.7.2.
                     $recipient = $matches[0];
                 }             
             }
@@ -493,8 +493,8 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
         $is_send_email = apply_filters( 'wpbc_email_api_is_allow_send', $is_send_email, $this->id, $this->fields_values );
         
         if ( $is_send_email ) {
-        	$to = apply_filters( 'wpbc_email_api_send_field_to', $to );                                                 //FixIn: 8.1.3.1
-	        //FixIn: 8.5.2.22
+        	$to = apply_filters( 'wpbc_email_api_send_field_to', $to );                                                 // FixIn: 8.1.3.1.
+	        // FixIn: 8.5.2.22.
 	        if ( ! empty( $to ) ) {
 // debuge( '$to, $subject, $message, $headers, $attachments',htmlspecialchars($to), htmlspecialchars($subject), htmlspecialchars($message), htmlspecialchars($headers), htmlspecialchars($attachments));
 //debuge( debug_backtrace() );
@@ -516,7 +516,7 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
              
             $headers = $this->get_headers( array( 'reply' => $to ) );
 
-//FixIn: 8.1.2.17
+// FixIn: 8.1.2.17.
 if ( ! empty( $this->fields_values['to'] ) ) {
 	$admin_to = $this->fields_values['to'];
 	if ( ! empty( $this->fields_values['to_name'] )) {
@@ -562,13 +562,13 @@ if ( ! empty( $this->fields_values['to'] ) ) {
 
 			$to = $this->validate_emails( $this->get_from__name() . ' <' . $this->get_from__email_address() . '> ' );
 
-}           //FixIn: 8.1.2.17
+}           // FixIn: 8.1.2.17.
 
             $is_send_email = apply_filters( 'wpbc_email_api_is_allow_send_copy', $is_send_email, $this->id, $this->fields_values );
             
             if ( $is_send_email ) {
-            	$to = apply_filters( 'wpbc_email_api_send_copy_field_to', $to );                                        //FixIn: 8.1.3.1
-	            //FixIn: 8.5.2.22
+            	$to = apply_filters( 'wpbc_email_api_send_copy_field_to', $to );                                        // FixIn: 8.1.3.1.
+	            // FixIn: 8.5.2.22.
 	            if ( ! empty( $to ) ) {
 		            $return_copy = wp_mail( $to, $subject, $message, $headers, $attachments );
 	            }

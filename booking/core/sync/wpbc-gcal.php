@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 //  A J A X
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 function wpbc_silent_import_all_events() {
 
@@ -54,8 +54,9 @@ function wpbc_silent_import_all_events() {
         $import_result = $wpbc_Google_Calendar->run();
         
     } else {
-        
-        $types_list = $wpdb->get_results( "SELECT booking_type_id, import FROM {$wpdb->prefix}bookingtypes" );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$types_list = $wpdb->get_results( "SELECT booking_type_id, import FROM {$wpdb->prefix}bookingtypes" );
 
         foreach ($types_list as $wpbc_booking_resource) {
             $wpbc_booking_resource_id = $wpbc_booking_resource->booking_type_id;
@@ -65,7 +66,7 @@ function wpbc_silent_import_all_events() {
                 $wpbc_Google_Calendar->setUrl($wpbc_booking_resource_feed);
                 $wpbc_Google_Calendar->setResource($wpbc_booking_resource_id);
 
-				//FixIn: 9.9.0.25
+				// FixIn: 9.9.0.25.
 	            if ( function_exists( 'wpbm_delete_all_imported_bookings' ) ) {
 		            wpbm_delete_all_imported_bookings( array( 'resource_id' => $wpbc_booking_resource_id ) );
 	            }
@@ -89,7 +90,7 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
         }        
         ?>
         <tr valign="top">
-            <th scope="row"><label for="booking_gcal_events_from" ><?php _e('From' ,'booking'); ?>:</label></th>
+            <th scope="row"><label for="booking_gcal_events_from" ><?php esc_html_e('From' ,'booking'); ?>:</label></th>
             <td class="booking_gcal_events_from">                        
                 <select id="booking_gcal_events_from" name="booking_gcal_events_from"
                         onchange="javascript: if(this.value=='date') {
@@ -111,14 +112,18 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                                           , "date" => __('Specific date / time' ,'booking')
                                     );
                     foreach ($wpbc_options as $key => $value) {
-                        ?><option <?php if( $booking_gcal_events_from == $key ) echo "selected"; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option><?php
+                        ?><option <?php if( $booking_gcal_events_from == $key ) echo "selected"; ?> value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $key; ?>"><?php echo esc_html( $value ); ?></option><?php
                     }
                     ?>
                 </select>
-                <span class="description"><?php _e('Select option, when to start retrieving events.' ,'booking');?></span>                
+                <span class="description"><?php esc_html_e('Select option, when to start retrieving events.' ,'booking'); ?></span>
                 <div class="booking_gcal_events_from_offset" style="margin:10px 0 0;">
-                    <label for="booking_gcal_events_from_offset"> <span class="wpbc_offset_value"><?php _e('Offset' ,'booking'); ?></span><span class="wpbc_offset_datetime" ><?php _e('Enter date / time' ,'booking'); ?></span>: </label>
-                    <input type="text"  id="booking_gcal_events_from_offset" name="booking_gcal_events_from_offset" value="<?php echo $booking_gcal_events_from_offset; ?>" style="width:100px;text-align: right;" />
+                    <label for="booking_gcal_events_from_offset"> <span class="wpbc_offset_value"><?php esc_html_e('Offset' ,'booking'); ?></span><span class="wpbc_offset_datetime" ><?php esc_html_e('Enter date / time' ,'booking'); ?></span>: </label>
+                    <input type="text"  id="booking_gcal_events_from_offset" name="booking_gcal_events_from_offset" value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $booking_gcal_events_from_offset; ?>" style="width:100px;text-align: right;" />
                     <span class="wpbc_offset_value">
                         <select id="booking_gcal_events_from_offset_type" name="booking_gcal_events_from_offset_type" style="margin-top: -2px;width: 99px;">
                             <?php 
@@ -129,14 +134,18 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                                                   , "day" => __('days' ,'booking')
                                             );
                             foreach ($wpbc_options as $key => $value) {
-                                ?><option <?php if( $booking_gcal_events_from_offset_type == $key ) echo "selected"; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option><?php
+                                ?><option <?php if( $booking_gcal_events_from_offset_type == $key ) echo "selected"; ?> value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $key; ?>"><?php echo esc_html( $value ); ?></option><?php
                             }
                             ?>
                         </select>
-                        <span class="description"><?php _e('You can specify an additional offset from you chosen start point. The offset can be negative.' ,'booking');?></span>
+                        <span class="description"><?php esc_html_e('You can specify an additional offset from you chosen start point. The offset can be negative.' ,'booking'); ?></span>
                     </span>
                     <span class="wpbc_offset_datetime">
-                        <em><?php printf(__('Type your date in format %s. Example: %s' ,'booking'),'Y-m-d','2014-08-01'); ?></em>
+                        <em><?php
+							/* translators: 1: ... */
+							echo wp_kses_post( sprintf( __( 'Type your date in format %1$s. Example: %2$s', 'booking' ), 'Y-m-d', '2014-08-01' ) ); ?></em>
                     </span>
                 </div>
             </td>
@@ -153,7 +162,7 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
         }
         ?>
         <tr valign="top">
-            <th scope="row"><label for="booking_gcal_events_until" ><?php _e('Until' ,'booking'); ?>:</label></th>
+            <th scope="row"><label for="booking_gcal_events_until" ><?php esc_html_e('Until' ,'booking'); ?>:</label></th>
             <td class="booking_gcal_events_until">                                
                 <select id="booking_gcal_events_until" name="booking_gcal_events_until"
                         onchange="javascript: if(this.value=='date') {
@@ -175,14 +184,18 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                                           , "date" => __('Specific date / time' ,'booking')
                                     );
                     foreach ($wpbc_options as $key => $value) {
-                        ?><option <?php if( $booking_gcal_events_until == $key ) echo "selected"; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option><?php
+                        ?><option <?php if( $booking_gcal_events_until == $key ) echo "selected"; ?> value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $key; ?>"><?php echo esc_html( $value ); ?></option><?php
                     }
                     ?>
                 </select>
-                <span class="description"><?php _e('Select option, when to stop retrieving events.' ,'booking');?></span>
+                <span class="description"><?php esc_html_e('Select option, when to stop retrieving events.' ,'booking'); ?></span>
                 <div class="booking_gcal_events_until_offset" style="margin:10px 0 0;">
-                    <label for="booking_gcal_events_until_offset" > <span class="wpbc_offset_value"><?php _e('Offset' ,'booking'); ?></span><span class="wpbc_offset_datetime" ><?php _e('Enter date / time' ,'booking'); ?></span>: </label>
-                    <input type="text" id="booking_gcal_events_until_offset" name="booking_gcal_events_until_offset" value="<?php echo $booking_gcal_events_until_offset; ?>" style="width:100px;text-align: right;" />
+                    <label for="booking_gcal_events_until_offset" > <span class="wpbc_offset_value"><?php esc_html_e('Offset' ,'booking'); ?></span><span class="wpbc_offset_datetime" ><?php esc_html_e('Enter date / time' ,'booking'); ?></span>: </label>
+                    <input type="text" id="booking_gcal_events_until_offset" name="booking_gcal_events_until_offset" value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $booking_gcal_events_until_offset; ?>" style="width:100px;text-align: right;" />
                     <span class="wpbc_offset_value">
                         <select id="booking_gcal_events_until_offset_type" name="booking_gcal_events_until_offset_type" style="margin-top: -2px;width: 99px;">
                             <?php 
@@ -193,14 +206,18 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                                                   , "day" => __('days' ,'booking')
                                             );
                             foreach ($wpbc_options as $key => $value) {
-                                ?><option <?php if( $booking_gcal_events_until_offset_type == $key ) echo "selected"; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option><?php
+                                ?><option <?php if( $booking_gcal_events_until_offset_type == $key ) echo "selected"; ?> value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $key; ?>"><?php echo esc_html( $value ); ?></option><?php
                             }
                             ?>
                         </select>
-                        <span class="description"><?php _e('You can specify an additional offset from you chosen end point. The offset can be negative.' ,'booking');?></span>
+                        <span class="description"><?php esc_html_e('You can specify an additional offset from you chosen end point. The offset can be negative.' ,'booking'); ?></span>
                     </span>
                     <span class="wpbc_offset_datetime">
-                        <em><?php  printf(__('Type your date in format %s. Example: %s' ,'booking'),'Y-m-d','2014-08-30'); ?></em>
+                        <em><?php
+							/* translators: 1: ... */
+							echo wp_kses_post( sprintf( __( 'Type your date in format %1$s. Example: %2$s', 'booking' ),'Y-m-d','2014-08-30') ); ?></em>
                     </span>
                     
                 </div>
@@ -213,10 +230,12 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
     function wpbc_gcal_settings_content_field_max_feeds($booking_gcal_events_max) {
         ?>
         <tr valign="top">
-            <th scope="row"><label for="booking_gcal_events_max" ><?php _e('Maximum number' ,'booking'); ?>:</label></th>
-            <td><input id="booking_gcal_events_max"  name="booking_gcal_events_max" class="regular-text" type="text" value="<?php echo $booking_gcal_events_max; ?>" />
+            <th scope="row"><label for="booking_gcal_events_max" ><?php esc_html_e('Maximum number' ,'booking'); ?>:</label></th>
+            <td><input id="booking_gcal_events_max"  name="booking_gcal_events_max" class="regular-text" type="text" value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $booking_gcal_events_max; ?>" />
                 <span class="description"><?php 
-                    _e('You can specify the maximum number of events to import during one session.' ,'booking');
+                    esc_html_e('You can specify the maximum number of events to import during one session.' ,'booking');
               ?></span>
             </td>
         </tr>                
@@ -227,7 +246,7 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
     function wpbc_gcal_settings_content_field_timezone($booking_gcal_timezone) {
         ?>
         <tr valign="top">
-            <th scope="row"><label for="booking_gcal_timezone" ><?php _e('Timezone' ,'booking'); ?>:</label></th>
+            <th scope="row"><label for="booking_gcal_timezone" ><?php esc_html_e('Timezone' ,'booking'); ?>:</label></th>
             <td>                                
                 <select id="booking_gcal_timezone" name="booking_gcal_timezone">
                     <?php 
@@ -235,16 +254,18 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                                             "" => __('Default' ,'booking')
                                     );
                     foreach ($wpbc_options as $key => $value) {
-                        ?><option <?php if( $booking_gcal_timezone == $key ) echo "selected"; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option><?php
+                        ?><option <?php if( $booking_gcal_timezone == $key ) echo "selected"; ?> value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $key; ?>"><?php echo esc_html( $value ); ?></option><?php
                     }
 
 
                     // structure: $wpbc_booking_region_cities_list["Pacific"]["Fiji"] = "Fiji";
-                    $wpbc_booking_region_cities_list = wpbc_get_booking_region_cities_list();							//FixIn: 8.9.4.9
+                    $wpbc_booking_region_cities_list = wpbc_get_booking_region_cities_list();							// FixIn: 8.9.4.9.
                     
                     foreach ($wpbc_booking_region_cities_list as $region => $region_cities) {
                         
-                        echo '<optgroup label="'. $region .'">';
+                        echo '<optgroup label="'. esc_attr( $region ) .'">';
                         
                         foreach ($region_cities as $city_key => $city_title) {
                             
@@ -252,8 +273,9 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                                 $is_selected = 'selected'; 
                             else 
                                 $is_selected = '';
-                            
-                            echo '<option '.$is_selected.' value="'. $region .'/'. $city_key .'">' . $city_title . '</option>';
+
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo '<option ' . $is_selected . ' value="' . $region . '/' . $city_key . '">' . $city_title . '</option>';
                             
                         }
                         echo '</optgroup>';
@@ -262,13 +284,13 @@ add_bk_action('wpbc_silent_import_all_events' , 'wpbc_silent_import_all_events' 
                     
                     ?>
                 </select>
-                <span class="description"><?php _e('Select a city in your required timezone, if you are having problems with dates and times.' ,'booking');?></span>
+                <span class="description"><?php esc_html_e('Select a city in your required timezone, if you are having problems with dates and times.' ,'booking'); ?></span>
             </td>
         </tr>                        
         <?php
     }
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Activation

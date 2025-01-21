@@ -1,5 +1,5 @@
 /**
- * Extend _wpbc with  new methods        //FixIn: 9.8.6.2
+ * Extend _wpbc with  new methods        // FixIn: 9.8.6.2.
  *
  * @type {*|{}}
  * @private
@@ -94,7 +94,7 @@
 
 			var removed_el = false;
 
-			if ( p_balancer[ 'wait' ].length ){					//FixIn: 9.8.10.1
+			if ( p_balancer[ 'wait' ].length ){					// FixIn: 9.8.10.1.
 				for ( var i in p_balancer[ 'wait' ] ){
 					if (
 						(resource_id === p_balancer[ 'wait' ][ i ][ 'resource_id' ])
@@ -121,7 +121,7 @@
 		*/
 		obj.balancer__is_already_wait = function ( resource_id, function_name ){
 
-			if ( p_balancer[ 'wait' ].length ){				//FixIn: 9.8.10.1
+			if ( p_balancer[ 'wait' ].length ){				// FixIn: 9.8.10.1.
 				for ( var i in p_balancer[ 'wait' ] ){
 					if (
 						(resource_id === p_balancer[ 'wait' ][ i ][ 'resource_id' ])
@@ -154,7 +154,7 @@
 
 			 var removed_el = false;
 
-			 if ( p_balancer[ 'in_process' ].length ){				//FixIn: 9.8.10.1
+			 if ( p_balancer[ 'in_process' ].length ){				// FixIn: 9.8.10.1.
 				 for ( var i in p_balancer[ 'in_process' ] ){
 					 if (
 						 (resource_id === p_balancer[ 'in_process' ][ i ][ 'resource_id' ])
@@ -181,7 +181,7 @@
 		*/
 		obj.balancer__is_already_run = function ( resource_id, function_name ){
 
-			if ( p_balancer[ 'in_process' ].length ){					//FixIn: 9.8.10.1
+			if ( p_balancer[ 'in_process' ].length ){					// FixIn: 9.8.10.1.
 				for ( var i in p_balancer[ 'in_process' ] ){
 					if (
 						(resource_id === p_balancer[ 'in_process' ][ i ][ 'resource_id' ])
@@ -200,7 +200,7 @@
 
 		// Get 1st from  Wait list
 		var removed_el = false;
-		if ( p_balancer[ 'wait' ].length ){					//FixIn: 9.8.10.1
+		if ( p_balancer[ 'wait' ].length ){					// FixIn: 9.8.10.1.
 			for ( var i in p_balancer[ 'wait' ] ){
 				removed_el = obj.balancer__remove_from__wait_list( p_balancer[ 'wait' ][ i ][ 'resource_id' ], p_balancer[ 'wait' ][ i ][ 'function_name' ] );
 				break;

@@ -29,7 +29,7 @@ function set_booking_row_read(booking_id){
 }
 
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 /**
 	 * Decrease counter about new bookings
@@ -149,7 +149,7 @@ function set_booking_row_deleted(booking_id){
     jQuery('#gcal_imported_events_id_'+booking_id).remove();
 }
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 // Set in Booking listing   R O W   new Remark in hint
 function set_booking_row_payment_status(booking_id, payment_status, payment_status_show){
@@ -170,7 +170,7 @@ function set_booking_row_payment_status(booking_id, payment_status, payment_stat
 
 
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 //FixIn: 5.4.5
 /**
@@ -206,7 +206,7 @@ function approve_unapprove_booking(booking_id, is_approve_or_pending, user_id, w
         var denyreason          = '';
         if ( is_send_emeils == 1 ) {
             if ( jQuery('#is_send_email_for_pending').length ) {
-                is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       //FixIn: 8.7.9.5
+                is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       // FixIn: 8.7.9.5.
                 if ( false === is_send_emeils ) { is_send_emeils = 0; }
                 else                            { is_send_emeils = 1; }
             }
@@ -293,7 +293,7 @@ function trash__restore_booking( is_trash, booking_id, user_id, wpdev_active_loc
         var denyreason          = '';
         if (is_send_emeils == 1) {
             if ( jQuery('#is_send_email_for_pending').length ) {
-                is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       //FixIn: 8.7.9.5
+                is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       // FixIn: 8.7.9.5.
                 if ( false === is_send_emeils ) { is_send_emeils = 0; }
                 else                            { is_send_emeils = 1; }
             }
@@ -342,7 +342,7 @@ function delete_booking(booking_id, user_id, wpdev_active_locale, is_send_emeils
         var denyreason          = '';
         if (is_send_emeils == 1) {
             if ( jQuery('#is_send_email_for_pending').length ) {
-                is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       //FixIn: 8.7.9.5
+                is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );       // FixIn: 8.7.9.5.
                 if ( false === is_send_emeils ) { is_send_emeils = 0; }
                 else                            { is_send_emeils = 1; }
             }
@@ -377,7 +377,7 @@ function delete_booking(booking_id, user_id, wpdev_active_locale, is_send_emeils
     return true;
 }
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 // Get Selected rows in imported Events list
 function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
@@ -399,7 +399,7 @@ function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
 
 }
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 
 /**
@@ -423,7 +423,7 @@ function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
 	var checks, first, last, checked, sliced, lastClicked = false;
 
 	// check all checkboxes
-	$('.wpbc_selectable_body').find('.check-column').find(':checkbox').on( 'click', function(e) {                   //FixIn: 8.7.11.12
+	$('.wpbc_selectable_body').find('.check-column').find(':checkbox').on( 'click', function(e) {                   // FixIn: 8.7.11.12.
 		if ( 'undefined' == e.shiftKey ) { return true; }
 		if ( e.shiftKey ) {
 			if ( !lastClicked ) { return true; }
@@ -446,19 +446,19 @@ function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
 
 		// toggle "check all" checkboxes
 		var unchecked = $(this).closest('.wpbc_selectable_body').find(':checkbox').filter(':visible:enabled').not(':checked');
-		//FixIn: 8.8.1.15
+		// FixIn: 8.8.1.15.
 		$(this).closest('.wpbc_selectable_table').find('.wpbc_selectable_head, .wpbc_selectable_foot').find(':checkbox').prop('checked', function() {
 			return ( 0 === unchecked.length );
 		});
 
 
 		// Disable text selection while pressing 'shift'
-		document.getSelection().removeAllRanges();              //FixIn: 8.7.6.8
+		document.getSelection().removeAllRanges();              // FixIn: 8.7.6.8.
 
 		return true;
 	});
 
-	//FixIn: 9.9.0.7
+	// FixIn: 9.9.0.7.
 	$('.wpbc_selectable_body').find('.check-column').find(':checkbox').on( 'change', function(e) {
 		if ( jQuery( this ).is( ':checked' ) ){
 			jQuery( this ).closest( '.wpbc_flextable_row' ).addClass( 'wpbc_flextable_row_selected' );
@@ -472,7 +472,7 @@ function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
 			$table = $this.closest( '.wpbc_selectable_table' ),
 			controlChecked = $this.prop('checked'),
 			toggle = event.shiftKey || $this.data('wp-toggle');
-        //FixIn: 8.8.1.15
+        // FixIn: 8.8.1.15.
 		$table.find( '.wpbc_selectable_body' ).filter(':visible')
                         .find('.check-column').find(':checkbox')
 			.prop('checked', function() {
@@ -488,9 +488,9 @@ function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
 				}
 
 				return false;
-			}).trigger( 'change' );		//FixIn: 9.9.0.7
+			}).trigger( 'change' );		// FixIn: 9.9.0.7.
 
-        //FixIn: 8.8.1.15
+        // FixIn: 8.8.1.15.
 		$table.find('.wpbc_selectable_head,  .wpbc_selectable_foot').filter(':visible')
                         .find('.check-column').find(':checkbox')
 			.prop('checked', function() {
@@ -506,7 +506,7 @@ function get_selected_bookings_id_in_this_list( list_tag, skip_id_length ) {
     });    
 }( jQuery ) );
 
-//FixIn: 8.4.7.14
+// FixIn: 8.4.7.14.
 function wpbc_are_you_sure_popup(){
     if ( wpbc_are_you_sure( 'Do you really want to do this ?' ) ) {
         return  true;

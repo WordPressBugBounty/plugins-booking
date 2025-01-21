@@ -22,20 +22,20 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return void
  */
-function wpbc_localize_js_vars( $where_to_load = 'both' ){                                                              //FixIn: 10.0.0.43
+function wpbc_localize_js_vars( $where_to_load = 'both' ){                                                              // FixIn: 10.0.0.43.
 
-	//$script  = 'var1 = '. json_encode('var1') .'; ';      // JSON.parse(wpbc_global_var);
+	//$script  = 'var1 = '. wp_json_encode('var1') .'; ';      // JSON.parse(wpbc_global_var);
 	$script = '';
 	$script .= "_wpbc.set_other_param( 'locale_active', '" . esc_js( wpbc_get_maybe_reloaded_booking_locale() ) . "' ); ";
 
-	//FixIn: 10.8.1.4
-	$gmt_time = date( 'Y-m-d H:i:s', strtotime( 'now' ) );
+	// FixIn: 10.8.1.4.
+	$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( 'now' ) );
 	$unavailable_time_from_today = get_bk_option( 'booking_unavailable_days_num_from_today' );
 
 	if ( ! empty( $unavailable_time_from_today ) ) {
 		if ( 'm' === substr( $unavailable_time_from_today, - 1 ) ) {
-			$gmt_time = date( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $unavailable_time_from_today ) - 1 ) . ' minutes' ) );
-			$unavailable_time_from_today = '0'; //FixIn: 10.9.2.6
+			$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $unavailable_time_from_today ) - 1 ) . ' minutes' ) );
+			$unavailable_time_from_today = '0'; // FixIn: 10.9.2.6.
 		}
 	} else {
 		$unavailable_time_from_today = '0';
@@ -46,15 +46,17 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	$script .= "_wpbc.set_other_param( 'today_arr', [" . $today_local . "]  ); ";
 
 	$script .= "_wpbc.set_other_param( 'url_plugin', '" . esc_url( plugins_url( '', WPBC_FILE ) ) . "' ); ";
-	//'_wpbc.get_other_param( 'url_plugin' )'
-	$script .= "_wpbc.set_other_param( 'this_page_booking_hash', '" . esc_js( ( ! empty( $_GET['booking_hash'] ) ) ? $_GET['booking_hash'] : '' ) . "'  ); ";
+
+	$get_booking_hash = ( ( isset( $_GET['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+
+	$script .= "_wpbc.set_other_param( 'this_page_booking_hash', '" . esc_js( $get_booking_hash ) . "'  ); ";
 
 
 	$script .= "_wpbc.set_other_param( 'calendars__on_this_page', [] ); ";
 
 	$script .= "_wpbc.set_other_param( 'calendars__first_day', '"   . intval( get_bk_option( 'booking_start_day_weeek' ) )   . "' ); ";                             //."\n";
 	$script .= "_wpbc.set_other_param( 'calendars__max_monthes_in_calendar', '"   . esc_js( get_bk_option( 'booking_max_monthes_in_calendar' ) )   . "' ); ";
-	//FixIn: 10.8.1.4
+	// FixIn: 10.8.1.4.
 	$script .= "_wpbc.set_other_param( 'availability__unavailable_from_today', '" . esc_js( $unavailable_time_from_today ) . "' ); ";    //Default: 0 '           Old JS: block_some_dates_from_today'		_wpbc.get_other_param( 'availability__unavailable_from_today' )
 	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 		$script .= "_wpbc.set_other_param( 'availability__available_from_today', '" . esc_js( get_bk_option( 'booking_available_days_num_from_today' ) ) . "' ); ";    //Default '' - all days. Old JS: 'wpbc_available_days_num_from_today'
@@ -78,7 +80,7 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_specific',    [" .$days_selection_arr['dynamic__days_specific'] . "] ); ";
 	$script .= "_wpbc.set_other_param( 'calendars__dynamic__week_days__start', [" .$days_selection_arr['dynamic__week_days__start'] . "] ); ";
 
-	//FixIn: 10.3.0.9
+	// FixIn: 10.3.0.9.
 	if ( false !== strpos( get_bk_option( 'booking_skin' ), 'light__24_8' ) ) {
 		$script .= "_wpbc.set_other_param( 'calendars__days_selection__middle_days_opacity', '0.5' ); ";
 	} else {
@@ -99,7 +101,7 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 		$script .= "_wpbc.set_other_param( 'is_enabled_booking_search_results_days_select', '" . esc_js( get_bk_option( 'booking_search_results_days_select' ) ) . "' ); ";
 	}
 
-	$script .= "_wpbc.set_other_param( 'update', '" . WP_BK_VERSION_NUM . "' ); ";
+	$script .= "_wpbc.set_other_param( 'update', '" . esc_attr( WP_BK_VERSION_NUM ) . "' ); ";
 	$script .= "_wpbc.set_other_param( 'version', '" . wpbc_get_version_type__and_mu() . "' ); ";
 
 	// Warning Messages
@@ -125,10 +127,10 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	$script_before = 'var wpbc_url_ajax =' . wp_json_encode( admin_url( 'admin-ajax.php' ) ) . ';';
 	wp_add_inline_script( 'wpbc_all', $script_before, 'before' );
 
-	$script .= "console.log( '== WPBC VARS " . WP_BK_VERSION_NUM . ' ['.wpbc_get_version_type__and_mu() .  "] LOADED ==' );";
+	$script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' ['.wpbc_get_version_type__and_mu() .  "] LOADED ==' );";
 
 
-	// Load this _wpbc only  after  loading of all scripts                                                              //FixIn: 10.1.3.4
+	// Load this _wpbc only  after  loading of all scripts                                                              // FixIn: 10.1.3.4.
 	$script  = " function wpbc_init__head(){ " . $script . " } ";
 	$script .= "( function() { if ( document.readyState === 'loading' ){ document.addEventListener( 'DOMContentLoaded', wpbc_init__head ); } else { wpbc_init__head(); } }() );";
 

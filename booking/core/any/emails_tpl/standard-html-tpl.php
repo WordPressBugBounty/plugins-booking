@@ -41,12 +41,12 @@ function wpbc_email_template_standard_html( $fields_values ) {
             Margin: 0;
             padding: 0;
             min-width: 100%;
-            <?php echo $background_color; ?>
+            <?php echo esc_attr( $background_color ); ?>
         }
         table {
             border-spacing: 0;
             font-family: sans-serif;
-            <?php echo $text_color; ?>
+            <?php echo esc_attr( $text_color ); ?>
         }
         td {
             padding: 0;
@@ -61,7 +61,7 @@ function wpbc_email_template_standard_html( $fields_values ) {
             -ms-text-size-adjust: 100%;                                
                 Margin: 0; 
                 padding: 70px 0 70px 0;
-                    <?php echo $background_color; ?> 
+                    <?php echo esc_attr( $background_color ); ?>
         }
         .webkit {
             max-width: 600px;
@@ -76,7 +76,7 @@ function wpbc_email_template_standard_html( $fields_values ) {
                 box-shadow: 0 1px 4px rgba(0,0,0,0.1) !important; 
                 border: 1px solid #dcdcdc; 
                 border-radius: 3px !important;
-                    <?php echo $body_color; ?> 
+                    <?php echo esc_attr( $body_color ); ?>
         }           
         .full-width-image img {
             width: 100%;
@@ -89,11 +89,11 @@ function wpbc_email_template_standard_html( $fields_values ) {
                 line-height: 100%; 
                 vertical-align: middle; 
                 font-family: Helvetica, Roboto, Arial, sans-serif;
-				<?php echo $base_color; ?>
+				<?php echo esc_attr( $base_color ); ?>
         }
         .footer .inner {
                 text-align: center;
-				<?php //echo $base_color; ?>
+				<?php //echo esc_attr( $base_color ); ?>
         }
         .footer .inner p {
                 font-size: 11px;
@@ -227,27 +227,28 @@ function wpbc_email_template_standard_html( $fields_values ) {
     </style>
     <![endif]-->
 </head>
-<body style="Margin:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;min-width:100%;<?php echo $background_color; ?>" <?php echo is_rtl() ? 'rightmargin="0"' : 'leftmargin="0"'; ?> > 
-    <center class="wrapper" style="width:100%;table-layout:fixed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;Margin:0;padding-top:70px;padding-bottom:70px;padding-right:0;padding-left:0;<?php echo $background_color; ?>" <?php echo is_rtl() ? 'dir="rtl"' : 'dir="ltr"'?> >
+<body style="Margin:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;min-width:100%;<?php echo esc_attr( $background_color ); ?>" <?php echo is_rtl() ? 'rightmargin="0"' : 'leftmargin="0"'; ?> >
+    <center class="wrapper" style="width:100%;table-layout:fixed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;Margin:0;padding-top:70px;padding-bottom:70px;padding-right:0;padding-left:0;<?php echo esc_attr( $background_color ); ?>" <?php echo is_rtl() ? 'dir="rtl"' : 'dir="ltr"'?> >
         <div class="webkit" style="max-width:600px;" >
             <!--[if (gte mso 9)|(IE)]>
-            <table width="600" align="center" style="border-spacing:0;font-family:sans-serif;<?php echo $text_color; ?>" >
+            <table width="600" align="center" style="border-spacing:0;font-family:sans-serif;<?php echo esc_attr( $text_color ); ?>" >
             <tr>
             <td style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
             <![endif]-->                                                       
-            <table class="outer" align="center" style="border-spacing:0;font-family:sans-serif;<?php echo $text_color; ?><?php echo $body_color; ?>Margin:0 auto;width:96%;max-width:600px;box-shadow:0 1px 4px rgba(0,0,0,0.1) !important;border-width:1px;border-style:solid;border-color:#dcdcdc;border-radius:3px !important;" >
+            <table class="outer" align="center" style="border-spacing:0;font-family:sans-serif;<?php echo esc_attr( $text_color ); ?><?php echo esc_attr( $body_color ); ?>Margin:0 auto;width:96%;max-width:600px;box-shadow:0 1px 4px rgba(0,0,0,0.1) !important;border-width:1px;border-style:solid;border-color:#dcdcdc;border-radius:3px !important;" >
 <?php if ( ! empty( $fields_values['header_img600_src'] ) ) { ?>
                 <!-- Header IMG:  1 column template row -->
                 <tr>                                                                <!-- This image must be 600px width (NOT wider). If less, then we need to set in CSS width in px of this image -->
                     <td class="full-width-image" style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-                        <img src="images/header.jpg" alt="" style="border-width:0;width:100%;height:auto;" />                  <!-- src="<?php $fields_values['header_img600_src']; ?>" -->   
+						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+                        <img src="images/header.jpg" alt="" style="border-width:0;width:100%;height:auto;" />                  <!-- src="<?php $fields_values['header_img600_src']; ?>" -->
                     </td>
                 </tr>
 <?php } ?>
                 <!-- Header:  1 column template row -->
                 <tr>                                                                        
                     <td class="one-column" style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-                        <table width="100%" class="header" style="<?php echo $base_color; ?>border-spacing:0;border-radius:3px 3px 0 0 !important;color:#ffffff;border-bottom-width:0;font-weight:bold;line-height:100%;vertical-align:middle;font-family:Helvetica, Roboto, Arial, sans-serif;" >
+                        <table width="100%" class="header" style="<?php echo esc_attr( $base_color ); ?>border-spacing:0;border-radius:3px 3px 0 0 !important;color:#ffffff;border-bottom-width:0;font-weight:bold;line-height:100%;vertical-align:middle;font-family:Helvetica, Roboto, Arial, sans-serif;" >
                             <tr>
                                 <td class="inner" style="padding-top:10px;padding-bottom:10px;padding-right:10px;padding-left:10px;width:100%;" >
                                     <p class="h1" style="Margin-bottom:10px;color:#ffffff;display:block;font-family:Helvetica, Roboto, Arial, sans-serif;font-size:30px;font-weight:300;line-height:150%;Margin:0;padding-top:26px;padding-bottom:26px;padding-right:48px;padding-left:48px;text-align:left;text-shadow:0 1px 0 #7797b4;-webkit-font-smoothing:antialiased;" ><?php echo ( wp_kses_post( wptexturize( $fields_values['header_content'] ) ) ); ?></p>
@@ -259,7 +260,7 @@ function wpbc_email_template_standard_html( $fields_values ) {
                 <!-- Content: 1 column template row -->
                 <tr>                                                            
                     <td class="one-column" style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-                        <table width="100%" style="border-spacing:0;font-family:sans-serif;<?php echo $text_color; ?>" >
+                        <table width="100%" style="border-spacing:0;font-family:sans-serif;<?php echo esc_attr( $text_color ); ?>" >
                             <tr>
                                 <td class="inner contents" style="padding-top:48px;padding-bottom:48px;padding-right:48px;padding-left:48px;width:100%;text-align:left;" >
                                     <p style="Margin:0;font-size:14px;Margin-bottom:10px;font-family:Helvetica, Roboto, Arial, sans-serif;line-height:150%;color:#737373;" ><?php 
@@ -277,7 +278,7 @@ function wpbc_email_template_standard_html( $fields_values ) {
                 <!-- Footer: 1 column template row  -->
                 <tr>
                     <td class="one-column" style="padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
-                        <table width="100%" class="footer" style="border-spacing:0;font-family:sans-serif;<?php echo $text_color; ?>" >
+                        <table width="100%" class="footer" style="border-spacing:0;font-family:sans-serif;<?php echo esc_attr( $text_color ); ?>" >
                             <tr>
                                 <td class="inner" style="text-align:center;padding-top:10px;padding-bottom:10px;padding-right:48px;padding-left:48px;width:100%;border-top-width:1px;border-top-style:solid;border-top-color:#dddddd;" >
                                     <p style="Margin:0;Margin-bottom:10px;font-family:Helvetica, Roboto, Arial, sans-serif;line-height:150%;color:#737373;font-size:11px;" >
@@ -527,6 +528,7 @@ return;
                 <!-- Header IMG:  1 column template row -->
                 <tr>                                                                <!-- This image must be 600px width (NOT wider). If less, then we need to set in CSS width in px of this image -->
                     <td class="full-width-image">
+						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                         <img src="images/header.jpg" alt="" />                  <!-- src="<?php $fields_values['header_img600_src']; ?>" -->   
                     </td>
                 </tr>
@@ -577,6 +579,7 @@ return;
                                             <tr>
                                                 <td>
                                                     <!-- width  of image must  be 260px -->
+													<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                                                     <img src="images/two-column-01.jpg" alt="" />   <!--  src="<?php $fields_values['header_column_1_img260_src']; ?>"  -->
                                                 </td>
                                             </tr>
@@ -604,6 +607,7 @@ return;
                                             <tr>
                                                 <td>
                                                     <!-- width  of image must  be 260px -->
+													<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
                                                     <img src="images/two-column-02.jpg" alt="" />   <!--  src="<?php $fields_values['header_column_2_img260_src']; ?>"  -->
                                                 </td>
                                             </tr>

@@ -35,7 +35,7 @@ function wpbc_set_relative_url( $url ){
 
 	$url = esc_url_raw($url);
 
-	$url_path = parse_url($url,  PHP_URL_PATH);
+	$url_path = wp_parse_url($url,  PHP_URL_PATH);
 	$url_path =  ( empty($url_path) ? $url : $url_path );
 
 	$url =  trim($url_path, '/');
@@ -71,9 +71,9 @@ function wpbc_make_link_absolute( $maybe_relative_link ){
 
 	if ( ( $maybe_relative_link != home_url() ) && ( strpos( $maybe_relative_link, 'http' ) !== 0 ) ) {
 
-		$maybe_relative_link = wpbc_lang( $maybe_relative_link );           //FixIn: 8.4.5.1
+		$maybe_relative_link = wpbc_lang( $maybe_relative_link );           // FixIn: 8.4.5.1.
 
-		$maybe_relative_link = home_url() . '/' . trim( wp_make_link_relative( $maybe_relative_link ), '/' );        //FixIn: 7.0.1.20
+		$maybe_relative_link = home_url() . '/' . trim( wp_make_link_relative( $maybe_relative_link ), '/' );        // FixIn: 7.0.1.20.
 	}
 
 	return esc_js( $maybe_relative_link );
@@ -91,10 +91,12 @@ function wpbc_redirect( $url ) {
 	$url = html_entity_decode( esc_url( $url ) );
 
 	echo '<script type="text/javascript">';
-	echo 'window.location.href="'.$url.'";';
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo 'window.location.href="' . $url . '";';
 	echo '</script>';
 	echo '<noscript>';
-	echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<meta http-equiv="refresh" content="0;url=' . $url . '" />';
 	echo '</noscript>';
 }
 
@@ -109,13 +111,14 @@ function wpbc_redirect( $url ) {
  */
 function wpbc_is_on_edit_page() {
 
-	//FixIn: 9.9.0.39
+	// FixIn: 9.9.0.39.
 
 	if ( ( ! empty( $GLOBALS['pagenow'] ) ) && ( is_admin() ) ) {
 		if (
-			   ( 'post.php'     === $GLOBALS['pagenow'] )		    // Edit - Post / Page
-			|| ( 'post-new.php' === $GLOBALS['pagenow'] )			// Add New - Post / Page
-			|| ( ( 'admin-ajax.php' === $GLOBALS['pagenow'] ) && ( ! empty( $_REQUEST['action'] ) ) && ( 'elementor_ajax' === $_REQUEST['action'] ) )		// Elementor Edit page - Ajax
+			( 'post.php' === $GLOBALS['pagenow'] )                       // Edit - Post / Page.
+			|| ( 'post-new.php' === $GLOBALS['pagenow'] )                // Add New - Post / Page.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			|| ( ( 'admin-ajax.php' === $GLOBALS['pagenow'] ) && ( ! empty( $_REQUEST['action'] ) ) && ( 'elementor_ajax' === $_REQUEST['action'] ) )   // Elementor Edit page - Ajax.
 		) {
 			return true;
 		}
@@ -138,7 +141,7 @@ function wpbc_get_menu_url( $menu_type, $is_absolute_url = true, $is_old = true)
 
 	switch ( $menu_type) {
 
-		case 'booking':                                                     // Bookings
+		case 'booking':                                                     // Bookings.
 		case 'bookings':
 		case 'booking-listing':
 		case 'bookings-listing':
@@ -149,7 +152,7 @@ function wpbc_get_menu_url( $menu_type, $is_absolute_url = true, $is_old = true)
 			$link = 'wpbc';
 			break;
 
-		case 'add':                                                         // Add New Booking
+		case 'add':                                                         // Add New Booking.
 		case 'add-bookings':
 		case 'add-booking':
 		case 'new':
@@ -166,21 +169,21 @@ function wpbc_get_menu_url( $menu_type, $is_absolute_url = true, $is_old = true)
 			$link = 'wpbc-prices';
 			break;
 
-		case 'resources':                                                   // Resources
+		case 'resources':                                                   // Resources.
 		case 'booking-resources':
 			$link = 'wpbc-resources';
 			break;
 
-		case 'settings':                                                    // Settings
+		case 'settings':                                                    // Settings.
 		case 'options':
 			$link = 'wpbc-settings';
 			break;
 
-		case 'setup':                                                    	// Setup
+		case 'setup':                                                    	// Setup.
 			$link = 'wpbc-setup';
 			break;
 
-		default:                                                            // Bookings
+		default:                                                            // Bookings.
 			$link = 'wpbc';
 			break;
 	}
@@ -281,142 +284,146 @@ function wpbc_get_setup_wizard_page_url( $is_absolute_url = true, $is_old = true
 
 /**
  * Check if this Booking Listing or Calendar Overview page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
 function wpbc_is_bookings_page( $server_param = 'REQUEST_URI' ) {
-	// Old
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'wpdev-booking.phpwpdev-booking') !== false ) &&
-		  ( strpos($_SERVER[ $server_param ],'wpdev-booking.phpwpdev-booking-reservation') === false )
-		) {
+	// Old.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'wpdev-booking.phpwpdev-booking' ) !== false ) && ( strpos( $_SERVER[ $server_param ], 'wpdev-booking.phpwpdev-booking-reservation' ) === false ) ) {
 		return true;
 	}
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc') !== false ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-') === false )
-		) {
+	// New.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc' ) !== false ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-' ) === false ) ) {
 		return true;
 	}
+
 	return false;
 }
 
 /**
  * Check if this Booking > Add booking page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
 function wpbc_is_new_booking_page( $server_param = 'REQUEST_URI' ) {
-	// Old
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'wpdev-booking.phpwpdev-booking-reservation') !== false )
-		) {
+	// Old.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'wpdev-booking.phpwpdev-booking-reservation' ) !== false ) ) {
 		return true;
 	}
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-new') !== false )
-		) {
+	// New.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-new' ) !== false ) ) {
 		return true;
 	}
+
 	return false;
 }
 
 /**
  * Check if this WP Booking Calendar > Settings > Booking Form page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
 function wpbc_is_settings_form_page( $server_param = 'REQUEST_URI' ) {
+	// Regular  user overwrite settings.
 
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-settings') !== false ) &&
-	      (
-				( strpos($_SERVER[ $server_param ],'&tab=form') !== false )
-		    ||  ( ( class_exists( 'wpdev_bk_multiuser' ) ) && ( ! empty( $_REQUEST['tab'] ) ) && ( 'form' === $_REQUEST['tab'] ) )                // Regular  user overwrite settings
-		  )
-		) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) !== false ) && ( ( strpos( $_SERVER[ $server_param ], '&tab=form' ) !== false ) || ( ( class_exists( 'wpdev_bk_multiuser' ) ) && ( ! empty( $_REQUEST['tab'] ) ) && ( 'form' === $_REQUEST['tab'] ) ) ) ) {
 		return true;
 	}
+
 	return false;
 }
 
 /**
  * Check if this Booking > Availability page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
 function wpbc_is_availability_page( $server_param = 'REQUEST_URI' ) {
 
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-availability') !== false )
-		) {
+	// New.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-availability' ) !== false ) ) {
 		return true;
 	}
+
 	return false;
 }
 
 
-
 /**
  * Check if this Booking > Setup page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
-function wpbc_is_setup_wizard_page( $server_param = 'REQUEST_URI' ) {                                            //FixIn: 9.8.0.1
+function wpbc_is_setup_wizard_page( $server_param = 'REQUEST_URI' ) {                                            // FixIn: 9.8.0.1.
 
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-setup') !== false )
-		) {
+	// New.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-setup' ) !== false ) ) {
 		return true;
 	}
+
 	return false;
 }
 
 /**
  * Check if this Booking > Resources page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
 function wpbc_is_resources_page( $server_param = 'REQUEST_URI' ) {
 
-	// Old
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'wpdev-booking.phpwpdev-booking-resources') !== false )
-		) {
+	// Old.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'wpdev-booking.phpwpdev-booking-resources' ) !== false ) ) {
 		return true;
 	}
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-resources') !== false )
-		) {
+	// New.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-resources' ) !== false ) ) {
 		return true;
 	}
+
 	return false;
 }
 
 /**
  * Check if this Booking > Settings page
+ *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
  * @return boolean true | false
  */
 function wpbc_is_settings_page( $server_param = 'REQUEST_URI' ) {
 
-	// Old
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'wpdev-booking.phpwpdev-booking-option') !== false )
-		) {
+	// Old.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'wpdev-booking.phpwpdev-booking-option' ) !== false ) ) {
 		return true;
 	}
-	// New
-	if (  ( is_admin() ) &&
-		  ( strpos($_SERVER[ $server_param ],'page=wpbc-settings') !== false )
-		) {
+	// New.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) !== false ) ) {
 		return true;
 	}
+
 	return false;
 }
 
@@ -441,11 +448,13 @@ function wpbc_get_params_in_url( $page_param , $exclude_params = array(), $only_
 	$exclude_params[] = 'page';
 	$exclude_params[] = 'post_type';
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_GET['page'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$page_param = $_GET['page'];
 	}
 	$get_paramaters = array( 'page' => $page_param );
-
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	$check_params = ( $only_get ) ? $_GET : $_REQUEST;
 
 
@@ -474,7 +483,7 @@ function wpbc_get_params_in_url( $page_param , $exclude_params = array(), $only_
 	$url = admin_url( add_query_arg(  $get_paramaters , 'admin.php' ) );
 
 	if ( $is_escape_url ) {
-		$url = esc_url_raw( $url );                                                                                     //FixIn: 8.1.1.7
+		$url = esc_url_raw( $url );                                                                                     // FixIn: 8.1.1.7.
 	}
 
 	return $url;

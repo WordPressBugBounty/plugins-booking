@@ -10,7 +10,7 @@
 
 function wpbc_calendar__load_data__ajx( params ){
 
-	//FixIn: 9.8.6.2
+	// FixIn: 9.8.6.2.
 	wpbc_calendar__loading__start( params['resource_id'] );
 
 	// Trigger event for calendar before loading Booking data,  but after showing Calendar.
@@ -23,7 +23,7 @@ function wpbc_calendar__load_data__ajx( params ){
 		return false;
 	}
 
-	//FixIn: 9.8.6.2
+	// FixIn: 9.8.6.2.
 	wpbc_calendar__blur__stop( params['resource_id'] );
 
 
@@ -52,7 +52,7 @@ console.groupCollapsed( 'WPBC_AJX_CALENDAR_LOAD' ); console.log( ' == Before Aja
 // console.timeEnd('resource_id_' + response_data['resource_id']);
 console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console.groupEnd();
 
-					//FixIn: 9.8.6.2
+					// FixIn: 9.8.6.2.
 					var ajx_post_data__resource_id = wpbc_get_resource_id__from_ajx_post_data_url( this.data );
 					wpbc_balancer__completed( ajx_post_data__resource_id , 'wpbc_calendar__load_data__ajx' );
 
@@ -113,7 +113,7 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 														} );
 					}
 
-					// Trigger event that calendar has been		 //FixIn: 10.0.0.44
+					// Trigger event that calendar has been		 // FixIn: 10.0.0.44.
 					if ( jQuery( '#calendar_booking' + response_data[ 'resource_id' ] ).length > 0 ){
 						var target_elm = jQuery( 'body' ).trigger( "wpbc_calendar_ajx__loaded_data", [response_data[ 'resource_id' ]] );
 						 //jQuery( 'body' ).on( 'wpbc_calendar_ajx__loaded_data', function( event, resource_id ) { ... } );

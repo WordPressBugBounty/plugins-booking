@@ -3,6 +3,10 @@
 .wpbc_top_tabs_sub_menu {
   display: none;
 }
+/* Hide Top Right Banner for purchase with  discount in Setup  page */
+.wpbc_header_news {
+    display: none !important;
+}
 /* Loader Spinner and Text for Main Container (including calendar) */
 .wpbc_calendar_loading {
     width:95%;

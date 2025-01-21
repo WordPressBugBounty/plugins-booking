@@ -44,8 +44,8 @@ function wpbc_stp_wiz__template__wizard_publish(){
 			<div class="wpbc__form__div wpbc_container_booking_form wpbc_swp_section wpbc_swp_section__wizard_publish">
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 0 auto;flex-flow: column;margin:0 0 10px;">
-						<h1 class="wpbc_swp_section_header" ><?php _e( 'Publish Your Booking Form', 'booking' ); ?></h1>
-						<p class="wpbc_swp_section_header_description"><?php _e('Start by using the pre-configured booking page or integrate booking form into a new page.','booking'); ?></p>
+						<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Publish Your Booking Form', 'booking' ); ?></h1>
+						<p class="wpbc_swp_section_header_description"><?php esc_html_e('Start by using the pre-configured booking page or integrate booking form into a new page.','booking'); ?></p>
 					</div>
 					<div class="wpbc__field">
 						<#
@@ -117,13 +117,13 @@ function wpbc_stp_wiz__panels__wizard_publish__embed_exist_new( $params = array(
 
 		if ( ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() ) ) { ?>
 			<div class="wpbc_ui_settings__flex_container__col_50" >
-				<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__preview"><?php _e( 'Preview', 'booking' ); ?></div>
+				<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__preview"><?php esc_html_e( 'Preview', 'booking' ); ?></div>
 				<?php wpbc_ui_settings__panel__publish_into_exist( $params ); ?>
 			</div><?php
 		}
 		?>
 		<div class="wpbc_ui_settings__flex_container__col_50">
-			<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__publish"><?php _e( 'Publish', 'booking' ); ?></div>
+			<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__publish"><?php esc_html_e( 'Publish', 'booking' ); ?></div>
 			<?php wpbc_ui_settings__panel__publish_into_new( $params ); ?>
 		</div>
 	</div><?php
@@ -162,13 +162,11 @@ function wpbc_ui_settings__panel__publish_into_exist( $params = array() ){
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__publish_into_exist">
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc-bi-arrow-right-short"></i>
-				<h1><span><span class="0wpbc_ui_settings__text_color__black2">
-					<?php _e( 'Pre-configured booking page', 'booking' ); ?>
+				<h1><span><span class="0wpbc_ui_settings__text_color__black2"> <?php esc_html_e( 'Pre-configured booking page', 'booking' ); ?>
 				</span></span></h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<span class="wpbc_ui_settings__text_color__black">
-					<?php _e( 'Start by using the pre-configured booking page we have set up.', 'booking' ); ?>
+				<span class="wpbc_ui_settings__text_color__black"> <?php esc_html_e( 'Start by using the pre-configured booking page we have set up.', 'booking' ); ?>
 				</span>
 			</div><?php
 
@@ -182,7 +180,7 @@ function wpbc_ui_settings__panel__publish_into_exist( $params = array() ){
 								<a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>"
 								   id="ui_btn_publish_into_exist" class="wpbc_ui_control wpbc_ui_button wpbc_ui_button_danger0 tooltip_top "
 								   title="<?php esc_attr_e( 'Go to page with booking form','booking'); ?>"  >
-										<span><?php _e('Go to page with booking form','booking'); ?>&nbsp;&nbsp;&nbsp;</span>
+										<span><?php esc_html_e('Go to page with booking form','booking'); ?>&nbsp;&nbsp;&nbsp;</span>
 										<i class="menu_icon icon-1x wpbc-bi-arrow-right-short" style="margin: 0;"></i>
 								</a>
 							</div>
@@ -230,13 +228,12 @@ function wpbc_ui_settings__panel__publish_into_new( $params = array() ){
 				<i class="menu_icon icon-1x wpbc-bi-box-arrow-in-down-left"></i>
 				<h1>
 					<span>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Insert shortcode in a page', 'booking' ); ?></span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php esc_html_e( 'Insert shortcode in a page', 'booking' ); ?></span>
 					</span>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<span class="wpbc_ui_settings__text_color__black">
-					<?php _e( 'Would you like to embed your booking form in an existing page, or create a new one?', 'booking' ); ?>
+				<span class="wpbc_ui_settings__text_color__black"> <?php esc_html_e( 'Would you like to embed your booking form in an existing page, or create a new one?', 'booking' ); ?>
 				</span>
 			</div>
 			<div style="align-self:center;margin: 10px 0 0;" class="wpbc_flextable_col">
@@ -301,13 +298,13 @@ function wpbc_ui_settings__panel__publish_into_new( $params = array() ){
 								<a href="javascript:void(0)" onclick="javascript:wpbc_resource_page_btn_click(<?php echo intval( $resource['id'] ); ?>);"
 								   id="ui_btn_shortcode_customize" class="wpbc_ui_control wpbc_ui_button wpbc_ui_button_danger0 tooltip_top "
 								   title="<?php esc_attr_e( 'Customize Booking Calendar shortcode','booking'); ?>"  ><span style="display: none;"><?php
-										_e('Customize','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_tune" style="margin: 0;"></i></a>
+										esc_html_e('Customize','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_tune" style="margin: 0;"></i></a>
 							</div>
 							<div class="ui_element" style="margin: 0 2px 0 0;">
 								<a class="wpbc_ui_control wpbc_ui_button wpbc_ui_button_primary tooltip_top "
 								   href="javascript:void(0);" onclick="javascript: wpbc_modal_dialog__show__resource_publish( <?php echo esc_attr( $resource['id'] ); ?> );"
 									title="<?php esc_attr_e('Embed your booking form into the page', 'booking'); ?>">
-									<span style=" "><?php _e( 'Publish', 'booking' ); ?></span>
+									<span style=" "><?php esc_html_e( 'Publish', 'booking' ); ?></span>
 									<i class="menu_icon icon-1x wpbc_icn_tune" style="display: none;"></i>
 								</a>
 							</div>
@@ -334,7 +331,7 @@ function wpbc_stp_wiz__is_exist_published_page_with_booking_form() {
 
 	$is_wp_post_booking = false;
 
-	//FixIn: 10.9.2.5
+	// FixIn: 10.9.2.5.
 	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url
 		$post_name_slug = 'wp-booking-calendar';
 	} else {                                                    // Old page already was Created     - Use old url

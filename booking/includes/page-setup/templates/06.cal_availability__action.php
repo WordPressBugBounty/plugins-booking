@@ -64,7 +64,7 @@ function wpbc_template__cal_availability__action_validate_data( $post_data ){
 		$escaped_data[ $key ] = implode( ',', $post_data_arr );
 	}
 	// -----------------------------------------------------------------------------------------------------------------
-	//FixIn: 10.8.1.4
+	// FixIn: 10.8.1.4.
 	$key = 'booking_unavailable_days_num_from_today';
 	if ( ( isset( $post_data[ $key ] ) ) ) {
 		$escaped_data[ $key ] = intval( $post_data[ $key ] );

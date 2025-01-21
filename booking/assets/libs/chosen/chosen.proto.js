@@ -924,7 +924,7 @@ Docs: https://harvesthq.github.io/chosen/options.html
       this.clear_backstroke();
       this.show_search_field_default();
       this.search_field_scale();
-      return this.search_field.trigger( 'blur' );   //FixIn: 8.7.11.12
+      return this.search_field.trigger( 'blur' );   // FixIn: 8.7.11.12.
     };
 
     Chosen.prototype.activate_field = function() {

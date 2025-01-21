@@ -12,7 +12,7 @@
  * @modified 2024-03-05
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 
 
@@ -29,7 +29,7 @@ function wpbc_shortcode_config__content__bookingsearch() {
 
 	$shortcode_name = 'bookingsearch';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		wpbc_shortcode_config__bookingsearch__top_tabs();
 
@@ -48,6 +48,7 @@ function wpbc_shortcode_config__content__bookingsearch() {
 									'versions'           => 'Business Large, MultiUser versions',
 									'css'                => 'transform: translate(0) translateY(120px);'
 								) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $upgrade_content_arr['content'];
 
 			//--------------------------------------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ function wpbc_shortcode_config__content__bookingsearch() {
 
 				wpbc_shortcode_config_fields__searchresults_new_page( $shortcode_name . '_wpbc_search_new_page', $shortcode_name );
 
-				//FixIn: 10.0.0.41
+				// FixIn: 10.0.0.41.
 				// wpbc_shortcode_config_fields__searchavailability_text_header( $shortcode_name . '_wpbc_search_header', $shortcode_name );
 				// wpbc_shortcode_config_fields__searchavailability_text_nothing_found( $shortcode_name . '_wpbc_search_nothing_found', $shortcode_name );
 
@@ -180,6 +181,7 @@ function wpbc_shortcode_config__content__bookingsearch() {
 												  'type'              => 'text'
 												, 'placeholder'       =>  __( 'Example', 'booking' ). ': ' . '{searchresults} ' . __('Result(s) Found','booking')
 												, 'title'             => __( 'Title of Search results', 'booking' )
+												/* translators: 1: ... */
 												, 'description'       => sprintf( __( 'Type the title of Search results. %s - show number of search results', 'booking' ) , '<code>{searchresults}</code>' )
 												, 'description_tag'   => 'span'
 												, 'label'             => ''
@@ -257,9 +259,9 @@ function wpbc_shortcode_config__content__bookingsearch() {
 						);
 
 
-					?><tr valign="top"  class="<?php echo $group_key . '_standard_section'; ?> wpbc_sub_settings_grayed wpbc_search_availability_form <?php echo $id; ?>_wpbc_sc_searchresults_new_page">
+					?><tr valign="top"  class="<?php echo esc_attr( $group_key . '_standard_section' ); ?> wpbc_sub_settings_grayed wpbc_search_availability_form <?php echo esc_attr( $id ); ?>_wpbc_sc_searchresults_new_page">
 						<th scope="row" style="vertical-align: middle;">
-							<label for="wpbc_booking_width" class="wpbc-form-text"><?php  _e('URL of search results:', 'booking'); ?></label>
+							<label for="wpbc_booking_width" class="wpbc-form-text"><?php esc_html_e('URL of search results:', 'booking'); ?></label>
 						</th>
 						<td class=""><fieldset><?php
 
@@ -274,10 +276,10 @@ function wpbc_shortcode_config__content__bookingsearch() {
 																		, 'value'             => ''
 																	)
 												);
-							?><span class="description"> <?php _e('Type the URL of search results page.' ,'booking'); ?></span></fieldset></td>
+							?><span class="description"> <?php esc_html_e('Type the URL of search results page.' ,'booking'); ?></span></fieldset></td>
 					</tr><?php
 
-					?><tr style="height:20px;border-bottom: 0px solid #eee;"  class="<?php echo $group_key . '_standard_section'; ?> wpbc_search_availability_form <?php echo $id; ?>_wpbc_sc_searchresults_new_page"><td colspan="2"></td></tr><?php
+					?><tr style="height:20px;border-bottom: 0px solid #eee;"  class="<?php echo esc_attr( $group_key . '_standard_section' ); ?> wpbc_search_availability_form <?php echo esc_attr( $id ); ?>_wpbc_sc_searchresults_new_page"><td colspan="2"></td></tr><?php
 		}
 
 

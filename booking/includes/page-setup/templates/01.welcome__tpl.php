@@ -40,19 +40,22 @@ function wpbc_stp_wiz__template__welcome(){
 		<div class="wpbc__form__div wpbc_swp_section wpbc_swp_section__welcome">
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<h1 class="wpbc_swp_section_header"><?php printf( __( 'Welcome to %s!', 'booking' ), 'WP Booking Calendar' ); ?></h1>
+					<h1 class="wpbc_swp_section_header"><?php
+						/* translators: 1: ... */
+						echo wp_kses_post( sprintf( __(  'Welcome to %s!', 'booking' ), 'WP Booking Calendar' ) ); ?></h1>
 				</div>
 			</div>
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<p style="font-size:15px;line-height: 2.2;"><?php printf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ); ?></p>
+					<p style="font-size:15px;line-height: 2.2;"><?php echo wp_kses_post( sprintf( __( 'We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ); ?></p>
 
 					<div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 20px 20px 5px 2px;">
 						<?php
-						 	echo '<strong>' . __('Note!' ,'booking') . '</strong> ';
-							printf( __( 'If you have previously configured the Booking Calendar, this setup will override some of your settings. In this case, you can %sskip setup%s.', 'booking' ),
+						 	echo '<strong>' . esc_html__('Note!' ,'booking') . '</strong> ';
+							/* translators: 1: ... */
+							echo wp_kses_post( sprintf( __( 'If you have previously configured the Booking Calendar, this setup will override some of your settings. In this case, you can %1$sskip setup%2$s.', 'booking' ),
 								  '<a href="javascript:void(0)" onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { \'do_action\': \'skip_wizard\' } ); ">'
-								, '</a>' );
+								, '</a>' ) );
 							echo ' ';
 						?>
 					</div>
@@ -67,7 +70,7 @@ function wpbc_stp_wiz__template__welcome(){
 						   id="btn__toolbar__buttons_prior"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 						   title="<?php esc_attr_e('Exist and skip the Setup Wizard','booking'); ?>"
-					 ><i class="menu_icon icon-1x wpbc_icn_close"></i><span>&nbsp;&nbsp;&nbsp;<?php _e('Skip the Setup Wizard','booking'); ?></span></a>
+					 ><i class="menu_icon icon-1x wpbc_icn_close"></i><span>&nbsp;&nbsp;&nbsp;<?php esc_html_e('Skip the Setup Wizard','booking'); ?></span></a>
 				</div>
 				<?php /**/ ?>
 				<div class="wpbc__field wpbc_container wpbc_container_booking_form">
@@ -80,7 +83,7 @@ function wpbc_stp_wiz__template__welcome(){
 																								'ui_clicked_element_id': 'btn__toolbar__buttons_next'
 																							} );
 									wpbc_button_enable_loading_icon( this );
-									wpbc_admin_show_message_processing( '' );" ><span><?php _e('Let\'s Get Started','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+									wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Let\'s Get Started','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 				</div>
 			</div>
 			<?php /**/ ?>
@@ -91,14 +94,14 @@ function wpbc_stp_wiz__template__welcome(){
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
 						><?php
-							_e('Exit and skip the setup wizard','booking');
+							esc_html_e('Exit and skip the setup wizard','booking');
 						?></a>
 						<?php /* ?>
 						<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
 						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
 						><?php
-							_e('Reset Wizard','booking');
+							esc_html_e('Reset Wizard','booking');
 						?></a>
 						<?php */ ?>
 					</p>

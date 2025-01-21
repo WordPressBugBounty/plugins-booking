@@ -10,7 +10,7 @@
  * @modified 2024-10-08
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit, if accessed directly           //FixIn: 10.6.2.1
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit, if accessed directly           // FixIn: 10.6.2.1.
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -55,13 +55,13 @@ function wpbc_get__booking_form__template( $template_name ) {
 	<c>[calendar]</c> \n\
 	<spacer>width:40px;</spacer> \n\
 	<c> \n\
-		<r><c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l> <br>[text* name]</c></r> \n\
-		<r><c> <l>' . __( 'Last Name (required)', 'booking' ) . '):</l>  <br>[text* secondname] </c></r> \n\
-		<r><c> <l>' . __( 'Email (required)', 'booking' ) . ':</l>      <br>[email* email] </c></r> \n\
-		<r><c> <l>' . __( 'Phone', 'booking' ) . ':</l>                 <br>[text phone] </c></r> \n\
-		<r><c> <l>' . __( 'Adults', 'booking' ) . ':</l>                <br>[selectbox visitors "1" "2" "3" "4"] </c></r> \n\
-		<r><c> <l>' . __( 'Children', 'booking' ) . ':</l>              <br>[selectbox children "0" "1" "2" "3"] </c></r> \n\
-		<r><c> <l>' . __( 'Details', 'booking' ) . ':</l><br> [textarea details]</c></r> \n\
+		<r><c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l> <br>[text* name]</c></r> \n\
+		<r><c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . '):</l>  <br>[text* secondname] </c></r> \n\
+		<r><c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l>      <br>[email* email] </c></r> \n\
+		<r><c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l>                 <br>[text phone] </c></r> \n\
+		<r><c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l>                <br>[selectbox visitors "1" "2" "3" "4"] </c></r> \n\
+		<r><c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l>              <br>[selectbox children "0" "1" "2" "3"] </c></r> \n\
+		<r><c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><br> [textarea details]</c></r> \n\
 		<r> \n\
 			<c>[checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"]</c> \n\
 			<c>[captcha]</c> \n\
@@ -81,19 +81,19 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 [calendar]\n\
 <div class="wpbc__form__div" style="padding: 1em 0;"> \n\
 	<r> \n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c> \n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c> \n\
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c> \n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c> \n\
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n\
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c> \n\
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n\
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l> <div style="clear:both;width:100%"></div> \n\
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l> <div style="clear:both;width:100%"></div> \n\
 			[textarea details] </c> \n\
 	</r> \n\
 	<r>\n\
@@ -111,24 +111,24 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
       Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n\
 <div class="wpbc__form__div" style="padding: 1em 0;"> \n\
     <r> \n\
-		<c> <l>' . __( 'Select Date', 'booking' ) . ':</l><br />[calendar] </c> \n\
-		<c> <l>' . __( 'Select Times', 'booking' ) . '*:</l><br /> \n\
+		<c> <l>' . esc_html__( 'Select Date', 'booking' ) . ':</l><br />[calendar] </c> \n\
+		<c> <l>' . esc_html__( 'Select Times', 'booking' ) . '*:</l><br /> \n\
 			[selectbox* rangetime "10:00 AM - 12:00 PM@@10:00 - 12:00" "12:00 PM - 02:00 PM@@12:00 - 14:00" "02:00 PM - 04:00 PM@@14:00 - 16:00" "04:00 PM - 06:00 PM@@16:00 - 18:00" "06:00 PM - 08:00 PM@@18:00 - 20:00"] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c> \n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c> \n\
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c> \n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c> \n\
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n\
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c> \n\
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n\
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n\
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l> <div style="clear:both;width:100%"></div> \n\
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l> <div style="clear:both;width:100%"></div> \n\
 			[textarea details] </c> \n\
 	</r> \n\
 	<p>[submit "' . __( 'Send', 'booking' ) . '"]</p> \n\
@@ -142,8 +142,8 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n\
 <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n\ 
 		<r> \n\
-			<c> <l>' . __( 'Select Date', 'booking' ) . ':</l><br />[calendar] </c> \n\ 
-			<c> <l>' . __( 'Select Times', 'booking' ) . '*:</l><br /> \n\
+			<c> <l>' . esc_html__( 'Select Date', 'booking' ) . ':</l><br />[calendar] </c> \n\ 
+			<c> <l>' . esc_html__( 'Select Times', 'booking' ) . '*:</l><br /> \n\
 				[selectbox rangetime "09:00 - 09:30" "09:30 - 10:00" "10:00 - 10:30" "10:30 - 11:00" "11:00 - 11:30" "11:30 - 12:00" "12:00 - 12:30" "12:30 - 13:00" "13:00 - 13:30" "13:30 - 14:00" "14:00 - 14:30" "14:30 - 15:00" "15:00 - 15:30" "15:30 - 16:00" "16:00 - 16:30" "16:30 - 17:00"] </c> \n\ 
 		</r><hr> \n\ 
 		<r> \n\
@@ -156,19 +156,19 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 </div> \n\
 <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="clear:both"> \n\ 
 	<r> \n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c> \n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c> \n\ 
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c> \n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c> \n\ 
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c> \n\ 
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n\ 
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c> \n\ 
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n\ 
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n\ 
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n\ 
 	</r> \n\
 	<r> \n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l><spacer></spacer> \n\ 
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><spacer></spacer> \n\ 
 			[textarea details] </c> \n\ 
 	</r> \n\
 	<spacer>height:10px;</spacer> \n\ 
@@ -197,27 +197,27 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	</r>\n\
 	<hr> \n\
 	<r>\n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Address (required)', 'booking' ) . ':</l><br />[text* address] </c>\n\
-		<c> <l>' . __( 'City (required)', 'booking' ) . ':</l><br />[text* city] </c>\n\
+		<c> <l>' . esc_html__( 'Address (required)', 'booking' ) . ':</l><br />[text* address] </c>\n\
+		<c> <l>' . esc_html__( 'City (required)', 'booking' ) . ':</l><br />[text* city] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Post code (required)', 'booking' ) . ':</l><br />[text* postcode] </c>\n\
-		<c> <l>' . __( 'Country (required)', 'booking' ) . ':</l><br />[country] </c>\n\
+		<c> <l>' . esc_html__( 'Post code (required)', 'booking' ) . ':</l><br />[text* postcode] </c>\n\
+		<c> <l>' . esc_html__( 'Country (required)', 'booking' ) . ':</l><br />[country] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
 			[textarea details] </c>\n\
 	</r>\n\
 	<div style="margin-top:10px;clear:both;"></div>\n\
@@ -249,27 +249,27 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 			' . __( 'Dates', 'booking' ) . ': [selected_short_timedates_hint]  ([nights_number_hint] - ' . __( 'night(s)', 'booking' ) . ')<br>  \n\
 			' . __( 'Full cost of the booking', 'booking' ) . ': <strong>[cost_hint]</strong> \n\
 		</p></c>\n\ 
-		<c><l>' . __( 'Availability', 'booking' ) . ':</l><spacer></spacer>[capacity_hint]</c> \n\   
+		<c><l>' . esc_html__( 'Availability', 'booking' ) . ':</l><spacer></spacer>[capacity_hint]</c> \n\   
 	</r>\n\
 	<hr>  \n\
 	<r>\n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
 			[textarea details] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Coupon (required)', 'booking' ) . ':</l><br />[coupon coupon] </c>\n\
+		<c> <l>' . esc_html__( 'Coupon (required)', 'booking' ) . ':</l><br />[coupon coupon] </c>\n\
 	</r>\n\
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
@@ -295,7 +295,7 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n\
 [calendar] \n\
 <r>\n\
-	<c>  <l>' . __( 'Select Times', 'booking' ) . '*:</l><br />\n\
+	<c>  <l>' . esc_html__( 'Select Times', 'booking' ) . '*:</l><br />\n\
 		[selectbox rangetime "9:00 AM - 9:30 AM@@09:00 - 09:30"  "9:30 AM - 10:00 AM@@09:30 - 10:00"  "10:00 AM - 10:30 AM@@10:00 - 10:30"  "10:30 AM - 11:00 AM@@10:30 - 11:00"  "11:00 AM - 11:30 AM@@11:00 - 11:30"  "11:30 AM - 12:00 PM@@11:30 - 12:00"  "12:00 PM - 12:30 PM@@12:00 - 12:30"  "12:30 PM - 1:00 PM@@12:30 - 13:00"  "1:00 PM - 1:30 PM@@13:00 - 13:30"  "1:30 PM - 2:00 PM@@13:30 - 14:00"  "2:00 PM - 2:30 PM@@14:00 - 14:30"  "2:30 PM - 3:00 PM@@14:30 - 15:00"  "3:00 PM - 3:30 PM@@15:00 - 15:30"  "3:30 PM - 4:00 PM@@15:30 - 16:00"  "4:00 PM - 4:30 PM@@16:00 - 16:30"  "4:30 PM - 5:00 PM@@16:30 - 17:00"  "5:00 PM - 5:30 PM@@17:00 - 17:30"  "5:30 PM - 6:00 PM@@17:30 - 18:00"  "6:00 PM - 6:30 PM@@18:00 - 18:30"]\n\
 	</c>\n\
 </r>\n\
@@ -311,23 +311,23 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	</r>\n\ 
 	<hr>  \n\
 	<r>\n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
 			[textarea details] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Coupon (required)', 'booking' ) . ':</l><br />[coupon coupon] </c>\n\
+		<c> <l>' . esc_html__( 'Coupon (required)', 'booking' ) . ':</l><br />[coupon coupon] </c>\n\
 	</r>\n\
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
@@ -364,23 +364,23 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	</r>\n\ 
 	<hr>  \n\
 	<r>\n\
-		<c> <l>' . __( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
-		<c> <l>' . __( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
+		<c> <l>' . esc_html__( 'First Name (required)', 'booking' ) . ':</l><br />[text* name] </c>\n\
+		<c> <l>' . esc_html__( 'Last Name (required)', 'booking' ) . ':</l><br />[text* secondname] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
-		<c> <l>' . __( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
+		<c> <l>' . esc_html__( 'Email (required)', 'booking' ) . ':</l><br />[email* email] </c>\n\
+		<c> <l>' . esc_html__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
-		<c> <l>' . __( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
+		<c> <l>' . esc_html__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c>\n\
+		<c> <l>' . esc_html__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
+		<c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><div style="clear:both;width:100%"></div>\n\
 			[textarea details] </c>\n\
 	</r>\n\
 	<r>\n\
-		<c> <l>' . __( 'Coupon (required)', 'booking' ) . ':</l><br />[coupon coupon] </c>\n\
+		<c> <l>' . esc_html__( 'Coupon (required)', 'booking' ) . ':</l><br />[coupon coupon] </c>\n\
 	</r>\n\
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
@@ -426,13 +426,13 @@ function wpbc_get__booking_data__template( $template_name ) {
 		case 'calendar_next_to_form':
 
             $booking_form = '<div class="standard-content-form"> \n\
-    <b>'. __('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
-    <b>'. __('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
-    <b>'. __('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
-    <b>'. __('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
-    <b>'. __('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
-    <b>'. __('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
-    <b>'. __('Details' ,'booking').'</b>:    <f>[details]</f> \n\
+    <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
+    <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
+    <b>' . esc_html__('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
+    <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
+    <b>' . esc_html__('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
+    <b>' . esc_html__('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
+    <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
 </div>';
             break;
 
@@ -440,59 +440,59 @@ function wpbc_get__booking_data__template( $template_name ) {
 		case '2_columns_times_30_minutes_wizard':
 
             $booking_form = '<div class="standard-content-form"> \n\
-    <b>'. __('Times' ,'booking').'</b>:      <f>[rangetime]</f><br/> \n\
-    <b>'. __('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
-    <b>'. __('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
-    <b>'. __('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
-    <b>'. __('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
-    <b>'. __('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
-    <b>'. __('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
-    <b>'. __('Details' ,'booking').'</b>:    <f>[details]</f> \n\
+    <b>' . esc_html__('Times' ,'booking').'</b>:      <f>[rangetime]</f><br/> \n\
+    <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
+    <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
+    <b>' . esc_html__('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
+    <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
+    <b>' . esc_html__('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
+    <b>' . esc_html__('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
+    <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
 </div>';
 			break;
 
 		case '2_columns_hint_cost_nights':
 
             $booking_form = '<div class="standard-content-form"> \n\
-    <b>'. __('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
-    <b>'. __('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
-    <b>'. __('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
-    <b>'. __('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
-    <b>'. __('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
-    <b>'. __('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
-    <b>'. __('Address' ,'booking').'</b>:    <f>[address]</f><br/> \n\
-    <b>'. __('City' ,'booking').'</b>:       <f>[city]</f><br/> \n\
-    <b>'. __('Post code' ,'booking').'</b>:  <f>[postcode]</f><br/> \n\
-    <b>'. __('Country' ,'booking').'</b>:    <f>[country]</f><br/> \n\
-    <b>'. __('Details' ,'booking').'</b>:    <f>[details]</f> \n\
+    <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
+    <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
+    <b>' . esc_html__('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
+    <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
+    <b>' . esc_html__('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
+    <b>' . esc_html__('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
+    <b>' . esc_html__('Address' ,'booking').'</b>:    <f>[address]</f><br/> \n\
+    <b>' . esc_html__('City' ,'booking').'</b>:       <f>[city]</f><br/> \n\
+    <b>' . esc_html__('Post code' ,'booking').'</b>:  <f>[postcode]</f><br/> \n\
+    <b>' . esc_html__('Country' ,'booking').'</b>:    <f>[country]</f><br/> \n\
+    <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
 </div>';
 	        break;
 
 		case '2_columns_hint_availability':
 		case '2_columns_hints_coupon':
             $booking_form = '<div class="standard-content-form"> \n\
-    <b>'. __('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
-    <b>'. __('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
-    <b>'. __('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
-    <b>'. __('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
-    <b>'. __('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
-    <b>'. __('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
-    <b>'. __('Coupon' ,'booking').'</b>:     <f>[coupon]</f><br/> \n\
-    <b>'. __('Details' ,'booking').'</b>:    <f>[details]</f> \n\
+    <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
+    <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
+    <b>' . esc_html__('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
+    <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
+    <b>' . esc_html__('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
+    <b>' . esc_html__('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
+    <b>' . esc_html__('Coupon' ,'booking').'</b>:     <f>[coupon]</f><br/> \n\
+    <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
 </div>';
 	        break;
 
 		case '2_columns_times_30_minutes_hints_coupon':
             $booking_form = '<div class="standard-content-form"> \n\
-    <b>'. __('Times' ,'booking').'</b>:      <f>[rangetime]</f><br/> \n\
-    <b>'. __('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
-    <b>'. __('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
-    <b>'. __('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
-    <b>'. __('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
-    <b>'. __('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
-    <b>'. __('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
-    <b>'. __('Coupon' ,'booking').'</b>:     <f>[coupon]</f><br/> \n\
-    <b>'. __('Details' ,'booking').'</b>:    <f>[details]</f> \n\
+    <b>' . esc_html__('Times' ,'booking').'</b>:      <f>[rangetime]</f><br/> \n\
+    <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
+    <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
+    <b>' . esc_html__('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
+    <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
+    <b>' . esc_html__('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
+    <b>' . esc_html__('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
+    <b>' . esc_html__('Coupon' ,'booking').'</b>:     <f>[coupon]</f><br/> \n\
+    <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
 </div>';
  	        break;
 	}
@@ -506,7 +506,7 @@ function wpbc_get__booking_data__template( $template_name ) {
 function wpbc_get__predefined_booking_form__template( $form_type ){
 
     $form_content = '';
-	//FixIn: 10.7.1.4
+	// FixIn: 10.7.1.4.
 	if ( in_array( $form_type, array( 'appointments30' ) ) ) {
 		$form_content = '';
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
@@ -730,7 +730,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
            $form_content .='</div>';
     }
 
-    //FixIn: 8.7.3.5
+    // FixIn: 8.7.3.5.
     if ( 'hints-dev' == $form_type ){
             $form_content = '';
             $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
@@ -801,7 +801,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='     <p>' . esc_attr__( 'Address', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):<br />  [text* address] </p> \n';
         $form_content .='     <p>' . esc_attr__( 'City', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):<br />  [text* city] </p> \n';
         $form_content .='     <p>' . esc_attr__( 'Post code', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):<br />  [text* postcode] </p> \n';
-        if ( $form_type == 'paymentUS' ){                                                                                //FixIn: 8.1.1.5
+        if ( $form_type == 'paymentUS' ){                                                                                // FixIn: 8.1.1.5.
             $form_content .='     <p>' . esc_attr__( 'Country', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):<br />  [country "US"] </p> \n';
             $form_content .='     <p>' . esc_attr__( 'State', 'booking' ) . ':<br /> [selectbox state "" "Alabama@@AL" "Alaska@@AK" "Arizona@@AZ" "Arkansas@@AR" "California@@CA" "Colorado@@CO" "Connecticut@@CT" "Delaware@@DE" "Florida@@FL" "Georgia@@GA" "Hawaii@@HI" "Idaho@@ID" "Illinois@@IL" "Indiana@@IN" "Iowa@@IA" "Kansas@@KS" "Kentucky@@KY" "Louisiana@@LA" "Maine@@ME" "Maryland@@MD" "Massachusetts@@MA" "Michigan@@MI" "Minnesota@@MN" "Mississippi@@MS" "Missouri@@MO" "Montana@@MT" "Nebraska@@NE" "Nevada@@NV" "New Hampshire@@NH" "New Jersey@@NJ" "New Mexico@@NM" "New York@@NY" "North Carolina@@NC" "North Dakota@@ND" "Ohio@@OH" "Oklahoma@@OK" "Oregon@@OR" "Pennsylvania@@PA" "Rhode Island@@RI" "South Carolina@@SC" "South Dakota@@SD" "Tennessee@@TN" "Texas@@TX" "Utah@@UT" "Vermont@@VT" "Virginia@@VA" "Washington@@WA" "West Virginia@@WV" "Wisconsin@@WI" "Wyoming@@WY"] </p> \n';
 		} else {
@@ -820,7 +820,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         ($form_type == 'wizard') ||
         ( in_array( $form_type, array( 'wizard_times', 'wizard_times30', 'wizard_times15', 'wizard_times120', 'wizard_times60', 'wizard_times60_24h' ) ) )
     ){
-        //FixIn: 8.6.1.15
+        // FixIn: 8.6.1.15.
 		$form_content = '';
         if ( wpbc_is_this_demo() ){
             // $form_content .='<!-- In our Public Demo, JavaScript is restricted in the form. --> \n';
@@ -980,7 +980,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         // $form_content .='</div> \n';
     }
 
-    //FixIn: 8.7.7.15
+    // FixIn: 8.7.7.15.
     if ($form_type == 'fields2columns')  { // 2 columns form
         $form_content = '';
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
@@ -1015,7 +1015,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='</div>';
     }
 
-    //FixIn: 8.8.2.6
+    // FixIn: 8.8.2.6.
     if ($form_type == 'fields3columns')  { // 3 columns form
         $form_content = '';
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
@@ -1055,7 +1055,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
     }
 
 
-    //FixIn: 8.7.11.14
+    // FixIn: 8.7.11.14.
     if ($form_type == 'fields2columnstimes')  { // 2 columns form
         $form_content  = '';
         $form_content .='<div class="wpbc__form__div"> \n';
@@ -1108,7 +1108,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 function wpbc_get__predefined_booking_data__template( $form_type ){
 
 	$form_content = '';
-	//FixIn: 10.7.1.4
+	// FixIn: 10.7.1.4.
     if (
         ( in_array( $form_type, array( 'appointments30' ) ) )
     ){
@@ -1122,7 +1122,7 @@ function wpbc_get__predefined_booking_data__template( $form_type ){
         $form_content .='    <b>' . esc_attr__( 'Details', 'booking' ) . '</b>:    <f>[details]</f>\n';
         $form_content .='</div>';
     }
-    if ( ($form_type == 'payment')  || ($form_type == 'paymentUS') || ( 'fields2columns' == $form_type ) || ( 'fields3columns' == $form_type ) ) {               //FixIn: 8.7.7.15      //FixIn: 8.8.2.6
+    if ( ($form_type == 'payment')  || ($form_type == 'paymentUS') || ( 'fields2columns' == $form_type ) || ( 'fields3columns' == $form_type ) ) {               //FixIn: 8.7.7.15      // FixIn: 8.8.2.6.
         $form_content = '';
         $form_content .='<div class="standard-content-form"> \n';
         $form_content .='    <b>' . esc_attr__( 'First Name', 'booking' ) . '</b>: <f>[name]</f><br>\n';

@@ -67,7 +67,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 							wpbc_flex_label(
 												array(
 													  'id' 	  => $el_id
-													, 'label' => '<span class="" style="font-weight:600;">' . __( 'Calendar Skin', 'booking' ) . ':</span>'
+													, 'label' => '<span class="" style="font-weight:600;">' . esc_html__( 'Calendar Skin', 'booking' ) . ':</span>'
 												)
 										   );
 					?></div><?php
@@ -86,14 +86,20 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 					?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 						jQuery( document ).ready( function (){
 							/* Set INITIAL selected option  in dropdown list based on  data. value 	//FixIn: 10.3.0.5 */
-							if (jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php echo WPBC_PLUGIN_URL; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).length){
-								jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php echo WPBC_PLUGIN_URL; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).prop( 'selected', true );
-								wpbc__calendar__change_skin( '<?php echo WPBC_PLUGIN_URL; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin  );
+							if (jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php echo esc_url( WPBC_PLUGIN_URL ); ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).length){
+								jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php echo esc_url( WPBC_PLUGIN_URL ); ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).prop( 'selected', true );
+								wpbc__calendar__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin  );
 							}
 							/* Set INITIAL selected option  if selected CUSTOM Calendar skin 		//FixIn: 10.3.0.5 */
-							if (jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php echo $custom_user_skin_url; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).length){
-								jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php echo $custom_user_skin_url; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).prop( 'selected', true );
-								wpbc__calendar__change_skin( '<?php echo $custom_user_skin_url; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin  );
+							if (jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $custom_user_skin_url; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).length){
+								jQuery( '#ui_btn_cstm__set_calendar_skin option[value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $custom_user_skin_url; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin + '"]' ).prop( 'selected', true );
+								wpbc__calendar__change_skin( '<?php
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo $custom_user_skin_url; ?>' + data.ajx_cleaned_params.customize_plugin__booking_skin  );
 							}
 							/**
 							 * Change calendar skin view
@@ -144,7 +150,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 							wpbc_flex_label(
 												array(
 													  'id' 	  => $el_id
-													, 'label' => '<span class="" style="font-weight:600;">' . __( 'Time Picker Skin', 'booking' ) . ':</span>'
+													, 'label' => '<span class="" style="font-weight:600;">' . esc_html__( 'Time Picker Skin', 'booking' ) . ':</span>'
 												)
 										   );
 					?></div><?php
@@ -160,8 +166,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 						jQuery( document ).ready( function (){
 							// Set selected option  in dropdown list based on  data. value
-							jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php echo WPBC_PLUGIN_URL; ?>' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
-							wpbc__css__change_skin( '<?php echo WPBC_PLUGIN_URL; ?>' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
+							jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php echo esc_url( WPBC_PLUGIN_URL ); ?>' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
+							wpbc__css__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
 
 							/**
 							 * Change Time Picker Skin
@@ -201,7 +207,7 @@ function wpbc_smpl_form__ui__calendar_skin_dropdown(){
 		//if ( ! wpbc_is_user_can( $booking_action, wpbc_get_current_user_id() ) ) { 	return false; 	}
 
 
-		//FixIn: 10.3.0.5
+		// FixIn: 10.3.0.5.
         //  Calendar Skin  /////////////////////////////////////////////////////
 		$cal_arr = wpbc_get_calendar_skin_options( WPBC_PLUGIN_URL );
 
@@ -285,12 +291,12 @@ function wpbc_smpl_form__ui__time_picker_dropdown(){
 
         // Skins in the Custom User folder (need to create it manually):    http://example.com/wp-content/uploads/wpbc_skins/ ( This folder do not owerwrited during update of plugin )
         $upload_dir = wp_upload_dir();
-	    //FixIn: 8.9.4.8
+	    // FixIn: 8.9.4.8.
 		$files_in_folder = wpbc_dir_list( array(  WPBC_PLUGIN_DIR . '/css/time_picker_skins/', $upload_dir['basedir'].'/wpbc_time_picker_skins/' ) );  // Folders where to look about Time Picker skins
 
         foreach ( $files_in_folder as $skin_file ) {                                                                            // Example: $skin_file['/css/skins/standard.css'] => 'Standard';
 
-            //FixIn: 8.9.4.8    //FixIn: 9.1.2.10
+            //FixIn: 8.9.4.8    // FixIn: 9.1.2.10.
 			$skin_file[1] = str_replace( array( WPBC_PLUGIN_DIR, WPBC_PLUGIN_URL , $upload_dir['basedir'] ), '', $skin_file[1] );                 // Get relative path for calendar skin
             $time_pickers_options[ WPBC_PLUGIN_URL . $skin_file[1] ] = $skin_file[2];
         }

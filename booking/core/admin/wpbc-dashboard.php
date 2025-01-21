@@ -50,8 +50,9 @@ function wpbc_db_dashboard_get_bookings_count_arr(){
 		if ($my_resources!='') $sql_req .=     " AND  bk.booking_type IN ({$my_resources}) ";
 
 		$sql_req .=     "ORDER BY dt.booking_date" ;
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$sql_results = $wpdb->get_results( $sql_req );
+
     // </editor-fold>
 
 
@@ -174,7 +175,7 @@ function wpbc_db_dashboard_get_bookings_count_arr(){
 function wpbc_dashboard_widget_setup(){            
 
    // Check, if we have permission  to  show Widget  ///////////////////////////
-   $is_user_activated = apply_bk_filter('multiuser_is_current_user_active',  true ); //FixIn: 6.0.1.17
+   $is_user_activated = apply_bk_filter('multiuser_is_current_user_active',  true ); // FixIn: 6.0.1.17.
    if ( ! $is_user_activated ) 
        return false;
 
@@ -215,7 +216,7 @@ add_action( 'wp_dashboard_setup', 'wpbc_dashboard_widget_setup' );
 /** Show Booking Dashboard Widget content */
 function wpbc_dashboard_widget_show() {
 
-	$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_dashboard_section_statistic' );        //FixIn: 9.9.0.8
+	$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_dashboard_section_statistic' );        // FixIn: 9.9.0.8.
 	$counter = $is_panel_visible ? wpbc_db_dashboard_get_bookings_count_arr() : array();
 
     wpbc_dashboard_widget_css();
@@ -378,13 +379,13 @@ function wpbc_dashboard_widget_css() {
 // S e c t i o n s
 ////////////////////////////////////////////////////////////////////////////////
 
-//FixIn: 8.1.3.11
+// FixIn: 8.1.3.11.
 /** Dashboard Section  - Video 1 */
 function wpbc_dashboard_section_video_f() {
 	return;
     ?>
     <div id='wpbc_dashboard_section_video_f' class="wpbc_dashboard_section bk_left">
-        <span class="bk_header"><?php _e('Video guide' ,'booking');?> (free):</span>
+        <span class="bk_header"><?php esc_html_e('Video guide' ,'booking'); ?> (free):</span>
 		<?php  wpbc_is_dismissed( 'wpbc_dashboard_section_video_f' );        //FixIn: 8.1.3.10  ?>
 		<?php // Free ?>
 		<div style="text-align: center;margin:10px 0;"><iframe style="width:90%;height:auto;" src="https://www.youtube.com/embed/videoseries?list=PLabuVtqCh9dwLA5cpz1p2RrZOitLuVupR&amp;start=28&amp;rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
@@ -392,14 +393,14 @@ function wpbc_dashboard_section_video_f() {
     <?php
 }
 
-//FixIn: 8.1.3.11
+// FixIn: 8.1.3.11.
 /** Dashboard Section  - Video 2 */
 function wpbc_dashboard_section_video_p() {
 	return;
     ?>
     <div id='wpbc_dashboard_section_video_p' class="wpbc_dashboard_section bk_right">
 		<?php  wpbc_is_dismissed( 'wpbc_dashboard_section_video_p' );        //FixIn: 8.1.3.10 ?>
-        <span class="bk_header"><?php _e('Video guide' ,'booking');?> (premium):</span>
+        <span class="bk_header"><?php esc_html_e('Video guide' ,'booking'); ?> (premium):</span>
 		<?php // Premium ?>
 		<div style="text-align: center;margin:10px 0;"><iframe style="width:90%;height:auto;" src="https://www.youtube.com/embed/videoseries?list=PLabuVtqCh9dyc_EO8L_1FKJyLpBuIv21_&amp;rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
     </div>
@@ -410,7 +411,7 @@ function wpbc_dashboard_section_video_p() {
 function wpbc_dashboard_section_support() {
     ?>
     <div id="wpbc_dashboard_section_support" class="wpbc_dashboard_section bk_right">
-        <span class="bk_header"><?php _e('Support' ,'booking');?>:</span>
+        <span class="bk_header"><?php esc_html_e('Support' ,'booking'); ?>:</span>
 		<?php  wpbc_is_dismissed( 'wpbc_dashboard_section_support', array( 'css' => 'padding: 0 20px;' ) );        //FixIn: 8.1.3.10  ?>
 		<?php /* ?>
 		<?php // Free ?>
@@ -421,25 +422,25 @@ function wpbc_dashboard_section_support() {
         <table class="bk_table">
             <tr class="first">
                 <td style="text-align:center;" class="bk_spec_font"><a href="<?php echo 'https://wpbookingcalendar.com/faq/#using'; //echo esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-getting-started' ), 'index.php' ) ) ); ?>"
-                    ><?php _e('Getting Started' ,'booking');?></a>
+                    ><?php esc_html_e('Getting Started' ,'booking'); ?></a>
                 </td>
             </tr>
             <tr>
-                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wpbookingcalendar.com/wn/"><?php _e('What\'s New' ,'booking');?></a></td>
+                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wpbookingcalendar.com/wn/"><?php esc_html_e('What\'s New' ,'booking'); ?></a></td>
             </tr>
 			<?php if ( class_exists('wpdev_bk_personal') ){ ?>
             <tr>
-                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wpbookingcalendar.com/request-update/"><?php _e('Request Update' ,'booking');?></a></td>
+                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wpbookingcalendar.com/request-update/"><?php esc_html_e('Request Update' ,'booking'); ?></a></td>
             </tr>
 			<?php } ?>
             <tr>
-                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wpbookingcalendar.com/faq/"><?php _e('FAQ' ,'booking');?></a></td>
+                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wpbookingcalendar.com/faq/"><?php esc_html_e('FAQ' ,'booking'); ?></a></td>
             </tr>
             <tr>
-                <td style="text-align:center;" class="bk_spec_font"><a href="mailto:support@wpbookingcalendar.com"><?php _e('Contact email' ,'booking');?></a></td>
+                <td style="text-align:center;" class="bk_spec_font"><a href="mailto:support@wpbookingcalendar.com"><?php esc_html_e('Contact email' ,'booking'); ?></a></td>
             </tr>                                        
             <tr>
-                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wordpress.org/plugins/booking/"><?php _e('Rate plugin (thanks:)' ,'booking');?></a></td>
+                <td style="text-align:center;" class="bk_spec_font"><a target="_blank" href="https://wordpress.org/plugins/booking/"><?php esc_html_e('Rate plugin (thanks:)' ,'booking'); ?></a></td>
             </tr>
         </table>
     </div>
@@ -459,14 +460,14 @@ function wpbc_dashboard_section_news() {
 			<div style="width: 99%;margin-right:0;" >
 				<span class="bk_header" style="padding: 0;">Booking Calendar News:</span><?php
 
-				wpbc_is_dismissed( 'wpbc_dashboard_section_news' );        //FixIn: 8.1.3.10
+				wpbc_is_dismissed( 'wpbc_dashboard_section_news' );        // FixIn: 8.1.3.10.
 
 				?><br/><br/>
 				<div id="bk_news" class="rssSummary"> <span style="font-size:13px;text-align:center;">Loading...</span></div>
 				<div id="ajax_bk_respond" class="rssSummary" style="display:none;"></div>
 				<script type="text/javascript">
 					jQuery.ajax({
-						url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+						url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
 						type:'POST',
 						success: function (data, textStatus){ if( textStatus == 'success' ) jQuery('#ajax_bk_respond').html( data ); },
 						error: function (XMLHttpRequest, textStatus, errorThrown){ window.status = 'Ajax sending Error status:' + textStatus; },
@@ -531,7 +532,7 @@ function wpbc_dashboard_section_news() {
 
 			if ( substr( $show_version, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) ) ) === WP_BK_VERSION_NUM ) {
 				$show_version = substr( $show_version, 0, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) - 1 ) );
-				$show_version = str_replace( '.', ' ', $show_version ) . " <sup><strong style='font-size:12px;'>" . WP_BK_VERSION_NUM . "</strong></sup>";
+				$show_version = str_replace( '.', ' ', $show_version ) . " <sup><strong style='font-size:12px;'>" . esc_attr( WP_BK_VERSION_NUM ) . "</strong></sup>";
 			}
 			return $show_version;
 		} else {
@@ -549,13 +550,13 @@ function wpbc_dashboard_section_version() {
     /*
 
     Disbale hidded notice about Upgrade to  higher version in paid versions
-    //FixIn: 8.0.1.6
+    // FixIn: 8.0.1.6.
     if ( ( $version !== 'free' ) && ( class_exists('wpdev_bk_multiuser') === false ) ) { ?>
         <div class="wpbc_dashboard_section border_orrange" id="bk_upgrade_section"> 
             <div style="padding:0px 10px;width:96%;">
-                <h4><?php _e('Upgrade to higher versions' ,'booking') ?>:</h4>
+                <h4><?php esc_html_e('Upgrade to higher versions' , 'booking' ); ?>:</h4>
                 <p>Check additional advanced functionality, which exist in higher versions and can be interesting for you <a href="https://wpbookingcalendar.com/features/" target="_blank">here &raquo;</a></p>
-                <p><a class="button button-primary" style="margin-top: 10px;font-weight: 600;"  href="<?php echo wpbc_up_link(); ?>" target="_blank"><?php if ( wpbc_get_ver_sufix() == '' ) { _e('Purchase' ,'booking'); } else { _e('Upgrade Now' ,'booking'); } ?></a> </p>
+                <p><a class="button button-primary" style="margin-top: 10px;font-weight: 600;"  href="<?php echo wpbc_up_link(); ?>" target="_blank"><?php if ( wpbc_get_ver_sufix() == '' ) { esc_html_e('Purchase' ,'booking'); } else { esc_html_e('Upgrade Now' ,'booking'); } ?></a> </p>
             </div>
         </div>
         <div style="clear:both;"></div>
@@ -570,54 +571,59 @@ function wpbc_dashboard_section_version() {
     */
     ?>
     <div id="wpbc_dashboard_section_current_version" class="wpbc_dashboard_section" >
-        <span class="bk_header"><?php _e('Current version' ,'booking');?>:</span>
+        <span class="bk_header"><?php esc_html_e('Current version' ,'booking'); ?>:</span>
         <table class="bk_table">
 			<?php if ( wpbc_is_this_demo() ) { ?>
             <tr class="first">
 				<td></td>
-                <td style="font-weight: 600; text-align: left;"><?php _e('Demo' ,'booking');?></td>
+                <td style="font-weight: 600; text-align: left;"><?php esc_html_e('Demo' ,'booking'); ?></td>
             </tr>
 			<?php } ?>
             <tr class="first">
-                <td style="width:35%;text-align: right;;" class=""><?php _e('Version' ,'booking');?>:</td>
+                <td style="width:35%;text-align: right;;" class=""><?php esc_html_e('Version' ,'booking'); ?>:</td>
                 <td style="color: #e50;font-size: 13px;font-weight: 600;text-align: left;text-shadow: 0 -1px 0 #eee;;" 
                     class="bk_spec_font"><?php 
-
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo wpbc_dashboard_info_get_version_number();
 
                 ?></td>
             </tr>
             <?php if ($version != 'free') { ?>
             <tr>
-                <td style="width:35%;text-align: right;" class="first b"><?php _e('Type' ,'booking');?>:</td>
+                <td style="width:35%;text-align: right;" class="first b"><?php esc_html_e('Type' ,'booking'); ?>:</td>
                 <td style="text-align: left;  font-weight: 600;" class="bk_spec_font"><?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	                echo wpbc_dashboard_info_get_version_type_readable();
 			?></td>
             </tr>
             <tr>
-                <td style="width:35%;text-align: right;" class="first b"><?php _e('Used for' ,'booking');?>:</td>
-                <td style="text-align: left;  font-weight: 600;" class="bk_spec_font"><?php 
+                <td style="width:35%;text-align: right;" class="first b"><?php esc_html_e('Used for' ,'booking'); ?>:</td>
+                <td style="text-align: left;  font-weight: 600;" class="bk_spec_font"><?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                        echo wpbc_dashboard_info_get_version_type_sites();
                 ?></td>
             </tr>
             <?php } ?>
             <tr>
-                <td style="width:35%;text-align: right;" class="first b"><?php _e('Release date' ,'booking');?>:</td>
-                <td style="text-align: left;  font-weight: 600;" class="bk_spec_font"><?php echo date ("d.m.Y", filemtime(WPBC_FILE)); ?></td>
+                <td style="width:35%;text-align: right;" class="first b"><?php esc_html_e('Release date' ,'booking'); ?>:</td>
+                <td style="text-align: left;  font-weight: 600;" class="bk_spec_font"><?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wpbc_date_localized( gmdate( 'Y-m-d', filemtime( WPBC_FILE ) ) );
+				?></td>
             </tr>
         </table>
 		<div id="wpbc_dashboard_section_current_version_upgrade">
 
-			<table class="bk_table"style="border:none;">
+			<table class="bk_table" style="border:none;">
 				<tr>
 					<td colspan="2" style="border:none;text-align:center;" class=""><?php
 						?><?php  wpbc_is_dismissed( 'wpbc_dashboard_section_current_version_upgrade' , array( 'css' => 'padding: 0 0px;' ) );        //FixIn: 8.1.3.10  ?><?php
 						if ($version == 'free') {
-							?><a class="button-primary button" style="font-weight:600;" target="_blank" href="https://wpbookingcalendar.com/features/"><?php _e('Check Premium Features' ,'booking');?></a><?php
+							?><a class="button-primary button" style="font-weight:600;" target="_blank" href="https://wpbookingcalendar.com/features/"><?php esc_html_e('Check Premium Features' ,'booking'); ?></a><?php
 						} elseif  ( wpbc_get_ver_sufix() != '' )  {
-							?><a class="button-primary button"  href="<?php echo wpbc_get_settings_url(); ?>&tab=upgrade"><?php _e('Upgrade' ,'booking');?></a><?php
+							?><a class="button-primary button"  href="<?php echo esc_url( wpbc_get_settings_url() . '&tab=upgrade' ); ?>"><?php esc_html_e('Upgrade' ,'booking'); ?></a><?php
 						} else {
-							?><a class="button-primary button" target="_blank" href="https://wpbookingcalendar.com/features/"><?php _e('Explore Premium Features' ,'booking');?></a><?php
+							?><a class="button-primary button" target="_blank" href="https://wpbookingcalendar.com/features/"><?php esc_html_e('Explore Premium Features' ,'booking'); ?></a><?php
 						}
 				  ?></td>
 				</tr>
@@ -631,53 +637,53 @@ function wpbc_dashboard_section_version() {
 
 /** Dashboard Statistic Section */
 function wpbc_dashboard_section_statistic( $counter ) {
-	//FixIn: 9.3.1.7
+	// FixIn: 9.3.1.7.
     $bk_admin_url = wpbc_get_bookings_url() . '&wh_approved=';
     ?>
 	<div id='wpbc_dashboard_section_statistic'>
 		<?php
-		$is_panel_visible = wpbc_is_dismissed( 'wpbc_dashboard_section_statistic' );        //FixIn: 9.9.0.8
+		$is_panel_visible = wpbc_is_dismissed( 'wpbc_dashboard_section_statistic' );        // FixIn: 9.9.0.8.
 		if ( $is_panel_visible ) {
 		?>
 		<div class="wpbc_dashboard_section bk_right">
-			<span class="bk_header"><?php _e('Statistic' ,'booking');?>:</span>
+			<span class="bk_header"><?php esc_html_e('Statistic' ,'booking'); ?>:</span>
 			<table class="bk_table">
 				<tr>
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1'; ?>"><span><?php echo $counter['booking_today']; ?></span></a> </td>
-					<td class="actual-bookings"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('Bookings for today' ,'booking');?></a> </td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>"><span><?php echo esc_html( $counter['booking_today'] ); ?></span></a> </td>
+					<td class="actual-bookings"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Bookings for today' ,'booking'); ?></a> </td>
 				</tr>
 				<tr class="first">
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>"><span><?php echo $counter['was_made_today']; ?></span></a> </td>
-					<td class="new-bookings"><a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('New booking(s) made today' ,'booking');?></a> </td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><span><?php echo esc_html( $counter['was_made_today'] ); ?></span></a> </td>
+					<td class="new-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('New booking(s) made today' ,'booking'); ?></a> </td>
 				</tr>
 				<tr class="first">
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>"><span class=""><?php echo $counter['new']; ?></span></a> </td>
-					<td class=""> <a href="<?php echo $bk_admin_url,'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>"><?php _e('New (unverified) booking(s)' ,'booking');?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['new'] ); ?></span></a> </td>
+					<td class=""> <a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><?php esc_html_e('New (unverified) booking(s)' ,'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>"><span class=""><?php echo $counter['pending']; ?></span></a></td>
-					<td class="pending"><a href="<?php echo $bk_admin_url,'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('Pending booking(s)' ,'booking');?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['pending'] ); ?></span></a></td>
+					<td class="pending"><a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Pending booking(s)' ,'booking'); ?></a></td>
 				</tr>
 			</table>
 		</div>
 		<div class="wpbc_dashboard_section" >
-			<span class="bk_header"><?php _e('Agenda' ,'booking');?>:</span>
+			<span class="bk_header"><?php esc_html_e('Agenda' ,'booking'); ?>:</span>
 			<table class="bk_table">
 				<tr>
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1'; ?>"><span class=""><?php echo $counter['check_in_today']; ?></span></a></td>
-					<td class="pending"><a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('Check in - Today', 'booking');?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_in_today'] ); ?></span></a></td>
+					<td class="pending"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check in - Today', 'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1'; ?>"><span class=""><?php echo $counter['check_out_today']; ?></span></a></td>
-					<td class=""><a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('Check out - Today', 'booking');?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_out_today'] ); ?></span></a></td>
+					<td class=""><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check out - Today', 'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1'; ?>"><span class=""><?php echo $counter['check_in_tomorrow']; ?></span></a></td>
-					<td class="new-bookings"><a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('Check in - Tomorrow', 'booking');?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_in_tomorrow'] ); ?></span></a></td>
+					<td class="new-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check in - Tomorrow', 'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1'; ?>"><span class=""><?php echo $counter['check_out_tomorrow']; ?></span></a></td>
-					<td class="actual-bookings"><a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1'; ?>" class=""><?php _e('Check out - Tomorrow', 'booking');?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_out_tomorrow'] ); ?></span></a></td>
+					<td class="actual-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check out - Tomorrow', 'booking'); ?></a></td>
 				</tr>
 
 			</table>
@@ -706,7 +712,6 @@ function wpbc_get_flex_dashboard_info() {
 /** Show Flex Dashboard Conatiner  */
 function wpbc_flex_dashboard_show(){
 
-	//FixIn: 9.9.0.40
 	if (
 		   ( ! empty( $GLOBALS['pagenow'] ) )
 		&& ( is_admin() )
@@ -714,9 +719,9 @@ function wpbc_flex_dashboard_show(){
 			   (   'index.php' === $GLOBALS['pagenow'] )
 			|| (
 					( 'admin.php' === $GLOBALS['pagenow'] )
-				 && ( ! empty( $_GET['page'] ) )
-				 && ( 'wpbc-settings' === $_GET['page'] )
-				 && ( ( ! isset( $_GET['tab'] ) ) || ( 'general' === $_GET['tab'] ) )
+				 && ( ! empty( $_GET['page'] ) )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				 && ( 'wpbc-settings' === $_GET['page'] )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				 && ( ( ! isset( $_GET['tab'] ) ) || ( 'general' === $_GET['tab'] ) )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			   )
 		   )
 	) {
@@ -726,7 +731,7 @@ function wpbc_flex_dashboard_show(){
 	}
 
 
-	$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_dashboard_section_statistic' );        //FixIn: 9.9.0.8
+	$is_panel_visible = wpbc_is_dismissed_panel_visible( 'wpbc_dashboard_section_statistic' );        // FixIn: 9.9.0.8.
 
 	$counter = ( $is_panel_visible ) ? wpbc_db_dashboard_get_bookings_count_arr() : array();
 
@@ -829,13 +834,13 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>">
-						<span><?php echo $counter['was_made_today']; ?></span>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+						<span><?php echo esc_html( $counter['was_made_today'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_was_made_today">
-					<a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>" class="">
-						<?php _e('New booking(s) made today' ,'booking');?>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class="">
+						<?php esc_html_e('New booking(s) made today' ,'booking');?>
 					</a>
 				</div>
 			</div>
@@ -845,13 +850,13 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1'; ?>">
-						<span><?php echo $counter['booking_today']; ?></span>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>">
+						<span><?php echo esc_html( $counter['booking_today'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_made_for_today">
-					<a href="<?php echo $bk_admin_url,'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1'; ?>" class="">
-						<?php _e('Booking(s) for today' ,'booking');?>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>" class="">
+						<?php esc_html_e('Booking(s) for today' ,'booking');?>
 					</a>
 				</div>
 			</div>
@@ -861,13 +866,13 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo $bk_admin_url,'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>">
-						<span class=""><?php echo $counter['pending']; ?></span>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+						<span class=""><?php echo esc_html( $counter['pending'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_pending">
-					<a href="<?php echo $bk_admin_url,'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>" class="">
-						<?php _e('Pending booking(s)' ,'booking');?>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class="">
+						<?php esc_html_e('Pending booking(s)' ,'booking');?>
 					</a>
 				</div>
 			</div>
@@ -878,13 +883,12 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo $bk_admin_url,'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>">
-						<span class=""><?php echo $counter['new']; ?></span>
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+						<span class=""><?php echo esc_html( $counter['new'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_new">
-					<a href="<?php echo $bk_admin_url, '&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1'; ?>">
-						<?php _e( 'New (unverified) booking(s)', 'booking' ); ?>
+					<a href="<?php echo esc_url( $bk_admin_url. '&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New (unverified) booking(s)', 'booking' ); ?>
 					</a>
 				</div>
 			</div>
@@ -895,15 +899,19 @@ function wpbc_flex_dashboard_show(){
 		?>
 		<div class="wpbc_flex_dashboard_item">
 			<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_version_type">
-				<a href="https://wpbookingcalendar.com/faq/difference-single-developer-multi-site/#<?php echo  wpbc_get_slug_format( trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() .  '_' . WP_BK_VERSION_NUM ) ); ?>">
+				<a href="https://wpbookingcalendar.com/faq/difference-single-developer-multi-site/#<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo esc_attr( wpbc_get_slug_format( trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() . '_' . WP_BK_VERSION_NUM ) ) ); ?>">
 				<?php
 					if ( class_exists( 'wpdev_bk_personal' ) ) {
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						echo wpbc_dashboard_info_get_version_type_readable();
 					}
 					if ( wpbc_is_this_demo() ) {
 						echo ' (Demo)';
 					} else {
 						if ( 'free' != wpbc_dashboard_info_get_version_type() ) {
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							echo ' (' . __( 'for', 'booking' ) . ' ' . trim( wpbc_dashboard_info_get_version_type_sites() ) . ')';
 						}
 					}
@@ -911,8 +919,10 @@ function wpbc_flex_dashboard_show(){
 				</a>
 			</div>
 			<div class="wpbc_flex_dashboard_item_number wpbc_flex_dashboard_item_version_number">
-				<a href="https://wpbookingcalendar.com/changelog/#<?php echo  wpbc_get_slug_format( trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() .  '_' . WP_BK_VERSION_NUM ) ); ?>">
-					<span class=""><?php echo WP_BK_VERSION_NUM; ?></span>
+				<a href="https://wpbookingcalendar.com/changelog/#<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo  wpbc_get_slug_format( trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() .  '_' . WP_BK_VERSION_NUM ) ); ?>">
+					<span class=""><?php echo esc_attr(WP_BK_VERSION_NUM); ?></span>
 				</a>
 			</div>
 		</div>

@@ -108,8 +108,7 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 
 			<div class="parameter-group" style="float:left;margin-right:2em;">
 				<legend class="screen-reader-text"><span><?php echo wp_kses_post( $field['title'] ); ?></span></legend>
-				<label for="<?php echo esc_attr( $field_name ); ?>_options" class="control-label"><strong><?php
-						_e( 'Time Slots', 'booking' ); ?></strong> (<?php _e( 'in 24 hour format', 'booking' ); ?>):</label>
+				<label for="<?php echo esc_attr( $field_name ); ?>_options" class="control-label"><strong><?php esc_html_e( 'Time Slots', 'booking' ); ?></strong> (<?php esc_html_e( 'in 24 hour format', 'booking' ); ?>):</label>
 				<textarea
 								rows="<?php echo esc_attr( $field['rows'] ); ?>"
 								cols="<?php echo esc_attr( $field['cols'] ); ?>"
@@ -117,7 +116,7 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 								id="<?php echo esc_attr( $field_name ); ?>_options"
 								name="<?php echo esc_attr( $field_name ); ?>_options"
 								class="input-text wide-input <?php echo esc_attr( $field['class'] );
-																   echo ( ! empty($field['validate_as']) ) ? ' validate-' . implode( ' validate-', $field['validate_as'] ) : ''; ?>"
+																   echo ( ! empty($field['validate_as']) ) ? ' validate-' . esc_attr( implode( ' validate-', $field['validate_as'] ) ) : ''; ?>"
 								style="<?php echo esc_attr( $field['css'] ); ?>"
 								placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"
 								<?php disabled( $field['disabled'], true ); ?>
@@ -129,13 +128,13 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 
 							><?php
 							echo esc_textarea( $field['value'] ); ?></textarea>
-				<p class="help-block"><?php _e( 'One option per line', 'booking' ); ?></p>
+				<p class="help-block"><?php esc_html_e( 'One option per line', 'booking' ); ?></p>
 			</div>
 
 			<div class="parameter-group" style="float:left">
 				<legend class="screen-reader-text"><span><?php echo wp_kses_post( $field['title'] ); ?></span></legend>
 				<label for="<?php echo esc_attr( $field_name ); ?>_options" class="control-label"><strong><?php
-						 _e('Titles' ,'booking'); ?></strong>  (<?php _e('optional' ,'booking'); ?>):</label>
+						 esc_html_e('Titles' ,'booking'); ?></strong>  (<?php esc_html_e('optional' ,'booking'); ?>):</label>
 				<textarea
 								rows="<?php echo esc_attr( $field['rows'] ); ?>"
 								cols="<?php echo esc_attr( $field['cols'] ); ?>"
@@ -143,7 +142,7 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 								id="<?php echo esc_attr( $field_name ); ?>_titles"
 								name="<?php echo esc_attr( $field_name ); ?>_titles"
 								class="input-text wide-input <?php echo esc_attr( $field['class'] );
-																   echo ( ! empty($field['validate_as']) ) ? ' validate-' . implode( ' validate-', $field['validate_as'] ) : ''; ?>"
+																   echo ( ! empty($field['validate_as']) ) ? ' validate-' . esc_attr( implode( ' validate-', $field['validate_as'] ) ) : ''; ?>"
 								style="<?php echo esc_attr( $field['css'] ); ?>"
 								placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"
 								<?php disabled( $field['disabled'], true ); ?>
@@ -154,7 +153,7 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 									onchange="javascript:wpbc_parse_time_options_titles__to_values( this );"
 							><?php
 							echo esc_textarea( $field['value'] ); ?></textarea>
-				<p class="help-block"><?php _e( 'One title per line', 'booking' ); ?>. <?php _e( 'Visible options in selectbox', 'booking' ); ?></p>
+				<p class="help-block"><?php esc_html_e( 'One title per line', 'booking' ); ?>. <?php esc_html_e( 'Visible options in selectbox', 'booking' ); ?></p>
 			</div>
 			<div class="clear"></div>
 		</td></tr>
@@ -196,16 +195,16 @@ add_action( 'wpbc_settings_form_page_after_values', 'wpbc_settings_form_page_aft
 
 			?><div style="margin: 25px 0 0;vertical-align: middle;line-height: 1.8em;"><?php
 
-				?><label for="fill_timetable_5min" class="wpbc-form-text"><?php _e( 'Reset times by' ,'booking'); ?> </label> <?php
+				?><label for="fill_timetable_5min" class="wpbc-form-text"><?php esc_html_e( 'Reset times by' ,'booking'); ?> </label> <?php
 
-				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_2hours button">2 <?php _e( 'hours' ,'booking');  ?></a> <?php
-				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_60min button">1 <?php _e( 'hour' ,'booking');  ?></a> <?php
-				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_30min button">30 <?php _e( 'minutes' ,'booking');  ?></a> <?php
-				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_20min button">20 <?php _e( 'minutes' ,'booking');  ?></a> <?php
-				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_15min button">15 <?php _e( 'minutes' ,'booking');  ?></a> <?php
-				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_5min button">5 <?php _e( 'minutes' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_2hours button">2 <?php esc_html_e( 'hours' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_60min button">1 <?php esc_html_e( 'hour' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_30min button">30 <?php esc_html_e( 'minutes' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_20min button">20 <?php esc_html_e( 'minutes' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_15min button">15 <?php esc_html_e( 'minutes' ,'booking');  ?></a> <?php
+				?><a href="javascript:void(0)" class="fill_timetable fill_timetable_5min button">5 <?php esc_html_e( 'minutes' ,'booking');  ?></a> <?php
 
-				?><label for="fill_timetable_5min" class="wpbc-form-text"> <?php echo strtolower( __( 'Time Slots' ,'booking') ); ?> </label> <?php
+				?><label for="fill_timetable_5min" class="wpbc-form-text"> <?php echo esc_html( strtolower( __( 'Time Slots' ,'booking') ) ); ?> </label> <?php
 
 				?><a href="javascript:void(0)" onclick="jQuery('.wpbc_tr_rangetime_field_generator_options_titles, .wpbc_tr_rangetime_field_generator_name, .wpbc_tr_rangetime_field_generator_value').toggle();"
 					 style="float:right;font-size:08px;color: #aaa;text-decoration: none;">Timeslots Beta</a><?php
@@ -424,7 +423,7 @@ function wpbc_timeslots_table_config_js() {
 		jQuery(document).ready(function(){
 
 			// 30 minutes
-			jQuery('.fill_timetable_30min' ).on( 'click', function() {			//FixIn: 8.7.11.12
+			jQuery('.fill_timetable_30min' ).on( 'click', function() {			// FixIn: 8.7.11.12.
 
 				jQuery( '.wpbc_table_form_free_timeslots' ).html( '<tfoot><tr><th colspan="4" style="font-weight: 600;text-align: left;padding: 10px;font-size: 1em;"><?php echo esc_js( __('Processing' ,'booking') ) ?>...</th></tr></tfoot>' );
 				setTimeout(function(){
@@ -514,17 +513,17 @@ function wpbc_timeslots_table_config_js() {
 			// Update Fields   I N D E X E S    at  TimesTable	(useful,  during adding or removing of some rows,  when  we can have same indexes in fields)
 			wpbc_reupdate_indexes_in_fields_at_timetable();
 
-			// Get  number of rows
-			var size = jQuery('#wpbc_timeslots_table_config tbody tr').size();
+			// Get  number of rows	//FixIn: 10.9.4.4
+			var size = jQuery('#wpbc_timeslots_table_config tbody tr').length;
 
 			var time_s, time_e, time_label;
 			var time_rows = [];
 
 			// Get parsed time-slots rows with labels,  if exist
 			for ( var i = 0; i < size; i++ ){
-				time_s = jQuery( "select[name='timeslotS[" + i + "]']" ).val();		//FixIn: 8.4.2.7
-				time_e = jQuery( "select[name='timeslotE[" + i + "]']" ).val();		//FixIn: 8.4.2.7
-				time_label = jQuery( "input[name='form_field_timeslot_label[" + i + "]']" ).val();	//FixIn: 8.4.2.7
+				time_s = jQuery( "select[name='timeslotS[" + i + "]']" ).val();		// FixIn: 8.4.2.7.
+				time_e = jQuery( "select[name='timeslotE[" + i + "]']" ).val();		// FixIn: 8.4.2.7.
+				time_label = jQuery( "input[name='form_field_timeslot_label[" + i + "]']" ).val();	// FixIn: 8.4.2.7.
 				time_label = time_label.trim();
 
 				if ( time_label.length > 0 ){
@@ -614,8 +613,9 @@ function wpbc_timeslots_table_config_js() {
 				timeslots_table += wpbc_table_rows_tpl(  el  );
 			});
 
-			timeslots_table +='</tbody>'
-							+ '<tfoot><tr><th colspan="4"><a href="javascript:void(0)" class="add_time_bk_link button"><?php _e( '+ Add Time Slot' ,'booking'); ?></a></th></tr></tfoot>'
+			timeslots_table += '</tbody>' + '<tfoot><tr><th colspan="4"><a href="javascript:void(0)" class="add_time_bk_link button"><?php
+				echo esc_js( __( '+ Add Time Slot', 'booking' ) );
+				?></a></th></tr></tfoot>'
 
 			jQuery( '.wpbc_table_form_free_timeslots' ).html( timeslots_table );
 
@@ -639,7 +639,7 @@ function wpbc_timeslots_table_config_js() {
 		function wpbc_timeslots_free_add_row(){
 
 			// Append    1    Row    to    TimeTable
-			jQuery('.wpbc_input_table .add_time_bk_link').on( 'click', function(){                   //FixIn: 8.7.11.12
+			jQuery('.wpbc_input_table .add_time_bk_link').on( 'click', function(){                   // FixIn: 8.7.11.12.
 
 				var size = jQuery('#wpbc_timeslots_table_config tbody tr').size();
 
@@ -684,7 +684,7 @@ function wpbc_timeslots_table_config_js() {
 			* array[  [ "10:00 - 12:00", 			"11:00 - 15:00", 	"14:00 - 16:00", 	… ]
 			*         [ "10:00 AM - 12:00 PM", 	"", 				"Afternoon", 		… ] ]
 			*/
-			var tslots_arr = wpbc_get_titles_options_from_values( '#' + field_name + '_value' );
+			var tslots_arr = wpbc_get_titles_options_from_values('#' + field_name + '_value');
 
 			var data = [];
 
@@ -804,11 +804,11 @@ function wpbc_timeslots_table_config_js() {
 							name="form_field_timeslot_label[{{data.i}}]"
 							value="{{data.time_label}}"
 							class="regular-text form_field_timeslot_label"
-							placeholder="<?php _e( 'Label', 'booking'); ?>"
+							placeholder="<?php esc_attr_e( 'Label', 'booking'); ?>"
 							autocomplete="off"
 						/>
 					</td>
-					<td class="field_actions"><a href="javascript:void(0)" class="tooltip_top button-secondary button delete_time_bk_link" title="<?php _e('Remove' ,'booking'); ?>"><i class="wpbc_icn_close"></i></a></td>
+					<td class="field_actions"><a href="javascript:void(0)" class="tooltip_top button-secondary button delete_time_bk_link" title="<?php esc_attr_e('Remove' ,'booking'); ?>"><i class="wpbc_icn_close"></i></a></td>
 				</tr>
 			</script><?php
 

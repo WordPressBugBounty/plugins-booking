@@ -609,6 +609,48 @@
 	border-radius: 0 0 3px 3px;
 	background-clip: padding-box;
 }
+/* ---------------------------- Animation Menu Start --------------------------------------- */
+.ui_element .wpbc_ui_dropdown.open .ui_dropdown_menu{
+    animation: ui_dropdown_menu__anim__grow_down 200ms ease-in-out forwards;
+    transform-origin: top center;
+}
+@keyframes ui_dropdown_menu__anim__grow_down {
+    0% {
+        transform: scaleY(0)
+    }
+    50% {
+        transform: scaleY(0.8)
+    }
+    100% {
+        transform: scaleY(1)
+    }
+}
+@keyframes ui_dropdown_menu__anim__pop_up_animation {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes ui_dropdown_menu__anim__fade_in{
+  0% {
+    opacity:0;
+  }
+  33% {
+    opacity:0.1;
+  }
+  66% {
+    opacity:0.2;
+  }
+  100% {
+    opacity:1;
+  }
+}
+/* ---------------------------- Animation End --------------------------------------- */
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu-left {
 }
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu-right {
@@ -800,7 +842,7 @@
 	border-radius: 0 0 2px 2px;
 }
 /* Toolbar without background and borders, for ability to insert elements somewhere in a page ----------------------------
- *																										//FixIn: 9.6.1.5
+ *																										// FixIn: 9.6.1.5.
 				?><div class="wpbc_ajx_toolbar wpbc_no_borders"><?php
 					?><div class="ui_container ui_container_small"><?php
 						?><div class="ui_group"><?php

@@ -194,7 +194,7 @@ class WPBC_Emails_API_Approved extends WPBC_Emails_API  {                       
                                 );
 
 
-//FixIn: 8.1.2.17
+// FixIn: 8.1.2.17.
         $this->fields['to_html_prefix'] = array(   
                                     'type'          => 'pure_html'
                                     , 'group'       => 'general'
@@ -269,7 +269,7 @@ class WPBC_Emails_API_Approved extends WPBC_Emails_API  {                       
                                     , 'default'     => get_option( 'admin_email' )
                                     //, 'placeholder' => ''
                                     , 'title'       => ''
-                                    , 'description' => __('Email Address', 'booking') . '. ' . __('Required', 'booking') . '. '  . __('Email Address will be used in the FROM field of response to Visitor.', 'booking')    //FixIn: 8.1.2.17
+                                    , 'description' => __('Email Address', 'booking') . '. ' . __('Required', 'booking') . '. '  . __('Email Address will be used in the FROM field of response to Visitor.', 'booking')    // FixIn: 8.1.2.17.
                                     , 'description_tag' => ''
                                     , 'css'         => 'width:100%'
                                     , 'group'       => 'general'
@@ -329,16 +329,19 @@ class WPBC_Emails_API_Approved extends WPBC_Emails_API  {                       
                             );
 	    $this->fields['subject_after'] = array( 'type'  => 'pure_html', 'group' => 'general_content',
 												'html'  => '<p style="text-align: right;font-size:12px;">'
-												           . sprintf(__('Type your email %ssubject%s for the booking confirmation message.' ,'booking'),'<b>','</b>') . ' ' . __('Required', 'booking')
+												           /* translators: 1: ... */
+												           . sprintf( __( 'Type your email %1$ssubject%2$s for the booking confirmation message.', 'booking' ),'<b>','</b>') . ' ' . __('Required', 'booking')
 												           . '.</p>' . '</td></tr>' );
 
 	    $blg_title = get_option( 'blogname' );
 	    $blg_title = str_replace( array( '"', "'" ), '', $blg_title );
 
 	    if ( class_exists( 'wpdev_bk_personal' ) ) {
-		    $email_content = sprintf( __( 'Your reservation %s for: %s has been approved.%sYou can edit the booking on this page: %s Thank you, %s', 'booking' ), '[bookingtype]', '[dates]', '<br/><br/>[content]<br/><br/>', '[visitorbookingediturl]<br/><br/>', $blg_title . '<br/>[siteurl]' );
+		    /* translators: 1: ... */
+		    $email_content = sprintf( __( 'Your reservation %1$s for: %2$s has been approved.%3$sYou can edit the booking on this page: %4$s Thank you, %5$s', 'booking' ), '[bookingtype]', '[dates]', '<br/><br/>[content]<br/><br/>', '[visitorbookingediturl]<br/><br/>', $blg_title . '<br/>[siteurl]' );
 	    } else {
-		    $email_content = sprintf( __( 'Your booking %s for: %s has been approved.%sThank you, %s', 'booking' ), '[bookingtype]', '[dates]', '<br/><br/>[content]<br/><br/>', $blg_title . '<br/>[siteurl]' );
+		    /* translators: 1: ... */
+		    $email_content = sprintf( __( 'Your booking %1$s for: %2$s has been approved.%3$sThank you, %4$s', 'booking' ), '[bookingtype]', '[dates]', '<br/><br/>[content]<br/><br/>', $blg_title . '<br/>[siteurl]' );
 	    }
 
 	    $this->fields['content_before'] = array(
@@ -412,7 +415,8 @@ class WPBC_Emails_API_Approved extends WPBC_Emails_API  {                       
 
         $this->fields['template_file_help'] = array(   
                                     'type' => 'help'                                        
-                                    , 'value' => array( sprintf( __('You can override this email template in this folder %s', 'booking')                                                
+                                    /* translators: 1: ... */
+                                    , 'value' => array( sprintf( __( 'You can override this email template in this folder %s', 'booking')
                                                                 , '<code>' . realpath( dirname(__FILE__) . '/../any/emails_tpl/' ) . '</code>' ) 
                                                       )
                                     , 'cols' => 2
@@ -507,7 +511,8 @@ class WPBC_Emails_API_Approved extends WPBC_Emails_API  {                       
                               , 'visitorbookingcancelurl'
                               , 'visitorbookingpayurl'
                           );
-        $email_example = sprintf(__('For example: "You have a new reservation %s on the following date(s): %s Contact information: %s You can approve or cancel this booking at: %s Thank you, Reservation service."' ,'booking'),'','[dates]&lt;br/&gt;&lt;br/&gt;','&lt;br/&gt; [content]&lt;br/&gt;&lt;br/&gt;', htmlentities( ' <a href="[moderatelink]">'.__('here' ,'booking').'</a> ') . '&lt;br/&gt;&lt;br/&gt; ');
+        /* translators: 1: ... */
+        $email_example = sprintf( __( 'For example: "You have a new reservation %1$s on the following date(s): %2$s Contact information: %3$s You can approve or cancel this booking at: %4$s Thank you, Reservation service."', 'booking' ),'','[dates]&lt;br/&gt;&lt;br/&gt;','&lt;br/&gt; [content]&lt;br/&gt;&lt;br/&gt;', htmlentities( ' <a href="[moderatelink]">'.__('here' ,'booking').'</a> ') . '&lt;br/&gt;&lt;br/&gt; ');
 
         $help_fields = wpbc_get_email_help_shortcodes( $skip_shortcodes, $email_example );
 
@@ -580,7 +585,7 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
         
         $subtabs['approved'] = array( 
                             'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
-        					, 'title' => '<span>' . __( 'Approved', 'booking' ) . $sufix . '</span>' 					// Title of TAB
+        					, 'title' => '<span>' . esc_html__( 'Approved', 'booking' ) . $sufix . '</span>' 					// Title of TAB
                             , 'page_title' => __('Emails Settings', 'booking')  // Title of Page   
                             , 'hint' => __('Customization of email template, which is sent to Visitor after approval of booking' ,'booking')   //FixIn: 8.1.2.17.1
                             , 'link' => ''                                      // link
@@ -588,7 +593,7 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon			//FixIn: 9.6.1.4
+                            , 'header_font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
                             , 'default' =>  false                                // Is this sub tab activated by default or not: true || false. 
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
@@ -643,11 +648,11 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
                 
         <span class="metabox-holder">
             
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" autocomplete="off">
+            <form name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" autocomplete="off">
                 <?php 
                    // N o n c e   field, and key for checking   S u b m i t 
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" />
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1"/>
 
                 <div class="clear"></div>
 				<?php
@@ -733,7 +738,7 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
         $init_fields_values = wpbc_import6_email__approved__get_fields_array_for_activation();
 
         // Get Value of first element - array of default or imported OLD data,  because need only  array  of values without key - name of options for wp_options table
-        $init_fields_values_temp = array_values( $init_fields_values );             //FixIn: 7.0.1.32
+        $init_fields_values_temp = array_values( $init_fields_values );             // FixIn: 7.0.1.32.
         $init_fields_values = array_shift( $init_fields_values_temp );
 
 
@@ -748,6 +753,7 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
 
         $this->mail_api()->validated_form_id = $submit_form_name;               // Define ID of Form for ability to  validate fields before submit.
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if ( isset( $_POST['is_form_sbmitted_'. $submit_form_name ] ) ) {
 
             // Nonce checking    {Return false if invalid, 1 if generated between, 0-12 hours ago, 2 if generated between 12-24 hours ago. }
@@ -822,7 +828,7 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
         $js_script .= "     }";
         $js_script .= "  }); ";
 
-        //FixIn: 8.1.2.17
+        // FixIn: 8.1.2.17.
 		$js_script .= " jQuery('#approved_copy_to_admin').on( 'change', function(){ ";
         $js_script .= "     if ( jQuery('#approved_copy_to_admin').is(':checked') ) {";
         $js_script .= "         jQuery('.wpbc_tr_copy_to_admin_to').show();";
@@ -864,7 +870,7 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 
     // Resources ///////////////////////////////////////////////////////////////
     $bk_title = wpbc_get_resource_title( $bktype );
-	$parent_resource_title = wpbc_get_parent_resource_title( $bktype );        //FixIn: 10.9.2.4
+	$parent_resource_title = wpbc_get_parent_resource_title( $bktype );        // FixIn: 10.9.2.4.
 
     // Dates ///////////////////////////////////////////////////////////////////
     $my_dates4emeil = wpbc_db__get_sql_dates__in_booking__as_str( $booking_id );
@@ -876,11 +882,11 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 
 	$my_check_in_date      = wpbc_get_dates_comma_string_localized( $my_dates4emeil_check_in_out[0] );
 	$my_check_out_date     = wpbc_get_dates_comma_string_localized( $my_dates4emeil_check_in_out[ count( $my_dates4emeil_check_in_out ) - 1 ] );
-	$my_check_in_onlydate  = wpbc_get_dates_comma_string_localized( wpbc_datetime_localized( date( 'Y-m-d 00:00:00', strtotime( $my_dates4emeil_check_in_out[0] ) ), 'Y-m-d 00:00:00' ) );        //FixIn: 8.7.2.5
-	$my_check_out_onlydate = wpbc_get_dates_comma_string_localized( wpbc_datetime_localized( date( 'Y-m-d 00:00:00', strtotime( $my_dates4emeil_check_in_out[ count( $my_dates4emeil_check_in_out ) - 1 ] ) ), 'Y-m-d 00:00:00' ) );
-	$my_check_out_plus1day = wpbc_get_dates_comma_string_localized( wpbc_datetime_localized( date( 'Y-m-d H:i:s', strtotime( $my_dates4emeil_check_in_out[ count( $my_dates4emeil_check_in_out ) - 1 ] . " +1 day" ) ), 'Y-m-d H:i:s' ) ); //FixIn: 6.0.1.11
+	$my_check_in_onlydate  = wpbc_get_dates_comma_string_localized( wpbc_datetime_localized( gmdate( 'Y-m-d 00:00:00', strtotime( $my_dates4emeil_check_in_out[0] ) ), 'Y-m-d 00:00:00' ) );        // FixIn: 8.7.2.5.
+	$my_check_out_onlydate = wpbc_get_dates_comma_string_localized( wpbc_datetime_localized( gmdate( 'Y-m-d 00:00:00', strtotime( $my_dates4emeil_check_in_out[ count( $my_dates4emeil_check_in_out ) - 1 ] ) ), 'Y-m-d 00:00:00' ) );
+	$my_check_out_plus1day = wpbc_get_dates_comma_string_localized( wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s', strtotime( $my_dates4emeil_check_in_out[ count( $my_dates4emeil_check_in_out ) - 1 ] . " +1 day" ) ), 'Y-m-d H:i:s' ) ); // FixIn: 6.0.1.11.
 
-	//FixIn: 10.1.5.6
+	// FixIn: 10.1.5.6.
 	$dates_only_arr = wpbc_get_only_dates__from_dates_ymd_his_csv__as_arr( $my_dates4emeil );                           // -> '2023-10-09, 2023-10-09'
 	$dates_only_str = implode( ',', $dates_only_arr );
 	$dates_only_str_formatted = ( 'short' === get_bk_option( 'booking_date_view_type' ) )
@@ -888,7 +894,7 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 								: wpbc_get_dates_comma_string_localized( $dates_only_str );
 
     // Cost ////////////////////////////////////////////////////////////////////
-    $booking_cost_digits_only = apply_bk_filter( 'get_booking_cost_from_db', '', $booking_id );  //FixIn: 9.2.3.1
+    $booking_cost_digits_only = apply_bk_filter( 'get_booking_cost_from_db', '', $booking_id );  // FixIn: 9.2.3.1.
     $booking_cost = wpbc_get_cost_with_currency_for_user( $booking_cost_digits_only );    
     // Other ///////////////////////////////////////////////////////////////////
     $replace[ 'booking_id' ]    = $booking_id;
@@ -898,21 +904,23 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 	$replace[ 'dates_only' ]    = $dates_only_str_formatted;
     $replace[ 'check_in_date' ] = $my_check_in_date;
     $replace[ 'check_out_date' ]    = $my_check_out_date;
-    //FixIn: 8.7.2.5
+    // FixIn: 8.7.2.5.
     $replace[ 'check_in_only_date' ] 	= $my_check_in_onlydate;
     $replace[ 'check_out_only_date' ]   = $my_check_out_onlydate;
 
-    $replace[ 'check_out_plus1day'] = $my_check_out_plus1day;                   //FixIn: 6.0.1.11
+    $replace[ 'check_out_plus1day'] = $my_check_out_plus1day;                   // FixIn: 6.0.1.11.
     $replace[ 'dates_count' ]   = count( $my_dates4emeil_check_in_out );
 	$replace['cost'] = $booking_cost;
 	$replace['cost_digits_only'] = $booking_cost_digits_only;
-    $replace[ 'siteurl' ]       = htmlspecialchars_decode( '<a href="' . home_url() . '">' . home_url() . '</a>' );
+    $replace[ 'siteurl' ]       = htmlspecialchars_decode( '<a href="' . esc_url( home_url() ) . '">' . home_url() . '</a>' );
     $replace[ 'resource_title'] = wpbc_lang( $bk_title );
-	$replace[ 'parent_resource_title'] = wpbc_lang( $parent_resource_title );														//FixIn: 10.9.2.4
+	$replace[ 'parent_resource_title'] = wpbc_lang( $parent_resource_title );														// FixIn: 10.9.2.4.
     $replace[ 'bookingtype' ]   = $replace[ 'resource_title'];
-    $replace[ 'remote_ip'     ] = wpbc_get_user_ip();   //FixIn:7.1.2.4                      // The IP address from which the user is viewing the current page. 
-    $replace[ 'user_agent'    ] = $_SERVER['HTTP_USER_AGENT'];                  // Contents of the User-Agent: header from the current request, if there is one. 
-    $replace[ 'request_url'   ] = ( isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '' );                     // The address of the page (if any) where action was occured. Because we are sending it in Ajax request, we need to use the REFERER HTTP
+	$replace['remote_ip'] = wpbc_get_user_ip();
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+    $replace[ 'user_agent'    ] = ( ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ) : '' );                  // Contents of the User-Agent: header from the current request, if there is one.
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$replace['request_url'] = $server_http_referer_uri;                     // The address of the page (if any) where action was occured. Because we are sending it in Ajax request, we need to use the REFERER HTTP
     $replace[ 'current_date' ]  = date_i18n( get_bk_option( 'booking_date_format' ) );
     $replace[ 'current_time' ]  = date_i18n( get_bk_option( 'booking_time_format' ) );                                                    
     
@@ -930,7 +938,7 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
     $replace[ 'moderatelink' ]  = htmlspecialchars_decode( 
                                                         //    '<a href="' . 
                                                             esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id ) 
-                                                        //    . '">' . __('here', 'booking') . '</a>'  
+                                                        //    . '">' . esc_html__('here', 'booking') . '</a>'
                                                         );    
     $replace[ 'visitorbookingediturl' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingediturl]', $booking_id );
     $replace[ 'visitorbookingslisting' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingslisting]', $booking_id );	//FixIn: 8.1.3.5.1
@@ -938,16 +946,16 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
     $replace[ 'visitorbookingpayurl' ]      = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingpayurl]', $booking_id );
     $replace[ 'bookinghash' ]               = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[bookinghash]', $booking_id );
 
-	//FixIn: 7.1.2.5	8.5.2.13
+	// FixIn: 8.5.2.13.
 //	$booking_data = array( 'form_data' => $booking_form_show_array );
 //	$booking_data[ 'dates_short' ] = array( $my_dates4emeil_check_in_out[ 0 ], '-', $my_dates4emeil_check_in_out[ count( $my_dates4emeil_check_in_out ) - 1 ] );
 //	$replace[ 'add_to_google_cal_url' ]  = htmlspecialchars_decode( esc_url(
 //												wpbc_btn_add_booking_to_google_calendar( $booking_data , array( 'is_only_url' => true ), false )
 //											) );
-	//FixIn: 9.6.3.8
+	// FixIn: 9.6.3.8.
 	$google_calendar_link = wpbc_booking_do_action__get_google_calendar_link( array(
 																						'form_data'   => $booking_form_show_array['_all_fields_'],
-																						'form_show'   => $booking_form_show_array['content'],     //strip_tags( $parsed_form_show ),
+																						'form_show'   => $booking_form_show_array['content'],
 																						'dates_short' => array(
 																												  $my_dates4emeil_check_in_out[0]
 																												, '-'
@@ -955,11 +963,11 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 																										)
 																			) );
 	$replace['add_to_google_cal_url']    = htmlspecialchars_decode( esc_url( $google_calendar_link ) );
-	$replace['add_to_google_cal_button'] = '<a href="' . esc_attr( $replace['add_to_google_cal_url'] ) . '" target="_blank" rel="nofollow">' . esc_attr__( 'Add to Google Calendar', 'booking' ) . '</a>';
+	$replace['add_to_google_cal_button'] = '<a href="' . esc_attr( $replace['add_to_google_cal_url'] ) . '" target="_blank" rel="nofollow">' . esc_html__( 'Add to Google Calendar', 'booking' ) . '</a>';
 
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
 	// Get additional  replace paramaters to the email shortcodes
-	$replace = apply_filters( 'wpbc_replace_params_for_booking', $replace, $booking_id, $bktype, $formdata );			//FixIn: 8.0.1.7
+	$replace = apply_filters( 'wpbc_replace_params_for_booking', $replace, $booking_id, $bktype, $formdata );			// FixIn: 8.0.1.7.
 
 
     return $replace;
@@ -969,49 +977,52 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
 
 
 /**
-	 * Send email
- * 
- * @param type $booking_id - ID of booking
- * @param type $bktype - type
- * @param type $formdata - booking form data
+ * Send approved email
+ * @param $approved_id_str
+ * @param $is_send_emeils
+ * @param $denyreason
+ *
+ * @return bool
  */
 function wpbc_send_email_approved( $approved_id_str, $is_send_emeils, $denyreason = '' ) {
-    
-    global $wpdb;
-    $sql = "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id IN ({$approved_id_str})";
-    $result = $wpdb->get_results( $sql  );
 
-    foreach ( $result as $res ) {
-    
-        $booking_id = $res->booking_id;
-        $bktype = $res->booking_type;
-        $formdata = $res->form;
-                                        
-        $previous_active_user = apply_bk_filter( 'wpbc_mu_set_environment_for_owner_of_resource', -1, $bktype );    // MU
-        
-        make_bk_action( 'booking_aproved', $res, '' );                          // Check for ability to change HASH during approving booking    //FixIn: 7.0.1.35
-        
-        ////////////////////////////////////////////////////////////////////////
-        // Load Data 
-        ////////////////////////////////////////////////////////////////////////
+	global $wpdb;
+	$sql = "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id IN ({$approved_id_str})";
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$result = $wpdb->get_results( $sql );
 
-        /* Check if New Email Template   Exist or NOT
-         * Exist     -  return  empty array in format: array( OPTION_NAME => array() ) 
-         *              Its will  load DATA from DB,  during creattion mail_api CLASS
-         *              during initial activation  of the API  its try  to get option  from DB
-         *              We need to define this API before checking POST, to know all available fields
-         *              Define Email Name & define field values from DB, if not exist, then default values. 
-         * Not Exist -  import Old Data from DB
-         *              or get "default" data from settings and return array with  this data
-         *              This data its initial  parameters for definition fields in mail_api CLASS 
-         * 
-         */
+	foreach ( $result as $res ) {
 
-        $init_fields_values = wpbc_import6_email__approved__get_fields_array_for_activation();
+		$booking_id = $res->booking_id;
+		$bktype     = $res->booking_type;
+		$formdata   = $res->form;
 
-        // Get Value of first element - array of default or imported OLD data,  because need only  array  of values without key - name of options for wp_options table
-        $init_fields_values_temp = array_values( $init_fields_values );             //FixIn: 7.0.1.32
-        $init_fields_values = array_shift( $init_fields_values_temp );
+		$previous_active_user = apply_bk_filter( 'wpbc_mu_set_environment_for_owner_of_resource', - 1, $bktype );       // MU.
+
+		// Check for ability to change HASH during approving booking    //FixIn: 7.0.1.35.
+		make_bk_action( 'booking_aproved', $res, '' );
+
+		// -------------------------------------------------------------------------------------------------------------
+		// Load Data
+		// -------------------------------------------------------------------------------------------------------------
+
+		/**
+		 * Check if New Email Template   Exist or NOT
+		 * Exist     -  return  empty array in format: array( OPTION_NAME => array() )
+		 *              Its will  load DATA from DB,  during creattion mail_api CLASS
+		 *              during initial activation  of the API  its try  to get option  from DB
+		 *              We need to define this API before checking POST, to know all available fields
+		 *              Define Email Name & define field values from DB, if not exist, then default values.
+		 * Not Exist -  import Old Data from DB
+		 *              or get "default" data from settings and return array with  this data
+		 *              This data its initial  parameters for definition fields in mail_api CLASS
+		 */
+		
+		$init_fields_values = wpbc_import6_email__approved__get_fields_array_for_activation();
+		
+		// Get Value of first element - array of default or imported OLD data,  because need only  array  of values without key - name of options for wp_options table
+		$init_fields_values_temp = array_values( $init_fields_values );             // FixIn: 7.0.1.32.
+		$init_fields_values      = array_shift( $init_fields_values_temp );
 
 
         $mail_api = new WPBC_Emails_API_Approved( WPBC_EMAIL_APPROVED_ID, $init_fields_values );
@@ -1022,17 +1033,17 @@ function wpbc_send_email_approved( $approved_id_str, $is_send_emeils, $denyreaso
 
 
         $replace = wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $formdata );
-        $replace[ 'denyreason' ] = $denyreason;                                 //FixIn: 7.0.1.1
-        $replace[ 'approvereason' ] = $denyreason;                              //FixIn: 7.0.1.1
-        $replace[ 'reason' ] = $denyreason;                                     //FixIn: 7.0.1.1
-	    if ( ! empty( $res->remark ) )                                    							//FixIn: 8.1.2.6
-			$replace[ 'remark' ] = $res->remark;                                //FixIn: 7.2.1.19
+        $replace[ 'denyreason' ] = $denyreason;                                 // FixIn: 7.0.1.1.
+        $replace[ 'approvereason' ] = $denyreason;                              // FixIn: 7.0.1.1.
+        $replace[ 'reason' ] = $denyreason;                                     // FixIn: 7.0.1.1.
+	    if ( ! empty( $res->remark ) )                                    							// FixIn: 8.1.2.6.
+			$replace[ 'remark' ] = $res->remark;                                // FixIn: 7.2.1.19.
 
         // Replace shortcodes with  custom URL parameter,  like: 'visitorbookingediturl', 'visitorbookingcancelurl', 'visitorbookingpayurl'
         foreach ( array( 'visitorbookingediturl', 'visitorbookingcancelurl', 'visitorbookingpayurl' , 'visitorbookingslisting' ) as $url_shortcode ) {                     //FixIn: 7.0.1.8	//FixIn: 8.1.3.5.1
             
             // Loop to  search  if we are having several such  shortcodes in our $mail_api->fields_values['content']  (For example,  if we have several  languges ).
-            $pos = 0;                                                               //FixIn: 7.0.1.52
+            $pos = 0;                                                               // FixIn: 7.0.1.52.
             do {
                 $shortcode_params = wpbc_get_params_of_shortcode_in_string( $url_shortcode, $mail_api->fields_values['content'] , $pos );
 
@@ -1042,28 +1053,28 @@ function wpbc_send_email_approved( $approved_id_str, $is_send_emeils, $denyreaso
 
                     $exist_replace =  substr( $mail_api->fields_values['content'], $shortcode_params['start'], ( $shortcode_params['end'] - $shortcode_params['start'] ) );
 
-                    $new_replace = $url_shortcode . rand(1000,9000);
+                    $new_replace = $url_shortcode . wp_rand(1000,9000);
 
                     $mail_api->fields_values['content'] = str_replace( $exist_replace,  $new_replace ,$mail_api->fields_values['content'] );
 
 					$pos = $shortcode_params['start'] + strlen( $new_replace );        									//FixIn: 9.7.3.5.1
                     $replace[ $new_replace ] = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '['.$exist_replace.']', $booking_id );
-                } else if (																								//FixIn: 8.1.1.8
+                } else if (																								// FixIn: 8.1.1.8.
                 				   ( ! empty( $shortcode_params ) )
 								&& ( isset( $shortcode_params['end'] ) )
 								&& ( $shortcode_params['end'] < strlen( $mail_api->fields_values['content'] ) )
 						)  {
 					$pos = $shortcode_params['end'];
                 } else {
-                    $shortcode_params = false;                                      //FixIn: 7.0.1.58
+                    $shortcode_params = false;                                      // FixIn: 7.0.1.58.
                 } 
 
-            } while ( ! empty( $shortcode_params ) );                               //FixIn: 7.0.1.52
+            } while ( ! empty( $shortcode_params ) );                               // FixIn: 7.0.1.52.
             
         }
         
         $mail_api->set_replace( $replace );
-        $mail_api->fields_values['from_name'] = $mail_api->replace_shortcodes( $mail_api->fields_values['from_name'] );                         //FixIn: 7.0.1.29
+        $mail_api->fields_values['from_name'] = $mail_api->replace_shortcodes( $mail_api->fields_values['from_name'] );                         // FixIn: 7.0.1.29.
 
 
 	    $to = ( isset( $replace['email'] ) ) ? $replace['email'] : '';                    // Get To field
@@ -1072,7 +1083,7 @@ function wpbc_send_email_approved( $approved_id_str, $is_send_emeils, $denyreaso
 		    $to = wpbc_email_prepand_person_name( $replace['email'], $replace );
 	    }
 
-	    $to = wpbc_check_for_several_emails_in_form( $to, $formdata, $bktype );     //FixIn: 6.0.1.9
+	    $to = wpbc_check_for_several_emails_in_form( $to, $formdata, $bktype );     // FixIn: 6.0.1.9.
 
 	    $to = str_replace( ';', ',', $to );
 

@@ -1,6 +1,9 @@
 .wpbc_top_tabs_sub_menu {
   display: none
 }
+.wpbc_header_news {
+  display: none!important
+}
 .wpbc_calendar_loading {
   width: 95%;
   text-align: center;

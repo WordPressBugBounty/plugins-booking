@@ -27,7 +27,7 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 
     //wpbc_toolbar_search_by_id_bookings();                                       // Search bookings by  ID - form  at the top  right side of the page
 
-    // wpbc_toolbar_btn__view_mode();                                              //  Vertical Buttons		//FixIn: 9.8.15.2
+    // wpbc_toolbar_btn__view_mode();                                              //  Vertical Buttons		// FixIn: 9.8.15.2.
 
     //  Toolbar ////////////////////////////////////////////////////////////////
 
@@ -48,7 +48,7 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 												, 'hint' => array( 'title' => __('Filter bookings' ,'booking') , 'position' => 'top' )
                                                 , 'onclick'     =>  "jQuery('.ui_container_toolbar').hide();"
                                                                     . "jQuery('.ui_container_filters').show();"
-                                                                    . "jQuery('.wpbc_ajx_toolbar .nav-tab').removeClass('nav-tab-active');"		//FixIn: 9.8.15.2
+                                                                    . "jQuery('.wpbc_ajx_toolbar .nav-tab').removeClass('nav-tab-active');"		// FixIn: 9.8.15.2.
                                                                     . "jQuery(this).addClass('nav-tab-active');"
                                                                     . "jQuery('.nav-tab i.icon-white').removeClass('icon-white');"
                                                                     . "jQuery('.nav-tab-active i').addClass('icon-white');"
@@ -70,7 +70,7 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 												, 'hint' => array( 'title' => __('Manage bookings' ,'booking') , 'position' => 'top' )
                                                 , 'onclick'     =>  "jQuery('.ui_container_toolbar').hide();"
                                                                     . "jQuery('.ui_container_actions').show();"
-                                                                    . "jQuery('.wpbc_ajx_toolbar .nav-tab').removeClass('nav-tab-active');"		//FixIn: 9.8.15.2
+                                                                    . "jQuery('.wpbc_ajx_toolbar .nav-tab').removeClass('nav-tab-active');"		// FixIn: 9.8.15.2.
                                                                     . "jQuery(this).addClass('nav-tab-active');"
                                                                     . "jQuery('.nav-tab i.icon-white').removeClass('icon-white');"
                                                                     . "jQuery('.nav-tab-active i').addClass('icon-white');"
@@ -89,13 +89,13 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 
                                 ) );
 
-			if ( class_exists( 'wpdev_bk_personal' ) ) {        //FixIn: 9.6.1.5
+			if ( class_exists( 'wpdev_bk_personal' ) ) {        // FixIn: 9.6.1.5.
 	            wpbc_bs_display_tab(   array(
-	                                                'title'         => __('Options', 'booking')								//FixIn: 9.5.4.3
+	                                                'title'         => __('Options', 'booking')								// FixIn: 9.5.4.3.
 	                                                , 'hint' => array( 'title' => __('User Options' ,'booking') , 'position' => 'top' )
 	                                                , 'onclick'     =>  "jQuery('.ui_container_toolbar').hide();"
 	                                                                    . "jQuery('.ui_container_options').show();"
-	                                                                    . "jQuery('.wpbc_ajx_toolbar .nav-tab').removeClass('nav-tab-active');"		//FixIn: 9.8.15.2
+	                                                                    . "jQuery('.wpbc_ajx_toolbar .nav-tab').removeClass('nav-tab-active');"		// FixIn: 9.8.15.2.
 	                                                                    . "jQuery(this).addClass('nav-tab-active');"
 	                                                                    . "jQuery('.nav-tab i.icon-white').removeClass('icon-white');"
 	                                                                    . "jQuery('.nav-tab-active i').addClass('icon-white');"
@@ -140,7 +140,7 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 
 					wpbc_ajx_toolbar_keyword_search( $escaped_search_request_params, $default_param_values );
 
-					wpbc_ajx_toolbar_clear_keyword_search( $escaped_search_request_params, $default_param_values );		//FixIn: 9.7.2.3
+					wpbc_ajx_toolbar_clear_keyword_search( $escaped_search_request_params, $default_param_values );		// FixIn: 9.7.2.3.
 
 					wpbc_ajx_toolbar_force_reload_button( $escaped_search_request_params, $default_param_values );
 
@@ -238,13 +238,13 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 		// -------------------------------------------------------------------------------------------------------------
 		// Options
 		// -------------------------------------------------------------------------------------------------------------
-		if ( class_exists( 'wpdev_bk_personal' ) ) {        //FixIn: 9.6.1.5
+		if ( class_exists( 'wpdev_bk_personal' ) ) {        // FixIn: 9.6.1.5.
 		?><div class="ui_container    ui_container_toolbar		ui_container_small    ui_container_options    ui_container_options_row_1" style="<?php echo ( $selected_tab == 'options' ) ? 'display: flex' : 'display: none' ?>;"><?php
 
 			?><div class="ui_group"><?php
 
 				/*
-				//	Is send Emails              //FixIn: 9.6.1.5
+				//	Is send Emails              // FixIn: 9.6.1.5.
 				?><div class="ui_element"><?php
 					wpbc_ajx__ui__options_checkbox__send_emails( $escaped_search_request_params, $default_param_values );
 				?></div><?php
@@ -278,7 +278,7 @@ function wpbc_ajx__ui__booking_sorting( $escaped_search_request_params, $default
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_swap_vert', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -332,7 +332,7 @@ function wpbc_ajx__ui__booking_sorting( $escaped_search_request_params, $default
  * @param $escaped_search_request_params   	-	escaped search request parameters array
  * @param $defaults							-   default parameters values
  */
-function wpbc_ajx__ui__booking__no_toolbar__is_email_sending( $escaped_search_request_params, $defaults ) {             //FixIn: 9.6.1.5
+function wpbc_ajx__ui__booking__no_toolbar__is_email_sending( $escaped_search_request_params, $defaults ) {             // FixIn: 9.6.1.5.
 
 	?><div class="wpbc_ajx_toolbar wpbc_no_borders wpbc_not_toolbar_is_send_emails"><?php
 		?><div class="ui_container ui_container_micro"><?php
@@ -362,7 +362,7 @@ function wpbc_ajx__ui__booked_dates( $escaped_search_request_params, $defaults )
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_event', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -456,7 +456,7 @@ function wpbc_ajx__ui__booked_dates( $escaped_search_request_params, $defaults )
 														//, 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"					// JavaScript code
 													  )
 													, array( 'type' => 'html', 'html' => '</div>' )
-													//FixIn: 9.7.2.2
+													// FixIn: 9.7.2.2.
 													, array( 'type' => 'html', 'html' => '<div class="ui_element" style="flex-flow: row wrap;padding:0;flex: 0 1 14px;order: 2;">' )
 													, array(
 															'type' => 'button'
@@ -760,7 +760,7 @@ function wpbc_ajx__ui__booking_status( $escaped_search_request_params, $defaults
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_done_all', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -809,18 +809,21 @@ function wpbc_ajx_toolbar_keyword_search( $escaped_search_request_params, $defau
 	$default_value = '';
 
 	// Old way of searching booking ID
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ! empty( $_REQUEST['wh_booking_id'] ) ) {
-		$wh_booking_id = intval( $_REQUEST['wh_booking_id'] );
+		$wh_booking_id = intval( $_REQUEST['wh_booking_id'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( $wh_booking_id > 0 ) {
 			$_REQUEST['overwrite'] = 1;
 			$_REQUEST['keyword']   = 'id:' . $wh_booking_id;
 		}
 	}
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ( ! empty( $_REQUEST['overwrite'] ) ) && ( ! empty( $_REQUEST['keyword'] ) ) ) {
 
-		// Searching for booking(s)  from URL: http://beta/wp-admin/admin.php?page=wpbc&view_mode=vm_booking_listing&keyword=id:2&overwrite=1
+		// Searching for booking(s)  from URL: http://beta/wp-admin/admin.php?page=wpbc&view_mode=vm_booking_listing&keyword=id:2&overwrite=1 .
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$default_value = wpbc_sanitize_text( $_REQUEST['keyword'] );
 
 		?><script type="text/javascript">
@@ -828,31 +831,31 @@ function wpbc_ajx_toolbar_keyword_search( $escaped_search_request_params, $defau
 				// setTimeout( function () {
 				// 	wpbc_ajx_booking_listing.search_set_param( 'wh_booking_type', [0] );
 				// }, 950 );
-				wpbc_ajx_booking_searching_after_few_seconds( '#<?php echo $el_id; ?>', 1000 ); 							// Immediate search after 0.5 second
+				wpbc_ajx_booking_searching_after_few_seconds( '#<?php echo esc_attr( $el_id ); ?>', 1000 ); 							// Immediate search after 0.5 second
 			} );
 		</script><?php
 	}
 
-    $params = array(
-					'type'          => 'text'
-					, 'id'          => $el_id
-					, 'name'        => $el_id
-					, 'label'       => ''
-					, 'disabled'    => false
-					, 'class'       => ''
-					, 'style'       => ''
-					, 'placeholder' => __( 'Enter keyword to search...', 'booking' )
-					, 'attr'        => array()
-					, 'value' 		=> $default_value
-					, 'onfocus' 	=> ''
-    );
+	$params = array(
+		'type'        => 'text',
+		'id'          => $el_id,
+		'name'        => $el_id,
+		'label'       => '',
+		'disabled'    => false,
+		'class'       => '',
+		'style'       => '',
+		'placeholder' => __( 'Enter keyword to search...', 'booking' ),
+		'attr'        => array(),
+		'value'       => $default_value,
+		'onfocus'     => '',
+	);
 	?><div class="ui_element"><?php
 		wpbc_flex_text( $params );
 	?></div><?php
 }
 
 
-//FixIn: 9.7.2.3
+// FixIn: 9.7.2.3.
 function wpbc_ajx_toolbar_clear_keyword_search( $escaped_search_request_params, $defaults ){
 
     $params  =  array(
@@ -993,7 +996,7 @@ function wpbc_ajx__ui__booking_resources( $escaped_search_request_params, $defau
 	 */
 	$resources_arr     = wpbc_ajx_arrange_booking_resources_arr( $resources_sql_arr );
 	$style = '';
-	$select_box_options = array();            //FixIn: 4.3.2.1
+	$select_box_options = array();            // FixIn: 4.3.2.1.
 	if ( ! empty( $resources_arr ) ) {
 
 		$linear_resources_arr = $resources_arr['linear_resources'];
@@ -1009,7 +1012,7 @@ function wpbc_ajx__ui__booking_resources( $escaped_search_request_params, $defau
 
 			$select_box_options[ /*implode( ',', $resources_id_arr )*/0 ] = array(
 																			  'title' => __( 'All resources', 'booking' )
-																			, 'attr'  => array( 'title' => '<strong>' . __( 'All resources', 'booking' ) . '</strong>' )
+																			, 'attr'  => array( 'title' => '<strong>' . esc_html__( 'All resources', 'booking' ) . '</strong>' )
 																			, 'style' => 'font-weight:600;'
 																		);
 		}
@@ -1042,7 +1045,7 @@ function wpbc_ajx__ui__booking_resources( $escaped_search_request_params, $defau
 						  'id'       => $el_id 												// HTML ID  of element
 						, 'name'     => $el_id
 		 				, 'label' => '' 	// __( 'Next Days', 'booking' )					// Label (optional)
-						, 'style' => ''                     								// CSS of select element
+						, 'style' => 'display:none;'                     								// CSS of select element
 						, 'class' => 'chzn-select'                     								// CSS Class of select element
 						, 'multiple' => true
     					, 'attr' => array( 'data-placeholder' => __( 'Select booking resources', 'booking' ) )			// Any additional attributes, if this radio | checkbox element
@@ -1068,43 +1071,48 @@ function wpbc_ajx__ui__booking_resources( $escaped_search_request_params, $defau
 	?><script type="text/javascript">
             function remove_all_options_from_choozen( selectbox_id ){
 				jQuery( selectbox_id + ' option' ).prop( 'selected', false );    										// Disable selection in the real selectbox
-				jQuery( selectbox_id ).trigger( 'chosen:updated' );            											// Remove all fields from the Choozen field	//FixIn: 8.7.9.9
+				jQuery( selectbox_id ).trigger( 'chosen:updated' );            											// Remove all fields from the Choozen field	// FixIn: 8.7.9.9.
 				jQuery( selectbox_id ).trigger( 'change' );
             }
+			<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wpbc_jq_ready_start();
+			?>
+			if ( 'function' === typeof( jQuery("#<?php echo esc_attr( $el_id ); ?>").chosen ) ) {
 
-			if ( 'function' === typeof( jQuery("#<?php echo $el_id; ?>").chosen ) ) {
+				jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).chosen( {no_results_text: "No results matched"} );
 
-				jQuery( "#<?php echo $el_id; ?>" ).chosen( {no_results_text: "No results matched"} );
+				jQuery("#<?php echo esc_attr( $el_id ); ?>").chosen().on('change', function(va){									// Catch any selections in the Choozen
 
-				jQuery("#<?php echo $el_id; ?>").chosen().on('change', function(va){									// Catch any selections in the Choozen
-
-					if ( jQuery( "#<?php echo $el_id; ?>" ).val() != null ){
+					if ( jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).val() != null ){
 						//So we are having aready values
-						jQuery.each( jQuery( "#<?php echo $el_id; ?>" ).val(), function ( index, value ){
+						jQuery.each( jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).val(), function ( index, value ){
 
 							if ( (value.indexOf( ',' ) > 0) || ('0' === value) ){ 															// Ok we are have array with  all booking resources ID
 
 								// Disable selection in the real selectbox
-								jQuery( '#<?php echo $el_id; ?>' + ' option' ).removeAttr( 'selected' );
+								jQuery( '#<?php echo esc_attr( $el_id ); ?>' + ' option' ).removeAttr( 'selected' );
 
 								// Select "All resources" option in real selectbox
-								jQuery( '#<?php echo $el_id; ?>' + ' option:first-child' ).prop( "selected", true );
+								jQuery( '#<?php echo esc_attr( $el_id ); ?>' + ' option:first-child' ).prop( "selected", true );
 
 								//Highlight options in chosen, before removing
-								jQuery( '#<?php echo $el_id; ?>_chosen li.search-choice:not(:contains(' + '<?php echo html_entity_decode( esc_js( __( 'All resources', 'booking' ) ) ); ?>' + '))' )
-											.fadeOut( 350 ).fadeIn( 300 )
-											.fadeOut( 350 ).fadeIn( 400 )
-											.fadeOut( 350 ).fadeIn( 300 )
-											.fadeOut( 350 ).fadeIn( 400 )
-											.animate( {opacity: 1}, 4000 ) ;
+								jQuery('#<?php echo esc_attr( $el_id ); ?>_chosen li.search-choice:not(:contains(' + '<?php
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo html_entity_decode( esc_js( __( 'All resources', 'booking' ) ) ); ?>' + '))')
+									.fadeOut(350).fadeIn(300)
+									.fadeOut(350).fadeIn(400)
+									.fadeOut(350).fadeIn(300)
+									.fadeOut(350).fadeIn(400)
+									.animate({opacity: 1}, 4000);
 
 								// Update chosen LI choices, relative selected options in selectbox
 								var all_resources_timer = setTimeout( function (){
 
-									jQuery( '#<?php echo $el_id; ?>' ).trigger( 'chosen:updated' );            			// Remove all fields from the Choozen field
+									jQuery( '#<?php echo esc_attr( $el_id ); ?>' ).trigger( 'chosen:updated' );            			// Remove all fields from the Choozen field
 								}, 2000 );
 
-								var my_message = '<?php echo html_entity_decode( esc_js( __( 'Please note, its not possible to add new resources, if "All resources" option is selected. Please clear the selection, then add new resources.', 'booking' ) ), ENT_QUOTES ); ?>';
+								var my_message = '<?php echo esc_js( __( 'Please note, its not possible to add new resources, if "All resources" option is selected. Please clear the selection, then add new resources.', 'booking' )  ); ?>';
 								wpbc_admin_show_message( my_message, 'warning', 10000 );
 							}
 						} );
@@ -1114,6 +1122,10 @@ function wpbc_ajx__ui__booking_resources( $escaped_search_request_params, $defau
 			} else {
 				alert( 'WPBC Error. JavaScript library "chosen" was not defined.' );
 			}
+			<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wpbc_jq_ready_end();
+			?>
         </script><?php
 }
 
@@ -1127,7 +1139,7 @@ function wpbc_ajx__ui__existing_or_trash( $escaped_search_request_params, $defau
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_delete_outline', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -1172,7 +1184,7 @@ function wpbc_ajx__ui__all_or_new( $escaped_search_request_params, $defaults ){
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_visibility', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -1223,7 +1235,7 @@ function wpbc_ajx__ui__creation_date( $escaped_search_request_params, $defaults 
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_edit_calendar', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -1342,7 +1354,7 @@ function wpbc_ajx__ui__creation_date( $escaped_search_request_params, $defaults 
 														, 'class'    => 'wpdevbk-filters-section-calendar' 					// CSS Class of select element
 														, 'disabled' => false
 														, 'attr'     => array() 			// Any  additional attributes, if this radio | checkbox element
-														, 'placeholder' => __('From' ,'booking')	// date( 'Y-m-d' )
+														, 'placeholder' => __('From' ,'booking')	// gmdate( 'Y-m-d' )
 														, 'value'    => $request_input_el_default[ 'ui_wh_modification_date_checkin'] 	// Some Value from optins array that selected by default
 														, 'onfocus' =>  "jQuery('#ui_wh_modification_date_radio_3').prop('checked', true);"					// JavaScript code
 														//, 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"					// JavaScript code
@@ -1358,7 +1370,7 @@ function wpbc_ajx__ui__creation_date( $escaped_search_request_params, $defaults 
 														, 'class'    => 'wpdevbk-filters-section-calendar' 					// CSS Class of select element
 														, 'disabled' => false
 														, 'attr'     => array() 			// Any  additional attributes, if this radio | checkbox element
-														, 'placeholder' => __('To' ,'booking')		// date( 'Y-m-d' )
+														, 'placeholder' => __('To' ,'booking')		// gmdate( 'Y-m-d' )
 														, 'value'    => $request_input_el_default[ 'ui_wh_modification_date_checkout']  		// Some Value from optins array that selected by default
 														, 'onfocus' =>  "jQuery('#ui_wh_modification_date_radio_3').prop('checked', true);"					// JavaScript code
 														//, 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"					// JavaScript code
@@ -1455,7 +1467,7 @@ function wpbc_ajx__ui__payment_status( $escaped_search_request_params, $defaults
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_payments', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -1516,7 +1528,7 @@ function wpbc_ajx__ui__payment_status( $escaped_search_request_params, $defaults
 														, 'class'    => '' 					// CSS Class of select element
 														, 'disabled' => false
 														, 'attr'     => array() 			// Any  additional attributes, if this radio | checkbox element
-														, 'placeholder' => __('Payment status' ,'booking')		// date( 'Y-m-d' )
+														, 'placeholder' => __('Payment status' ,'booking')		// gmdate( 'Y-m-d' )
 														, 'value'    => $request_input_el_default[ 'ui_wh_pay_status_custom']  		// Some Value from optins array that selected by default
 														, 'onfocus' =>  "jQuery('#ui_wh_pay_status_radio_1').prop('checked', true);"					// JavaScript code
 														//, 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"					// JavaScript code
@@ -1614,7 +1626,7 @@ function wpbc_ajx__ui__cost_min_max( $escaped_search_request_params, $defaults )
 	$params = array(
 							  'id'       => $el_id 		// HTML ID  of element
 							, 'name'     => $el_id
-							, 'label'    => '<span class="" style="font-weight:600;">' . __( 'Cost', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
+							, 'label'    => '<span class="" style="font-weight:600;">' . esc_html__( 'Cost', 'booking' ) . ' <em style="color:#888;">(' . esc_html__( 'min-max', 'booking' ) . '):</em></span>'
 							, 'style'    => 'max-width: 69px;' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							, 'disabled' => false
@@ -2245,7 +2257,7 @@ function wpbc_ajx__ui__options_checkbox__send_emails( $escaped_search_request_pa
 	$params_checkbox = array(
 							  'id'       => $el_id 		// HTML ID  of element
 							, 'name'     => $el_id
-							, 'label'    => array( 'title' => __( 'Emails sending', 'booking' ) , 'position' => 'right' )           //FixIn: 9.6.1.5
+							, 'label'    => array( 'title' => __( 'Emails sending', 'booking' ) , 'position' => 'right' )           // FixIn: 9.6.1.5.
 							, 'style'    => '' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							, 'disabled' => false

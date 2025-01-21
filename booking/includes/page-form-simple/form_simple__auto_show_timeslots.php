@@ -24,6 +24,7 @@ function wpbc_hook_settings_page_footer__auto_show_timeslots( $page ){
 
 	if ( 'form_field_free_settings'  === $page ) {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ( isset( $_GET['field_type'] ) ) && ( 'timeslots' === $_GET['field_type'] ) ) {
 			?>
 			<script type="text/javascript">

@@ -43,8 +43,8 @@ function wpbc_stp_wiz__template__form_structure(){
 			<div class="wpbc__form__div wpbc_container_booking_form wpbc_swp_section wpbc_swp_section__form_structure">
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 0 auto;flex-flow: column;margin:0 0 10px;">
-						<h1 class="wpbc_swp_section_header" ><?php _e( 'Booking Form Structure', 'booking' ); ?></h1>
-						<p class="wpbc_swp_section_header_description"><?php _e('Customize the structure of your booking form.','booking'); ?></p>
+						<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Booking Form Structure', 'booking' ); ?></h1>
+						<p class="wpbc_swp_section_header_description"><?php esc_html_e('Customize the structure of your booking form.','booking'); ?></p>
 					</div>
 					<div class="wpbc__field">
 						<#
@@ -68,9 +68,9 @@ function wpbc_stp_wiz__template__form_structure(){
 				<div class="wpbc_widget             wpbc_widget_preview_booking_form">
 					<div class="wpbc_widget_header">
 						<span class="wpbc_widget_header_text"><?php
-							_e( 'Preview', 'booking' );
+							esc_html_e( 'Preview', 'booking' );
 							echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> ';
-							_e( 'Booking Form', 'booking' );
+							esc_html_e( 'Booking Form', 'booking' );
 						?></span>
 						<?php wpbc_stp_wiz__ui__form_structure__mobile_buttons(); ?>
 					</div>
@@ -126,7 +126,7 @@ function wpbc_stp_wiz__widget__form_structure__select_form_template(){
 	?>
 	<div class="wpbc_widget wpbc_widget_change_form_structure">
 		<div class="wpbc_widget_header">
-			<span class="wpbc_widget_header_text"><?php _e('Form Template','booking'); ?></span>
+			<span class="wpbc_widget_header_text"><?php esc_html_e('Form Template','booking'); ?></span>
 		</div>
 		<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
 			<div class="ui_container">
@@ -134,7 +134,7 @@ function wpbc_stp_wiz__widget__form_structure__select_form_template(){
 				<div class="ui_group    ui_group__change_form_structure"><?php
 					/*
 					?><div class="ui_element ui_nowrap0" style="flex: 1 1 100%;margin: 0;"><?php
-						wpbc_flex_label(  array( 'id' => $el_id, 'label' => '<span class="" style="font-weight:600;">' . __( 'Form Template', 'booking' ) . ':</span>' )  );
+						wpbc_flex_label(  array( 'id' => $el_id, 'label' => '<span class="" style="font-weight:600;">' . esc_html__( 'Form Template', 'booking' ) . ':</span>' )  );
 					?></div><?php
 					*/
 					?><div class="ui_element ui_nowrap" style="flex: 1 1 100%;margin: 0;"><?php
@@ -323,7 +323,7 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 
 	?>
 	<#
-		jQuery( '#<?php echo $el_id; ?> option' ).prop('selected', false);
+		jQuery( '#<?php echo esc_attr( $el_id ); ?> option' ).prop('selected', false);
 		if (
 			   ( 'undefined' !== typeof( data.booking_wizard_data) )
 			&& ( 'undefined' !== typeof( data.booking_wizard_data.save_and_continue__bookings_types ) )
@@ -331,9 +331,9 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 		){
 			jQuery(document).ready(function(){
 				if ( 'time_slots_appointments' === data.booking_wizard_data.save_and_continue__bookings_types.wpbc_swp_booking_types ) {
-					jQuery( '#<?php echo $el_id; ?> option[value="free|wizard_2columns"]' ).prop('selected', true);
+					jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="free|wizard_2columns"]' ).prop('selected', true);
 				} else {
-					jQuery( '#<?php echo $el_id; ?> option[value="free|form_right"]' ).prop('selected', true);
+					jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="free|form_right"]' ).prop('selected', true);
 				}
 			});
 		}
@@ -343,26 +343,26 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 			&& ( 'undefined' !== typeof( data.booking_wizard_data.load_form_template.wpbc_swp_booking_form_template_pro ) )
 		){
 			jQuery(document).ready(function(){
-				jQuery( '#<?php echo $el_id; ?> option' ).prop('selected', false);
-				jQuery( '#<?php echo $el_id; ?> option[value="' + data.booking_wizard_data.load_form_template.wpbc_swp_booking_form_template_pro + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id ); ?> option' ).prop('selected', false);
+				jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="' + data.booking_wizard_data.load_form_template.wpbc_swp_booking_form_template_pro + '"]' ).prop( 'selected', true );
 			});
 		}
 	#>
 	<style tye="text/css">
-		#<?php echo $el_id; ?> optgroup {
+		#<?php echo esc_attr( $el_id ); ?> optgroup {
 			color: #b7b7b7;
 			padding: 10px 0 0;
 			font-style: normal;
 		}
-		#<?php echo $el_id; ?> option {
+		#<?php echo esc_attr( $el_id ); ?> option {
 			color: #1d2327;
 			padding-top: 10px;
 			padding-bottom: 10px;
 		}
-		#<?php echo $el_id; ?> option:disabled{
+		#<?php echo esc_attr( $el_id ); ?> option:disabled{
 			color: #ccc;
 		}
-		#<?php echo $el_id; ?> option:first-child {
+		#<?php echo esc_attr( $el_id ); ?> option:first-child {
 			margin-top: 10px;
 		}
 	</style>
@@ -378,9 +378,10 @@ function wpbc_stp_wiz__ui__form_structure__help(){
 
 	// Help message
 	?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 0 0 1.5em;">
-		<?php printf( __( 'You can configure form fields later in %s', 'booking' ),
-			'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>' );
-		?>
+		<?php
+	/* translators: 1: ... */
+	echo wp_kses_post( sprintf( __(  'You can configure form fields later in %s', 'booking' ),
+			'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>' ) ); ?>
 	</div><?php
 }
 
@@ -419,7 +420,7 @@ function wpbc_stp_wiz__ui__form_structure__bottom_buttons(){
 																									'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
 																								} );
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php _e('Go Back','booking'); ?></span></a>
+										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php esc_html_e('Go Back','booking'); ?></span></a>
 						<# } else { #>
 							<span style="margin-left:auto;"></span>
 						<# } #>
@@ -438,7 +439,7 @@ function wpbc_stp_wiz__ui__form_structure__bottom_buttons(){
 																								} );
 
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><span><?php _e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+										wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 					</div>
 				</div>
 				<div class="wpbc__row">
@@ -448,14 +449,14 @@ function wpbc_stp_wiz__ui__form_structure__bottom_buttons(){
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 							   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
 							><?php
-								_e('Exit and skip the setup wizard','booking');
+								esc_html_e('Exit and skip the setup wizard','booking');
 							?></a>
 							<?php  ?>
 							<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;" tabindex="-1"
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
 							   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
 							><?php
-								_e('Reset Wizard','booking');
+								esc_html_e('Reset Wizard','booking');
 							?></a>
 						</p>
 					</div>

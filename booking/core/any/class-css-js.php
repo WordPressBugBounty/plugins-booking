@@ -83,26 +83,29 @@ abstract class WPBC_JS_CSS {
         return $is_load;
     }
 
-    
-    // Register
-    public function registerScripts() {
-        
-        //if ( function_exists( 'wp_dequeue_script' ) ) 
-        $this->remove_conflicts(  ( is_admin() ? 'admin': 'client' )  );
-        
-        foreach( $this->objects as $script ) {
-                            
-            if ( $this->isLoad( $script['where_to_load'] ) ) {
-                
-                if ( $this->getType() == 'css' )
-                    wp_register_style( $script['handle'], $script['src'], $script['deps'], $script['version'] ); 
-                else
-                    wp_register_script( $script['handle'], $script['src'], $script['deps'], $script['version'] );
-            }
-        }
-    }
-        
-    
+	/**
+	 * Register Scripts
+	 *
+	 * @return void
+	 */
+	public function registerScripts() {
+
+		$this->remove_conflicts( ( is_admin() ? 'admin' : 'client' ) );
+
+		foreach ( $this->objects as $script ) {
+
+			if ( $this->isLoad( $script['where_to_load'] ) ) {
+
+				if ( 'css' === $this->getType() ) {
+					wp_register_style( $script['handle'], $script['src'], $script['deps'], $script['version'] );
+				} else {
+					wp_register_script( $script['handle'], $script['src'], $script['deps'], $script['version'], array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+				}
+			}
+		}
+	}
+
+
     // Load scripts or styles here
     public function load(){
         
@@ -131,11 +134,8 @@ abstract class WPBC_JS_CSS {
                         } else {                                                // Add additional "dynamic CSS" if the WP version older than 3.6.0 (its function  suport since WP 3.3)
                             if ( ($num-1) > -1 ) {  // Its because "wp_add_inline_style" add the CSS to the already added style. So its require that some other simple style was added before
                                 wp_enqueue_style(  $this->objects[($num-1)]['handle'] );
-                                wp_add_inline_style( $this->objects[($num-1)]['handle'], 
-                                                            sprintf("<!--[if ".$script['condition']."]>\n" .
-                                                            "<link rel='stylesheet' id='".$script['handle']."-css' href='". $script['src'] ."?ver=" . $script['version'] . "' type='text/css' media='all' />\n" .
-                                                            "<![endif]-->\n")
-                                                   );
+								// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+								wp_add_inline_style( $this->objects[ ( $num - 1 ) ]['handle'], sprintf( "<!--[if " . $script['condition'] . "]>\n" . "<link rel='stylesheet' id='" . $script['handle'] . "-css' href='" . $script['src'] . "?ver=" . $script['version'] . "' type='text/css' media='all' />\n" . "<![endif]-->\n" ) );
                             }
                         }                        
                     }

@@ -37,7 +37,7 @@
     --wpbc_cal-timespartly-text-color: #998a3a;
 
     /* Minor Parameters */
-    --wpbc_cal-day-cells-padding: 2px;
+        --wpbc_cal-day-cells-padding: 2px;
 }
 /* Color Scheme: - .violet 1 */
 :root.violet {
@@ -129,35 +129,47 @@ div.block_hints.datepick * {
   font-size: var(--wpbc_cal-text-general-size);
 }
 .block_check_in_out, .block_pending, .block_time, .block_booked, .block_free {
-  float: left;
-  width: 40px;
-  height: 40px;
-  line-height: 32px;
-  text-align: center;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-content: center;
+    float: left;
+    width: 40px;
+    height: 40px;
+    line-height: 32px;
+    text-align: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-content: center;
 }
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height,
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height table{
-  min-width: 40px;  /* //FixIn: 10.9.2.3 */
-  width: 40px !important;
-  height:  40px !important;
-    width: calc(42px + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
-    height: calc(42px + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
+  min-width:  var(--wpbc_cal_legend-day-cell-width, 40px);  /* //FixIn: 10.9.2.3 */
+  width: var(--wpbc_cal_legend-day-cell-width, 40px) !important;
+  height:   var(--wpbc_cal_legend-day-cell-height, 40px) !important;
+    width: calc(var(--wpbc_cal_legend-day-cell-width, 40px) + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
+    height: calc(var(--wpbc_cal_legend-day-cell-width, 40px) + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
 }
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .wpbc_calendar_legend_day_cell_height {
-  height: 40px !important;
-  border-width: 0;
+    height: var(--wpbc_cal_legend-day-cell-height, 40px) !important;
+    border-width: 0;
 }
 .block_hints.datepick .datepick-inline {
     margin-top: -3px;
 }
 .block_hints .datepick-inline,
 .block_hints .datepick-inline .datepick {
-    background:  transparent;
+    background: transparent;
 }
+/*
+.block_hints .datepick-inline .date_available .wpbc-cell-box {
+    background: var( --wpbc_cal-main-background-color );
+    background: rgb(from var(--wpbc_cal-available-day-color) r g b / 100%);
+}
+.block_hints .datepick-inline .date_approved .wpbc-cell-box {
+    background: rgb(from var(--wpbc_cal-approved-day-color) r g b / 100%);
+}
+.block_hints .datepick-inline .date2approve .wpbc-cell-box {
+    background: rgb(from var(--wpbc_cal-pending-day-color) r g b / 100%);
+}
+ */
 .block_hints .block_free {
     border: var( --wpbc_cal-day-cell-border-width ) solid var(--wpbc_cal-available-day-color);
 }
@@ -246,6 +258,9 @@ table.wpbc_calendar tr:nth-child(2n+1) > td {
 .datepick-inline:not(.wpbc_calendar_legend_table_width_height) .datepick tbody{
   background: var( --wpbc_cal-main-background-color );
 }
+.wpbc_ajx_avy__calendar .datepick-inline:not(.wpbc_calendar_legend_table_width_height) .datepick tbody{
+    background: transparent;
+}
 /* Previous & Next links  and TITLE BACKGROUND */
 .datepick-inline .calendar-links {
     border-bottom:none;
@@ -309,7 +324,9 @@ div.datepick-inline .datepick-title-row th{
 }
 /* Basically  this is padding between the dates: */
 .datepick-inline th,
-.datepick-inline .datepick-days-cell{
+.datepick-inline .datepick-days-cell,
+div.datepick-inline table.datepick.wpbc_calendar th,
+div.datepick-inline table.datepick.wpbc_calendar td.datepick-days-cell{
   border-width: var( --wpbc_cal-day-cells-padding ) !important;
   box-sizing: border-box;
 }
@@ -333,7 +350,7 @@ div.datepick-inline .datepick-title-row th{
 /*  New Stripes - Unavailable Cells - for  Booking > Availability page  ********/
 /*******************************************************************************/
 /* Stripes */
-.wpbc_ajx_availability_container .datepick-inline .datepick .resource_unavailable:not(.datepick-unselectable) .wpbc-cell-box {
+.wpbc_ajx_availability_container .datepick-inline .datepick .resource_unavailable:not(.datepick-unselectable,.datepick-current-day,.datepick-days-cell-over) .wpbc-cell-box {
   /*background: repeating-linear-gradient( 135deg, #fff, #fff 4px, #eaeaeb 4px, #eaeaeb 8px );*/
   /*background: repeating-linear-gradient( 135deg, #fff, #fff 4px, #f5f5ef 4px, #f5f5cf 8px );*/
   background: repeating-linear-gradient(-45deg, #eee 0 3px, var( --wpbc_cal-main-background-color ) 3px 8px);
@@ -436,7 +453,7 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 /* A P P R O V E D  -  T E X T /including partially booked - timeslots/ */
 .block_hints .date_approved.block_check_in_out,
 .block_hints .block_booked,
-.datepick-inline .date_approved,
+.datepick-inline .date_approved .wpbc-cell-box,
 .block_hints .block_booked a,
 .datepick-inline .date_approved a{
     color: var( --wpbc_cal-approved-text-color );
@@ -468,7 +485,7 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_i
 /* P E N D I N G  -  T E X T /including partially booked - timeslots/ */
 .block_hints .date2approve.block_check_in_out,
 .block_hints .block_pending,
-.datepick-inline .date2approve  .wpbc-cell-box,
+.datepick-inline .date2approve .wpbc-cell-box,
 .block_hints .block_pending a,
 .datepick-inline .date2approve a {
     color: var(--wpbc_cal-pending-text-color);
@@ -562,7 +579,6 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 }
 
 /* Show partially (time-slots) booked days with Background color as for available days ********************************/
-/** //FixIn: 8.2.1.27   Updated 2018-07-04   ****/
 /* Color as in this section A V A I L A B L E - BACKGROUND */
 .wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock  .wpbc-cell-box{
     background: transparent;
@@ -575,8 +591,7 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 .wpbc_timeslot_day_bg_as_available .datepick-inline .date2approve.timespartly:not(.check_in_time,.check_out_time) a,
 .wpbc_timeslot_day_bg_as_available .datepick-inline .date_approved.timespartly:not(.check_in_time,.check_out_time) a,
 .wpbc_timeslot_day_bg_as_available .datepick-inline .date2approve.timespartly:not(.check_in_time,.check_out_time) span,
-.wpbc_timeslot_day_bg_as_available .datepick-inline .date_approved.timespartly:not(.check_in_time,.check_out_time) span
-{
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date_approved.timespartly:not(.check_in_time,.check_out_time) span{
     color: var(--wpbc_cal-timespartly-text-color);
     font-weight: 600;
     text-shadow: none;

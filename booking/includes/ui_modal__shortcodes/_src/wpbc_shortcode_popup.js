@@ -61,7 +61,7 @@ function wpbc_set_shortcode(){
             // [bookingselect selected_type=1] - Selected Resource
             if ( jQuery( '#' + shortcode_id + '_wpbc_selected_resource' ).length > 0 ){
                 if (
-                       ( jQuery( '#' + shortcode_id + '_wpbc_selected_resource' ).val() !== null )                      //FixIn: 8.2.1.12
+                       ( jQuery( '#' + shortcode_id + '_wpbc_selected_resource' ).val() !== null )                      // FixIn: 8.2.1.12.
                     && ( parseInt( jQuery( '#' + shortcode_id + '_wpbc_selected_resource' ).val() ) > 0 )
                 ){
                     wpbc_shortcode += ' selected_type=' + jQuery( '#' + shortcode_id + '_wpbc_selected_resource' ).val().trim();
@@ -123,7 +123,7 @@ function wpbc_set_shortcode(){
             }
 
             // :limit_hours
-            //FixIn: 7.0.1.17
+            // FixIn: 7.0.1.17.
             jQuery( '.bookingtimeline_view_times' ).hide();
             if (
                    ( ( wpbc_is_matrix ) && ( view_days_num_temp == 1 ) )
@@ -203,7 +203,7 @@ function wpbc_set_shortcode(){
                     jQuery( '.' + shortcode_id + '_wpbc_search_new_page_wpbc_sc_searchresults_new_page' ).hide();
                 }
 
-/*              //FixIn: 10.0.0.41
+/*              // FixIn: 10.0.0.41.
                 // : Search Header
                 if ( jQuery( '#' + shortcode_id + '_wpbc_search_header' ).length > 0 ){
                     var search_header_temp = jQuery( '#' + shortcode_id + '_wpbc_search_header' ).val().trim();
@@ -409,7 +409,7 @@ function wpbc_set_shortcode(){
         // [booking] , [bookingcalendar] , ...  parameters for these shortcodes and others...
         // -------------------------------------------------------------------------------------------------------------
         if ( jQuery( '#' + shortcode_id + '_wpbc_resource_id' ).length > 0 ) {
-            if ( jQuery( '#' + shortcode_id + '_wpbc_resource_id' ).val() === null ) {											//FixIn: 8.2.1.12
+            if ( jQuery( '#' + shortcode_id + '_wpbc_resource_id' ).val() === null ) {											// FixIn: 8.2.1.12.
                 jQuery( '#wpbc_text_put_in_shortcode' ).val( '---' );
                 return;
             } else {
@@ -522,13 +522,13 @@ function wpbc_set_shortcode(){
     /**
      * Open TinyMCE Modal */
     function wpbc_tiny_btn_click( tag ) {
-        //FixIn: 9.0.1.5
+        // FixIn: 9.0.1.5.
         jQuery('#wpbc_tiny_modal').wpbc_my_modal({
             keyboard: false
           , backdrop: true
           , show: true
         });
-        //FixIn: 8.3.3.99
+        // FixIn: 8.3.3.99.
         jQuery( "#wpbc_text_gettenberg_section_id" ).val( '' );
 
     }
@@ -537,7 +537,7 @@ function wpbc_set_shortcode(){
      * Open TinyMCE Modal */
     function wpbc_tiny_close() {
 
-        jQuery('#wpbc_tiny_modal').wpbc_my_modal('hide');	//FixIn: 9.0.1.5
+        jQuery('#wpbc_tiny_modal').wpbc_my_modal('hide');	// FixIn: 9.0.1.5.
     }
 
     /* ------------------------------------------------------------------------------------------------------------------ */
@@ -601,7 +601,7 @@ function wpbc_set_shortcode(){
      * RESOURCES PAGE: Open TinyMCE Modal */
     function wpbc_resource_page_btn_click( resource_id , shortcode_default_value = '') {
 
-        //FixIn: 9.0.1.5
+        // FixIn: 9.0.1.5.
         jQuery('#wpbc_tiny_modal').wpbc_my_modal({
             keyboard: false
           , backdrop: true
@@ -638,7 +638,7 @@ function wpbc_set_shortcode(){
      * @param shortcode_val
      */
     function wpbc_send_text_to_resource( shortcode_val ){
-        //FixIn: 10.3.0.8
+        // FixIn: 10.3.0.8.
         var resource_id = 1;
         if ( jQuery( "#booking_wpbc_resource_id" ).length ){
             resource_id = jQuery( "#booking_wpbc_resource_id" ).val();
@@ -697,7 +697,7 @@ function wpbc_set_shortcode(){
         // Reset  for [[bookingsearch ...] shortcode params
         jQuery( '#' + shortcode_val + '_wpbc_search_new_page_url' ).val( '' ).trigger('change');
         jQuery( '#' + shortcode_val + '_wpbc_search_new_page_enabled' ).prop( 'checked', false ).trigger('change');
-        // jQuery( '#' + shortcode_val + '_wpbc_search_header' ).val( '' ).trigger('change');                           //FixIn: 10.0.0.41
+        // jQuery( '#' + shortcode_val + '_wpbc_search_header' ).val( '' ).trigger('change');                           // FixIn: 10.0.0.41.
         // jQuery( '#' + shortcode_val + '_wpbc_search_nothing_found' ).val( '' ).trigger('change');
         jQuery( '#' + shortcode_val + '_wpbc_search_for_users' ).val( '' ).trigger('change');
         jQuery( 'input[name="' + shortcode_val + '_wpbc_search_form_results"][value="bookingsearch"]' ).prop( 'checked', true ).trigger('change');
@@ -1115,7 +1115,7 @@ jQuery( document ).ready( function (){
             }
         } );
 
-        // If we changed number of months in 'Setup Size & Structure' then  change general 'Visible months' number      //FixIn: 10.0.0.4
+        // If we changed number of months in 'Setup Size & Structure' then  change general 'Visible months' number      // FixIn: 10.0.0.4.
         jQuery(  '#' + id + '_wpbc_size_months_num_in_row'                   // - Month Num in Row
                     ).on( 'change', {'id': id}, function(event){
             jQuery( '#' + event.data.id + '_wpbc_nummonths option[value="' + parseInt( jQuery( '#' + event.data.id + '_wpbc_size_months_num_in_row' ).val().trim() ) + '"]' ).prop( 'selected', true );//.trigger('change');
@@ -1176,7 +1176,7 @@ jQuery( document ).ready( function (){
                 +",input[name='"+ id +"_wpbc_search_form_results']"
                 +',#' + id + '_wpbc_search_new_page_enabled'
                 +',#' + id + '_wpbc_search_new_page_url'
-                // +',#' + id + '_wpbc_search_header'                       //FixIn: 10.0.0.41
+                // +',#' + id + '_wpbc_search_header'                       // FixIn: 10.0.0.41.
                 // +',#' + id + '_wpbc_search_nothing_found'
                 +',#' + id + '_wpbc_search_for_users'
 

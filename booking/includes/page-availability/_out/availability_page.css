@@ -102,11 +102,11 @@
   }
   div.wpbc_widgets .wpbc_widget.wpbc_widget_available_unavailable {
     position: fixed;
-    top: 100%;
+    bottom: 0;
     z-index: 9999;
     padding: 0 2px;
     left: 0;
-    margin: -105px 0 0
+    margin: 0 0 -10px
   }
 }
 #wpbc_hidden_template__select_booking_resource {

@@ -12,7 +12,7 @@
  * @modified 2023-12-27
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.15.5
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.15.5.
 
 
 /**
@@ -60,6 +60,7 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 
 	// Check $_POST
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ( isset( $_POST['action'] ) ) && ( 'wpbc_page_resource_publish' === $_POST['action'] ) ) {
 
 		if ( wpbc_is_this_demo() ) {
@@ -72,16 +73,18 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 		$add_shortcode_result_arr = false;
 
 		// CREATE NEW PAGE
-		if(
-			   ( 'create' === $_POST['wpbc_page_resource_publish_what'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+		if ( ( 'create' === $_POST['wpbc_page_resource_publish_what'] )
 			&& ( ! empty($_POST['create_page_for_resource_publish'] ) )
 			&& ( ! empty($_POST['wpbc_page_resource_publish_resource_id'] ) )
 		){
-			$shortcode_resource_id = intval( $_POST['wpbc_page_resource_publish_resource_id'] );
-			$page_name               = $_POST['create_page_for_resource_publish'];
+			$shortcode_resource_id = intval( $_POST['wpbc_page_resource_publish_resource_id'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$page_name               = sanitize_text_field( wp_unslash( $_POST['create_page_for_resource_publish'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( ! empty( $_POST['wpbc_page_resource_publish_resource_shortcode'] ) ) {
 				//$insert_shortcode = WPBC_Settings_API::validate_textarea_post_static( 'wpbc_page_resource_publish_resource_shortcode' );
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$insert_shortcode = wp_kses(   trim( stripslashes( $_POST[ 'wpbc_page_resource_publish_resource_shortcode' ] ) ),
 											   array_merge(    array( 		  //    'iframe' => array( 'src' => true, 'style' => true, 'id' => true, 'class' => true )
 																			  //	, 'script' => array( 'type' => true )       // Allow JS
@@ -108,13 +111,13 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 		}
 
 		// ADD TO EXIST PAGE
-		if(
-			   ( 'edit' === $_POST['wpbc_page_resource_publish_what'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+		if ( ( 'edit' === $_POST['wpbc_page_resource_publish_what'] )
 			&& ( ! empty($_POST['select_page_for_resource_publish'] ) )
 			&& ( ! empty($_POST['wpbc_page_resource_publish_resource_id'] ) )
 		){
-			$shortcode_resource_id = intval( $_POST['wpbc_page_resource_publish_resource_id'] );
-			$page_id               = intval( $_POST['select_page_for_resource_publish'] );
+			$shortcode_resource_id = intval( $_POST['wpbc_page_resource_publish_resource_id'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$page_id               = intval( $_POST['select_page_for_resource_publish'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 			// Add shortcode to  specific Page with  POST ID
 			$check_exist_shortcode_arr = array(
@@ -128,8 +131,10 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 			}
 
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( ! empty( $_POST['wpbc_page_resource_publish_resource_shortcode'] ) ) {
 				//$insert_shortcode = WPBC_Settings_API::validate_textarea_post_static( 'wpbc_page_resource_publish_resource_shortcode' );
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$insert_shortcode = wp_kses(   trim( stripslashes( $_POST[ 'wpbc_page_resource_publish_resource_shortcode' ] ) ),
 											   array_merge(    array( 		  //    'iframe' => array( 'src' => true, 'style' => true, 'id' => true, 'class' => true )
 																			  //	, 'script' => array( 'type' => true )       // Allow JS
@@ -170,13 +175,15 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 		} elseif ( false === $add_shortcode_result_arr ) {
 			wpbc_show_notice__for_page_resource_publish( 'Error: You may not have chosen the correct page name.', 'error' );
 			wpbc_show_notice__for_page_resource_publish(
-														sprintf(	__('Find more information at the %sFAQ page%s','booking'),
+														/* translators: 1: ... */
+														sprintf( __( 'Find more information at the %1$sFAQ page%2$s', 'booking' ),
 																	'<a href="https://wpbookingcalendar.com/faq/#shortcodes">', '</a>'
 														), 'info');
 		}else {
 			wpbc_show_notice__for_page_resource_publish( $add_shortcode_result_arr['message'], 'error' );
 			wpbc_show_notice__for_page_resource_publish(
-														sprintf(	__('Find more information at the %sFAQ page%s','booking'),
+														/* translators: 1: ... */
+														sprintf( __( 'Find more information at the %1$sFAQ page%2$s', 'booking' ),
 																	'<a href="https://wpbookingcalendar.com/faq/#shortcodes">', '</a>'
 														), 'info');
 		}
@@ -186,11 +193,15 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 add_action( 'wpbc_hook_settings_page_before_content_table', 'wpbc_check_for_submit__page_resource_publish' ,10, 1);
 
 
-function wpbc_show_notice__for_page_resource_publish( $message, $message_type='success'){
-    ?>
-	<div class="wpbc-settings-notice notice-<?php echo $message_type ?>" style="text-align:left;font-size: 1rem;margin-top:20px;">
-		<strong><?php echo ( ( 'error' == $message_type ) ? ( __('Error' ,'booking') . '! ' ) : '' ); ?></strong> <?php
-			echo $message;
+function wpbc_show_notice__for_page_resource_publish( $message, $message_type = 'success' ) {
+	?>
+	<div class="wpbc-settings-notice notice-<?php echo esc_attr( $message_type ); ?>" style="text-align:left;font-size: 1rem;margin-top:20px;">
+		<strong><?php
+		if ( ( 'error' == $message_type ) ) {
+				echo esc_html__( 'Error', 'booking' ) . '! ';
+		} ?></strong> <?php
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $message;
 		?>
 	</div>
 	<?php
@@ -203,7 +214,7 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 	if (
 		 ( 'resources' !== $page_name ) &&
 		 ( 'wpbc-ajx_booking_setup_wizard' !== $page_name )
-		 // && ( 'wpbc-ajx_booking' !== $page_name )        //FixIn: 10.6.6.2
+		 // && ( 'wpbc-ajx_booking' !== $page_name )        // FixIn: 10.6.6.2.
 	){
 		return false;
 	}
@@ -264,7 +275,7 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title"><?php _e( 'Insert into page' ); ?></h4>
+					<h4 class="modal-title"><?php esc_html_e( 'Insert into page', 'booking' ); ?></h4>
 				</div>
 				<div class="modal-body">
 					<div id="wpbc_content_for_js_resource_publish">
@@ -282,7 +293,7 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 								wp_nonce_field( 'set_resource_publish_check' );
 							?>
 							<div class="wpbc_publish_wizard_steps wpbc_publish_wizard_step_1">
-								<div class="wpbc_publish_wizard_inner_header"><?php _e('Choose whether to embed your booking form in an existing page or create a new one.', 'booking'); ?></div>
+								<div class="wpbc_publish_wizard_inner_header"><?php esc_html_e('Choose whether to embed your booking form in an existing page or create a new one.', 'booking'); ?></div>
 								<div class="wpbc_publish_wizard_steps__buttons">
 									<a href="javascript:void(0)" class="button button-secondary"
 									   onclick="javascript:jQuery( '.wpbc_publish_wizard_steps').hide();
@@ -290,41 +301,40 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 									   					   jQuery( '#wpbc_modal__resource_publish .modal-footer').show();
 														   jQuery( '#wpbc_page_resource_publish_resource_shortcode' ).val( jQuery( '#booking_resource_shortcode_' + jQuery( '#wpbc_page_resource_publish_resource_id' ).val() ).val() );
 														   jQuery( '#wpbc_page_resource_publish_what' ).val( 'edit' );"
-										><?php _e('Embed in Existing Page','booking') ?></a>
+										><?php esc_html_e('Embed in Existing Page', 'booking' ); ?></a>
 									<a href="javascript:void(0)" class="button button-secondary"
 									   onclick="javascript:jQuery( '.wpbc_publish_wizard_steps').hide();
 									   					   jQuery( '.wpbc_publish_wizard_step_3').show();
 									   					   jQuery( '#wpbc_modal__resource_publish .modal-footer').show();
 														   jQuery( '#wpbc_page_resource_publish_resource_shortcode' ).val( jQuery( '#booking_resource_shortcode_' + jQuery( '#wpbc_page_resource_publish_resource_id' ).val() ).val() );
 														   jQuery( '#wpbc_page_resource_publish_what' ).val( 'create' );"
-										><?php _e('Create New Page','booking') ?></a>
+										><?php esc_html_e('Create New Page','booking'); ?></a>
 								</div>
 							</div>
 							<div class="wpbc_publish_wizard_steps wpbc_publish_wizard_step_2">
-								<div class="wpbc_publish_wizard_inner_header"><?php _e('Select the page where you want to embed your booking form.', 'booking'); ?></div>
+								<div class="wpbc_publish_wizard_inner_header"><?php esc_html_e('Select the page where you want to embed your booking form.', 'booking'); ?></div>
 								<div class="wpbc_publish_wizard_steps__inputs">
 									<?php
 										wp_dropdown_pages(
 											array(
 												'name'              => 'select_page_for_resource_publish',
-												'show_option_none'  => __( '&mdash; Select &mdash;' ),
+												'show_option_none'  => '&mdash; ' . esc_html__( 'Select', 'booking' ) . ' &mdash;',
 												'option_none_value' => '0',
 												'selected'          => 0,//$privacy_policy_page_id,
 												'post_status'       => array( 'draft', 'publish' ),
 											)
 										);
-										submit_button( __( 'Use This Page' ), 'primary', 'submit', false, array( 'id' => 'set-page' ) );
+										submit_button( __( 'Use This Page', 'booking' ), 'primary', 'submit', false, array( 'id' => 'set-page' ) );
 									?>
 								</div>
 							</div>
 							<div class="wpbc_publish_wizard_steps wpbc_publish_wizard_step_3">
-								<div class="wpbc_publish_wizard_inner_header"><?php _e('Provide a name for your new page.', 'booking'); ?></div>
+								<div class="wpbc_publish_wizard_inner_header"><?php esc_html_e('Provide a name for your new page.', 'booking'); ?></div>
 								<div class="wpbc_publish_wizard_steps__inputs">
 									<input id="create_page_for_resource_publish" name="create_page_for_resource_publish" type="text" value=""
 										   placeholder="<?php echo esc_attr( __( 'Enter Page Name', 'booking' ) ); ?>"/>
 									<?php
-
-										submit_button( __( 'Create Page' ), 'primary', 'submit', false, array( 'id' => 'set-page' ) );
+										submit_button( __( 'Create Page', 'booking' ), 'primary', 'submit', false, array( 'id' => 'set-page' ) );
 									?>
 								</div>
 							</div>
@@ -333,13 +343,13 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 					</div>
 				</div>
 				<div class="modal-footer">
-					<!--a href="javascript:void(0)" class="button button-secondary" data-dismiss="modal"><?php _e('Close' ,'booking'); ?></a-->
+					<!--a href="javascript:void(0)" class="button button-secondary" data-dismiss="modal"><?php esc_html_e('Close' ,'booking'); ?></a-->
 					<a id="wpbc_modal__go_back_button" class="button button-secondary"
 					   href="javascript:void(0);"
 					   onclick="javascript:jQuery( '.wpbc_publish_wizard_steps').hide();
 										   jQuery( '.wpbc_publish_wizard_step_1').show();
 										   jQuery( '#wpbc_modal__resource_publish .modal-footer').hide();"
-					  ><i class="menu_icon icon-1x wpbc_icn_keyboard_arrow_left"></i> <?php _e('Go Back' ,'booking'); ?></a>
+					  ><i class="menu_icon icon-1x wpbc_icn_keyboard_arrow_left"></i> <?php esc_html_e('Go Back' ,'booking'); ?></a>
 				</div>
 			</div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->

@@ -74,7 +74,7 @@ color:#ffff;
 /*  New Stripes - Unavailable Cells - for  Booking > Availability page  ********/
 /*******************************************************************************/
 /* Stripes */
-.wpbc_ajx_availability_container .datepick-inline .datepick {
+.wpbc_ajx_availability_container .datepick-inline .datepick .resource_unavailable:not(.datepick-unselectable,.datepick-current-day,.datepick-days-cell-over) .wpbc-cell-box {
     /*background: repeating-linear-gradient( 135deg, #717171, #717171 4px, #777 4px, #777 8px );*/
 	  background: repeating-linear-gradient( 135deg, #444, #444 4px, #555 4px, #555 8px );
 }
@@ -127,7 +127,7 @@ div.wpbc_ajx_availability_container .datepick-inline .datepick-unselectable,
 .block_hints .block_time,
 .block_hints .block_check_in_out div.check-in-div,                             /* Item  for the LEGEND */
 .block_hints .block_check_in_out div.check-out-div,                             /* Item  for the LEGEND */
-.datepick-inline .date_available,
+.datepick-inline .date_available .wpbc-cell-box,
 .datepick-inline .timespartly.check_in_time div.check-in-div,                   /* Define the COLOR fot the check  in / out times the same as available*/
 .datepick-inline .timespartly.check_out_time div.check-out-div {
 background:#383838;
@@ -153,7 +153,7 @@ background:#383838;
 /* A P P R O V E D  - BACKGROUND */
 .block_hints .date_approved.block_check_in_out,
 .block_hints .block_booked,
-.datepick-inline .date_approved,
+.datepick-inline .date_approved .wpbc-cell-box,
 /* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2 *
 .wpbc_cal_container:not(.wpbc_timeslot_day_bg_as_available) table.wpbc_calendar tr:nth-child(2n) > td.date_approved,
 .wpbc_cal_container:not(.wpbc_timeslot_day_bg_as_available) table.wpbc_calendar tr:nth-child(2n+1) > td.date_approved,
@@ -166,10 +166,10 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 /* A P P R O V E D  -  T E X T /including partially booked - timeslots/ */
 .block_hints .date_approved.block_check_in_out,
 .block_hints .block_booked,
-.datepick-inline .date_approved,
+.datepick-inline .date_approved .wpbc-cell-box,
 .block_hints .block_booked a,
 .datepick-inline .date_approved a{
-        color: #d3d3d3;
+	color: #d3d3d3;
     font-weight: 600;
     text-shadow: 0 1px 0 #DD0000;
 }
@@ -187,7 +187,7 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 /* P E N D I N G  - BACKGROUND */
 .block_hints .date2approve.block_check_in_out,
 .block_hints .block_pending,
-.datepick-inline .date2approve,
+.datepick-inline .date2approve .wpbc-cell-box,
 /* Resolve Conflicts with tables in Elementor //FixIn: 10.9.2.2 *
 .wpbc_cal_container:not(.wpbc_timeslot_day_bg_as_available) table.wpbc_calendar tr:nth-child(2n) > td.date2approve,
 .wpbc_cal_container:not(.wpbc_timeslot_day_bg_as_available) table.wpbc_calendar tr:nth-child(2n+1) > td.date2approve,
@@ -200,7 +200,7 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_i
 /* P E N D I N G  -  T E X T /including partially booked - timeslots/ */
 .block_hints .date2approve.block_check_in_out,
 .block_hints .block_pending,
-.datepick-inline .date2approve,
+.datepick-inline .date2approve .wpbc-cell-box,
 .block_hints .block_pending a,
 .datepick-inline .date2approve a {
     color: #885500;
@@ -219,20 +219,21 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_i
 /*******************************************************************************/
 
 /* S E L E C T E D   Dates - Background */
-.datepick-inline .datepick-one-month .datepick .datepick-current-day {
+.datepick-inline div.datepick-one-month .datepick td.datepick-current-day .wpbc-cell-box{
   background-color: #05738e;
 }
 /* S E L E C T E D   Dates - Text color */
-.datepick-inline .datepick-one-month .datepick .datepick-current-day .wpbc_time_dots,                               /*  //FixIn: 8.9.4.13 */
-.datepick-inline .datepick-one-month .datepick .datepick-current-day a{
+.datepick-inline div.datepick-one-month .datepick td.datepick-current-day .wpbc_time_dots,
+.datepick-inline div.datepick-one-month .datepick td.datepick-current-day a,
+.datepick-inline div.datepick-one-month .datepick td.datepick-current-day a:hover {
     color: #EEEEEE;
     text-shadow: 0 -1px 0 #000000;
 }
 /*******************************************************************************/
 
 /* C e l l   O V E R   Dates - Background */
-.wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock.datepick-days-cell-over,
-.datepick-inline .datepick .datepick-days-cell-over{
+.wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock.datepick-days-cell-over  .wpbc-cell-box,
+.datepick-inline .datepick .datepick-days-cell-over  .wpbc-cell-box{
     background:#aaa;
 }
 /* C e l l   O V E R   Dates - Text color */
@@ -254,13 +255,22 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 }
 
 /* Show partially (time-slots) booked days with Background color as for available days ********************************/
-/** //FixIn: 8.2.1.27   Updated 2018-07-04   ****/
 /* Color as in this section A V A I L A B L E - BACKGROUND */
-.wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock {
-    background-color: #191919;
+:root{
+	--wpbc_cal-available-day-color:  #191919;
 }
+.wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock  .wpbc-cell-box {
+    background-color: var(--wpbc_cal-available-day-color);
+}
+
 /* Same as in this Section above --- A V A I L A B L E  - Text A  */
-.wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock.date_available a {
+/* TIME SLOTs (partially booked) - TEXT */
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date2approve.timespartly:not(.check_in_time,.check_out_time) .wpbc_time_dots,
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date_approved.timespartly:not(.check_in_time,.check_out_time) .wpbc_time_dots,
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date2approve.timespartly:not(.check_in_time,.check_out_time) a,
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date_approved.timespartly:not(.check_in_time,.check_out_time) a,
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date2approve.timespartly:not(.check_in_time,.check_out_time) span,
+.wpbc_timeslot_day_bg_as_available .datepick-inline .date_approved.timespartly:not(.check_in_time,.check_out_time) span{
     color: #fff;
     font-weight: 600;
     text-shadow: none;
@@ -285,10 +295,11 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 /* Fill diagonal check  in/out items with AVAILABLE background color */
 .wpbc-cell-box .wpbc-diagonal-el svg polygon{
     fill: #383838;									/*FixIn: 9.6.3.1*/
-}
+	display: block;
+ }
 /* Firstly we define background of the day cells background as available */
-.datepick-inline td.datepick-days-cell.check_in_time,
-.datepick-inline td.datepick-days-cell.check_out_time {
+.datepick-inline td.datepick-days-cell.check_in_time .wpbc-cell-box,
+.datepick-inline td.datepick-days-cell.check_out_time  .wpbc-cell-box{
     background-color: #191919;
 }
 /* Pending */
@@ -304,7 +315,7 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
     fill: #c23b1b;
 }
 /* C e l l   O V E R   Dates */
-.datepick-inline td.datepick-days-cell.check_in_time.datepick-days-cell-over,
-.datepick-inline td.datepick-days-cell.check_out_time.datepick-days-cell-over {
+.datepick-inline td.datepick-days-cell.check_in_time.datepick-days-cell-over .wpbc-cell-box,
+.datepick-inline td.datepick-days-cell.check_out_time.datepick-days-cell-over  .wpbc-cell-box{
     background-color: #aaa;
 }

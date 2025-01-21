@@ -44,18 +44,18 @@ function wpbc_stp_wiz__template__get_started(){
 			<div class="wpbc__form__div wpbc_container_booking_form wpbc_swp_section wpbc_swp_section__get_started">
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 1 550px;flex-flow: column;margin: 0 auto;">
-						<h1 class="wpbc_swp_section_header" ><?php printf( __( 'Congratulations! You\'re all set!', 'booking' ), 'WP Booking Calendar' ); ?></h1>
+						<h1 class="wpbc_swp_section_header" ><?php echo wp_kses_post( sprintf( __(  'Congratulations! You\'re all set!', 'booking' ), 'WP Booking Calendar' ) ); ?></h1>
 						<p class="wpbc_swp_section_header_description" style="font-size: 14px;"><?php
-							_e('Everything is ready to start accepting your first booking.','booking');
+							esc_html_e('Everything is ready to start accepting your first booking.','booking');
 						?></p><?php
 
 						if(0){
 							?><p class="wpbc_swp_section_header_description" style="font-size: 13px;"><?php
 								//_e('Check helpful links to different sections of plugin for managing bookings and calendar(s).','booking');
-								?><strong><?php printf( 'Next Steps' ); ?></strong>. <?php
-								_e('Start receiving new bookings from visitors on your website, or create bookings manually in the Admin Panel.','booking');
+								?><strong><?php esc_html_e( 'Next Steps', 'booking' ); ?></strong>. <?php
+								esc_html_e('Start receiving new bookings from visitors on your website, or create bookings manually in the Admin Panel.','booking');
 								echo ' ';
-								_e('Manage Bookings in Booking Listing and Timeline View pages.','booking');
+								esc_html_e('Manage Bookings in Booking Listing and Timeline View pages.','booking');
 							?></p><?php
 						}
 
@@ -96,12 +96,12 @@ function wpbc_stp_wiz__template__get_started(){
 																									'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
 																								} );
 										wpbc_button_enable_loading_icon( this );
-										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><!--span>&nbsp;&nbsp;&nbsp;<?php _e('Go Back','booking'); ?></span--></a>
+										wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><!--span>&nbsp;&nbsp;&nbsp;<?php esc_html_e('Go Back','booking'); ?></span--></a>
 						<a	   style="margin: 0 0 0 1em;"
 							   class="wpbc_button_light button-primary"
 							   id="btn__toolbar__buttons_next"
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); " ><span><?php
-								_e('Complete','booking'); ?></span><!--&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i--></a>
+								esc_html_e('Complete','booking'); ?></span><!--&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i--></a>
 					</div>
 				</div>
 			</div>
@@ -172,10 +172,10 @@ function wpbc_stp_wiz__panels__get_started__structure( $params = array() ){
 		</div>
 
 		<div class="wpbc_ui_settings__flex_container__col_50" >
-			<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__bookings_manage"><?php _e( 'Check and Manage Bookings', 'booking' ); ?></div>
+			<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__bookings_manage"><?php esc_html_e( 'Check and Manage Bookings', 'booking' ); ?></div>
 			<?php wpbc_ui_settings__panel__bookings_manage( $params ); ?>
 
-			<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__add_new_booking"><?php _e( 'Add New Bookings', 'booking' ); ?></div>
+			<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__add_new_booking"><?php esc_html_e( 'Add New Bookings', 'booking' ); ?></div>
 			<?php wpbc_ui_settings__panel__add_new_booking( $params ); ?>
 		</div>
 
@@ -196,7 +196,7 @@ function wpbc_stp_wiz__panels__get_started__structure( $params = array() ){
 
 				?><div id="<?php echo esc_attr( $dismiss_id ); ?>">
 
-					<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__add_new_resource"><?php _e( 'Resources  ( Calendars )', 'booking' ); ?></div>
+					<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__add_new_resource"><?php esc_html_e( 'Resources  ( Calendars )', 'booking' ); ?></div>
 					<?php wpbc_ui_settings__panel__add_new_resource( $params ); ?>
 
 				</div><?php
@@ -204,7 +204,7 @@ function wpbc_stp_wiz__panels__get_started__structure( $params = array() ){
 
 
 			<div>
-				<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__days_availability"><?php _e( 'Set Days Availability', 'booking' ); ?></div>
+				<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__days_availability"><?php esc_html_e( 'Set Days Availability', 'booking' ); ?></div>
 				<?php wpbc_ui_settings__panel__days_availability( $params ); ?>
 			</div>
 
@@ -217,7 +217,7 @@ function wpbc_stp_wiz__panels__get_started__structure( $params = array() ){
 				$params['dismiss_x_button'] = $dismiss_x_button;
 
 				?><div id="<?php echo esc_attr( $dismiss_id ); ?>">
-					<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__price"><?php _e( 'Set Prices', 'booking' ); ?></div>
+					<div class="wpbc_ui_settings__panel__up_header wpbc_ui_settings__panel__up_header__price"><?php esc_html_e( 'Set Prices', 'booking' ); ?></div>
 					<?php wpbc_ui_settings__panel__price( $params ); ?>
 				</div><?php
 			}
@@ -239,11 +239,11 @@ function wpbc_stp_wiz__panels__get_started__structure( $params = array() ){
 		?><div class="wpbc-settings-notice notice-warning notice-helpful-info"
 		  	   style="padding: 8px 20px;font-size: 14px;max-width: Min(53em,100%);margin:34px 0 0;"><?php
 
-				?><strong><?php printf( 'Get Started' ); ?></strong>. <?php
+				?><strong><?php esc_html_e( 'Get Started', 'booking' ); ?></strong>. <?php
 
-				_e( 'Start receiving a new bookings from visitors of your website or create a new bookings in the Admin Panel.', 'booking' );
+				esc_html_e( 'Start receiving a new bookings from visitors of your website or create a new bookings in the Admin Panel.', 'booking' );
 				echo ' ';
-				_e( 'Manage Bookings in Booking Listing and Timeline View pages.', 'booking' );
+				esc_html_e( 'Manage Bookings in Booking Listing and Timeline View pages.', 'booking' );
 
 		?></div><?php
 	}
@@ -258,10 +258,10 @@ function wpbc_stp_wiz__panels__get_started__structure( $params = array() ){
 		?><div class="wpbc-settings-notice notice-warning notice-helpful-info"
 				 style="padding: 8px 20px;font-size: 14px;max-width: Min(53em,100%);margin:34px 0 0;"><?php
 
-				?><strong><?php printf( 'Next Steps' ); ?></strong>. <?php
-				_e( 'Add new booking resources (properties or services) with unique calendars and availability.', 'booking' );
+				?><strong><?php esc_html_e( 'Next Steps', 'booking' ); ?></strong>. <?php
+				esc_html_e( 'Add new booking resources (properties or services) with unique calendars and availability.', 'booking' );
 				echo ' ';
-				_e( 'Configure availability and pricing for your bookings.', 'booking' );
+				esc_html_e( 'Configure availability and pricing for your bookings.', 'booking' );
 		?></div><?php
 	}
 
@@ -300,14 +300,21 @@ function wpbc_ui_settings__panel__bookings_manage( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc-bi-collection"></i>
 				<h1>
-					<a onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Booking Listing','booking'); ?></span>
+					<a onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Booking Listing','booking'); ?></span>
 					</a>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-					<?php _e( 'View and manage all your bookings in a list format.', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'View and manage all your bookings in a list format.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -328,14 +335,21 @@ function wpbc_ui_settings__panel__bookings_manage( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom"></i>
 				<h1>
-					<a onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Timeline View','booking'); ?></span>
+					<a onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Timeline View','booking'); ?></span>
 					</a>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-					<?php _e( 'View and manage bookings in a timeline format.', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'View and manage bookings in a timeline format.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -378,14 +392,21 @@ function wpbc_ui_settings__panel__add_new_booking( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc_icn_add _circle_outline"></i>
 				<h1>
-					<a onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Add New Booking','booking'); ?></span>
+					<a onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Add New Booking','booking'); ?></span>
 					</a>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-					<?php _e( 'Manually add new bookings from the Admin Panel.', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'Manually add new bookings from the Admin Panel.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -406,13 +427,11 @@ function wpbc_ui_settings__panel__add_new_booking( $params = array() ){
 			?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__add_new_booking_in_front_end">
 				<div class="wpbc_ui_settings__text_row">
 					<i class="menu_icon icon-1x wpbc-bi-arrow-right-short"></i>
-					<h1><span><a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>" class="0wpbc_ui_settings__text_color__black2">
-						<?php _e( 'Pre-configured booking page', 'booking' ); ?>
+					<h1><span><a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>" class="0wpbc_ui_settings__text_color__black2"> <?php esc_html_e( 'Pre-configured booking page', 'booking' ); ?>
 					<a/></span></h1>
 				</div>
 				<div class="wpbc_ui_settings__text_row">
-					<a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>" class="wpbc_ui_settings__text_color__black">
-						<?php _e( 'Start receiving bookings directly on the front-end page.', 'booking' ); ?>
+					<a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>" class="wpbc_ui_settings__text_color__black"> <?php esc_html_e( 'Start receiving bookings directly on the front-end page.', 'booking' ); ?>
 					</a>
 				</div>
 			</div><?php
@@ -456,14 +475,21 @@ function wpbc_ui_settings__panel__days_availability( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc-bi-calendar2-check"></i>
 				<h1>
-					<a onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Days Availability','booking'); ?></span>
+					<a onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Days Availability','booking'); ?></span>
 					</a>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-					<?php _e( 'Define available and unavailable days for your calendar(s).', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'Define available and unavailable days for your calendar(s).', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -484,14 +510,21 @@ function wpbc_ui_settings__panel__days_availability( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x 0wpbc-bi-calendar2-check 0wpbc_icn_check_circle_outline wpbc-bi-calendar2-week"></i>
 				<h1>
-					<a onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Season Availability','booking'); ?></span>
+					<a onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Season Availability','booking'); ?></span>
 					</a>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-					<?php _e( 'Configuration of availability for booking resources', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'Configuration of availability for booking resources', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -538,22 +571,27 @@ function wpbc_ui_settings__panel__price( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc-bi-cash-coin wallet2 wpbc_icn_insert_chart_outlined00"></i>
 				<h1>
-					<a <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Prices for Bookings','booking'); ?></span>
+					<a <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Prices for Bookings','booking'); ?></span>
 					</a>
 				</h1>
 				<?php
 				if ( ! class_exists( 'wpdev_bk_biz_m' ) ) {
 
-					?><div class="wpbc_ui_settings__text_right"><a <?php echo $url; ?> class="wpbc_ui_settings__text_pro" target="_blank"><?php _e('Pro','booking'); ?></a></div><?php
-
+					?><div class="wpbc_ui_settings__text_right"><a <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?> class="wpbc_ui_settings__text_pro" target="_blank"><?php esc_html_e('Pro','booking'); ?></a></div><?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo wpbc_replace__js_scripts__to__tpl_scripts(  $params ['dismiss_x_button'] );
 				}
 				?>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" <?php echo $url; ?>>
-					<?php _e( 'Setup pricing for your bookings.', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'Setup pricing for your bookings.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -574,14 +612,21 @@ function wpbc_ui_settings__panel__price( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc_icn_insert_chart_outlined"></i>
 				<h1>
-					<a onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Form Options Costs','booking'); ?></span>
+					<a onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Form Options Costs','booking'); ?></span>
 					</a>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php echo $onclick; ?>" <?php echo $url; ?>>
-					<?php _e( 'Set up automatic email notifications for different booking actions.', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $onclick; ?>" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'Set up automatic email notifications for different booking actions.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -625,22 +670,27 @@ function wpbc_ui_settings__panel__add_new_resource( $params = array() ){
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc-bi-calendar-plus"></i>
 				<h1>
-					<a <?php echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo __('Add New Resource','booking'); ?></span>
+					<a <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?>>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Add New Resource','booking'); ?></span>
 					</a>
 				</h1>
 				<?php
 				if ( ! class_exists( 'wpdev_bk_personal' ) ) {
 
-					?><div class="wpbc_ui_settings__text_right"><a <?php echo $url; ?> class="wpbc_ui_settings__text_pro" target="_blank"><?php _e('Pro','booking'); ?></a></div><?php
-
+					?><div class="wpbc_ui_settings__text_right"><a <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $url; ?> class="wpbc_ui_settings__text_pro" target="_blank"><?php esc_html_e('Pro','booking'); ?></a></div><?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo wpbc_replace__js_scripts__to__tpl_scripts(  $params ['dismiss_x_button'] );
 				}
 				?>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" <?php echo $url; ?>>
-					<?php _e( 'Create unique calendars with individual availability.', 'booking' ); ?>
+				<a class="wpbc_ui_settings__text_color__black" <?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $url; ?>> <?php esc_html_e( 'Create unique calendars with individual availability.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php

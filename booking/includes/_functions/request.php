@@ -10,7 +10,7 @@
  * @modified 2022-10-29
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.3.1.2
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.3.1.2.
 
 
 /**
@@ -447,19 +447,14 @@ function wpbc_get_direct_value_in_request( $request_key, $prefix_in_request = fa
 	 * from  'prefix request' - "$_REQUEST['request_params']['page_num'] => 3"
      */
 
-	if (
-		   ( empty( $prefix_in_request ) )
-		&& ( isset( $_REQUEST[ $request_key ] ) )
-	) {
-		return $_REQUEST[ $request_key ];
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( empty( $prefix_in_request ) ) && ( isset( $_REQUEST[ $request_key ] ) ) ) {
+		return $_REQUEST[ $request_key ];  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 
-	if (
-		    ( ! empty( $prefix_in_request ) )
-		 && ( isset( $_REQUEST[ $prefix_in_request ] ) )
-	     && ( isset( $_REQUEST[ $prefix_in_request ][ $request_key ] ) )
-	) {
-		return $_REQUEST[ $prefix_in_request ][ $request_key ];
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( ! empty( $prefix_in_request ) ) && ( isset( $_REQUEST[ $prefix_in_request ] ) ) && ( isset( $_REQUEST[ $prefix_in_request ][ $request_key ] ) ) ) {
+		return $_REQUEST[ $prefix_in_request ][ $request_key ];  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 
 	return  false;

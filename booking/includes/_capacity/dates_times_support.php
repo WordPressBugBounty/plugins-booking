@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 
 if ( ! defined( 'WPBC_FULL_DAY_TIME_IN' ) ) {  define( 'WPBC_FULL_DAY_TIME_IN'    , 1 ); }          // =                          +1 sec.               '00:00:01'
@@ -263,7 +263,7 @@ function wpbc_is__intervals__intersected( $interval_A, $interval_B ) {
 			}
 		}
 
-		$sql_date = date( $sql_date_format, $in_seconds );
+		$sql_date = gmdate( $sql_date_format, $in_seconds );
 
 		return $sql_date;
 	}
@@ -440,6 +440,7 @@ function wpbc_is__intervals__intersected( $interval_A, $interval_B ) {
 		if ( $in_seconds >= 86400 ) {
 			// if we have 24:00 then  instead of 00:00 show 24:00 ... Please check more here https://www.php.net/manual/en/datetime.format.php
 			$time_format = str_replace( array( 'H', 'G' ), '24', $time_format );
+			//$in_seconds--;  // It will decrees time on 1 second and show time as 11:59PM instead of 12:00AM
 		}
 
 		$s_tm = date_i18n( $time_format, $in_seconds );
@@ -1120,9 +1121,9 @@ function wpbc_is__intervals__intersected( $interval_A, $interval_B ) {
 					// For debugging only ! -------------------------------------------------------------------------------
 					$test_unexpected = explode( '-', $all_seconds__key__time_range );
 					if ( count( $test_unexpected ) > 2 ) {
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						echo "WPBC. Unexpected situation. We have more than 2 times for the booking {$a_booking_id}: {$all_seconds__key__time_range}";
-						debuge( '$a_only_date, $a_resource_id, $a_booking_id, $all_seconds_for_this_booking_arr',
-							     $a_only_date, $a_resource_id, $a_booking_id, $all_seconds_for_this_booking_arr, __FILE__, __LINE__ );
+						debuge( '$a_only_date, $a_resource_id, $a_booking_id, $all_seconds_for_this_booking_arr', $a_only_date, $a_resource_id, $a_booking_id, $all_seconds_for_this_booking_arr, __FILE__, __LINE__ );
 					}
 					// For debugging only ! -------------------------------------------------------------------------------
 
@@ -1396,6 +1397,7 @@ function wpbc__in_all_bookings__create_WPBC_BOOKING_DATE( $resources__booking_id
 								$times_arr___by_dates[ $only_date_key ] = array( '00:00:00', $time_only_24hours );
 
 							} else {                                                                                    // Unexpected ?
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								echo "WPBC. Unexpected data value: {$time_only_24hours} Timestamp ended with value different than: 1|2 for the day {$only_date_key} in one booking ";
 							}
 
@@ -1415,6 +1417,7 @@ function wpbc__in_all_bookings__create_WPBC_BOOKING_DATE( $resources__booking_id
 				} else {
 
 					// Something wrong ????  Check it.
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo "WPBC. Unexpected data value. We have more than 2 time slots for single day {$only_date_key} in one booking ";
 					debuge( $times_arr___by_dates, __FILE__, __LINE__ );
 				}
@@ -1495,8 +1498,8 @@ function wpbc__in_all_bookings__create_WPBC_BOOKING_DATE( $resources__booking_id
 			if ( isset( $sql_dates_arr[ $check_in_timestamp ] ) ) { unset( $sql_dates_arr[ $check_in_timestamp ] ); }
 
 			// Add new date:             see definition  of                 WPBC_FULL_DAY_TIME_IN       <-      00:00:01
-			$real__check_in__date_sql     = date( 'Y-m-d', $check_in_timestamp ) . ' 00:00:01';
-			$real__check_in_timestamp_new = wpbc_convert__sql_date__to_seconds( date( 'Y-m-d', $check_in_timestamp ) . ' 00:00:01', $is_apply__check_in_out__10s );
+			$real__check_in__date_sql     = gmdate( 'Y-m-d', $check_in_timestamp ) . ' 00:00:01';
+			$real__check_in_timestamp_new = wpbc_convert__sql_date__to_seconds( gmdate( 'Y-m-d', $check_in_timestamp ) . ' 00:00:01', $is_apply__check_in_out__10s );
 			$sql_dates_arr[ $real__check_in_timestamp_new ]  = $real__check_in__date_sql;
 
 
@@ -1507,8 +1510,8 @@ function wpbc__in_all_bookings__create_WPBC_BOOKING_DATE( $resources__booking_id
 				unset( $sql_dates_arr[ $check_out_timestamp ] );
 			}
 			// Add new date:             see definition  of                 WPBC_FULL_DAY_TIME_OUT      <-      23:59:52
-			$real__check_out__date_sql     = date( 'Y-m-d', $check_out_timestamp ) . ' 24:00:02';
-			$real__check_out_timestamp_new = wpbc_convert__sql_date__to_seconds( date( 'Y-m-d', $check_out_timestamp ) . ' 23:59:52', $is_apply__check_in_out__10s );
+			$real__check_out__date_sql     = gmdate( 'Y-m-d', $check_out_timestamp ) . ' 24:00:02';
+			$real__check_out_timestamp_new = wpbc_convert__sql_date__to_seconds( gmdate( 'Y-m-d', $check_out_timestamp ) . ' 23:59:52', $is_apply__check_in_out__10s );
 			$sql_dates_arr[ $real__check_out_timestamp_new ] = $real__check_out__date_sql;
 
 			// Sort such dates again, because we changed the order   ---------------------------------------------------

@@ -40,9 +40,9 @@ class WPBC_AJX__Setup_Wizard__Templates {
 
 		if ( wpbc_is_setup_wizard_page() ){
 
-			wp_enqueue_script( 'wpbc_all', 			wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ), 	array( 'jquery' ), 			 WP_BK_VERSION_NUM );
-			wp_enqueue_script( 'wpbc-main-client', 	wpbc_plugin_url( '/js/client.js' ), 				array( 'wpbc-datepick' ), 	 WP_BK_VERSION_NUM );
-			wp_enqueue_script( 'wpbc-times', 		wpbc_plugin_url( '/js/wpbc_times.js' ), 			array( 'wpbc-main-client' ), WP_BK_VERSION_NUM );
+			wp_enqueue_script( 'wpbc_all', 			wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ), 	array( 'jquery' ), 			 WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+			wp_enqueue_script( 'wpbc-main-client', 	wpbc_plugin_url( '/js/client.js' ), 				array( 'wpbc-datepick' ), 	 WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+			wp_enqueue_script( 'wpbc-times', 		wpbc_plugin_url( '/js/wpbc_times.js' ), 			array( 'wpbc-main-client' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 
 			wp_enqueue_script( 'wpbc-general_ui_js_css',  wpbc_plugin_url( '/includes/_general_ui_js_css/_out/wpbc_main_ui_funcs.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
@@ -340,14 +340,14 @@ class WPBC_AJX__Setup_Wizard__Templates {
 								   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
 								   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
 								><?php
-									_e('Exit and skip the setup wizard','booking');
+									esc_html_e('Exit and skip the setup wizard','booking');
 								?></a>
 								<?php  ?>
 								<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;" tabindex="-1"
 								   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
 								   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
 								><?php
-									_e('Reset Wizard','booking');
+									esc_html_e('Reset Wizard','booking');
 								?></a>
  								<?php /**/ ?>
 							</p>

@@ -24,11 +24,13 @@ function wpbc_define_listing_page_parameters( $page_tag ) {
 
     if ( wpbc_is_bookings_page() ) {                                            // We are inside of this page. Menu item selected.
 
+	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	    if ( ( isset( $_REQUEST['view_mode'] ) ) && ( 'vm_booking_listing' === $_REQUEST['view_mode'] ) ) {             //FixIn: 9.2.0
 		    return;
 	    }
 
 		$booking_default_view_mode = wpbc_get_default_saved_view_mode_for_wpbc_page();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ! isset( $_REQUEST['view_mode'] ) ) {
 			$_REQUEST['view_mode'] = $booking_default_view_mode;                        // Set to REQUEST
 		}
@@ -51,17 +53,18 @@ add_action('wpbc_define_nav_tabs', 'wpbc_define_listing_page_parameters', 1  ); 
  */
 function wpbc_get_default_saved_view_mode_for_wpbc_page() {
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ! isset( $_REQUEST['view_mode'] ) ) {
 		$booking_default_view_mode = get_bk_option( 'booking_listing_default_view_mode' );
 	} else {
-		$booking_default_view_mode = $_REQUEST['view_mode'];
+		$booking_default_view_mode = sanitize_text_field( wp_unslash( $_REQUEST['view_mode'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 	}
 //$booking_default_view_mode='vm_listing';    //TODO:2023-05-20 remove it!!!!!!
-	if ( ! in_array( $booking_default_view_mode, array( 'vm_calendar', 'vm_booking_listing' ) ) ) {                     //FixIn: 9.2.1  //FixIn: 9.6.3.5
+	if ( ! in_array( $booking_default_view_mode, array( 'vm_calendar', 'vm_booking_listing' ) ) ) {                     //FixIn: 9.2.1  // FixIn: 9.6.3.5.
 		$booking_default_view_mode = 'vm_booking_listing';
 	}
 
-	$booking_default_view_mode = ( 'vm_listing' == $booking_default_view_mode ) ? 'vm_booking_listing' : $booking_default_view_mode;        //FixIn: 9.6.3.5
+	$booking_default_view_mode = ( 'vm_listing' == $booking_default_view_mode ) ? 'vm_booking_listing' : $booking_default_view_mode;        // FixIn: 9.6.3.5.
 
     return $booking_default_view_mode;                                          // 'vm_calendar' / 'vm_booking_listing' ;
 }
@@ -90,7 +93,8 @@ function wpbc_set_default_saved_params_to_request_for_booking_listing( $filter_n
 
     // Get here default View mode saved in a General Booking Settings page
     $booking_default_view_mode = wpbc_get_default_saved_view_mode_for_wpbc_page();
-    if ( !isset( $_REQUEST['view_mode'] ) ) 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+    if ( !isset( $_REQUEST['view_mode'] ) )
         $wpdevbk_filter_params['view_mode'] = $booking_default_view_mode;       // 'vm_calendar' / 'vm_booking_listing' ;
     $_REQUEST['view_mode'] = $booking_default_view_mode;                        // Set to REQUEST
     
@@ -104,6 +108,7 @@ function wpbc_set_default_saved_params_to_request_for_booking_listing( $filter_n
 //    }
 
     // Get here default view_days_num
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
     if ( !isset( $_REQUEST['view_days_num'] ) ) {
         $booking_view_days_num = get_bk_option( 'booking_view_days_num' );
         if ( $booking_view_days_num !== false ) {
@@ -122,18 +127,20 @@ function wpbc_set_default_saved_params_to_request_for_booking_listing( $filter_n
 	 * Clean Request Parameters
  * 
  */
-function wpbc_check_request_paramters() {                                       //FixIn:6.2.1.4
+function wpbc_check_request_paramters() {                                       // FixIn: 6.2.1.4.
     
 //debuge($_REQUEST);
     $clean_params = array();  
 
     $clean_params['wh_booking_id']                  = 'digit_or_csd';
-	if ( ( ! empty( $_REQUEST['wh_booking_type'] ) ) && ( 'lost' == $_REQUEST['wh_booking_type'] ) ) {          //FixIn: 8.5.2.19
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( ! empty( $_REQUEST['wh_booking_type'] ) ) && ( 'lost' == $_REQUEST['wh_booking_type'] ) ) {          // FixIn: 8.5.2.19.
 		$clean_params['wh_booking_type'] = 'checked_skip_it';
 	} else {
 		$clean_params['wh_booking_type'] =  'digit_or_csd';
 	}
-	if ( ( ! empty( $_REQUEST['booking_type'] ) ) && ( 'lost' == $_REQUEST['booking_type'] ) ) {                //FixIn: 8.9.2.1
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( ! empty( $_REQUEST['booking_type'] ) ) && ( 'lost' == $_REQUEST['booking_type'] ) ) {                // FixIn: 8.9.2.1.
 		$clean_params['booking_type'] = 'checked_skip_it';
 	} else {
 		$clean_params['booking_type'] =  'digit_or_csd';
@@ -172,7 +179,7 @@ function wpbc_check_request_paramters() {                                       
     $clean_params['page_items_count']               = 'd';                  // '' | '1' ...         // does not exist  in 6.2.1.4
     $clean_params['view_days_num']               = 'd';                  // '' | '1' ...         // does not exist  in 6.2.1.4
 
-	//FixIn: 8.9.2.1
+	// FixIn: 8.9.2.1.
 	$clean_params['scroll_start_date']     = 'digit_or_date';
 	$clean_params['scroll_day']            = 'd';
 	$clean_params['scroll_month']          = 'd';
@@ -185,6 +192,7 @@ function wpbc_check_request_paramters() {                                       
         // elements only listed in array::
         if (  is_array( $clean_type ) ) {                                       // check  only values from  the list  in this array
             
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
             if ( ( isset( $_REQUEST[ $request_key ] ) ) &&  ( ! in_array( $_REQUEST[ $request_key ], $clean_type ) ) )
                 $clean_type = 's';    
             else 
@@ -198,66 +206,81 @@ function wpbc_check_request_paramters() {                                       
                 break;
 
             case 'digit_or_date':                                            // digit or comma separated digit
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_REQUEST[ $request_key ] ) ) {
-		            $_REQUEST[ $request_key ] = wpbc_clean_digit_or_date( $_REQUEST[ $request_key ] );
+					$_REQUEST[ $request_key ] = wpbc_clean_digit_or_date( $_REQUEST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_GET[ $request_key ] ) ) {
-		            $_GET[ $request_key ] = wpbc_clean_digit_or_date( $_GET[ $request_key ] );
+		            $_GET[ $request_key ] = wpbc_clean_digit_or_date( $_GET[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_POST[ $request_key ] ) ) {
-		            $_POST[ $request_key ] = wpbc_clean_digit_or_date( $_POST[ $request_key ] );
+		            $_POST[ $request_key ] = wpbc_clean_digit_or_date( $_POST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
 
                 break;
 
             case 'digit_or_csd':                                            // digit or comma separated digit
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_REQUEST[ $request_key ] ) ) {
-		            $_REQUEST[ $request_key ] = wpbc_clean_digit_or_csd( $_REQUEST[ $request_key ] );
+		            $_REQUEST[ $request_key ] = wpbc_clean_digit_or_csd( $_REQUEST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_GET[ $request_key ] ) ) {
-		            $_GET[ $request_key ] = wpbc_clean_digit_or_csd( $_GET[ $request_key ] );
+		            $_GET[ $request_key ] = wpbc_clean_digit_or_csd( $_GET[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_POST[ $request_key ] ) ) {
-		            $_POST[ $request_key ] = wpbc_clean_digit_or_csd( $_POST[ $request_key ] );
+		            $_POST[ $request_key ] = wpbc_clean_digit_or_csd( $_POST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
 
                 break;
 
             case 's':                                                       // string
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_REQUEST[ $request_key ] ) ) {
-		            $_REQUEST[ $request_key ] = wpbc_clean_like_string_for_db( $_REQUEST[ $request_key ] );
+		            $_REQUEST[ $request_key ] = wpbc_clean_like_string_for_db( $_REQUEST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_GET[ $request_key ] ) ) {
-		            $_GET[ $request_key ] = wpbc_clean_like_string_for_db( $_GET[ $request_key ] );
+		            $_GET[ $request_key ] = wpbc_clean_like_string_for_db( $_GET[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_POST[ $request_key ] ) ) {
-		            $_POST[ $request_key ] = wpbc_clean_like_string_for_db( $_POST[ $request_key ] );
+		            $_POST[ $request_key ] = wpbc_clean_like_string_for_db( $_POST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	            }
 
                 break;
 
             case 'd':                                                       // digit
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( ( isset( $_REQUEST[ $request_key ] ) ) && ( $_REQUEST[ $request_key ] !== '' ) ) {
-		            $_REQUEST[ $request_key ] = intval( $_REQUEST[ $request_key ] );
+		            $_REQUEST[ $request_key ] = intval( $_REQUEST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( ( isset( $_GET[ $request_key ] ) ) && ( $_GET[ $request_key ] !== '' ) ) {
-		            $_GET[ $request_key ] = intval( $_GET[ $request_key ] );
+		            $_GET[ $request_key ] = intval( $_GET[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( ( isset( $_POST[ $request_key ] ) ) && ( $_POST[ $request_key ] !== '' ) ) {
-		            $_POST[ $request_key ] = intval( $_POST[ $request_key ] );
+		            $_POST[ $request_key ] = intval( $_POST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            }
 
                 break;
 
             default:
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_REQUEST[ $request_key ] ) ) {
-		            $_REQUEST[ $request_key ] = intval( $_REQUEST[ $request_key ] );
+		            $_REQUEST[ $request_key ] = intval( $_REQUEST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_GET[ $request_key ] ) ) {
-		            $_GET[ $request_key ] = intval( $_GET[ $request_key ] );
+		            $_GET[ $request_key ] = intval( $_GET[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            }
+	            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            if ( isset( $_POST[ $request_key ] ) ) {
-		            $_POST[ $request_key ] = intval( $_POST[ $request_key ] );
+		            $_POST[ $request_key ] = intval( $_POST[ $request_key ] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	            }
                 break;
         }
@@ -269,7 +292,7 @@ function wpbc_check_request_paramters() {                                       
 }
 
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 /**
 	 * Get array of cleaned (limited number) paramas from REQUEST
@@ -280,11 +303,12 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
   
     
         // Reset
-        $start_year = date("Y");            //2012
-        $start_month = date("m");           //09
+        $start_year = gmdate("Y");            //2012
+        $start_month = gmdate("m");           //09
         $start_day = 1;//date("d");//1;     //31
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if (! empty($_REQUEST['scroll_start_date'])) {   // scroll_start_date=2013-07-01
-            $scroll_start_date= explode('-',$_REQUEST['scroll_start_date']);
+			$scroll_start_date = explode( '-', $_REQUEST['scroll_start_date'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
             
             $start_year     = $scroll_start_date[0];            //2012
             $start_month    = $scroll_start_date[1];           //09
@@ -294,9 +318,11 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
         $scroll_day     = 0;
         $scroll_month   = 0;        
 
-        if (isset($_REQUEST['view_days_num']))  $view_days_num = $_REQUEST['view_days_num'];
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+        if (isset($_REQUEST['view_days_num']))  $view_days_num = sanitize_text_field( wp_unslash( $_REQUEST['view_days_num'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
         else                                    $view_days_num = get_bk_option( 'booking_view_days_num');
         
+          // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         if  ((isset($_REQUEST['wh_booking_type'])) && ( strpos($_REQUEST['wh_booking_type'], ',') !== false ) )
                 $is_show_resources_matrix = true;
         else    $is_show_resources_matrix = false;
@@ -306,72 +332,78 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
             switch ($view_days_num) {
                 
                 case '1':
-                    if (empty($_REQUEST['scroll_start_date']))  $start_day = date("d");
-                    
-                    if (isset($_REQUEST['scroll_day'])) $scroll_day = $_REQUEST['scroll_day'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (empty($_REQUEST['scroll_start_date']))  $start_day = gmdate("d");
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_day'])) $scroll_day = sanitize_text_field( wp_unslash( $_REQUEST['scroll_day'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-11-29';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-11-29';
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2013-12-3';                    
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2013-12-3';
                     break;
                     
                 case '7':
-                    if (empty($_REQUEST['scroll_start_date']))  $start_day = date("d");
-                    $start_week_day_num = date("w");
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (empty($_REQUEST['scroll_start_date']))  $start_day = gmdate("d");
+                    $start_week_day_num = gmdate("w");
                     $start_day_weeek  = esc_js(get_bk_option( 'booking_start_day_weeek' )); //[0]:Sun .. [6]:Sut
                     if ($start_week_day_num != $start_day_weeek) {
                         for ($d_inc = 1; $d_inc < 8; $d_inc++) {                // Just get week  back
 	                        $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) - intval( $d_inc ) ), intval( $start_year ) );
-                            $start_week_day_num = date("w", $real_date);
+                            $start_week_day_num = gmdate("w", $real_date);
                             if ($start_week_day_num == $start_day_weeek) {
-                                $start_day = date("d", $real_date);
-                                $start_year = date("Y", $real_date);
-                                $start_month = date("m", $real_date);
+                                $start_day = gmdate("d", $real_date);
+                                $start_year = gmdate("Y", $real_date);
+                                $start_month = gmdate("m", $real_date);
                                 $d_inc=9;
                             }
                         }
                     }
                     
-                    if (isset($_REQUEST['scroll_day'])) $scroll_day = $_REQUEST['scroll_day'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_day'])) $scroll_day = sanitize_text_field( wp_unslash( $_REQUEST['scroll_day'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + 7 + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2012-12-7';                    
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2012-12-7';
                     break;
                     
                 case '30':
-                    if (isset($_REQUEST['scroll_month'])) $scroll_month = $_REQUEST['scroll_month'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_month'])) $scroll_month = sanitize_text_field( wp_unslash( $_REQUEST['scroll_month'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + intval( $scroll_month ) ), intval( $start_day ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + 1 + intval( $scroll_month ) ), ( intval( $start_day ) - 1 ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2012-12-31';                    
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2012-12-31';
                     break;
                     
                 case '60':
-                    if (isset($_REQUEST['scroll_month'])) $scroll_month = $_REQUEST['scroll_month'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_month'])) $scroll_month = sanitize_text_field( wp_unslash( $_REQUEST['scroll_month'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + intval( $scroll_month ) ), intval( $start_day ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + 2 + intval( $scroll_month ) ), ( intval( $start_day ) - 1 ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2013-02-31';                    
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2013-02-31';
                     break;
                     
 ////////////////////////////////////////////////////////////////////////////////
                 default:  // 30 - default
-                    if (isset($_REQUEST['scroll_month'])) $scroll_month = $_REQUEST['scroll_month'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_month'])) $scroll_month = sanitize_text_field( wp_unslash( $_REQUEST['scroll_month'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + intval( $scroll_month ) ), intval( $start_day ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + 1 + intval( $scroll_month ) ), ( intval( $start_day ) - 1 ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2012-12-31';
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2012-12-31';
                     break;
             }
             
@@ -380,55 +412,60 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
             switch ($view_days_num) {
                 case '90':
 
-                    if (empty($_REQUEST['scroll_start_date'])) $start_day = date("d");
-                    $start_week_day_num = date("w");
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (empty($_REQUEST['scroll_start_date'])) $start_day = gmdate("d");
+                    $start_week_day_num = gmdate("w");
                     $start_day_weeek  = esc_js(get_bk_option( 'booking_start_day_weeek' )); //[0]:Sun .. [6]:Sut
 
                     if ($start_week_day_num != $start_day_weeek) {
                         for ($d_inc = 1; $d_inc < 8; $d_inc++) {                // Just get week  back
 	                        $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) - intval( $d_inc ) ), intval( $start_year ) );
-                            $start_week_day_num = date("w", $real_date);
+                            $start_week_day_num = gmdate("w", $real_date);
                             if ($start_week_day_num == $start_day_weeek) {
-                                $start_day = date("d", $real_date);
-                                $start_year = date("Y", $real_date);
-                                $start_month = date("m", $real_date);
+                                $start_day = gmdate("d", $real_date);
+                                $start_year = gmdate("Y", $real_date);
+                                $start_month = gmdate("m", $real_date);
                                 $d_inc=9;
                                 //break;
                             }
                         }
                     }
 
-                    if (isset($_REQUEST['scroll_day'])) $scroll_day = $_REQUEST['scroll_day'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_day'])) $scroll_day = sanitize_text_field( wp_unslash( $_REQUEST['scroll_day'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + 7 * 12 + 7 + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2013-12-31';
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2013-12-31';
                     break;
 
                 case '30':
-                    if (empty($_REQUEST['scroll_start_date'])) $start_day = date("d");
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (empty($_REQUEST['scroll_start_date'])) $start_day = gmdate("d");
 
-                    if (isset($_REQUEST['scroll_day'])) $scroll_day = $_REQUEST['scroll_day'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_day'])) $scroll_day = sanitize_text_field( wp_unslash( $_REQUEST['scroll_day'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, intval( $start_month ), ( intval( $start_day ) + 31 + intval( $scroll_day ) ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2013-12-31';
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2013-12-31';
                     break;
 
                 default:  // 365
 
-                    if (isset($_REQUEST['scroll_month'])) $scroll_month = $_REQUEST['scroll_month'];
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+                    if (isset($_REQUEST['scroll_month'])) $scroll_month = sanitize_text_field( wp_unslash( $_REQUEST['scroll_month'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
                     else $scroll_month = 0;
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + intval( $scroll_month ) ), intval( $start_day ), intval( $start_year ) );
-                    $wh_booking_date  = date("Y-m-d", $real_date);                          // '2012-12-01';
+                    $wh_booking_date  = gmdate("Y-m-d", $real_date);                          // '2012-12-01';
 
 	                $real_date = mktime( 0, 0, 0, ( intval( $start_month ) + intval( $scroll_month ) + 13 ), ( intval( $start_day ) - 1 ), intval( $start_year ) );
-                    $wh_booking_date2 = date("Y-m-d", $real_date);                          // '2013-12-31';
+                    $wh_booking_date2 = gmdate("Y-m-d", $real_date);                          // '2013-12-31';
 
                     break;
             }
@@ -437,133 +474,146 @@ function wpbc_get_clean_paramas_from_request_for_timeline() {
         
         $or_sort = '' ;
 
-        $args = array(
-		'wh_booking_type' =>    (isset($_REQUEST['wh_booking_type']))?$_REQUEST['wh_booking_type']:'',
-                'wh_approved' =>        '',                                     // Any
-		'wh_booking_id' =>      '',                                     // Any
-                'wh_is_new' =>          '',         //(isset($_REQUEST['wh_is_new']))?$_REQUEST['wh_is_new']:'',                  // ?
-		'wh_pay_status' =>      'all',      //(isset($_REQUEST['wh_pay_status']))?$_REQUEST['wh_pay_status']:'',          // ?
-                'wh_keyword' =>         '',         //(isset($_REQUEST['wh_keyword']))?$_REQUEST['wh_keyword']:'',                // ?
-		'wh_booking_date' =>    $wh_booking_date,
-                'wh_booking_date2' =>   $wh_booking_date2, 
-		'wh_modification_date' =>  '3',     //(isset($_REQUEST['wh_modification_date']))?$_REQUEST['wh_modification_date']:'',     // ?
-                'wh_modification_date2' => '',      //(isset($_REQUEST['wh_modification_date2']))?$_REQUEST['wh_modification_date2']:'',   // ?
-		'wh_cost' =>            '',         //(isset($_REQUEST['wh_cost']))?$_REQUEST['wh_cost']:'',                      // ?
-                'wh_cost2' =>           '',         //(isset($_REQUEST['wh_cost2']))?$_REQUEST['wh_cost2']:'',                    // ?
-		'or_sort' =>            $or_sort,
-		'page_num' =>           '1',
-                'page_items_count' =>   '100000'
+	$args = array(
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		'wh_booking_type'       => ( isset( $_REQUEST['wh_booking_type'] ) ) ? $_REQUEST['wh_booking_type'] : '',
+		'wh_approved'           => '', // Any.
+		'wh_booking_id'         => '', // Any.
+		'wh_is_new'             => '', // (isset($_REQUEST['wh_is_new']))?$_REQUEST['wh_is_new']:'',                   ?.
+		'wh_pay_status'         => 'all', // (isset($_REQUEST['wh_pay_status']))?$_REQUEST['wh_pay_status']:'',          // ?.
+		'wh_keyword'            => '', // (isset($_REQUEST['wh_keyword']))?$_REQUEST['wh_keyword']:'',                // ?.
+		'wh_booking_date'       => $wh_booking_date,
+		'wh_booking_date2'      => $wh_booking_date2,
+		'wh_modification_date'  => '3', // (isset($_REQUEST['wh_modification_date']))?$_REQUEST['wh_modification_date']:'',     // ?
+		'wh_modification_date2' => '', // (isset($_REQUEST['wh_modification_date2']))?$_REQUEST['wh_modification_date2']:'',   // ?
+		'wh_cost'               => '', // (isset($_REQUEST['wh_cost']))?$_REQUEST['wh_cost']:'',                      // ?
+		'wh_cost2'              => '', // (isset($_REQUEST['wh_cost2']))?$_REQUEST['wh_cost2']:'',                    // ?
+		'or_sort'               => $or_sort,
+		'page_num'              => '1',
+		'page_items_count'      => '100000',
 	);
 
-        return $args;    
+	return $args;
 }
 
 
 /** Set initial $_REQUEST['view_days_num'] depend on from selected booking resources  */
 function wpbc_set_request_params_for_timeline() {
-    
-    if ( (isset( $_REQUEST['wh_booking_type'] )) && ( strpos( $_REQUEST['wh_booking_type'], ',' ) !== false ) )
-        $is_show_resources_matrix = true;
-    else
-        $is_show_resources_matrix = false;
 
-    if ( !isset( $_REQUEST['view_days_num'] ) )
-        $_REQUEST['view_days_num'] = get_bk_option( 'booking_view_days_num' );
-    
-    //We do not have the Year (365) and (90) view modes in the Matrix mode so  we are set to the closest variant. And the same backward.
-    if ( ($is_show_resources_matrix ) ) { // Switching from the Single to Matrix mode.
-        if ( $_REQUEST['view_days_num'] == '365' ) {
-            $_REQUEST['view_days_num'] = 60;
-        }
-        if ( $_REQUEST['view_days_num'] == '90' ) {
-            $_REQUEST['view_days_num'] = 7;
-        }
-    } else { // Switching from the Matrix to Single  mode.
-        if ( $_REQUEST['view_days_num'] == '60' ) {
-            $_REQUEST['view_days_num'] = 365;
-        }
-        if ( ($_REQUEST['view_days_num'] == '7') || ($_REQUEST['view_days_num'] == '1') ) {
-            $_REQUEST['view_days_num'] = 30;
-        }
-    }
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( isset( $_REQUEST['wh_booking_type'] ) ) && ( strpos( $_REQUEST['wh_booking_type'], ',' ) !== false ) ) {
+		$is_show_resources_matrix = true;
+	} else {
+		$is_show_resources_matrix = false;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ! isset( $_REQUEST['view_days_num'] ) ) {
+		$_REQUEST['view_days_num'] = get_bk_option( 'booking_view_days_num' );
+	}
+
+	// We do not have the Year (365) and (90) view modes in the Matrix mode so  we are set to the closest variant. And the same backward.
+	if ( ( $is_show_resources_matrix ) ) { // Switching from the Single to Matrix mode.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['view_days_num'] ) && ( $_REQUEST['view_days_num']  == '365' ) ) {
+			$_REQUEST['view_days_num'] = 60;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['view_days_num'] ) && ( $_REQUEST['view_days_num']  == '90' ) ) {
+			$_REQUEST['view_days_num'] = 7;
+		}
+	} else { // Switching from the Matrix to Single  mode.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['view_days_num'] ) && ( $_REQUEST['view_days_num']  == '60' ) ) {
+			$_REQUEST['view_days_num'] = 365;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( ( $_REQUEST['view_days_num'] == '7' ) || ( $_REQUEST['view_days_num'] == '1' ) ) {
+			$_REQUEST['view_days_num'] = 30;
+		}
+	}
 }
 
 
 /** Define default booking resource to $_GET request and check if user can  be here in MU version. */
-function wpbc_set_default_resource_to__get() { 
-        
-    if ( isset( $_GET['booking_type'] ) ) {                                     
-        
-        // Check if User can be here in MultiUser version for this booking resource (is this user owner of this resource or not)
-        if ( class_exists( 'wpdev_bk_multiuser' ) ) {
-            
-            $default_booking_resource = $_GET['booking_type'];
-            
-            // Check if this MU user activated or superadmin,  otherwise show warning
-            if ( ! wpbc_is_mu_user_can_be_here('activated_user') )                  
-                return  false;
+function wpbc_set_default_resource_to__get() {
 
-            // Check if this MU user owner of this resource or superadmin,  otherwise show warning
-            if ( ! wpbc_is_mu_user_can_be_here( 'resource_owner', $default_booking_resource ) ) 
-                return false;             
-        }
-        
-    } else {                                                                    // Set default booking resource to  $_GET
-        
-        // Get ID of default booking resource, or return false (in case if user have no access to  this resource and show some warnings).
-        $default_booking_resource = wpbc_get_default_resource();
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_GET['booking_type'] ) ) {
 
-        if ( empty( $default_booking_resource ) ) {
+		// Check if User can be here in MultiUser version for this booking resource (is this user owner of this resource or not).
+		if ( class_exists( 'wpdev_bk_multiuser' ) ) {
 
-            return  false;                                                      // User can  not be here, Warnings have shown
+			$default_booking_resource = sanitize_text_field( wp_unslash( $_GET['booking_type'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 
-        } else {
-            
-            $_GET['booking_type'] = $default_booking_resource;            
-        }
+			// Check if this MU user activated or superadmin,  otherwise show warning.
+			if ( ! wpbc_is_mu_user_can_be_here( 'activated_user' ) ) {
+				return false;
+			}
 
-        // Check if this resource parent and has some additional childs, if yes then assign $_GET['parent_res'] = 1  only  in case,  if its for loading default booking resource.  
-        make_bk_action( 'check_if_bk_res_parent_with_childs_set_parent_res', $default_booking_resource );                       
-    }
-          
-    
-    return  true;
+			// Check if this MU user owner of this resource or superadmin,  otherwise show warning.
+			if ( ! wpbc_is_mu_user_can_be_here( 'resource_owner', $default_booking_resource ) ) {
+				return false;
+			}
+		}
+	} else {                                                                    // Set default booking resource to  $_GET.
+
+		// Get ID of default booking resource, or return false (in case if user have no access to  this resource and show some warnings).
+		$default_booking_resource = wpbc_get_default_resource();
+
+		if ( empty( $default_booking_resource ) ) {
+
+			return false;                                                      // User can  not be here, Warnings have shown.
+
+		} else {
+
+			$_GET['booking_type'] = $default_booking_resource;
+		}
+
+		// Check if this resource parent and has some additional childs, if yes then assign $_ GET['parent_res'] = 1  only  in case,  if its for loading default booking resource.
+		make_bk_action( 'check_if_bk_res_parent_with_childs_set_parent_res', $default_booking_resource );
+	}
+
+	return true;
 }
 
 
 /**
-	 * Get ID of default booking resource, or return false (in case if user have no access to  this resource and show some warnings).
- *  
+ * Get ID of default booking resource, or return false (in case if user have no access to  this resource and show some warnings).
+ *
  * @return boolean|int
  */
-function wpbc_get_default_resource() { 
+function wpbc_get_default_resource() {
 
-    if ( ! class_exists( 'wpdev_bk_personal' ) )
-        return 1;                                                               // Free, i.e., default 1
-    
-    // Get assigned default booking resource from  General Booking Settings page 
-    $default_booking_resource = get_bk_option( 'booking_default_booking_resource' );        // If empty, i.e., "" - its all  resources - no default booking resource
-        
-    if ( empty( $default_booking_resource ) ) { //We do  not have default resource
-                
-        // Get first resource in a list 
-        // If its MU, then  for superadmin get first resource in a list OR if user DO NOT have resources get FIRST resource in LIST FROM ALL resources
-        $default_booking_resource = get__default_type();
-    }
+	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+		return 1;
+	}                                                                                       // Free, i.e., default 1.
 
-    //MU
-    if ( class_exists( 'wpdev_bk_multiuser' ) ) {  
+	// Get assigned default booking resource from  General Booking Settings page.
+	$default_booking_resource = get_bk_option( 'booking_default_booking_resource' );        // If empty, i.e., "" - its all  resources - no default booking resource.
 
-        // Check if this MU user activated or superadmin,  otherwise show warning
-        if ( ! wpbc_is_mu_user_can_be_here('activated_user') )                  
-            return  false;
-        
-        // Check if this MU user owner of this resource or superadmin,  otherwise show warning
-        if ( ! wpbc_is_mu_user_can_be_here( 'resource_owner', $default_booking_resource ) ) 
-            return false;             
-    }
-        
-    return $default_booking_resource;    
+	if ( empty( $default_booking_resource ) ) { // We do  not have default resource.
+
+		// Get first resource in a list.
+		// If its MU, then  for superadmin get first resource in a list OR if user DO NOT have resources get FIRST resource in LIST FROM ALL resources.
+		$default_booking_resource = get__default_type();
+	}
+
+	// MU.
+	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
+
+		// Check if this MU user activated or superadmin,  otherwise show warning.
+		if ( ! wpbc_is_mu_user_can_be_here( 'activated_user' ) ) {
+			return false;
+		}
+
+		// Check if this MU user owner of this resource or superadmin,  otherwise show warning.
+		if ( ! wpbc_is_mu_user_can_be_here( 'resource_owner', $default_booking_resource ) ) {
+			return false;
+		}
+	}
+
+	return $default_booking_resource;
 }
 
 
@@ -596,7 +646,7 @@ function wpbc_get_all_booking_resources_list(){                                 
 	// $resource_objects = $resources_cache->get_single_parent_resources();
 
 	//$resource_options = $params['resources'];
-	$resource_options = array();    //FixIn: 8.2.1.12
+	$resource_options = array();    // FixIn: 8.2.1.12.
 
 	foreach ( $resource_objects as $br ) {
 
@@ -707,13 +757,13 @@ function wpbc_get_bookings_objects( $args ){
         , 'wh_cost2' => ''
         , 'or_sort' => ''
         , 'page_num' => '1'
-        , 'wh_trash' => ''                                                      //FixIn: 6.1.1.10
+        , 'wh_trash' => ''                                                      // FixIn: 6.1.1.10.
         , 'page_items_count' => ( ( empty( $num_per_page_check ) ) ? '10' : $num_per_page_check )
     );
 
     $r = wp_parse_args( $args, $defaults );
     
-    $r = apply_filters( 'wpbc_request_params_for_get_booking_obj', $r );               //FixIn: 7.0.1.41
+    $r = apply_filters( 'wpbc_request_params_for_get_booking_obj', $r );               // FixIn: 7.0.1.41.
 
     extract( $r, EXTR_SKIP );
 
@@ -721,19 +771,19 @@ function wpbc_get_bookings_objects( $args ){
 
 //debuge( $sql_start_select . $sql . $sql_where . $sql_order . $sql_limit );
     
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$bookings_res = $wpdb->get_results( $sql_start_select . $sql . $sql_where . $sql_order . $sql_limit );              // Get Bookings.
 
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$bookings_count = $wpdb->get_results( $sql_start_count . $sql . $sql_where );                                       // Get Number of bookings.
 
-    $bookings_res = $wpdb->get_results( $sql_start_select . $sql . $sql_where . $sql_order . $sql_limit );      // Get Bookings
-
-    $bookings_count = $wpdb->get_results( $sql_start_count . $sql . $sql_where );                               // Get Number of bookings    
     $bookings_count = ( ( count( $bookings_count ) > 0 ) ? $bookings_count[0]->count : 0 );
     
     $booking_types = apply_bk_filter( 'wpdebk_get_keyed_all_bk_resources', array() );                           // Get Resources
 
 
-    ////////////////////////////////////////////////////////////////////////////
-    
+	// -----------------------------------------------------------------------------------------------------------------
     $booking_id_list    = array();                                              // ID list of ALL bookings
     $bookings           = array();
     $short_days         = array();
@@ -762,11 +812,11 @@ function wpbc_get_bookings_objects( $args ){
                                           , 'resource_title' => (isset( $booking_types[$booking->booking_type] )) ? $booking_types[$booking->booking_type] : ''
                                         )
                                 );
-//debuge($cont);
-        $search  = array( "'(<br[ ]?[/]?>)+'si", "'(<[/]?p[ ]?>)+'si"/*, "'(<[/]?div[ ]?>)+'si"*/ );                        //FixIn: 8.8.1.6
+
+        $search  = array( "'(<br[ ]?[/]?>)+'si", "'(<[/]?p[ ]?>)+'si"/*, "'(<[/]?div[ ]?>)+'si"*/ );                        // FixIn: 8.8.1.6.
         $replace = array( "&nbsp;&nbsp;", " &nbsp; ", " &nbsp; " );
         $cont['content'] = preg_replace( $search, $replace, $cont['content'] );
-//debuge( htmlentities(  $cont['content'] ) );die;
+
         $bookings[$booking->booking_id]->form_show = $cont['content'];
         unset( $cont['content'] );
         $bookings[$booking->booking_id]->form_data = $cont;
@@ -774,25 +824,28 @@ function wpbc_get_bookings_objects( $args ){
     $booking_id_list = implode( ",", $booking_id_list );
     $booking_id_list = wpbc_clean_like_string_for_db( $booking_id_list );
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    if ( ! empty( $booking_id_list ) ) {                                        // Get Dates for all our Bookings
-        $sql = "SELECT *
+	// -----------
+
+	if ( ! empty( $booking_id_list ) ) {                                                                                // Get Dates for all our Bookings.
+		$sql = "SELECT *
                 FROM {$wpdb->prefix}bookingdates as dt
                 WHERE dt.booking_id in ( {$booking_id_list} ) ";
 
-        if ( class_exists( 'wpdev_bk_biz_l' ) )
-            $sql .= " ORDER BY booking_id, type_id, booking_date   ";
-        else
-            $sql .= " ORDER BY booking_id, booking_date   ";
+		if ( class_exists( 'wpdev_bk_biz_l' ) ) {
+			$sql .= ' ORDER BY booking_id, type_id, booking_date ';
+		} else {
+			$sql .= ' ORDER BY booking_id, booking_date ';
+		}
 
-        $booking_dates = $wpdb->get_results( $sql );
-    } else
-        $booking_dates = array();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$booking_dates = $wpdb->get_results( $sql );
 
+	} else {
+		$booking_dates = array();
+	}
 
-    ////////////////////////////////////////////////////////////////////////////
-    
+	// -------------
+
     $last_booking_id = '';
     
     foreach ( $booking_dates as $date ) {                                       // Add Dates to Bookings array
@@ -858,12 +911,11 @@ function wpbc_get_bookings_objects( $args ){
         $bookings[$last_booking_id]->dates_short_id = $short_days_type_id;
     }
 
-//debuge( 'Before filtering:',  date('Y-m-d', time() +86400 ), $_REQUEST, $bookings ) ;       
+//debuge( 'Before filtering:',  gmdate('Y-m-d', time() +86400 ), $_REQUEST, $bookings ) ;
 
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // Filter some bookings
-    ////////////////////////////////////////////////////////////////////////////
-    
+	// -----------------------------------------------------------------------------------------------------------------
     // Showing only  bookings that starting or ending during "Today"            ( Today check in/out )
     if ( (isset( $args['wh_booking_date'] )) && ($args['wh_booking_date'] == '9') ) {
 
@@ -892,8 +944,8 @@ function wpbc_get_bookings_objects( $args ){
 
     // If we selected the Dates as "Check In - Today/Tommorow", then show only the bookings, where check in date is Today 
     if ( (isset( $args['wh_booking_date'] )) && ($args['wh_booking_date'] == '7') ) {
-        //$today_mysql_format = date('Y-m-d');
-        //$today_mysql_format = date('Y-m-d', time() +86400 );                  // 1 Day = 24*60*60 = 86400
+        //$today_mysql_format = gmdate('Y-m-d');
+        //$today_mysql_format = gmdate('Y-m-d', time() +86400 );                  // 1 Day = 24*60*60 = 86400
         $today_mysql_format = date_i18n( 'Y-m-d', time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) + DAY_IN_SECONDS ); // Tommorow day with gmt offset
         foreach ( $bookings as $bc_id => $bc_value ) {
             $check_in_date = $bc_value->dates_short[0];
@@ -907,35 +959,36 @@ function wpbc_get_bookings_objects( $args ){
     }
 
 
-    // If we selected the Dates as "Check Out - Tomorow", then show only the bookings, where check out date is Tomorrow 
-    if ( (isset( $args['wh_booking_date'] )) && ($args['wh_booking_date'] == '8') ) {
-        //$tomorrow_mysql_format = date('Y-m-d', time() +86400 );               // 1 Day = 24*60*60 = 86400
-        $tomorrow_mysql_format = date_i18n( 'Y-m-d', time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) + DAY_IN_SECONDS ); // Tommorow day with gmt offset
-        foreach ( $bookings as $bc_id => $bc_value ) {
-            if ( count( $bc_value->dates_short ) == 1 )
-                $check_out_date = $bc_value->dates_short[0];
-            else
-                $check_out_date = $bc_value->dates_short[2];
-            $check_out_date = explode( ' ', $check_out_date );
-            $check_out_date = $check_out_date[0];                               // 2014-02-25
-            if ( $tomorrow_mysql_format != $check_out_date ) {
-                unset( $bookings[$bc_id] );
-                $bookings_count--;
-            }
-        }
-    }
-    
-    
-    $return_booking_structure = array(
-                                        'bookings' => $bookings
-                                        , 'resources' => $booking_types
-                                        , 'bookings_count' => $bookings_count
-                                        , 'page_num' => $page_num
-                                        , 'count_per_page' => $page_items_count
-                                    );     
-//debuge( $return_booking_structure );
+	// If we selected the Dates as "Check Out - Tomorow", then show only the bookings, where check out date is Tomorrow .
+	if ( ( isset( $args['wh_booking_date'] ) ) && ( 8 === intval( $args['wh_booking_date'] ) ) ) {
 
-    return $return_booking_structure;
+		$tomorrow_mysql_format = date_i18n( 'Y-m-d', time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) + DAY_IN_SECONDS ); // Tommorow day with gmt offset.
+		foreach ( $bookings as $bc_id => $bc_value ) {
+			if ( count( $bc_value->dates_short ) === 1 ) {
+				$check_out_date = $bc_value->dates_short[0];
+			} else {
+				$check_out_date = $bc_value->dates_short[2];
+			}
+			$check_out_date = explode( ' ', $check_out_date );
+			$check_out_date = $check_out_date[0];                               // 2014-02-25
+			if ( $tomorrow_mysql_format !== $check_out_date ) {
+				unset( $bookings[ $bc_id ] );
+				--$bookings_count;
+			}
+		}
+	}
+
+
+	$return_booking_structure = array(
+		'bookings'       => $bookings,
+		'resources'      => $booking_types,
+		'bookings_count' => $bookings_count,
+		'page_num'       => $page_num,
+		'count_per_page' => $page_items_count,
+	);
+
+
+	return $return_booking_structure;
 }
 
 
@@ -970,8 +1023,8 @@ function wpbc_get_sql_for_booking_listing( $args ){
         , 'wh_cost2' => ''
         , 'or_sort' => ''
         , 'page_num' => '1'
-        , 'wh_trash' => ''                                                      //FixIn: 6.1.1.10
-        , 'wh_sync_gid' => ''                                       // '' | 'imported' | 'plugin'                       //FixIn: 8.8.3.19
+        , 'wh_trash' => ''                                                      // FixIn: 6.1.1.10.
+        , 'wh_sync_gid' => ''                                       // '' | 'imported' | 'plugin'                       // FixIn: 8.8.3.19.
         , 'page_items_count' => $num_per_page_check
     );
     $r = wp_parse_args( $args, $defaults );
@@ -1011,7 +1064,7 @@ function wpbc_get_sql_for_booking_listing( $args ){
                                            FROM {$wpdb->prefix}bookingdates as dt
                                            WHERE  bk.booking_id = dt.booking_id ";
 
-        if ( 'lost' == $wh_booking_type ) {     //FixIn: 8.5.2.19
+        if ( 'lost' == $wh_booking_type ) {     // FixIn: 8.5.2.19.
 
 	    	$sql_where.=                  " AND bk.booking_type NOT IN ( SELECT DISTINCT booking_type_id FROM {$wpdb->prefix}bookingtypes ) ";
 	    	$sql_where.=                  " ) ";
@@ -1026,9 +1079,9 @@ function wpbc_get_sql_for_booking_listing( $args ){
 
 	        $sql_where.=                   " ) ";
 
-	        $sql_where .= " {$trash_bookings} ";                                    //FixIn: 6.1.1.10
+	        $sql_where .= " {$trash_bookings} ";                                    // FixIn: 6.1.1.10.
 
-	        //FixIn: 8.8.3.19
+	        // FixIn: 8.8.3.19.
 	        if ( 'imported' === $wh_sync_gid ) {
 		        $sql_where .= " AND  bk.sync_gid != '' ";
 	        }
@@ -1051,7 +1104,7 @@ function wpbc_get_sql_for_booking_listing( $args ){
 
     } else {
 
-	    //FixIn: 8.7.7.10
+	    // FixIn: 8.7.7.10.
     	if ( strpos( $wh_booking_id, '<' ) !== false ) {
 		    $wh_booking_id = str_replace( '<', '', $wh_booking_id );
 		    $wh_booking_id = intval( $wh_booking_id );
@@ -1120,15 +1173,15 @@ function wpbc_set_sql_where_for_dates( $wh_booking_date, $wh_booking_date2, $pre
 
                                                                                 // Actual
     if (  ( ( $wh_booking_date  === '' ) && ( $wh_booking_date2  === '' ) ) || ($wh_booking_date  === '0') ) {
-        $sql_where =               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      //FixIn: 8.5.2.14
+        $sql_where =               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      // FixIn: 8.5.2.14.
 
-    } else  if ($wh_booking_date  === '1') {                                    // Today								//FixIn: 7.1.2.8
+    } else  if ($wh_booking_date  === '1') {                                    // Today								// FixIn: 7.1.2.8.
         $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;
-        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;     //FixIn: 8.4.7.21
+        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;     // FixIn: 8.4.7.21.
 
 
     } else if ($wh_booking_date  === '2') {                                     // Previous
-        $sql_where =               $and_pre."( ".$pref."booking_date <= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      //FixIn: 8.5.2.16
+        $sql_where =               $and_pre."( ".$pref."booking_date <= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      // FixIn: 8.5.2.16.
 
     } else if ($wh_booking_date  === '3') {                                     // All
         $sql_where =  '';
@@ -1136,7 +1189,7 @@ function wpbc_set_sql_where_for_dates( $wh_booking_date, $wh_booking_date2, $pre
     } else if ($wh_booking_date  === '4') {                                     // Next
         $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL ". $wh_booking_date2 . " DAY ) ) ".$and_suf ;
         // $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL 1 DAY ) ) ".$and_suf ;
-	    $sql_where .=               $and_pre."( ".$pref."booking_date > ( CURDATE() ) ) ".$and_suf ;                    //FixIn: 8.0.1.1
+	    $sql_where .=               $and_pre."( ".$pref."booking_date > ( CURDATE() ) ) ".$and_suf ;                    // FixIn: 8.0.1.1.
 
     } else if ($wh_booking_date  === '5') {                                     // Prior
         $wh_booking_date2 = str_replace('-', '', $wh_booking_date2);
@@ -1190,8 +1243,8 @@ function wpbc_set_sql_where_for_modification_date( $wh_modification_date, $wh_mo
     else                 { $and_pre = ''; $and_suf = ' AND '; }
 
     if ($wh_modification_date  === '1') {                                       // Today
-        $sql_where  =               $and_pre."( ".$pref."modification_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;    //FixIn: 8.4.7.22
-        $sql_where .=               $and_pre."( ".$pref."modification_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;    //FixIn: 8.4.7.22
+        $sql_where  =               $and_pre."( ".$pref."modification_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;    // FixIn: 8.4.7.22.
+        $sql_where .=               $and_pre."( ".$pref."modification_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;    // FixIn: 8.4.7.22.
 
     } else if ($wh_modification_date  === '3') {                                // All
         $sql_where =  '';

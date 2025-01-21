@@ -12,7 +12,7 @@
  * @modified 2024-03-08
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 
 
@@ -29,7 +29,7 @@ function wpbc_shortcode_config__content__bookingother() {
 
 	$shortcode_name = 'bookingother';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		wpbc_shortcode_config__bookingother__top_tabs();
 
@@ -43,10 +43,12 @@ function wpbc_shortcode_config__content__bookingother() {
 			?></tbody></table>
 			<div class="bookingother_section_additional bookingother_section_booking_confirm"><?php
                     wpbc_show_message_in_settings(
+													/* translators: 1: ... */
 													sprintf( __( 'This shortcode %s is used on a confirmation booking page to display booking details and confirmation after a successful booking.', 'booking' ), '<code>[booking_confirm]</code>', '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' )
-										. '<br/>' . sprintf( __( 'The content of field %s on the %sgeneral booking settings page%s at %s section must link to this page.', 'booking' )
-														, '<strong>' . __( 'Confirmation Page URL', 'booking ' ) .'</strong>'
-														, '<a href="' . wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_booking_confirmation_tab">'
+										/* translators: 1: ... */
+										. '<br/>' . sprintf( __( 'The content of field %1$s on the %2$sgeneral booking settings page%3$s at %4$s section must link to this page.', 'booking' )
+														, '<strong>' . esc_html__( 'Confirmation Page URL', 'booking' ) .'</strong>'
+														, '<a href="' . esc_url( wpbc_get_settings_url() ) . '&scroll_to_section=wpbc_general_settings_booking_confirmation_tab">'
 														, '</a>'
 														,  '<strong>' .__( 'Booking Confirmation', 'booking' ) . ' > '
 														 . __( 'Redirect to thank you page', 'booking' ).'</strong>'
@@ -55,17 +57,24 @@ function wpbc_shortcode_config__content__bookingother() {
 			?></div>
 			<div class="bookingother_section_additional bookingother_section_bookingedit"><?php
                     wpbc_show_message_in_settings(
-													sprintf( __( 'This shortcode %s is used on a page, where visitors can %smodify%s their own booking(s), %scancel%s or make %spayment%s after receiving an admin email payment request', 'booking' ), '<code>[bookingedit]</code>', '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' )
-										. '<br/>' . sprintf( __( 'The content of field %sURL to edit bookings%s on the %sgeneral booking settings page%s must link to this page', 'booking' ), '<i>"', '"</i>', '<a href="' . wpbc_get_settings_url() . '">', '</a>' )
+													/* translators: 1: ... */
+													sprintf( __( 'This shortcode %1$s is used on a page, where visitors can %2$smodify%3$s their own booking(s), %4$scancel%5$s or make %6$spayment%7$s after receiving an admin email payment request', 'booking' ), '<code>[bookingedit]</code>', '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' )
+										/* translators: 1: ... */
+										. '<br/>' . sprintf( __( 'The content of field %1$sURL to edit bookings%2$s on the %3$sgeneral booking settings page%4$s must link to this page', 'booking' ), '<i>"', '"</i>', '<a href="' . esc_url( wpbc_get_settings_url() ) . '">', '</a>' )
+										/* translators: 1: ... */
 										. '<br/>' . sprintf( __( 'Email templates, which use shortcodes: %s, will be linked to this page', 'booking' ), '<code>[visitorbookingediturl]</code>, <code>[visitorbookingcancelurl]</code>, <code>[visitorbookingpayurl]</code>' )
 										, 'info', ''  );
 			?></div>
 			<div class="bookingother_section_additional bookingother_section_bookingcustomerlisting"><?php
 					wpbc_show_message_in_settings(
-									sprintf( __( 'This shortcode %s is used on a page, where visitors can %sview listing%s of their own booking(s)', 'booking' ), '<code>[bookingcustomerlisting]</code>', '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' )
-						. '<br/>' . sprintf( __( 'The content of field %sURL of page for customer bookings listing%s on the %sgeneral booking settings page%s must link to this page', 'booking' ), '<i>"', '"</i>', '<a href="' . wpbc_get_settings_url() . '">', '</a>' )
+									/* translators: 1: ... */
+									sprintf( __( 'This shortcode %1$s is used on a page, where visitors can %2$sview listing%3$s of their own booking(s)', 'booking' ), '<code>[bookingcustomerlisting]</code>', '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' )
+						/* translators: 1: ... */
+						. '<br/>' . sprintf( __( 'The content of field %1$sURL of page for customer bookings listing%2$s on the %3$sgeneral booking settings page%4$s must link to this page', 'booking' ), '<i>"', '"</i>', '<a href="' . esc_url( wpbc_get_settings_url() ) . '">', '</a>' )
+						/* translators: 1: ... */
 						. '<br/>' . sprintf( __( 'Email templates, which use shortcodes: %s, will be linked to this page', 'booking' ), '<code>[visitorbookingslisting]</code>' )
-						. '<br/>' . sprintf( __( '%s You can use in this shortcode the same parameters as for %s shortcode', 'booking' ), '<strong>' . __('Trick', 'booking') . '.</strong> ', '<code>[bookingtimeline ... ]</code>' )
+						/* translators: 1: ... */
+						. '<br/>' . sprintf( __( '%1$s You can use in this shortcode the same parameters as for %2$s shortcode', 'booking' ), '<strong>' . esc_html__('Trick', 'booking') . '.</strong> ', '<code>[bookingtimeline ... ]</code>' )
 						, 'info', ''  );
 
 			?></div>

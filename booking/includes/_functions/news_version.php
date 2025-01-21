@@ -41,7 +41,7 @@ function wpdev_ajax_check_bk_news( $sub_url = '' ){
 				'subscription_key'   => isset($obc_settings['subscription_key'])?$obc_settings['subscription_key']:false,
 				'bk' => array('bk_ver'=>WPDEV_BK_VERSION, 'bk_url'=>WPBC_PLUGIN_URL,'bk_dir'=>WPBC_PLUGIN_DIR, 'bk_clss'=>$v),
 				'siteurl'            => get_option('siteurl'),
-				'siteip' 			 => wpbc_get_server_ip(),													//FixIn: 9.8.14.3
+				'siteip' 			 => wpbc_get_server_ip(),													// FixIn: 9.8.14.3.
 				'admin_email'        => get_option('admin_email')
 	);
 
@@ -56,7 +56,8 @@ function wpdev_ajax_check_bk_news( $sub_url = '' ){
 	if (!is_wp_error($result) && ($result['response']['code']=='200') && (true) ) {
 
 	   $string = ($result['body']);                                         //$string = str_replace( "'", '&#039;', $string );
-	   echo $string;
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $string;
 	   echo ' <script type="text/javascript"> ';
 	   echo '    jQuery("#ajax_bk_respond").after( jQuery("#ajax_bk_respond #bk_news_loaded") );';
 	   echo '    jQuery("#bk_news_loaded").slideUp(1).slideDown(1500);';
@@ -65,8 +66,13 @@ function wpdev_ajax_check_bk_news( $sub_url = '' ){
 	} else  /**/
 		{ // Some error appear
 		echo '<div id="bk_errror_loading">';
-		if (is_wp_error($result))  echo $result->get_error_message();
-		else                       echo $result['response']['message'];
+			if ( is_wp_error( $result ) ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $result->get_error_message();
+			} else {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $result['response']['message'];
+			}
 		echo '</div>';
 		echo ' <script type="text/javascript"> ';
 		echo '    document.getElementById("bk_news").style.display="none";';
@@ -83,7 +89,7 @@ function wpdev_ajax_check_bk_news( $sub_url = '' ){
  * Check  if user defined to  not show up_news section.
  *
  */
-function wpbc_is_show_up_news(){                                                                                        //FixIn: 8.1.3.9
+function wpbc_is_show_up_news(){                                                                                        // FixIn: 8.1.3.9.
 
 	$wpdev_copyright_adminpanel  = get_bk_option( 'booking_wpdev_copyright_adminpanel' );             // check
 	if ( 	( $wpdev_copyright_adminpanel === 'Off' )
@@ -107,15 +113,19 @@ function wpdev_ajax_check_bk_version(){
 
 	$obc_settings = array();
 	$params = array(
-				'action' => 'set_register',
-				'order_number'   => isset($_POST['order_num'])?$_POST['order_num']:false,
-				'bk' => array('bk_ver'=>WPDEV_BK_VERSION, 'bk_url'=>WPBC_PLUGIN_URL,'bk_dir'=>WPBC_PLUGIN_DIR, 'bk_clss'=>$v),
-				'siteurl'            => get_option('siteurl'),
-				'siteip'             => wpbc_get_server_ip(), 				//FixIn: 9.8.14.3
-				'admin_email'        => get_option('admin_email')
+		'action'       => 'set_register',
+		'order_number' => isset( $_POST['order_num'] ) ? sanitize_text_field( wp_unslash( $_POST['order_num'] ) ) : false,  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		'bk'           => array( 'bk_ver'  => WPDEV_BK_VERSION,
+								 'bk_url'  => WPBC_PLUGIN_URL,
+								 'bk_dir'  => WPBC_PLUGIN_DIR,
+								 'bk_clss' => $v,
+		),
+		'siteurl'      => get_option( 'siteurl' ),
+		'siteip'       => wpbc_get_server_ip(),                // FixIn: 9.8.14.3.
+		'admin_email'  => get_option( 'admin_email' ),
 	);
 
-	update_bk_option( 'bk_version_data' ,  serialize($params) );
+	update_bk_option( 'bk_version_data', serialize( $params ) );
 
 	$request = new WP_Http();
 	$result  = $request->request( OBC_CHECK_URL . 'register/', array(
@@ -129,7 +139,8 @@ function wpdev_ajax_check_bk_version(){
 		&& ( true ) ) {
 
 	   $string = ($result['body']);                                         //$string = str_replace( "'", '&#039;', $string );
-	   echo $string ;
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $string;
 	   echo ' <script type="text/javascript"> ';
 	   echo '    jQuery("#ajax_message").append( jQuery("#ajax_respond #bk_registration_info") );';
 	   echo '    jQuery("#ajax_message").append( "<div id=\'bk_registration_info_reload\'>If page will not reload automatically,  please refresh page after 60 seconds...</div>" );';
@@ -137,12 +148,17 @@ function wpdev_ajax_check_bk_version(){
 
 	} else { // Some error appear
 		echo '<div id="bk_errror_loading" class="warning_message" >';
-		echo '<div class="info_message">'; _e('Warning! Some error occur, during sending registration request.' ,'booking'); echo '</div>';
+		echo '<div class="info_message">'; esc_html_e('Warning! Some error occur, during sending registration request.' ,'booking'); echo '</div>';
 
-		if (is_wp_error($result))  echo $result->get_error_message();
-		else                       echo $result['response']['message'];
+		if ( is_wp_error( $result ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $result->get_error_message();
+		} else {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $result['response']['message'];
+		}
 		echo '<br /><br />';
-		_e('Please refresh this page and if the same error appear again contact support by email (with  info about order number and website) for finishing the registrations' ,'booking'); echo ' <a href="mailto:activate@wpbookingcalendar.com">activate@wpbookingcalendar.com</a>';
+		esc_html_e('Please refresh this page and if the same error appear again contact support by email (with  info about order number and website) for finishing the registrations' ,'booking'); echo ' <a href="mailto:activate@wpbookingcalendar.com">activate@wpbookingcalendar.com</a>';
 		echo '</strong></div>';
 		echo ' <script type="text/javascript"> ';
 		echo '    jQuery( "#ajax_message" ).html( "" );';

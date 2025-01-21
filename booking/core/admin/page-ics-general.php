@@ -13,7 +13,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-//FixIn: 8.1.1.10
+// FixIn: 8.1.1.10.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -98,7 +98,8 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
                                     'type' => 'select'
                                     , 'default' => ''
                                     , 'title' => __('Event Title', 'booking')
-                                    , 'description' => sprintf( __( 'Select field for assigning to %sevent property%s' ,'booking'), '<b>', '</b>' )
+									/* translators: 1: Open HTML strong symbol, 2:  Close HTML strong symbol. */
+                                    , 'description' => sprintf( __( 'Select field for assigning to %1$sevent property%2$s' ,'booking'), '<b>', '</b>' )
                                     , 'description_tag' => 'span'
                                     , 'css' => ''
                                     , 'options' => $options
@@ -108,7 +109,8 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
                                     'type' => 'select'
                                     , 'default' => ''
                                     , 'title' => __('Event Description (optional field)' ,'booking')
-                                    , 'description' => sprintf( __( 'Select field for assigning to %sevent property%s' ,'booking'), '<b>', '</b>' )
+									/* translators: 1: Open HTML strong symbol, 2:  Close HTML strong symbol. */
+                                    , 'description' => sprintf( __( 'Select field for assigning to %1$sevent property%2$s' ,'booking'), '<b>', '</b>' )
                                     , 'description_tag' => 'span'
                                     , 'css' => ''
                                     , 'options' => $options
@@ -118,7 +120,8 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
                                     'type' => 'select'
                                     , 'default' => ''
                                     , 'title' => __('Location' ,'booking')
-                                    , 'description' => sprintf( __( 'Select field for assigning to %sevent property%s' ,'booking'), '<b>', '</b>' )
+									/* translators: 1: Open HTML strong symbol, 2:  Close HTML strong symbol. */
+                                    , 'description' => sprintf( __( 'Select field for assigning to %1$sevent property%2$s' ,'booking'), '<b>', '</b>' )
                                     , 'description_tag' => 'span'
                                     , 'css' => ''
                                     , 'options' => $options
@@ -131,7 +134,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
         $options[''] = __('Default' ,'booking');
 
 		// structure: $wpbc_booking_region_cities_list["Pacific"]["Fiji"] = "Fiji";
-        $wpbc_booking_region_cities_list = wpbc_get_booking_region_cities_list();										//FixIn: 8.9.4.9
+        $wpbc_booking_region_cities_list = wpbc_get_booking_region_cities_list();										// FixIn: 8.9.4.9.
 
         foreach ( $wpbc_booking_region_cities_list as $region => $region_cities) {
 
@@ -163,7 +166,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
                                     , 'group' => 'general'
                             );
 
-	    	//FixIn: 9.5.4.1
+	    	// FixIn: 9.5.4.1.
 			$this->fields['booking_ics_import_append_checkout_day'] = array(
 										  'type'        => 'checkbox'
 										, 'default'     => 'On'
@@ -174,7 +177,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 								);
 
         if ( class_exists( 'wpdev_bk_biz_s' ) ) {
-			//FixIn: 8.1.3.29
+			// FixIn: 8.1.3.29.
 			$this->fields['booking_ics_import_add_change_over_time'] = array(
 										  'type'        => 'checkbox'
 										, 'default'     => 'On'
@@ -183,7 +186,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 										, 'description' => ''
 										, 'group'       => 'import_advanced'
 								);
-			//FixIn: 8.5.2.3
+			// FixIn: 8.5.2.3.
 			$this->fields['booking_is_ics_export_only_approved'] = array(
 										  'type'        => 'checkbox'
 										, 'default'     => 'Off'
@@ -193,7 +196,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 										, 'group'       => 'export_advanced'
 								);
 
-			//FixIn: 8.8.3.19
+			// FixIn: 8.8.3.19.
 			$this->fields['booking_is_ics_export_imported_bookings'] = array(
 										  'type' => 'select'
 										, 'default' => ''
@@ -202,14 +205,14 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 										, 'description_tag' => 'p'
 										, 'css' => ''
 										, 'options' => array (
-												'' 			=> __('All bookings'),
-												'plugin' 	=> __('Bookings created in Booking Calendar'),
-												'imported' 	=> __('Imported bookings'),
+												'' 			=> __('All bookings','booking'),
+												'plugin' 	=> __('Bookings created in Booking Calendar','booking'),
+												'imported' 	=> __('Imported bookings','booking'),
 											)
 										, 'group'       => 'export_advanced'
 								);
         }
-			//FixIn: 10.3.0.1
+			// FixIn: 10.3.0.1.
 			$this->fields['booking_g_cal_export_no_data'] = array(
 										  'type'        => 'checkbox'
 										, 'default'     => 'Off'
@@ -219,9 +222,9 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 										, 'group'       => 'export_advanced'
 								);
 
-        //FixIn: 8.5.1.1
+        // FixIn: 8.5.1.1.
 /*
-		//FixIn: 8.4.7.1
+		// FixIn: 8.4.7.1.
 		$this->fields['booking_ics_force_import'] = array(
 									  'type'        => 'checkbox'
 									, 'default'     => 'Off'
@@ -231,7 +234,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 									, 'group'       => 'import_advanced'
 							);
 /**/
-		//FixIn: 8.4.7.12	//FixIn: //FixIn: 9.1.2.6
+		//FixIn: 8.4.7.12	//FixIn: // FixIn: 9.1.2.6.
 		$this->fields['booking_ics_force_trash_before_import'] = array(
 									  'type' => 'select'
 									, 'default' => 'Off'
@@ -239,7 +242,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 									, 'description' => __('Move all previously imported bookings to trash or permanently delete before new import bookings. Its can resolve issue of updating deleted and edited events in external sources. Its work only, if you are using one source (.ics feed) for importing into specific booking resource!' ,'booking')
 									, 'description_tag' => 'p'
 									, 'css' => ''
-									, 'options' => array (                                                                //FixIn: 9.7.3.9
+									, 'options' => array (                                                                // FixIn: 9.7.3.9.
 											'Off'    => __( 'Do nothing', 'booking' ),
 											'On'     => __( 'Trash imported bookings', 'booking' ),
 											'delete' => __( 'Permanently delete', 'booking' )
@@ -252,7 +255,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 									  'type'        => 'checkbox'
 									, 'default'     => 'Off'
 									, 'title'       => __( 'Import conditions', 'booking' )//__('Import only new events', 'booking')
-									, 'label'       => '<strong>' . __( 'Import Only New Events', 'booking' ) . '</strong> -  ' . __( 'Import only if the event has not been imported before.', 'booking' )
+									, 'label'       => '<strong>' . esc_html__( 'Import Only New Events', 'booking' ) . '</strong> -  ' . __( 'Import only if the event has not been imported before.', 'booking' )
 									, 'description' => ''
 									, 'group'       => 'import_advanced'
 							);
@@ -260,7 +263,7 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 									  'type'        => 'checkbox'
 									, 'default'     => 'Off'
 									, 'title'       => ''//__('Import if dates available', 'booking')
-									, 'label'       => '<strong>' . __( 'Import if Dates Available', 'booking' ) . '</strong> -  ' . __( 'Import only if dates are available in the source calendar.', 'booking' )
+									, 'label'       => '<strong>' . esc_html__( 'Import if Dates Available', 'booking' ) . '</strong> -  ' . esc_html__( 'Import only if dates are available in the source calendar.', 'booking' )
 									, 'description' => ''
 									, 'group'       => 'import_advanced'
 							);
@@ -340,11 +343,12 @@ class WPBC_Page_SettingsGeneralSync extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-	                        , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			//FixIn: 9.6.1.4
+	                        , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
                             , 'default' =>  true                                // Is this sub tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false.
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
+							//, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
                         );
 
         $tabs[ 'sync' ]['subtabs'] = $subtabs;
@@ -405,6 +409,7 @@ class WPBC_Page_SettingsGeneralSync extends WPBC_Page_Structure {
 
         // $this->get_api()->validated_form_id = $submit_form_name;             // Define ID of Form for ability to  validate fields (like required field) before submit.
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if ( isset( $_POST['is_form_sbmitted_'. $submit_form_name ] ) ) {
 
             // Nonce checking    {Return false if invalid, 1 if generated between, 0-12 hours ago, 2 if generated between 12-24 hours ago. }
@@ -432,11 +437,11 @@ class WPBC_Page_SettingsGeneralSync extends WPBC_Page_Structure {
         ?>
         <div class="clear" style="margin-bottom:0px;"></div>
         <span class="metabox-holder">
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" autocomplete="off">
+            <form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" autocomplete="off">
                 <?php
                    // N o n c e   field, and key for checking   S u b m i t
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
                 ?><div class="clear"></div><?php
 
                 ?><div class="clear" style="height:10px;"></div><?php
@@ -455,7 +460,7 @@ class WPBC_Page_SettingsGeneralSync extends WPBC_Page_Structure {
 
                     wpbc_close_meta_box_section();
 
-                    //FixIn: 8.5.1.1
+                    // FixIn: 8.5.1.1.
 					// if ( class_exists( 'wpdev_bk_biz_s' ) ) {
 
 						wpbc_open_meta_box_section( 'wpbc_settings_general_sync_import', __( 'Import', 'booking' ) . ' ' . __( 'Advanced', 'booking' ) );
@@ -475,7 +480,7 @@ class WPBC_Page_SettingsGeneralSync extends WPBC_Page_Structure {
 
 					<div class="clear"></div>
 
-					<input type="submit" value="<?php _e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" />
+					<input type="submit" value="<?php esc_attr_e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" />
 				<?php
 
 				?>

@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ==  Get Booking Confirmation Data
@@ -110,7 +110,7 @@ function wpbc_booking_confirmation( $params_arr ){
 	$title_after_reservation = html_entity_decode( esc_js(  wpbc_lang( get_bk_option( 'booking_title_after_reservation' ) ) ) );
 	$title_after_reservation = wpbc_replace_booking_shortcodes( $title_after_reservation, $replace_arr, ' --- ' );
 	$title_after_reservation = stripslashes( $title_after_reservation );
-	$title_after_reservation = wp_kses_post( $title_after_reservation );                                                //FixIn: 10.6.4.2
+	$title_after_reservation = wp_kses_post( $title_after_reservation );                                                // FixIn: 10.6.4.2.
 	$confirmation['ty_message'] = $title_after_reservation;                                                             // 'Thank you for booking!'
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -120,11 +120,12 @@ function wpbc_booking_confirmation( $params_arr ){
 	if ( 'Off' !== get_bk_option( 'booking_confirmation_header_enabled' ) ) {
 		$confirmation['ty_message_booking_id'] .= ( false !== get_bk_option( 'booking_confirmation_header' ) )
 															? html_entity_decode( esc_js(  wpbc_lang( get_bk_option( 'booking_confirmation_header' ) ) ) )
+															/* translators: 1: ... */
 															: sprintf( __( 'Your booking id: %s', 'booking' ), '<strong>[booking_id]</strong>' );
 	}
 	$confirmation['ty_message_booking_id'] = wpbc_replace_booking_shortcodes( $confirmation['ty_message_booking_id'], $replace_arr, ' --- ' );
 	$confirmation['ty_message_booking_id'] = stripslashes( $confirmation['ty_message_booking_id'] );
-	$confirmation['ty_message_booking_id'] = wp_kses_post( $confirmation['ty_message_booking_id'] );                                                //FixIn: 10.6.4.2
+	$confirmation['ty_message_booking_id'] = wp_kses_post( $confirmation['ty_message_booking_id'] );                                                // FixIn: 10.6.4.2.
 			//$confirmation['ty_message_booking_id'] = str_replace( '[booking_id]', $params_arr['booking_id'], $confirmation['ty_message_booking_id'] );
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -143,7 +144,7 @@ function wpbc_booking_confirmation( $params_arr ){
 		$confirmation['ty_customer_details'] = str_replace( array( "\\n", "\n" ), '<br>', $confirmation['ty_customer_details'] );
 		$confirmation['ty_customer_details'] = wpbc_replace_booking_shortcodes( $confirmation['ty_customer_details'], $replace_arr, ' --- ' );
 	}
-	$confirmation['ty_customer_details'] = wp_kses_post( $confirmation['ty_customer_details'] );                                                //FixIn: 10.6.4.2
+	$confirmation['ty_customer_details'] = wp_kses_post( $confirmation['ty_customer_details'] );                                                // FixIn: 10.6.4.2.
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// -- Booking details --
@@ -160,7 +161,7 @@ function wpbc_booking_confirmation( $params_arr ){
 		$confirmation['ty_booking_details'] = wpbc_replace_booking_shortcodes( $confirmation['ty_booking_details'], $replace_arr, ' --- ' );
 	}
 
-	$confirmation['ty_booking_details'] = wp_kses_post( $confirmation['ty_booking_details'] );                                                //FixIn: 10.6.4.2
+	$confirmation['ty_booking_details'] = wp_kses_post( $confirmation['ty_booking_details'] );                                                // FixIn: 10.6.4.2.
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// -- Costs text --
@@ -265,7 +266,7 @@ function wpbc_booking_confirmation( $params_arr ){
 		// "Update Note" in booking with  all  datails. Again ?
 		// ---------------------------------------------------------------------------------------------------------
 		$cost_booking_note = preg_replace( "@(&lt;|<)br\s*/?(&gt;|>)(\r\n)?@", "\n", $confirmation['ty_booking_costs'] );
-		$cost_booking_note = strip_tags( $cost_booking_note );
+		$cost_booking_note = wp_strip_all_tags( $cost_booking_note );
 		$cost_booking_note = str_replace( array( '  ', "\n " ), array( ' ', "\n" ), $cost_booking_note );
 
 		if ( ! empty( $params_arr['gateway_rows'] ) ) {
@@ -276,7 +277,7 @@ function wpbc_booking_confirmation( $params_arr ){
 			$booking_note .= ' ' . __( 'Payment section displayed', 'booking' );
 			if ( empty( $cost_booking_note ) ) {
 				foreach ( $params_arr['gateway_rows'] as $row_num => $gateway_row ) {
-					$booking_note .= ' | ' . strip_tags( html_entity_decode( $gateway_row['header'] ) );
+					$booking_note .= ' | ' . wp_strip_all_tags( html_entity_decode( $gateway_row['header'] ) );
 				}
 			}
 			$booking_note .= "\n";
@@ -370,7 +371,7 @@ function wpbc_booking_confirmation( $params_arr ){
 
 	if ( 'page' == $confirmation['ty_is_redirect'] ) {
 
-		//FixIn: 9.9.0.3
+		// FixIn: 9.9.0.3.
 		if ( ! empty( $params_arr['ty_url'] ) ) {
 
 			$confirmation['ty_url'] = $params_arr['ty_url'];

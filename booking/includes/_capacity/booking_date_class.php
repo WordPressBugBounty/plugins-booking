@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 
 /**
@@ -252,7 +252,7 @@ class WPBC_BOOKING_DATE {
 		 */
 		protected function transform__timestamp__to_sql_date( $in_seconds, $sql_date_format = 'Y-m-d H:i:s' ){
 
-			$sql_date = date( $sql_date_format, $in_seconds );
+			$sql_date = gmdate( $sql_date_format, $in_seconds );
 
 			return $sql_date;
 		}

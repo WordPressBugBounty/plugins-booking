@@ -51,15 +51,15 @@ class WPBC_AJX_Bookings {
 
 				//wp_enqueue_script( 'wpbc-live_search', wpbc_plugin_url( '/_out/js/live_search.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 				wp_enqueue_script( 'wpbc-booking_ajx_toolbar_hooks'
-					, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js'         /* wpbc_plugin_url( '/_out/js/codemirror.js' ) */
+					, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 					, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
 				wp_enqueue_script( 'wpbc-booking_ajx_listing'
-					, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js'         /* wpbc_plugin_url( '/_out/js/codemirror.js' ) */
+					, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 					, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
 				wp_enqueue_script( 'wpbc-booking_ajx_actions'
-					, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js'         /* wpbc_plugin_url( '/_out/js/codemirror.js' ) */
+					, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 					, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
 				wp_enqueue_script( 'wpbc-general_ui_js_css'
@@ -217,7 +217,7 @@ class WPBC_AJX_Bookings {
 							 * Example
 							 *      French  translation  of this code:
 							 *
-							 *      if ( '<?php _e( 'Resource not exist', 'booking' ); ?>' == data.parsed_fields.resource_title ) {
+							 *      if ( '<?php esc_html_e( 'Resource not exist', 'booking' ); ?>' == data.parsed_fields.resource_title ) {
 							 * is:
 							 * 		if ( 'La ressource n'existe pas' == data.parsed_fields.resource_title ) {
 							 *
@@ -268,7 +268,9 @@ class WPBC_AJX_Bookings {
 
 
 								if ( ! empty( $label ) ) {
-									?><span class="wpbc_label" style="color:<?php echo $text_color; ?>;background-color:<?php echo $color; ?>;">{{{data.parsed_fields<?php echo $label;  ?>}}}</span><?php
+									?><span class="wpbc_label" style="color:<?php echo esc_attr( $text_color ); ?>;background-color:<?php echo esc_attr( $color ); ?>;">{{{data.parsed_fields<?php
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo $label;  ?>}}}</span><?php
 								}
 							}
 
@@ -474,6 +476,7 @@ console.log( 'row listing', data );	// LISTING_ROWS
 		 */
 		public function ajax_WPBC_AJX_BOOKING_LISTING() {
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST['search_params'] ) || empty( $_POST['search_params'] ) ) { exit; }
 
 			// Security  -----------------------------------------------------------------------------------------------    // in Ajax Post:   'nonce': wpbc_ajx_booking_listing.get_secure_param( 'nonce' ),
@@ -481,7 +484,7 @@ console.log( 'row listing', data );	// LISTING_ROWS
 			$nonce_post_key = 'nonce';
 			$result_check   = check_ajax_referer( $action_name, $nonce_post_key );
 
-			$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();
+			$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 			/**
 			 * SQL  ---------------------------------------------------------------------------
@@ -494,7 +497,7 @@ console.log( 'row listing', data );	// LISTING_ROWS
 
 			$user_request = new WPBC_AJX__REQUEST( array(
 													   'db_option_name'          => 'booking_listing_request_params',
-													   'user_id'                 => $user_id, 							//FixIn: 9.4.3.2
+													   'user_id'                 => $user_id, 							// FixIn: 9.4.3.2.
 													   'request_rules_structure' => wpbc_ajx_get__request_params__names_default()
 													)
 							);
@@ -522,6 +525,7 @@ console.log( 'row listing', data );	// LISTING_ROWS
 								'ajx_count'             => $data_arr['count'],
 								'ajx_items'             => $data_arr['data_arr'],
 								'ajx_booking_resources' => $data_arr['booking_resources'],
+								// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 								'ajx_search_params'     => $_REQUEST['search_params'],
 								'ajx_cleaned_params'    => $request_params,
 								'ajx_new_bookings_count'=> $new_bookings_count

@@ -38,7 +38,7 @@ class WPBC_JS extends WPBC_JS_CSS {
      */
     public function enqueue( $where_to_load ) {
 
-		wpbc_remove_js_conflicts();                                                                                     //FixIn: 9.5.4.2
+		wpbc_remove_js_conflicts();                                                                                     // FixIn: 9.5.4.2.
 
         wpbc_js_load_vars(  $where_to_load );
         do_action( 'wpbc_define_js_vars', $where_to_load );                                                             // Define JavaScript variables in all other files
@@ -89,7 +89,7 @@ class WPBC_JS extends WPBC_JS_CSS {
 		if (
 			   ( 'jquery-core' === $handle )
 			|| ( 'jquery-migrate' === $handle )
-			|| ( false !== strpos( $handle, 'wpbc_' ) )                 // Booking Calendar script wpbc_all.js          //FixIn: 10.1.2.3
+			|| ( false !== strpos( $handle, 'wpbc_' ) )                 // Booking Calendar script wpbc_all.js          // FixIn: 10.1.2.3.
 			|| ( false !== strpos( $handle, 'wpbc-' ) )                 // Booking Calendar scripts
 			|| ( false !== strpos( $handle, 'wpdevelop-' ) )
 			|| ( false !== strpos( $handle, 'wpbm-' ) )
@@ -151,7 +151,12 @@ function wpbc_js_load_vars( $where_to_load ) {
 /** Default JavaScripts Libraries */
 function wpbc_js_load_libs( $where_to_load ) {
 
-    wp_enqueue_script( 'jquery' );                                                  // jQuery
+	wp_enqueue_script( 'jquery' );                                                                                      // jQuery.
+
+	//	$src  = '';
+	//	$deps = '';
+	//	$ver  = false;
+	//	wp_enqueue_script( 'jquery', $src, $deps, $ver, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 
     // Default Admin Libs 
 	if ( 'admin' == $where_to_load ) {
@@ -166,14 +171,14 @@ function wpbc_js_load_libs( $where_to_load ) {
     }
 
 	// WP Util,  that  support wp.template,  based on underscore _.template system
-    wp_enqueue_script( 'wp-util' );                                                                                     //FixIn: TimeFreeGenerator      //FixIn: 9.4.4.11
+    wp_enqueue_script( 'wp-util' );                                                                                     //FixIn: TimeFreeGenerator      // FixIn: 9.4.4.11.
 }
 
 
 /** Load JavaScript Files */
 function wpbc_js_load_files( $where_to_load ) {
 
-	wp_enqueue_script( 'wpbc_all',          wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ),                    array( 'jquery' ), WP_BK_VERSION_NUM );              //FixIn: 9.8.6.1
+	wp_enqueue_script( 'wpbc_all',          wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ),                    array( 'jquery'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );              // FixIn: 9.8.6.1.
 
     /**
      * Popover functionality.
@@ -186,37 +191,37 @@ function wpbc_js_load_files( $where_to_load ) {
      * In popper.js  edit global.Popper  to global.wpbc_Popper
      * In tippy-bundle.umd.js  edit global.Popper  to global.wpbc_Popper   and      global.tippy   to  global.wpbc_tippy
      */
-	wp_enqueue_script( 'wpbc-popper', wpbc_plugin_url( '/assets/libs/popper/popper.js' ),                   array( 'wpbc_all' ),    WP_BK_VERSION_NUM );            //FixIn: 9.0.1.1
-	wp_enqueue_script( 'wpbc-tipcy',  wpbc_plugin_url( '/assets/libs/tippy.js/dist/tippy-bundle.umd.js' ),  array( 'wpbc-popper' )  ,       WP_BK_VERSION_NUM );            //FixIn: 9.8.1
+	wp_enqueue_script( 'wpbc-popper', wpbc_plugin_url( '/assets/libs/popper/popper.js' ),                   array( 'wpbc_all'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );            // FixIn: 9.0.1.1.
+	wp_enqueue_script( 'wpbc-tipcy',  wpbc_plugin_url( '/assets/libs/tippy.js/dist/tippy-bundle.umd.js' ),  array( 'wpbc-popper'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );            //FixIn: 9.8.1
 
 	if ( $where_to_load != 'client' ) {
-		wp_enqueue_script( 'wpbc-modal', wpbc_plugin_url( '/assets/libs/ui/_out/dropdown_modal.js' ),       array( 'jquery' ),          WP_BK_VERSION_NUM );               //FixIn: 9.8.1
+		wp_enqueue_script( 'wpbc-modal', wpbc_plugin_url( '/assets/libs/ui/_out/dropdown_modal.js' ),       array( 'jquery'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );               //FixIn: 9.8.1
 	}
 
-    wp_enqueue_script( 'wpbc-datepick', wpbc_plugin_url( '/js/datepick/jquery.datepick.wpbc.9.0.js'),       array( 'wpbc_all' ), WP_BK_VERSION_NUM );               //FixIn: 9.8.1
+    wp_enqueue_script( 'wpbc-datepick', wpbc_plugin_url( '/js/datepick/jquery.datepick.wpbc.9.0.js'),       array( 'wpbc_all'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );               //FixIn: 9.8.1
     $calendar_localization_url = wpbc_get_calendar_localization_url();                                                  // Localization
 	if ( ! empty( $calendar_localization_url ) ) {
-		wp_enqueue_script( 'wpbc-datepick-localize', $calendar_localization_url,                            array( 'wpbc-datepick' ),   WP_BK_VERSION_NUM );                 //FixIn: 9.8.1
+		wp_enqueue_script( 'wpbc-datepick-localize', $calendar_localization_url,                            array( 'wpbc-datepick'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );                 //FixIn: 9.8.1
 	}
 
     if (  ( $where_to_load == 'client' ) || ( wpbc_is_new_booking_page()  ) || ( wpbc_is_settings_form_page() || wpbc_is_setup_wizard_page()  )   ) {
 
-	    wp_enqueue_script( 'wpbc-main-client',  wpbc_plugin_url( '/js/client.js' ),                                  array( 'wpbc-datepick' ), WP_BK_VERSION_NUM );             // Client
-	    wp_enqueue_script( 'wpbc_capacity',     wpbc_plugin_url( '/includes/_capacity/_out/create_booking.js' ),     array( 'wpbc-main-client' ), WP_BK_VERSION_NUM );          // Add new bookings   //FixIn: 9.8.0.3
-	    wp_enqueue_script( 'wpbc-times',        wpbc_plugin_url( '/js/wpbc_times.js' ),                              array( 'wpbc-main-client' ), WP_BK_VERSION_NUM );          // FixIn: TimeFree 2 //UnComment it for Booking Calendar Free version
+	    wp_enqueue_script( 'wpbc-main-client',  wpbc_plugin_url( '/js/client.js' ),                                  array( 'wpbc-datepick'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );             // Client
+	    wp_enqueue_script( 'wpbc_capacity',     wpbc_plugin_url( '/includes/_capacity/_out/create_booking.js' ),     array( 'wpbc-main-client'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );          // Add new bookings   // FixIn: 9.8.0.3.
+	    wp_enqueue_script( 'wpbc-times',        wpbc_plugin_url( '/js/wpbc_times.js' ),                              array( 'wpbc-main-client'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );          // FixIn: TimeFree 2 //UnComment it for Booking Calendar Free version
 	    if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || ( wpbc_is_setup_wizard_page() ) ) {
-			wp_enqueue_script( 'wpbc-time-selector',    wpbc_plugin_url( '/js/wpbc_time-selector.js'),               array( 'wpbc-times' ),     WP_BK_VERSION_NUM);             //FixIn: 8.7.11.10
+			wp_enqueue_script( 'wpbc-time-selector',    wpbc_plugin_url( '/js/wpbc_time-selector.js'),               array( 'wpbc-times'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );             // FixIn: 8.7.11.10.
 	    }
     }
 
     if ( $where_to_load == 'admin' ) {
-		wp_enqueue_script( 'wpbc-js-print',      wpbc_plugin_url( '/assets/libs/wpbc_js_print/wpbc_js_print.js' ),  array( 'jquery' )  ,         WP_BK_VERSION_NUM );           //FixIn: 9.8.1            //FixIn: 9.2.1.6   //FixIn: 9.1.2.13
-        wp_enqueue_script( 'wpbc-admin-main',    wpbc_plugin_url( '/js/admin.js'),                                  array( 'wpbc_all' ), WP_BK_VERSION_NUM );           // Admin
+		wp_enqueue_script( 'wpbc-js-print',      wpbc_plugin_url( '/assets/libs/wpbc_js_print/wpbc_js_print.js' ),  array( 'jquery'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );           //FixIn: 9.8.1            //FixIn: 9.2.1.6   // FixIn: 9.1.2.13.
+        wp_enqueue_script( 'wpbc-admin-main',    wpbc_plugin_url( '/js/admin.js'),                                  array( 'wpbc_all'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );           // Admin
 	    if ( wpbc_can_i_load_on_this_page__shortcode_config() ) {
-			wp_enqueue_script( 'wpbc_shortcode_popup', wpbc_plugin_url( '/includes/ui_modal__shortcodes/_out/wpbc_shortcode_popup.js' ), array( 'jquery' ), WP_BK_VERSION_NUM ); //FixIn: 9.8.6.1
+			wp_enqueue_script( 'wpbc_shortcode_popup', wpbc_plugin_url( '/includes/ui_modal__shortcodes/_out/wpbc_shortcode_popup.js' ), array( 'jquery'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) ); // FixIn: 9.8.6.1.
 	    }
-        wp_enqueue_script( 'wpbc-admin-support', wpbc_plugin_url( '/core/any/js/admin-support.js'),                 array( 'wpbc_all' ), WP_BK_VERSION_NUM );
-        wp_enqueue_script( 'wpbc-chosen',        wpbc_plugin_url( '/assets/libs/chosen/chosen.jquery.min.js'),      array( 'wpbc_all' ), WP_BK_VERSION_NUM );           // Chosen Library
+        wp_enqueue_script( 'wpbc-admin-support', wpbc_plugin_url( '/core/any/js/admin-support.js'),                 array( 'wpbc_all'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+        wp_enqueue_script( 'wpbc-chosen',        wpbc_plugin_url( '/assets/libs/chosen/chosen.jquery.min.js'),      array( 'wpbc_all'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );           // Chosen Library
     }
 }
 
@@ -288,17 +293,19 @@ function wpbc_is_load_css_js_on_client_page( $is_load_scripts ) {
 
             $booking_pages_for_load_js_css = preg_split('/[\r\n]+/', $booking_pages_for_load_js_css, -1, PREG_SPLIT_NO_EMPTY);
 
-            $request_uri = $_SERVER['REQUEST_URI'];                                 //FixIn:5.4.1
-	        //FixIn: 8.4.5.8
+			$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+            $request_uri = $server_request_uri;                                 //FixIn:5.4.1
+	        // FixIn: 8.4.5.8.
             if (
             	   ( strpos( $request_uri, 'booking_hash=') !== false )
                 || ( strpos( $request_uri, 'check_in=') !== false )
             ) {
-                $request_uri = parse_url($request_uri);
+                $request_uri = wp_parse_url($request_uri);
                 if (  ( ! empty($request_uri ) ) && ( isset($request_uri['path'] ) )  ){
                     $request_uri = $request_uri['path'];
                 } else {
-                    $request_uri = $_SERVER['REQUEST_URI'];
+					$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+                    $request_uri = $server_request_uri;
                 }
             }
 
@@ -321,7 +328,7 @@ add_filter( 'wpbc_is_load_script_on_this_page', 'wpbc_is_load_css_js_on_client_p
 function wpbc_load_js__required_for_modals(){
 
 	// JS for opening Modals
-	wp_enqueue_script( 'wpbc-modal', wpbc_plugin_url( '/assets/libs/ui/_out/dropdown_modal.js' ), array( 'jquery' ), WP_BK_VERSION_NUM );						//FixIn: 9.8.1
+	wp_enqueue_script( 'wpbc-modal', wpbc_plugin_url( '/assets/libs/ui/_out/dropdown_modal.js' ), array( 'jquery'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );						//FixIn: 9.8.1
 
 	// CSS
 	wp_enqueue_style( 'wpdevelop-bts',              wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap.css' ),          array(), WP_BK_VERSION_NUM );	//FixIn: 9.8.1
@@ -331,11 +338,11 @@ function wpbc_load_js__required_for_modals(){
 	wp_enqueue_style( 'wpbc-admin-menu',            wpbc_plugin_url( '/core/any/css/admin-menu.css' ),          array(), WP_BK_VERSION_NUM );
 	//wp_enqueue_style( 'wpbc-admin-toolbar',         wpbc_plugin_url( '/core/any/css/admin-toolbar.css' ),     array(), WP_BK_VERSION_NUM );
 	wp_enqueue_style( 'wpbc-flex-toolbar', 			wpbc_plugin_url( '/includes/_toolbar_ui/_src/toolbar_ui.css' ), array(), WP_BK_VERSION_NUM );
-	wp_enqueue_style( 'wpbc-admin-modal-popups',    wpbc_plugin_url( '/css/modal.css' ),                        array(), WP_BK_VERSION_NUM);
-	wp_enqueue_style( 'wpbc-admin-pages',           wpbc_plugin_url( '/css/admin.css' ),                        array(), WP_BK_VERSION_NUM);
-	wp_enqueue_style( 'wpbc-admin-skin',            wpbc_plugin_url( '/css/admin-skin.css' ),                   array( 'wpbc-admin-pages' ), WP_BK_VERSION_NUM);            //FixIn: 8.0.2.4
-	//if ( 'legacy' != get_bk_option( 'booking_admin_panel_skin' ) ) {                                            //FixIn: 9.5.5.7
-	wp_enqueue_style( 'wpbc-admin-skin-modern_1', wpbc_plugin_url( '/css/admin-skin-modern_1.css' ), array( 'wpbc-admin-skin' ), WP_BK_VERSION_NUM );       //FixIn: 9.5.5.1
+	wp_enqueue_style( 'wpbc-admin-modal-popups',    wpbc_plugin_url( '/css/modal.css' ),                        array(), WP_BK_VERSION_NUM );
+	wp_enqueue_style( 'wpbc-admin-pages',           wpbc_plugin_url( '/css/admin.css' ),                        array(), WP_BK_VERSION_NUM );
+	wp_enqueue_style( 'wpbc-admin-skin',            wpbc_plugin_url( '/css/admin-skin.css' ),                   array( 'wpbc-admin-pages'  ), WP_BK_VERSION_NUM  );            // FixIn: 8.0.2.4.
+	//if ( 'legacy' != get_bk_option( 'booking_admin_panel_skin' ) ) {                                            // FixIn: 9.5.5.7.
+	wp_enqueue_style( 'wpbc-admin-skin-modern_1', wpbc_plugin_url( '/css/admin-skin-modern_1.css' ), array( 'wpbc-admin-skin'  ), WP_BK_VERSION_NUM  );       // FixIn: 9.5.5.1.
 	//}
 }
 
@@ -358,7 +365,7 @@ function wpbc_load_js__required_for_media_upload(){
 		wp_enqueue_script( 'wpbc_ui__media_upload', wpbc_plugin_url( '/includes/_media_upload/_out/wpbc_ui__media_upload.js' ), array(
 			'jquery',
 			'media-editor'
-		), WP_BK_VERSION_NUM );
+		 ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 	} else {
 		$script  = "jQuery(document).ready(function() { ";
 		$script .= " jQuery( '.wpbc_media_upload_button' ).on( 'click', function( event ) { ";
@@ -377,7 +384,7 @@ function wpbc_load_js__required_for_media_upload(){
  */
 function wpbc_jq_ready_start() {
 
-	return "(function() { var a = setInterval( function() {  if ( ( 'undefined' === typeof jQuery ) || ! window.jQuery ) { return; } clearInterval( a ); jQuery( document ).ready( function (){";
+	return "(function() { var a = setInterval( function() {  if ( ( 'undefined' === typeof _wpbc ) || ( 'undefined' === typeof jQuery ) || ! window.jQuery ) { return; } clearInterval( a ); jQuery( document ).ready( function (){";
 
 	// Help description:
 	?><script type="text/javascript">

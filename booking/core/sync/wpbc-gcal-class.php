@@ -67,7 +67,9 @@ class WPBC_Google_Calendar {
             return;
 
       ?><script type="text/javascript">
-            var my_message = '<?php echo html_entity_decode( esc_js( $message ),ENT_QUOTES) ; ?>';
+            var my_message = '<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo html_entity_decode( esc_js( $message ),ENT_QUOTES) ; ?>';
             wpbc_admin_show_message( my_message, '<?php echo ( $is_error ? 'error' : 'info' ); ?>', <?php echo ( $is_error ? '60000' : '3000' ); ?> );                                                                      
         </script><?php
 
@@ -78,10 +80,10 @@ class WPBC_Google_Calendar {
      
         ?>  <script type="text/javascript"> if (jQuery('#ajax_message').length > 0 ) { 
                 <?php if ($is_spin ) { ?>
-                    jQuery('#ajax_message').html('<div class="updated ajax_message<?php echo ($is_error?' error':''); ?>" id="ajax_message"><div style="float:left;"><?php echo $message;  ?></div><div id="ajax_message_wpbc_spin_loader" class="wpbc_spin_loader"></div></div>');
+                    jQuery('#ajax_message').html('<div class="updated ajax_message<?php echo ($is_error?' error':''); ?>" id="ajax_message"><div style="float:left;"><?php echo esc_js( $message ); ?></div><div id="ajax_message_wpbc_spin_loader" class="wpbc_spin_loader"></div></div>');
 					wpbc__spin_loader__mini__show( 'ajax_message_wpbc_spin_loader', {'show_here': {'where': 'inside'}} );
                 <?php } else { ?>
-                    jQuery('#ajax_message').html('<div class="updated ajax_message<?php echo ($is_error?' error':''); ?>" id="ajax_message"><?php echo $message;  ?></div>'); 
+                    jQuery('#ajax_message').html('<div class="updated ajax_message<?php echo ($is_error?' error':''); ?>" id="ajax_message"><?php echo esc_js( $message ); ?></div>');
                 <?php } ?>
             }</script> <?php
     }
@@ -125,7 +127,7 @@ class WPBC_Google_Calendar {
                     $booking_gcal_events_from_offset = intval( $booking_gcal_events_from[1] );
                     break;
                 case "minute":  
-                    $booking_gcal_events_from_offset = intval( $booking_gcal_events_from[1] ) * 60 ;                    //FixIn: 9.7.3.15
+                    $booking_gcal_events_from_offset = intval( $booking_gcal_events_from[1] ) * 60 ;                    // FixIn: 9.7.3.15.
                     break;
                 case "hour":  
                     $booking_gcal_events_from_offset = intval( $booking_gcal_events_from[1] ) * 3600 ;
@@ -148,19 +150,19 @@ class WPBC_Google_Calendar {
         switch ( $booking_gcal_events_from ) {
             //Don't just use time() for 'now', as this will effectively make cache duration 1 second. Instead set to previous minute. Events in Google Calendar cannot be set to precision of seconds anyway
             case 'now':
-	            $this->booking_gcal_events_from = mktime( intval( date( 'H' ) ), intval( date( 'i' ) ), 0, intval( date( 'm' ) ), intval( date( 'j' ) ), intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_from = mktime( intval( gmdate( 'H' ) ), intval( gmdate( 'i' ) ), 0, intval( gmdate( 'm' ) ), intval( gmdate( 'j' ) ), intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'today':
-	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( date( 'm' ) ), intval( date( 'j' ) ), intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( gmdate( 'm' ) ), intval( gmdate( 'j' ) ), intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'week':
-	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( date( 'm' ) ), ( intval( date( 'j' ) ) - intval( date( 'w' ) ) + intval( $this->start_of_week ) ), intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( gmdate( 'm' ) ), ( intval( gmdate( 'j' ) ) - intval( gmdate( 'w' ) ) + intval( $this->start_of_week ) ), intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'month-start':
-	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( date( 'm' ) ), 1, intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( gmdate( 'm' ) ), 1, intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'month-end':
-	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( date( 'm' ) ) + 1, 1, intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_from = mktime( 0, 0, 0, intval( gmdate( 'm' ) ) + 1, 1, intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'date':
                 $offset = explode('-', $offset);
@@ -182,7 +184,7 @@ class WPBC_Google_Calendar {
 	                $booking_gcal_events_until_offset = intval( $booking_gcal_events_until[1] );
                     break;
                 case "minute":
-	                $booking_gcal_events_until_offset = intval( $booking_gcal_events_until[1] ) * 60;                   //FixIn: 9.8.15.1
+	                $booking_gcal_events_until_offset = intval( $booking_gcal_events_until[1] ) * 60;                   // FixIn: 9.8.15.1.
                     break;
                 case "hour":
 	                $booking_gcal_events_until_offset = intval( $booking_gcal_events_until[1] ) * 3600;
@@ -203,19 +205,19 @@ class WPBC_Google_Calendar {
         
         switch ( $booking_gcal_events_until ) {        
             case 'now':
-	            $this->booking_gcal_events_until = mktime( intval( date( 'H' ) ), intval( date( 'i' ) ), 0, intval( date( 'm' ) ), intval( date( 'j' ) ), intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_until = mktime( intval( gmdate( 'H' ) ), intval( gmdate( 'i' ) ), 0, intval( gmdate( 'm' ) ), intval( gmdate( 'j' ) ), intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'today':
-	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( date( 'm' ) ), intval( date( 'j' ) ), intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( gmdate( 'm' ) ), intval( gmdate( 'j' ) ), intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'week':
-	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( date( 'm' ) ), ( intval( date( 'j' ) ) - intval( date( 'w' ) ) + intval( $this->start_of_week ) ), intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( gmdate( 'm' ) ), ( intval( gmdate( 'j' ) ) - intval( gmdate( 'w' ) ) + intval( $this->start_of_week ) ), intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'month-start':
-	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( date( 'm' ) ), 1, intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( gmdate( 'm' ) ), 1, intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'month-end':
-	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( date( 'm' ) ) + 1, 1, intval( date( 'Y' ) ) ) + $offset;
+	            $this->booking_gcal_events_until = mktime( 0, 0, 0, intval( gmdate( 'm' ) ) + 1, 1, intval( gmdate( 'Y' ) ) ) + $offset;
                 break;
             case 'date':
                 $offset = explode('-', $offset);
@@ -239,7 +241,7 @@ class WPBC_Google_Calendar {
     //Convert an ISO date/time to a UNIX timestamp
     private function iso_to_ts( $iso ) {
         sscanf( $iso, "%u-%u-%uT%u:%u:%uZ", $year, $month, $day, $hour, $minute, $second );
-	    $year   = intval((string) $year);        //FixIn: 9.6.3.7
+	    $year   = intval((string) $year);        // FixIn: 9.6.3.7.
 	    $month  = intval((string) $month);
 	    $day    = intval((string) $day);
 	    $hour   = intval((string) $hour);
@@ -260,7 +262,7 @@ class WPBC_Google_Calendar {
 //        $url = $this->feed_url;
 //
 //        // Break the feed URL up into its parts (scheme, host, path, query)
-//        $url_parts = parse_url( $url );
+//        $url_parts = wp_parse_url( $url );
 //        
 //        if (! isset($url_parts['path']))                                        // Something wrong with  URL
 //            return  false;
@@ -287,9 +289,9 @@ class WPBC_Google_Calendar {
         $url .= '?key=' . $api_key;
 
 
-        $args['timeMin'] = urlencode( date( 'c', $this->booking_gcal_events_from - $gmt_offset ) );
+        $args['timeMin'] = urlencode( gmdate( 'c', $this->booking_gcal_events_from - $gmt_offset ) );
 
-        $args['timeMax'] = urlencode( date( 'c', $this->booking_gcal_events_until - $gmt_offset ) );
+        $args['timeMax'] = urlencode( gmdate( 'c', $this->booking_gcal_events_until - $gmt_offset ) );
 
         $args['maxResults'] = $this->booking_gcal_events_max;
         
@@ -302,8 +304,8 @@ class WPBC_Google_Calendar {
         
 
 //        //Append the feed specific parameters to the querystring
-//        $query .= '&start-min=' . date( 'Y-m-d\TH:i:s', $this->booking_gcal_events_from - $gmt_offset );
-//        $query .= '&start-max=' . date( 'Y-m-d\TH:i:s', $this->booking_gcal_events_until - $gmt_offset );
+//        $query .= '&start-min=' . gmdate( 'Y-m-d\TH:i:s', $this->booking_gcal_events_from - $gmt_offset );
+//        $query .= '&start-max=' . gmdate( 'Y-m-d\TH:i:s', $this->booking_gcal_events_until - $gmt_offset );
 //        $query .= '&max-results=' . $this->booking_gcal_events_max;
 //
 //        if ( ! empty( $this->booking_gcal_timezone ) )
@@ -362,13 +364,13 @@ class WPBC_Google_Calendar {
 //debuge($range_dates, $range_time);
                                 $bktype = $this->getResource();
 
-                                //FixIn: 8.6.1.4
+                                // FixIn: 8.6.1.4.
 //								if (   ( class_exists( 'wpdev_bk_biz_s' ) )
 //									&& ( get_bk_option( 'booking_range_selection_time_is_active')  == 'On' )
 //									&& ( get_bk_option( 'booking_ics_import_add_change_over_time' ) !== 'Off' )
 //									&& ( get_bk_option( 'booking_ics_import_append_checkout_day' ) !== 'Off' )
 //								) {
-								if ( 'On' == get_bk_option( 'booking_ics_import_append_checkout_day' ) ) {                                      //FixIn: 2.0.27.1		//FixIn: 9.5.4.1
+								if ( 'On' == get_bk_option( 'booking_ics_import_append_checkout_day' ) ) {                                      //FixIn: 2.0.27.1		// FixIn: 9.5.4.1.
 									// Add one additional  day  to .ics event (useful in some cases for bookings with  change-over days),
 									//  if the imported .ics dates is coming without check  in/our times
 									// Later system is adding check  in/out times from  Booking Calendar to  this event
@@ -383,13 +385,13 @@ class WPBC_Google_Calendar {
 									$range_dates .= ', ' . $ics_event_check_out;
 								}
 
-	                            //FixIn: 8.6.1.1
+	                            // FixIn: 8.6.1.1.
 	                            if ( empty( $range_time ) ) {
 
 									if ( 	( class_exists( 'wpdev_bk_biz_s' ) )
 										 && ( get_bk_option( 'booking_range_selection_time_is_active')  == 'On' )
 										 && ( get_bk_option( 'booking_ics_import_add_change_over_time' )  !== 'Off' )
-									) {    //FixIn: 2.0.5.1
+									) {    // FixIn: 2.0.5.1.
 										//Add check  in/out times to full day  events
 										$wpbc_check_in  = get_bk_option( 'booking_range_selection_start_time' );// . ':01';                                    // ' 14:00:01'
 										$wpbc_check_out = get_bk_option( 'booking_range_selection_end_time' );	// . ':02';                                    // ' 10:00:02';
@@ -486,10 +488,11 @@ class WPBC_Google_Calendar {
                         $this->error = __( 'Access to this feed was denied (403). Please ensure you have public sharing enabled for your calendar.' ,'booking');
                         break;
                     default:
+                        /* translators: 1: ... */
                         $this->error = sprintf( __( 'The feed data could not be retrieved. Error code: %s. Please ensure your feed URL is correct.' ,'booking'), '<strong>' . $raw_data['response']['code'] . '</strong>' );
                         
                         if (isset( $raw_data['body'] ))
-                            $this->error .= '<br><br><strong>' . __( 'Info', 'booking' ) . '</strong>: <code>' . $raw_data['body'] . '</code>';
+                            $this->error .= '<br><br><strong>' . esc_html__( 'Info', 'booking' ) . '</strong>: <code>' . $raw_data['body'] . '</code>';
 
                 }
             }
@@ -504,6 +507,7 @@ class WPBC_Google_Calendar {
             $is_spin = false;
             $is_error = true;            
             $this->show_message(  $this->error , $is_spin, $is_error);
+	        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	        if (  ( isset( $_REQUEST['action'] ) ) && ( 'WPBC_AJX_BOOKING_ACTIONS' == $_REQUEST['action'] )  ) {
 				return  false;
 	        }
@@ -547,7 +551,7 @@ class WPBC_Google_Calendar {
 			$start_date = $this->iso_to_ts( $event_dates_start['dateTime'] );
             $end_date   = $this->iso_to_ts( $event_dates_end['dateTime'] );
 
-	        //FixIn: 8.9.4.2
+	        // FixIn: 8.9.4.2.
 	        /**
 	         * Check  for situation,  when  we are having times starting or ending at  the midnight: 00:00:00
 			 * Because in this "IF section" we are checking events dates with  times (in the previous "IF section" was FULL day  events,
@@ -555,13 +559,13 @@ class WPBC_Google_Calendar {
 			 * show such  date as fully  booked!
 	         */
 			$start_date_unix = $start_date;
-			$check_start_date = wpbc_datetime_localized( date( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d H:i:s' );
+			$check_start_date = wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d H:i:s' );
 			if ( substr( $check_start_date, 11 ) === '00:00:00' ) {
 				$start_date_unix = $start_date_unix + 61;
 				$start_date = $start_date_unix;
 			}
 			$end_date_unix = $end_date;
-			$check_end_date   = wpbc_datetime_localized( date( 'Y-m-d H:i:s', $end_date_unix ), 'Y-m-d H:i:s' );
+			$check_end_date   = wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s', $end_date_unix ), 'Y-m-d H:i:s' );
 			if ( substr( $check_end_date, 11 ) === '00:00:00' ) {
 				$end_date_unix = $end_date_unix - 2;
 				$end_date = $end_date_unix;
@@ -599,9 +603,9 @@ class WPBC_Google_Calendar {
     }
     
     
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // Create New bookings based on $this->events array.
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     public function createNewBookingsFromEvents( $exist_bookings_guid = array() ) {
                 
         foreach ($this->events as $key => $event) {
@@ -637,7 +641,8 @@ class WPBC_Google_Calendar {
 
 					// Add notes to the booking relative source of imported booking
 					if ( class_exists( 'wpdev_bk_personal' ) ) {
-						$remark_text = '[' . wpbc_datetime_localized( date( 'Y-m-d H:i:s' ), 'Y-m-d H:i:s' ) . '] ' . sprintf( __( 'Imported from %s ', 'booking-manager' ), 'Google Calendar' );
+						/* translators: 1: ... */
+						$remark_text = '[' . wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s' ), 'Y-m-d H:i:s' ) . '] ' . sprintf( __( 'Imported from %s ', 'booking' ), 'Google Calendar' );
 						$remark_text = str_replace( '%', '&#37;', $remark_text );
 						$remark_text = str_replace( array( '"', "'" ), '', $remark_text );
 						$remark_text = trim( $remark_text );
@@ -662,13 +667,13 @@ class WPBC_Google_Calendar {
 									  	. '<hr/>'
 									    . ' <span style="color:#8b2122;">' . $booking_save_arr['ajx_data']['ajx_after_action_message'] . '</span>'
 									  	. '<hr/>'
-					                  	. ' <strong>' . __( 'Resource', 'booking' ) . ' ID : ' . '</strong>' . $request_save_params['resource_id']
-										. ' <strong>' . __( 'Dates', 'booking' )         .': ' . '</strong>' . $request_save_params['dates_ddmmyy_csv']
+					                  	. ' <strong>' . esc_html__( 'Resource', 'booking' ) . ' ID : ' . '</strong>' . $request_save_params['resource_id']
+										. ' <strong>' . esc_html__( 'Dates', 'booking' )         .': ' . '</strong>' . $request_save_params['dates_ddmmyy_csv']
 									  	. (   ( ! empty( $parsed_booking_data_arr['rangetime'] ) )
-											? ( ' <strong>' . __( 'Times', 'booking' )  . ': ' . '</strong>' . $parsed_booking_data_arr['rangetime']  )
+											? ( ' <strong>' . esc_html__( 'Times', 'booking' )  . ': ' . '</strong>' . $parsed_booking_data_arr['rangetime']  )
 											: ''
 									      )
-									  	//. ' <strong>' . __( 'Data', 'booking' ) . ': ' . ' </strong>'
+									  	//. ' <strong>' . esc_html__( 'Data', 'booking' ) . ': ' . ' </strong>'
 									  	. $plain_form_data_show
 									. '</div>';
 
@@ -681,40 +686,41 @@ class WPBC_Google_Calendar {
 
         return $this->events;
     }
-    
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // Get Already  exist same bookings
-    ////////////////////////////////////////////////////////////////////////////
-    public function getExistBookings_gid( $events_array ) {
-        
-        $sql_sync_gid = array();
-        foreach ($events_array as $event) {
-            $sql_sync_gid[] = $event['sync_gid'];
-        }        
-        $sql_sync_gid= implode( "','",$sql_sync_gid );
-        
-        $exist_bookings_guid = array();
 
-		$booking_condition_import_only_new = get_bk_option( 'booking_condition_import_only_new' );        //FixIn: 9.8.15.8
-	    if ( ( ! empty( $sql_sync_gid ) ) && ( 'On' === $booking_condition_import_only_new ) ) {
-            global $wpdb;       
-            $exist_bookings = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}booking WHERE sync_gid IN ('{$sql_sync_gid}') AND trash != 1" );		//FixIn: 9.8.15.8
-            foreach ($exist_bookings as $bk) {
-                $exist_bookings_guid[]=$bk->sync_gid;
-            }
-        }
-        return $exist_bookings_guid;        
-    }
-    
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // Show Table of imported Events
-    ////////////////////////////////////////////////////////////////////////////    
-    public function showImportedEvents( ) {
-                ////////////////////////////////////////////////////////////////////////
-        ?>        
-        <div id="gcal_imported_events<?php echo $this->getResource(); ?>" class="table-responsive">
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Get Already  exist same bookings
+	// -----------------------------------------------------------------------------------------------------------------
+	public function getExistBookings_gid( $events_array ) {
+
+		$sql_sync_gid = array();
+		foreach ( $events_array as $event ) {
+			$sql_sync_gid[] = $event['sync_gid'];
+		}
+		$sql_sync_gid = implode( "','", $sql_sync_gid );
+
+		$exist_bookings_guid = array();
+
+		$booking_condition_import_only_new = get_bk_option( 'booking_condition_import_only_new' );                                                        // FixIn: 9.8.15.8.
+		if ( ( ! empty( $sql_sync_gid ) ) && ( 'On' === $booking_condition_import_only_new ) ) {
+			global $wpdb;
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$exist_bookings = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}booking WHERE sync_gid IN ('{$sql_sync_gid}') AND trash != 1" );          // FixIn: 9.8.15.8.
+			foreach ( $exist_bookings as $bk ) {
+				$exist_bookings_guid[] = $bk->sync_gid;
+			}
+		}
+
+		return $exist_bookings_guid;
+	}
+
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Show Table of imported Events
+	// -----------------------------------------------------------------------------------------------------------------
+	public function showImportedEvents() {
+		?>
+        <div id="gcal_imported_events<?php echo esc_attr( $this->getResource() ); ?>" class="table-responsive">
         <table style="width:99%;margin-top:45px;border:1px solid #ccc;" 
                
                class="resource_table0 booking_table0 table table-striped " 
@@ -722,52 +728,66 @@ class WPBC_Google_Calendar {
             <?php
             
                 if (function_exists ('wpbc_db__get_resource_title')) {
-                    echo '<tr><td colspan="6" style="padding:5px 10px;font-style:italic;"> <h4>' , wpbc_get_resource_title( $this->getResource() ) , '</h4></td></tr>';
+                    echo '<tr><td colspan="6" style="padding:5px 10px;font-style:italic;"> <h4>' , wp_kses_post( wpbc_get_resource_title( $this->getResource() ) ) , '</h4></td></tr>';
                 }
 
             ?>
             <?php // Headers  ?>
             <tr>
-                <th style="text-align:center;width:15px;"><input type="checkbox" onclick="javascript:jQuery('#gcal_imported_events<?php echo $this->getResource(); ?> .events_items').attr('checked', this.checked);" class="" id="events_items_all"  name="events_items_all" /></th>
-                <th style="text-align:center;width:10px;height:35px;"> <?php _e('ID' ,'booking'); ?> </th>
-                <th style="text-align:center;height:35px;width:220px;" style="border-left: 1px solid #ccc;"> <?php _e('Title' ,'booking'); ?> </th>                
-                <th style="text-align:center;"> <?php _e('Info' ,'booking'); ?> </th>
-                <th style="text-align:center;"> <?php _e('Dates' ,'booking'); ?> </th>
-                <th style="text-align:center;width:10px;height:35px;"> <?php _e('GID' ,'booking'); ?> </th>
+                <th style="text-align:center;width:15px;"><input type="checkbox" onclick="javascript:jQuery('#gcal_imported_events<?php echo esc_attr( $this->getResource() ); ?> .events_items').attr('checked', this.checked);" class="" id="events_items_all"  name="events_items_all" /></th>
+                <th style="text-align:center;width:10px;height:35px;"> <?php esc_html_e('ID' ,'booking'); ?> </th>
+                <th style="text-align:center;height:35px;width:220px;" style="border-left: 1px solid #ccc;"> <?php esc_html_e('Title' ,'booking'); ?> </th>
+                <th style="text-align:center;"> <?php esc_html_e('Info' ,'booking'); ?> </th>
+                <th style="text-align:center;"> <?php esc_html_e('Dates' ,'booking'); ?> </th>
+                <th style="text-align:center;width:10px;height:35px;"> <?php esc_html_e('GID' ,'booking'); ?> </th>
             </tr>
             <?php
             $alternative_color = '';
             if (! empty($this->events))
               foreach ($this->events as $bt) {
-                
-                if ( $alternative_color == '')    
-                    $alternative_color = ' class="alternative_color" ';
-                else                              
-                    $alternative_color = '';
-                ?>
-                   <tr id="gcal_imported_events_id_<?php echo $bt['id']; ?>"> 
-                        <td <?php echo $alternative_color; ?> style="border-left: 0;border-right: 1px solid #ccc;">
-<!--                            <span class="wpbc_mobile_legend"><?php _e('Selection' ,'booking'); ?>:</span>-->
-                            <input type="checkbox" class="events_items" id="events_items_<?php echo $bt['id']; ?>" value="<?php echo $bt['id']; ?>"  name="events_items_<?php echo $bt['id']; ?>" /></td>
-                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php echo $alternative_color; ?> >
-<!--                            <span class="wpbc_mobile_legend"><?php _e('ID' ,'booking'); ?>:</span>-->
-                            <?php echo $bt['id']; ?></td>
-                        <td <?php echo $alternative_color; ?> style="border-right: 0;border-left: 1px solid #ccc;">
-<!--                            <span class="wpbc_mobile_legend"><?php _e('Title' ,'booking'); ?>:</span>-->
-                            <span ><?php echo $bt['title']; ?></span>
+
+				  if ( $alternative_color == '' ) {
+					  $alternative_color = ' class="alternative_color" ';
+				  } else {
+					  $alternative_color = '';
+				  }
+				  ?>
+                   <tr id="gcal_imported_events_id_<?php echo esc_attr( $bt['id'] ); ?>">
+                        <td <?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $alternative_color; ?> style="border-left: 0;border-right: 1px solid #ccc;">
+<!--                            <span class="wpbc_mobile_legend"><?php esc_html_e('Selection' ,'booking'); ?>:</span>-->
+                            <input type="checkbox" class="events_items" id="events_items_<?php echo esc_attr( $bt['id'] ); ?>" value="<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $bt['id']; ?>"  name="events_items_<?php echo esc_attr( $bt['id'] ); ?>" /></td>
+                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $alternative_color; ?> >
+<!--                            <span class="wpbc_mobile_legend"><?php esc_html_e('ID' ,'booking'); ?>:</span>-->
+                            <?php echo esc_attr( $bt['id'] ); ?></td>
+                        <td <?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $alternative_color; ?> style="border-right: 0;border-left: 1px solid #ccc;">
+<!--                            <span class="wpbc_mobile_legend"><?php esc_html_e('Title' ,'booking'); ?>:</span>-->
+                            <span ><?php echo esc_html( $bt['title'] ); ?></span>
                         </td>                        
-                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php echo $alternative_color; ?> >
-<!--                            <span class="wpbc_mobile_legend"><?php _e('Info' ,'booking'); ?>:</span>-->
-                            <span ><?php echo $bt['description']; ?></span><br/>
-                            <?php 
-                            if (! empty($bt['location']) )
-                                echo '<span >', __('Location:' ,'booking'), ': ' , $bt['location'], '</span>'; 
+                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $alternative_color; ?> >
+<!--                            <span class="wpbc_mobile_legend"><?php esc_html_e('Info' ,'booking'); ?>:</span>-->
+                            <span ><?php echo esc_html( $bt['description'] ); ?></span><br/>
+                            <?php
+							if ( ! empty( $bt['location'] ) ) {
+								echo wp_kses_post( '<span >' . esc_html__( 'Location:', 'booking' ) . ': ' . $bt['location'] . '</span>' );
+							}
                             ?>
                         </td>
 
-                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php echo $alternative_color; ?> >                                         
+                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $alternative_color; ?> >
                             <span class="wpbc-listing-collumn booking-dates field-dates field-booking-date">
-<!--                                <span class="wpbc_mobile_legend"><?php _e('Dates' ,'booking'); ?>:</span>-->
+<!--                                <span class="wpbc_mobile_legend"><?php esc_html_e('Dates' ,'booking'); ?>:</span>-->
                                 <div class="booking_dates_full" ><?php 
                                     $bt['dates'] = explode(', ', $bt['dates']);
                                     foreach ($bt['dates'] as $keyd=>$valued) {
@@ -778,41 +798,42 @@ class WPBC_Google_Calendar {
                                         $bt['dates'][$keyd] = '<a href="javascript:void(0)" class="field-booking-date">' . $valued[0] . '</a>';
                                     }
                                     $bt['dates'] = implode('<span class="date_tire">, </span>', $bt['dates']);
-                                    echo $bt['dates'];//date_i18n('d.m.Y H:i',$bt['start_time'] ), ' - ', date_i18n('d.m.Y H:i',$bt['end_time']); ?>
+                                    echo wp_kses_post( $bt['dates'] );//date_i18n('d.m.Y H:i',$bt['start_time'] ), ' - ', date_i18n('d.m.Y H:i',$bt['end_time']); ?>
                                 </div>
                             </span>
                         </td>
-                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php echo $alternative_color; ?> >
-<!--                            <span class="wpbc_mobile_legend"><?php _e('GID' ,'booking'); ?>:</span>-->
-                            <?php echo $bt['sync_gid']; ?></td>
+                        <td style="border-right: 0;border-left: 1px solid #ccc;text-align: center;" <?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $alternative_color; ?> >
+<!--                            <span class="wpbc_mobile_legend"><?php esc_html_e('GID' ,'booking'); ?>:</span>-->
+                            <?php echo wp_kses_post( $bt['sync_gid'] ); ?></td>
                    </tr>                   
             <?php } ?>
 
             <tr class="wpbc_table_footer">
                 <td colspan="6" style="text-align: center;"> 
                     <a href="javascript:void(0)" class="button button-primary" style="float:none;margin:10px;" 
-                       onclick="javascript:location.reload();" ><?php _e('Reload page' ,'booking'); ?></a>                    
+                       onclick="javascript:location.reload();" ><?php esc_html_e('Reload page' ,'booking'); ?></a>
                     <a href="javascript:void(0)" class="button" style="float:none;margin:10px;" 
-                       onclick="javascript:jQuery('#gcal_imported_events<?php echo $this->getResource(); ?>').remove();" ><?php _e('Hide' ,'booking'); ?></a>                    
+                       onclick="javascript:jQuery('#gcal_imported_events<?php echo esc_attr( $this->getResource() ); ?>').remove();" ><?php esc_html_e('Hide' ,'booking'); ?></a>
                     <a href="javascript:void(0)" class="button"  style="float:none;margin:10px;"                                        
                        onclick="javascript: if ( wpbc_are_you_sure('<?php echo esc_js(__('Do you really want to delete selected booking(s) ?' ,'booking')); ?>') ) {
                                                     //delete_booking( 
                                                     trash__restore_booking( 1,         <?php //FixIn: 7.0.1  ?>
-                                                                    get_selected_bookings_id_in_this_list('#gcal_imported_events<?php echo $this->getResource(); ?> .events_items', 13) 
-                                                                    , <?php echo $this->getUserID(); ?>
-                                                                    , '<?php echo wpbc_get_maybe_reloaded_booking_locale(); ?>'
+                                                                    get_selected_bookings_id_in_this_list('#gcal_imported_events<?php echo esc_attr( $this->getResource() ); ?> .events_items', 13)
+                                                                    , <?php echo esc_attr( $this->getUserID() ); ?>
+                                                                    , '<?php echo esc_attr( wpbc_get_maybe_reloaded_booking_locale() ); ?>'
                                                                     , 1  
                                                     ); 
                                             } "
-                       ><?php _e('Delete selected booking(s)' ,'booking'); ?></i></a>
-                    
+                       ><?php esc_html_e('Delete selected booking(s)' ,'booking'); ?></i></a>
                 </td>
             </tr>
 
         </table>
         </div>
         <script type="text/javascript"> 
-            jQuery("#gcal_imported_events<?php echo $this->getResource(); ?>").insertAfter("#toolbar_booking_listing");
+            jQuery("#gcal_imported_events<?php echo esc_attr( $this->getResource() ); ?>").insertAfter("#toolbar_booking_listing");
         </script>
         <?php   
     }

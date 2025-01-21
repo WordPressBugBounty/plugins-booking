@@ -39,7 +39,7 @@ function wpbc_template__general_info__action_validate_data( $post_data ){
 
 	$escaped_data = array(
 		'wpbc_swp_industry'          => '',
-		'type'                       => '',         //FixIn: 10.7.1.3
+		'type'                       => '',         // FixIn: 10.7.1.3.
 		'days'                       => '',
 		'version'                    => 'V: ' .wpbc_feedback_01_get_version(),
 		'wpbc_swp_booking_who_setup' => '',

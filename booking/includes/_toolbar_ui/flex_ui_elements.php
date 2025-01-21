@@ -60,7 +60,7 @@ function wpbc_flex_button( $item ) {
 		$css_button_class = 'wpbc_ui_button ' . $css_button_class;
 	}
 
-    ?><a  class="wpbc_ui_control <?php echo $css_button_class;
+    ?><a  class="wpbc_ui_control <?php echo esc_attr( $css_button_class );
 													  echo ( ! empty( $item_params['hint'] ) ) ? ' tooltip_' . esc_attr( $item_params['hint']['position'] ) . ' ' : '' ; ?>"
 		  style="<?php 		  echo esc_attr( $item_params['style'] ); ?>"
 		  href="<?php
@@ -68,22 +68,35 @@ function wpbc_flex_button( $item ) {
 						  echo esc_attr( $item_params['link'] );
 					  }
 					  if ( 'decode' == $item_params['options']['link'] ) {
+						  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						  echo str_replace( '"', '', htmlspecialchars_decode( esc_attr( $item_params['link'] ), ENT_QUOTES ) );
 					  }
 					  if ( 'no_decode' == $item_params['options']['link'] ) {
+						  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						  echo str_replace( '"', '',  $item_params['link'] );
 					  }
 		  		?>"
           <?php if ( ! empty( $item_params['id'] ) ) { ?>
-              id="<?php echo $item_params['id']; ?>"
+			id="<?php echo wp_kses_post( $item_params['id'] ); ?>"
           <?php } ?>
-          <?php if ( ! empty( $item_params['action'] ) ) { ?>
-              onclick="javascript:<?php echo wpbc_esc_js( $item_params['action'] ); ?>"
-          <?php } ?>
+
+			<?php
+			if ( ! empty( $item_params['action'] ) ) {
+			?>
+			onclick="javascript:<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wpbc_esc_js( $item_params['action'] );
+				?>" <?php
+			}
+			?>
+
 		  <?php if ( ! empty( $item_params['hint'] ) ) { ?>
 			  title="<?php  echo esc_attr( $item_params['hint']['title'] ); ?>"
 		  <?php } ?>
-          <?php echo wpbc_get_custom_attr( $item_params ); ?>
+          <?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wpbc_get_custom_attr( $item_params );
+		  ?>
         ><?php
               $btn_icon = '';
 
@@ -98,6 +111,7 @@ function wpbc_flex_button( $item ) {
 					  } else {
 						  $img_path = $item_params['icon']['icon_img'];
 					  }
+					  // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
 					  $btn_icon = '<img class="menuicons" src="' . esc_url( $img_path ) . '" />';    // Img  Icon
 				  }
 
@@ -108,7 +122,7 @@ function wpbc_flex_button( $item ) {
 			  }
 
 			  if ( ( ! empty( $btn_icon ) ) && ( $item_params['icon']['position'] == 'left' ) ) {
-
+				  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				  echo $btn_icon;
 
 				  if ( ! empty( $item_params['title'] ) ) {
@@ -118,7 +132,7 @@ function wpbc_flex_button( $item ) {
 
               // Text
               echo '<span' . ( (  ( ! empty( $btn_icon ) )  && ( ! $item_params['mobile_show_text'] ) )? ' class="in-button-text"' : '' ) . '>';
-
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo html_entity_decode(
 											  wp_kses_post( $item_params['title'] )		// Sanitizes content for allowed HTML tags for post content
 											, ENT_QUOTES								// Convert &quot;  to " and '
@@ -132,6 +146,7 @@ function wpbc_flex_button( $item ) {
               echo '</span>';
 
 				if ( ( ! empty( $btn_icon ) ) && ( $item_params['icon']['position'] == 'right' ) ) {
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $btn_icon;
 				}
     ?></a><?php
@@ -173,9 +188,12 @@ function wpbc_flex_label( $item ) {
 					  title="<?php  echo esc_attr( $item_params['hint']['title'] ); ?>"
 				  <?php } ?>
 				<?php disabled( $item_params['disabled'], true ); ?>
-				<?php echo wpbc_get_custom_attr( $item_params ); ?>
+				<?php
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wpbc_get_custom_attr( $item_params ); ?>
 		><?php
 
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo html_entity_decode(
 									  wp_kses_post( $item_params['label'] )		// Sanitizes content for allowed HTML tags for post content
 									, ENT_QUOTES								// Convert &quot;  to " and '
@@ -259,19 +277,29 @@ function wpbc_flex_text( $item ) {
               style="<?php 	echo esc_attr( $item_params['style'] ); ?>"
               class="wpbc_ui_control wpbc_ui_text <?php echo esc_attr( $item_params['class'] ); ?>"
               placeholder="<?php 	echo esc_attr( $item_params['placeholder'] ); ?>"
-              value="<?php 	echo $escaped_value; ?>"
+              value="<?php
+			  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			  echo $escaped_value; ?>"
 	 		  autocomplete="off"
               <?php disabled( $item_params['disabled'], true ); ?>
-              <?php echo wpbc_get_custom_attr( $item_params ); ?>
+              <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
               <?php
                 if ( ! empty( $item_params['onfocus'] ) ) {
-                    ?> onfocus="javascript:<?php echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
+                    ?> onfocus="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
                 }
 				if ( ! empty( $item_params['onchange'] ) ) {
-					?> onchange="javascript:<?php echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
+					?> onchange="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
 				}
 				if ( ! empty( $item_params['onkeydown'] ) ) {
-					?> onkeydown="javascript:<?php echo wpbc_esc_js( $item_params['onkeydown'] ); ?>" <?php
+					?> onkeydown="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onkeydown'] ); ?>" <?php
 				}
               ?>
           /><?php
@@ -354,16 +382,22 @@ function wpbc_flex_textarea( $item ) {
 				  rows="<?php 	echo esc_attr( $item_params['rows'] ); ?>"
 				  cols="<?php 	echo esc_attr( $item_params['cols'] ); ?>"
 				  <?php disabled( $item_params['disabled'], true ); ?>
-				  <?php echo wpbc_get_custom_attr( $item_params ); ?>
+				  <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
 				  <?php
 					if ( ! empty( $item_params['onfocus'] ) ) {
-						?> onfocus="javascript:<?php echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
+						?> onfocus="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
 					}
 					if ( ! empty( $item_params['onchange'] ) ) {
-						?> onchange="javascript:<?php echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
+						?> onchange="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
 					}
 				  ?>
-          ><?php echo $escaped_value; ?></textarea><?php
+          ><?php echo esc_html( $escaped_value ); ?></textarea><?php
 }
 
 /**
@@ -428,7 +462,7 @@ function wpbc_flex_textarea( $item ) {
 	 $params_select = array(
 						  'id' => 'next_days'                        // HTML ID  of element
 						, 'name' => 'next_days'
-		 				, 'label' => '<span class="" style="font-weight:600;">' . __( 'Cost', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
+		 				, 'label' => '<span class="" style="font-weight:600;">' . esc_html__( 'Cost', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
 						, 'style' => ''                     // CSS of select element
 						, 'class' => ''                     // CSS Class of select element
 						, 'multiple' => false
@@ -517,14 +551,20 @@ function wpbc_flex_select( $item ) {
             class="wpbc_ui_control wpbc_ui_select <?php echo esc_attr( $item_params['class'] ); ?>"
             style="<?php echo esc_attr( $item_params['style'] ); ?>"
             <?php disabled( $item_params['disabled'], true ); ?>
-            <?php echo wpbc_get_custom_attr( $item_params ); ?>
+            <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
             <?php echo ( $item_params['multiple'] ? ' multiple="MULTIPLE"' : '' ); ?>
             <?php
                 if ( ! empty( $item_params['onfocus'] ) ) {
-                    ?> onfocus="javascript:<?php echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
+                    ?> onfocus="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
                 }
                 if ( ! empty( $item_params['onchange'] ) ) {
-                    ?> onchange="javascript:<?php echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
+                    ?> onchange="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
                 }
             ?>
             autocomplete="off"
@@ -581,7 +621,9 @@ function wpbc_flex_select( $item ) {
 
 						disabled( $option_data['disabled'], true );
 
-						echo wpbc_get_custom_attr( $option_data );
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $option_data );
 
 						if ( ! empty( $item_params['value'] ) ) {
 
@@ -593,7 +635,8 @@ function wpbc_flex_select( $item ) {
 						}
 					?>
                 ><?php
-					echo html_entity_decode(
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo html_entity_decode(
 												  wp_kses_post( $option_data['title'] )		// Sanitizes content for allowed HTML tags for post content
 												, ENT_QUOTES								// Convert &quot;  to " and '
 												, get_bloginfo( 'charset' ) 				// 'UTF-8'  or other
@@ -683,15 +726,21 @@ function wpbc_flex_checkbox( $item ) {
 						title="<?php echo esc_attr( $item_params['hint']['title'] ); ?>" <?php
 					}
 				?>
-                <?php echo wpbc_get_custom_attr( $item_params ); ?>
+                <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
                 <?php checked(  $item_params['selected'], true ); ?>
                 <?php disabled( $item_params['disabled'], true ); ?>
 				<?php
 					if ( ! empty( $item_params['onfocus'] ) ) {
-						?> onfocus="javascript:<?php echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
+						?> onfocus="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
 					}
 					if ( ! empty( $item_params['onchange'] ) ) {
-						?> onchange="javascript:<?php echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
+						?> onchange="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
 					}
 				?>
 				autocomplete="off"
@@ -773,15 +822,21 @@ function wpbc_flex_toggle( $item ){
 					value="<?php 		 echo esc_attr( $item_params['value'] ); ?>"
 					aria-label="<?php 	 echo esc_attr( $item_params['legend'] ); ?>"
 					class="wpbc_ui_<?php echo esc_attr( $item_params['type'] ); ?> <?php echo esc_attr( $item_params['class'] ); ?>"
-					<?php echo wpbc_get_custom_attr( $item_params ); ?>
+					<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
 					<?php checked(  $item_params['selected'], true ); ?>
 					<?php disabled( $item_params['disabled'], true ); ?>
 					<?php
 						if ( ! empty( $item_params['onfocus'] ) ) {
-							?> onfocus="javascript:<?php echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
+							?> onfocus="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onfocus'] ); ?>" <?php
 						}
 						if ( ! empty( $item_params['onchange'] ) ) {
-							?> onchange="javascript:<?php echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
+							?> onchange="javascript:<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_esc_js( $item_params['onchange'] ); ?>" <?php
 						}
 					?>
 					autocomplete="off"
@@ -879,7 +934,7 @@ function wpbc_flex_radio( $item ) {
  * Example 2:
  		$params_addon = array(
 							  'type'        => 'span'
-							, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+							, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 							, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_event', 'position' => 'right', 'icon_img' => '' )
 							, 'class'       => 'wpbc_ui_button inactive'
 							, 'style'       => ''
@@ -915,6 +970,7 @@ function wpbc_flex_addon( $item ) {
 			} else {
 				$img_path = $item_params['icon']['icon_img'];
 			}
+			// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
 			$btn_icon = '<img class="menuicons" src="' . esc_url( $img_path ) . '" />';    // Img  Icon
 		}
 
@@ -928,27 +984,30 @@ function wpbc_flex_addon( $item ) {
 			class="wpbc_ui_control wpbc_ui_addon <?php echo esc_attr( $item_params['class'] );
 													   echo ( ! empty( $item_params['hint'] ) ) ? ' tooltip_' . esc_attr( $item_params['hint']['position'] ) . ' ' : '' ; ?>"
 			style="<?php echo esc_attr( $item_params['style'] ); ?>"
-			<?php echo wpbc_get_custom_attr( $item_params ); ?>
+			<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
 		  <?php if ( ! empty( $item_params['hint'] ) ) { ?>
 			  title="<?php  echo esc_attr( $item_params['hint']['title'] ); ?>"
 		  <?php } ?>
 
 	><?php
 
-		if ( ( ! empty( $btn_icon ) ) && ( 'left' == $item_params['icon']['position'] ) ) {
-				echo $btn_icon;
-		}
+	if ( ( ! empty( $btn_icon ) ) && ( 'left' == $item_params['icon']['position'] ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $btn_icon;
+	}
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo html_entity_decode( wp_kses_post( $item_params['html'] )        // Sanitizes content for allowed HTML tags for post content
+		, ENT_QUOTES                                                     // Convert &quot;  to " and '
+		, get_bloginfo( 'charset' )                // 'UTF-8'  or other
+	);                                                // Convert &amp;dash;  to &dash;  etc...
 
-		echo html_entity_decode(
-									  wp_kses_post( $item_params['html'] )		// Sanitizes content for allowed HTML tags for post content
-									, ENT_QUOTES								// Convert &quot;  to " and '
-									, get_bloginfo( 'charset' ) 				// 'UTF-8'  or other
-								);												// Convert &amp;dash;  to &dash;  etc...
 
-
-		if ( ( ! empty( $btn_icon ) ) && ( 'right' == $item_params['icon']['position'] ) ) {
-				echo $btn_icon;
-		}
+	if ( ( ! empty( $btn_icon ) ) && ( 'right' == $item_params['icon']['position'] ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $btn_icon;
+	}
 
 	?></<?php echo esc_attr( $item_params['type'] ); ?>><?php
 }
@@ -969,7 +1028,9 @@ function wpbc_flex_divider( $item = array() ){
 	?><div class="wpbc_ui_control ui_elements_divider <?php echo esc_attr( $item_params['class'] );
 													   echo ( ! empty( $item_params['hint'] ) ) ? ' tooltip_' . esc_attr( $item_params['hint']['position'] ) . ' ' : '' ; ?>"
 			style="<?php echo esc_attr( $item_params['style'] ); ?>"
-			<?php echo wpbc_get_custom_attr( $item_params ); ?>
+			<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
 		  <?php if ( ! empty( $item_params['hint'] ) ) { ?>
 			  title="<?php  echo esc_attr( $item_params['hint']['title'] ); ?>"
 		  <?php } ?>
@@ -1009,11 +1070,15 @@ function wpbc_flex_vertical_color( $item = array() ){
 				class="wpbc_ui_control wpbc_ui_button ui_elements_vertical_color <?php echo esc_attr( $item_params['class'] );
 													   echo ( ! empty( $item_params['hint'] ) ) ? ' tooltip_' . esc_attr( $item_params['hint']['position'] ) . ' ' : '' ; ?>"
 				style="<?php echo esc_attr( $item_params['vertical_line'] ) . ';'; ?>padding: 0;<?php echo esc_attr( $item_params['style'] ); ?>"
-			<?php echo wpbc_get_custom_attr( $item_params ); ?>
+			<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
 			<?php if ( ! empty( $item_params['hint'] ) ) { ?>
 			  title="<?php  echo esc_attr( $item_params['hint']['title'] ); ?>"
 			<?php } ?>
-	  ><?php  echo $item_params['html']; ?></div><?php
+	  ><?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $item_params['html']; ?></div><?php
 
 }
 
@@ -1082,12 +1147,15 @@ function wpbc_flex_horizontal_text_bar( $item = array() ){
 				class="wpbc_ui_control wpbc_ui_addon wpbc_text_bar <?php echo esc_attr( $item_params['class'] );
 													   echo ( ! empty( $item_params['hint'] ) ) ? ' tooltip_' . esc_attr( $item_params['hint']['position'] ) . ' ' : '' ; ?>"
 				style="<?php echo esc_attr( $item_params['style'] ); ?>"
-			<?php echo wpbc_get_custom_attr( $item_params ); ?>
+			<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $item_params ); ?>
 			<?php if ( ! empty( $item_params['hint'] ) ) { ?>
 			  title="<?php  echo esc_attr( $item_params['hint']['title'] ); ?>"
 			<?php } ?>
 	><span class="<?php echo esc_attr( $item_params['option_class'] ); ?>"><?php
-			echo $item_params['html'];
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $item_params['html'];
 	?></span></<?php echo esc_attr( $item_params['tag'] );  ?>><?php
 
 }
@@ -1139,7 +1207,7 @@ function wpbc_flex_horizontal_text_bar( $item = array() ){
 
 	$params_addon = array(
 						  'type'        => 'span'
-						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . __( 'Dates', 'booking ' ) . '</strong>'
+						, 'html'        => ''// '<i class="menu_icon icon-1x wpbc_icn_event"></i>' //'<strong>' . esc_html__( 'Dates', 'booking ' ) . '</strong>'
 						, 'icon'        =>  array( 'icon_font' => 'wpbc_icn_event', 'position' => 'right', 'icon_img' => '' )
 						, 'class'       => 'wpbc_ui_button inactive'
 						, 'style'       => ''
@@ -1425,7 +1493,7 @@ function wpbc_flex_dropdown( $args = array() ) {
                         , 'disabled' => array()                                 // If some options disabled,  then option values list here
 						, 'onfocus'  => ''										// JavaScript code
 						, 'onchange' => ''										// JavaScript code
-						, 'is_use_for_template' => false						// In case, if we are using it for template, then we skip  JavaScript code for initial value. Need to define it manually.		//FixIn: 9.4.3.5
+						, 'is_use_for_template' => false						// In case, if we are using it for template, then we skip  JavaScript code for initial value. Need to define it manually.		// FixIn: 9.4.3.5.
                     );
     $params = wp_parse_args( $args, $defaults );
 
@@ -1550,19 +1618,21 @@ function wpbc_flex_dropdown( $args = array() ) {
 					 id="<?php echo esc_attr( $params['id'] ); ?>_selector"
 					 data-toggle="wpbc_dropdown"
 					 class="wpbc_ui_control wpbc_ui_button dropdown-toggle <?php
-							echo ( ! empty( $params['hint'] ) ) ? 'tooltip_' . $params['hint']['position'] . ' ' : '' ;
+							echo ( ! empty( $params['hint'] ) ) ? 'tooltip_' . esc_attr( $params['hint']['position'] ) . ' ' : '' ;
 							?>"
 					 <?php if (! $is_this_simple_list ) { ?>
-					 	onclick="javascript:jQuery('#<?php echo $params['id']; ?>_container').show();"
+					 	onclick="javascript:jQuery('#<?php echo esc_attr( $params['id'] ); ?>_container').show();"
 					 <?php } ?>
 					  <?php if ( ! empty( $params['hint'] ) ) { ?>
 					 	title="<?php  echo esc_attr( $params['hint']['title'] ); ?>"
 					  <?php } ?>
-					 <?php echo wpbc_get_custom_attr( $params ); ?>
+					 <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $params ); ?>
 			><?php
 
 				  	?><label class="wpbc_ui_dropdown__inside_label" <?php if ( empty( $params['title'] ) )  { echo ' style="display:none;" '; } ?> ><?php
-
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						echo html_entity_decode(
 											  wp_kses_post( $params['title'] )			// Sanitizes content for allowed HTML tags for post content
 											, ENT_QUOTES								// Convert &quot;  to " and '
@@ -1572,6 +1642,7 @@ function wpbc_flex_dropdown( $args = array() ) {
 				    ?></label> <?php
 
 				  	?><span class="wpbc_selected_in_dropdown" ><?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						echo html_entity_decode(
 											  wp_kses_post( $default_selected_title )	// Sanitizes content for allowed HTML tags for post content
 											, ENT_QUOTES								// Convert &quot;  to " and '
@@ -1583,7 +1654,7 @@ function wpbc_flex_dropdown( $args = array() ) {
 
 			?></a><?php
 
-			?><ul id="<?php echo $params['id']; ?>_container" 	class="ui_dropdown_menu ui_dropdown_menu-<?php echo esc_attr( $params['align'] ); ?>" ><?php
+			?><ul id="<?php echo esc_attr( $params['id'] ); ?>_container" 	class="ui_dropdown_menu ui_dropdown_menu-<?php echo esc_attr( $params['align'] ); ?>" ><?php
 
 						wpbc_flex_dropdown__options( $params, array( 'is_this_simple_list' => $is_this_simple_list ) );
 
@@ -1595,28 +1666,34 @@ function wpbc_flex_dropdown( $args = array() ) {
 					 id="<?php 		echo esc_attr( $params['id'] ); ?>"
 					 name="<?php 	echo esc_attr( $params['id'] ); ?>"
 				/><?php
-		if( ! $params['is_use_for_template'] ){                                                                         //FixIn: 9.4.3.5
+		if( ! $params['is_use_for_template'] ){                                                                         // FixIn: 9.4.3.5.
 			?>
 			<script type="text/javascript">
-				<?php /* document.getElementById("<?php echo $params['id']; ?>").value = "<?php echo wp_slash( json_encode($params['default']  ) ); ?>";  */ ?>
+				<?php /* document.getElementById("<?php echo esc_attr( $params['id'] ); ?>").value = "<?php echo wp_slash( wp_json_encode($params['default']  ) ); ?>";  */ ?>
 				jQuery(document).ready(function(){
 
-					jQuery( '#<?php echo $params['id']; ?>').val( "<?php echo wp_slash( json_encode( $params['default'] ) ); ?>" );
+					jQuery( '#<?php echo esc_attr( $params['id'] ); ?>').val( "<?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_slash( wp_json_encode( $params['default'] ) ); ?>" );
 
 					<?php if (! empty( $params['onchange'] )) { ?>
 
-						jQuery( '#<?php echo $params['id']; ?>' ).on( 'change', function( event ){
+						jQuery( '#<?php echo esc_attr( $params['id'] ); ?>' ).on( 'change', function( event ){
 
-							<?php echo $params['onchange']; ?>
+							<?php
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo $params['onchange']; ?>
 						});
 
 					<?php } ?>
 
 					<?php if (! empty( $params['onfocus'] )) { ?>
 
-						jQuery( '#<?php echo $params['id']; ?>_selector' ).on( 'focus', function( event ){
+						jQuery( '#<?php echo esc_attr( $params['id'] ); ?>_selector' ).on( 'focus', function( event ){
 
-							<?php echo $params['onfocus']; ?>
+							<?php
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo $params['onfocus']; ?>
 						});
 
 					<?php } ?>
@@ -1673,7 +1750,9 @@ function wpbc_flex_dropdown__options( $params, $args = array() ) {
 		?><li role="presentation"
 			  class="<?php echo esc_attr( $li_option['class'] ); ?>"
 			  style="<?php echo esc_attr( $li_option['style'] ); ?>"
-			  <?php echo wpbc_get_custom_attr( $li_option ); ?>
+			  <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo wpbc_get_custom_attr( $li_option ); ?>
 		><?php
 
 			switch ( $li_option['type'] ) {
@@ -1686,31 +1765,39 @@ function wpbc_flex_dropdown__options( $params, $args = array() ) {
 
 								if( false !== filter_var( $li_option['value'], FILTER_VALIDATE_URL ) ){ ?>
 
-											href="<?php echo $li_option['value']; ?>"
+											href="<?php
+											// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											echo $li_option['value']; ?>"
 
 								<?php } else { ?>
 
 											href="javascript:void(0)"
 											onclick="javascript: wpbc_ui_dropdown_simple_click( {
-																								  'dropdown_id'        : '<?php echo $params['id']; ?>'
-																								, 'is_this_simple_list':  <?php echo ( $args['is_this_simple_list'] ) ? 'true' : 'false'; ?>
-																								, 'value'              : '<?php echo $li_option['value']; ?>'
+																								  'dropdown_id'        : '<?php echo esc_attr( $params['id'] ); ?>'
+																								, 'is_this_simple_list':  <?php echo esc_attr( ( $args['is_this_simple_list'] ) ? 'true' : 'false' ); ?>
+																								, 'value'              : '<?php
+											// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											echo $li_option['value']; ?>'
 																								, '_this'              : this
 																							} );"
 								<?php }
 
 					} ?>
 					   ><?php
-						  echo $li_option['title'];
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $li_option['title'];
+
 					?></a><?php
 
 					break;
 
 				case 'html':
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $li_option['html'];
 					break;
 
 				case 'header':
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $li_option['title'];
 					break;
 
@@ -1721,6 +1808,7 @@ function wpbc_flex_dropdown__options( $params, $args = array() ) {
 						switch ( $input_option['type'] ) {
 
 							case 'html':
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								echo $input_option['html'];
 								break;
 
@@ -1877,7 +1965,7 @@ function wpbc_smpl_form__ui__selectbox_next_btn( $dropdown_id, $is_apply_rotatin
  *                                        , 'label'    => array( 'title' => __('Changeover multi dates bookings','booking') , 'position' => 'right', 'class' => 'wpbc_ui_radio_choice_title' )
  *                                        , 'text_description'  => __('Receive and manage bookings for chosen times on selected date(s). Time-slots selection in booking form.','booking')
  *                                        , 'label_after_right' => '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank"><strong class="wpbc_ui_radio_text_right">Pro</strong></a>'
- *                                        , 'footer_text'      => sprintf(__('Find more information about this feature on %sthis page%s.','booking'), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
+ *                                        , 'footer_text'      => sprintf( __( '...', 'booking' ), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
  *                                        , 'style'    => ''                                                                                // CSS of select element
  *                                        , 'class'    => ''                                                                                // CSS Class of select element
  *                                        , 'disabled' => !false
@@ -1902,13 +1990,13 @@ function wpbc_smpl_form__ui__selectbox_next_btn( $dropdown_id, $is_apply_rotatin
  *									     id="wpbc_swp_booking_types__changeover_multi_dates_bookings"
  *									   						  value="changeover_multi_dates_bookings"
  *								/>
- *								<label for="wpbc_swp_booking_types__changeover_multi_dates_bookings" class="wpbc_ui_radio_choice_title"><?php _e('Changeover multi dates bookings','booking'); ?></label>
+ *								<label for="wpbc_swp_booking_types__changeover_multi_dates_bookings" class="wpbc_ui_radio_choice_title"><?php esc_html_e('Changeover multi dates bookings','booking'); ?></label>
  *								<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank"><strong class="wpbc_ui_radio_text_right">Pro</strong></a>
- *								<p class="wpbc_ui_radio_choice_description"><?php _e('Manage multidays bookings with changeover days for check in/out dates, marked with diagonal or vertical lines. Split days bookings.','booking'); ?></p>
+ *								<p class="wpbc_ui_radio_choice_description"><?php esc_html_e('Manage multidays bookings with changeover days for check in/out dates, marked with diagonal or vertical lines. Split days bookings.','booking'); ?></p>
  *							</div>
  *							<div class="wpbc_ui_radio_choice wpbc_ui_radio_footer">
- *								<p class="wpbc_ui_radio_choice_description"><?php printf(__('Find more information about this feature on %sthis page%s.','booking'),
- *									'<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>') ; ?></p>
+ *								<p class="wpbc_ui_radio_choice_description"><?php echo wp_kses_post( sprintf( __( ',,,', 'booking' ),
+ *									'<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')  ); ?></p>
  *							</div>
  *						</div>
  *
@@ -1942,7 +2030,7 @@ function wpbc_flex_radio_container( $args = array() ) {
 						, 'text_description' => ''			// __('Receive and manage bookings for chosen times on selected date(s). Time-slots selection in booking form.','booking')
 
 						// Footer Text  separated by line
-						, 'footer_text' => ''				// sprintf(__('Find more information about this feature on %sthis page%s.','booking'), '<a tabindex="-1" href="https://wpbookingcalendar.com/features/#change-over-days" target="_blank">','</a>')
+						, 'footer_text' => ''
 						, 'bottom_html' => ''
                     );
     $params = wp_parse_args( $args, $defaults );
@@ -1968,11 +2056,15 @@ function wpbc_flex_radio_container( $args = array() ) {
 				wpbc_flex_checkbox( $params );
 
 				if ( ! empty( $params['label_after_right'] ) ) {
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $params['label_after_right'];
 				}
 
 				if ( ! empty( $params['text_description'] ) ) {
-					?><p class="wpbc_ui_radio_choice_description"><?php echo $params['text_description']; ?></p><?php
+					?><p class="wpbc_ui_radio_choice_description"><?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $params['text_description'];
+					?></p><?php
 				}
 
 			?>
@@ -1980,14 +2072,17 @@ function wpbc_flex_radio_container( $args = array() ) {
 
 		if ( ! empty( $params['footer_text'] ) ) {
 			?><div class="wpbc_ui_radio_choice wpbc_ui_radio_footer">
-				<p class="wpbc_ui_radio_choice_description"><?php echo $params['footer_text']; ?></p>
+				<p class="wpbc_ui_radio_choice_description"><?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $params['footer_text'];
+				?></p>
 			</div><?php
 		}
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $params['bottom_html'];
 		?>
 	</div>
 	<?php
 
-	// Should end with </div>
+	// Should end with </div> .
 }
-

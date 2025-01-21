@@ -18,10 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return bool
  */
-function wpbc_is_show_general_setting_options(){                                                                        //FixIn: 8.9.4.11
+function wpbc_is_show_general_setting_options(){                                                                        // FixIn: 8.9.4.11.
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ( isset( $_GET['system_info'] ) ) && ( $_GET['system_info'] == 'show' ) ) {
-		$nonce_gen_time = check_admin_referer( 'wpbc_settings_url_nonce' );            //FixIn: 9.2.2.1
+		$nonce_gen_time = check_admin_referer( 'wpbc_settings_url_nonce' );            // FixIn: 9.2.2.1.
 		return false;
 	}
     return  true;
@@ -76,8 +77,8 @@ function wpbc_settings__system_info__reset_booking_forms() {
 	if ( ! current_user_can( 'activate_plugins' ) ) {
 		return;
 	}
-
-	if ( ( isset( $_GET['reset'] ) ) && ( 'custom_forms' == $_GET['reset'] ) ) {        								//FixIn: 8.1.3.21
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( isset( $_GET['reset'] ) ) && ( 'custom_forms' == $_GET['reset'] ) ) {        								// FixIn: 8.1.3.21.
 
 		wpbc_open_meta_box_section( 'wpbc_general_settings_system_info', 'System Info' );
 
@@ -104,14 +105,17 @@ function wpbc_settings__system_info__generate_php_from_pot() {
 		return;
 	}
 
-	if ( ! empty( $_GET['pot'] ) ) {                                        //FixIn: 8.1.3.21
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ! empty( $_GET['pot'] ) ) {                                        // FixIn: 8.1.3.21.
 
 		wpbc_open_meta_box_section( 'wpbc_general_settings_system_info', 'System Info' );
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( '1' == $_GET['pot'] ) {
 			wpbc_pot_to_php();
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( 'erase__wpbc_all_translations' == $_GET['pot'] ) {
 			wpbc_delete_translation_php_files();
 		}
@@ -133,7 +137,8 @@ function wpbc_settings__system_info__update_translations() {
 		return;
 	}
 
-	if ( ( isset( $_GET['update_translations'] ) ) && ( '1' == $_GET['update_translations'] ) ) {        								//FixIn: 8.1.3.21
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( isset( $_GET['update_translations'] ) ) && ( '1' == $_GET['update_translations'] ) ) {        								// FixIn: 8.1.3.21.
 
 		wpbc_open_meta_box_section( 'wpbc_general_settings_system_info', 'System Info' );
 
@@ -156,16 +161,19 @@ function wpbc_settings__system_info__show_translation_status() {
 		return;
 	}
 
-	if ( isset( $_GET['show_translation_status'] )  ) {        								//FixIn: 8.1.3.21
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_GET['show_translation_status'] )  ) {        								// FixIn: 8.1.3.21.
 
 		wpbc_open_meta_box_section( 'wpbc_general_settings_system_info', 'System Info' );
-
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( '1' == $_GET['show_translation_status'] ){
 				wpbc_show_translation_status_compare_wpbc_wp();
 			}
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( '2' == $_GET['show_translation_status'] ){
 				wpbc_show_translation_status_from_wp();
 			}
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( '3' == $_GET['show_translation_status'] ){
 				wpbc_show_translation_status_from_wpbc();
 			}
@@ -182,6 +190,7 @@ function wpbc_settings__system_info__show_translation_status() {
  */
 function wpbc_settings__system_info__show_system_info(){
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ( isset( $_GET['booking_system_info'] ) ) && ( $_GET['booking_system_info'] == 'show' ) ) { ?>
 
 		<?php wpbc_open_meta_box_section( 'wpbc_general_settings_system_info', 'System Info' );  ?>
@@ -201,15 +210,17 @@ function wpbc_settings__system_info__show_system_info(){
  */
 function wpbc_settings__system_info__restore_dismissed_windows(){
 
-	if ( ( isset( $_GET['restore_dismissed'] ) ) && ( $_GET['restore_dismissed'] == 'On' ) ) {            //FixIn: 8.1.3.10
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( isset( $_GET['restore_dismissed'] ) ) && ( $_GET['restore_dismissed'] == 'On' ) ) {            // FixIn: 8.1.3.10.
 
 		update_bk_option( 'booking_is_show_powered_by_notice', 'On' );
 
 		update_bk_option( 'booking_wpdev_copyright_adminpanel', 'On' );
 
 		global $wpdb;
-		// Delete all users booking windows states
-		if ( false === $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%booking_win_%'" ) ) {    // All users data
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		if ( false === $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%booking_win_%'" ) ) {    		// Delete all users booking windows states.
 			debuge_error( 'Error during deleting user meta at DB', __FILE__, __LINE__ );
 			die();
 		} else {
@@ -218,9 +229,7 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 
 			?><h2>All dismissed windows has been restored.</h2><?php
 
-			echo '<div class="clear"></div><hr/><center><a class="button button" href="' . wpbc_get_settings_url() . '">'
-			     . 'Reload Page'
-			     . '</a></center>';
+			echo '<div class="clear"></div><hr/><center><a class="button button" href="' . esc_url( wpbc_get_settings_url() ) . '">Reload Page</a></center>';
 
 			wpbc_close_meta_box_section();
 		}
@@ -235,21 +244,19 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 	  */
 	function wpbc_system_info() {
 
-
-
-		if ( current_user_can( 'activate_plugins' ) ) {                                // Only for Administrator or Super admin. More here: https://codex.wordpress.org/Roles_and_Capabilities
-
+		if ( current_user_can( 'activate_plugins' ) ) {                                            // Only for Administrator or Super admin. More here: https://codex.wordpress.org/Roles_and_Capabilities .
 
 			global $wpdb, $wp_version;
 
-			$all_plugins = get_plugins();
+			$all_plugins    = get_plugins();
 			$active_plugins = get_option( 'active_plugins' );
-
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 			$mysql_info = $wpdb->get_results( "SHOW VARIABLES LIKE 'sql_mode'" );
+
 			if ( is_array( $mysql_info ) )  $sql_mode = $mysql_info[0]->Value;
 			if ( empty( $sql_mode ) )       $sql_mode = 'Not set';
 
-			//FixIn: 8.4.7.24
+			// FixIn: 8.4.7.24.
 			$allow_url_fopen    = ( ini_get( 'allow_url_fopen' ) ) ?  'On' : 'Off';
 			$upload_max_filesize = ( ini_get( 'upload_max_filesize' ) ) ? ini_get( 'upload_max_filesize' ) : 'N/A';
 			$post_max_size      = ( ini_get( 'post_max_size' ) ) ? ini_get( 'post_max_size' ) : 'N/A';
@@ -259,7 +266,7 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 			$exif_read_data     = ( is_callable( 'exif_read_data' ) ) ? 'Yes' . " ( V" . substr( phpversion( 'exif' ), 0, 4 ) . ")" : 'No';
 			$iptcparse          = ( is_callable( 'iptcparse' ) ) ? 'Yes' : 'No';
 			$xml_parser_create  = ( is_callable( 'xml_parser_create' ) ) ? 'Yes' : 'No';
-			$theme              = ( function_exists( 'wp_get_theme' ) ) ? wp_get_theme() : get_theme( get_current_theme() );
+			$theme              = wp_get_theme();
 
 			if ( function_exists( 'is_multisite' ) ) {
 				if ( is_multisite() )   $multisite = 'Yes';
@@ -270,17 +277,20 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 			$system_info = array(
 				'system_info' => '',
 				'php_info' => '',
-				'active_plugins' => array(),			//FixIn: 8.4.4.1
-				'inactive_plugins' => array()			//FixIn: 8.4.4.1
+				'active_plugins' => array(),			// FixIn: 8.4.4.1.
+				'inactive_plugins' => array()			// FixIn: 8.4.4.1.
 			);
 
 			$ver_small_name = wpbc_get_plugin_version_type();
 			if ( class_exists( 'wpdev_bk_multiuser' ) ) $ver_small_name = 'multiuser';
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			$mysql_version = $wpdb->get_var( 'SELECT VERSION() AS version' );
+
 			$system_info['system_info'] = array(
 				'Plugin Update'         => ( defined( 'WPDEV_BK_VERSION' ) ) ? WPDEV_BK_VERSION : 'N/A',
 				'Plugin Version'        => ucwords( $ver_small_name ),
-				'Plugin Update Date'   => date( "Y-m-d", filemtime( WPBC_FILE ) ),
+				'Plugin Update Date'   => gmdate( "Y-m-d", filemtime( WPBC_FILE ) ),
 
 				'Server Default Timezone' => date_default_timezone_get(),
 				'WordPress Timezone'      => wp_timezone()->getName(),
@@ -289,15 +299,15 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 				'WP DEBUG'   =>  ( ( defined('WP_DEBUG') ) && ( WP_DEBUG ) ) ? 'On' : 'Off',
 				'WP DB Version' => get_option( 'db_version' ),
 				'Operating System' => PHP_OS,
-				'Server' => $_SERVER["SERVER_SOFTWARE"],
+				'Server' => isset( $_SERVER["SERVER_SOFTWARE"] ) ? sanitize_text_field( wp_unslash( $_SERVER["SERVER_SOFTWARE"] ) ) : 'N/A',
 				'PHP Version' => PHP_VERSION,
-				'MYSQL Version' => $wpdb->get_var( "SELECT VERSION() AS version" ),
+				'MYSQL Version' => $mysql_version,
 				'SQL Mode' => $sql_mode,
 				'Memory usage' => $memory_usage,
 				'Site URL' => get_option( 'siteurl' ),
 				'Home URL' => home_url(),
-				'SERVER[HTTP_HOST]' => $_SERVER['HTTP_HOST'],
-				'SERVER[SERVER_NAME]' => $_SERVER['SERVER_NAME'],
+				'SERVER[HTTP_HOST]' => isset( $_SERVER["HTTP_HOST"] ) ? sanitize_text_field( wp_unslash( $_SERVER["HTTP_HOST"] ) ) : 'N/A',
+				'SERVER[SERVER_NAME]' => isset( $_SERVER["SERVER_NAME"] ) ? sanitize_text_field( wp_unslash( $_SERVER["SERVER_NAME"] ) ) : 'N/A',
 				'Multisite' => $multisite,
 				'Active Theme' => $theme['Name'] . ' ' . $theme['Version']
 			);
@@ -350,7 +360,7 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 				if ( isset( $gd_info['GD Version'] ) )
 					$gd_info = $gd_info['GD Version'];
 				else
-					$gd_info = json_encode( $gd_info );
+					$gd_info = wp_json_encode( $gd_info );
 			} else {
 				$gd_info = 'Off';
 			}
@@ -374,15 +384,15 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 				?>
 				<span class="wpdevelop">
 				<table class="table table-striped table-bordered">
-					<thead><tr><th colspan="2" style="border-bottom: 1px solid #eeeeee;padding: 10px;"><?php echo strtoupper( $section_name ); ?></th></tr></thead>
+					<thead><tr><th colspan="2" style="border-bottom: 1px solid #eeeeee;padding: 10px;"><?php echo esc_html( strtoupper( $section_name ) ); ?></th></tr></thead>
 					<tbody>
 					<?php
 					if ( !empty( $section_values ) ) {
 						foreach ( $section_values as $key => $value ) {
 							?>
 							<tr>
-								<td scope="row" style="width:18em;padding:4px 8px;"><?php echo $key; ?></td>
-								<td scope="row" style="padding:4px 8px;"><?php echo $value; ?></td>
+								<td scope="row" style="width:18em;padding:4px 8px;"><?php echo esc_html( $key ); ?></td>
+								<td scope="row" style="padding:4px 8px;"><?php echo esc_html( $value ); ?></td>
 							</tr>
 							<?php
 						}

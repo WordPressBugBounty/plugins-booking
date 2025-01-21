@@ -14,7 +14,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-//FixIn: 9.6.1.8
+// FixIn: 9.6.1.8.
 
 /**
  * Show message in top  header
@@ -45,7 +45,9 @@ function wpbc_show_message_top( $page_tag, $active_page_tab, $active_page_subtab
 			z-index: 99;
 		}
 	</style><?php
-	?><div class="wpbc_message_wrapper <?php echo 'wpbc__version__' . $version ?>"><?php
+	?>
+	<div class="wpbc_message_wrapper <?php
+	echo 'wpbc__version__' . esc_attr( $version ); ?>"><?php
 
 		// Send Ajax request  to  get info  about the notifications
 		wp_nonce_field('wpbc_ajax_message_top_nonce',  "wpbc_ajax_message_top_nonce" ,  true , true );
@@ -58,7 +60,7 @@ function wpbc_show_message_top( $page_tag, $active_page_tab, $active_page_subtab
 					console.log( '== Before Ajax Send - SHOW_MESSAGE_TOP ==' );
 
 					jQuery.ajax({
-						url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+						url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
 						type:'POST',
 						success: function (data, textStatus){
 
@@ -102,7 +104,7 @@ function wpbc_ajax__get_message_top(){
 	$nonce_post_key = 'wpbc_nonce';
 	$result_check   = check_ajax_referer( $action_name, $nonce_post_key );
 
-	// $user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();
+	// $user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 	// Check if there were some errors  --------------------------------------------------------------------------------
 	$error_messages = $ajax_errors->get_error_messages();

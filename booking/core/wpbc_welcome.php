@@ -110,8 +110,8 @@ function wpbc_ui_settings__panel__welcome(){
 
 			wpbc_ui_settings_panel__card__welcome__have_questions();
 
-			//Info: If needs to show "Shortcode Popup Dialog" and create new Pages, please uncomment all rows marked with: //FixIn: 10.6.6.2
-			// wpbc_ui_settings_panel__card__publish_into_new( array() );			//FixIn: 10.6.6.2
+			//Info: If needs to show "Shortcode Popup Dialog" and create new Pages, please uncomment all rows marked with: // FixIn: 10.6.6.2.
+			// wpbc_ui_settings_panel__card__publish_into_new( array() );			// FixIn: 10.6.6.2.
 
 			?><div style="flex:100%;border-bottom: 1px solid #eeeff1;"></div><?php		// Divider
 
@@ -136,9 +136,7 @@ function wpbc_ui_settings__panel__welcome(){
 
 	function wpbc_ui_settings__panel__welcome__header() {
 
-		?><p class="about-description"><?php
-			_e( 'We&#8217;ve assembled some links to get you started:', 'booking' );
-		?></p><?php
+		?><p class="about-description"><?php esc_html_e( 'We&#8217;ve assembled some links to get you started:', 'booking' ); ?></p><?php
 	}
 
 
@@ -156,14 +154,14 @@ function wpbc_ui_settings__panel__welcome(){
 				<i class="menu_icon icon-1x wpbc-bi-box-arrow-in-down-left"></i>
 				<h1>
 					<span>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Insert shortcode in a page', 'booking' ); ?></span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php esc_html_e( 'Insert shortcode in a page', 'booking' ); ?></span>
 					</span>
 				</h1>
 			</div>
 			<div class="wpbc_ui_settings__text_row">
 				<span class="wpbc_ui_settings__text_color__black">
 					<?php
-					 	printf( __( 'Integrate booking form into a page on your website.', 'booking' ), '', '' );
+					esc_html_e( 'Integrate booking form into a page on your website.', 'booking' );
 					?>
 				</span>
 			</div>
@@ -180,7 +178,7 @@ function wpbc_ui_settings__panel__welcome(){
 								   title="<?php echo esc_attr(
 																sprintf( __( 'Integrate booking form into a page on your website.', 'booking' ), '', '' )
 										); ?>"  >
-										<span><?php _e('Integrate booking form', 'booking'); ?>&nbsp;&nbsp;&nbsp;</span>
+										<span><?php esc_html_e('Integrate booking form', 'booking'); ?>&nbsp;&nbsp;&nbsp;</span>
 										<i class="menu_icon icon-1x wpbc-bi-arrow-right-short" style="margin: 0;"></i>
 								</a>
 							</div>
@@ -208,7 +206,7 @@ function wpbc_ui_settings__panel__welcome(){
 				<i class="menu_icon icon-1x wpbc_icn_code"></i>
 				<h1>
 					<span>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Shortcodes', 'booking' ); ?></span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php esc_html_e( 'Shortcodes', 'booking' ); ?></span>
 					</span>
 				</h1>
 			</div>
@@ -216,15 +214,19 @@ function wpbc_ui_settings__panel__welcome(){
 				<span class="wpbc_ui_settings__text_color__black">
 					<ul>
 						<li style="font-size: 0.94em;"><span class="welcome-icon"><?php
-							printf( __('Learn how to %sAdd the Booking Form or Calendar to your page%s in WordPress Block Editor, Elementor, or other non-standard editors.','booking')
-									, '<strong><a href="https://wpbookingcalendar.com/faq/insert-booking-calendar-into-page/" target="_blank">', '</a></strong>'
-									);
+
+								/* translators: 1: ... */
+								$text_description = __( 'Learn how to %1$sAdd the Booking Form or Calendar to your page%2$s in WordPress Block Editor, Elementor, or other non-standard editors.', 'booking' );
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								printf( $text_description, '<strong><a href="https://wpbookingcalendar.com/faq/insert-booking-calendar-into-page/" target="_blank">', '</a></strong>' );
+
 							echo '</span> <span class="welcome-icon">';
-						    printf( __('See %sall shortcodes%s of the Booking Calendar that you can use in pages.','booking')
-									, '<strong><a href="https://wpbookingcalendar.com/faq/#shortcodes" target="_blank">', '</a></strong>'
-//									, '<a href="' . admin_url( 'edit.php?post_type=page' ) . '">', '</a>'
-//									, '<a href="' . admin_url( 'edit.php' ) . '">', '</a>'
-									);
+
+								/* translators: 1: ... */
+								$text_description = __( 'See %1$sall shortcodes%2$s of the Booking Calendar that you can use in pages.', 'booking' );
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								printf( $text_description, '<strong><a href="https://wpbookingcalendar.com/faq/#shortcodes" target="_blank">', '</a></strong>' );
+
 						?></span></li>
 					</ul>
 				</span>
@@ -245,7 +247,7 @@ function wpbc_ui_settings__panel__welcome(){
 				<i class="menu_icon icon-1x wpbc_icn_code"></i>
 				<h1>
 					<span>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Next Steps', 'booking' ); ?></span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php esc_html_e( 'Next Steps', 'booking' ); ?></span>
 					</span>
 				</h1>
 			</div>
@@ -255,25 +257,28 @@ function wpbc_ui_settings__panel__welcome(){
 
 						<?php if ( ! empty( $wp_post_booking_absolute ) ) { ?>
 						<li><div class="welcome-icon"><?php
-							printf( __('Start creating %snew bookings%s from %syour page%s or in the %sAdmin Panel%s.','booking')
+							/* translators: 1: ... */
+							echo esc_html( sprintf( __( 'Start creating %1$snew bookings%2$s from %3$syour page%4$s or in the %5$sAdmin Panel%6$s.', 'booking' )
 									, '<strong>', '</strong>'
 									, '<strong><a href="' . esc_url( $wp_post_booking_absolute ) . '" target="_blank">', '</a></strong>'
 									, '<a href="' . esc_url( wpbc_get_new_booking_url() ) . '">', '</a>'
-									);
+									) );
 						?></div></li>
 						<?php } ?>
 
 						<li><div class="welcome-icon"><?php
-							printf( __( 'Check %sBooking Listing%s page for new bookings.','booking')
+							/* translators: 1: ... */
+							echo esc_html( sprintf( __( 'Check %1$sBooking Listing%2$s page for new bookings.', 'booking' )
 										, '<a href="' . esc_url( wpbc_get_bookings_url(true, false) . '&view_mode=vm_listing' ) . '">', '</a>'
-									);
+									) );
 						?></div></li>
 						<li><div class="welcome-icon"><?php
-							printf( __( 'Configure  %sForm Fields%s, %sEmails%s and other %sSettings%s.' ,'booking')
+							/* translators: 1: ... */
+							echo esc_html( sprintf( __( 'Configure  %1$sForm Fields%2$s, %3$sEmails%4$s and other %5$sSettings%6$s.', 'booking' )
 										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) . '&tab=form' ) . '">', '</a>'
 										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) . '&tab=email' ) . '">', '</a>'
 										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) ) . '">', '</a>'
-									);
+									) );
 						?></div></li>
 					</ul>
 				</span>
@@ -294,7 +299,7 @@ function wpbc_ui_settings__panel__welcome(){
 				<i class="menu_icon icon-1x wpbc_icn_help_outline"></i>
 				<h1>
 					<span>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php _e( 'Have a questions?', 'booking' ); ?></span>
+						<span class="0wpbc_ui_settings__text_color__black2"><?php esc_html_e( 'Have a questions?', 'booking' ); ?></span>
 					</span>
 				</h1>
 			</div>
@@ -302,26 +307,16 @@ function wpbc_ui_settings__panel__welcome(){
 				<span class="wpbc_ui_settings__text_color__black">
 					<ul>
 						<li><span class="welcome-icon"><?php
-							printf( __( 'See %sFAQ%s.' ,'booking'),
-								'<a href="https://wpbookingcalendar.com/faq/" target="_blank">',
-								'</a> , ' . '<a href="https://wpbookingcalendar.com/support/" target="_blank">' . __( 'Support Forum','booking') . '</a>'
-							);
+
+								/* translators: 1: ... */
+								$text_description = __( 'See %1$sFAQ%2$s.', 'booking' );
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								printf( $text_description, '<a href="https://wpbookingcalendar.com/faq/" target="_blank">', '</a> , ' . '<a href="https://wpbookingcalendar.com/support/" target="_blank">' . esc_html__( 'Support Forum', 'booking' ) . '</a>' );
 							echo '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="welcome-icon">';
-							printf( __( 'Contact %sSupport%s.','booking'),
-								'<a href="mailto:support@wpbookingcalendar.com" target="_blank">',
-								'</a>' );
-/*
-						?></div></li>
-						<li><div class="welcome-icon"><?php
-							printf( __( 'Check out our %sHelp%s' ,'booking'),
-								'<a href="https://wpbookingcalendar.com/help/" target="_blank">',
-								'</a>' );
-						?></div></li>
-						<li><div class="welcome-icon"><?php
-							printf( __( 'Still having questions? Contact %sSupport%s.','booking'),
-								'<a href="https://wpbookingcalendar.com/support/" target="_blank">',
-								'</a>' );
-*/
+								/* translators: 1: ... */
+								$text_description = __( 'Contact %1$sSupport%2$s.', 'booking' );
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								printf( $text_description, '<a href="mailto:support@wpbookingcalendar.com" target="_blank">', '</a>' );
 						?></span></li>
 				</span>
 			</div>

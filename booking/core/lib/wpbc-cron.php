@@ -295,8 +295,8 @@ class WPBC_Cron {
 
 				$last_time__run__timestamp = $task_params_arr['last_execution'];
 				$next_time__run__timestamp = $this->get_task__timestamp__of_next_execution( $task_params_arr );
-				//active_tasks[ $task_name ]['last_time__run__gmt'] = date( 'Y-m-d H:i:s', $active_tasks[ $task_name ]['last_time__run__timestamp'] );
-				//$active_tasks[ $task_name ]['next_time__run__gmt'] = date( 'Y-m-d H:i:s', $active_tasks[ $task_name ]['next_time__run__timestamp'] );
+				//active_tasks[ $task_name ]['last_time__run__gmt'] = gmdate( 'Y-m-d H:i:s', $active_tasks[ $task_name ]['last_time__run__timestamp'] );
+				//$active_tasks[ $task_name ]['next_time__run__gmt'] = gmdate( 'Y-m-d H:i:s', $active_tasks[ $task_name ]['next_time__run__timestamp'] );
 
 			$active_tasks[ $task_name ]['last_time__run__local'] = wp_date( 'Y-m-d H:i:s', $last_time__run__timestamp );
 			$active_tasks[ $task_name ]['next_time__run__local'] = wp_date( 'Y-m-d H:i:s', $next_time__run__timestamp );
@@ -339,7 +339,7 @@ class WPBC_Cron {
 			}
 		}
 
-		$execution_interval_in_seconds =  intval( $action['recurrence'] ) * $number_of_seconds;     // number of hours | m | d    //FixIn: 8.4.5.2
+		$execution_interval_in_seconds =  intval( $action['recurrence'] ) * $number_of_seconds;     // number of hours | m | d    // FixIn: 8.4.5.2.
 
 		return $execution_interval_in_seconds;
 	}

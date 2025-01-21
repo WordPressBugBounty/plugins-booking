@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.9.3.2
+Stable tag: 10.9.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,40 +240,40 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- German 95.47% [ 2444 / 2560 ], fuzzy 90, not translated 26
-- French (France) 91.91% [ 2353 / 2560 ], fuzzy 132, not translated 75
-- Dutch 91.48% [ 2342 / 2560 ], fuzzy 140, not translated 78
-- Korean 88.87% [ 2275 / 2560 ], fuzzy 185, not translated 100
-- Hungarian 88.75% [ 2272 / 2560 ], fuzzy 191, not translated 97
-- Spanish (Spain) 81.13% [ 2077 / 2560 ], fuzzy 244, not translated 239
-- Portuguese (Brazil) 76.6% [ 1961 / 2560 ], fuzzy 369, not translated 230
-- Greek 76.29% [ 1953 / 2560 ], fuzzy 378, not translated 229
-- Turkish 75.59% [ 1935 / 2560 ], fuzzy 392, not translated 233
-- Danish 74.96% [ 1919 / 2560 ], fuzzy 415, not translated 226
-- Italian 73.28% [ 1876 / 2560 ], fuzzy 301, not translated 383
-- Spanish (Mexico) 69.69% [ 1784 / 2560 ], fuzzy 490, not translated 286
-- Finnish 69.3% [ 1774 / 2560 ], fuzzy 495, not translated 291
-- Polish 68.98% [ 1766 / 2560 ], fuzzy 490, not translated 304
-- Romanian 68.79% [ 1761 / 2560 ], fuzzy 496, not translated 303
-- Swedish 68.36% [ 1750 / 2560 ], fuzzy 512, not translated 298
-- Norwegian (Bokmål) 67.3% [ 1723 / 2560 ], fuzzy 525, not translated 312
-- Arabic 67.27% [ 1722 / 2560 ], fuzzy 529, not translated 309
-- Russian 67.07% [ 1717 / 2560 ], fuzzy 762, not translated 81
-- Slovenian 65.43% [ 1675 / 2560 ], fuzzy 555, not translated 330
-- Chinese (Taiwan) 63.32% [ 1621 / 2560 ], fuzzy 607, not translated 332
-- Bulgarian 63.05% [ 1614 / 2560 ], fuzzy 584, not translated 362
-- Portuguese (Portugal) 62.58% [ 1602 / 2560 ], fuzzy 591, not translated 367
-- Chinese (China) 60.9% [ 1559 / 2560 ], fuzzy 596, not translated 405
-- Thai 59.26% [ 1517 / 2560 ], fuzzy 650, not translated 393
-- Hebrew 58.95% [ 1509 / 2560 ], fuzzy 638, not translated 413
-- Ukrainian 58.63% [ 1501 / 2560 ], fuzzy 640, not translated 419
-- Japanese 57.7% [ 1477 / 2560 ], fuzzy 169, not translated 914
-- Galician 57.66% [ 1476 / 2560 ], fuzzy 691, not translated 393
-- Slovak 53.48% [ 1369 / 2560 ], fuzzy 622, not translated 569
-- Catalan 52.27% [ 1338 / 2560 ], fuzzy 643, not translated 579
-- Croatian 51.91% [ 1329 / 2560 ], fuzzy 646, not translated 585
-- Czech 45.78% [ 1172 / 2560 ], fuzzy 704, not translated 684
-- Chinese (Hong Kong) 27.66% [ 708 / 2560 ], fuzzy 96, not translated 1756
+- German 85.96% [ 2106 / 2450 ], fuzzy 318, not translated 26
+- French (France) 82.33% [ 2017 / 2450 ], fuzzy 358, not translated 75
+- Dutch 81.96% [ 2008 / 2450 ], fuzzy 365, not translated 77
+- Hungarian 79.39% [ 1945 / 2450 ], fuzzy 410, not translated 95
+- Korean 79.39% [ 1945 / 2450 ], fuzzy 407, not translated 98
+- Spanish (Spain) 73.06% [ 1790 / 2450 ], fuzzy 433, not translated 227
+- Portuguese (Brazil) 68.94% [ 1689 / 2450 ], fuzzy 543, not translated 218
+- Greek 68.53% [ 1679 / 2450 ], fuzzy 553, not translated 218
+- Turkish 67.63% [ 1657 / 2450 ], fuzzy 572, not translated 221
+- Danish 66.73% [ 1635 / 2450 ], fuzzy 597, not translated 218
+- Italian 65.88% [ 1614 / 2450 ], fuzzy 486, not translated 350
+- Spanish (Mexico) 63.31% [ 1551 / 2450 ], fuzzy 627, not translated 272
+- Finnish 62.94% [ 1542 / 2450 ], fuzzy 633, not translated 275
+- Polish 62.9% [ 1541 / 2450 ], fuzzy 623, not translated 286
+- Romanian 62.37% [ 1528 / 2450 ], fuzzy 636, not translated 286
+- Swedish 62% [ 1519 / 2450 ], fuzzy 648, not translated 283
+- Russian 61.35% [ 1503 / 2450 ], fuzzy 870, not translated 77
+- Norwegian (Bokmål) 61.18% [ 1499 / 2450 ], fuzzy 658, not translated 293
+- Arabic 60.94% [ 1493 / 2450 ], fuzzy 667, not translated 290
+- Slovenian 59.35% [ 1454 / 2450 ], fuzzy 685, not translated 311
+- Chinese (Taiwan) 57.76% [ 1415 / 2450 ], fuzzy 725, not translated 310
+- Portuguese (Portugal) 57.31% [ 1404 / 2450 ], fuzzy 705, not translated 341
+- Bulgarian 57.14% [ 1400 / 2450 ], fuzzy 712, not translated 338
+- Japanese 56.45% [ 1383 / 2450 ], fuzzy 227, not translated 840
+- Chinese (China) 55.39% [ 1357 / 2450 ], fuzzy 711, not translated 382
+- Ukrainian 55.02% [ 1348 / 2450 ], fuzzy 719, not translated 383
+- Thai 54% [ 1323 / 2450 ], fuzzy 761, not translated 366
+- Hebrew 53.67% [ 1315 / 2450 ], fuzzy 749, not translated 386
+- Galician 52.29% [ 1281 / 2450 ], fuzzy 801, not translated 368
+- Slovak 48.61% [ 1191 / 2450 ], fuzzy 726, not translated 533
+- Catalan 47.31% [ 1159 / 2450 ], fuzzy 748, not translated 543
+- Croatian 47.06% [ 1153 / 2450 ], fuzzy 749, not translated 548
+- Czech 40.9% [ 1002 / 2450 ], fuzzy 805, not translated 643
+- Chinese (Hong Kong) 27.76% [ 680 / 2450 ], fuzzy 104, not translated 1666
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -306,29 +306,29 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
-= 10.9.3.2 =
+= 10.9.4.2 =
 - Changes in **all** versions:
-	* **Fix**: css in some calendar skins.
+	* **Improvement**: loading of JavaScript variables.
 
-= 10.9.3 =
+= 10.9.4.1 =
 - Changes in **all** versions:
-	* **New**: Added 4 "Calendar Color Themes": 24_9__green_1, 24_9__green_2, 24_9__green_3, 24_9__green_4, 24_9__dark_3
- 	* **Improvement** Change name of "Add booking" menu  to  "+ Add booking" (10.9.3.1)
-	* **Fix**: Showing calendar days padding in some WordPress Themes. (10.9.4.3)
-	* **Fix**: Additional escaping of "additional calendar ID" in the Booking Calendar shortcode.
+	* **Fix**: Resolved issue on Search Form: Uncaught TypeError: child_resources_arr is null (10.9.5.2)
 
-= 10.9.2 =
+= 10.9.4 =
 - Changes in **all** versions:
- 	* **Improvement** Centering Calendar in a row, if used "Wizard Form" style and simple booking form  configuration,  for more clean  look at wide screens.(10.9.2.1)
-	* **Fix**: Resolving CSS conflict of calendar legend items showing in some themes. (10.9.2.3)
-	* **Fix**: Resolving issue of incorrectly  showing unavailable dates at the Days Availability page and in Search Form,  if used "Unavailable time from current time" less then 1 day.	 (10.9.2.6)
- 	* **Under Hood** During initial activation  of the plugin,  create default page with  booking form slug: "wp-booking-calendar" instead of "wpbc-booking" (10.9.2.5)
+	* **New**: Added new "Calendar Color Theme": 24_9__green_5
+	* **Improvement**: Resolving CSS conflict issues of Booking Calendar with different WP themes or plugins (such as with  Elementor).
+	* **Improvement**: Huge code refactoring and update escaping functions to apply for best practices.
+	* **Improvement**: Loads all JS at the page footer, by default. It's prevent of the common issues, when the jQuery library were loaded several times in the page.
+	* **Fix**: Showing "Unavailable days from today" hint relative to WordPress timezone, e.g.: "Unavailable: 28 Dec, 12:49 - 28 Dec, 17:48"	(10.9.4.2)
+	* **Fix**: Uncaught TypeError: $current.size is not a function (10.9.4.4)
+	* **Fix**: CSS issue of showing Apply availability  button  in mobile devices at  WP Booking Calendar > Availability > Days Availability page. (10.9.4.5)
+	* **Fix**: Resolved conflict issue: Uncaught TypeError: _wpbc.bookings_in_calendar__get_for_date(...)[child_resource_id] is undefined (10.9.5.1)
 - Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New**: Shortcode [parent_resource_title] in the emails for showing booked "parent" booking resource, if booked some child booking resource. Useful in situation to show name/type of booked room instead of room number. (10.9.2.4)
+	* **Improvement**: Ability to change the "Commerce number (FUC)", Terminal number and "secret passphrase" in test  mode for Redsys payment system. (10.9.4.1)
 
-= 10.9.1 =
-- Changes in **all** versions:
- 	* **Fix**  An error of type E_PARSE was caused in line 259 of the file ..booking/includes/page-setup/setup_support.php. Error message: syntax error, unexpected ')' (10.9.1.1)
+= 10.9.1 - 10.9.3.2 =
+- Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 10.9 =
 - Changes in **all** versions:
@@ -553,15 +553,3 @@ Enhanced Calendar Overview and Timeline Views, and more...
 
 = 10.2 =
 Explore Advanced Configurable Booking Confirmation, Enhanced Booking Form Typography, and more...
-
-= 10.1 =
-Explore enhanced simple booking form setup, with Preview option. Updated UI on the Calendar Overview and Settings pages. Completely new Search Availability Engine to search for available Dates and Times (NEW) based on unavailable dates, and other criteria in Business Large or higher version. And much more.
-
-= 10.0 =
-Explore simplified integration and enhanced management. Easy  shortcodes integration. Utilize the new booking resources UI management page, and configure conditional days with ease in pro versions. Track booking edits, add additional notes and much more. Enjoy improved performance, preventing conflicts for a smoother user experience.
-
-= 9.9 =
-Explore a fresh look for Admin UI's 'Top Tabs,' offering a spacious and user-friendly interface. Now, integrate PayPal Standard Checkout for diverse payment options. Efficiently manage pricing with the new 'Prices' menu. Simplify availability settings in the consolidated 'Availability' menu.
-
-= 9.8 =
-Get ready for our biggest update yet! Enjoy a new booking engine, improved performance, structured settings, an enhanced UI, and a smoother booking process with the new booking confirmation section. Paid versions bring features like time-slot capacity for multiple bookings per time-slot and more.

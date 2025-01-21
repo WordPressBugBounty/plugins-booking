@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Main function  for       ajax_ WPBC_AJX_BOOKING__CREATE
@@ -85,7 +85,7 @@ function wpbc_captcha__simple__generate_new() {
 	$captcha_instance = new wpdevReallySimpleCaptcha();
 
 	// Clean up dead files older than  2 minutes
-	$captcha_instance->cleanup( 2 );                    //FixIn: 7.0.1.67
+	$captcha_instance->cleanup( 2 );                    // FixIn: 7.0.1.67.
 
 	//$captcha_instance->img_size = array( 72, 24 );
 	/* Background color of CAPTCHA image. RGB color 0-255 */
@@ -103,7 +103,7 @@ function wpbc_captcha__simple__generate_new() {
 
 
 	$word   = $captcha_instance->generate_random_word();
-	$prefix = mt_rand();
+	$prefix = wp_rand();
 
 	$captcha_instance->generate_image( $prefix, $word );
 
@@ -139,6 +139,7 @@ function wpbc_captcha__simple__generate_html_content( $resource_id ) {
 	$html  = '<span class="wpbc_text_captcha_container wpdev-form-control-wrap ">';
 	$html .=   '<input  autocomplete="off" type="hidden" name="wpdev_captcha_challenge_' . $resource_id . '"  id="wpdev_captcha_challenge_' . $resource_id . '" value="' . $captcha_challenge . '" />';
 	$html .=   '<input  autocomplete="off" type="text" class="captachinput" value="" name="captcha_input' . $resource_id . '" id="captcha_input' . $resource_id . '" />';
+	// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
 	$html .=   '<img class="captcha_img"  id="captcha_img' . $resource_id . '" alt="To show CAPTCHA, please deactivate cache plugin or exclude this page from caching or disable CAPTCHA at WP Booking Calendar - Settings General page in Form Options section." src="' . $captcha_url . '" />';
 	$html .= '</span>';
 
@@ -153,7 +154,7 @@ function wpbc_captcha__simple__generate_html_content( $resource_id ) {
  */
 function wpbc_captcha__simple__is_installed() {
 
-	//FixIn: 8.8.3.5
+	// FixIn: 8.8.3.5.
 	if ( function_exists( 'gd_info' ) ) {
 
 		return  true;
@@ -162,7 +163,7 @@ function wpbc_captcha__simple__is_installed() {
 		if ( isset( $gd_info['GD Version'] ) ) {
 			$gd_info = $gd_info['GD Version'];
 		} else {
-			$gd_info = json_encode( $gd_info );
+			$gd_info = wp_json_encode( $gd_info );
 		}
 		*/
 	} else {

@@ -62,24 +62,22 @@ class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
 		 *
 		 * @param string $menu_in_page_tag - active page
 		 */
-		public function wpbc_toolbar_toolbar_tabs( $menu_in_page_tag ) {
+	public function wpbc_toolbar_toolbar_tabs( $menu_in_page_tag ) {
 
-			if (
-					( $this->in_page() == $menu_in_page_tag )
-				 && ( ( empty( $_GET['tab'] ) ) || ( 'availability' == $_GET['tab'] ) )					//FixIn: 9.8.15.2.2
-			) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( ( $this->in_page() === $menu_in_page_tag ) && ( ( empty( $_GET['tab'] ) ) || ( 'availability' === $_GET['tab'] ) ) ) {  // FixIn: 9.8.15.2.2.
 
-				wpbc_bs_toolbar_tabs_html_container_start();
+			wpbc_bs_toolbar_tabs_html_container_start();
 
-				$escaped_search_request_params = $this->get_cleaned_params__saved_requestvalue_default();
+			$escaped_search_request_params = $this->get_cleaned_params__saved_requestvalue_default();
 
-				// Check if by  some reason, user was saved request without this parameter, then get  default value
-				if ( ! empty( $escaped_search_request_params['ui_usr__availability_selected_toolbar'] ) ) {
-					$selected_tab = $escaped_search_request_params['ui_usr__availability_selected_toolbar'];
-				} else {
-					$default_search_request_params = WPBC_AJX__Availability::request_rules_structure();
-					$selected_tab = $default_search_request_params ['ui_usr__availability_selected_toolbar']['default'];
-				}
+			// Check if by  some reason, user was saved request without this parameter, then get  default value.
+			if ( ! empty( $escaped_search_request_params['ui_usr__availability_selected_toolbar'] ) ) {
+				$selected_tab = $escaped_search_request_params['ui_usr__availability_selected_toolbar'];
+			} else {
+				$default_search_request_params = WPBC_AJX__Availability::request_rules_structure();
+				$selected_tab                  = $default_search_request_params ['ui_usr__availability_selected_toolbar']['default'];
+			}
 
 				wpbc_bs_display_tab(   array(
 													'title'         => __( 'Set Availability', 'booking' )
@@ -153,11 +151,11 @@ class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
 							);
 			$escaped_request_params_arr = $user_request->get_sanitized__saved__user_request_params();		// Get Saved
 
-//Fix Calendar cell heights in versions older than //FixIn: 9.7.3.2
+//Fix Calendar cell heights in versions older than // FixIn: 9.7.3.2.
 if ( 	( false !== $escaped_request_params_arr )
 	 && ( '' === $escaped_request_params_arr['calendar__view__cell_height'] )
 ) {
-	$user_request->user_request_params__db_delete();    // Delete from DB
+	$user_request->user_request_params__db_delete();    // Delete from DB.
 }
 
 			if ( false === $escaped_request_params_arr ) {			// This request was not saved before, then get sanitized direct parameters, like: 	$_REQUEST['resource_id']
@@ -224,11 +222,11 @@ if ( 	( false !== $escaped_request_params_arr )
         ?>
         <div class="clear" style="margin-bottom:10px;"></div>
         <span class="metabox-holder">
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" >
+            <form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" >
                 <?php
                    // N o n c e   field, and key for checking   S u b m i t
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
 
 				//wpbc_ajx_booking_modify_container_show();					// Container for showing Edit ajx_booking and define Edit and Delete ajx_booking JavaScript vars.
 
@@ -264,16 +262,16 @@ if ( 	( false !== $escaped_request_params_arr )
 						font-weight: 600;
 					}
 				</style>
-				<div class="wpbc_calendar_loading"><span class="wpbc_icn_autorenew wpbc_spin"></span>&nbsp;&nbsp;<span><?php _e( 'Loading', 'booking' ); ?>...</span>
+				<div class="wpbc_calendar_loading"><span class="wpbc_icn_autorenew wpbc_spin"></span>&nbsp;&nbsp;<span><?php esc_html_e( 'Loading', 'booking' ); ?>...</span>
 				</div>
 			</div>
 			<script type="text/javascript">
 				jQuery( document ).ready( function (){
 
 					// Set Security - Nonce for Ajax  - Listing
-					wpbc_ajx_availability.set_secure_param( 'nonce',   '<?php echo wp_create_nonce( 'wpbc_ajx_availability_ajx' . '_wpbcnonce' ) ?>' );
-					wpbc_ajx_availability.set_secure_param( 'user_id', '<?php echo wpbc_get_current_user_id(); ?>' );
-					wpbc_ajx_availability.set_secure_param( 'locale',  '<?php echo get_user_locale(); ?>' );
+					wpbc_ajx_availability.set_secure_param( 'nonce',   '<?php echo esc_js( wp_create_nonce( 'wpbc_ajx_availability_ajx' . '_wpbcnonce' ) ); ?>' );
+					wpbc_ajx_availability.set_secure_param( 'user_id', '<?php echo esc_js( wpbc_get_current_user_id() ); ?>' );
+					wpbc_ajx_availability.set_secure_param( 'locale',  '<?php echo esc_js( get_user_locale() ); ?>' );
 
 					// Set other parameters
 					wpbc_ajx_availability.set_other_param( 'listing_container',    '.wpbc_ajx_availability_container' );
@@ -283,21 +281,22 @@ if ( 	( false !== $escaped_request_params_arr )
 				} );
 			</script>
 			<?php
-//FixIn: 10.0.0.5
+// FixIn: 10.0.0.5.
 if ( 0 ) {
 			$resource_id = 220;
-			// $bk_cal = apply_bk_filter( 'pre_get_calendar_html', $resource_id, $my_boook_count, $bk_otions );
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+			?><style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { height: 50px; } </style><?php
+
 			?>
-			<style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { height: 50px; } </style>
 			<div class="wpbc_calendar_wraper wpbc_change_over_triangle">
 				<div class="bk_calendar_frame months_num_in_row_4 cal_month_num_4" style="width:100%;max-width:100%;">
-					<div id="calendar_booking<?php echo $resource_id ?>"><?php _e('Calendar is loading...', 'booking'); ?></div>
+					<div id="calendar_booking<?php echo esc_attr( $resource_id ); ?>"><?php esc_html_e('Calendar is loading...', 'booking'); ?></div>
 				</div>
 			</div><?php
 
 			$selected_dates_if_no_calendar = '';
-			echo '<textarea rows="3" cols="50" id="date_booking' . $resource_id . '" name="date_booking' . $resource_id . '"  autocomplete="off" style="display:none;">'
-					. $selected_dates_if_no_calendar . '</textarea>';
+			echo '<textarea rows="3" cols="50" id="date_booking' . esc_attr( $resource_id ) . '" name="date_booking' . esc_attr( $resource_id ) . '"  autocomplete="off" style="display:none;">' .
+				 esc_textarea( $selected_dates_if_no_calendar ) . '</textarea>';
 	if(1){
 			$start_script_code = wpbc__calendar__load( array(
 
@@ -310,7 +309,7 @@ if ( 0 ) {
 														'custom_form'                     => 'standard'
 
 													));
-
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $start_script_code;
 	} else {
 				?>
@@ -347,9 +346,9 @@ if ( 0 ) {
 						} );
 						_wpbc.seasons__set( 220, [] );
 						wpbc_calendar_show( '220' );
-						_wpbc.set_secure_param( 'nonce',  '<?php echo wp_create_nonce( 'wpbc_calendar_load_ajx' . '_wpbcnonce' ); ?>' );
-						_wpbc.set_secure_param( 'user_id','<?php echo wpbc_get_current_user_id(); ?>' );
-						_wpbc.set_secure_param( 'locale', '<?php echo get_user_locale(); ?>' );
+						_wpbc.set_secure_param( 'nonce',  '<?php echo esc_attr( wp_create_nonce( 'wpbc_calendar_load_ajx' . '_wpbcnonce' ) ); ?>' );
+						_wpbc.set_secure_param( 'user_id','<?php echo esc_attr( wpbc_get_current_user_id() ); ?>' );
+						_wpbc.set_secure_param( 'locale', '<?php echo esc_attr( get_user_locale() ); ?>' );
 						wpbc_calendar__load_data__ajx( {
 							"resource_id"              : 220,
 							"booking_hash"             : "",
@@ -372,7 +371,7 @@ if ( 0 ) {
 		 * @return void
 		 */
 		private function css_fix(){
-			//FixIn: 9.8.15.2
+			// FixIn: 9.8.15.2.
 			/*
 
 		    ?><style type="text/css">
@@ -397,7 +396,7 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
     public function in_page() {
 
 	    if ( ! wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) {            // If this User not "super admin",  then  do  not load this page at all
-	        return (string) rand( 100000, 1000000 );        // If this User not "super admin",  then  do  not load this page at all
+	        return (string) wp_rand( 100000, 1000000 );        // If this User not "super admin",  then  do  not load this page at all
         }
 
 		return 'wpbc-availability';

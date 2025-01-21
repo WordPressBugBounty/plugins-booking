@@ -11,19 +11,22 @@
  *
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;                             // Exit if accessed directly.
+}
 
 
 /**
  *  A c t i v a t e  - Create new DB Table, for booking dates properties
  *
- * booking date property can be relative to:  	prop_name =  'unavailable', 'available', 'rate', 'allow_start_day_selection', 'allow_days_number_to_select', 'availability_count', ...
+ * booking date property can be relative to:    prop_name =  'unavailable', 'available', 'rate', 'allow_start_day_selection', 'allow_days_number_to_select', 'availability_count', ...
  *
- * 											?:	prop_name =  'date_status'		->	 	prop_value =  'unavailable', 'available', 'pending', 'approved'
+ *                                            ?:    prop_name =  'date_status'        ->        prop_value =  'unavailable', 'available', 'pending', 'approved'
  *
  * @return void
  */
-function wpbc_activation__dates_availability() {                                                                            //FixIn: 9.3.1.2
+function wpbc_activation__dates_availability() {
+	// FixIn: 9.3.1.2.
 
 	global $wpdb;
 	$charset_collate  = ( ! empty( $wpdb->charset ) ) ? "DEFAULT CHARACTER SET $wpdb->charset" : '';
@@ -38,6 +41,7 @@ function wpbc_activation__dates_availability() {                                
                      prop_value text,
                      PRIMARY KEY  (booking_dates_prop_id)
                     ) {$charset_collate}";
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$wpdb->query( $simple_sql );
 	}
 }
@@ -50,6 +54,7 @@ add_bk_action( 'wpbc_activation_after_db_actions', 'wpbc_activation__dates_avail
 function wpbc_deactivation__dates_availability() {
 
 	global $wpdb;
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}booking_dates_props" );
 }
 add_bk_action( 'wpbc_other_versions_deactivation', 'wpbc_deactivation__dates_availability' );

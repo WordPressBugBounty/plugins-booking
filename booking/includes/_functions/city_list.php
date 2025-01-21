@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return array|array[]
  */
-function wpbc_get_booking_region_cities_list(){                                                                         //FixIn: 8.9.4.9
+function wpbc_get_booking_region_cities_list(){                                                                         // FixIn: 8.9.4.9.
 
 	$city = array(
 					  'Africa' => array()

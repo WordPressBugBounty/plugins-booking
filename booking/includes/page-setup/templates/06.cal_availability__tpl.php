@@ -44,8 +44,8 @@ function wpbc_stp_wiz__template__cal_availability(){
 			<div class="wpbc__form__div wpbc_container_booking_form wpbc_swp_section wpbc_swp_section__cal_availability">
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 0 auto;flex-flow: column;margin:0 0 10px;">
-						<h1 class="wpbc_swp_section_header" ><?php _e( 'General Availability', 'booking' ); ?></h1>
-						<p class="wpbc_swp_section_header_description"><?php _e('Define unavailable weekdays, add booking buffers, and customize unavailable day options.','booking'); ?></p>
+						<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'General Availability', 'booking' ); ?></h1>
+						<p class="wpbc_swp_section_header_description"><?php esc_html_e('Define unavailable weekdays, add booking buffers, and customize unavailable day options.','booking'); ?></p>
 					</div>
 					<div class="wpbc__field">
 						<#
@@ -63,7 +63,7 @@ function wpbc_stp_wiz__template__cal_availability(){
 			<div class="wpbc_widgets">
 				<div class="wpbc_widget             wpbc_widget_preview_booking_form">
 					<div class="wpbc_widget_header">
-						<span class="wpbc_widget_header_text"><?php _e( 'Preview', 'booking' ); echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> '; _e( 'Booking Form', 'booking' ); ?></span>
+						<span class="wpbc_widget_header_text"><?php esc_html_e( 'Preview', 'booking' ); echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> '; esc_html_e( 'Booking Form', 'booking' ); ?></span>
 						<?php wpbc_stp_wiz__ui__form_structure__mobile_buttons(); ?>
 					</div>
 					<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
@@ -118,7 +118,7 @@ function wpbc_stp_wiz__widget__cal_availability__weekdays(){
 	?>
 	<div class="wpbc_widget wpbc_widget__cal_availability__weekdays">
 		<div class="wpbc_widget_header">
-			<span class="wpbc_widget_header_text"><?php _e('Unavailable Weekdays','booking'); ?></span>
+			<span class="wpbc_widget_header_text"><?php esc_html_e('Unavailable Weekdays','booking'); ?></span>
 		</div>
 		<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
 			<div class="ui_container">
@@ -143,7 +143,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
     ?>
 	<div class="wpbc_widget wpbc_widget__cal_availability__advanced_availability">
 		<div class="wpbc_widget_header">
-			<span class="wpbc_widget_header_text"><?php _e('Advanced availability', 'booking'); ?></span>
+			<span class="wpbc_widget_header_text"><?php esc_html_e('Advanced availability', 'booking'); ?></span>
 			<!--a href="https://wpbookingcalendar.com/features/#availability-from-today" target="_blank" class="wpbc_widget_header_settings_link"><span class="wpbc_pro_label">Pro</span></i></a-->
 		</div>
 		<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders" style="margin:0 0 0px;">
@@ -161,7 +161,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 							wpbc_stp_wiz__ui__upgrade_note( 'biz_m', 'https://wpbookingcalendar.com/features/#availability-from-today' );
 						}
 				?>
-				<div class="ui_group    ui_group__cal_availability__buffer_availability <?php echo $is_blur; ?>">
+				<div class="ui_group    ui_group__cal_availability__buffer_availability <?php echo esc_attr( $is_blur ); ?>">
 				<?php
 					wpbc_stp_wiz__ui__cal_availability__limit_available_from_today();
 
@@ -225,7 +225,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 			$params_checkbox = array(
 									  'id'       => $el_id . '_'.$day_key 		// HTML ID  of element
 									, 'name'     => $el_id . '_'.$day_key
-									, 'label'    => array( 'title' => $day_title , 'position' => 'right' )           //FixIn: 9.6.1.5
+									, 'label'    => array( 'title' => $day_title , 'position' => 'right' )           // FixIn: 9.6.1.5.
 									, 'style'    => '' 					// CSS of select element
 									, 'class'    => '' 					// CSS Class of select element
 									, 'disabled' => false
@@ -260,15 +260,15 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 			// Set checked specific Radio button,  depends on  last action  from  user
 			?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 				jQuery( document ).ready( function (){
-					//if   ( -1 !== _wpbc.get_other_param('availability__week_days_unavailable').indexOf( parseInt(<?php echo $day_key; ?>) ) ) {
-					if ( wpbc_in_array( data.ui.booking_unavailable_day, parseInt( <?php echo $day_key; ?> ) ) ){
-						jQuery( '#<?php echo $el_id . '_'.$day_key; ?>' ).prop( 'checked', true );//.trigger( 'change' );
+					//if   ( -1 !== _wpbc.get_other_param('availability__week_days_unavailable').indexOf( parseInt(<?php echo esc_attr( $day_key ); ?>) ) ) {
+					if ( wpbc_in_array( data.ui.booking_unavailable_day, parseInt( <?php echo esc_attr( $day_key ); ?> ) ) ){
+						jQuery( '#<?php echo esc_attr( $el_id . '_'.$day_key ); ?>' ).prop( 'checked', true );//.trigger( 'change' );
 					} else {
-						jQuery( '#<?php echo $el_id . '_'.$day_key; ?>' ).prop( 'checked', false );//.trigger( 'change' );
+						jQuery( '#<?php echo esc_attr( $el_id . '_'.$day_key ); ?>' ).prop( 'checked', false );//.trigger( 'change' );
 					}
-					jQuery( '#<?php echo $el_id . '_'.$day_key; ?>' ).off( 'change' );
-					jQuery( '#<?php echo $el_id . '_'.$day_key; ?>' ).on( 'change', function (){
-						wpbc_blink_element( '#<?php echo $el_id . '_apply'; ?>', 2, 50 );
+					jQuery( '#<?php echo esc_attr( $el_id . '_'.$day_key ); ?>' ).off( 'change' );
+					jQuery( '#<?php echo esc_attr( $el_id . '_'.$day_key ); ?>' ).on( 'change', function (){
+						wpbc_blink_element( '#<?php echo esc_attr( $el_id . '_apply' ); ?>', 2, 50 );
 					});
 				} );
 			<?php if (0) { ?></script><?php } ?> #><?php
@@ -347,7 +347,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 			//  Options
 			$dropdown_options = range( 0, 31 );
 
-			//FixIn: 10.8.1.4
+			// FixIn: 10.8.1.4.
 			$field_options = array();
 
 			$field_options[0] = ' - ';
@@ -403,9 +403,9 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 			jQuery( document ).ready( function (){
 				// Set selected option  in dropdown list based on  data. value
-				jQuery( '#<?php echo $el_id; ?> option[value="' + data.ui.booking_unavailable_days_num_from_today + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="' + data.ui.booking_unavailable_days_num_from_today + '"]' ).prop( 'selected', true );
 
-				jQuery( '#<?php echo $el_id; ?>_hint' ).html( '<span style="color: #cc3a5f;text-transform: uppercase;"><?php _e('Unavailable','booking') ?></span>'
+				jQuery( '#<?php echo esc_attr( $el_id ); ?>_hint' ).html( '<span style="color: #cc3a5f;text-transform: uppercase;"><?php echo esc_js( __('Unavailable', 'booking' ) ); ?></span>'
 															+ data.ui.booking_unavailable_days_num_from_today__hint );
 			} );
 
@@ -481,9 +481,9 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 			jQuery( document ).ready( function (){
 				// Set selected option  in dropdown list based on  data. value
-				jQuery( '#<?php echo $el_id; ?> option[value="' + data.ui.booking_available_days_num_from_today + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="' + data.ui.booking_available_days_num_from_today + '"]' ).prop( 'selected', true );
 
-				jQuery( '#<?php echo $el_id; ?>_hint' ).html(  '<span style="color: #50be31;text-transform: uppercase;"><?php _e('Available','booking') ?></span>'
+				jQuery( '#<?php echo esc_attr( $el_id ); ?>_hint' ).html(  '<span style="color: #50be31;text-transform: uppercase;"><?php echo esc_js( __('Available', 'booking' ) ); ?></span>'
 															+ data.ui.booking_available_days_num_from_today__hint );
 			} );
 
@@ -519,7 +519,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 
 			$el_value = '';
 		?><div class="ui_element"><?php
-			?><span class="wpbc_ui_control wpbc_ui_button <?php echo $el_id. '_' . $el_value . '__outer_button'; ?>" style="padding-right: 8px;"><?php
+			?><span class="wpbc_ui_control wpbc_ui_button <?php echo esc_attr( $el_id. '_' . $el_value . '__outer_button' ); ?>" style="padding-right: 8px;"><?php
 				$params_radio = array(
 								  'id'       => $el_id . '_' . $el_value			// HTML ID  of element
 								, 'name'     => $booking_action
@@ -542,7 +542,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 
 			$el_value = 'm';
 		?><div class="ui_element"><?php
-			?><span class="wpbc_ui_control wpbc_ui_button <?php echo $el_id. '_' . $el_value . '__outer_button'; ?>" style="padding-right: 8px;"><?php
+			?><span class="wpbc_ui_control wpbc_ui_button <?php echo esc_attr( $el_id. '_' . $el_value . '__outer_button' ); ?>" style="padding-right: 8px;"><?php
 				$params_radio = array(
 								  'id'       => $el_id . '_' . $el_value			// HTML ID  of element
 								, 'name'     => $booking_action
@@ -573,7 +573,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 
 			$el_value = 'd';
 		?><div class="ui_element"><?php
-			?><span class="wpbc_ui_control wpbc_ui_button <?php echo $el_id. '_' . $el_value . '__outer_button'; ?>" style="padding-right: 8px;"><?php
+			?><span class="wpbc_ui_control wpbc_ui_button <?php echo esc_attr( $el_id. '_' . $el_value . '__outer_button' ); ?>" style="padding-right: 8px;"><?php
 				$params_radio = array(
 								  'id'       => $el_id . '_' . $el_value			// HTML ID  of element
 								, 'name'     => $booking_action
@@ -610,31 +610,31 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 					<?php foreach ( array( '', 'm', 'd' ) as $item_val) { ?>
 
 						// Change and send Ajax
-						jQuery( '#ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo $item_val; ?>' ).on( 'change', function ( event ){
+						jQuery( '#ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo esc_attr( $item_val ); ?>' ).on( 'change', function ( event ){
 							<?php // It's required for not send request second time !  ?>
-							jQuery( '#ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo $item_val; ?>' ).off( 'change' );
-							//if ( '' === '<?php echo $item_val; ?>' ) {
+							jQuery( '#ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo esc_attr( $item_val ); ?>' ).off( 'change' );
+							//if ( '' === '<?php echo esc_attr( $item_val ); ?>' ) {
 								wpbc_ajx__setup_wizard_page__send_request_with_params( {
 									'do_action': 'load_form_template',
 									'step_data': {
-										'booking_unavailable_extra_in_out': '<?php echo $item_val; ?>'
+										'booking_unavailable_extra_in_out': '<?php echo esc_attr( $item_val ); ?>'
 									}
 								} );
 								wpbc_button_enable_loading_icon( this );
 								wpbc_admin_show_message_processing( '' );
 							//}
 							jQuery( '.ui_element_sub_section_d,.ui_element_sub_section_m').hide();
-							if ('m' == '<?php echo $item_val; ?>') {
+							if ('m' == '<?php echo esc_attr( $item_val ); ?>') {
 								jQuery( '.ui_element_sub_section_m').show();
 							}
-							if ('d' == '<?php echo $item_val; ?>') {
+							if ('d' == '<?php echo esc_attr( $item_val ); ?>') {
 								jQuery( '.ui_element_sub_section_d').show();
 							}
 							return false;
 						} );
 						<?php // Helper,  if we click on button  side,  and not at  radio button or label,  then  make radio checked. ?>
-						jQuery(     '.ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo $item_val; ?>__outer_button' ).on( 'click', function (){
-							jQuery( '#ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo $item_val; ?>' ).prop( "checked", true ).trigger('change');
+						jQuery(     '.ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo esc_attr( $item_val ); ?>__outer_button' ).on( 'click', function (){
+							jQuery( '#ui_btn_cstm__set_calendar_unavailable_before_after_bookings_<?php echo esc_attr( $item_val ); ?>' ).prop( "checked", true ).trigger('change');
 						} );
 
 					<?php } ?>
@@ -685,7 +685,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		$params_select = array(
 							  'id'       => $el_id  . '_in'				// HTML ID  of element
 							, 'name'     => $el_id  . '_in'
-							, 'label'    => __( 'Before booking', 'booking' )//'<span class="" style="font-weight:600;">' . __( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
+							, 'label'    => __( 'Before booking', 'booking' )//'<span class="" style="font-weight:600;">' . esc_html__( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
 							, 'style'    => 'max-width: 100%;' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							//, 'multiple' => true
@@ -713,7 +713,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		$params_select = array(
 							  'id'       => $el_id  . '_out' 				// HTML ID  of element
 							, 'name'     => $el_id  . '_out'
-							, 'label'    => __( 'After booking', 'booking' )//'<span class="" style="font-weight:600;">' . __( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
+							, 'label'    => __( 'After booking', 'booking' )//'<span class="" style="font-weight:600;">' . esc_html__( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
 							, 'style'    => 'max-width: 100%;' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							//, 'multiple' => true
@@ -742,8 +742,8 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 			jQuery( document ).ready( function (){
 				// Set selected option  in dropdown list based on  data. value
-				jQuery( '#<?php echo $el_id . '_in';  ?> option[value="' + data.ui.booking_unavailable_extra_minutes_in + '"]' ).prop( 'selected', true );
-				jQuery( '#<?php echo $el_id . '_out'; ?> option[value="' + data.ui.booking_unavailable_extra_minutes_out + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id . '_in' ); ?> option[value="' + data.ui.booking_unavailable_extra_minutes_in + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id . '_out' ); ?> option[value="' + data.ui.booking_unavailable_extra_minutes_out + '"]' ).prop( 'selected', true );
 			} );
 
 		<?php if (0) { ?></script><?php } ?> #><?php
@@ -765,7 +765,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		$params_select = array(
 							  'id'       => $el_id  . '_in'				// HTML ID  of element
 							, 'name'     => $el_id  . '_in'
-							, 'label'    => __( 'Before booking', 'booking' )//'<span class="" style="font-weight:600;">' . __( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
+							, 'label'    => __( 'Before booking', 'booking' )//'<span class="" style="font-weight:600;">' . esc_html__( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
 							, 'style'    => 'max-width: 100%;' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							//, 'multiple' => true
@@ -793,7 +793,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		$params_select = array(
 							  'id'       => $el_id  . '_out' 				// HTML ID  of element
 							, 'name'     => $el_id  . '_out'
-							, 'label'    => __( 'After booking', 'booking' )//'<span class="" style="font-weight:600;">' . __( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
+							, 'label'    => __( 'After booking', 'booking' )//'<span class="" style="font-weight:600;">' . esc_html__( 'Days', 'booking' ) . ' <em style="color:#888;">(' . __( 'min-max', 'booking' ) . '):</em></span>'
 							, 'style'    => 'max-width: 100%;' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							//, 'multiple' => true
@@ -822,8 +822,8 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
 			jQuery( document ).ready( function (){
 				// Set selected option  in dropdown list based on  data. value
-				jQuery( '#<?php echo $el_id . '_in';  ?> option[value="' + data.ui.booking_unavailable_extra_days_in + '"]' ).prop( 'selected', true );
-				jQuery( '#<?php echo $el_id . '_out'; ?> option[value="' + data.ui.booking_unavailable_extra_days_out + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id . '_in' ); ?> option[value="' + data.ui.booking_unavailable_extra_days_in + '"]' ).prop( 'selected', true );
+				jQuery( '#<?php echo esc_attr( $el_id . '_out' ); ?> option[value="' + data.ui.booking_unavailable_extra_days_out + '"]' ).prop( 'selected', true );
 			} );
 
 		<?php if (0) { ?></script><?php } ?> #><?php
@@ -881,7 +881,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 		// Help message
 		?><div class="wpbc-settings-notice notice-warning notice-helpful-info" style="height: auto;font-size: 12px;margin: 0 0 1.5em;">
 			<?php
-				_e( 'You can always change this later', 'booking' );
+				esc_html_e( 'You can always change this later', 'booking' );
 				echo ' - ';
 				echo '<a href="'. esc_attr( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab' ).'">Settings > Availability</a>';
 			?>
@@ -921,8 +921,8 @@ function wpbc_stp_wiz__ui__upgrade_note( $version, $url ){
     ?>
 	<div class="ui_group    ui_group__upgrade">
 		<div class="wpbc_upgrade_note">
-			This <a target="_blank" href="<?php echo $url; ?>">feature</a> requires the
-			<a target="_blank" href="<?php echo $url; ?>"><?php echo $ver_title; ?></a>
+			This <a target="_blank" href="<?php echo esc_url( $url ); ?>">feature</a> requires the
+			<a target="_blank" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $ver_title ); ?></a>
 			<?php if ( 'multiuser' !== $version ) { ?>
 				or higher versions
 			<?php } ?>

@@ -42,10 +42,9 @@ abstract class WPBC_Page_Structure {
         add_action('wpbc_page_structure_show', array( $this, 'content_structure' ) );           // This Hook fire in the class WPBC_Admin_Menus for showing page content of specific menu                
     }
         
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // Abstract Methods
-    ////////////////////////////////////////////////////////////////////////////
-    
+	// -----------------------------------------------------------------------------------------------------------------
     /**
 	 * Define slug in what menu to show this page.                             // Parameter relative: $_GET['page'].
      * 
@@ -155,6 +154,7 @@ abstract class WPBC_Page_Structure {
         
         $this_submit_form  = 'wpbc_emails_toolbar';                             // Define form name
         
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if ( isset( $_POST['is_form_sbmitted_'. $this_submit_form ] ) ) {
 
             // Check   N o n c e
@@ -177,10 +177,9 @@ abstract class WPBC_Page_Structure {
 	}
     
 
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // C O N T E N T
-    ////////////////////////////////////////////////////////////////////////////
-        
+	// -----------------------------------------------------------------------------------------------------------------
     /**
 	 * General Page Structure
      * 
@@ -215,7 +214,7 @@ abstract class WPBC_Page_Structure {
 
 
 		?><div class="wpbc_page_top__header_tabs"><?php
-			?><div    id="<?php echo $page_tag; ?>-admin-page-top"
+			?><div    id="<?php echo esc_attr( $page_tag ); ?>-admin-page-top"
 				   class="wrap wpbc_page_top <?php
 							echo ' wpbc_page_tab__' . esc_attr( $active_page_tab );
 							echo ' wpbc_page_subtab__' . esc_attr( $active_page_subtab );
@@ -224,12 +223,12 @@ abstract class WPBC_Page_Structure {
 				?><h1 class="wpbc_header wpdvlp-top-tabs"><?php
 					?><div class="wpbc_header_menu_tabs"><?php
 						if ( ! empty( $this->is_use_navigation_path ) ) {
-							$this->show_top_path( $page_tag );                     	// Show Top Path		//FixIn: 10.4.0.2
+							$this->show_top_path( $page_tag );                     	// Show Top Path		// FixIn: 10.4.0.2.
 						} else {
 							$this->show_tabs_line( $page_tag );                     // T O P    T A B S    in  Header
 						}
 					?></div><?php
-	 				make_bk_action( 'wpbc_h1_header_content_end', $page_tag, $active_page_tab, $active_page_subtab );	//FixIn: 9.9.0.10
+	 				make_bk_action( 'wpbc_h1_header_content_end', $page_tag, $active_page_tab, $active_page_subtab );	// FixIn: 9.9.0.10.
 				?></h1><?php
 			?></div><?php
 	  	?></div><?php
@@ -237,7 +236,7 @@ abstract class WPBC_Page_Structure {
 		do_action( 'wpbc_after_wpbc_page_top__header_tabs', $page_tag, $active_page_tab, $active_page_subtab  );                 // Fires Before showing settings Content page
 
 
-	  ?><div id="<?php echo $page_tag; ?>-admin-page"
+	  ?><div id="<?php echo esc_attr( $page_tag ); ?>-admin-page"
 			   class="wrap wpbc_page wpbc_page_tab__<?php echo esc_attr( $active_page_tab ); ?> wpbc_page_subtab__<?php echo esc_attr( $active_page_subtab ); ?>" >
             <div class="wpbc_admin_message"></div>
             <div class="wpbc_admin_page">
@@ -291,10 +290,9 @@ abstract class WPBC_Page_Structure {
       
     
     
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // Active Page Parameters
-    ////////////////////////////////////////////////////////////////////////////
-    
+	// -----------------------------------------------------------------------------------------------------------------
     /**
 	 * Check if this page selected (active), depend from the GET parameter
      *  If selected, then  define Current Page Parameters.
@@ -336,30 +334,29 @@ abstract class WPBC_Page_Structure {
 					}
 				}
 
-			if (       ( isset( $_REQUEST[ 'page' ] ) )
-					&& ( $this_page == $_REQUEST[ 'page' ] )  ){                        // We are inside of this page. Menu item selected.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			if ( ( isset( $_REQUEST['page'] ) ) && ( $this_page == $_REQUEST['page'] ) ) {                        // We are inside of this page. Menu item selected.
 
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if (   ( ! isset( $_REQUEST[ $this->tags['tab'] ] ) )                            // TAB      NOT     selected    &&  Default
 					//&& ( ! isset( $_REQUEST[ $this->tags['subtab'] ] ) )                       // SubTab   NOT     selected
 					&& ( isset( $this_tab['default'] ) ) && ( $this_tab['default'] )
 				   )
 					$is_page_selected = true;
 
-				if (   ( isset( $_REQUEST[ $this->tags['tab'] ] ) )                              // TAB      Selected
-					&& ( ! isset( $_REQUEST[ $this->tags['subtab'] ] ) )                         // SubTab   NOT     selected    &&      ! exist     ||  Default
-					&& ( $_REQUEST[ $this->tags['tab'] ] == $this_tab_tag )
-					&& ( ( $this_subtab_tag === 0 )
-						 || ( $this_subtab['default'] )
-					   )
-				   )
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+				if ( ( isset( $_REQUEST[ $this->tags['tab'] ] ) ) && ( ! isset( $_REQUEST[ $this->tags['subtab'] ] ) ) && ( $_REQUEST[ $this->tags['tab'] ] == $this_tab_tag ) && ( ( $this_subtab_tag === 0 ) || ( $this_subtab['default'] ) ) ) {
+					// ( isset( $_REQUEST[ $this->tags['tab'] ] ) )                  ->   // TAB      Selected
+					// && ( ! isset( $_REQUEST[ $this->tags['subtab'] ] ) )         ->   // SubTab   NOT     selected    &&      ! exist     ||  Default
 					$is_page_selected = true;
+				}
 
-				if (   ( isset( $_REQUEST[ $this->tags['tab'] ] ) )                              // TAB      Selected
-					&& ( isset( $_REQUEST[ $this->tags['subtab'] ] ) )                           // SubTab   Selected
-					&& ( $_REQUEST[ $this->tags['tab'] ] == $this_tab_tag )
-					&& ( $_REQUEST[ $this->tags['subtab'] ] == $this_subtab_tag )
-				   )
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+				if ( ( isset( $_REQUEST[ $this->tags['tab'] ] ) ) && ( isset( $_REQUEST[ $this->tags['subtab'] ] ) ) && ( $_REQUEST[ $this->tags['tab'] ] == $this_tab_tag ) && ( $_REQUEST[ $this->tags['subtab'] ] == $this_subtab_tag ) ) {
+					// if (   ( isset( $_REQUEST[ $this->tags['tab'] ] ) )         ->                 // TAB      Selected.
+					// && ( isset( $_REQUEST[ $this->tags['subtab'] ] ) )          ->                 // SubTab   Selected.
 					$is_page_selected = true;
+				}
 			}
 
 
@@ -395,7 +392,7 @@ abstract class WPBC_Page_Structure {
 		    $this->is_use_left_navigation_custom = true;
 	    }
 
-		// Use Top line as Path and nt the menu		//FixIn: 10.4.0.2
+		// Use Top line as Path and nt the menu		// FixIn: 10.4.0.2.
 	    if ( ( ! empty( $this_subtab ) ) && ( ! empty( $this_subtab['is_use_navigation_path'] ) ) ) {
 		    $this->is_use_navigation_path = $this_subtab['is_use_navigation_path'];
 	    }
@@ -431,10 +428,9 @@ abstract class WPBC_Page_Structure {
     
     
     
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // T A B s
-    ////////////////////////////////////////////////////////////////////////////
-
+	// -----------------------------------------------------------------------------------------------------------------
     // Define ------------------------------------------------------------------
     
     /**
@@ -625,7 +621,7 @@ abstract class WPBC_Page_Structure {
 			<div class="clear"></div><?php
 	    }
 
-	    //FixIn: 9.8.15.2
+	    // FixIn: 9.8.15.2.
 		do_action( 'wpbc_toolbar_top_tabs_insert', $menu_in_page_tag );
 
         $bottom_tabs = $this->get_all_sub_tabs_of_selected_tab( $menu_in_page_tag );
@@ -651,11 +647,12 @@ abstract class WPBC_Page_Structure {
     }
 
 
-	//FixIn: 10.4.0.2
+	// FixIn: 10.4.0.2.
+
 	/**
 	 * Show Top Path
 	 *
-	 * @param $menu_in_page_tag
+	 * @param        $menu_in_page_tag
 	 *
 	 * @param string $menu_in_page_tag - Menu Tag, the same as $this->in_page ();
 	 */
@@ -663,88 +660,89 @@ abstract class WPBC_Page_Structure {
 
 		$navigation_path_arr = $this->is_use_navigation_path;
 
-		if (! empty( $navigation_path_arr ) ) {
+		if ( ! empty( $navigation_path_arr ) ) {
 			if ( ! empty( $navigation_path_arr['path'] ) ) {
 				foreach ( $navigation_path_arr['path'] as $el_id => $el_arr ) {
 
 					$defaults = array(
-						'tag'    => 'a',
-						'title'  => '',
-						'hint'   => '',
-						'class'  => '',
-						'icon'   => false,
-						'url'    => '' ,
-						'attr'   => array(),
-						'html'   => ''
+						'tag'   => 'a',
+						'title' => '',
+						'hint'  => '',
+						'class' => '',
+						'icon'  => false,
+						'url'   => '',
+						'attr'  => array(),
+						'html'  => ''
 					);
-					$el_arr   = wp_parse_args( $el_arr, $defaults );
+					$el_arr = wp_parse_args( $el_arr, $defaults );
 
 					$tag = 'span';
-					if (  in_array( $el_arr['tag'], array( 'a', 'span', 'div', '>', '|' ) ) ) {
+					if ( in_array( $el_arr['tag'], array( 'a', 'span', 'div', '>', '|' ) ) ) {
 						$tag = $el_arr['tag'];
 					}
 
 					// Shortcut for 'Next'  breadcrumb
 					if ( '>' === $tag ) {
-							$tag  = 'span';
-							$el_arr['html'] = '<i class="menu_icon icon-1x wpbc_icn_navigate_next"></i>';
-							$el_arr['attr'] = array( 'style' => 'padding-left: 0;padding-right: 0;' );
+						$tag = 'span';
+						$el_arr['html'] = '<i class="menu_icon icon-1x wpbc_icn_navigate_next"></i>';
+						$el_arr['attr'] = array( 'style' => 'padding-left: 0;padding-right: 0;' );
 					}
 					if ( '|' === $tag ) {
-							$tag  = 'div';
-							$el_arr['html'] = '<div style="border-left: 2px solid #00000012;width: 0;height: 100%;margin: 0 10px;">&nbsp;</div>';
-							$el_arr['attr'] = array( 'style' => 'padding-left: 0;padding-right: 0;' );
+						$tag = 'div';
+						$el_arr['html'] = '<div style="border-left: 2px solid #00000012;width: 0;height: 100%;margin: 0 10px;">&nbsp;</div>';
+						$el_arr['attr'] = array( 'style' => 'padding-left: 0;padding-right: 0;' );
 					}
 
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo '<' . $tag;
 
 					if ( ! empty( $el_arr['action'] ) ) {
 
-						echo ' onclick="javascript:' . $el_arr['action'] .'" ';
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo ' onclick="javascript:' . $el_arr['action'] . '" ';
 
-						// URL
+						// URL.
 						echo ' href="javascript:void(0);" ';
 					} else {
-						// URL
+						// URL.
 						if ( ! empty( $el_arr['url'] ) ) {
 							echo ' href="' . esc_url( $el_arr['url'] ) . '" ';
 						}
 					}
 
-					// Hints
+					// Hints.
 					if ( ! empty( $el_arr['hint'] ) ) {
 						echo ' data-original-title="' . esc_attr( $el_arr['hint'] ) . '" ';
 					}
 
-					// CSS Class
-					echo ' class="nav-tab ' .
-									( ( ! empty( $el_arr['class'] ) ) ? esc_attr( $el_arr['class'] ) : '' ) .
-									( ( ! empty( $el_arr['hint'] ) ) ? ' tooltip_top ' : '' ) .
-								 '" ';
+					// CSS Class.
+					echo ' class="nav-tab ' . ( ( ! empty( $el_arr['class'] ) ) ? esc_attr( $el_arr['class'] )
+							: '' ) . ( ( ! empty( $el_arr['hint'] ) ) ? ' tooltip_top ' : '' ) . '" ';
 
 
-					// Other attr
+					// Other attr.
 					if ( ! empty( $el_arr['attr'] ) ) {
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						echo ' ' . WPBC_Settings_API::get_custom_attr_static( array( 'attr' => $el_arr['attr'] ) ) . ' ';
 					}
 
 					echo '>';
 
-							// In case if we insert  ANY html
-							if ( ! empty( $el_arr['html'] ) ) {
-								echo $el_arr['html'];
-							}
-							// Icon
-							if ( ! empty( $el_arr['icon'] ) ) {
-								echo '<i class="menu_icon icon-1x ' . esc_attr( $el_arr['icon'] ) . '"></i>';
-							}
-							// Title
-							if (!empty($el_arr['title'])){
-								echo '<span class="nav-tab-text">' .
-										( ( ! empty( $el_arr['icon'] ) ) ? '&nbsp;&nbsp;' : '' ) .
-									 	$el_arr['title'] .
-									 '</span>';
-							}
+					// In case if we insert  ANY html.
+					if ( ! empty( $el_arr['html'] ) ) {
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo  $el_arr['html'] ;
+					}
+					// Icon.
+					if ( ! empty( $el_arr['icon'] ) ) {
+						echo '<i class="menu_icon icon-1x ' . esc_attr( $el_arr['icon'] ) . '"></i>';
+					}
+					// Title.
+					if ( ! empty( $el_arr['title'] ) ) {
+						echo '<span class="nav-tab-text">' . ( ( ! empty( $el_arr['icon'] ) ) ? '&nbsp;&nbsp;'
+								: '' ) . wp_kses_post( $el_arr['title'] ) . '</span>';
+					}
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo '</' . $tag . '>';
 				}
 			}
@@ -752,45 +750,51 @@ abstract class WPBC_Page_Structure {
 	}
 
 
-
-    /**
+	/**
 	 * Show Top nav TABs line
-     * 
-     * @param string $menu_in_page_tag - Menu Tag, the same as $this->in_page ();
-     */
-    public function show_tabs_line( $menu_in_page_tag ) {
+	 *
+	 * @param string $menu_in_page_tag - Menu Tag, the same as $this->in_page ();
+	 */
+	public function show_tabs_line( $menu_in_page_tag ) {
 
-        foreach ( self::$nav_tabs[ $menu_in_page_tag ] as $tab_tag => $tab ) {
-            
-            $css_classes = ( ( isset($tab['css_classes']) ) ? $tab['css_classes'] : '' );
+		foreach ( self::$nav_tabs[ $menu_in_page_tag ] as $tab_tag => $tab ) {
 
-            if (  ( isset( $this->current_page_params['tab'] ) ) && ( $this->current_page_params['tab']['tag'] == $tab_tag )  )
-                    $css_classes .= ' nav-tab-active';                     
-            
-            if ( ! empty( $tab['position'] ) ) 
-                $css_classes .= ' nav-tab-position-' . $tab['position']; 
-            
-            if ( ! empty( $tab['hided'] ) ) 
-                $css_classes .= ' hide'; 
-            
-            if (  ( isset( $tab['disabled'] ) ) && ( $tab['disabled'] )  )
-                $css_classes .= ' wpdevelop-tab-disabled'; 
+			$css_classes = ( ( isset( $tab['css_classes'] ) ) ? $tab['css_classes'] : '' );
 
-            $tab['css_classes'] = $css_classes;
-            
-            $tab['link'] = ( ! empty($tab['link']) ? $tab['link'] : $this->get_tab_url( $menu_in_page_tag, $tab_tag ) );            
-                        
-            if (                                                                // Recheck active status of default TAB   
-                    ( isset( $_REQUEST[ $this->tags['tab'] ] ) )                    // Some Tab  selected                    
-                && ( $_REQUEST[ $this->tags['tab'] ] !== $tab_tag )                 // This tag  not in URL
-                && ( isset($tab['default']) && ( $tab['default'] ) )                                          // This tab default,  need to  set  it as not defaultm  for not showing it selected
-               ) 
-                $tab['default'] = false;
-            
-            wpbc_bs_display_tab( $tab );
-            
-        }
-    }
+			if ( ( isset( $this->current_page_params['tab'] ) ) && ( $this->current_page_params['tab']['tag'] == $tab_tag ) ) {
+				$css_classes .= ' nav-tab-active';
+			}
+
+			if ( ! empty( $tab['position'] ) ) {
+				$css_classes .= ' nav-tab-position-' . $tab['position'];
+			}
+
+			if ( ! empty( $tab['hided'] ) ) {
+				$css_classes .= ' hide';
+			}
+
+			if ( ( isset( $tab['disabled'] ) ) && ( $tab['disabled'] ) ) {
+				$css_classes .= ' wpdevelop-tab-disabled';
+			}
+
+			$tab['css_classes'] = $css_classes;
+
+			$tab['link'] = ( ! empty( $tab['link'] ) ? $tab['link']
+				: $this->get_tab_url( $menu_in_page_tag, $tab_tag ) );
+
+			// Recheck active status of default TAB.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( ( isset( $_REQUEST[ $this->tags['tab'] ] ) ) && ( $_REQUEST[ $this->tags['tab'] ] !== $tab_tag ) && ( isset( $tab['default'] ) && ( $tab['default'] ) ) ) {
+				// ( isset( $_REQUEST[ $this->tags['tab'] ] ) )              ->      // Some Tab  selected.
+				// && ( $_REQUEST[ $this->tags['tab'] ] !== $tab_tag )       ->      // This tag  not in URL.
+				// && ( isset( $tab['default'] ) && ( $tab['default'] ) )    ->      // This tab default,  need to  set  it as not defaultm  for not showing it selected.
+				$tab['default'] = false;
+			}
+
+			wpbc_bs_display_tab( $tab );
+
+		}
+	}
     
     
     /**
@@ -810,24 +814,34 @@ abstract class WPBC_Page_Structure {
                 break;
 
                 case 'button':                              // Button
-                   ?><div class="clear-for-mobile"></div><input 
-                            type="button" 
-                            class="button button-primary wpbc_submit_button" 
-                            value="<?php echo $tab['title']; ?>" 
-                            onclick="if (typeof document.forms['<?php echo $tab['form']; ?>'] !== 'undefined'){ document.forms['<?php echo $tab['form']; ?>'].submit(); } else { wpbc_admin_show_message( '<?php echo ' <strong>Error!</strong> Form <strong>' , $tab['form'] , '</strong> does not exist.'; ?>', 'error', 10000 ); }"     <?php  //FixIn: 7.0.1.56 ?>
-                            /><?php
+					?>
+					<div class="clear-for-mobile"></div><input
+						type="button"
+						class="button button-primary wpbc_submit_button"
+						value="<?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $tab['title']; ?>"
+						onclick="if (typeof document.forms['<?php
+						echo esc_js( $tab['form'] ); ?>'] !== 'undefined'){ document.forms['<?php
+						echo esc_js( $tab['form'] ); ?>'].submit(); } else { wpbc_admin_show_message( '<?php
+						echo ' <strong>Error!</strong> Form <strong>', esc_js( $tab['form'] ), '</strong> does not exist.'; ?>', 'error', 10000 ); }"     <?php
+						//FixIn: 7.0.1.56.
+						?>
+					/><?php
                 break;
 
-                case 'html':                                                    // HTML
-                    echo $tab['html'];
-                break;
-            
-                case 'goto-link':
-                    ?><a    class="nav-tab wpdevelop-submenu-tab go-to-link" 
-                            original-title="<?php echo (empty($tab['hint'])?'':$tab['hint']); ?>" 
-                            onclick="javascript:wpbc_scroll_to('#<?php echo esc_js( $tab['show_section'] ); ?>' );" 
-                            href="javascript:void(0);"><span><?php echo $tab['title']; ?></span></a><?php
-                break;
+				case 'html':                                                    // HTML.
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo  $tab['html'];
+					break;
+
+				case 'goto-link':
+					?><a    class="nav-tab wpdevelop-submenu-tab go-to-link"
+							original-title="<?php echo esc_attr( ( empty( $tab['hint'] ) ? '' : $tab['hint'] ) ); ?>"
+							onclick="javascript:wpbc_scroll_to('#<?php echo esc_js( $tab['show_section'] ); ?>' );"
+							href="javascript:void(0);"><span><?php
+						echo wp_kses_post( $tab['title'] ); ?></span></a><?php
+					break;
             
                 default:                                    // Link
 
@@ -859,21 +873,31 @@ abstract class WPBC_Page_Structure {
 
 		                ?><div id="wpbc_settings_left_nav_tab_<?php echo esc_attr( $tab_tag ); ?>"
 							   class="wpbc_settings_navigation_item <?php echo esc_attr( $css_classes ); ?>">
-						    <<?php echo $html_tag; ?> class="<?php echo esc_attr( $hint_css_classes ); ?>"
+						    <<?php
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo $html_tag; ?> class="<?php echo esc_attr( $hint_css_classes ); ?>"
 							   title="<?php echo esc_attr( $hint_title ); ?>"
 								<?php
-								if ( $html_tag == 'a' ) {                                                   			// Parameters for A tag
-
-									echo ' href="', $tab['link'] , '" ';
+								if ( $html_tag == 'a' ) {                                                            // Parameters for A tag.
+									?> href="<?php
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo  $tab['link'];
+									?>" <?php
 
 									if ( ! empty( $tab['onclick'] ) ) {
-										echo ' onclick="javascript:', $tab['onclick'], '" ';
+										?> onclick="javascript:<?php
+										// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+										echo $tab['onclick'];
+										?>" <?php
 									}
 								}
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								echo wpbc_get_custom_attr( $tab );
 								?>
 							>
-								<?php echo $tab['title']; ?>
+						<?php
+						echo wp_kses_post( $tab['title'] );
+						?>
 								<?php if ( ( ! empty( $tab['show_checked_icon'] ) ) && ( ! empty( $tab['checked_data'] ) ) ) {
 									$is_checked_data = get_bk_option( $tab['checked_data'] );
 									if (
@@ -886,7 +910,9 @@ abstract class WPBC_Page_Structure {
 									}
 
 								}?>
-							</<?php echo $html_tag; ?>>
+							</<?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $html_tag; ?>>
 						</div><?php
 
                     } else {
@@ -918,10 +944,9 @@ abstract class WPBC_Page_Structure {
     }
     
     
-    ////////////////////////////////////////////////////////////////////////////
+	// -----------------------------------------------------------------------------------------------------------------
     // Support
-    ////////////////////////////////////////////////////////////////////////////
-    
+	// -----------------------------------------------------------------------------------------------------------------
     /**
 	 * Get URL of settings page, based on Page Slug and Tab Slug
      * 

@@ -65,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 			$start_time = $start_end_time[0];                                       // array('00','00','01');
 			$end_time   = $start_end_time[1];                                       // array('00','00','01');
 
-			if ( ( '00' == $start_time[0] ) && ( '00' == $start_time[1] ) ) {       //FixIn: 8.7.8.8
+			if ( ( '00' == $start_time[0] ) && ( '00' == $start_time[1] ) ) {       // FixIn: 8.7.8.8.
 				$start_time = array( '00', '00', '00' );
 				$end_time   = array( '00', '00', '00' );
 			} else {
@@ -202,7 +202,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 			    $start_time = '00:00';
 		    }
 
-		    $start_time = wpbc_check_min_max_available_times( $start_time, '00:01', '23:59' );                          //FixIn: 8.7.11.1
+		    $start_time = wpbc_check_min_max_available_times( $start_time, '00:01', '23:59' );                          // FixIn: 8.7.11.1.
 
 		    $start_time = explode( ':', $start_time );
 
@@ -224,7 +224,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 			    $end_time = '00:00';
 		    }
 
-		    $end_time = wpbc_check_min_max_available_times( $end_time, '00:01', '23:59' );                              //FixIn: 8.7.11.1
+		    $end_time = wpbc_check_min_max_available_times( $end_time, '00:01', '23:59' );                              // FixIn: 8.7.11.1.
 
 		    $is_time_exist = true;
 
@@ -251,7 +251,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 		    // Here we are get start time and add duration for end time
 		    $new_end_time = mktime( intval( $start_time[0] ), intval( $start_time[1] ) );
 		    $new_end_time = $new_end_time + $end_time[0] * 60 * 60 + $end_time[1] * 60;
-		    $end_time     = date( 'H:i', $new_end_time );
+		    $end_time     = gmdate( 'H:i', $new_end_time );
 
 		    if ( $end_time == '00:00' ) {
 			    $end_time = '23:59';
@@ -278,7 +278,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 	 */
 	function wpbc_time_slot_in_format( $timeslot, $time_format = false ){
 
-		//FixIn: 8.9.3.1
+		// FixIn: 8.9.3.1.
 		if ( ( empty( $timeslot ) ) ) {
 			return '';
 		}
@@ -319,7 +319,8 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 
 	    global $wpdb;
 
-	    $dates_result = $wpdb->get_results( "SELECT DISTINCT booking_date FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id_str}) ORDER BY booking_date" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$dates_result = $wpdb->get_results( "SELECT DISTINCT booking_date FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id_str}) ORDER BY booking_date" );
 
 	    $dates_str = array();
 
@@ -349,7 +350,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 	function wpbc_get_only_dates__from_dates_ymd_his_csv__as_arr( $dates_ymd_his_csv ){
 
 
-        //FixIn: 10.1.5.6
+        // FixIn: 10.1.5.6.
 		$dates_only_arr = wpbc_get_dates_arr__from_dates_comma_separated( array(
 																				'dates_separator' => ', ',                  //  ', '
 																				'dates'           => $dates_ymd_his_csv,    	// '2023-04-04 12:03:00, 2023-04-07 2024-06-30:00'
@@ -389,7 +390,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 	    }
 
 	    $time_str = explode( ':', trim( $time_str ) );
-		//FixIn: 9.9.0.4
+		// FixIn: 9.9.0.4.
 		$time_str[0] = intval( $time_str[0] ) + $time_str_plus;
 		$time_str[1] = intval( $time_str[1] );
 
@@ -409,7 +410,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 	 * @return int - number of days
 	 */
 	function wpbc_get_difference_in_days( $day1, $day2 ) {
-		return floor( ( strtotime( $day1 ) - strtotime( $day2 ) ) / 86400 );        //FixIn: 8.2.1.11
+		return floor( ( strtotime( $day1 ) - strtotime( $day2 ) ) / 86400 );        // FixIn: 8.2.1.11.
 	}
 
 
@@ -463,11 +464,11 @@ function wpbc_get_comma_seprated_dates_from_to_day( $date_str_from, $date_str_to
     $aryRange=array();
     
     if ( $iDateTo >= $iDateFrom ) {
-        array_push( $aryRange, date( 'd.m.Y', $iDateFrom ) );                   // first entry
+        array_push( $aryRange, gmdate( 'd.m.Y', $iDateFrom ) );                   // first entry
 
         while ($iDateFrom<$iDateTo) {
             $iDateFrom+=86400;                                                  // add 24 hours
-            array_push( $aryRange, date( 'd.m.Y', $iDateFrom ) );
+            array_push( $aryRange, gmdate( 'd.m.Y', $iDateFrom ) );
         }
     }
     
@@ -598,7 +599,7 @@ function wpbc_get_dates_arr__from_dates_comma_separated( $params ){
  */
 function wpbc_get_tommorow_day( $nowday ){
 
-    $nowday_d = date( 'm.d.Y', mysql2date( 'U', $nowday ) );
+    $nowday_d = gmdate( 'm.d.Y', mysql2date( 'U', $nowday ) );
     $previos_array = explode( '.', $nowday_d );
     $tommorow_day = mktime( 0, 0, 0, intval($previos_array[0]), ( intval($previos_array[1]) + 1 ), intval($previos_array[2]) ) ;
     return $tommorow_day;
@@ -613,8 +614,8 @@ function wpbc_get_tommorow_day( $nowday ){
  */
 function wpbc_is_today_date( $some_day ) {
 
-    $some_day_d = date( 'm.d.Y',  mysql2date( 'U', $some_day ) );
-    $today_day =  date( 'm.d.Y' );
+    $some_day_d = gmdate( 'm.d.Y',  mysql2date( 'U', $some_day ) );
+    $today_day = gmdate( 'm.d.Y' );
 
 	if ( $today_day == $some_day_d ) {
 		return true;
@@ -632,9 +633,9 @@ function wpbc_is_today_date( $some_day ) {
  */
 function wpbc_is_tomorrow_date( $some_day ) {
 
-	$some_day_d   = date( 'Y-m-d 00:00:00', mysql2date( 'U', $some_day ) );
-	$today_day    = date( 'Y-m-d 00:00:00' );
-	$tomorrow_day = date( 'Y-m-d 00:00:00', strtotime( '+1 day', strtotime( $today_day ) ) );
+	$some_day_d   = gmdate( 'Y-m-d 00:00:00', mysql2date( 'U', $some_day ) );
+	$today_day    = gmdate( 'Y-m-d 00:00:00' );
+	$tomorrow_day = gmdate( 'Y-m-d 00:00:00', strtotime( '+1 day', strtotime( $today_day ) ) );
 
 	if ( $tomorrow_day == $some_day_d ) {
 		return true;
@@ -644,7 +645,7 @@ function wpbc_is_tomorrow_date( $some_day ) {
 }
 
 
-//FixIn: 8.8.1.2
+// FixIn: 8.8.1.2.
 /**
  * Check if this date in past
  *
@@ -653,7 +654,7 @@ function wpbc_is_tomorrow_date( $some_day ) {
  */
 function wpbc_is_date_in_past( $some_day ) {
 
-	$some_day_d = date( 'm.d.Y', mysql2date( 'U', $some_day ) );
+	$some_day_d = gmdate( 'm.d.Y', mysql2date( 'U', $some_day ) );
 	$some_array = explode( '.', $some_day_d );
 	$some_day   = mktime( 0, 0, 0, intval($some_array[0]), ( intval($some_array[1]) + 1 ), intval($some_array[2]) );
 
@@ -685,7 +686,7 @@ function wpbc_get_date_in_correct_format( $dt, $date_format = false, $time_forma
     if ( $time_format === false )   $time_format = get_bk_option( 'booking_time_format');        
     if ( empty( $time_format ) )    $time_format = get_option( 'time_format' );       //'h:i a';                        //FixIn:  TimeFree 2    -  in Booking Calendar Free version  show by  default times hints in AM/PM format
     
-    $my_time = date( 'H:i:s' , mysql2date( 'U', $dt ) );    
+    $my_time = gmdate( 'H:i:s' , mysql2date( 'U', $dt ) );
     if ( $my_time == '00:00:00' )   $time_format = '';
     
     $bk_date = date_i18n( $date_format, mysql2date( 'U', $dt ) );
@@ -744,7 +745,7 @@ function wpbc_get_short_dates_formated_to_show( $bk_dates_short, $is_approved = 
     return $short_dates_content;    
 }
 
-//FixIn: 9.6.3.5
+// FixIn: 9.6.3.5.
 
 /**
  * Get booking dates from DB for specific calendar
@@ -820,7 +821,9 @@ function wpbc__sql__get_booked_dates( $params ){
                 [1] => stdClass Object ( [booking_date] => 2022-12-28 00:00:00,  [approved] => 1,  [booking_id] => 26 )
 	            ...
 	 */
-	$result_arr = $wpdb->get_results(  $sql . $sql_where . $sql_order );
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$result_arr = $wpdb->get_results( $sql . $sql_where . $sql_order );
 
 	// P A R S E
 	$prior_check_out_date = false;
@@ -833,7 +836,7 @@ function wpbc__sql__get_booked_dates( $params ){
         if (
 				( ! class_exists( 'wpdev_bk_biz_l' ) )
              || ( ( class_exists( 'wpdev_bk_biz_l' ) ) && ( ! wpbc_is_this_parent_resource( $resource_id ) ) )
-        ){                                                                                                      //FixIn: 9.1.2.7
+        ){                                                                                                      // FixIn: 9.1.2.7.
             list( $blocked_days_range, $prior_check_out_date ) = apply_filters( 'wpbc_get_extended_block_dates_filter', array( $blocked_days_range, $prior_check_out_date ) );
 		}
 
@@ -844,11 +847,11 @@ function wpbc__sql__get_booked_dates( $params ){
 
 				$date_as_int = strtotime( $sql_date->booking_date );
 
-				$date_key = date( 'Y-m-d', $date_as_int );
+				$date_key = gmdate( 'Y-m-d', $date_as_int );
 				$date_seconds = $date_as_int - strtotime( $date_key );
 
 				// Transform '2022-09-01' to  9-1-2022
-				$date_key__for_calendar = date( 'n-j-Y', $date_as_int );                    // j -	Day of the month without leading zeros 	1 to 31 ;      n -	Number of month, without leading zeros 	1 to 12
+				$date_key__for_calendar = gmdate( 'n-j-Y', $date_as_int );                    // j -	Day of the month without leading zeros 	1 to 31 ;      n -	Number of month, without leading zeros 	1 to 12
 
 				if ( empty( $dates_arr[ $date_key__for_calendar ] ) ) {
 					$dates_arr[ $date_key__for_calendar ] = array();
@@ -896,14 +899,14 @@ function wpbc__sql__get_booked_dates( $params ){
 	 */
 	function wpbc__sql__get_season_availability( $params ){
 
-		//FixIn: 9.5.4.4
+		// FixIn: 9.5.4.4.
 		$max_days_count = 365;
 		$max_monthes_in_calendar = get_bk_option( 'booking_max_monthes_in_calendar' );
 
 		if ( strpos( $max_monthes_in_calendar, 'm' ) !== false ) {
-			$max_days_count = intval( str_replace( 'm', '', $max_monthes_in_calendar ) ) * 31 + 5;                          //FixIn: 9.6.1.1
+			$max_days_count = intval( str_replace( 'm', '', $max_monthes_in_calendar ) ) * 31 + 5;                          // FixIn: 9.6.1.1.
 		} else {
-			$max_days_count = intval( str_replace( 'y', '', $max_monthes_in_calendar ) ) * 365 + 15;                        //FixIn: 9.6.1.1
+			$max_days_count = intval( str_replace( 'y', '', $max_monthes_in_calendar ) ) * 365 + 15;                        // FixIn: 9.6.1.1.
 		}
 
 		$defaults = array(
@@ -921,7 +924,7 @@ function wpbc__sql__get_booked_dates( $params ){
 
 		$season_filters_id_arr = array();
 
-		if ( ( class_exists( 'wpdev_bk_biz_m' ) ) && ( function_exists( 'wpbc_get_resource_meta' ) ) ) {                // BM and higher        //FixIn: 9.9.0.13
+		if ( ( class_exists( 'wpdev_bk_biz_m' ) ) && ( function_exists( 'wpbc_get_resource_meta' ) ) ) {                // BM and higher        // FixIn: 9.9.0.13.
 
 			// S Q L
 			$availability_res = wpbc_get_resource_meta( $params['resource_id'], 'availability' );
@@ -959,7 +962,7 @@ function wpbc__sql__get_booked_dates( $params ){
 
 		for( $i = 0; $i < $params['count']; $i++) {
 
-			$date_y_m_d = date( 'Y-m-d', strtotime( '+' . $i . 'days', strtotime( $params['from'] ) ) );
+			$date_y_m_d = gmdate( 'Y-m-d', strtotime( '+' . $i . 'days', strtotime( $params['from'] ) ) );
 
 			$days_availability[ $date_y_m_d ] = $is_all_days_available;
 

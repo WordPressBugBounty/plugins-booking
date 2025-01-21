@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 
 // <editor-fold     defaultstate="collapsed"                        desc="  ==  SQL - Get Dates array from DB  ==  "  >
@@ -169,6 +169,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		// Show past bookings, as well
 		// $my_sql = str_replace( 'AND dt.booking_date >= CURDATE()', '', $my_sql );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$sql__dates_obj__arr = $wpdb->get_results( $my_sql );
 
 
@@ -501,7 +502,8 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		wpbc_set_limit_php( 300 );      // Set 300 seconds for php execution.
 	}
 
-
+	$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
     $defaults = array(
 					  'dates_to_check'      => 'CURDATE'                                    //  'CURDATE'  |  'ALL'  |  [ '2023-07-15' , '2023-07-21' ]
     				, 'approved'            => ( ( get_bk_option( 'booking_is_show_pending_days_as_available' ) == 'On' ) ? '1' : 'all' )     // 'all' | 0 | 1
@@ -511,12 +513,12 @@ function wpbc_get_availability_per_days_arr( $params ) {
                     , 'as_single_resource'  => false                                        // get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources'
 	                , 'max_days_count'      => wpbc_get_max_visible_days_in_calendar()      // 365
 	                , 'timeslots_to_check_intersect' => array()                             // array( '12:20 - 12:55', '13:00 - 14:00' )   //TODO: ? do we really need it, because below we get it from function
-                    , 'request_uri'         => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'] )     //  front-end: $_SERVER['REQUEST_URI'] | ajax: $_SERVER['HTTP_REFERER']                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages
+                    , 'request_uri'         => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri )     //  front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages
 						, 'custom_form'         => ''                                   // Required for checking all available time-slots and compare with  booked time slots
     			);
 	$params   = wp_parse_args( $params, $defaults );
 
-	//FixIn: 10.7.1.2
+	// FixIn: 10.7.1.2.
 	if ( false !== strpos( $params['request_uri'], 'allow_past' ) ) {
 		$params['dates_to_check'] = 'ALL';
 	}
@@ -579,7 +581,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	$search_dates = $params['dates_to_check'];    // 'CURDATE' | 'ALL' |  [ "2023-08-03" , "2023-08-04" , "2023-08-05" ]
 
 	//FixIn: 9.8.15.10  Aggregate or not Aggregate Booking > Availability ?     aggregate_type = 'all' | 'bookings_only'
-	if ( ( ! empty( $params['aggregate_type'] ) ) && ( 'bookings_only' === $params['aggregate_type'] ) ) {              //FixIn: 9.9.0.16
+	if ( ( ! empty( $params['aggregate_type'] ) ) && ( 'bookings_only' === $params['aggregate_type'] ) ) {              // FixIn: 9.9.0.16.
 		$unavailable_dates__per_resources__arr = wpbc_for_resources_arr__get_unavailable_dates(
 																$resource_id__with_children__arr,                       // Only One Primary Resource !!
 																$search_dates
@@ -615,7 +617,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	$is_this_bap_page  = ( false !== strpos( $params['request_uri'], 'page=wpbc-new' ) ) ? true : false;
 	$is_this_hash_page = ( false !== strpos( $params['request_uri'], 'booking_hash' ) ) ? true : false;                // Set it to TRUE for adding booking in past at Booking > Add booking page
 
-	//FixIn: 10.7.1.2
+	// FixIn: 10.7.1.2.
 	if ( ! $is_this_hash_page ) {
 		$is_this_hash_page = ( false !== strpos( $params['request_uri'], 'allow_past' ) ) ? true : false;
 	}
@@ -629,19 +631,19 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		$start_day_number     = - 1 * $params['max_days_count'];
 		//$today_inix_timestamp = strtotime( '-' . intval( $params['max_days_count'] ) . ' days' );                       // - 300 days
 
-		// Get time, relative to Timezone from WordPress  > Settings General page   //FixIn: 9.9.0.17
+		// Get time, relative to Timezone from WordPress  > Settings General page   // FixIn: 9.9.0.17.
 		$start_date_unix       = strtotime( '-' . intval( $params['max_days_count'] ) . ' days' );                     // - 365 days
-		$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( date( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
+		$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
 		$today_inix_timestamp  = strtotime( $date_with_wp_timezone );
 
 	} else if ( 'CURDATE' == $params['dates_to_check'] ) {                                                              // Current dates        ->   CURDATE()
 
 		$start_day_number     = 1;
-		// $today_inix_timestamp = strtotime( date( 'Y-m-d 00:00:00', strtotime( 'now' ) ) );                              // Today 00:00:00
+		// $today_inix_timestamp = strtotime( gmdate( 'Y-m-d 00:00:00', strtotime( 'now' ) ) );                              // Today 00:00:00
 
-		// Get time, relative to Timezone from WordPress  > Settings General page   //FixIn: 9.9.0.17
+		// Get time, relative to Timezone from WordPress  > Settings General page   // FixIn: 9.9.0.17.
 		$start_date_unix        = strtotime( 'now' );
-		$date_with_wp_timezone  = wpbc_datetime_localized__use_wp_timezone( date( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
+		$date_with_wp_timezone  = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
 		$today_inix_timestamp = strtotime( $date_with_wp_timezone );
 
 	} else if ( is_array( $params['dates_to_check'] ) ) {
@@ -673,7 +675,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 	for ( $day_num = $start_day_number; $day_num <= $params['max_days_count']; $day_num ++ ) {
 
-		$my_day_tag = date( 'Y-m-d', $today_inix_timestamp );                                   // '2023-07-19'
+		$my_day_tag = gmdate( 'Y-m-d', $today_inix_timestamp );                                   // '2023-07-19'
 
 
 		//--------------------------------------------------------------------------------------------------------------
@@ -1099,7 +1101,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 
 		$availability_per_this_day['summary']['hint__in_day__cost']         = wpbc_support_capacity__in_day_hint__summary__day_cost( $availability_per_this_day, $my_day_tag, $resource_id_arr );
-		$availability_per_this_day['summary']['hint__in_day__availability'] = wpbc_support_capacity__in_day_hint__summary__availability( $availability_per_this_day, $my_day_tag, $resource_id_arr );       //FixIn: 10.6.4.1
+		$availability_per_this_day['summary']['hint__in_day__availability'] = wpbc_support_capacity__in_day_hint__summary__availability( $availability_per_this_day, $my_day_tag, $resource_id_arr );       // FixIn: 10.6.4.1.
 
 		// -------------------------------------------------------------------------------------------------------------
 		// ['summary']['status_for_day']
@@ -1315,7 +1317,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 					$cost_text = $availability_per_this_day[ $id_of_first_resource ]->date_cost_rate;
 					$cost_text = number_format( floatval( $cost_text ), wpbc_get_cost_decimals(), '.', '' );
-					$cost_text = strip_tags( wpbc_cost_show( $cost_text, array(  'currency' => 'CURRENCY_SYMBOL' ) ) );
+					$cost_text = wp_strip_all_tags( wpbc_cost_show( $cost_text, array(  'currency' => 'CURRENCY_SYMBOL' ) ) );
 					$cost_text = str_replace( array( 'CURRENCY_SYMBOL', '&' ), array( $cur_sym, '&amp;' ), $cost_text );
 					$cost_text = html_entity_decode($cost_text);
 
@@ -1325,7 +1327,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			return $tooltip;
 		}
 
-		//FixIn: 10.6.4.1
+		// FixIn: 10.6.4.1.
 		/**
 		 * Get availability  for in Day cells
 		 *
@@ -1383,7 +1385,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 			if ( 'On' == get_bk_option( 'booking_is_show_booked_data_in_tooltips' ) ) {                                            //FixIn: 9.5.0.2.2
 
-				$tooltip_title_word = '<div class="wpbc_tooltip_title">' . __('Booking details','booking') . '</div>';
+				$tooltip_title_word = '<div class="wpbc_tooltip_title">' . esc_html__('Booking details','booking') . '</div>';
 
 				$status_summary_tooltip_times = array();
 				foreach ( $resource_id_arr as $resource_id ) {
@@ -1560,7 +1562,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 					if ( is_null( $replace_value ) ) { $replace_value = ''; };
 
-					$replace_value = wpbc_replace__true_false__to__yes_no( $replace_value );									    //FixIn: 9.8.9.1
+					$replace_value = wpbc_replace__true_false__to__yes_no( $replace_value );									    // FixIn: 9.8.9.1.
 
 		            $booking_shortcodes_in_tooltips = str_replace(  array(
 																			'[' . $replace_shortcode . ']'
@@ -1644,13 +1646,13 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		 */
 		function wpbc_support_capacity__day_status__from_today_unavailable( $availability_per_day, $my_day_tag, $resource_id ){
 
-			//FixIn: 10.8.1.4
+			// FixIn: 10.8.1.4.
 
 			// -----------------------------------------------------------------------------------------------------        // from_today_unavailable
 			// 2. Unavailable days from today
 			$unavailable_days_num_from_today = get_bk_option( 'booking_unavailable_days_num_from_today' );
 
-			//FixIn: 10.8.1.4
+			// FixIn: 10.8.1.4.
 			if ( ! empty( $unavailable_days_num_from_today ) ) {
 				if ( 'm' === substr( $unavailable_days_num_from_today, - 1 ) ) {
 					$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' minutes' );                // + 0 days
@@ -1662,8 +1664,8 @@ function wpbc_get_availability_per_days_arr( $params ) {
 				$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                   // + 0 days
 			}
 
-			//FixIn: 9.9.0.17
-			$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( date( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
+			// FixIn: 9.9.0.17.
+			$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
 			$today_timestamp_wp_timezone  = strtotime( $date_with_wp_timezone );
 			$days_number = intval( (  $today_timestamp_wp_timezone - strtotime( $my_day_tag ) ) / 86400 );
 
@@ -1701,7 +1703,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 				$unavailable_weekdays[ $week_day_num ] = ( 'On' == get_bk_option( 'booking_unavailable_day' . $week_day_num ) ) ? true : false;
 			}
 
-			$this_day_week_num = date( 'w', strtotime( $my_day_tag ) ); // 0 - 6
+			$this_day_week_num = gmdate( 'w', strtotime( $my_day_tag ) ); // 0 - 6
 
 			if ( $unavailable_weekdays[ $this_day_week_num ] ) {
 				// this date unavailable

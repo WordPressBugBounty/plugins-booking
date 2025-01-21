@@ -1,7 +1,7 @@
 <?php
 
 
-//FixIn: 9.4.3.6
+// FixIn: 9.4.3.6.
 
 
 /**
@@ -26,11 +26,11 @@ function wpbc_get_calendar_legend() {
 		if (    //FixIn: 10.1.5.5 ( class_exists( 'wpdev_bk_biz_s' ) ) &&
 		      ( 'On' == get_bk_option( 'booking_legend_is_show_item_partially' ) ) ) { $items_sort[] = 'partially'; }
 
-		if ( 'On' == get_bk_option( 'booking_legend_is_show_item_unavailable' ) ) {   $items_sort[] = 'unavailable'; }  //FixIn: 9.9.0.5
+		if ( 'On' == get_bk_option( 'booking_legend_is_show_item_unavailable' ) ) {   $items_sort[] = 'unavailable'; }  // FixIn: 9.9.0.5.
 
 		$calendar_legend_html = wpbc_get_calendar_legend__content_html( array(
 																			  'is_vertical'       => ( 'On' != get_bk_option( 'booking_legend_is_vertical' ) ) ? false : true
-																			, 'text_for_day_cell' => ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) ) ? '&nbsp;' : date( 'd' )
+																			, 'text_for_day_cell' => ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) ) ? '&nbsp;' : gmdate( 'd' )
 																			, 'items'             => $items_sort
 																	) );
 	}
@@ -43,7 +43,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 
 	$defaults = array(
 					  'is_vertical'         => ( 'On' != get_bk_option( 'booking_legend_is_vertical' ) ) ? false : true
-					, 'text_for_day_cell'   => ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) )  ? '&nbsp;' : date( 'd' )
+					, 'text_for_day_cell'   => ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) )  ? '&nbsp;' : gmdate( 'd' )
 					, 'items' => array(
 										  'available'
 										, 'approved'
@@ -55,18 +55,78 @@ function wpbc_get_calendar_legend__content_html( $params ) {
     			);
     $params   = wp_parse_args( $params, $defaults );
 
+	$legend_arr = array();
 
-	// Content for Partially  booked item - "time slot" or "change over days"
-	if(1){
+	// Available.
+	if ( 1 ) {
+		$key          = 'available';
+		$day_cell_tag = 'a';
+
+		$legend_arr[ $key ]  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';
+		$legend_arr[ $key ] .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
+		$legend_arr[ $key ] .= '<td class="datepick-days-cell date_available wpbc_calendar_legend_day_cell_height">';
+		$legend_arr[ $key ] .= '<div class="wpbc-cell-box">';
+		$legend_arr[ $key ] .= '	<div class="date-cell-content">';
+		$legend_arr[ $key ] .= '		<div class="date-content-top"></div>';
+		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . $params['text_for_day_cell'] . '</' . $day_cell_tag . '>';
+		$legend_arr[ $key ] .= '		<div class="date-content-bottom"></div>';
+		$legend_arr[ $key ] .= '	</div>';
+		$legend_arr[ $key ] .= '</div>';
+		$legend_arr[ $key ] .= '</td></tr></tbody></table>';
+		$legend_arr[ $key ] .= '</div>';
+	}
+
+	// Pending.
+	if ( 1 ) {
+		$key          = 'pending';
+		$day_cell_tag = 'span';
+
+		$legend_arr[ $key ]  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';
+		$legend_arr[ $key ] .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
+		$legend_arr[ $key ] .= '<td class="datepick-days-cell datepick-unselectable date_user_unavailable full_day_booking date2approve wpbc_calendar_legend_day_cell_height">';
+		$legend_arr[ $key ] .= '<div class="wpbc-cell-box">';
+		$legend_arr[ $key ] .= '	<div class="date-cell-content">';
+		$legend_arr[ $key ] .= '		<div class="date-content-top"></div>';
+		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . $params['text_for_day_cell'] . '</' . $day_cell_tag . '>';
+		$legend_arr[ $key ] .= '		<div class="date-content-bottom"></div>';
+		$legend_arr[ $key ] .= '	</div>';
+		$legend_arr[ $key ] .= '</div>';
+		$legend_arr[ $key ] .= '</td></tr></tbody></table>';
+		$legend_arr[ $key ] .= '</div>';
+	}
+
+	// Approved.
+	if ( 1 ) {
+		$key          = 'approved';
+		$day_cell_tag = 'span';
+
+		$legend_arr[ $key ]  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';
+		$legend_arr[ $key ] .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
+		$legend_arr[ $key ] .= '<td class="datepick-days-cell datepick-unselectable date_user_unavailable full_day_booking date_approved wpbc_calendar_legend_day_cell_height">';
+		$legend_arr[ $key ] .= '<div class="wpbc-cell-box">';
+		$legend_arr[ $key ] .= '	<div class="date-cell-content">';
+		$legend_arr[ $key ] .= '		<div class="date-content-top"></div>';
+		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . $params['text_for_day_cell'] . '</' . $day_cell_tag . '>';
+		$legend_arr[ $key ] .= '		<div class="date-content-bottom"></div>';
+		$legend_arr[ $key ] .= '	</div>';
+		$legend_arr[ $key ] .= '</div>';
+		$legend_arr[ $key ] .= '</td></tr></tbody></table>';
+		$legend_arr[ $key ] .= '</div>';
+	}
+
+
+	// Content for Partially  booked item - "time slot" or "change over days".
+	if ( 1 ) {
 		$my_partially = '';
-		$booking_timeslot_day_bg_as_available = ( 'On' === get_bk_option( 'booking_timeslot_day_bg_as_available' ) ) ? ' wpbc_timeslot_day_bg_as_available' : '';
+
+		$booking_timeslot_day_bg_as_available  = ( 'On' === get_bk_option( 'booking_timeslot_day_bg_as_available' ) ) ? ' wpbc_timeslot_day_bg_as_available' : '';
 		$booking_timeslot_day_bg_as_available .= ( 'Off' !== get_bk_option( 'booking_change_over_days_triangles' ) ) ? ' wpbc_change_over_triangle' : '';
 
 
 		$my_partially .= '<span class="' . $booking_timeslot_day_bg_as_available . '">';
-		$my_partially .= '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     //FixIn: 9.3.1.4
+		$my_partially .= '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     // FixIn: 9.3.1.4.
 		$my_partially .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
-		if ( ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time() ) ) {                                                   //FixIn: 8.9.4.10
+		if ( ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time() ) ) {                                                   // FixIn: 8.9.4.10.
 			$my_partially .= '<td class="datepick-days-cell date_available date_approved timespartly check_in_time check_in_time_date_approved wpbc_calendar_legend_day_cell_height">';
 		} else {
 			$my_partially .= '<td class="datepick-days-cell date_available date2approve timespartly times_clock wpbc_calendar_legend_day_cell_height">';
@@ -87,15 +147,15 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_partially .= '</span>';
 	}
 
-	// Unavailable
-	if (1){
-		$my_unavailable = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     //FixIn: 9.3.1.4
+	// Unavailable.
+	if ( 1 ) {
+		$my_unavailable  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';                     // FixIn: 9.3.1.4.
 		$my_unavailable .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
 		$my_unavailable .= '<td class="datepick-days-cell datepick-unselectable date_user_unavailable wpbc_calendar_legend_day_cell_height">';
 		$my_unavailable .= '<div class="wpbc-cell-box">';
 		$my_unavailable .= '	<div class="date-cell-content">';
 		$my_unavailable .= '		<div class="date-content-top"></div>';
-		$my_unavailable .= '		<'.$params['unavailable_day_cell_tag'].'>' . $params['text_for_day_cell'] . '</'.$params['unavailable_day_cell_tag'].'>';
+		$my_unavailable .= '		<' . $params['unavailable_day_cell_tag'] . '>' . $params['text_for_day_cell'] . '</' . $params['unavailable_day_cell_tag'] . '>';
 		$my_unavailable .= '		<div class="date-content-bottom"></div>';
 		$my_unavailable .= '	</div>';
 		$my_unavailable .= '</div>';
@@ -103,15 +163,15 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_unavailable .= '</div>';
 	}
 
-	// Resource Unavailable
-	if (1){
-		$my_resource_unavailable = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     //FixIn: 9.3.1.4
+	// Resource Unavailable.
+	if ( 1 ) {
+		$my_resource_unavailable  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';             // FixIn: 9.3.1.4.
 		$my_resource_unavailable .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
 		$my_resource_unavailable .= '<td class="datepick-days-cell resource_unavailable date_user_unavailable wpbc_calendar_legend_day_cell_height">';
 		$my_resource_unavailable .= '<div class="wpbc-cell-box">';
 		$my_resource_unavailable .= '	<div class="date-cell-content">';
 		$my_resource_unavailable .= '		<div class="date-content-top"></div>';
-		$my_resource_unavailable .= '		<'.$params['unavailable_day_cell_tag'].'>' . $params['text_for_day_cell'] . '</'.$params['unavailable_day_cell_tag'].'>';
+		$my_resource_unavailable .= '		<' . $params['unavailable_day_cell_tag'] . '>' . $params['text_for_day_cell'] . '</' . $params['unavailable_day_cell_tag'] . '>';
 		$my_resource_unavailable .= '		<div class="date-content-bottom"></div>';
 		$my_resource_unavailable .= '	</div>';
 		$my_resource_unavailable .= '</div>';
@@ -123,18 +183,18 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 
 	$items_arr = array(   'available' => array(
 											  'title'             => ( ! empty( $params['titles']['available'] ) ) ? $params['titles']['available'] : wpbc_lang( get_bk_option( 'booking_legend_text_for_item_available' ) )
-											, 'text_for_day_cell' => '<a>' . $params['text_for_day_cell'] . '</a>'
-											, 'css_class'         => 'block_free datepick-days-cell'
+											, 'text_for_day_cell' => $legend_arr['available']  // '<a>' . $params['text_for_day_cell'] . '</a>'.
+											, 'css_class'         => '' // 'block_free datepick-days-cell'
 										)
 						, 'approved' => array(
 											  'title'             => ( ! empty( $params['titles']['approved'] ) ) ? $params['titles']['approved'] : wpbc_lang( get_bk_option( 'booking_legend_text_for_item_approved' ) )
-											, 'text_for_day_cell' => $params['text_for_day_cell']
-											, 'css_class'         => 'block_booked date_approved'
+											, 'text_for_day_cell' => $legend_arr['approved']  // $params['text_for_day_cell'].
+											, 'css_class'         => '' //'block_booked date_approved'
 										)
 						, 'pending' => array(
 											  'title'             => ( ! empty( $params['titles']['pending'] ) ) ? $params['titles']['pending'] : wpbc_lang( get_bk_option( 'booking_legend_text_for_item_pending' ) )
-											, 'text_for_day_cell' => $params['text_for_day_cell']
-											, 'css_class'         => 'block_pending date2approve'
+											, 'text_for_day_cell' => $legend_arr['pending']  // $params['text_for_day_cell'].
+											, 'css_class'         => '' //'block_pending date2approve'
 										)
 						, 'partially' => array(
 											  'title'             => ( ! empty( $params['titles']['partially'] ) )
@@ -147,7 +207,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 											, 'text_for_day_cell' => $my_partially
 											, 'css_class'         => ''
 										)
-						, 'unavailable' => array(                       //FixIn: 9.9.0.5
+						, 'unavailable' => array(                       // FixIn: 9.9.0.5.
 											  'title'             =>  ( ! empty( $params['titles']['unavailable'] ) )
 												                     ? $params['titles']['unavailable']
 												                     : (
@@ -156,12 +216,12 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 																			: __( 'Unavailable', 'booking' )
 												                       )
 											, 'text_for_day_cell' => $my_unavailable
-											, 'css_class'         => 'datepick-days-cell datepick-unselectable date_user_unavailable'
+											, 'css_class'         => '' //'datepick-days-cell datepick-unselectable date_user_unavailable'
 										)
 						, 'resource_unavailable' => array(
 											  'title'             =>  ( ! empty( $params['titles']['resource_unavailable'] ) ) ? $params['titles']['resource_unavailable'] : __( 'Resource unavailable days', 'booking' )
 											, 'text_for_day_cell' => $my_resource_unavailable
-											, 'css_class'         => 'datepick-days-cell resource_unavailable date_user_unavailable'
+											, 'css_class'         => '' //'datepick-days-cell resource_unavailable date_user_unavailable'
 										)
 					);
 
@@ -205,7 +265,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 																						.' unavailable={' . htmlspecialchars(  __( "Unavailable day's", 'booking' ), ENT_QUOTES ) . '}'
 																						.' pending={' . htmlspecialchars(  __( "Pending", 'booking' ), ENT_QUOTES ) . '}'
 																					 .'"'
-																			. ' text_for_day_cell="' . date( 'd' ) . '"'
+																			. ' text_for_day_cell="' . gmdate( 'd' ) . '"'
 																			. ' unavailable_day_cell_tag="a"'
 															.']' );
  */
@@ -221,7 +281,7 @@ function wpbc_replace_shortcodes_in_booking_form__legend_items( $return_form, $r
 		$shortcode_params = wpbc_get_params_of_shortcode_in_string( 'legend_items', $return_form , $pos );
 
 		if ( ( isset( $shortcode_params['text_for_day_cell'] ) ) && ( empty( $shortcode_params['text_for_day_cell'] ) ) ) {
-			$shortcode_params['text_for_day_cell'] = date( 'd' );
+			$shortcode_params['text_for_day_cell'] = gmdate( 'd' );
 		}
 
 		$shortcode_titles_params = array();
@@ -238,7 +298,7 @@ function wpbc_replace_shortcodes_in_booking_form__legend_items( $return_form, $r
 																		      'is_vertical'       => ( ! empty( $shortcode_params['is_vertical'] ) ) ? true : false
 																			, 'text_for_day_cell' => ( ! empty( $shortcode_params['text_for_day_cell'] ) )
 																									? $shortcode_params['text_for_day_cell']
-																									: ( ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) ) ? '&nbsp;' : date( 'd' ) )
+																									: ( ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) ) ? '&nbsp;' : gmdate( 'd' ) )
 																			, 'items'             => ( ! empty( $shortcode_params['items'] ) )
 																									? explode( ',',$shortcode_params['items'] )
 																									: array(

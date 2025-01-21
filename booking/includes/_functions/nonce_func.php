@@ -14,7 +14,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-//FixIn: 10.1.1.2
+// FixIn: 10.1.1.2.
 
 // =====================================================================================================================
 // ==  Nonce functions  ==
@@ -46,10 +46,10 @@ function wpbc_is_use_nonce_at_front_end() {
  * @return bool|void
  */
 function wpbc_check_nonce_in_admin_panel( $action_check = 'wpbc_ajax_admin_nonce' ){
-
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
     $nonce = ( isset($_REQUEST['wpbc_nonce']) ) ? $_REQUEST['wpbc_nonce'] : '';
 
-	if ( '' === $nonce ) return false;	// Its was request  from  some other plugin										//FixIn: 7.2.1.10
+	if ( '' === $nonce ) return false;	// Its was request  from  some other plugin										// FixIn: 7.2.1.10.
 
     if ( ! wp_verify_nonce( $nonce, $action_check ) ) {                         										// This nonce is not valid.
         ?>
@@ -59,18 +59,18 @@ function wpbc_check_nonce_in_admin_panel( $action_check = 'wpbc_ajax_admin_nonce
 
 					echo '<strong>' . esc_js( __( 'Error' , 'booking') ) . '!</strong> ';
 
-					echo  sprintf( esc_js( __( 'Probably nonce for this page has been expired. Please %sreload the page%s.', 'booking' ) )
-							,"<a href='javascript:void(0)' onclick='javascript:location.reload();'>", "</a>");
-
-					echo '<br/>' . sprintf( esc_js(  __( 'Please check more here %s', 'booking' ) )
-													, "<a href='https://wpbookingcalendar.com/faq/request-do-not-pass-security-check/?update=" . WP_BK_VERSION_NUM . '&ver=' . wpbc_get_version_type__and_mu(). "'>FAQ</a>"
-									);        //FixIn: 8.8.3.6
+					/* translators: 1: ... */
+					echo esc_js( sprintf( __( 'Probably nonce for this page has been expired. Please %1$sreload the page%2$s.', 'booking' ), "<a href='javascript:void(0)' onclick='javascript:location.reload();'>", "</a>" ) );
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.WP.I18n.MissingTranslatorsComment
+					echo '<br/>' . sprintf( esc_js( __( 'Please check more here %s', 'booking' ) ), "<a href='https://wpbookingcalendar.com/faq/request-do-not-pass-security-check/?update=" . esc_attr( WP_BK_VERSION_NUM ) . '&ver=' . wpbc_get_version_type__and_mu() . "'>FAQ</a>" );        // FixIn: 8.8.3.6.
 
 					?></div></div>" );
 			} else if (jQuery(".ajax_respond_insert").length > 0 ){
 				jQuery( ".ajax_respond_insert" ).after( "<div class='wpdevelop'><div class='alert alert-warning alert-danger'><?php
-					printf( __( '%sError!%s Request do not pass security check! Please refresh the page and try one more time.', 'booking' ), '<strong>', '</strong>' );
-					echo '<br/>' . sprintf( __( 'Please check more here %s', 'booking' ), 'https://wpbookingcalendar.com/faq/request-do-not-pass-security-check/?update=' . WP_BK_VERSION_NUM . '&ver=' . wpbc_get_version_type__and_mu() );        //FixIn: 8.8.3.6
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.WP.I18n.MissingTranslatorsComment
+					printf( __( '%1$sError!%2$s Request do not pass security check! Please refresh the page and try one more time.', 'booking' ), '<strong>', '</strong>' );
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.WP.I18n.MissingTranslatorsComment
+					echo '<br/>' . sprintf( __( 'Please check more here %s', 'booking' ), 'https://wpbookingcalendar.com/faq/request-do-not-pass-security-check/?update=' . esc_attr( WP_BK_VERSION_NUM ) . '&ver=' . wpbc_get_version_type__and_mu() );        // FixIn: 8.8.3.6.
 					?></div></div>" );
 			}
 			if ( jQuery( "#ajax_message" ).length ){
@@ -80,7 +80,7 @@ function wpbc_check_nonce_in_admin_panel( $action_check = 'wpbc_ajax_admin_nonce
         <?php
         die;
     }
-	return  true;																										//FixIn: 7.2.1.10
+	return  true;																										// FixIn: 7.2.1.10.
 }
 
 
@@ -126,7 +126,7 @@ function wpbc_do_not_cache() {
 // =====================================================================================================================
 
 /**
- * Add exclusion  of minify JS files in 'WP-Optimize' plugin            //FixIn: 10.1.3.3
+ * Add exclusion  of minify JS files in 'WP-Optimize' plugin            // FixIn: 10.1.3.3.
  *
  *  Otherwise default rules:
  *  *plugins/booking*

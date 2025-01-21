@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // == Confirmation Page
@@ -27,7 +27,7 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 	$replace = array( "'", "'", '"', '"', '-' );
     $content_utf2 = str_replace($search, $replace, $content_utf);
 
-	$content_utf2 = strip_tags( $content_utf2 );
+	$content_utf2 = wp_strip_all_tags( $content_utf2 );
 
 	$content_json =  json_decode( $content_utf2 );
 	debuge($content_json);
@@ -35,10 +35,10 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 	die;
 
 
-	$content_str = json_encode( $content_json );
+	$content_str = wp_json_encode( $content_json );
 	$content_str = str_replace(',', ",\n", $content_str);
 
-	$return = json_encode( $attr ) . '<p><pre>' . $content_str . '</pre></p>' . $tag;
+	$return = wp_json_encode( $attr ) . '<p><pre>' . $content_str . '</pre></p>' . $tag;
 
 	$return .=  '<hr/>';
 
@@ -100,8 +100,9 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 
 		    default:
 			    $return = '<p style="font-size:9px;">'
-			              . 'Invalid shortcode configuration: <strong>[' . $tag . ' ... ]</strong> with the following parameters: ' . json_encode( $attr ) . '. '
-			              . sprintf( __( 'Find more in the %sFAQ%s', 'booking' ), '<a href="https://wpbookingcalendar.com/faq/">', '</a>.' )
+			              . 'Invalid shortcode configuration: <strong>[' . $tag . ' ... ]</strong> with the following parameters: ' . wp_json_encode( $attr ) . '. '
+			              /* translators: 1: ... */
+			              . sprintf( __( 'Find more in the %1$sFAQ%2$s', 'booking' ), '<a href="https://wpbookingcalendar.com/faq/">', '</a>.' )
 			              . '</p>';
 		}
 
@@ -116,7 +117,7 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 function wpbc_do_shortcode__booking_confirm( $attr ){
 
 	if ( wpbc_is_on_edit_page() ) {
-		return wpbc_get_preview_for_shortcode( 'booking_confirm', array() );      //FixIn: 9.9.0.39
+		return wpbc_get_preview_for_shortcode( 'booking_confirm', array() );      // FixIn: 9.9.0.39.
 	}
 
 	ob_start();
@@ -137,7 +138,7 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
 
 	if (  empty( $booking_id ) ) {
 
-		return '<strong>' . __('Oops!' ,'booking') . '</strong> '
+		return '<strong>' . esc_html__('Oops!' ,'booking') . '</strong> '
 		                  . __('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking');
 	} else {
 
@@ -242,7 +243,8 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
 		$payment_params['is_from_admin_panel']  = false;                                            //           => false    true | false
 		$payment_params['is_show_payment_form'] = 1;                                                //           => 1        0 | 1
 
-		//FixIn: 9.9.0.35
+		// FixIn: 9.9.0.35.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ( ! empty( $_GET['is_show_payment_form'] ) ) && ( 'Off' === $_GET['is_show_payment_form'] ) ) {
 			$payment_params['is_show_payment_form'] = 0;
 		}
@@ -251,6 +253,7 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
  											  'total_cost'   => $params_arr['payment_cost'],
 											  'deposit_cost' => $params_arr['payment_cost']
 										);
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		if ( ( ! empty( $_GET['booking_pay'] ) ) && ( 1 == intval( $_GET['booking_pay'] ) ) ) {
 			$payment_params['booking_payment_form_in_request_only'] = 1;
 			    $params_arr['booking_payment_form_in_request_only'] = 1;
@@ -298,11 +301,11 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
 
 		$return_str =  '<div class="wpbc_container ">'
 		                  . '<div id="booking_form' . $resource_id . '"></div>'
-		                  . '<script type="text/javascript"> ' . wpbc_jq_ready_start()                                  //FixIn: 10.1.3.7
+		                  . '<script type="text/javascript"> ' . wpbc_jq_ready_start()                                  // FixIn: 10.1.3.7.
 		                    . ' wpbc_show_thank_you_message_after_booking(' .wp_json_encode( $json_arr ) . '); '
 		                    //. ' wpbc_show_thank_you_message_after_booking(' . str_replace( array( "\n", '\\n', '\n' ), ' ', wp_json_encode( $json_arr ) ) . '); '
 		                    . ' setTimeout( function (){ wpbc_do_scroll( "#wpbc_scroll_point_' . intval( $resource_id ) . '", 10 ); }, 500 ); '
-					   . wpbc_jq_ready_end() . '</script>'                                                          	//FixIn: 10.1.3.7
+					   . wpbc_jq_ready_end() . '</script>'                                                          	// FixIn: 10.1.3.7.
 					 . '</div>';
 	}
 

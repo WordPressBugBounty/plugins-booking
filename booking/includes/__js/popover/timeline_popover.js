@@ -1,5 +1,5 @@
 
-//FixIn: 10.2.0.4
+// FixIn: 10.2.0.4.
 /**
  * Define Popovers for Timelines in WP Booking Calendar
  *

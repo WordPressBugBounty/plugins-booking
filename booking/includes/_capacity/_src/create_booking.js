@@ -320,7 +320,7 @@ console.groupEnd();
 		// Animate
 		jQuery( '#' + message_id + ', ' + '#captcha_input' + params[ 'resource_id' ] ).fadeOut( 350 ).fadeIn( 300 ).fadeOut( 350 ).fadeIn( 400 ).animate( {opacity: 1}, 4000 );
 		// Focus text  field
-		jQuery( '#captcha_input' + params[ 'resource_id' ] ).trigger( 'focus' );    									//FixIn: 8.7.11.12
+		jQuery( '#captcha_input' + params[ 'resource_id' ] ).trigger( 'focus' );    									// FixIn: 8.7.11.12.
 
 
 		// Enable Submit | Hide spin loader
@@ -586,7 +586,7 @@ function wpbc_show_thank_you_message_after_booking( response_data ){
 		&& ('page' == response_data[ 'ajx_confirmation' ][ 'ty_is_redirect' ])
 		&& ('' != response_data[ 'ajx_confirmation' ][ 'ty_url' ])
 	){
-		jQuery( 'body' ).trigger( 'wpbc_booking_created', [ response_data[ 'resource_id' ] , response_data ] );			//FixIn: 10.0.0.30
+		jQuery( 'body' ).trigger( 'wpbc_booking_created', [ response_data[ 'resource_id' ] , response_data ] );			// FixIn: 10.0.0.30.
 		window.location.href = response_data[ 'ajx_confirmation' ][ 'ty_url' ];
 		return;
 	}

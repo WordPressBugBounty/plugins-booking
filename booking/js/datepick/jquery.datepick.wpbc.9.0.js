@@ -29,7 +29,7 @@ var PROP_NAME = 'datepick';
 
 
     // https://github.com/jquery/jquery-migrate/blob/master/src/core.js#L50
-	//FixIn: 8.7.10.1
+	// FixIn: 8.7.10.1.
     if (!$.browser_is_supported_datepick) {
         var uaMatch = function(ua) {
             ua = ua.toLowerCase();
@@ -97,7 +97,7 @@ function Datepick() {
 		yearSuffix: '' // Additional text to append to the year in the month headers
 	};
 	this._defaults = { // Global defaults for all the date picker instances
-		wpbc_resource_id: 0, // ID of booking resource - customization	//FixIn: 9.4.4.13
+		wpbc_resource_id: 0, // ID of booking resource - customization	// FixIn: 9.4.4.13.
 		useThemeRoller: false, // True to apply ThemeRoller styling, false for default styling
 		showOn: 'focus', // 'focus' for popup on focus,
 			// 'button' for trigger button, or 'both' for either
@@ -280,7 +280,7 @@ $.extend(Datepick.prototype, {
 		}
 		var showOn = this._get(inst, 'showOn');
 		if (showOn == 'focus' || showOn == 'both') // Pop-up date picker when in the marked field
-			input.on('focus.wpbc_datepick', this._showDatepick);			//FixIn: 10.0.0.45
+			input.on('focus.wpbc_datepick', this._showDatepick);			// FixIn: 10.0.0.45.
 		if (showOn == 'button' || showOn == 'both') { // Pop-up date picker when button clicked
 			var buttonText = this._get(inst, 'buttonText');
 			var buttonImage = this._get(inst, 'buttonImage');
@@ -292,7 +292,7 @@ $.extend(Datepick.prototype, {
 					{src: buttonImage, alt: buttonText, title: buttonText})));
 			input[isRTL ? 'before' : 'after'](trigger);
 			inst.siblings = inst.siblings.add(trigger);
-			//FixIn: 8.7.11.12
+			// FixIn: 8.7.11.12.
 			trigger.on( 'click', function (){
 				if ($.datepick._datepickerShowing && $.datepick._lastInput == target)
 					$.datepick._hideDatepick();
@@ -301,7 +301,7 @@ $.extend(Datepick.prototype, {
 				return false;
 			});
 		}
-		input.addClass( this.markerClassName ).on( 'keydown.wpbc_datepick', this._doKeyDown ).on( 'keypress.wpbc_datepick', this._doKeyPress ).on( 'keyup.wpbc_datepick', this._doKeyUp );	//FixIn: 10.0.0.45	//FixIn: 8.7.11.12
+		input.addClass( this.markerClassName ).on( 'keydown.wpbc_datepick', this._doKeyDown ).on( 'keypress.wpbc_datepick', this._doKeyPress ).on( 'keyup.wpbc_datepick', this._doKeyUp );	//FixIn: 10.0.0.45	// FixIn: 8.7.11.12.
 		if (this._get(inst, 'showDefault') && !inst.input.val()) {
 			inst.dates = [this._getDefaultDate(inst)];
 			this._showDate(inst);
@@ -360,11 +360,11 @@ $.extend(Datepick.prototype, {
 		divSpan.append(inst.dpDiv);
 		this._updateAlternate(inst);
 
-		//FixIn: 9.4.4.13
+		// FixIn: 9.4.4.13.
 		var resource_id = parseInt( divSpan.get( 0 ).getAttribute( 'id' ).replace( 'calendar_booking', '' ) );
 		inst.settings.wpbc_resource_id = resource_id;  		// To get this property use: 	this._get(inst, 'wpbc_resource_id')
 
-		//FixIn: 9.4.4.12
+		// FixIn: 9.4.4.12.
 		$( 'body' ).trigger(
 							  'wpbc_datepick_inline_calendar_loaded'													// event name
 							, [
@@ -391,7 +391,7 @@ $.extend(Datepick.prototype, {
 			var id = 'dp' + (++this._uuid);
 			this._dialogInput = $('<input type="text" id="' + id +
 				'" style="position: absolute; width: 1px; z-index: -1"/>');
-			this._dialogInput.on( 'keydown.wpbc_datepick', this._doKeyDown);		//FixIn: 10.0.0.45
+			this._dialogInput.on( 'keydown.wpbc_datepick', this._doKeyDown);		// FixIn: 10.0.0.45.
 			$('body').append(this._dialogInput);
 			inst = this._dialogInst = this._newInst(this._dialogInput, false);
 			inst.settings = {};
@@ -433,9 +433,9 @@ $.extend(Datepick.prototype, {
 			$target.removeClass(this.markerClassName).empty();
 		else {
 			$(inst.siblings).remove();
-			//$target.removeClass(this.markerClassName).unbind('focus', this._showDatepick).unbind('keydown', this._doKeyDown).unbind('keypress', this._doKeyPress).unbind('keyup', this._doKeyUp);	//FixIn: 10.0.0.45
-			//$target.removeClass(this.markerClassName).off('focus', this._showDatepick).off('keydown', this._doKeyDown).off('keypress', this._doKeyPress).off('keyup', this._doKeyUp);				//FixIn: 10.0.0.45
-			$target.removeClass( this.markerClassName ).off( 'focus.wpbc_datepick' ).off( 'keydown.wpbc_datepick' ).off( 'keypress.wpbc_datepick' ).off( 'keyup.wpbc_datepick' );					//FixIn: 10.0.0.45
+			//$target.removeClass(this.markerClassName).unbind('focus', this._showDatepick).unbind('keydown', this._doKeyDown).unbind('keypress', this._doKeyPress).unbind('keyup', this._doKeyUp);	// FixIn: 10.0.0.45.
+			//$target.removeClass(this.markerClassName).off('focus', this._showDatepick).off('keydown', this._doKeyDown).off('keypress', this._doKeyPress).off('keyup', this._doKeyUp);				// FixIn: 10.0.0.45.
+			$target.removeClass( this.markerClassName ).off( 'focus.wpbc_datepick' ).off( 'keydown.wpbc_datepick' ).off( 'keypress.wpbc_datepick' ).off( 'keyup.wpbc_datepick' );					// FixIn: 10.0.0.45.
 		}
 	},
 
@@ -884,7 +884,7 @@ $.extend(Datepick.prototype, {
 			if (duration == '')
 				postProcess();
 			if (inst.input[0].type != 'hidden')
-			    $( inst.input ).trigger( 'focus' );		//FixIn: 8.7.11.12
+			    $( inst.input ).trigger( 'focus' );		// FixIn: 8.7.11.12.
 			$.datepick._curInst = inst;
 		}
 	},
@@ -909,9 +909,9 @@ $.extend(Datepick.prototype, {
 			removeClass(this._rtlClass.join(' ')).
 			addClass(this._get(inst, 'isRTL') ? this._rtlClass[useTR] : '');
 		if (inst.input && inst.input[0].type != 'hidden' && inst == $.datepick._curInst)
-			$( inst.input ).trigger( 'focus' );		//FixIn: 8.7.11.12
+			$( inst.input ).trigger( 'focus' );		// FixIn: 8.7.11.12.
 
-		//FixIn: 9.4.4.13
+		// FixIn: 9.4.4.13.
 		var resource_id = this._get(inst, 'wpbc_resource_id');
 		if ( resource_id > 0 ){
 			$( 'body' ).trigger(
@@ -1046,8 +1046,8 @@ $.extend(Datepick.prototype, {
 	   @param  inst  (object) the instance settings for this datepicker */
 	_tidyDialog: function(inst) {
 		var useTR = this._get(inst, 'useThemeRoller') ? 1 : 0;
-		//inst.dpDiv.removeClass(this._dialogClass[useTR]).unbind('.datepick');		//FixIn: 10.0.0.45
-		inst.dpDiv.removeClass(this._dialogClass[useTR]).off('.datepick');			//FixIn: 10.0.0.45
+		//inst.dpDiv.removeClass(this._dialogClass[useTR]).unbind('.datepick');		// FixIn: 10.0.0.45.
+		inst.dpDiv.removeClass(this._dialogClass[useTR]).off('.datepick');			// FixIn: 10.0.0.45.
 		$('.' + this._promptClass[useTR], inst.dpDiv).remove();
 	},
 
@@ -1058,7 +1058,7 @@ $.extend(Datepick.prototype, {
 			return;
 		var $target = $(event.target);
 		var useTR = $.datepick._get($.datepick._curInst, 'useThemeRoller') ? 1 : 0;
-		// replaced .andSelf to .addBack		//FixIn: 10.0.0.45
+		// replaced .andSelf to .addBack		// FixIn: 10.0.0.45.
 		if (!$target.parents().addBack().is('#' + $.datepick._mainDivId[useTR]) &&
 				!$target.hasClass($.datepick.markerClassName) &&
 				!$target.parents().addBack().hasClass($.datepick._triggerClass[useTR]) &&
@@ -1118,7 +1118,7 @@ $.extend(Datepick.prototype, {
 	_clickMonthYear: function(id) {
 		var inst = this._getInst($(id)[0]);
 		if (inst.input && inst.selectingMonthYear && !$.browser_is_supported_datepick.msie)
-			$( inst.input ).trigger( 'focus' );		//FixIn: 8.7.11.12
+			$( inst.input ).trigger( 'focus' );		// FixIn: 8.7.11.12.
 		inst.selectingMonthYear = !inst.selectingMonthYear;
 	},
 
@@ -1908,7 +1908,7 @@ $.extend(Datepick.prototype, {
 							(defaultDate.getTime() == printDate.getTime() &&
 							defaultDate.getTime() == cursorDate.getTime()) ?
 							// Or defaultDate is selected printedDate and defaultDate is cursorDate
-							' ' /*+ $.datepick._dayOverClass[useTR]*/ : '') + // Highlight selected day		//FixIn: 9.2.1.7
+							' ' /*+ $.datepick._dayOverClass[useTR]*/ : '') + // Highlight selected day		// FixIn: 9.2.1.7.
 							(unselectable ? ' ' + this._unselectableClass[useTR] :
 							' ' + this._selectableClass[useTR]) +  // Highlight unselectable days
 							(empty ? '' : ' ' + daySettings[1] + // Highlight custom dates
@@ -1924,7 +1924,7 @@ $.extend(Datepick.prototype, {
 							inst.id + '\',' + printDate.getTime() + ')"') + '>';
 
 							/** Start content of Day cell *************************************************************/
-							html += '<div class="wpbc-cell-box">' +														//FixIn: 8.9.4.13
+							html += '<div class="wpbc-cell-box">' +														// FixIn: 8.9.4.13.
 										'<div class="wpbc-diagonal-el">' +
 											'<div class="wpbc-co-out">' +
 												'<svg height="100%" width="100%" viewBox="0 0 100 100" preserveAspectRatio="none">' +
@@ -1941,12 +1941,12 @@ $.extend(Datepick.prototype, {
 										'</div>' +
 										    //'<div class="check-in-div"><div></div></div>' +		// Deprecated! remove this line
 										    //'<div class="check-out-div"><div></div></div>' +		// Deprecated! remove this line
-										'<div class="date-cell-content">' +												//FixIn: 8.9.4.13
+										'<div class="date-cell-content">' +												// FixIn: 8.9.4.13.
 											'<div class="date-content-top">' +
 												(unselectable ? '' : ((typeof (wpbc_show_date_info_top) == 'function') ? wpbc_show_date_info_top( inst.id, printDate.getTime() ) : '')) +
 											'</div>' +
-											(empty ? '&#xa0;' : // Not showing other months //FixIn:6.0.1.2
-											(unselectable ? '<span>' + printDate.getDate()+ '</span>' : '<a href="javascript:void(0)" >' + printDate.getDate() + '</a>')) +		//FixIn: 10.0.0.19
+											(empty ? '&#xa0;' : // Not showing other months // FixIn: 6.0.1.2.
+											(unselectable ? '<span>' + printDate.getDate()+ '</span>' : '<a href="javascript:void(0)" >' + printDate.getDate() + '</a>')) +		// FixIn: 10.0.0.19.
 											'<div class="date-content-bottom">'+
 												(unselectable ? '' : ((typeof (wpbc_show_date_info_bottom) == 'function') ? wpbc_show_date_info_bottom( inst.id, printDate.getTime() ) : '')) +
 											'</div>' +
@@ -2257,7 +2257,7 @@ $.datepick = new Datepick(); // Singleton instance
 
 $(function() {
 
-	$( document ).on( 'mousedown', $.datepick._checkExternalClick ).find( 'body' ).append( $.datepick.dpDiv );			//FixIn: 8.7.11.12
+	$( document ).on( 'mousedown', $.datepick._checkExternalClick ).find( 'body' ).append( $.datepick.dpDiv );			// FixIn: 8.7.11.12.
 });
 
 })(jQuery);

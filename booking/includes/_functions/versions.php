@@ -25,17 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_is_this_demo() {
 
-//return false;
+	// return false;  //.
 
 	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
-		return false;		// If this is Booking Calendar Free version,  then it's not the demo.
+		return false;        // If this is Booking Calendar Free version,  then it's not the demo.
 	}
 
-	//FixIn: 7.2.1.17
-	if (
-		   ( ( isset( $_SERVER['SCRIPT_FILENAME'] ) ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'wpbookingcalendar.com' ) !== false ) )
-		|| ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( strpos( $_SERVER['HTTP_HOST'], 'wpbookingcalendar.com' ) !== false ) )
-	) {
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( ( isset( $_SERVER['SCRIPT_FILENAME'] ) ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'wpbookingcalendar.com' ) !== false ) ) || ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( strpos( $_SERVER['HTTP_HOST'], 'wpbookingcalendar.com' ) !== false ) ) ) {
 		return true;
 	} else {
 		return false;
@@ -50,7 +47,7 @@ function wpbc_is_this_demo() {
  */
 function wpbc_is_this_beta() {
 
-	$is_beta = ( $_SERVER['HTTP_HOST'] === 'beta' );
+	$is_beta = ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( 'beta' === $_SERVER['HTTP_HOST'] ) );
 
 	return $is_beta;
 }
@@ -152,11 +149,11 @@ function wpbc_get_wpbm_version() {
  *          $plugin_data = wpbc_file__read_header_info(  WPBC_FILE , array( 'Name' => 'Plugin Name', 'PluginURI' => 'Plugin URI', 'Version' => 'Version', 'Description' => 'Description', 'Author' => 'Author', 'AuthorURI' => 'Author URI', 'TextDomain' => 'Text Domain', 'DomainPath' => 'Domain Path' ) , 'plugin' );
  */
 function wpbc_file__read_header_info( $file, $default_headers, $context = '' ) {
-
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 	$fp = fopen( $file, 'r' );		// We don't need to write to the file, so just open for reading.
-
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread
 	$file_data = fread( $fp, 8192 );		// Pull only the first 8kiB of the file in.
-
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 	fclose( $fp );					// PHP will close file handle, but we are good citizens.
 
 	if ( $context != '' ) {
@@ -284,15 +281,16 @@ function wpbc_get__upgrade_notice__html_content( $id, $params ){
 				<div class="wpbc_upgrade_note wpbc_upgrade_theme_green">
 					<div>
 					<?php
-						printf( 'This %s is available in the %s. %s'
+						echo wp_kses_post( sprintf( 'This %s is available in the %s. %s'
 							, '<a target="_blank" href="https://wpbookingcalendar.com/' . $params['feature_link']['relative_url'] . '">' . $params['feature_link']['title'] . '</a>'
 							, '<strong>' . $params['versions'] . '</strong>'
 							, '<a target="_blank" href="https://wpbookingcalendar.com/' . $params['upgrade_link']['relative_url'] . '">' . $params['upgrade_link']['title'] . '</a>'
-						);
+						) );
 					?>
 					</div>
 					<?php
 					// Dismiss button
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $params['html_dismiss_btn'];
 					?>
 				</div>
@@ -443,14 +441,14 @@ function wpbc_get_info__about_how_old() {
 	global $wpdb;
 
 	$sql = "SELECT modification_date FROM  {$wpdb->prefix}booking as bk ORDER by booking_id  LIMIT 0,1";
-
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	$res = $wpdb->get_results( $sql );
 
 	if ( ! empty( $res ) ) {
 
-		$first_booking_date = wpbc_datetime_localized( date( 'Y-m-d H:i:s', strtotime( $res[0]->modification_date ) ), 'Y-m-d H:i:s' );
+		$first_booking_date = wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s', strtotime( $res[0]->modification_date ) ), 'Y-m-d H:i:s' );
 
-		$dif_days = wpbc_get_difference_in_days( date( 'Y-m-d 00:00:00', strtotime( 'now' ) ), date( 'Y-m-d 00:00:00', strtotime( $res[0]->modification_date ) ) );
+		$dif_days = wpbc_get_difference_in_days( gmdate( 'Y-m-d 00:00:00', strtotime( 'now' ) ), gmdate( 'Y-m-d 00:00:00', strtotime( $res[0]->modification_date ) ) );
 
 		return array(
 			'date_ymd_his' => $res[0]->modification_date,

@@ -536,6 +536,47 @@
   border-radius: 0 0 3px 3px;
   background-clip: padding-box
 }
+.ui_element .wpbc_ui_dropdown.open .ui_dropdown_menu {
+  animation: .2s ease-in-out forwards ui_dropdown_menu__anim__grow_down;
+  -ms-transform-origin: top center;
+  transform-origin: top center
+}
+@keyframes ui_dropdown_menu__anim__grow_down {
+  0% {
+    transform: scaleY(0)
+  }
+  50% {
+    transform: scaleY(.8)
+  }
+  100% {
+    transform: scaleY(1)
+  }
+}
+@keyframes ui_dropdown_menu__anim__pop_up_animation {
+  0% {
+    transform: scale(0)
+  }
+  50% {
+    transform: scale(1.1)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+@keyframes ui_dropdown_menu__anim__fade_in {
+  0% {
+    opacity: 0
+  }
+  33% {
+    opacity: .1
+  }
+  66% {
+    opacity: .2
+  }
+  100% {
+    opacity: 1
+  }
+}
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu-right {
   left: auto;
   right: 0

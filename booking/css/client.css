@@ -1086,11 +1086,13 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
         flex-flow: row wrap;
         justify-content: flex-start;
         align-items: center;
+        flex: 1 1 auto;
     }
     .wpbc_container_booking_form .wpbc__row .wpbc_row_inline       .wpdev-form-control-wrap,
     .wpbc_container_booking_form .wpbc__row .wpbc_row_inline label .wpdev-form-control-wrap {
         width: auto;
         margin: 0 5px;
+        min-width: 1em;
     }
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* == Calendar Next to Form ==                                                                                        */

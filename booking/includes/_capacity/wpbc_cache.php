@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 
-global $wpbc_global_cache;                                                                                              //FixIn: 9.7.3.14
+global $wpbc_global_cache;                                                                                              // FixIn: 9.7.3.14.
 $wpbc_global_cache = array();
 
 // GET Saved request ---------------------------------------------------------------------------------------------------

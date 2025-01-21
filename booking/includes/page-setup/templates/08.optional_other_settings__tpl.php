@@ -44,8 +44,8 @@ function wpbc_stp_wiz__template__optional_other_settings(){
 			<div class="wpbc__form__div wpbc_container_booking_form wpbc_swp_section wpbc_swp_section__optional_other_settings">
 				<div class="wpbc__row">
 					<div class="wpbc__field" style="flex: 0 0 auto;flex-flow: column;margin:0 0 10px;">
-						<h1 class="wpbc_swp_section_header" ><?php _e( 'Optional Settings and Features', 'booking' ); ?></h1>
-						<p class="wpbc_swp_section_header_description"><?php _e('Configure additional optional settings and features.','booking'); ?></p>
+						<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Optional Settings and Features', 'booking' ); ?></h1>
+						<p class="wpbc_swp_section_header_description"><?php esc_html_e('Configure additional optional settings and features.','booking'); ?></p>
 					</div>
 					<div class="wpbc__field">
 						<#
@@ -61,13 +61,14 @@ function wpbc_stp_wiz__template__optional_other_settings(){
 		?>
 		<div class="wpbc_ajx_page__section_main">
 			<?php
-				echo wpbc_stp_wiz__widget__optional_other_settings__all_settings_panels__get();
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wpbc_stp_wiz__widget__optional_other_settings__all_settings_panels__get();
 			if (0){
 			?>
 			<div class="wpbc_widgets">
 				<div class="wpbc_widget             wpbc_widget_preview_booking_form">
 					<div class="wpbc_widget_header">
-						<span class="wpbc_widget_header_text"><?php _e( 'Preview', 'booking' ); echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> '; _e( 'Booking Form', 'booking' ); ?></span>
+						<span class="wpbc_widget_header_text"><?php esc_html_e( 'Preview', 'booking' ); echo ' <i class="menu_icon icon-1x wpbc_icn_navigate_next"></i> '; esc_html_e( 'Booking Form', 'booking' ); ?></span>
 						<?php wpbc_stp_wiz__ui__form_structure__mobile_buttons(); ?>
 					</div>
 					<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
@@ -105,7 +106,7 @@ function wpbc_stp_wiz__template__optional_other_settings(){
 																											'ui_clicked_element_id': 'btn__toolbar__buttons_next'
 																										} );
 												wpbc_button_enable_loading_icon( this );
-												wpbc_admin_show_message_processing( '' );" ><span><?php _e('Skip for Now','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+												wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Skip for Now','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 							</div>
 						</div>
 					</div>

@@ -79,7 +79,7 @@ var _wpbc = (function ( obj, $) {
 	 * @param property_name
 	 * @returns {boolean}
 	 */
-	obj.calendar__is_prop_int = function ( property_name ) {													//FixIn: 9.9.0.29
+	obj.calendar__is_prop_int = function ( property_name ) {													// FixIn: 9.9.0.29.
 
 		var p_calendar_int_properties = ['dynamic__days_min', 'dynamic__days_max', 'fixed__days_num'];
 
@@ -185,7 +185,7 @@ var _wpbc = (function ( obj, $) {
 			   ( obj.calendar__is_defined( resource_id ) )
 			&& ( 'undefined' !== typeof ( p_calendars[ 'calendar_' + resource_id ][ prop_name ] ) )
 		){
-			//FixIn: 9.9.0.29
+			// FixIn: 9.9.0.29.
 			if ( obj.calendar__is_prop_int( prop_name ) ){
 				p_calendars[ 'calendar_' + resource_id ][ prop_name ] = parseInt( p_calendars[ 'calendar_' + resource_id ][ prop_name ] );
 			}

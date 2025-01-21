@@ -13,12 +13,13 @@
  * We are not guarantee correct work and support of Booking Calendar, if some file(s) was modified by someone else then wpdevelop.
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {exit;}
 
-//FixIn: 8.0
+
 
 /**
-	 * Show Content
+ * Show Content
  *  Update Content
  *  Define Slug
  *  Define where to show
@@ -30,13 +31,12 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
 
 	
     public function in_page() {
-        return 'wpbc-settings';
-    }
-    
+		return 'wpbc-settings';
+	}
 
     public function tabs() {
         
-        $tabs = array();
+		$tabs = array();
                 
         $tabs[ 'sync' ] = array(
                               'title'     => __( 'Sync', 'booking')					   // Title of TAB    
@@ -54,7 +54,7 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
                     );
         
         
-        $subtabs = array();
+        $subtabs =    array();
         
         $subtabs[ 'export' ] = array( 
                             'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
@@ -67,11 +67,12 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			//FixIn: 9.6.1.4
+                            , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
                             , 'default' =>  false                                // Is this sub tab activated by default or not: true || false. 
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
+                            //, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
                         );
         
         $tabs[ 'sync' ]['subtabs'] = $subtabs;
@@ -109,6 +110,7 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
         
         // $this->get_api()->validated_form_id = $submit_form_name;             // Define ID of Form for ability to  validate fields (like required field) before submit.
         
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if ( isset( $_POST['is_form_sbmitted_'. $submit_form_name ] ) ) {
 
             // Nonce checking    {Return false if invalid, 1 if generated between, 0-12 hours ago, 2 if generated between 12-24 hours ago. }
@@ -132,15 +134,14 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
         ?><div class="clear" style="margin-bottom:0px;"></div><?php
 		
 
-		if ( ! function_exists( 'mb_detect_encoding' ) ) {                      //FixIn: 2.0.5.3							//FixIn: 8.1.3.25
+		if ( ! function_exists( 'mb_detect_encoding' ) ) {                      //FixIn: 2.0.5.3							// FixIn: 8.1.3.25.
 			?>
 			<span class="metabox-holder">
 				<div class="clear" style="height:15px;"></div>
 				<div class="wpbc-settings-notice notice-error" style="text-align:left;font-size: 16px;padding: 5px 20px;">
-					<strong><?php _e('Warning!' ,'booking'); ?></strong> <?php
-
-						printf( __( 'This feature require %s', 'booking' ), 'PHP <strong>mbstring</strong> extension.'
-							);
+					<strong><?php esc_html_e('Warning!' ,'booking'); ?></strong> <?php
+						/* translators: 1: PHP function description. */
+						printf( esc_attr__( 'This feature require %s', 'booking' ), 'PHP <strong>mbstring</strong> extension.' );
 					?>
 				</div>
 				<div class="clear" style="height:25px;"></div><?php
@@ -163,16 +164,17 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
 			<span class="metabox-holder">
 				<div class="clear" style="height:15px;"></div>
 				<div class="wpbc-settings-notice notice-error" style="text-align:left;font-size: 16px;padding: 5px 20px;">
-					<strong><?php _e('Important!' ,'booking'); ?></strong> <?php 
+					<strong><?php esc_html_e('Important!' ,'booking'); ?></strong> <?php
 
-						printf( __( 'This feature require %s plugin. You can install %s plugin from this %spage%s.', 'booking' )
-									, '<strong><a class="" href="'. home_url() .'/wp-admin/plugin-install.php?s=booking+manager+by+oplugins&tab=search&type=term">'
+						/* translators: 1: ... */
+						echo wp_kses_post( sprintf( __( 'This feature require %1$s plugin. You can install %2$s plugin from this %3$spage%4$s.', 'booking' )
+									, '<strong><a href="'. esc_attr( home_url() .'/wp-admin/plugin-install.php?s=booking+manager+by+oplugins&tab=search&type=term' ). '">'
 									// , '<strong><a class="thickbox open-plugin-details-modal" href="'. home_url() .'/wp-admin/plugin-install.php?tab=plugin-information&plugin=booking-manager&TB_iframe=true&width=772&height=741"  target="_blank">'
-									   . 'Booking Manager' . '</a></strong> '  . ' <strong>' .$wpbm_minimum_version.'</strong> ('. __('or newer','booking') . ') '
+									   . 'Booking Manager' . '</a></strong> '  . ' <strong>' .esc_attr($wpbm_minimum_version).'</strong> ('. esc_attr__('or newer','booking') . ') '
 									,  '<strong>' . 'Booking Manager' . '</strong>'	
 									, '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/">'
 									, '</a>'
-							);
+							) );
 					?>
 				</div>
 				<div class="clear" style="height:25px;"></div><?php
@@ -199,17 +201,17 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
 			?>
 			<div class="clear" style="margin-bottom:0px;"></div>
 			<span class="metabox-holder">
-				<form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" autocomplete="off">
+				<form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" autocomplete="off">
 					<?php 
 					   // N o n c e   field, and key for checking   S u b m i t 
 					   wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-					?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php    
+					?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
 					?>
 					<div class="clear" style="margin-top:10px;"></div>
 					<?php
 	            		// Add hidden input SEARCH KEY field into  main form, if previosly was searching by ID or Title
 						if ( class_exists('wpdev_bk_personal') )
-	            			wpbc_hidden_search_by_id_field_in_main_form( array( 'search_get_key' => 'wh_resource_id' ) );													//FixIn: 8.0.1.12
+	            			wpbc_hidden_search_by_id_field_in_main_form( array( 'search_get_key' => 'wh_resource_id' ) );													// FixIn: 8.0.1.12.
 					?>
 					<div id="wpbc_resources_link" class="clear"></div>
 					<?php  if ( class_exists('wpdev_bk_personal') ) {  ?>
@@ -235,12 +237,13 @@ class WPBC_Page_SettingsExportFeeds extends WPBC_Page_Structure {
 						wpbc_close_meta_box_section();
 					
 					
-					} ?>
-					<input type="submit" value="<?php _e('Save Changes','booking'); ?>" class="button button-primary wpbc_submit_button" />  
-					
-					<div class="clear" style="height:25px;"></div><?php
+					}
+					?>
+					<input type="submit" value="<?php esc_attr_e( 'Save Changes', 'booking' ); ?>" class="button button-primary wpbc_submit_button" />
+					<div class="clear" style="height:25px;"></div>
+					<?php
 
-					wpbc_open_meta_box_section( 'wpbc_settings_ics_import_help_how', __('How it works', 'booking') );
+					wpbc_open_meta_box_section( 'wpbc_settings_ics_import_help_how', __( 'How it works', 'booking' ) );
 
 						wpbc_ics_import_export__show_help_info( false );
 
@@ -441,34 +444,34 @@ function wpbc_export_ics_feed__table() {
 	<table class="form-table">
 		<tbody><tr class="wpbc_tr_booking_export_feed_free" valign="top">
 			<th scope="row">
-                <label for="booking_export_feed1" class="wpbc-form-text"><?php _e( '.ics feed URL', 'booking' ); ?></label>
+                <label for="booking_export_feed1" class="wpbc-form-text"><?php esc_html_e( '.ics feed URL', 'booking' ); ?></label>
 			</th>
             <td><fieldset class="wpdevelop">                
-				<legend class="screen-reader-text"><span><?php _e( '.ics feed URL', 'booking' ); ?></span></legend>
+				<legend class="screen-reader-text"><span><?php esc_html_e( '.ics feed URL', 'booking' ); ?></span></legend>
 				<code style="font-size:12px;line-height: 2.4em;background: #ddd;color:#000;"><a
-						href="<?php echo trim( home_url(), '/' ) . '/' . trim( $resource_export, '/');  ?>"
+						href="<?php echo esc_url( trim( home_url(), '/' ) . '/' . trim( $resource_export, '/' ) ); ?>"
 						target="_blank"><?php
-							$wpbc_h_u = home_url();																		//FixIn: 8.1.3.6
+							$wpbc_h_u = home_url();																		// FixIn: 8.1.3.6.
 							if (strlen( $wpbc_h_u ) > 23 ) {
-								echo substr( $wpbc_h_u, 0, 10 ) . '...' . substr( $wpbc_h_u, -10 );
+								echo esc_attr( substr( $wpbc_h_u, 0, 10 ) . '...' . substr( $wpbc_h_u, -10 ) );
 							} else {
-								echo $wpbc_h_u;
+								echo esc_attr( $wpbc_h_u );
 							}?></a></code>
 				<input id="booking_export_feed1" 
 					   name="booking_export_feed1" 
-					   value="<?php echo $resource_export; ?>" 
+					   value="<?php echo esc_attr( $resource_export ); ?>"
 					   placeholder="" 
 					   autocomplete="off" 
 					   type="text"						
 					   class="regular-text" 					   					   
 				/> 
-				<a href="<?php echo trim( home_url(), '/' ) . '/' . trim( $resource_export, '/');  ?>" 
-						   title="<?php _e( 'Open in new window', 'booking' ); ?>"
+				<a href="<?php echo esc_url( trim( home_url(), '/' ) . '/' . trim( $resource_export, '/') );  ?>"
+						   title="<?php esc_attr_e( 'Open in new window', 'booking' ); ?>"
 						   target="_blank"><i class="wpbc_icn_open_in_new"></i></a>
-				<p class="description"><?php _e( 'Please enter URL for generating .ics feed', 'booking' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Please enter URL for generating .ics feed', 'booking' ); ?></p>
 				<div class="wpbc-settings-notice notice-info" style="text-align:left;border-top:1px solid #f0f0f0;border-right:1px solid #f0f0f0;">
-					<strong><?php _e( 'Note', 'booking' ) ?></strong>.  <?php 					
-					printf( __( 'This .ics feed of bookings starting from today for 1 year', 'booking' ) );						
+					<strong><?php esc_html_e( 'Note', 'booking' ); ?></strong>.  <?php
+					 esc_html_e( 'This .ics feed of bookings starting from today for 1 year', 'booking' );
 					?>
 				</div>				
 			</fieldset></td>
@@ -488,7 +491,7 @@ function wpbc_export_ics_feed__update() {
 	$validated_value = WPBC_Settings_API::validate_text_post_static( 'booking_export_feed1' );
 
 	$validated_value = explode( '/', $validated_value );
-	foreach ( $validated_value as $v_i => $v_val ) {                                                                    //FixIn: 8.1.1.9
+	foreach ( $validated_value as $v_i => $v_val ) {                                                                    // FixIn: 8.1.1.9.
 		if ( strpos( $v_val, '.') !== false ) {
 			$v_val = sanitize_file_name( $v_val );
 		}

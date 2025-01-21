@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 
 class WPBC_RESOURCE_SUPPORT {
@@ -63,7 +63,7 @@ class WPBC_RESOURCE_SUPPORT {
 	 */
 	function get__sql__booking_resources__arr() {
 
-		// CACHE - GET    ::    check if such request was cached and get it  -----------------------------------------------    //FixIn: 9.7.3.14
+		// CACHE - GET    ::    check if such request was cached and get it  -----------------------------------------------    // FixIn: 9.7.3.14.
 		$params_for_cache = maybe_serialize( $this->resource_id_arr );
 		$cache_result     = wpbc_cache__get( 'WPBC_RESOURCE_SUPPORT__sql', $params_for_cache );
 		if ( ! is_null( $cache_result ) ) {
@@ -138,9 +138,10 @@ class WPBC_RESOURCE_SUPPORT {
 		if ( empty( $sql_args ) ) {
 			$sql_prepared =                 $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit'];
 		} else {
+			/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 			$sql_prepared = $wpdb->prepare( $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit']     , $sql_args );
 		}
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$bookings_sql_obj = $wpdb->get_results( $sql_prepared );
 
 		// CACHE - SAVE ::  ------------------------------------------------------------------------------------------------

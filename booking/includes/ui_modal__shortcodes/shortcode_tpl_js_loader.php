@@ -12,7 +12,7 @@
  * @modified 2024-02-03
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 
 // =====================================================================================================================
@@ -30,9 +30,9 @@ function wpbc_register_js__shortcode_config( $hook ) {
 
 	if ( wpbc_can_i_load_on_this_page__shortcode_config() ) {
 
-		wp_enqueue_script( 'wpbc_all', wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ), array( 'jquery' ), WP_BK_VERSION_NUM );              //FixIn: 9.8.6.1
-		wp_enqueue_script( 'wpbc_shortcode_popup', wpbc_plugin_url( '/includes/ui_modal__shortcodes/_out/wpbc_shortcode_popup.js' ), array( 'jquery' ), WP_BK_VERSION_NUM ); //FixIn: 9.8.6.1
-		wp_enqueue_script( 'wpbc-admin-support', wpbc_plugin_url( '/core/any/js/admin-support.js' ), array( 'jquery' ), WP_BK_VERSION_NUM );		//Needed for ability to send dismiss //2024-03-13 //FixIn: 9.9.0.42
+		wp_enqueue_script( 'wpbc_all', wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );              // FixIn: 9.8.6.1.
+		wp_enqueue_script( 'wpbc_shortcode_popup', wpbc_plugin_url( '/includes/ui_modal__shortcodes/_out/wpbc_shortcode_popup.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) ); // FixIn: 9.8.6.1.
+		wp_enqueue_script( 'wpbc-admin-support', wpbc_plugin_url( '/core/any/js/admin-support.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );		//Needed for ability to send dismiss //2024-03-13 // FixIn: 9.9.0.42.
 		if ( wpbc_can_i_load_on__edit_new_post_page() ) {
 			do_action( 'wpbc_enqueue_js_files', 'admin' );
 		}

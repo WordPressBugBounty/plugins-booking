@@ -12,7 +12,7 @@
  * @modified 2024-03-03
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 
 
@@ -29,7 +29,7 @@ function wpbc_shortcode_config__content__bookingform() {
 
 	$shortcode_name = 'bookingform';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		wpbc_shortcode_config__bookingform__top_tabs();
 
@@ -48,6 +48,7 @@ function wpbc_shortcode_config__content__bookingform() {
 									'versions'           => 'Business Large, MultiUser versions',
 									'css'                => 'transform: translate(0) translateY(120px);'
 								) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $upgrade_content_arr['content'];
 
 			//--------------------------------------------------------------------------------------------------------------
@@ -142,8 +143,8 @@ function wpbc_shortcode_config__content__bookingform() {
 			////////////////////////////////////////////////////////////////////
 			// Start Month
 			////////////////////////////////////////////////////////////////////
-			?><tr valign="top" class="<?php echo $group_key . '_standard_section'; ?> wpbc_sub_settings_grayed0">
-				<th scope="row" style="vertical-align: middle;"><label for="<?php echo $id; ?>_active" class="wpbc-form-text"><?php  _e('Booking Date', 'booking'); ?>:</label></th>
+			?><tr valign="top" class="<?php echo esc_attr( $group_key . '_standard_section' ); ?> wpbc_sub_settings_grayed0">
+				<th scope="row" style="vertical-align: middle;"><label for="<?php echo esc_attr( $id ); ?>_active" class="wpbc-form-text"><?php esc_html_e('Booking Date', 'booking'); ?>:</label></th>
 				<td class=""><fieldset><?php
 
 					WPBC_Settings_API::field_select_row_static(  $id . '_year'
@@ -159,8 +160,8 @@ function wpbc_shortcode_config__content__bookingform() {
 																		, 'css'               => 'width:5em;'
 																		, 'only_field'        => true
 																		, 'attr'              => array()
-																		, 'value'             => date( 'Y' )
-																		, 'options'           => array_combine( range( ( date('Y') - 1 ), ( date('Y') + 10 ) ), range( ( date('Y') - 1 ), ( date('Y') + 10 ) )  )
+																		, 'value'             => gmdate( 'Y' )
+																		, 'options'           => array_combine( range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) ), range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) )  )
 																	)
 									);
 
@@ -179,7 +180,7 @@ function wpbc_shortcode_config__content__bookingform() {
 																		, 'css'               => 'width:4em;'
 																		, 'only_field'        => true
 																		, 'attr'              => array()
-																		, 'value'             => date('n')
+																		, 'value'             => gmdate('n')
 																		, 'options'           => array_combine( range( 1, 12 ), range( 1, 12 ) )
 																	)
 									);
@@ -199,12 +200,12 @@ function wpbc_shortcode_config__content__bookingform() {
 																		, 'css'               => 'width:4em;'
 																		, 'only_field'        => true
 																		, 'attr'              => array()
-																		, 'value'             => date('j')
+																		, 'value'             => gmdate('j')
 																		, 'options'           => array_combine( range( 1, 31 ), range( 1, 31 ) )
 																	)
 									);
 
-					?><span class="description"> <?php _e('Select date, which you want to use for users to submit the bookings' ,'booking'); ?></span></fieldset></td>
+					?><span class="description"> <?php esc_html_e('Select date, which you want to use for users to submit the bookings' ,'booking'); ?></span></fieldset></td>
 			</tr><?php
 
 	}

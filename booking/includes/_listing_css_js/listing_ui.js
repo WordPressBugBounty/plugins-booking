@@ -12,7 +12,7 @@
 		<div id="row_id_{{{data.rules_id}}}" class="wpbc_listing_usual_row wpbc_list_row wpbc_row">
 			<div class="wpbc_listing_col wpbc_col_id check-column"><div class="content_text"><input type="checkbox" /></div></div>
 			<div class="wpbc_listing_col wpbc_col_labels">
-				<div class="content_text"><span class="wpbc_label"><?php _e('Email', 'email-reminders'); ?>: {{{data['rule']['email_template']}}}</span></div>
+				<div class="content_text"><span class="wpbc_label"><?php esc_html_e('Email', 'email-reminders'); ?>: {{{data['rule']['email_template']}}}</span></div>
 			</div>
 			...
  	</div>

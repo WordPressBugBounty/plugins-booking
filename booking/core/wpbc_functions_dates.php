@@ -27,6 +27,7 @@ function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezo
 
 	$server_zone = date_default_timezone_get();                                                                         // If in 'Theme' or 'other plugin' set  default timezone other than UTC. Save it.
 	if ( 'UTC' !== $server_zone ) {                                                                                     // Needed for WP date functions  - set timezone to  UTC
+		// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 		@date_default_timezone_set( 'UTC' );
 	}
 
@@ -41,6 +42,7 @@ function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezo
 	$local_date = date_i18n( $format, $date_str_ymdhis );
 
 	if ( 'UTC' !== $server_zone ) {                                                                                     // Back  to  previos state,  if it was changed.
+		// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 		@date_default_timezone_set( $server_zone );
 	}
 
@@ -49,7 +51,7 @@ function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezo
 
 	// -----------------------------------------------------------------------------------------------------------------
 
-	//FixIn: 9.9.0.17
+	// FixIn: 9.9.0.17.
 	/**
 	 * Return date / time in    'LOCAL_FORMAT'    with  WordPress Timezone   offset   from WordPress  > Settings General page
 	 *
@@ -98,7 +100,7 @@ function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezo
 	function wpbc_datetime__use_wp_timezone( $format, $date_str_ymdhis = '' ) {
 
 		if ( '' === $date_str_ymdhis ) {
-			$date_str_ymdhis = date( 'Y-m-d H:i:s', strtotime( 'now' ) );
+			$date_str_ymdhis = gmdate( 'Y-m-d H:i:s', strtotime( 'now' ) );
 		}
 
 		return wpbc_datetime_localized__use_wp_timezone( $date_str_ymdhis, $format );
@@ -116,7 +118,7 @@ function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezo
 	function wpbc_datetime__no_wp_timezone( $format, $date_str_ymdhis = '' ) {
 
 		if ( '' === $date_str_ymdhis ) {
-			$date_str_ymdhis = date( 'Y-m-d H:i:s', strtotime( 'now' ) );
+			$date_str_ymdhis = gmdate( 'Y-m-d H:i:s', strtotime( 'now' ) );
 		}
 
 		return wpbc_datetime_localized__no_wp_timezone( $date_str_ymdhis, $format );
@@ -486,7 +488,7 @@ function wpbc_get_redable_times( $dates_ymd_arr , $times_arr_his, $params = arra
  */
 function wpbc_date_get_week_day_num( $date_sql_str ) {
 
-	return intval( date( 'w', strtotime( $date_sql_str ) ) );
+	return intval( gmdate( 'w', strtotime( $date_sql_str ) ) );
 }
 
 
@@ -506,8 +508,8 @@ function wpbc_date_get_week_day_num( $date_sql_str ) {
 // Dates Debug
 // ---------------------------------------------------------------------------------------------------------------------
 
-//TODO: replace functions like this:        date_i18n( 'Y-m-d H:i:s'  ...            to             wpbc_datetime_localized( date( 'Y-m-d H:i:s',
-
+//TODO: replace functions like this:        date_i18n( 'Y-m-d H:i:s'  ...            to             wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s',
+// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 // date_default_timezone_set( 'Europe/Amsterdam' );          // For Debug in Booking Calendar - booking form,  for shortcode [wpbc_test_dates_functions] this line can be commented
 
 // <editor-fold     defaultstate="collapsed"                        desc="  ==  [wpbc_test_dates_functions]  ==  "  >
@@ -520,7 +522,7 @@ function wpbc_date_get_week_day_num( $date_sql_str ) {
 function wpbc_test_dates_functions() {
 
 	if ( wpbc_is_on_edit_page() ) {
-		return wpbc_get_preview_for_shortcode( 'wpbc_test_dates_functions', array() );      //FixIn: 9.9.0.39
+		return wpbc_get_preview_for_shortcode( 'wpbc_test_dates_functions', array() );      // FixIn: 9.9.0.39.
 	}
 
 	ob_start();
@@ -528,7 +530,7 @@ function wpbc_test_dates_functions() {
 
 	$server_zone = date_default_timezone_get();
 	debuge( array( 'init' => 'Default Timezones', 'server'  => date_default_timezone_get(), 'wordpress'   => wp_timezone()->getName(), 'wordpress - gmt_offset' => get_option( 'gmt_offset' ) ) );
-
+// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 //	date_default_timezone_set( 'Europe/Oslo' );
 //	date_default_timezone_set( 'Europe/Amsterdam' );
 //	date_default_timezone_set( 'UTC' );
@@ -542,7 +544,7 @@ function wpbc_test_dates_functions() {
 
 	for ( $i = 0; $i < 366; $i ++ ) {
 
-		$ts = date( 'Y-m-d 16:00:01', strtotime( '+' . $i . ' days' ) );
+		$ts = gmdate( 'Y-m-d 16:00:01', strtotime( '+' . $i . ' days' ) );
 
 		$ts_arr = explode(' ',$ts);
 
@@ -562,10 +564,10 @@ function wpbc_test_dates_functions() {
 		$date_arr['loc_T_param_T']  = wpbc_time_localized( $ts_arr[1] );
 
 
-
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.PHP.DevelopmentFunctions.error_log_var_export
 		echo '<pre><code>' . var_export( $date_arr, 1 ) . '</code></pre><br>';
 	}
-
+	// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 	date_default_timezone_set( $server_zone );
 
 	debuge( array( 'end' => 'Back to default previos timezone', 'server'  => date_default_timezone_get(), 'wordpress'   => wp_timezone_string()  ) );
@@ -578,5 +580,6 @@ function wpbc_test_dates_functions() {
 add_shortcode( 'wpbc_test_dates_functions', 'wpbc_test_dates_functions' );
 // </editor-fold>
 
-//TODO: it's only  for Debug: Comment it. //FixIn: 9.9.0.17
+//TODO: it's only  for Debug: Comment it. // FixIn: 9.9.0.17.
+// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 // date_default_timezone_set( 'America/Chicago' );          // For Debug in Booking Calendar - booking form,  for shortcode [wpbc_test_dates_functions] this line can be commented

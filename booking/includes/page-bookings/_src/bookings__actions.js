@@ -54,7 +54,7 @@ console.log( ' == Ajax Actions :: Response WPBC_AJX_BOOKING_ACTIONS == ', respon
 
 					// Probably Error
 					if ( (typeof response_data !== 'object') || (response_data === null) ){
-						jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();	 												//FixIn: 9.6.1.5
+						jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();	 												// FixIn: 9.6.1.5.
 						jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html(
 																	'<div class="wpbc-settings-notice notice-warning" style="text-align:left">' +
 																		response_data +
@@ -118,7 +118,7 @@ console.log( ' == Ajax Actions :: Response WPBC_AJX_BOOKING_ACTIONS == ', respon
 					jQuery( '#ajax_respond' ).html( response_data );		// For ability to show response, add such DIV element to page
 				}
 			  ).fail( function ( jqXHR, textStatus, errorThrown ) {    if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
-					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														//FixIn: 9.6.1.5
+					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														// FixIn: 9.6.1.5.
 					var error_message = '<strong>' + 'Error!' + '</strong> ' + errorThrown ;
 					if ( jqXHR.responseText ){
 						error_message += jqXHR.responseText;

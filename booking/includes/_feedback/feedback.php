@@ -18,10 +18,10 @@ if ( ! defined( 'WPBC_FEEDBACK_TIMEOUT' ) ) {       define( 'WPBC_FEEDBACK_TIMEO
 //if ( ! defined( 'WPBC_FEEDBACK_TIMEOUT' ) ) {       define( 'WPBC_FEEDBACK_TIMEOUT',    '+30 seconds' ); }
 
 // == For testing ==
-//update_option( 'booking_feedback_03', date( 'Y-m-d H:i:s', strtotime( '+10 seconds', strtotime( 'now' ) ) ) );
+//update_option( 'booking_feedback_03', gmdate( 'Y-m-d H:i:s', strtotime( '+10 seconds', strtotime( 'now' ) ) ) );
 
 // Init Timer
-// update_option( 'booking_feedback_03',  date( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) ) );
+// update_option( 'booking_feedback_03', gmdate( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) ) );
 
 // Reset
 // delete_option( 'booking_feedback_03');
@@ -62,6 +62,7 @@ class WPBC_Feedback_01 {
 		 */
 		public function ajax_WPBC_AJX_FEEDBACK() {
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST['action_params'] ) || empty( $_POST['action_params'] ) ) { exit; }
 
 			$ajax_errors = new WPBC_AJAX_ERROR_CATCHING();
@@ -71,7 +72,7 @@ class WPBC_Feedback_01 {
 			$nonce_post_key = 'nonce';
 			$result_check   = check_ajax_referer( $action_name, $nonce_post_key );
 
-			$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();
+			$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
 			/**
 			 * SQL  ---------------------------------------------------------------------------
@@ -107,7 +108,8 @@ class WPBC_Feedback_01 {
 			$defaults = array(
 					    'new_listing_params'   => false		// required for Import Google Calendar bookings
                   	  , 'after_action_result'  => false
-					  , 'after_action_message' => sprintf( __('No actions %s has been processed.', 'booking')
+					  /* translators: 1: ... */
+					  , 'after_action_message' => sprintf( __( 'No actions %s has been processed.', 'booking')
 														 , ' <strong>' . $request_params['booking_action'] . '</strong> ' )
 			);
 			$action_result = wp_parse_args( $action_result, $defaults );
@@ -123,6 +125,7 @@ class WPBC_Feedback_01 {
 			//------------------------------------------------------------------------------------------------------------------
 			// Send JSON. Its will make "wp_json_encode" - so pass only array, and This function call wp_die( '', '', array( 'response' => null, ) )		Pass JS OBJ: response_data in "jQuery.post( " function on success.
 			wp_send_json( array(
+								// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 								'ajx_action_params'                      => $_REQUEST['action_params'],							// Do not clean input parameters
 								'ajx_cleaned_params'                     => $request_params,									// Cleaned input parameters
 								'ajx_after_action_message'               => $action_result['after_action_message'],				// Message to  show
@@ -153,7 +156,7 @@ class WPBC_Feedback_01 {
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
 
-			wp_enqueue_script( 'wpbc-feedback_02', trailingslashit( plugins_url( '', __FILE__ ) ) . 'feedback.js'         /* wpbc_plugin_url( '/_out/js/codemirror.js' ) */
+			wp_enqueue_script( 'wpbc-feedback_02', trailingslashit( plugins_url( '', __FILE__ ) ) . 'feedback.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 												   , array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 			/**
 			wp_localize_script( 'wpbc_all', 'wpbc_live_request_obj'
@@ -191,8 +194,8 @@ class WPBC_Feedback_01 {
 
 		// Nonce for Ajax and some other data
 		?><div  id="wpbc_ajax__feedback_01" style="display:none;"
-				data-nonce="<?php echo wp_create_nonce( 'wpbc_ajx__feedback_ajx' . '_wpbcnonce' ); ?>"
-				data-user-id="<?php echo wpbc_get_current_user_id(); ?>"
+				data-nonce="<?php echo esc_attr( wp_create_nonce( 'wpbc_ajx__feedback_ajx' . '_wpbcnonce' ) ); ?>"
+				data-user-id="<?php echo esc_attr( wpbc_get_current_user_id() ); ?>"
 		></div><?php
 
 
@@ -203,7 +206,7 @@ class WPBC_Feedback_01 {
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title"><?php _e( 'Feedback' ); ?></h4>
+						<h4 class="modal-title"><?php esc_html_e( 'Feedback', 'booking' ); ?></h4>
 					</div>
 					<div class="modal-body">
 					<?php
@@ -219,7 +222,7 @@ class WPBC_Feedback_01 {
 
 						<a id="wpbc_modal__feedback_01__button_send" class="button button-primary"
 						   onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01();" href="javascript:void(0);"
-						  ><?php _e('Next' ,'booking'); ?> 1/3</a>
+						  ><?php esc_html_e('Next' ,'booking'); ?> 1/3</a>
 					</div>
 				</div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -243,36 +246,40 @@ class WPBC_Feedback_01 {
 
 		/* S T A R S */ ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_1" >
-			<h4 class="modal-title"><?php printf( 'Do you like the new %sNew Update%s of Booking Calendar?'  ,'<strong>','</strong>'); ?></h4>
+			<h4 class="modal-title"><?php echo wp_kses_post( sprintf( 'Do you like the new %sNew Update%s of Booking Calendar?'  ,'<strong>','</strong>') ); ?></h4>
 			<div class="wpbc_feedback_01__content_rating">
 				<div class="wpbc_feedback_01__content_rating_stars"><?php
 					for( $i = 1; $i < 6; $i++) {
-					  ?><a id="wpbc_feedback_01_star_<?php echo $i; ?>"
+					  ?><a id="wpbc_feedback_01_star_<?php echo esc_attr( $i ); ?>"
 					   href="javascript:void(0)"
-					   onmouseover="javascript:wpbc_feedback_01__over_star(<?php echo $i; ?>, 'over');"
-					   onmouseout="javascript:wpbc_feedback_01__over_star(<?php echo $i; ?>, 'out');"
-					   onclick="javascript:wpbc_feedback_01__over_star(<?php echo $i; ?>, 'click');"
-					   data-original-title="<?php echo esc_attr( sprintf( __('Rate with %s star', 'booking'), $i ) ); ?>"
+					   onmouseover="javascript:wpbc_feedback_01__over_star(<?php echo esc_attr( $i ); ?>, 'over');"
+					   onmouseout="javascript:wpbc_feedback_01__over_star(<?php echo esc_attr( $i ); ?>, 'out');"
+					   onclick="javascript:wpbc_feedback_01__over_star(<?php echo esc_attr( $i ); ?>, 'click');"
+					   data-original-title="<?php
+					   /* translators: 1: ... */
+					   echo esc_attr( sprintf( __('Rate with %s star', 'booking'), $i ) ); ?>"
 					   class="tooltip_top "><i class="menu_icon icon-1x wpbc-bi-star 0wpbc_icn_star_outline"></i></a><?php
 					}
 					?>
 				</div>
 			</div>
 			<div class="modal-footer modal-footer-inside">
-				<a href="javascript:void(0)" class="wpbc_btn_as_link" data-dismiss="modal"><?php _e('Do not show anymore' ,'booking'); ?></a>
-				<a href="javascript:void(0)" class="wpbc_btn_as_link" onclick="javascript: wpbc_ajx_booking__ui_click__feedback_01_remind_later();"><?php _e('Remind me later' ,'booking'); ?></a>
+				<a href="javascript:void(0)" class="wpbc_btn_as_link" data-dismiss="modal"><?php esc_html_e('Do not show anymore' ,'booking'); ?></a>
+				<a href="javascript:void(0)" class="wpbc_btn_as_link" onclick="javascript: wpbc_ajx_booking__ui_click__feedback_01_remind_later();"><?php esc_html_e('Remind me later' ,'booking'); ?></a>
 				<a id="wpbc_modal__feedback_01__button_next__step_1" class="button button-primary wpbc_btn_next disabled"
 				   onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01(this);" href="javascript:void(0);"
-				  ><?php _e('Next' ,'booking'); ?> <!--span>1/2</span--></a>
+				  ><?php esc_html_e('Next' ,'booking'); ?> <!--span>1/2</span--></a>
 			</div>
 		</div>
 
 		<?php // Star 1 - 2 	Reason	 ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_2" style="display:none;">
-			<h5 class="modal-title"><?php printf(__('Sorry to hear that... %s' ,'booking')
-										,'<i class="menu_icon icon-1x wpbc-bi-emoji-frown 0wpbc_icn_sentiment_very_dissatisfied" style="color:#ca930b;"></i>');
+			<h5 class="modal-title"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf(__('Sorry to hear that... %s' ,'booking')
+										,'<i class="menu_icon icon-1x wpbc-bi-emoji-frown 0wpbc_icn_sentiment_very_dissatisfied" style="color:#ca930b;"></i>') );
 			?></h5><br>
-			<h4 class="modal-title"><?php _e('How can we improve it for you?' ,'booking'); ?></h4>
+			<h4 class="modal-title"><?php esc_html_e('How can we improve it for you?' ,'booking'); ?></h4>
 			<textarea id="wpbc_modal__feedback_01__reason_of_action__step_2"  name="wpbc_modal__feedback_01__reason_of_action__step_2"
 					  style="width:100%;" cols="57" rows="3" autocomplete="off"
 					  onkeyup="javascript:if(jQuery( this ).val() != '' ){ jQuery( '#wpbc_modal__feedback_01__button_next__step_2').removeClass('disabled'); }"
@@ -280,69 +287,78 @@ class WPBC_Feedback_01 {
 			<div class="modal-footer modal-footer-inside">
 
 				<a onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01( this, '.wpbc_modal__feedback_01__step_1' );" href="javascript:void(0);"
-				   class="button button-secondary"><?php _e('Back' ,'booking'); ?></a>
+				   class="button button-secondary"><?php esc_html_e('Back' ,'booking'); ?></a>
 
 				<a id="wpbc_modal__feedback_01__button_next__step_2" class="button button-primary wpbc_btn_next"
 				   onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01( this, '.wpbc_modal__feedback_01__step_3');" href="javascript:void(0);"
-				  ><?php _e('Next' ,'booking'); ?> <span>2/3</span></a>
+				  ><?php esc_html_e('Next' ,'booking'); ?> <span>2/3</span></a>
 			</div>
 		</div>
 
 		<?php /* Star 1 - 2 	Done 	*/ ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_3" style="display:none;">
-			<h5 class="modal-title"><?php printf(__('Thank you for your feedback! %s' ,'booking')
-									,'<i class="menu_icon icon-1x wpbc-bi-hand-thumbs-up" style="color: #dd2e44;"></i>' );
+			<h5 class="modal-title"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf(__('Thank you for your feedback! %s' ,'booking')
+									,'<i class="menu_icon icon-1x wpbc-bi-hand-thumbs-up" style="color: #dd2e44;"></i>' ) );
 			?></h5><br>
-			<h4 class="modal-title"><?php printf(__('You\'re helping us do a better job. :) We appreciate that!' ,'booking')
-									,'<i class="menu_icon icon-1x wpbc-bi-hand-thumbs-up" style="color: #dd2e44;"></i>' );
+			<h4 class="modal-title"><?php echo wp_kses_post( sprintf(__('You\'re helping us do a better job. :) We appreciate that!' ,'booking')
+									,'<i class="menu_icon icon-1x wpbc-bi-hand-thumbs-up" style="color: #dd2e44;"></i>' ) );
 			?></h4><br>
-			<h4 class="modal-title"><?php printf(__('Thanks for being with us! %s' ,'booking')
-									,'<i class="menu_icon icon-1x wpbc-bi-heart-fill 0wpbc_icn_favorite" style="color: #dd2e44;"></i>' );
+			<h4 class="modal-title"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf(__('Thanks for being with us! %s' ,'booking')
+									,'<i class="menu_icon icon-1x wpbc-bi-heart-fill 0wpbc_icn_favorite" style="color: #dd2e44;"></i>' ) );
 			?></h4>
 			<div class="modal-footer modal-footer-inside ui_element">
 				<a class="button button-primary wpbc_ui_button wpbc_ui_button_primary" id="wpbc_modal__feedback_01__submit_1_2"
 				onclick="javascript: wpbc_ajx_booking__ui_click__submit_feedback_01( this, '.wpbc_modal__feedback_01__step_3');" href="javascript:void(0);"
-				><span><?php _e('Done' ,'booking'); ?></span>&nbsp; <i class="menu_icon icon-1x wpbc_icn_done_all"></i></a>
+				><span><?php esc_html_e('Done' ,'booking'); ?></span>&nbsp; <i class="menu_icon icon-1x wpbc_icn_done_all"></i></a>
 			</div>
 		</div>
 
 		<?php /* Star 3 - 4 	Reason	*/ ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_4" style="display:none;">
-			<h4 class="modal-title"><?php _e('What functionality important to you are missing in the plugin?'); ?></h4><br>
+			<h4 class="modal-title"><?php esc_html_e('What functionality important to you are missing in the plugin?', 'booking'); ?></h4><br>
 			<textarea id="wpbc_modal__feedback_01__reason_of_action__step_4"  name="wpbc_modal__feedback_01__reason_of_action__step_4"
 					  style="width:100%;" cols="57" rows="3" autocomplete="off"
 					  onkeyup="javascript:if(jQuery( this ).val() != '' ){ jQuery( '#wpbc_modal__feedback_01__button_next__step_4').removeClass('disabled'); }"
 			></textarea>
-			<label class="help-block"><?php printf(__('It\'s an %soptional question%s. But, we\'d love to hear your thoughts!' ,'booking'),'<b>','</b>');?></label>
+			<label class="help-block"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( 'It\'s an %1$soptional question%2$s. But, we\'d love to hear your thoughts!', 'booking' ), '<b>', '</b>' ) ); ?></label>
 			<div class="modal-footer modal-footer-inside">
 
 				<a onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01( this, '.wpbc_modal__feedback_01__step_1' );" href="javascript:void(0);"
-				   class="button button-secondary"><?php _e('Back' ,'booking'); ?></a>
+				   class="button button-secondary"><?php esc_html_e('Back' ,'booking'); ?></a>
 
 				<a id="wpbc_modal__feedback_01__button_next__step_4" class="button button-primary wpbc_btn_next "
 				   onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01( this, '.wpbc_modal__feedback_01__step_5');" href="javascript:void(0);"
-				  ><?php _e('Next' ,'booking'); ?> <span>2/3</span></a>
+				  ><?php esc_html_e('Next' ,'booking'); ?> <span>2/3</span></a>
 			</div>
 		</div>
 
 		<?php /* Star 3 - 4 	Done 	*/ ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_5" style="display:none;">
-			<h4 class="modal-title"><?php printf(__('%sFantastic!%s Thanks for taking the time! %s' ,'booking')
+			<h4 class="modal-title"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( '%1$sFantastic!%2$s Thanks for taking the time! %3$s', 'booking' )
 										,'<strong>','</strong>'
-										,'<i class="menu_icon icon-1x wpbc-bi-heart-fill 0wpbc_icn_favorite" style="color: #dd2e44;"></i>' );
+										,'<i class="menu_icon icon-1x wpbc-bi-heart-fill 0wpbc_icn_favorite" style="color: #dd2e44;"></i>' ) );
 			?></h4><br>
-			<h4 class="modal-title"><?php _e('Your answers will help us to make the plugin better for you!' ,'booking'); ?></h4><br>
-			<h4 class="modal-title"><?php _e('Thanks for sharing your feedback! Have a great day :)' ,'booking'); ?></h4>
+			<h4 class="modal-title"><?php esc_html_e('Your answers will help us to make the plugin better for you!' ,'booking'); ?></h4><br>
+			<h4 class="modal-title"><?php esc_html_e('Thanks for sharing your feedback! Have a great day :)' ,'booking'); ?></h4>
 			<div class="modal-footer modal-footer-inside ui_element">
 				<a class="button button-primary wpbc_ui_button wpbc_ui_button_primary" id="wpbc_modal__feedback_01__submit_3_4"
 				onclick="javascript: wpbc_ajx_booking__ui_click__submit_feedback_01( this, '.wpbc_modal__feedback_01__step_5');" href="javascript:void(0);"
-				><span><?php _e('Done' ,'booking'); ?></span>&nbsp; <i class="menu_icon icon-1x wpbc_icn_done_all"></i></a>
+				><span><?php esc_html_e('Done' ,'booking'); ?></span>&nbsp; <i class="menu_icon icon-1x wpbc_icn_done_all"></i></a>
 			</div>
 		</div>
 
 		<?php /* Star 5 	Review	*/ ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_6" style="display:none;">
-			<h4 class="modal-title" style="line-height: 2.4em;"><?php //printf(__('%sFantastic!%s Would you like to leave a small review about the product? %s' ,'booking')
+			<h4 class="modal-title" style="line-height: 2.4em;"><?php
+				/* translators: 1: ... */
 				printf( '%sAwesome!%s Can you do us a HUGE favor and leave a 5-star rating for our plugin on WordPress to help us spread the word and boost our motivation? %s'
 										,'<strong>','</strong>'
 										,'<i class="menu_icon icon-1x wpbc-bi-heart-fill" style="color: #dd2e44;"></i>'
@@ -350,9 +366,9 @@ class WPBC_Feedback_01 {
 										,'<i class="menu_icon icon-1x wpbc-bi-balloon-heart" style="color: #dd2e44;"></i>'
 				);
 			?></h4><br>
-			<h4 class="modal-title"><?php //printf(__('It will support us to include more features in the plugin. %s%s%s' ,'booking')
+			<h4 class="modal-title"><?php
 				printf( 'Your support would mean a lot to us and we would be over the moon! :) %s%s%s'
-				//printf(__('Your support would mean a lot to us and we would be incredibly appreciative! :) %s%s%s' ,'booking')
+
 										,'<i class="menu_icon icon-1x wpbc-bi-balloon-heart" style="color: #dd2e44;"></i>'
 										,'<i class="menu_icon icon-1x wpbc-bi-balloon-heart" style="color: #dd2e44;"></i>'
 										,'<i class="menu_icon icon-1x wpbc-bi-balloon-heart" style="color: #dd2e44;"></i>'
@@ -360,25 +376,22 @@ class WPBC_Feedback_01 {
 			<textarea id="wpbc_modal__feedback_01__reason_of_action__step_7"  name="wpbc_modal__feedback_01__reason_of_action__step_7" style="display:none;"
 					  style="width:100%;" cols="57" rows="3" autocomplete="off"
 					  onkeyup="javascript:if(jQuery( this ).val() != '' ){ jQuery( '#wpbc_modal__feedback_01__button_next__step_7').removeClass('disabled'); }"
-					  placeholder="<?php esc_attr_e('What\'s the main benefit from Booking Calendar for you?'); ?>"
+					  placeholder="<?php esc_attr_e( 'What\'s the main benefit from Booking Calendar for you?', 'booking' ); ?>"
 			>not_now</textarea>
 			<?php //echo 'How it helps you or your business? Is it ease of use? Do you like the Product design ? Value for money...' ; ?>
 
 			<div class="modal-footer modal-footer-inside ui_element" style="justify-content: flex-end;">
 				<a id="wpbc_modal__feedback_01__button_next__step_6" class="button button-primary wpbc_btn_next "
 				   onclick="javascript: jQuery( '#wpbc_modal__feedback_01__reason_of_action__step_7').val('rate5'); wpbc_ajx_booking__ui_click__submit_feedback_01( this, '.wpbc_modal__feedback_01__step_7');" href="javascript:void(0);"
-				  ><?php _e('Yes! Sure, I\'d love to help!' ,'booking');
-						?> &nbsp; <i class="menu_icon icon-1x wpbc-bi-emoji-smile"></i></a>
+				  ><?php esc_html_e('Yes! Sure, I\'d love to help!' ,'booking'); ?> &nbsp; <i class="menu_icon icon-1x wpbc-bi-emoji-smile"></i></a>
 
 				<a onclick="javascript:  wpbc_ajx_booking__ui_click__submit_feedback_01( this, '.wpbc_modal__feedback_01__step_7');" href="javascript:void(0);"
-				   class="button button-secondary wpbc_ui_button"  id="wpbc_modal__feedback_01__submit_5_none"><?php _e('No, sorry - not this time.' ,'booking');
-						?>  &nbsp; <i class="menu_icon icon-1x wpbc-bi-emoji-neutral"></i></a>
+				   class="button button-secondary wpbc_ui_button"  id="wpbc_modal__feedback_01__submit_5_none"><?php esc_html_e('No, sorry - not this time.' ,'booking'); ?>  &nbsp; <i class="menu_icon icon-1x wpbc-bi-emoji-neutral"></i></a>
 
 				<?php /* ?>
 				<a id="wpbc_modal__feedback_01__button_next__step_6" class="button button-primary wpbc_btn_next "
 				   onclick="javascript: wpbc_ajx_booking__ui_click__send_feedback_01( this, '.wpbc_modal__feedback_01__step_7');" href="javascript:void(0);"
-				  ><?php _e('Yes! Sure, I\'d love to help!' ,'booking');
-						?> <i class="menu_icon icon-1x wpbc-bi-emoji-smile"></i></a>
+				  ><?php esc_html_e('Yes! Sure, I\'d love to help!' ,'booking'); ?> <i class="menu_icon icon-1x wpbc-bi-emoji-smile"></i></a>
  				<?php */ ?>
 			</div>
 
@@ -386,16 +399,18 @@ class WPBC_Feedback_01 {
 
 		<?php /* Star 5 	Done 	*/ ?>
 		<div class="wpbc_modal__feedback_01__steps wpbc_modal__feedback_01__step_7" style="display:none;">
-			<h4 class="modal-title"><?php printf(__('%sPerfect!%s Thanks for taking the time! %s' ,'booking')
+			<h4 class="modal-title"><?php
+				/* translators: 1: ... */
+				echo wp_kses_post( sprintf( __( '%1$sPerfect!%2$s Thanks for taking the time! %3$s', 'booking' )
 										,'<strong>','</strong>'
-										,'<i class="menu_icon icon-1x wpbc-bi-heart-fill 0wpbc_icn_favorite" style="color: #dd2e44;"></i>' );
+										,'<i class="menu_icon icon-1x wpbc-bi-heart-fill 0wpbc_icn_favorite" style="color: #dd2e44;"></i>' ) );
 			?></h4><br>
-			<h4 class="modal-title"><?php _e('Your answers will help us to make the plugin better for you!' ,'booking'); ?></h4><br>
-			<h4 class="modal-title"><?php _e('Thanks for sharing your feedback! Have a great day :)' ,'booking'); ?></h4>
+			<h4 class="modal-title"><?php esc_html_e('Your answers will help us to make the plugin better for you!' ,'booking'); ?></h4><br>
+			<h4 class="modal-title"><?php esc_html_e('Thanks for sharing your feedback! Have a great day :)' ,'booking'); ?></h4>
 			<div class="modal-footer modal-footer-inside ui_element">
 				<a class="button button-primary wpbc_ui_button wpbc_ui_button_primary" id="wpbc_modal__feedback_01__submit_5"
 				onclick="javascript: wpbc_ajx_booking__ui_click__submit_feedback_01( this, '.wpbc_modal__feedback_01__step_7');" href="javascript:void(0);"
-				><span><?php _e('Done' ,'booking'); ?></span>&nbsp; <i class="menu_icon icon-1x wpbc_icn_done_all"></i></a>
+				><span><?php esc_html_e('Done' ,'booking'); ?></span>&nbsp; <i class="menu_icon icon-1x wpbc_icn_done_all"></i></a>
 			</div>
 		</div>
 		<?php
@@ -417,6 +432,7 @@ function wpbc_booking_do_action__feedback_01( $request_params, $params ) {
 	$feedback__note = $request_params['feedback__note'];//esc_textarea( $request_params['feedback__note'] );
 
 	$after_action_result  = true;
+	/* translators: 1: ... */
 	$after_action_message = sprintf( __( 'Thanks for sharing your rating %s', 'booking' ), '<strong style="font-size: 1.1em;">' . $feedback_stars . '</strong>/5' );
 
 	if ( 'remind_later' == $feedback__note ) {
@@ -424,7 +440,7 @@ function wpbc_booking_do_action__feedback_01( $request_params, $params ) {
 		$after_action_message = __( 'Done', 'booking' );
 
 		// Update new period for showing Feedback
-		$feedback_date = date('Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) );
+		$feedback_date = gmdate('Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) );
 		update_option('booking_feedback_03', $feedback_date );
 
 	} elseif ( ( $feedback_stars > 0 ) && ( $feedback_stars <= 5 ) ) {
@@ -564,7 +580,7 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 
 			return 	  $ver . ' (' . $show_version . ') '
 					. ( ( 'Free' !== $ver ) ?  ' :: ' . $v_type . '.' : '' )
-					. ' :: ' 	. date( "d.m.Y", filemtime( WPBC_FILE ) );
+					. ' :: ' 	. gmdate( "d.m.Y", filemtime( WPBC_FILE ) );
 		}
 
 
@@ -601,7 +617,7 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 			if ( version_compare( WP_BK_VERSION_NUM, wpbc_get_feedback_defaults( 'max_version' ) , '>=') ) {
 				return false;
 			}
-			$feedback_date = date( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) );
+			$feedback_date = gmdate( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) );
 			add_option( 'booking_feedback_03', $feedback_date );
 		}
 		add_bk_action( 'wpbc_before_activation' , 'wpbc_is__feedback_01__timer_install' );

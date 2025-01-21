@@ -12,7 +12,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-//     H   A   S   H                                                                                                            //FixIn: 9.2.3.3
+//     H   A   S   H                                                                                                            // FixIn: 9.2.3.3.
 
 /**
  * Get booking ID and resource ID  by booking HASH
@@ -31,19 +31,19 @@ function wpbc_hash__get_booking_id__resource_id( $booking_hash ) {
 	if ( class_exists( 'wpdev_bk_personal' ) ) {
 
 		$sql = $wpdb->prepare( "SELECT booking_id as id, booking_type as type FROM {$wpdb->prefix}booking as bk  WHERE  bk.hash = %s", $booking_hash );
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql );
 
-		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->id ) ) && ( isset( $res[0]->type ) ) ) {          //FixIn: 8.1.2.13
+		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->id ) ) && ( isset( $res[0]->type ) ) ) {          // FixIn: 8.1.2.13.
 			return array( $res[0]->id, $res[0]->type );
 		}
 	} else {
 
 		$sql = $wpdb->prepare( "SELECT booking_id as id FROM {$wpdb->prefix}booking as bk  WHERE  bk.hash = %s", $booking_hash );
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql );
 
-		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->id ) ) ) {                                        //FixIn: 8.1.2.13
+		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->id ) ) ) {                                        // FixIn: 8.1.2.13.
 			return array( $res[0]->id, 1 );
 		}
 	}
@@ -58,7 +58,7 @@ function wpbc_hash__get_booking_id__resource_id( $booking_hash ) {
  *
  * @param $booking_id
  *
- * @return array|false		-   array( $hash, $resource_id )  |  false 		if not found
+ * @return array|false        -   array( $hash, $resource_id )  |  false        if not found
  */
 function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 
@@ -70,7 +70,7 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 	if ( class_exists( 'wpdev_bk_personal' ) ) {
 
 		$sql = $wpdb->prepare( "SELECT hash, booking_type as type FROM {$wpdb->prefix}booking as bk  WHERE  bk.booking_id = %d", $booking_id );
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql );
 
 		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->hash ) ) && ( isset( $res[0]->type ) ) ) {
@@ -79,7 +79,7 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 	} else {
 
 		$sql = $wpdb->prepare( "SELECT hash FROM {$wpdb->prefix}booking as bk  WHERE  bk.booking_id = %d", $booking_id );
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$res = $wpdb->get_results( $sql );
 
 		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->hash ) ) ) {
@@ -92,7 +92,7 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 
 
 /**
- * Update booking hash to newly generated. 	Run after creation/modification of booking in post request
+ * Update booking hash to newly generated.    Run after creation/modification of booking in post request
  *
  * @param $booking_id
  * @param $resource_id
@@ -102,12 +102,15 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 function wpbc_hash__update_booking_hash( $booking_id, $resource_id = '1' ) {
 	global $wpdb;
 
-	$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking AS bk SET bk.hash = MD5(%s) WHERE bk.booking_id = %d"
-									, time() . '_' . rand( 1000, 1000000 )
-									, $booking_id
-								);
+	$update_sql = $wpdb->prepare(
+		"UPDATE {$wpdb->prefix}booking AS bk SET bk.hash = MD5(%s) WHERE bk.booking_id = %d"
+		, time() . '_' . wp_rand( 1000, 1000000 )
+		, $booking_id
+	);
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	if ( false === $wpdb->query( $update_sql ) ) {
-		?><script type="text/javascript"> document.getElementById( 'submiting<?php echo $resource_id; ?>' ).innerHTML = '<div style=&quot;height:20px;width:100%;text-align:center;margin:15px auto;&quot;><?php debuge_error( 'Error during updating hash in BD', __FILE__, __LINE__ ); ?></div>'; </script> <?php
+		?>
+		<script type="text/javascript"> document.getElementById('submiting<?php echo esc_attr( $resource_id ); ?>').innerHTML = '<div style=&quot;height:20px;width:100%;text-align:center;margin:15px auto;&quot;><?php debuge_error( 'Error during updating hash in BD', __FILE__, __LINE__ ); ?></div>'; </script> <?php
 		die();
 	}
 }
@@ -123,9 +126,9 @@ function wpbc_hash__update_booking_hash( $booking_id, $resource_id = '1' ) {
  */
 function wpbc_get_dates_selection_js_code( $to_select__dates_sql_arr, $resource_id ){
 
-	$dates_selection_js_code  = '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 				//FixIn: 10.1.3.7
+	$dates_selection_js_code  = '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 				// FixIn: 10.1.3.7.
 
-	//FixIn: 10.0.0.50
+	// FixIn: 10.0.0.50.
 	$dates_selection_js_code .= ' var select_dates_in_calendar_id = ' . intval( $resource_id ) . ';';
 	$dates_selection_js_code .= " jQuery( 'body' ).on( 'wpbc_calendar_ajx__loaded_data', function ( event, loaded_resource_id ){ ";		// Fire on all booking dates loaded
 	$dates_selection_js_code .= " 	if ( loaded_resource_id == select_dates_in_calendar_id ){ ";
@@ -142,7 +145,7 @@ function wpbc_get_dates_selection_js_code( $to_select__dates_sql_arr, $resource_
 	$dates_selection_js_code .= " 	} ";
 	$dates_selection_js_code .= " } ); ";
 
-	$dates_selection_js_code .= wpbc_jq_ready_end() . '</script>';                                                          				//FixIn: 10.1.3.7
+	$dates_selection_js_code .= wpbc_jq_ready_end() . '</script>';                                                          				// FixIn: 10.1.3.7.
 
 	return $dates_selection_js_code;
 }
@@ -190,7 +193,7 @@ function wpbc_get_resource_id__from_hash_in_url( $booking_hash = false ){
 function wpbc_get_booking_arr__from_hash_in_url( $booking_hash = false ){
 
 	if ( empty( $booking_hash ) ) {
-		$booking_hash = ( isset( $_REQUEST['booking_hash'] ) ) ? $_REQUEST['booking_hash'] : '';
+		$booking_hash = ( isset( $_REQUEST['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['booking_hash'] ) ) : ''; /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */
 	}
 
 	$booking_id  = '';

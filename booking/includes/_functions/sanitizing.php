@@ -131,7 +131,7 @@ function wpbc_sanitize_params_in_arr( $request_params_values_arr, $params_rules 
 					break;
 
 				case 'csv_dates':													// CSV Dates: '11.11.2025, 12.11.2025, 13.11.2025'  or  '2024-02-06, 2024-02-10'
-					$clean_params[ $request_key_name ] = wpbc_sanitize_csv_dates( $request_value_check );               //FixIn: 9.9.1.1
+					$clean_params[ $request_key_name ] = wpbc_sanitize_csv_dates( $request_value_check );               // FixIn: 9.9.1.1.
 					break;
 
 				case 'digit_or_date':                                            // digit or Date
@@ -213,7 +213,7 @@ function wpbc_sanitize_params_in_arr( $request_params_values_arr, $params_rules 
  * or
 					* wpbc_sanitize_digit_or_csd( array( '12,a,45,9', '10a' ) )  => array ( '12,0,45,9',  '10' )
  */
-function wpbc_sanitize_digit_or_csd( $value ) {                                //FixIn:6.2.1.4
+function wpbc_sanitize_digit_or_csd( $value ) {                                // FixIn: 6.2.1.4.
 
 	if ( $value === '' ) {
 		return $value;
@@ -247,7 +247,7 @@ function wpbc_sanitize_digit_or_csd( $value ) {                                /
  *
  * @return string | int  '2022-05-31' or 5  or ''
  */
-function wpbc_sanitize_digit_or_date( $value ) {                               //FixIn:6.2.1.4
+function wpbc_sanitize_digit_or_date( $value ) {                               // FixIn: 6.2.1.4.
 
 	if ( $value === '' ) return $value;
 
@@ -267,7 +267,7 @@ function wpbc_sanitize_digit_or_date( $value ) {                               /
  *
  * @return string '2022-05-31' or ''
  */
-function wpbc_sanitize_date( $value ) {                               //FixIn:6.2.1.4
+function wpbc_sanitize_date( $value ) {                               // FixIn: 6.2.1.4.
 
 	if ( $value === '' ) return $value;
 
@@ -287,7 +287,7 @@ function wpbc_sanitize_date( $value ) {                               //FixIn:6.
  *
  * @return string '31.05.2022' or ''
  */
-function wpbc_sanitize_date_dmy( $value ) {                                                                             //FixIn: 9.9.1.1
+function wpbc_sanitize_date_dmy( $value ) {                                                                             // FixIn: 9.9.1.1.
 
 	if ( $value === '' ) return $value;
 
@@ -307,7 +307,7 @@ function wpbc_sanitize_date_dmy( $value ) {                                     
  *
  * @return string '2022-05-31' or ''
  */
-function wpbc_sanitize_csv_dates( $value ) {                                                                            //FixIn: 9.9.1.1
+function wpbc_sanitize_csv_dates( $value ) {                                                                            // FixIn: 9.9.1.1.
 
 	if ( '' === $value ) { return $value; }
 
@@ -399,7 +399,7 @@ function wpbc_sanitize_text_strong( $value ){
     $esc_sql_value = preg_replace( '/<[^>]*>/', '', $esc_sql_value );
     $esc_sql_value = str_replace( '<', ' ', $esc_sql_value );
     $esc_sql_value = str_replace( '>', ' ', $esc_sql_value );
-    $esc_sql_value = strip_tags( $esc_sql_value );
+    $esc_sql_value = wp_strip_all_tags( $esc_sql_value );
 
 	//FixIn: 9.7.4.1	-	escape coded html/xss							// Escape any XSS injection
 	// If we have field converted to 'Unicode Hex Character Code', then  we make HTML decode firstly (html_entity_decode) and then make sanitizing
@@ -420,7 +420,7 @@ function wpbc_sanitize_text_strong( $value ){
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * Sanitize $_GET, $_POST, $_REQUEST text parameters									    				    //FixIn: 10.0.0.12
+ * Sanitize $_GET, $_POST, $_REQUEST text parameters									    				    // FixIn: 10.0.0.12.
  *
  * @param $value
  * @param $keep_newlines bool
@@ -445,17 +445,17 @@ function wpbc_clean_parameter( $value, $is_escape_sql = true ) {
 	$value = preg_replace( '/<[^>]*>/', '', $value );                       // clean any tags
 	$value = str_replace( '<', ' ', $value );
 	$value = str_replace( '>', ' ', $value );
-	$value = strip_tags( $value );
+	$value = wp_strip_all_tags( $value );
 
 	//FixIn: 9.7.4.1	-	escape coded html/xss							// Escape any XSS injection
 	$value = sanitize_textarea_field( $value );
 	$value = sanitize_textarea_field( html_entity_decode( $value ) );		// If we have field converted to 'Unicode Hex Character Code', then  we make HTML decode firstly (html_entity_decode) and then make sanitizing
 
 	if ( $is_escape_sql ) {
-		$value = esc_sql( $value );			// Clean SQL injection					//FixIn: 9.7.4.2
+		$value = esc_sql( $value );			// Clean SQL injection					// FixIn: 9.7.4.2.
 	}
 
-	$value = esc_textarea( $value );																				//FixIn: 7.1.1.2
+	$value = esc_textarea( $value );																				// FixIn: 7.1.1.2.
 
 	return $value;
 }
@@ -474,7 +474,7 @@ function wpbc_clean_parameter( $value, $is_escape_sql = true ) {
  * or
  *					wpbc_clean_digit_or_csd( array( '12,a,45,9', '10a' ) )  => array ( '12,0,45,9',  '10' )
  */
-function wpbc_clean_digit_or_csd( $value ) {                                //FixIn:6.2.1.4
+function wpbc_clean_digit_or_csd( $value ) {                                // FixIn: 6.2.1.4.
 
 	if ( $value === '' ) return $value;
 
@@ -493,7 +493,7 @@ function wpbc_clean_digit_or_csd( $value ) {                                //Fi
 	$result = array();
 	foreach ($array_of_nums as $check_element) {
 
-		$result[] = intval( $check_element );						//FixIn: 8.0.2.10
+		$result[] = intval( $check_element );						// FixIn: 8.0.2.10.
 	}
 	$result = implode(',', $result );
 	return $result;
@@ -506,7 +506,7 @@ function wpbc_clean_digit_or_csd( $value ) {                                //Fi
  * @param string $value
  * @return string or int
  */
-function wpbc_clean_digit_or_date( $value ) {                               //FixIn:6.2.1.4
+function wpbc_clean_digit_or_date( $value ) {                               // FixIn: 6.2.1.4.
 
 	if ( $value === '' ) return $value;
 
@@ -591,6 +591,20 @@ function wpbc_esc_like( $value_trimmed ) {
 		return addcslashes( $value_trimmed, '_%\\' );                       // Direct implementation  from $wpdb->esc_like(
 }
 
+/**
+ * Escape single quote from '  to  &#039;
+ *
+ * @param string $value  - String to escape.
+ *
+ * @return array|string|string[]
+ */
+function wpbc_esc_single_quote( $value ) {
+
+	$safe_text     = wp_check_invalid_utf8( $value );
+	$escaped_value = str_replace( "'", '&#039;', $safe_text );
+
+	return $escaped_value;
+}
 
 /**
  * Sanitize term to Slug format (no spaces, lowercase).
@@ -618,9 +632,10 @@ function wpbc_clean_like_string_for_append_in_sql_for_db( $value ) {
 	global $wpdb;
 
 	$value_trimmed = trim( stripslashes( $value ) );
-$wild = '%';
-$like = $wild . wpbc_esc_like( $value_trimmed ) . $wild;
-$sql  = $wpdb->prepare( "'%s'", $like );
+	$wild          = '%';
+	$like          = $wild . wpbc_esc_like( $value_trimmed ) . $wild;
+	/* phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder */
+	$sql = $wpdb->prepare( "'%s'", $like );
 
 	return $sql;
 
@@ -662,9 +677,10 @@ function wpbc_clean_like_string_for_db( $value ){
 
 	$value_trimmed = trim( stripslashes( $value ) );
 
-	$value_trimmed =  wpbc_esc_like( $value_trimmed );
+	$value_trimmed = wpbc_esc_like( $value_trimmed );
 
-	$value = trim( $wpdb->prepare( "'%s'",  $value_trimmed ) , "'" );
+	/* phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder */
+	$value = trim( $wpdb->prepare( "'%s'", $value_trimmed ), "'" );
 
 	return $value;
 

@@ -54,7 +54,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
         
         if ( ! wpbc_is_mu_user_can_be_here( 'activated_user' ) ) return false;  // Check if MU user activated,  otherwise show Warning message.
         
-        if ( ! wpbc_set_default_resource_to__get() ) return false;              // Define default booking resources for $_GET and check if booking resource belong to user
+        if ( ! wpbc_set_default_resource_to__get() ) return false;              // Define default booking resources for $_ GET and check if booking resource belong to user
 
         ?><span class="wpdevelop"><?php                                         // BS UI CSS Class
         
@@ -73,7 +73,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
         ?><div class="add_booking_page_content" style="width:100%;margin-bottom:100px;"><?php
         
             // Previously we defined booking resources to  $_GET
-            $bk_type = intval( $_GET['booking_type'] );
+		$bk_type = isset( $_GET['booking_type'] ) ? intval( $_GET['booking_type'] ) : 1;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
             // do_action( 'wpdev_bk_add_form', $bk_type, get_bk_option( 'booking_client_cal_count' ) );
             
@@ -87,7 +87,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
                             , ''                                                    // $my_selected_dates_without_calendar = ''
                             , false                                                 // $start_month_calendar = false
                             , '{calendar' . $saved_user_calendar_params['options_param'] . '}'          // $bk_otions=array() 
-                          );                                                        //FixIn:6.0.1.6
+                          );                                                        // FixIn: 6.0.1.6.
         
         ?></div><?php
         
@@ -135,7 +135,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
         if ( ! empty( $user_calendar_options['calendar_width'] ) ) {
              $unit_value = ( esc_attr( $user_calendar_options['calendar_widthunits'] ) == 'percent' ) ? '%' : esc_attr( $user_calendar_options['calendar_widthunits'] );
              $option_width = ' width=' . intval( $user_calendar_options['calendar_width'] ) . $unit_value;
-			 $option_width .= ' strong_width=' . intval( $user_calendar_options['calendar_width'] ) . $unit_value;        //FixIn: 9.3.1.6
+			 $option_width .= ' strong_width=' . intval( $user_calendar_options['calendar_width'] ) . $unit_value;        // FixIn: 9.3.1.6.
         } else $option_width = '';            
 
         if ( ! empty( $user_calendar_options['calendar_cell_height'] ) ) {

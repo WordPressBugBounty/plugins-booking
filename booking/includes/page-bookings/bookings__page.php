@@ -44,8 +44,8 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
                             , 'position'	=> ''                               // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             , 'icon'		=> ''                               // Icon - link to the real PNG img
-                            , 'font_icon'	=> 'wpbc-bi-collection'			// CSS definition  of forn Icon				//FixIn: 9.5.5.3
-                            , 'header_font_icon'	=> 'wpbc-bi-collection'			// CSS definition  of forn Icon				//FixIn: 9.5.5.3
+                            , 'font_icon'	=> 'wpbc-bi-collection'			// CSS definition  of forn Icon				// FixIn: 9.5.5.3.
+                            , 'header_font_icon'	=> 'wpbc-bi-collection'			// CSS definition  of forn Icon				// FixIn: 9.5.5.3.
                             , 'default'		=> false								// Is this tab activated by default or not: true || false.
                             , 'disabled'	=> false                            // Is this tab disabled: true || false.
                             , 'hided'		=> true                             // Is this tab hided: true || false.
@@ -76,46 +76,46 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 						);
 
 		$escaped_search_request_params = false;
+	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	    if ( empty( $_REQUEST['overwrite'] ) ) {
 		    $escaped_search_request_params = $user_request->get_sanitized__saved__user_request_params();				// Get Saved
 	    }
 
-		if (
-			   ( false === $escaped_search_request_params )
-			|| ( ! empty( $_REQUEST['overwrite'] ) )
-		){							// This request was not saved before, then get sanitized direct parameters, like: 	$_REQUEST['resource_id']
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( ( false === $escaped_search_request_params ) || ( ! empty( $_REQUEST['overwrite'] ) ) ) {
+			// This request was not saved before, then get sanitized direct parameters, like: 	$_REQUEST['resource_id'].
 
-			$request_prefix = false;
-			$escaped_search_request_params = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  ); 		// Direct: 	$_REQUEST['resource_id']
+			$request_prefix                = false;
+			$escaped_search_request_params = $user_request->get_sanitized__in_request__value_or_default( $request_prefix );        // Direct: 	$_REQUEST['resource_id'].
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        // Submit  /////////////////////////////////////////////////////////////
-        $submit_form_name = 'wpbc_ajx_booking_form';                             	// Define form name
+		// Submit.
+		$submit_form_name = 'wpbc_ajx_booking_form';                                                    // Define form name.
 
-		?><span class="wpdevelop"><?php                                         // BS UI CSS Class
+		?><span class="wpdevelop"><?php                                                                                 // BS UI CSS Class.
 
-			wpbc_js_for_bookings_page();                                            // JavaScript functions
+		wpbc_js_for_bookings_page();                                            // JavaScript functions.
 
-			wpbc_welcome_panel();                                                   // Welcome Panel (links)
+		wpbc_welcome_panel();                                                   // Welcome Panel (links).
 
-			wpbc_ajx_bookings_toolbar( $escaped_search_request_params );
+		wpbc_ajx_bookings_toolbar( $escaped_search_request_params );
 
-		?></span><?php                                         // BS UI CSS Class
+		?></span><?php  // BS UI CSS Class.
 
 		?><div id="wpbc_log_screen" class="wpbc_log_screen"></div><?php
 
-        // Content  ////////////////////////////////////////////////////////////
+        // Content ----------------------------------------------------------------------------------------------------.
         ?>
         <div class="clear" style="margin-bottom:10px;"></div>
         <span class="metabox-holder">
-            <form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" >
+            <form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" >
                 <?php
                    // N o n c e   field, and key for checking   S u b m i t
                    wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-                ?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php
+                ?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
 
 				///wpbc_ajx_booking_modify_container_show();					// Container for showing Edit ajx_booking and define Edit and Delete ajx_booking JavaScript vars.
 
@@ -126,7 +126,7 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 					?><div class="wpbc_ajx_booking_pagination"></div><?php		// Pagination  container at  head
 
 					//	Is send Emails
-		            wpbc_ajx__ui__booking__no_toolbar__is_email_sending( $escaped_search_request_params, wpbc_ajx_get__request_params__names_default( 'default' ) );        //FixIn: 9.6.1.5
+		            wpbc_ajx__ui__booking__no_toolbar__is_email_sending( $escaped_search_request_params, wpbc_ajx_get__request_params__names_default( 'default' ) );        // FixIn: 9.6.1.5.
 
                 ?></div><?php
 
@@ -177,34 +177,41 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 		}
 
 
-		private function show_ajx_booking_listing_container_ajax( $escaped_search_request_params ) {
-
-			?>
-			<div class="wpbc_listing_container wpbc_selectable_table wpbc_ajx_booking_listing_container">
-				<?php // New Spinner Loader 		//FixIn: 10.0.0.25  ?>
-				<div class="wpbc_spins_loading_container" >
-					<div class="wpbc_booking_form_spin_loader" ><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spins_loader_mini"></div></div></div>
-					<span><?php _e('Loading','booking'); ?> ...</span>
+	private function show_ajx_booking_listing_container_ajax( $escaped_search_request_params ) {
+		?>
+		<div class="wpbc_listing_container wpbc_selectable_table wpbc_ajx_booking_listing_container">
+			<div class="wpbc_spins_loading_container">
+				<div class="wpbc_booking_form_spin_loader">
+					<div class="wpbc_spins_loader_wrapper">
+						<div class="wpbc_spins_loader_mini"></div>
+					</div>
 				</div>
+				<span>
+				<?php
+					esc_html_e( 'Loading', 'booking' );
+					echo ' ...';
+				?>
+				</span>
 			</div>
-			<script type="text/javascript">
-				jQuery( document ).ready( function (){
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function () {
 
-					// Set Security - Nonce for Ajax  - Listing
-					wpbc_ajx_booking_listing.set_secure_param( 'nonce',   '<?php echo wp_create_nonce( 'wpbc_ajx_booking_listing_ajx' . '_wpbcnonce' ) ?>' );
-					wpbc_ajx_booking_listing.set_secure_param( 'user_id', '<?php echo wpbc_get_current_user_id();  ?>' );
-					wpbc_ajx_booking_listing.set_secure_param( 'locale',  '<?php echo get_user_locale(); ?>' );
+				// Set Security - Nonce for Ajax  - Listing
+				wpbc_ajx_booking_listing.set_secure_param('nonce', '<?php echo esc_attr( wp_create_nonce( 'wpbc_ajx_booking_listing_ajx' . '_wpbcnonce' ) ); ?>');
+				wpbc_ajx_booking_listing.set_secure_param('user_id', '<?php echo esc_attr( wpbc_get_current_user_id() ); ?>');
+				wpbc_ajx_booking_listing.set_secure_param('locale', '<?php echo esc_attr( get_user_locale() ); ?>');
 
-					// Set other parameters
-					wpbc_ajx_booking_listing.set_other_param( 'listing_container',    '.wpbc_ajx_booking_listing_container' );
-					wpbc_ajx_booking_listing.set_other_param( 'pagination_container', '.wpbc_ajx_booking_pagination' );
+				// Set other parameters
+				wpbc_ajx_booking_listing.set_other_param('listing_container', '.wpbc_ajx_booking_listing_container');
+				wpbc_ajx_booking_listing.set_other_param('pagination_container', '.wpbc_ajx_booking_pagination');
 
-					// Send Ajax request and show listing after this.
-					wpbc_ajx_booking_send_search_request_with_params( <?php echo wp_json_encode( $escaped_search_request_params ); ?> );
-				} );
-			</script>
-			<?php
-		}
+				// Send Ajax request and show listing after this.
+				wpbc_ajx_booking_send_search_request_with_params( <?php echo wp_json_encode( $escaped_search_request_params ); ?> );
+			});
+		</script>
+		<?php
+	}
 
 
 		private function show_ajx_booking_listing_container_directly(){

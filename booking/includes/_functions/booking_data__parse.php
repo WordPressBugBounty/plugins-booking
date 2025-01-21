@@ -78,7 +78,7 @@ function wpbc_get_parsed_booking_data_arr( $form_data, $resource_id = 1, $params
 		foreach ( $fields_arr as $field ) {
 
 			if ( false === strpos( $field, '^' ) ) {
-				break;            //FixIn: 9.8.10.2
+				break;            // FixIn: 9.8.10.2.
 			}
 
 			list( $field_type, $field_original_name, $field_value ) = explode( '^', $field );
@@ -120,7 +120,7 @@ function wpbc_get_parsed_booking_data_arr( $form_data, $resource_id = 1, $params
 		}
 
 		// Convert arrays to string
-		foreach ( $booking_data_arr as $field_name => $field_structure_arr ) {									//FixIn: 9.8.9.1
+		foreach ( $booking_data_arr as $field_name => $field_structure_arr ) {									// FixIn: 9.8.9.1.
 			$field_structure_arr['value'] = array_filter( $field_structure_arr['value'], function ( $v ) {
 																											return ( $v !== '' );	// Remove All '' entries
 																										} );
@@ -276,14 +276,14 @@ function wpbc_get__booking_form_data__show( $form_data, $resource_id = 1 , $para
 
 	$booking_data_arr  = wpbc_get_parsed_booking_data_arr( $form_data, $resource_id, array( 'get' => 'value' ) );
 
-	foreach ( $booking_data_arr as $key_param => $value_param ) {                                  					//FixIn: 6.1.1.4
+	foreach ( $booking_data_arr as $key_param => $value_param ) {                                  					// FixIn: 6.1.1.4.
 
 		$value_param = esc_html( $value_param );																	//FixIn: 9.7.4.1	-	escape coded html/xss
 		$value_param = esc_html( html_entity_decode( $value_param ) );
-		$value_param = nl2br($value_param);                                             							// Add BR instead if /n elements		//FixIn: 9.7.4.2
+		$value_param = nl2br($value_param);                                             							// Add BR instead if /n elements		// FixIn: 9.7.4.2.
 		$value_param = wpbc_string__escape__then_convert__n_amp__html( $value_param );
 
-		$value_param = wpbc_replace__true_false__to__yes_no( $value_param );												//FixIn: 9.8.9.1
+		$value_param = wpbc_replace__true_false__to__yes_no( $value_param );												// FixIn: 9.8.9.1.
 
 		if (
 				( gettype( $value_param ) != 'array' )
@@ -295,10 +295,10 @@ function wpbc_get__booking_form_data__show( $form_data, $resource_id = 1 , $para
 
 	if ($params['is_replace_unknown_shortcodes']) {
 		// Remove all shortcodes, which is not replaced early.
-		$booking_form_show = preg_replace( '/[\s]{0,}\[[a-zA-Z0-9.,-_]{0,}\][\s]{0,}/', $params['unknown_shortcodes_replace_by'], $booking_form_show );        //FixIn: 6.1.1.4
+		$booking_form_show = preg_replace( '/[\s]{0,}\[[a-zA-Z0-9.,-_]{0,}\][\s]{0,}/', $params['unknown_shortcodes_replace_by'], $booking_form_show );        // FixIn: 6.1.1.4.
 	}
 
-	$booking_form_show = str_replace( "&amp;", '&', $booking_form_show );											//FixIn:7.1.2.12
+	$booking_form_show = str_replace( "&amp;", '&', $booking_form_show );											// FixIn: 7.1.2.12.
 
 
 
@@ -319,7 +319,7 @@ function wpbc_get__custom_booking_form_name( $resource_id = 1, $form_data = '' )
 
 	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
-		if ( false !== strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) ) {                        //FixIn: 9.4.3.12
+		if ( false !== strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) ) {                        // FixIn: 9.4.3.12.
 
 			$custom_booking_form_name = substr( $form_data, strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) + strlen( 'wpbc_custom_booking_form' . $resource_id . '^' ) );
 
@@ -386,7 +386,7 @@ function wpbc_get__booking_form_fields__configuration( $resource_id = 1, $form_n
 			}
 
 			//MU :: if resource of "Regular User" - then  GET STANDARD user form ( if ( get_bk_option( 'booking_is_custom_forms_for_regular_users' ) !== 'On' ) )
-			$booking_form_configuration = apply_bk_filter( 'wpbc_multiuser_get_booking_form_fields_configuration_of_regular_user', $booking_form_configuration, $resource_id, $form_name );    //FixIn: 8.1.3.19
+			$booking_form_configuration = apply_bk_filter( 'wpbc_multiuser_get_booking_form_fields_configuration_of_regular_user', $booking_form_configuration, $resource_id, $form_name );    // FixIn: 8.1.3.19.
 		}
 	}
 
@@ -424,7 +424,7 @@ function wpbc_get__booking_form_data_configuration( $resource_id = 1, $form_data
 
 		if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
-			if ( false !== strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) ) {                        //FixIn: 9.4.3.12
+			if ( false !== strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) ) {                        // FixIn: 9.4.3.12.
 
 				$custom_booking_form_name = substr( $form_data, strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) + strlen( 'wpbc_custom_booking_form' . $resource_id . '^' ) );
 				if ( false !== strpos( $custom_booking_form_name, '~' ) ) {
@@ -442,7 +442,7 @@ function wpbc_get__booking_form_data_configuration( $resource_id = 1, $form_data
 			}
 
 			//MU :: if resource of "Regular User" - then  GET STANDARD user form ( if ( get_bk_option( 'booking_is_custom_forms_for_regular_users' ) !== 'On' ) )
-			$booking_form_show = apply_bk_filter( 'wpbc_multiuser_get_booking_form_show_of_regular_user', $booking_form_show, $resource_id, $my_booking_form_name );    //FixIn: 8.1.3.19
+			$booking_form_show = apply_bk_filter( 'wpbc_multiuser_get_booking_form_show_of_regular_user', $booking_form_show, $resource_id, $my_booking_form_name );    // FixIn: 8.1.3.19.
 		}
 	}
 
@@ -630,7 +630,7 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 		//FixIn: 9.7.4.1	-	escape coded html/xss
 		$value = esc_html( $value );
 		$value = esc_html( html_entity_decode( $value ) );
-		$value = nl2br($value);                                             // Add BR instead if /n elements		//FixIn: 9.7.4.2
+		$value = nl2br($value);                                             // Add BR instead if /n elements		// FixIn: 9.7.4.2.
 				// Escaping for timeline popovers and for other places
 		$value = wpbc_string__escape__then_convert__n_amp__html( $value );
 
@@ -640,7 +640,7 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 		$type_name = str_replace('[]','',$type_name);
 		if ($bktype == substr( $type_name,  -1*$count_pos ) ) $type_name = substr( $type_name, 0, -1*$count_pos ); // $type_name = str_replace($bktype,'',$elemnts[1]);
 
-		if ( ( ($type_name == 'email') || ($type == 'email')  ) && ( empty($email_adress) )   )    $email_adress = $value;  //FixIn: 6.0.1.9
+		if ( ( ($type_name == 'email') || ($type == 'email')  ) && ( empty($email_adress) )   )    $email_adress = $value;  // FixIn: 6.0.1.9.
 		if ( ($type_name == 'coupon') || ($type == 'coupon')  )             $coupon_code = $value;
 		if ( ($type_name == 'name') || ($type == 'name')  )                 $name_of_person = $value;
 		if ( ($type_name == 'secondname') || ($type == 'secondname')  )     $secondname_of_person = $value;
@@ -663,7 +663,7 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 					$checkbox_value[ str_replace('[]','',(string) $element_name) ] = array($value);
 				}
 
-			$value = '['. $type_name .']';                                  //FixIn: 6.1.1.14
+			$value = '['. $type_name .']';                                  // FixIn: 6.1.1.14.
 		}
 
 		if ( ( $type == 'select-one') || ( $type == 'selectbox-one') || ( $type == 'select-multiple' ) || ( $type == 'selectbox-multiple' )  || ( $type == 'radio' ) ) { // add all select box selected items to return array
@@ -685,7 +685,7 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 			$check_box_selected_items[$type_name] = $current_checkbox_value;
 		} else {
 
-			//FixIn: 8.4.2.11
+			// FixIn: 8.4.2.11.
 			$all_fields_array_without_types[ substr(   str_replace('[]','',(string) $element_name), 0 , -1*strlen( $bktype ) )   ] = $value;
 			/**
 			   ['_all_']        => $all_fields_array,        CONVERT to  " AM/PM "
@@ -695,10 +695,10 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 				$value = wpbc_time_slot_in_format(  $value );
 			}
 			$all_fields_array[ str_replace('[]','',(string) $element_name) ] = $value;
-			//FixIn: 8.4.2.11
+			// FixIn: 8.4.2.11.
 
 		}
-		$is_skip_replace = false;                                           //FixIn: 7.0.1.45
+		$is_skip_replace = false;                                           // FixIn: 7.0.1.45.
 		if ( ( $type == 'radio' ) && empty( $value ) )
 				$is_skip_replace = true;
 		if ( ! $is_skip_replace ) {
@@ -717,21 +717,21 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 		if (! isset($all_fields_array_without_types[  $key_param  ]))            $all_fields_array_without_types[ $key_param  ] = $value_param;
 	}
 
-	foreach ( $all_fields_array_without_types as $key_param=>$value_param) {                                  //FixIn: 6.1.1.4
+	foreach ( $all_fields_array_without_types as $key_param=>$value_param) {                                  // FixIn: 6.1.1.4.
 		if (   ( gettype ( $value_param ) != 'array' )
 			&& ( gettype ( $value_param ) != 'object' )
 			) {
 			$booking_form_show = str_replace( '['. $key_param .']', $value_param ,$booking_form_show);
 
-			$all_fields_array_without_types[ $key_param ] = str_replace( "&amp;", '&', $value_param );					//FixIn:7.1.2.12
+			$all_fields_array_without_types[ $key_param ] = str_replace( "&amp;", '&', $value_param );					// FixIn: 7.1.2.12.
 		}
 
 
 	}
 	// Remove all shortcodes, which is not replaced early.
-	$booking_form_show = preg_replace ('/[\s]{0,}\[[a-zA-Z0-9.,-_]{0,}\][\s]{0,}/', '', $booking_form_show);  //FixIn: 6.1.1.4
+	$booking_form_show = preg_replace ('/[\s]{0,}\[[a-zA-Z0-9.,-_]{0,}\][\s]{0,}/', '', $booking_form_show);  // FixIn: 6.1.1.4.
 
-	$booking_form_show = str_replace( "&amp;", '&', $booking_form_show );											//FixIn:7.1.2.12
+	$booking_form_show = str_replace( "&amp;", '&', $booking_form_show );											// FixIn: 7.1.2.12.
 
 	$return_array = array(
 							'content'      => $booking_form_show,

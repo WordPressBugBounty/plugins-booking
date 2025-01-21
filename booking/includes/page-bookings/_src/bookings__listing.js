@@ -113,7 +113,7 @@ if ( ! is_this_action ){
 		'<div style="width:100%;text-align: center;" id="wpbc_loading_section"><span class="wpbc_icn_autorenew wpbc_spin"></span></div>'
 		+ jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html()
 	);
-	if ( 'function' === typeof (jQuery( '#wpbc_loading_section' ).wpbc_my_modal) ){			//FixIn: 9.0.1.5
+	if ( 'function' === typeof (jQuery( '#wpbc_loading_section' ).wpbc_my_modal) ){			// FixIn: 9.0.1.5.
 		jQuery( '#wpbc_loading_section' ).wpbc_my_modal( 'show' );
 	} else {
 		alert( 'Warning! Booking Calendar. Its seems that  you have deactivated loading of Bootstrap JS files at Booking Settings General page in Advanced section.' )
@@ -145,7 +145,7 @@ is_this_action = false;
 console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); console.groupEnd();
 					// Probably Error
 					if ( (typeof response_data !== 'object') || (response_data === null) ){
-						jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();													//FixIn: 9.6.1.5
+						jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();													// FixIn: 9.6.1.5.
 						jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html(
 																	'<div class="wpbc-settings-notice notice-warning" style="text-align:left">' +
 																		response_data +
@@ -204,7 +204,7 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					jQuery( '#ajax_respond' ).html( response_data );		// For ability to show response, add such DIV element to page
 				}
 			  ).fail( function ( jqXHR, textStatus, errorThrown ) {    if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
-					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														//FixIn: 9.6.1.5
+					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														// FixIn: 9.6.1.5.
 					var error_message = '<strong>' + 'Error!' + '</strong> ' + errorThrown ;
 					if ( jqXHR.responseText ){
 						error_message += jqXHR.responseText;
@@ -233,7 +233,7 @@ function wpbc_ajx_booking_show_listing( json_items_arr, json_search_params, json
 	wpbc_ajx_define_templates__resource_manipulation( json_items_arr, json_search_params, json_booking_resources );
 
 //console.log( 'json_items_arr' , json_items_arr, json_search_params );
-	jQuery( '.wpbc_ajx_under_toolbar_row' ).css( "display", "flex" );													//FixIn: 9.6.1.5
+	jQuery( '.wpbc_ajx_under_toolbar_row' ).css( "display", "flex" );													// FixIn: 9.6.1.5.
 	var list_header_tpl = wp.template( 'wpbc_ajx_booking_list_header' );
 	var list_row_tpl    = wp.template( 'wpbc_ajx_booking_list_row' );
 
@@ -425,7 +425,7 @@ function wpbc_ajx_booking__actual_listing__show(){
  * Hide Listing Table ( and Pagination )
  */
 function wpbc_ajx_booking__actual_listing__hide(){
-	jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();																		//FixIn: 9.6.1.5
+	jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();																		// FixIn: 9.6.1.5.
 	jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' )    ).html( '' );
 	jQuery( wpbc_ajx_booking_listing.get_other_param( 'pagination_container' ) ).html( '' );
 }

@@ -9,7 +9,12 @@
  *
  * @modified 2023-11-11
  */
-
+:root{
+	/* Default Sizes */
+	--wpbc_cal_legend-day-cell-height: 40px;
+    --wpbc_cal_legend-day-cell-width: var(--wpbc_cal_legend-day-cell-height); /* Usually it has to be the same as --wpbc_cal_legend-day-cell-height */
+    --wpbc_cal_legend-day-cell-font-size: 14px;
+}
 /*******************************************************************************/
 /*  Calendar structure:                                                         */
 /*******************************************************************************/
@@ -362,7 +367,11 @@ div.datepick-inline .datepick-title-row th{
     position:relative;
     z-index: 99;
 }
-
+/* // FixIn: 10.9.4.3 Fix padding in TD / TH in some themes. 2024-12-31 */
+.datepick-inline table.datepick th,
+.datepick-inline table.datepick td {
+    padding: 0 !important;
+}
 
 /*******************************************************************************/
 /*    Check In / Out Times      ************************************************/
@@ -631,7 +640,7 @@ div#datepick-div textarea {
     position: relative;
 }
 .datepick-inline .datepick-days-cell div.date-content-top div{
-    line-height: 50%;
+    line-height: 40%;
 }
 /*******************************************************************************/
 /* Responsive Design For Mobile Devices ****************************************/
@@ -693,7 +702,11 @@ div#datepick-div textarea {
 .datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__cost,
 .datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__availability * {
     font-size: Max(8px, var(--wpbc_cal-text-cost-size, 0.7em));
-    line-height: 1.1;
+    line-height: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
 }
 .datepick-inline .datepick-days-cell .date-cell-content span.wpbc_in_date_hint__availability .wpbc_in_date_hint__availability_number{
     font-weight: 600;
@@ -702,6 +715,10 @@ div#datepick-div textarea {
 .datepick-inline .datepick-days-cell .date-cell-content a,
 .datepick-inline .datepick-days-cell .date-cell-content span {
     flex: 1 1 30%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
 }
 .datepick-inline .timespartly .date-content-top{
     display: flex;
@@ -788,15 +805,16 @@ div#datepick-div textarea {
 * https://stackoverflow.com/questions/71674803/html-tables-has-a-weird-bold-horizontal-line-due-to-border-collapse-property/71703247#71703247
 */
 div.datepick-inline table.datepick {
-  border-collapse: collapse;
-  border-spacing: 0;
+    border-collapse: collapse !important;;
+    border-spacing: 0 !important;;
+    border-color: transparent !important;;
 }
 /* Chrome, Safari, AND NOW ALSO the Edge Browser and Firefox - it's for mobile devices: */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
     div.datepick-inline table.datepick,
     div.datepick-inline table.datepick th,
     div.datepick-inline table.datepick td {
-         border-width: 0.69px;
+         border-width: 0.69px !important;;
     }
 }
 /* Chrome 29+ */
@@ -804,7 +822,7 @@ div.datepick-inline table.datepick {
     div.datepick-inline table.datepick,
     div.datepick-inline table.datepick th,
     div.datepick-inline table.datepick td {
-         border-width: 0.01px;
+         border-width: 0.01px !important;;
     }
 }
 /* iOS */
@@ -812,7 +830,7 @@ div.datepick-inline table.datepick {
     div.datepick-inline table.datepick,
     div.datepick-inline table.datepick th,
     div.datepick-inline table.datepick td {
-         border-width: 0.68px;
+         border-width: 0.68px !important;;
     }
 }
 /* Chrome 22-28 *
@@ -824,7 +842,7 @@ div.datepick-inline table.datepick {
      border-width: 0.01px;
   );}
   div.datepick-inline table.datepick td {-chrome-:only(;
-     border-width: 0.01px;
+     border-width: 0.01px !important;;
   );}
 }
 */
@@ -885,15 +903,38 @@ div.datepick-inline table.datepick {
 /* ================================================================================================================== */
 /* End Tooltips Content ********************************************************************************************* */
 /* ================================================================================================================== */
+/* ================================================================================================================== */
+/* Calendar Legend Items Size *************************************************************************************** */
+/* ================================================================================================================== */
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height {
-    width: 30px !important;
-    height: 30px;
     border: 0;
     box-shadow: none;
     float: left;
-    min-width: 30px;
     padding: 0;
+
+    width: var(--wpbc_cal_legend-day-cell-width, 40px) !important;
+    min-width: var(--wpbc_cal_legend-day-cell-width, 40px);
+    height: var(--wpbc_cal_legend-day-cell-height, 40px);
 }
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .wpbc_calendar_legend_day_cell_height {
-    height:30px !important;
+    height: var(--wpbc_cal_legend-day-cell-height, 40px) !important;
+    width: var(--wpbc_cal_legend-day-cell-width, 40px) !important;
+    max-width: var(--wpbc_cal_legend-day-cell-width, 40px) !important;
+    min-width: var(--wpbc_cal_legend-day-cell-width, 40px) !important;
+}
+.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .datepick-days-cell .date-cell-content a,
+.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .datepick-days-cell .date-cell-content span{
+    font-size: var(--wpbc_cal_legend-day-cell-font-size, 12px);
+}
+/* ================================================================================================================== */
+/* Reset differnt CSS conflicts (such as with  Elementor) in HTML Tables with Booking Calendar plugin  ************** */
+/* ================================================================================================================== */
+.datepick-inline thead,
+.datepick-inline tbody,
+.datepick-inline tr,
+.datepick-inline th,
+.datepick-inline td {
+    background: transparent !important;
+    padding: 0 !important;
+    border-color: transparent !important;
 }

@@ -158,7 +158,7 @@ function wpbc_ajx_availability__calendar__show( calendar_params_arr ){
 	/**
 	 * Define showing mouse over tooltip on unavailable dates
 	 * It's defined, when calendar REFRESHED (change months or days selection) loaded in jquery.datepick.wpbc.9.0.js :
-	 * 		$( 'body' ).trigger( 'wpbc_datepick_inline_calendar_refresh', ...		//FixIn: 9.4.4.13
+	 * 		$( 'body' ).trigger( 'wpbc_datepick_inline_calendar_refresh', ...		// FixIn: 9.4.4.13.
 	 */
 	jQuery( 'body' ).on( 'wpbc_datepick_inline_calendar_refresh', function ( event, resource_id, inst ){
 		// inst.dpDiv  it's:  <div class="datepick-inline datepick-multi" style="width: 17712px;">....</div>
@@ -174,7 +174,7 @@ function wpbc_ajx_availability__calendar__show( calendar_params_arr ){
 	/**
 	 * Define height of the calendar  cells, 	and  mouse over tooltips at  some unavailable dates
 	 * It's defined, when calendar loaded in jquery.datepick.wpbc.9.0.js :
-	 * 		$( 'body' ).trigger( 'wpbc_datepick_inline_calendar_loaded', ...		//FixIn: 9.4.4.12
+	 * 		$( 'body' ).trigger( 'wpbc_datepick_inline_calendar_loaded', ...		// FixIn: 9.4.4.12.
 	 */
 	jQuery( 'body' ).on( 'wpbc_datepick_inline_calendar_loaded', function ( event, resource_id, jCalContainer, inst ){
 
@@ -408,7 +408,7 @@ function wpbc_show_inline_booking_calendar( calendar_params_arr ){
 
 		// SEASONS ::  					Booking > Resources > Availability page
 		var    is_date_available = calendar_params_arr.season_availability[ sql_class_day ];
-		if ( false === is_date_available ){																				//FixIn: 9.5.4.4
+		if ( false === is_date_available ){																				// FixIn: 9.5.4.4.
 			return [ !!false, css_date__standard + ' date_user_unavailable'		+ ' season_unavailable' ];
 		}
 
@@ -416,7 +416,7 @@ function wpbc_show_inline_booking_calendar( calendar_params_arr ){
 		if ( wpbc_in_array(calendar_params_arr.resource_unavailable_dates, sql_class_day ) ){
 			is_date_available = false;
 		}
-		if (  false === is_date_available ){																			//FixIn: 9.5.4.4
+		if (  false === is_date_available ){																			// FixIn: 9.5.4.4.
 			return [ !false, css_date__standard + ' date_user_unavailable'		+ ' resource_unavailable' ];
 		}
 
@@ -881,9 +881,9 @@ function wpbc_show_inline_booking_calendar( calendar_params_arr ){
 					maxWidth         : 550,
 					theme            : 'wpbc-tippy-times',
 					placement        : 'top',
-					delay			 : [400, 0],			//FixIn: 9.4.2.2
+					delay			 : [400, 0],			// FixIn: 9.4.2.2.
 					ignoreAttributes : true,
-					touch			 : true,				//['hold', 500], // 500ms delay			//FixIn: 9.2.1.5
+					touch			 : true,				//['hold', 500], // 500ms delay			// FixIn: 9.2.1.5.
 					appendTo: () => document.body,
 				});
 		}

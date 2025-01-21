@@ -71,7 +71,7 @@ class wpdevReallySimpleCaptcha {
 		/* Foreground (character) color of CAPTCHA image. RGB color 0-255 */
 		$this->fg = array( 0, 0, 0 );
 
-		//FixIn: 10.0.0.54
+		// FixIn: 10.0.0.54.
 		if ( ( function_exists( 'get_bk_option' ) ) && ( 'wpbc_theme_dark_1' === get_bk_option( 'booking_form_theme' ) ) ) {
 			$this->bg = array( 39, 39, 39 );
 			$this->fg = array( 255, 255, 255 );
@@ -105,7 +105,7 @@ class wpdevReallySimpleCaptcha {
 		$word = '';
 
 		for ( $i = 0; $i < $this->char_length; $i++ ) {
-			$pos = mt_rand( 0, strlen( $this->chars ) - 1 );
+			$pos = wp_rand( 0, strlen( $this->chars ) - 1 );
 			$char = $this->chars[$pos];
 			$word .= $char;
 		}
@@ -136,15 +136,14 @@ class wpdevReallySimpleCaptcha {
 			$fg = imagecolorallocate( $im, $this->fg[0], $this->fg[1], $this->fg[2] );
 
 			imagefill( $im, 0, 0, $bg );
-
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
 			$x = $this->base[0] + mt_rand( -2, 2 );
 
 			for ( $i = 0; $i < strlen( $word ); $i++ ) {
 				$font = $this->fonts[array_rand( $this->fonts )];
 				$font = $this->normalize_path( $font );
-
-				imagettftext( $im, $this->font_size, mt_rand( -12, 12 ), $x,
-					$this->base[1] + mt_rand( -2, 2 ), $fg, $font, $word[$i] );
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
+				imagettftext( $im, $this->font_size, mt_rand( -12, 12 ), $x, $this->base[1] + mt_rand( -2, 2 ), $fg, $font, $word[$i] );
 				$x += $this->font_char_width;
 			}
 
@@ -167,6 +166,7 @@ class wpdevReallySimpleCaptcha {
 			}
 
 			imagedestroy( $im );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_chmod
 			@chmod( $file, $this->file_mode );
 		}
 
@@ -185,18 +185,19 @@ class wpdevReallySimpleCaptcha {
 		$dir = trailingslashit( $this->tmp_dir );
 		$answer_file = $dir . sanitize_file_name( $prefix . '.txt' );
 		$answer_file = $this->normalize_path( $answer_file );
-
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		if ( $fh = @fopen( $answer_file, 'w' ) ) {
 			$word = strtoupper( $word );
 			$salt = wp_generate_password( 64 );
 			$hash = hash_hmac( 'md5', $word, $salt );
 
 			$code = $salt . '|' . $hash;
-
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $fh, $code );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 			fclose( $fh );
 		}
-
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_chmod
 		@chmod( $answer_file, $this->answer_file_mode );
 	}
 
@@ -218,7 +219,7 @@ class wpdevReallySimpleCaptcha {
 		$dir = trailingslashit( $this->tmp_dir );
 		$filename = sanitize_file_name( $prefix . '.txt' );
 		$file = $this->normalize_path( $dir . $filename );
-
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		if ( @is_readable( $file ) && ( $code = file_get_contents( $file ) ) ) {
 			$code = explode( '|', $code, 2 );
 
@@ -247,7 +248,8 @@ class wpdevReallySimpleCaptcha {
 			$file = $this->normalize_path( $dir . $filename );
 
 			if ( @is_file( $file ) ) {
-				@unlink( $file );
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+				@wp_delete_file( $file );
 			}
 		}
 	}
@@ -267,7 +269,7 @@ class wpdevReallySimpleCaptcha {
 		}
 
 		$is_win = ( 'WIN' === strtoupper( substr( PHP_OS, 0, 3 ) ) );
-
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
 		if ( ! ( $is_win ? win_is_writable( $dir ) : @is_writable( $dir ) ) ) {
 			return false;
 		}
@@ -284,9 +286,12 @@ class wpdevReallySimpleCaptcha {
 
 				$stat = @stat( $file );
 				if ( ( $stat['mtime'] + $minutes * 60 ) < time() ) {
-					if ( ! @unlink( $file ) ) {
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+					if ( ! @wp_delete_file( $file ) ) {
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_chmod
 						@chmod( $file, 0644 );
-						@unlink( $file );
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+						@wp_delete_file( $file );
 					}
 
 					$count += 1;
@@ -323,25 +328,42 @@ class wpdevReallySimpleCaptcha {
 		}
 
 		// FixIn: 8.7.7.5
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		if ( $handle = @fopen( $htaccess_file, 'w' ) ) {
 
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '# apache 2.2' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '<IfModule !mod_authz_core.c>' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  Order deny,allow' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  Deny from all' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  <Files ~ "^[0-9A-Za-z]+\.(jpeg|gif|png)$">' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '    Allow from all' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  </Files>' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '</IfModule>' . "\n" );
 
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '# apache 2.4' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '<IfModule mod_authz_core.c>' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  Require all denied' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  <Files ~ "^[0-9A-Za-z]+\.(jpeg|gif|png)$">' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '    Require all granted' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '  </Files>' . "\n" );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite( $handle, '</IfModule>' . "\n" );
 
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 			fclose( $handle );
 		}
 

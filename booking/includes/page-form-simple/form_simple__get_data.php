@@ -134,7 +134,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 	    $skip_already_exist_field_types = array();                                                                  // 'calendar', 'submit', 'captcha' );
 	    $exist_fields_arr               = array();
 
-		//FixIn: 10.7.1.7
+		// FixIn: 10.7.1.7.
 	    if ( 'wizard_2columns' == $booking_form_structure ) {
 
 		    $skip_already_exist_field_types[] = 'submit';
@@ -244,7 +244,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			$html_form .= '	</c>' . "\n";
 			$html_form .= '	</r>' . "\n";
 		}
-	    //FixIn: 10.7.1.7
+	    // FixIn: 10.7.1.7.
 	    if ( 'wizard_2columns' == $booking_form_structure ) {
 
 		    $html_form .= '    <hr><r>' . "\n";
@@ -313,7 +313,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			$exist_fields_arr = array();
 			$html_form        = '';
 
-			//FixIn: 10.7.1.6
+			// FixIn: 10.7.1.6.
 			$rows_arr = array();    // All rows
 			$curr_row_num = 0;          // Current row number
 			$max_col = max( intval( get_bk_option( 'booking_form_layout_max_cols' ) ), 1 );           // Maximum  number of columns
@@ -345,8 +345,8 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			        }
 
 					$field_css_class = 'wpbc_r_' . $exist_fields_arr[ count( $exist_fields_arr ) - 1 ];
-//						$html_form .= '	<r>' . "\n";                                                        //FixIn: 10.7.1.6
-					$html_form .= '				<c class="' . esc_attr( $field_css_class ) . '">';                             //FixIn: 10.7.1.6
+//						$html_form .= '	<r>' . "\n";                                                        // FixIn: 10.7.1.6.
+					$html_form .= '				<c class="' . esc_attr( $field_css_class ) . '">';                             // FixIn: 10.7.1.6.
 
 		            // -----------------------------------------------------------------------------------------------------
 		            // L abel
@@ -431,13 +431,13 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 					}
 
 		            $html_form .= ' </c>' . "\n";
-//						$html_form .= '	</r>' . "\n";                                       //FixIn: 10.7.1.6
+//						$html_form .= '	</r>' . "\n";                                       // FixIn: 10.7.1.6.
 
 
 			        // -------------------------------------------------------------------------------------------------
 			        // Set content by columns
 			        // -------------------------------------------------------------------------------------------------
-			        //FixIn: 10.7.1.6
+			        // FixIn: 10.7.1.6.
 					if ( ! isset( $rows_arr[ $curr_row_num ] ) ) {
 						$rows_arr[ $curr_row_num ] = array();
 					}
@@ -498,9 +498,10 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 
 	    $booking_data__parsed_fields = array();
 	    $booking_data__dates         = array();
+	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	    if ( isset( $_GET['booking_hash'] ) ) {
-
-		    $booking_id__resource_id = wpbc_hash__get_booking_id__resource_id( $_GET['booking_hash'] );
+			$get_booking_hash = ( ( isset( $_GET['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
+		    $booking_id__resource_id = wpbc_hash__get_booking_id__resource_id( $get_booking_hash );
 
 		    if ( $booking_id__resource_id != false ) {
 
@@ -526,7 +527,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 	    $html_form = '';
 		$skip_already_exist_field_types = array();                                                                  // 'calendar', 'submit', 'captcha' );
 
-		//FixIn: 10.7.1.7
+		// FixIn: 10.7.1.7.
 	    if ( 'wizard_2columns' == $booking_form_structure ) {
 
 		    $skip_already_exist_field_types[] = 'submit';
@@ -626,7 +627,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
 
 			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
-			$submit_button_title = wp_kses_post( $submit_button_title );                                                //FixIn: 10.6.5.2
+			$submit_button_title = wp_kses_post( $submit_button_title );                                                // FixIn: 10.6.5.2.
 
 			$html_form .= '   	<r>' . "\n";
 			$html_form .= '   		<c> <p>'
@@ -648,7 +649,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		    $html_form .= '</r>' . "\n";
 	    }
 
-	    //FixIn: 10.7.1.7
+	    // FixIn: 10.7.1.7.
 	    if ( 'wizard_2columns' == $booking_form_structure ) {
 
 		    $html_form .= '    <hr><r>' . "\n";
@@ -691,12 +692,14 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 
 
 	    if ( ! empty( $booking_data__dates ) ) {
-		    $html_form .= wpbc_get_dates_selection_js_code( $booking_data__dates, $resource_id );                       //FixIn: 9.2.3.4
+		    $html_form .= wpbc_get_dates_selection_js_code( $booking_data__dates, $resource_id );                       // FixIn: 9.2.3.4.
 	    }
 
 	    $admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );
-	    if ( ( strpos( $_SERVER['REQUEST_URI'], $admin_uri ) !== false ) && ( isset( $_SERVER['HTTP_REFERER'] ) ) ) {
-		    $html_form .= '<input type="hidden" name="wpdev_http_referer" id="wpdev_http_referer" value="' . $_SERVER['HTTP_REFERER'] . '" />';
+		$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+		$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	    if ( ( strpos( $server_request_uri, $admin_uri ) !== false ) && ( isset( $server_http_referer_uri ) ) ) {
+		    $html_form .= '<input type="hidden" name="wpdev_http_referer" id="wpdev_http_referer" value="' . $server_http_referer_uri . '" />';
 	    }
 
 
@@ -737,7 +740,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			$exist_fields_arr = array();
 			$html_form        = '';
 
-			//FixIn: 10.7.1.6
+			// FixIn: 10.7.1.6.
 			$rows_arr = array();    // All rows
 			$curr_row_num = 0;          // Current row number
 			$max_col = max( intval( get_bk_option( 'booking_form_layout_max_cols' ) ), 1 );           // Maximum  number of columns
@@ -769,8 +772,8 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			        }
 
 					$field_css_class = 'wpbc_r_' . $exist_fields_arr[ count( $exist_fields_arr ) - 1 ];
-//					$html_form .= '    <r>' . "\n";                                                    //FixIn: 10.7.1.6
-					$html_form .= '      <c class="' . esc_attr( $field_css_class ) . '"> ';                            //FixIn: 10.7.1.6
+//					$html_form .= '    <r>' . "\n";                                                    // FixIn: 10.7.1.6.
+					$html_form .= '      <c class="' . esc_attr( $field_css_class ) . '"> ';                            // FixIn: 10.7.1.6.
 
 					// -----------------------------------------------------------------------------------------------------
 					// L abel
@@ -795,13 +798,13 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 					$html_form .= wpbc_simple_form__get_html_form_input( $form_field, $params['booking_data__parsed_fields'], $params['resource_id'] );
 
 					$html_form .= '</c>' . "\n";
-//					$html_form .= '    </r>' . "\n";            //FixIn: 10.7.1.6
+//					$html_form .= '    </r>' . "\n";            // FixIn: 10.7.1.6.
 
 
 			        // -------------------------------------------------------------------------------------------------
 			        // Set content by columns
 			        // -------------------------------------------------------------------------------------------------
-			        //FixIn: 10.7.1.6
+			        // FixIn: 10.7.1.6.
 					if ( ! isset( $rows_arr[ $curr_row_num ] ) ) {
 						$rows_arr[ $curr_row_num ] = array();
 					}
@@ -866,7 +869,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 								. ( ( $form_field['required'] == 'On' ) ? ' wpdev-validates-as-required' : '' )
 								//. ( ( strpos( $form_field['name'], 'phone' ) !== false ) ? ' validate_as_digit' : '' )
 							  .'" '
-							  . ( isset( $booking_data__parsed_fields[ $form_field['name'] ] )					//FixIn: 9.2.3.4
+							  . ( isset( $booking_data__parsed_fields[ $form_field['name'] ] )					// FixIn: 9.2.3.4.
 								  ? ' value="' . esc_attr( $booking_data__parsed_fields[ $form_field['name'] ] ) . '"'
 								  : ''
 								)
@@ -874,12 +877,12 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			}
 
 			if ( $form_field['type'] == 'email' ) {
-				//FixIn: 10.8.1.2
+				// FixIn: 10.8.1.2.
 				$my_form.='   <input type="email" name="'. $form_field['name'] . $resource_id . '" id="' . $form_field['name'] . $resource_id . '" class="input-xlarge wpdev-validates-as-email'
 								. ( ( $form_field['required'] == 'On' ) ? ' wpdev-validates-as-required' : '' )
-								. ' wpdev-validates-as-required'        //FixIn: 7.0.1.22
+								. ' wpdev-validates-as-required'        // FixIn: 7.0.1.22.
 							  .'" '
-							  . ( isset( $booking_data__parsed_fields[ $form_field['name'] ] )					//FixIn: 9.2.3.4
+							  . ( isset( $booking_data__parsed_fields[ $form_field['name'] ] )					// FixIn: 9.2.3.4.
 								  ? ' value="' . esc_attr( $booking_data__parsed_fields[ $form_field['name'] ] ) . '"'
 								  : ''
 								)
@@ -890,11 +893,11 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 
 				$my_form.='   <select name="'. $form_field['name'] . $resource_id . '" id="' . $form_field['name'] . $resource_id . '" class="input-xlarge'
 							. ( ( $form_field['required'] == 'On' ) ? ' wpdev-validates-as-required' : '' )
-							. '" >';																			//FixIn: 8.1.1.4
+							. '" >';																			// FixIn: 8.1.1.4.
 
 						$form_field['value'] = preg_split( '/\r\n|\r|\n/', $form_field['value'] );
 
-						foreach ($form_field['value'] as $key => $select_option) {  //FixIn: 7.0.1.21
+						foreach ($form_field['value'] as $key => $select_option) {  // FixIn: 7.0.1.21.
 
 
 							$select_option = wpbc_lang( $select_option );
@@ -902,7 +905,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 								$select_option = icl_translate( 'wpml_custom', 'wpbc_custom_form_select_value_'
 																				. wpbc_get_slug_format( $form_field['name']) . '_' .$key
 																				, $select_option );
-																					// //FixIn: 7.0.1.21
+																					// // FixIn: 7.0.1.21.
 							$select_option = str_replace(array("'",'"'), '', $select_option);
 
 																												//FixIn:  TimeFreeGenerator
@@ -947,7 +950,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 
 				$my_form.='    <label for="'. $form_field['name'] . $resource_id . '" class="control-label" style="display: inline-block;">';
 
-				//FixIn: 9.2.3.4
+				// FixIn: 9.2.3.4.
 				if (
 						( isset( $booking_data__parsed_fields[ $form_field['name'] ] ) )
 					 && (
@@ -977,10 +980,10 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			if ( $form_field['type'] == 'textarea' ) {
 				$my_form.='   <textarea  rows="3" name="'. $form_field['name'] . $resource_id . '" id="' . $form_field['name'] . $resource_id . '" class="input-xlarge'
 							. ( ( $form_field['required'] == 'On' ) ? ' wpdev-validates-as-required' : '' )
-							. '" >';																			//FixIn: 8.1.1.4
+							. '" >';																			// FixIn: 8.1.1.4.
 
-				$my_form.= ( isset( $booking_data__parsed_fields[ $form_field['name'] ] )						//FixIn: 9.2.3.4
-							  ? esc_attr( $booking_data__parsed_fields[ $form_field['name'] ] )                 //FixIn: 9.7.4.3
+				$my_form.= ( isset( $booking_data__parsed_fields[ $form_field['name'] ] )						// FixIn: 9.2.3.4.
+							  ? esc_attr( $booking_data__parsed_fields[ $form_field['name'] ] )                 // FixIn: 9.7.4.3.
 							  : ''
 							);
 
@@ -1004,7 +1007,7 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 				}
 				$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( $submit_button_title ) ) );
 
-				$submit_button_title = wp_kses_post( $submit_button_title );                                                //FixIn: 10.6.5.2
+				$submit_button_title = wp_kses_post( $submit_button_title );                                                // FixIn: 10.6.5.2.
 
 				$my_form .= '<button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' .
 				                $submit_button_title .

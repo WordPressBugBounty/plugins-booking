@@ -6,7 +6,7 @@
 * Version: 1.0
 * @modified 2024-06-28
 */
-//FixIn: 10.2.0.1
+// FixIn: 10.2.0.1.
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 /**
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *  3)../includes/page-setup/setup_ajax.php
  *  	- Add validation  option 'save_and_continue__form_structure'   in 	wpbc_setup_wizard_page__request_rules_structure()
  *  	- Add save action in ajax_WPBC_AJX_SETUP_WIZARD_PAGE :
- *                                                            case 'save_and_continue__form_structure':
+ *                                                            case 'save_and_continue__form_structure': $
  *                                                                if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
  *                                                                    $cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );
  *                                                                    wpbc_setup__update__form_structure( $cleaned_data );
@@ -129,7 +129,7 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
                             , 'css_classes' => ''                               	// CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 	// Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   			// CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_donut_large'   		// CSS definition of Font Icon			//FixIn: 9.6.1.4
+                            , 'header_font_icon' => 'wpbc_icn_donut_large'   		// CSS definition of Font Icon			// FixIn: 9.6.1.4.
                             , 'default' 	=> true                                	// Is this sub tab activated by default or not: true || false.
                             , 'disabled' 	=> false                               	// Is this sub tab deactivated: true || false.
                             , 'checkbox'  	=> false                              	// or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
@@ -225,11 +225,11 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 		// Main Submit Form  (if needed ?)
 		// -------------------------------------------------------------------------------------------------------------
 		$submit_form_name = 'wpbc_setup_wizard_page_form';                             									// Define form name
-		?><form  name="<?php echo $submit_form_name; ?>" id="<?php echo $submit_form_name; ?>" action="" method="post" >
+		?><form  name="<?php echo esc_attr( $submit_form_name ); ?>" id="<?php echo esc_attr( $submit_form_name ); ?>" action="" method="post" >
 			<?php
 			   // N o n c e   field, and key for checking   S u b m i t
 			   wp_nonce_field( 'wpbc_settings_page_' . $submit_form_name );
-			?><input type="hidden" name="is_form_sbmitted_<?php echo $submit_form_name; ?>" id="is_form_sbmitted_<?php echo $submit_form_name; ?>" value="1" /><?php
+			?><input type="hidden" name="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" id="is_form_sbmitted_<?php echo esc_attr( $submit_form_name ); ?>" value="1" /><?php
 
 		?></form><?php
 
@@ -262,19 +262,22 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 		<span class="metabox-holder">
 			<div id="ajx_nonce_calendar_section"></div>
 			<div class="wpbc_setup_wizard_page_container" wpbc_loaded="first_time">
-				<div class="wpbc_calendar_loading"><span class="wpbc_icn_autorenew wpbc_spin"></span>&nbsp;&nbsp;<span><?php _e( 'Loading', 'booking' ); ?>...</span></div>
+				<div class="wpbc_calendar_loading"><span class="wpbc_icn_autorenew wpbc_spin"></span>&nbsp;&nbsp;<span><?php esc_html_e( 'Loading', 'booking' ); ?>...</span></div>
 			</div>
 		</span>
 		<?php
 
 		wpbc_clear_div();
 
-		?><script type="text/javascript"><?php echo wpbc_jq_ready_start(); ?>
+		?><script type="text/javascript"><?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wpbc_jq_ready_start();
+			?>
 
 			// Set Security - Nonce for Ajax  - Listing
-			_wpbc_settings.set_param__secure( 'nonce',   '<?php echo wp_create_nonce( 'wpbc_setup_wizard_page_ajx' . '_wpbcnonce' ) ?>' );
-			_wpbc_settings.set_param__secure( 'user_id', '<?php echo wpbc_get_current_user_id(); ?>' );
-			_wpbc_settings.set_param__secure( 'locale',  '<?php echo get_user_locale(); ?>' );
+			_wpbc_settings.set_param__secure( 'nonce',   '<?php echo esc_js( wp_create_nonce( 'wpbc_setup_wizard_page_ajx' . '_wpbcnonce' ) ); ?>' );
+			_wpbc_settings.set_param__secure( 'user_id', '<?php echo esc_js( wpbc_get_current_user_id() ); ?>' );
+			_wpbc_settings.set_param__secure( 'locale',  '<?php echo esc_js( get_user_locale() ); ?>' );
 
 			// Set other parameters
 			_wpbc_settings.set_param__other( 'container__main_content', '.wpbc_setup_wizard_page_container' );
@@ -282,7 +285,10 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 			// Send Ajax and then show content
 			wpbc_ajx__setup_wizard_page__send_request_with_params( <?php echo wp_json_encode( $escaped_request_params_arr ); ?> );
 
-		<?php echo wpbc_jq_ready_end(); ?></script><?php
+		<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wpbc_jq_ready_end();
+		?></script><?php
 
 		/**
 		 *   JS Examples of showing specific Step:
@@ -334,6 +340,7 @@ add_action('wpbc_menu_created', array( new WPBC_Page_AJX_Setup_Wizard() , '__con
 function wpbc_setup_wizard_page__force_in_get() {
 
 	// Se it as DONE
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_REQUEST['wpbc_setup_wizard'] ) && 'completed' === $_REQUEST['wpbc_setup_wizard'] ) {
 
 		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
@@ -343,6 +350,7 @@ function wpbc_setup_wizard_page__force_in_get() {
 	}
 
 	// Reset
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_REQUEST['wpbc_setup_wizard'] ) && 'reset' === $_REQUEST['wpbc_setup_wizard'] ) {
 
 		// -------------------------------------------------------------------------------------------------------------

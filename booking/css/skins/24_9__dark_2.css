@@ -34,7 +34,7 @@
   --wpbc_cal-day-cells-padding: 3px;
 }
 /* Unavailable Days at  the WP Booking Calendar > Availability > Days Availability page */
-.wpbc_ajx_availability_container .datepick-inline .datepick .resource_unavailable:not(.datepick-unselectable) .wpbc-cell-box {
+.wpbc_ajx_availability_container .datepick-inline .datepick .resource_unavailable:not(.datepick-unselectable,.datepick-current-day,.datepick-days-cell-over) .wpbc-cell-box {
   background: repeating-linear-gradient(-45deg, #595959 0 3px, var( --wpbc_cal-main-background-color ) 3px 8px);
 }
 .datepick-inline{

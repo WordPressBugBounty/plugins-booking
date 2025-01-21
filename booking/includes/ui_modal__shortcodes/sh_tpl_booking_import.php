@@ -12,7 +12,7 @@
  * @modified 2024-03-08
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			//FixIn: 9.9.0.15
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly			// FixIn: 9.9.0.15.
 
 
 
@@ -29,7 +29,7 @@ function wpbc_shortcode_config__content__booking_ics_import() {
 
 	$shortcode_name = 'booking_import_ics';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo $shortcode_name; ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
 
 		wpbc_shortcode_config__booking_ics_import__top_tabs();
 
@@ -197,9 +197,9 @@ function wpbc_shortcode_config__content__booking_ics_import() {
 					);
 		$options = wp_parse_args( $options, $defaults );
 
-			?><tr valign="top"  class="<?php echo $group_key . '_standard_section'; ?> wpbc_sub_settings_grayed0 <?php echo $id; ?>_wpbc_sc__from_to">
+			?><tr valign="top"  class="<?php echo esc_attr( $group_key . '_standard_section' ); ?> wpbc_sub_settings_grayed0 <?php echo esc_attr( $id ); ?>_wpbc_sc__from_to">
 				<th scope="row" style="vertical-align: middle;">
-					<label for="<?php echo $id . ''; ?>" class=""><?php  echo $options['title']; ?></label>
+					<label for="<?php echo esc_attr( $id . '' ); ?>" class=""><?php  echo wp_kses_post( $options['title'] ); ?></label>
 				</th>
 				<td class=""><fieldset><?php
 
@@ -222,11 +222,11 @@ function wpbc_shortcode_config__content__booking_ics_import() {
 																	)
 									);
 
-					?><label for="<?php echo $id . '_offset'; ?>" 	class="<?php echo $id . '_offset_label'; ?>" 	style="font-weight:400;padding: 0 8px 0 12px;"><?php
-							echo __( 'Offset', 'booking' );
+					?><label for="<?php echo esc_attr( $id . '_offset' ); ?>" 	class="<?php echo esc_attr( $id . '_offset_label' ); ?>" 	style="font-weight:400;padding: 0 8px 0 12px;"><?php
+							echo esc_html__( 'Offset', 'booking' );
 					?></label>
-					<label for="<?php echo $id . '_offset'; ?>" 	class="<?php echo $id . '_date_label'; ?>" 	style="font-weight:400;padding: 0 8px 0 12px;display:none;"><?php
-							echo __( 'Date', 'booking' );
+					<label for="<?php echo esc_attr( $id . '_offset' ); ?>" 	class="<?php echo esc_attr( $id . '_date_label' ); ?>" 	style="font-weight:400;padding: 0 8px 0 12px;display:none;"><?php
+							echo esc_html__( 'Date', 'booking' );
 					?></label><?php
 
 					WPBC_Settings_API::field_text_row_static(  $id . '_offset'
@@ -268,21 +268,21 @@ function wpbc_shortcode_config__content__booking_ics_import() {
 																							  )
 																	)
 									);
-					?><span class="description <?php echo $id . '_offset_label'; ?>" style="flex0:100%;"> <?php
-							_e( 'You can specify an optional offset from you chosen start point. The offset can be negative.', 'booking' );
-					?></span>
-					<span class="description <?php echo $id . '_date_label'; ?>" style="flex0:100%;display:none;">
-						<em><?php printf( __( 'Type your date in format %s. Example: %s', 'booking' ), 'Y-m-d', date( 'Y-m-d', strtotime( '+7 days' ) ) ); ?></em>
+					?><span class="description <?php echo esc_attr( $id . '_offset_label' ); ?>" style="flex0:100%;"> <?php esc_html_e( 'You can specify an optional offset from you chosen start point. The offset can be negative.', 'booking' ); ?></span>
+					<span class="description <?php echo esc_attr( $id . '_date_label' ); ?>" style="flex0:100%;display:none;">
+						<em><?php
+							/* translators: 1: ... */
+							echo wp_kses_post( sprintf( __( 'Type your date in format %1$s. Example: %2$s', 'booking' ), 'Y-m-d', gmdate( 'Y-m-d', strtotime( '+7 days' ) ) ) ); ?></em>
 					</span><?php
 
 					// Show or hide some UI elements,  depend on from  selection  of "From" options.
 					?><script type="text/javascript">
 						jQuery(document).ready(function(){
-							jQuery( '#<?php echo $id; ?>' ).on( 'change', {'id': '<?php echo $id; ?>'}, function ( event ){
+							jQuery( '#<?php echo esc_attr( $id ); ?>' ).on( 'change', {'id': '<?php echo esc_attr( $id ); ?>'}, function ( event ){
 								/* console.log( ':->: on change wpbc_set_shortcode', event.data.id , event ); */
-								wpbc_shortcode_config_fields__booking_ics_import__from_until__support( '<?php echo $id; ?>' );
+								wpbc_shortcode_config_fields__booking_ics_import__from_until__support( '<?php echo esc_attr( $id ); ?>' );
 							} );
-							wpbc_shortcode_config_fields__booking_ics_import__from_until__support( '<?php echo $id; ?>' );
+							wpbc_shortcode_config_fields__booking_ics_import__from_until__support( '<?php echo esc_attr( $id ); ?>' );
 						});
 						function wpbc_shortcode_config_fields__booking_ics_import__from_until__support( id ){
 							jQuery( '#' + id + '_offset' ).show();
@@ -330,8 +330,8 @@ function wpbc_shortcode_config__content__booking_ics_import() {
 															, 'attr'              => array()
 															, 'value'             => ''
 															, 'options'           => array(
-																							'' => __( 'Import in any case', 'booking-manager' )
-																						  , 'if_dates_free' => __( 'Import only, if days are available', 'booking-manager' )
+																							'' => __( 'Import in any case', 'booking' )
+																						  , 'if_dates_free' => __( 'Import only, if days are available', 'booking' )
 																						)
 														)
 						);
@@ -363,8 +363,8 @@ function wpbc_shortcode_config__content__booking_ics_import() {
 															, 'attr'              => array()
 															, 'value'             => '1'
 															, 'options'           => array(
-																							'0' => __( 'Some date(s) in conditional interval', 'booking-manager' )
-																						  , '1' => __( 'Strict. All dates in conditional interval', 'booking-manager' )
+																							'0' => __( 'Some date(s) in conditional interval', 'booking' )
+																						  , '1' => __( 'Strict. All dates in conditional interval', 'booking' )
 																						)
 														)
 						);

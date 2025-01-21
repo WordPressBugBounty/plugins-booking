@@ -43,8 +43,8 @@ function wpbc_email_template_plain_html( $fields_values ) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
 <?php */ ?></head>
-<body style="Margin:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;min-width:100%;<?php echo $body_color; ?>" <?php echo is_rtl() ? 'rightmargin="0"' : 'leftmargin="0"'; ?> >
-<div class="wrapper" style="table-layout:fixed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;padding-left:10px;<?php echo $body_color; ?>" <?php echo is_rtl() ? 'dir="rtl"' : 'dir="ltr"'?> >
+<body style="Margin:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;min-width:100%;<?php echo esc_attr( $body_color ); ?>" <?php echo is_rtl() ? 'rightmargin="0"' : 'leftmargin="0"'; ?> >
+<div class="wrapper" style="table-layout:fixed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;padding-left:10px;<?php echo esc_attr( $body_color ); ?>" <?php echo is_rtl() ? 'dir="rtl"' : 'dir="ltr"'?> >
     <?php 
     
     if ( ! empty( $fields_values['header_content'] ) ) {
@@ -55,7 +55,7 @@ function wpbc_email_template_plain_html( $fields_values ) {
          ?></p><?php
     }
     
-    ?><p style="Margin:0;font-size:14px;Margin-bottom:10px;font-family:Helvetica, Roboto, Arial, sans-serif;line-height:150%;<?php echo $text_color; ?>" ><?php 
+    ?><p style="Margin:0;font-size:14px;Margin-bottom:10px;font-family:Helvetica, Roboto, Arial, sans-serif;line-height:150%;<?php echo esc_attr( $text_color ); ?>" ><?php
                                         
         $h2_headers = array('<p class="h2" style="Margin-bottom:10px;font-family:Helvetica, Roboto, Arial, sans-serif;display:block;font-size:18px;font-weight:bold;line-height:130%;Margin:16px 0 8px;text-align:left;color:#557da1;" >', '</p>');
         $fields_values['content'] = str_replace( array( '<h2>', '</h2>' ), $h2_headers, $fields_values['content'] );

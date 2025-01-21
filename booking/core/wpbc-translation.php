@@ -39,10 +39,10 @@ function wpbc_load_translation(){
 	// Get reloaded 'booking'  or current WordPress locale
 	$locale = wpbc_get_maybe_reloaded_booking_locale();             // if NOT defined WPBC_LOCALE_RELOAD define by  current  WordPress locale
 
-	//FixIn: 8.9.4.5
+	// FixIn: 8.9.4.5.
 	if (  is_admin() && ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX )  ) {
 		//Reload locale for Ajax request
-		wpbc_check_ajax_locale__reload_it( $locale );               // Contain -->     if ( ! defined( 'WPBC_LOCALE_RELOAD' ) ) define( 'WPBC_LOCALE_RELOAD', esc_js( $_REQUEST['wpdev_active_locale'] ) );
+		wpbc_check_ajax_locale__reload_it( $locale );               //
 	}
 
 	wpbc_load_country_list_file_php( $locale );
@@ -56,19 +56,18 @@ function wpbc_load_translation(){
 /**
  * Check ( $_REQUEST['wpdev_active_locale'] ) and Reload specific Locale for the Ajax request
  */
-function wpbc_check_ajax_locale__reload_it( $reloaded_locale ) {                                                                                 //FixIn: 8.4.5.1
+function wpbc_check_ajax_locale__reload_it( $reloaded_locale ) {                                                                                 // FixIn: 8.4.5.1.
 
-	if (  ( isset( $_REQUEST['wpdev_active_locale'] ) ) ||                                                                  // Reload locale according request parameter
-	      ( isset( $_REQUEST['wpbc_ajx_locale'] ) )
-	) {                                                                  // Reload locale according request parameter
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( isset( $_REQUEST['wpdev_active_locale'] ) ) || ( isset( $_REQUEST['wpbc_ajx_locale'] ) ) ) {                 // Reload locale according request parameter.
 
 		unload_textdomain( 'booking' );
 
 		/*
 		 * Removed because,  it's configured in  $locale = wpbc_get_maybe_reloaded_booking_locale();  which is executed before this action
 		 *
-	        if ( ! defined( 'WPBC_LOCALE_RELOAD' ) ) {
-		        define( 'WPBC_LOCALE_RELOAD', esc_js( $_REQUEST['wpdev_active_locale'] ) );
+	        if ( ! defined( 'WPBC_LOCALE_RELOAD' ) ) { // $
+		        define( 'WPBC_LOCALE_RELOAD', ( $_REQUEST['wpdev_active_locale'] ) );
 	        }
 		*/
 		add_filter( 'locale', 'wpbc_get_maybe_reloaded_booking_locale', 999 );             // Set filter to load the locale of the Booking Calendar
@@ -138,7 +137,7 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
 		$mofile_local_short = WPBC_PLUGIN_DIR  . '/languages/' . $domain . '-' . substr( $locale, 0 , 2 ) . '.mo';
 
 		// Load from General folder  /wp-content/languages/plugins/plugin-name-xx_XX.mo
-        $mofile_in_wp_folder = WP_LANG_DIR . '/plugins/' . $domain . '-' . $locale . '.mo';                 //FixIn: 8.9.4.6  Fix '/languages/plugin/' to '/languages/plugins/          //FixIn: 8.7.7.1
+        $mofile_in_wp_folder = WP_LANG_DIR . '/plugins/' . $domain . '-' . $locale . '.mo';                 //FixIn: 8.9.4.6  Fix '/languages/plugin/' to '/languages/plugins/          // FixIn: 8.7.7.1.
 
 
 	    /**
@@ -174,9 +173,9 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
 			     *  Direct  load  from    ../wp-content/plugins/booking/languages/booking-fr_FR.mo
 			     */
 
-			    $is_mo_loaded = load_textdomain( $domain, $mofile_in_plugin_folder );                                   //FixIn: 8.9.4.5
+			    $is_mo_loaded = load_textdomain( $domain, $mofile_in_plugin_folder );                                   // FixIn: 8.9.4.5.
 
-		    } elseif ( ( ! empty( $mofile_local_short ) ) && ( file_exists( $mofile_local_short ) ) ) {                 //FixIn: 8.1.3.13
+		    } elseif ( ( ! empty( $mofile_local_short ) ) && ( file_exists( $mofile_local_short ) ) ) {                 // FixIn: 8.1.3.13.
 
 			    /**
 			     *  Direct  load of  short       " booking-en.mo "   MO file
@@ -184,7 +183,7 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
 
 			    $is_mo_loaded = load_textdomain( $domain, $mofile_local_short );
 
-		    } elseif ( file_exists( $mofile_in_wp_folder ) ) {                                                          //FixIn: 8.9.4.6
+		    } elseif ( file_exists( $mofile_in_wp_folder ) ) {                                                          // FixIn: 8.9.4.6.
 
 			    /**
 			     *  Here possible to  use
@@ -199,7 +198,7 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
 			     */
 
 			    $is_mo_loaded = load_textdomain( $domain, $mofile_in_wp_folder );
-		    } else {                                                                                                    //FixIn: 7.2.1.21
+		    } else {                                                                                                    // FixIn: 7.2.1.21.
 
 			    $is_unloaded = unload_textdomain( $domain );
 		    }
@@ -215,13 +214,13 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
  *
  * @string $locale    '' || 'en_US' || 'it_IT'
  */
-function wpbc_load_country_list_file_php( $locale ){                                                                             //FixIn: 8.8.2.5
+function wpbc_load_country_list_file_php( $locale ){                                                                             // FixIn: 8.8.2.5.
 
 	if ( ! empty( $locale ) ) {
 		$locale_lang    = strtolower( substr( $locale, 0, 2 ) );
 		$locale_country = strtolower( substr( $locale, 3 ) );
 
-		//FixIn: 8.9.4.12
+		// FixIn: 8.9.4.12.
 		if ( ( $locale_lang !== 'en' ) && ( wpbc_is_file_exist( '/core/lang/wpdev-country-list-' . $locale . '.php' ) ) ) {
 			require_once WPBC_PLUGIN_DIR . '/core/lang/wpdev-country-list-' . $locale . '.php';
 		} else {
@@ -231,7 +230,7 @@ function wpbc_load_country_list_file_php( $locale ){                            
 		require_once WPBC_PLUGIN_DIR . '/core/lang/wpdev-country-list.php';
 	}
 
-	do_action( 'wpbc_country_list_loaded' );                                                                            //FixIn: 8.9.4.9
+	do_action( 'wpbc_country_list_loaded' );                                                                            // FixIn: 8.9.4.9.
 }
 
 
@@ -252,17 +251,17 @@ function wpbc_get_maybe_reloaded_booking_locale() {
 	/**
 	 * Check active locale in some other translation plugins,  like Polylang  (NOT  in Ajax),  etc...
 	 */
-	if ( ! $is_ajax ) {                                          //FixIn: 8.9.4.7
+	if ( ! $is_ajax ) {                                          // FixIn: 8.9.4.7.
 
 		// Exception for Polylang plugin. It will force loading locale of Polylang plugin.
-		if ( function_exists( 'pll_current_language' ) ) {                                                              //FixIn: 8.1.2.5
-			if ( defined( 'POLYLANG_VERSION' ) ) {                                                                      //FixIn: 8.8.3.16
+		if ( function_exists( 'pll_current_language' ) ) {                                                              // FixIn: 8.1.2.5.
+			if ( defined( 'POLYLANG_VERSION' ) ) {                                                                      // FixIn: 8.8.3.16.
 				if (
-					( version_compare( POLYLANG_VERSION, '2.6.5', '<' ) )                                               //FixIn: 8.7.1.3
-					|| ( version_compare( POLYLANG_VERSION, '2.7.1', '>' ) )                                            //FixIn: 8.7.7.11
+					( version_compare( POLYLANG_VERSION, '2.6.5', '<' ) )                                               // FixIn: 8.7.1.3.
+					|| ( version_compare( POLYLANG_VERSION, '2.7.1', '>' ) )                                            // FixIn: 8.7.7.11.
 				) {
 					$locale = pll_current_language( 'locale' );
-					if ( ! empty( $locale ) ) {                                                                         //FixIn: 8.7.7.11
+					if ( ! empty( $locale ) ) {                                                                         // FixIn: 8.7.7.11.
 						return $locale;
 					}
 				}
@@ -271,11 +270,15 @@ function wpbc_get_maybe_reloaded_booking_locale() {
 	}
 
 	$wpbc_ajx_locale = false;
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_REQUEST['wpdev_active_locale'] ) ) {
-		$wpbc_ajx_locale = esc_js( $_REQUEST['wpdev_active_locale'] );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.NonceVerification.Recommended
+		$wpbc_ajx_locale = sanitize_text_field( $_REQUEST['wpdev_active_locale'] );
 	}
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_REQUEST['wpbc_ajx_locale'] ) ) {
-		$wpbc_ajx_locale = esc_js( $_REQUEST['wpbc_ajx_locale'] );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.NonceVerification.Recommended
+		$wpbc_ajx_locale = sanitize_text_field( $_REQUEST['wpbc_ajx_locale'] );
 	}
 
 	// Reload locale ONLY in AJAX, and if `isset   $_REQUEST['wpdev_active_locale']
@@ -286,8 +289,8 @@ function wpbc_get_maybe_reloaded_booking_locale() {
 			if (
 				 	( $is_ajax )
 				||  (
-							( isset( $_REQUEST['wpbc_ajx_locale_reload'] ) )
-						&&  ( 'force' == $_REQUEST['wpbc_ajx_locale_reload'] )
+						// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+						( isset( $_REQUEST['wpbc_ajx_locale_reload'] ) ) &&  ( 'force' == $_REQUEST['wpbc_ajx_locale_reload'] )
 					)
 			) {                                                                  // Reload locale according request parameter
 				define( 'WPBC_LOCALE_RELOAD', $wpbc_ajx_locale  );
@@ -297,7 +300,7 @@ function wpbc_get_maybe_reloaded_booking_locale() {
 
 
 	// If not defined than get current WordPress locale and define
-	if ( ! defined( 'WPBC_LOCALE_RELOAD' ) ) {                                                                            //FixIn: 7.2.1.21
+	if ( ! defined( 'WPBC_LOCALE_RELOAD' ) ) {                                                                            // FixIn: 7.2.1.21.
 
 		$locale = wpbc_get_current_wordpress_locale();      // 'en_US'  or 'it_IT',  etc...
 
@@ -319,7 +322,7 @@ function wpbc_get_maybe_reloaded_booking_locale() {
  */
 function wpbc_get_current_wordpress_locale(){
 
-	if ( function_exists( 'determine_locale' ) ) {                      //FixIn: 8.7.5.1            //FixIn: 8.7.3.15
+	if ( function_exists( 'determine_locale' ) ) {                      //FixIn: 8.7.5.1            // FixIn: 8.7.3.15.
 		$current_locale = determine_locale();
 	} else {
 		if ( function_exists( 'get_user_locale' ) ) {
@@ -345,7 +348,7 @@ function wpbc_get_current_wordpress_locale(){
  *
  * @return mixed|string              'it_IT'
  */
-function wpbc_filter_recheck_plugin_locale( $locale, $plugin_domain = '' ) {       //FixIn: 8.4.4.2
+function wpbc_filter_recheck_plugin_locale( $locale, $plugin_domain = '' ) {       // FixIn: 8.4.4.2.
 
 	if (
 			   ( 'booking' == $plugin_domain )
@@ -385,7 +388,7 @@ function wpbc_filter_load_custom_plugin_translation_file( $mofile, $domain ) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Translate content. Check for language sections -- [lang=xx_XX] shortcode.                                            //FixIn: 10.0.0.46
+ * Translate content. Check for language sections -- [lang=xx_XX] shortcode.                                            // FixIn: 10.0.0.46.
  *
  * @param $content_orig
  *
@@ -435,7 +438,7 @@ function wpdev_check_for_active_language( $content_orig ) {
 	}
 
 	$return_text = wpbc_bk_check_qtranslate( $return_text, $locale );
-	$return_text = wpbc_check_wpml_tags( $return_text, $locale );               //FixIn: 5.4.5.8
+	$return_text = wpbc_check_wpml_tags( $return_text, $locale );               // FixIn: 5.4.5.8.
 
     return $return_text;
 }
@@ -449,10 +452,13 @@ function wpdev_check_for_active_language( $content_orig ) {
 function wpbc_get_help_rows_about_config_in_several_languges() {
 
     $field_options = array();
-    $field_options[] = '<strong>' . __('Configuration in several languages' ,'booking') . '</strong>';
-    $field_options[] = sprintf(__('%s - start new translation section, where %s - locale of translation' ,'booking'),'<code>[lang=LOCALE]</code>','<code>LOCALE</code>');
-    $field_options[] = sprintf(__('Example #1: %s - start French translation section' ,'booking'),'<code>[lang=fr_FR]</code>');
-    $field_options[] = sprintf(__('Example #2: "%s" - English and French translation of some message' ,'booking'),'<code>Thank you for your booking.[lang=fr_FR]Je vous remercie de votre reservation.</code>');
+    $field_options[] = '<strong>' . esc_html__('Configuration in several languages' ,'booking') . '</strong>';
+    /* translators: 1: ... */
+    $field_options[] = sprintf( __( '%1$s - start new translation section, where %2$s - locale of translation', 'booking' ),'<code>[lang=LOCALE]</code>','<code>LOCALE</code>');
+    /* translators: 1: ... */
+    $field_options[] = sprintf(__( 'Example #1: %s - start French translation section' ,'booking'),'<code>[lang=fr_FR]</code>');
+    /* translators: 1: ... */
+    $field_options[] = sprintf(__( 'Example #2: "%s" - English and French translation of some message' ,'booking'),'<code>Thank you for your booking.[lang=fr_FR]Je vous remercie de votre reservation.</code>');
 
     return $field_options;
 }
@@ -471,7 +477,7 @@ function wpbc_get_help_rows_about_config_in_several_languges() {
  *
  * @return string
  */
-function wpbc_check_wpml_tags( $text, $locale='' ) {                            //FixIn: 5.4.5.8
+function wpbc_check_wpml_tags( $text, $locale='' ) {                            // FixIn: 5.4.5.8.
 
     if ( $locale == '' ) {
         $locale = wpbc_get_maybe_reloaded_booking_locale();
@@ -578,26 +584,21 @@ function wpbc_translation_buttons_settings_section(){
 			echo
 				'<a class="button button tooltip_top" 
 					data-original-title="'
+					/* translators: 1: ... */
 					. esc_attr( sprintf( __( 'Download translation PO files from %s and update the current translation version.', 'booking' ), 'wp.org / wpbookingcalendar.com' ) )
 				. '" href="'
-				. wpbc_get_settings_url()
-				. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&update_translations=1#wpbc_general_settings_system_info_metabox">'
-				. __( 'Update Translations' )
+				. esc_url( wpbc_get_settings_url()
+				. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&update_translations=1#wpbc_general_settings_system_info_metabox">'
+				. esc_html__( 'Update Translations', 'booking' )
 				. '</a>';
 
-			echo
-				'<a class="button button tooltip_top" 
-					data-original-title="'
-					. esc_attr(  __( 'Show exist translations status', 'booking' )  )
-				. '" 
-					href="'
-				. wpbc_get_settings_url()
-				. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&show_translation_status=1#wpbc_general_settings_system_info_metabox">'
-				. __( 'Show translations status', 'booking' )
-				. '</a>';
+		echo '<a 	class="button button tooltip_top" 
+					data-original-title="' . esc_attr( __( 'Show exist translations status', 'booking' ) ) . '" 
+					href="' . esc_url( wpbc_get_settings_url() . '&system_info=show&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) ) . '&show_translation_status=1#wpbc_general_settings_system_info_metabox">' .
+			 esc_html( __( 'Show translations status', 'booking' ) ) . '</a>';
 
 
-			if ( $_SERVER['HTTP_HOST'] === 'beta' ) {
+		if ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( 'beta' === $_SERVER['HTTP_HOST'] ) ) {
 
 				?><div style="width:100%;height:2em;border-bottom:1px dashed #777;margin-bottom:1em;"></div><?php
 
@@ -606,8 +607,8 @@ function wpbc_translation_buttons_settings_section(){
 					'<a class="button button-secondary tooltip_top" 
 						data-original-title="Delete wpbc_all_translations(*).php files,  before Updating POT file (manually)"  					
 						style="background:#fff9e6;" href="'
-					. wpbc_get_settings_url()
-					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&pot=erase__wpbc_all_translations#wpbc_general_settings_system_info_metabox">'
+					. esc_url( wpbc_get_settings_url()
+					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&pot=erase__wpbc_all_translations#wpbc_general_settings_system_info_metabox">'
 					. '1. Erase Translation PHP files'
 					. '</a>';
 				echo
@@ -615,29 +616,29 @@ function wpbc_translation_buttons_settings_section(){
 						data-original-title="Create or update wpbc_all_translations(*).php files, from actual POT file" 
 						style="background:#fff9e6;" 
 						href="'
-					. wpbc_get_settings_url()
-					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&pot=1#wpbc_general_settings_system_info_metabox">'
+					. esc_url( wpbc_get_settings_url()
+					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&pot=1#wpbc_general_settings_system_info_metabox">'
 					. '2. Generate Translation PHP from POT file'
 					. '</a>';
 
 				echo
 					'<a class="button button-secondary tooltip_top" 
-						data-original-title="Just show WP.ORG translation status from ' . WP_LANG_DIR . '/plugins/' . ' "
+						data-original-title="Just show WP.ORG translation status from ' . esc_attr( WP_LANG_DIR ) . '/plugins/' . ' "
 						style="background:#fff9e6;" 
 						href="'
-					. wpbc_get_settings_url()
-					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&show_translation_status=2#wpbc_general_settings_system_info_metabox">'
+					. esc_url( wpbc_get_settings_url()
+					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&show_translation_status=2#wpbc_general_settings_system_info_metabox">'
 					. 'Translation status WP.ORG'
 					. '</a>';
 
 
 				echo
 					'<a class="button button-secondary tooltip_top" 
-						data-original-title="Just show LOCAL translation status from ' . WPBC_PLUGIN_DIR . '/languages/' . ' " 
+						data-original-title="Just show LOCAL translation status from ' . esc_attr( WPBC_PLUGIN_DIR ) . '/languages/' . ' " 
 						style="background:#fff9e6;" 
 						href="'
-					. wpbc_get_settings_url()
-					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) .'&show_translation_status=3#wpbc_general_settings_system_info_metabox">'
+					. esc_url( wpbc_get_settings_url()
+					. '&system_info=show&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'&show_translation_status=3#wpbc_general_settings_system_info_metabox">'
 					. 'Translation status WPBC'
 					. '</a>';
 			}
@@ -648,55 +649,47 @@ function wpbc_translation_buttons_settings_section(){
 }
 
 
-
-
-//======================================================================================================================
-//	Update Translations -- DOWNLOAD from  WP.ORG  and  WPBC
-//======================================================================================================================
-
-
+// ======================================================================================================================
+// Update Translations -- DOWNLOAD from  WP.ORG  and  WPBC
+// ======================================================================================================================
 
 
 /**
  * Update transaltions of plugin  from  WP repository
  */
-function wpbc_update_translations__from_wp(){
+function wpbc_update_translations__from_wp() {
 
-	echo  '<h2>' . __('Start updating translation files', 'booking') . '</h2>';
-
-	if ( function_exists( 'set_time_limit' ) ) { set_time_limit( 900 ); }
-	@ini_set('memory_limit','256M');
-	@ini_set('max_execution_time', 300);
+	echo '<h2>' . esc_html__( 'Start updating translation files', 'booking' ) . '</h2>';
+	WPBC_Action_Scheduler_Compatibility::raise_memory_limit();
+	WPBC_Action_Scheduler_Compatibility::raise_time_limit( 300 );
 
 	$wpbc_download_result = false;
 	if ( 'translations_updated_from_wpbc' !== get_bk_option( 'booking_translation_update_status' ) ) {
-
 		$wpbc_download_result = wpbc_translation_download_from_wpbc();
-
 	}
 	if ( ( ! is_wp_error( $wpbc_download_result ) ) && ( false !== $wpbc_download_result ) ) {
 		update_bk_option( 'booking_translation_update_status', 'translations_updated_from_wpbc' );
 	}
 
-
-	$wp_org_translation_packages_arr = wpbc_get_translation_packages_arr_from_wp(); 		/**
-																							 * ..., array ( [language] => sk_SK
-																											[version] => 8.9.3
-																											[updated] => 2020-03-11 17:10:35
-																											[english_name] => Slovak
-																											[native_name] => Slovenčina
-																											[package] => https://downloads.wordpress.org/translation/plugin/booking/8.9.3/sk_SK.zip
-																											[iso] => Array ( [1] => sk,  [2] => slk )
-																									),
-																							 * ...
-																							 */
+	$wp_org_translation_packages_arr = wpbc_get_translation_packages_arr_from_wp();
+	/**
+	 * ..., array ( [language] => sk_SK
+	 * [version] => 8.9.3
+	 * [updated] => 2020-03-11 17:10:35
+	 * [english_name] => Slovak
+	 * [native_name] => Slovenčina
+	 * [package] => https://downloads.wordpress.org/translation/plugin/booking/8.9.3/sk_SK.zip
+	 * [iso] => Array ( [1] => sk,  [2] => slk )
+	 * ),
+	 * ...
+	 */
 
 	$download_result_arr = wpbc_transaltion_download_from_wp_org( $wp_org_translation_packages_arr );
 
-	echo '<h2>' . __('End updating translation files', 'booking') . '</h2>';
-	echo '<a class="button button-secondary" style="margin:10px 0;" href="' . wpbc_get_settings_url() . '" >' . __( 'Go to Settings', 'booking' ) . '</a>';
+	echo '<h2>' . esc_html__( 'End updating translation files', 'booking' ) . '</h2>';
+	echo '<a class="button button-secondary" style="margin:10px 0;" href="' . esc_url( wpbc_get_settings_url() ) . '" >' . esc_html__( 'Go to Settings', 'booking' ) . '</a>';
 
-	update_bk_option( 'booking_translation_update_status' , 'translations_updated_from_wpbc_and_wp');
+	update_bk_option( 'booking_translation_update_status', 'translations_updated_from_wpbc_and_wp' );
 }
 
 
@@ -841,9 +834,8 @@ function wpbc_update_translations__from_wp(){
 
 function wpbc_show_translation_status_compare_wpbc_wp( ) {
 
-	if ( function_exists( 'set_time_limit' ) ) { set_time_limit( 900 ); }
-	@ini_set('memory_limit','256M');
-	@ini_set('max_execution_time', 300);
+	WPBC_Action_Scheduler_Compatibility::raise_memory_limit();
+	WPBC_Action_Scheduler_Compatibility::raise_time_limit( 300 );
 
 	$params = array(
 						  'sort_field_name' => 'locale'
@@ -988,7 +980,7 @@ function wpbc_show_translation_status_compare_wpbc_wp( ) {
 
 		wpbc_show_message_in_settings( $translation_message, 'info' );
 
-		echo '<a class="button button-secondary" style="margin:10px 0;" href="' . wpbc_get_settings_url() . '" >' . __( 'Go to Settings', 'booking' ) . '</a>';
+		echo '<a class="button button-secondary" style="margin:10px 0;" href="' . esc_url( wpbc_get_settings_url() ) . '" >' . esc_html__( 'Go to Settings', 'booking' ) . '</a>';
 }
 
 /**
@@ -1097,7 +1089,7 @@ function wpbc_show_translation_status_from_wp( $is_echo = true, $params = array(
 
 		wpbc_show_message_in_settings( $translation_message, 'info' );
 
-		echo '<a class="button button-secondary" style="margin:10px 0;" href="' . wpbc_get_settings_url() . '" >' . __( 'Go to Settings', 'booking' ) . '</a>';
+		echo '<a class="button button-secondary" style="margin:10px 0;" href="' . esc_url( wpbc_get_settings_url() ) . '" >' . esc_html__( 'Go to Settings', 'booking' ) . '</a>';
 	}
 
 	return $translation_status_arr;
@@ -1192,7 +1184,7 @@ function wpbc_show_translation_status_from_wpbc( $is_echo = true, $params = arra
 
 		wpbc_show_message_in_settings( $translation_message, 'info' );
 
-		echo '<a class="button button-secondary" style="margin:10px 0;" href="' . wpbc_get_settings_url() . '" >' . __( 'Go to Settings', 'booking' ) . '</a>';
+		echo '<a class="button button-secondary" style="margin:10px 0;" href="' . esc_url( wpbc_get_settings_url() ) . '" >' . esc_html__( 'Go to Settings', 'booking' ) . '</a>';
 	}
 
 	return $translation_status_arr;
@@ -1462,7 +1454,7 @@ function wpbc_pot_to_php() {
 
         wpbc_show_message_in_settings( 'Found <strong>' . count($po->entries)  . '</strong> translations' , 'info' );
 
-	    	//FixIn: 8.7.3.6
+	    	// FixIn: 8.7.3.6.
         	$translation_files = array();
 
 
@@ -1474,7 +1466,7 @@ function wpbc_pot_to_php() {
 			foreach ( $po->entries as $transaltion => $transaltion_obj ) {
 
 				$transaltion = str_replace( "'", "\'", $transaltion );
-				$all_translations .= ' $wpbc_all_translations[] = __(\''.  $transaltion  .'\', \'booking\'); ' . "\n";
+				$all_translations .= ' $wpbc_all_translations[] = __(\''.  $transaltion  .'\', \'booking\'); /* translators: 1: ... */ ' . "\n";
 				$lines_number++;
 
 				// Maximum  number of lines in such  files
@@ -1498,26 +1490,28 @@ function wpbc_pot_to_php() {
 			foreach ( $translation_files as $file_number => $file_content ) {
 
 				// Path  to new PHP file with  all
-				$new_php_file = WP_PLUGIN_DIR . '/' . trim( WPBC_PLUGIN_DIRNAME . '/core/lang/wpbc_all_translations' . ( ( ! empty( $file_number ) ) ? $file_number : '' ) . '.php', '/' );        //FixIn: 8.9.4.12
-
+				$new_php_file = WP_PLUGIN_DIR . '/' . trim( WPBC_PLUGIN_DIRNAME . '/core/lang/wpbc_all_translations' . ( ( ! empty( $file_number ) ) ? $file_number : '' ) . '.php', '/' );        // FixIn: 8.9.4.12.
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 				$fh = fopen( $new_php_file, 'w' );
 				if ( false === $fh ) {
 					wpbc_show_message_in_settings( 'Can not create or edit PHP file: ' . $new_php_file, 'error' );
 
 					return false;
 				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 				$res = fwrite( $fh, $file_content );
 				if ( false === $res ) {
 					wpbc_show_message_in_settings( 'Some error during saving data into file ' . $new_php_file, 'error' );
 
 					return false;
 				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 				$res = fclose( $fh );
 
 				wpbc_show_message_in_settings( 'Completed! [ ' . htmlentities( $new_php_file ) . ' ]', 'info' );
 			}
 
-			echo '<a class="button button-secondary" style="margin:10px 0;" href="' . wpbc_get_settings_url() . '" >' . __( 'Go to Settings', 'booking' ) . '</a>';
+			echo '<a class="button button-secondary" style="margin:10px 0;" href="' . esc_url( wpbc_get_settings_url() ) . '" >' . esc_html__( 'Go to Settings', 'booking' ) . '</a>';
 
         return $res;
 
@@ -1568,12 +1562,11 @@ function wpbc_delete_translation_php_files(){
 
 		if ( file_exists( $path ) ) {
 			if ( is_file( $path ) ) {
-				if ( ! unlink( $path ) ) {
-					throw new \RuntimeException( "Failed to unlink {$path}: " . var_export( error_get_last(), true ) );
+				if ( ! wp_delete_file( $path ) ) {
+					throw new \RuntimeException( 'Failed to unlink ' . esc_html( $path ) . ': ' . var_export( error_get_last(), true ) );    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped, WordPress.PHP.DevelopmentFunctions.error_log_var_export
 				} else {
-					echo '<p style="color:red;">Deleted: ' . $path . '</p>';
+					echo '<p style="color:red;">Deleted: ' . esc_html( $path ) . '</p>';
 				}
-
 			}
 		}
 	}
@@ -1582,7 +1575,7 @@ function wpbc_delete_translation_php_files(){
 
 // $translation = apply_filters( "gettext_{$domain}", $translation, $text, $domain );
 
-//FixIn: 9.1.3.2
+// FixIn: 9.1.3.2.
 /**
  * Check consistency of translations. For situations, when translators made mistakes with missed symbols like %s or additional items
  *

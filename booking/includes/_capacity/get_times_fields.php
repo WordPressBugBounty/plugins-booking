@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            //FixIn: 9.8.0.4
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.0.4.
 
 
 /**
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *            $timeslots_arr = wpbc_get_times_fields_configuration(
  *                                                                   1,
  *                                                                   'my_custom_form_name',
- *                                                                   strtotime( date( 'Y-m-d 00:00:00', strtotime( 'now' ) ) ),
+ *                                                                   strtotime( gmdate( 'Y-m-d 00:00:00', strtotime( 'now' ) ) ),
  *                                                                   365
  *                                                                );
  */
@@ -81,7 +81,7 @@ function wpbc_get_times_fields_configuration__by_dates( $resource_id, $custom_fo
 	$dates_times_fields_arr = array();
 	for ( $day_num = 0; $day_num <= $days_count; $day_num ++ ) {
 
-		$my_day_tag = date( 'Y-m-d', $start_date_unix_timestamp );                                   // '2023-07-19'
+		$my_day_tag = gmdate( 'Y-m-d', $start_date_unix_timestamp );                                   // '2023-07-19'
 
 		if ( ( ! empty( $conditions ) ) && ( function_exists( 'wpbc_conditions_form__get_section__depend_from_date' ) ) ){
 
