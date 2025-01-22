@@ -641,7 +641,9 @@ if(0){
 			$is_success_update = $user_request->user_request_params__db_save( $request_params_to_save );					// Save to DB		// - $cleaned_request_params - serialized here automatically
 		}
 
-
+		if ( ! empty( $data_arr['calendar_force_load'] ) ) {
+			$data_arr['calendar_force_load'] = wpbc_clean_calendar_loading_scripts( $data_arr['calendar_force_load'] );
+		}
 		// -------------------------------------------------------------------------------------------------------------
 		// Send JSON.   It will make "wp_json_encode" - so pass only array, and This function call wp_die( '', '', array( 'response' => null, ) )		Pass JS OBJ: response_data in "jQuery.post( " function on success.
 		// -------------------------------------------------------------------------------------------------------------

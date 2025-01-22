@@ -76,6 +76,7 @@ function wpbc_stp_wiz__template__form_structure(){
 					</div>
 					<div class="wpbc_widget_content wpbc_ajx_toolbar wpbc_no_borders">
 						<div class="wpbc_center_preview" style="margin: 0 auto;">
+							<# data.calendar_force_load = data.calendar_force_load.replace( /ajax_scrpt/gi, 'script' ); #>
 							{{{data.calendar_force_load}}}
 						</div>
 					</div>

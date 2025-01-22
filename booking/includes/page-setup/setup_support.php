@@ -290,3 +290,23 @@ function wpbc_maybe_show_warning_conflict__wordfence( $style = '' ) {
 }
 
 
+/**
+ * Escape scripts from the Booking Calendar shortcode content for showing in Wizard templates.
+ *
+ * @param string $calendar_html_content  - usualy it is the content of [booking ...] shortcode.
+ *
+ * @return mixed
+ */
+function wpbc_clean_calendar_loading_scripts( $calendar_html_content ) {
+
+	// Prevent of any intention usage od this tag.
+	$calendar_html_content = str_replace( 'ajax_scrpt', '', $calendar_html_content );
+
+	$pattern               = '/<script\s*(type=[\'"]+text\/javascript[\'"]+)?\s*>/i';
+	$calendar_html_content = preg_replace( $pattern, '<ajax_scrpt>', $calendar_html_content );
+
+	$pattern               = '/<\/script>/i';
+	$calendar_html_content = preg_replace( $pattern, '</ajax_scrpt>', $calendar_html_content );
+
+	return $calendar_html_content;
+}

@@ -10,6 +10,9 @@ console.groupCollapsed( 'WPBC_AJX_SETUP_WIZARD_PAGE' ); console.log( ' == Before
 	// It can start 'icon spinning' on top menu bar at 'active menu item'.
 	wpbc_setup_wizard_page_reload_button__spin_start();
 
+	// Clear some parameters, which can make issue with blocking requests.
+	wpbc_ajx__setup_wizard_page__do_request_clean();
+
 	// Start Ajax
 	jQuery.post( wpbc_url_ajax,
 			{
@@ -118,4 +121,14 @@ console.log( ' == Response WPBC_AJX_SETUP_WIZARD_PAGE == ', response_data ); con
 		  // .always( function ( data_jqXHR, textStatus, jqXHR_errorThrown ) {   if ( window.console && window.console.log ){ console.log( 'always finished', data_jqXHR, textStatus, jqXHR_errorThrown ); }     })
 		  ;  // End Ajax
 
+}
+
+
+/**
+ * Clean some parameters,  does not required for request
+ */
+function wpbc_ajx__setup_wizard_page__do_request_clean() {
+	// We donot require the 'calendar_force_load' parameter  with  all html and scripts  content at  server side. This content generated at server side.
+	// It is also can be the reason of blocking request, because of script tags.
+	_wpbc_settings.set_param__setup_wizard('calendar_force_load', '');
 }

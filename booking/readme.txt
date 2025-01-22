@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.9.4.2
+Stable tag: 10.9.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -306,9 +306,13 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.9.5 =
+- Changes in **all** versions:
+	* **Improvement**: Prevent blocking Wizard Setup at Steps 4/5 in some systems.
+
 = 10.9.4.2 =
 - Changes in **all** versions:
-	* **Improvement**: loading of JavaScript variables.
+	* **Improvement**: Loading of JavaScript variables,  such  as _wpbc.
 
 = 10.9.4.1 =
 - Changes in **all** versions:
@@ -515,7 +519,7 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 - Changes in **all** versions:
 	* **New Feature**: Redesigned "Top Tabs" for page selection in the Booking Calendar Admin UI. This update enhances space utilization, resulting in a clearer and smoother interface for users. (9.8.15.2)
 	* **New** Resource menu page simplifies embedding your booking form. Easily integrate booking form into an existing page or create a new page with the booking form in just a few clicks. (9.8.15.7)
-	* **New** Introducing General Import Conditions options for importing events into the Booking Calendar for all booking resources. You can now enable the option **Import if Dates Available** to import events only if dates are available in the source calendar. Additionally, the option **Import Only New Events** allows you to import only if the event has not been imported before. This last option replaces the deprecated "Force import" option and can be configured at Booking > Settings > Sync > "General" page in the "Import advanced" section.  (9.8.15.8)
+	* **New** Introducing General Import Conditions options for importing events into the Booking Calendar for all booking resources. You can now enable the option **Import if Dates Available** to import events only if dates are available in the source calendar. Additionally, the option **Import Only New Events** allows you to import only if the event has not been imported before. This last option replaces the legacy "Force import" option and can be configured at Booking > Settings > Sync > "General" page in the "Import advanced" section.  (9.8.15.8)
 	* **Translation Update**: German, French, Italian translation has been updated
 - Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
 	* **New** Integrated **PayPal Standard Checkout** payment gateway. Enjoy various payment methods, including **card payments and PayPal**. Choose from different designs for PayPal buttons. The system now automatically responds from  the PayPal, updating the booking status and payment status.  *(Business Small/Medium/Large, MultiUser)*
