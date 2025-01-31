@@ -986,9 +986,13 @@ function wpbc_send_email_deny( $deny_id_str, $is_send_emeils, $denyreason = '' )
         $booking_id = $res->booking_id;
         $bktype = $res->booking_type;
         $formdata = $res->form;
-        
-        $previous_active_user = apply_bk_filter( 'wpbc_mu_set_environment_for_owner_of_resource', -1, $bktype );    // MU
-        
+
+		$previous_active_user = apply_bk_filter( 'wpbc_mu_set_environment_for_owner_of_resource', - 1, $bktype );    // MU
+
+		// Check for ability to change HASH during Decline (set pending) booking. //FixIn: 10.9.6.1.
+		make_bk_action( 'booking_pending_send_email', $res, '' );
+
+
         ////////////////////////////////////////////////////////////////////////
         // Load Data 
         ////////////////////////////////////////////////////////////////////////

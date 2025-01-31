@@ -108,6 +108,43 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
                 inp_value = element.value;
             }
 
+            var inp_title_value = '';
+
+            var input_element_type = ('input' === jQuery( element )[0].tagName.toString().toLowerCase())
+                                      ? jQuery( jQuery( element )[0] ).prop( "type" ).toLowerCase()
+                                      : jQuery( element )[0].tagName.toLowerCase();
+
+            switch ( input_element_type ) {
+                case 'text':
+                    inp_title_value = inp_value;
+                    break;
+                case 'email':
+                    inp_title_value = inp_value;
+                    break;
+                case 'select':
+                    inp_title_value = jQuery( element ).find( "option:selected" ).text();
+                    break;
+                case 'radio':
+                    if ( jQuery( element ).is( ':checked' ) ) {
+                        var label_element = jQuery( element ).parents( '.wpdev-list-item' ).find( '.wpdev-list-item-label' );
+                        if ( label_element.length ) {
+                            inp_title_value = label_element.html();
+                        }
+                    }
+                    break;
+                case 'checkbox':
+                    if ( jQuery( element ).is( ':checked' ) ) {
+                        var label_element = jQuery( element ).parents( '.wpdev-list-item' ).find( '.wpdev-list-item-label' );
+                        if ( label_element.length ) {
+                            inp_title_value = label_element.html();
+                        }
+                    }
+                    break;
+                default:
+                    inp_title_value = inp_value;
+            }
+
+
             // Get value in selectbox of multiple selection
             if ( (element.type == 'selectbox-multiple') || (element.type == 'select-multiple') ){
                 inp_value = jQuery('[name="'+element.name+'"]').val() ;
@@ -208,13 +245,18 @@ function mybooking_submit( submit_form , bk_type, wpdev_active_locale){
                 inp_value = inp_value.replace(/'/g, '&#39;'); // replace single quot
 
                 if ( 'select-one' == el_type ){
-                    el_type = 'selectbox-one'
+                    el_type = 'selectbox-one';
                 }
                 if ( 'select-multiple' == el_type ){
-                    el_type = 'selectbox-multiple'
+                    el_type = 'selectbox-multiple';
                 }
 
-                formdata += el_type + '^' + element.name + '^' + inp_value ;                    // element attr
+                formdata += el_type + '^' + element.name + '^' + inp_value ;  // element attr
+
+                var clean_field_name = element.name;
+                clean_field_name = clean_field_name.replaceAll( /\[\]/gi, '' );
+                clean_field_name = clean_field_name.substr( 0, (clean_field_name.length - bk_type.toString().length) );
+                formdata += '~' + el_type + '^' + clean_field_name + '_val' + bk_type + '^' + inp_title_value;
             }
         }
 
@@ -592,6 +634,7 @@ function wpbc_wizard_step( el, step_num, step_from ){
     if ( br_id != undefined ){
         jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" ).css( {"display": "none"} ).removeClass('wpbc_wizard_step_hidden');
         jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num ).css( {"display": "block"} );
+        return jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num );
     }
 }
 
@@ -614,7 +657,11 @@ function wpbc_hook__init_booking_form_wizard_buttons() {
         if ( (null !== found_steps_arr) && (found_steps_arr.length > 2) ){
             var step = parseInt( found_steps_arr[ 1 ] );
             if ( step > 0 ){
-                wpbc_wizard_step( this, step );
+                var jq_step_element = wpbc_wizard_step( this, step );
+                if ( false !== jq_step_element ) {
+                    wpbc_do_scroll( jq_step_element );
+                    // wpbc_do_scroll( jQuery('.wpbc_wizard_step:visible') );
+                }
             }
         }
     } );

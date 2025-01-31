@@ -89,8 +89,11 @@ function wpbc_is_user_can_access_wizard_page() {
 function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show_only_calendar = false ) {
 
 	ob_start();
+
+	$localized_js_vars_script = wpbc_get_localized_js_vars();
+
 	if ( $is_show_only_calendar ) {
-		// Center calendar
+		// Center calendar.
 		?><style type="text/css">
 			.wpbc_calendar_wraper {
 			  display: flex;
@@ -109,6 +112,10 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 		// If we use the [bookingcalendar] shortcode,  then  we remove this tag,  for ability to  select  dates in calendar.
 		?><script tye="text/javascript">
 			jQuery(document).ready(function(){
+				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $localized_js_vars_script;
+				?>
 				jQuery( 'body' ).on( 'wpbc_calendar_ajx__loaded_data', function( event, resource_id ) {
 					jQuery( '#calendar_booking_unselectable' + resource_id ).remove();
 				} );
@@ -130,6 +137,10 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 		// If we use the [bookingcalendar] shortcode,  then  we remove this tag,  for ability to  select  dates in calendar.
 		?><script type="text/javascript">
 			jQuery( document ).ready( function () {
+				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $localized_js_vars_script;
+				?>
 				_wpbc.set_other_param( 'calendars__on_this_page', [] );
 				<?php if ( 'On' === get_bk_option( 'booking_timeslot_picker') ) { ?>
 				wpbc_hook__init_timeselector();

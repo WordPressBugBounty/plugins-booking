@@ -603,12 +603,19 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 	    for ( $ii = 2; $ii < 92; $ii ++ ) {
 		    $field_options[ $ii ] = $ii . ' ' . __( 'days', 'booking' );
 	    }
-        
-        $this->fields['booking_unavailable_days_num_from_today'] = array(   
+
+
+		$unavailable_from_today_arr = wpbc_get_unavailable_from_today_hints_arr();
+
+		$this->fields['booking_unavailable_days_num_from_today'] = array(
                                     'type'          => 'select'
                                     , 'default'     => $default_options_values['booking_unavailable_days_num_from_today']                                  //'0'            
                                     , 'title'       => __('Unavailable time from current time', 'booking')
                                     , 'description' => __('Select an unavailable time interval on the calendar, starting from today\'s current time.' ,'booking')
+													   . '<br><code id="ui_btn_cstm__set_calendar_unavailable_from_today_hint" style="font-weight: 600;font-size: 10px;padding: 3px 5px;color: #626262;border-radius:2px;background: #f9f2f4">'
+													   . '<span style="color: #cc3a5f;text-transform: uppercase;">' . esc_html( __( 'Unavailable', 'booking' ) ) . '</span>'
+													   . $unavailable_from_today_arr['booking_unavailable_days_num_from_today__hint']
+													   .'</code>'
                                     , 'options'     => $field_options
                                     , 'group'       => 'availability'
                             );

@@ -14,28 +14,41 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 /**
- * Define General inline  JavaScript variables for the Booking Calendar
+ * Get script string for localised variables.
  *
- * This function  run  after ENQUEUE of WPBC  JavaScript files
- *
- * @param $where_to_load
- *
- * @return void
+ * @return string
  */
-function wpbc_localize_js_vars( $where_to_load = 'both' ){                                                              // FixIn: 10.0.0.43.
+function wpbc_get_localized_js_vars() {
 
-	//$script  = 'var1 = '. wp_json_encode('var1') .'; ';      // JSON.parse(wpbc_global_var);
-	$script = '';
+	// $script  = 'var1 = '. wp_json_encode('var1') .'; ';      // JSON.parse(wpbc_global_var);  //.
+
+	$script  = '';
 	$script .= "_wpbc.set_other_param( 'locale_active', '" . esc_js( wpbc_get_maybe_reloaded_booking_locale() ) . "' ); ";
 
 	// FixIn: 10.8.1.4.
 	$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( 'now' ) );
+
+	$script .= "_wpbc.set_other_param( 'time_gmt_arr', [" . wpbc_datetime_localized__no_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) . ']  ); ';
+	$script .= "_wpbc.set_other_param( 'time_local_arr', [" . wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) . ']  ); ';
+
 	$unavailable_time_from_today = get_bk_option( 'booking_unavailable_days_num_from_today' );
 
 	if ( ! empty( $unavailable_time_from_today ) ) {
 		if ( 'm' === substr( $unavailable_time_from_today, - 1 ) ) {
+
 			$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $unavailable_time_from_today ) - 1 ) . ' minutes' ) );
-			$unavailable_time_from_today = '0'; // FixIn: 10.9.2.6.
+
+			// Local timezone unavailable time.                                                                         // FixIn: 10.9.6.3.
+			$local_unavailable_datetime_ymdhis = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y-m-d H:i:s' );             // Local unavailable.
+			// Local timezone Now time.
+			$local_now_datetime_ymdhis = wpbc_datetime_localized__use_wp_timezone( strtotime( 'now' ), 'Y-m-d H:i:s' );            // Local Now.
+			// Local timezone Today midnight time.
+			$local_now_datetime_ymd000 = wpbc_datetime_localized__use_wp_timezone( strtotime( 'now' ), 'Y-m-d 00:00:00' );         // Local Midnight.
+
+			// Check time from local MIDNIGHT to Unavailable.
+			$days_number_shift           = intval( ( strtotime( $local_unavailable_datetime_ymdhis ) - strtotime( $local_now_datetime_ymd000 ) ) / 86400 );
+			$unavailable_time_from_today = $days_number_shift;
+			// $unavailable_time_from_today = '0'; // FixIn: 10.9.2.6.
 		}
 	} else {
 		$unavailable_time_from_today = '0';
@@ -70,15 +83,16 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 				                                                    . ( ( get_bk_option( 'booking_unavailable_day5') == 'On' ) ? '5,' : '' )
 				                                                    . ( ( get_bk_option( 'booking_unavailable_day6') == 'On' ) ? '6,' : '' )
 				                                                    . "999] ); ";                                            // 999 - blank day, which will not impact  to the checking of the week days. Required for correct creation of this array.
-	// General  days selection
+	// General  days selection.
 	$days_selection_arr = wpbc__calendar__js_params__get_days_selection_arr();
-	$script .= "_wpbc.set_other_param( 'calendars__days_select_mode', '"         . $days_selection_arr['days_select_mode'] . "' ); ";
-	$script .= "_wpbc.set_other_param( 'calendars__fixed__days_num', " .           $days_selection_arr['fixed__days_num'] . " ); ";
-	$script .= "_wpbc.set_other_param( 'calendars__fixed__week_days__start',   [" .$days_selection_arr['fixed__week_days__start'] . "] ); ";
-	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_min', " .         $days_selection_arr['dynamic__days_min'] . " ); ";
-	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_max', " .         $days_selection_arr['dynamic__days_max'] . " ); ";
-	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_specific',    [" .$days_selection_arr['dynamic__days_specific'] . "] ); ";
-	$script .= "_wpbc.set_other_param( 'calendars__dynamic__week_days__start', [" .$days_selection_arr['dynamic__week_days__start'] . "] ); ";
+
+	$script .= "_wpbc.set_other_param( 'calendars__days_select_mode', '" . $days_selection_arr['days_select_mode'] . "' ); ";
+	$script .= "_wpbc.set_other_param( 'calendars__fixed__days_num', " . $days_selection_arr['fixed__days_num'] . " ); ";
+	$script .= "_wpbc.set_other_param( 'calendars__fixed__week_days__start',   [" . $days_selection_arr['fixed__week_days__start'] . "] ); ";
+	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_min', " . $days_selection_arr['dynamic__days_min'] . " ); ";
+	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_max', " . $days_selection_arr['dynamic__days_max'] . " ); ";
+	$script .= "_wpbc.set_other_param( 'calendars__dynamic__days_specific',    [" . $days_selection_arr['dynamic__days_specific'] . "] ); ";
+	$script .= "_wpbc.set_other_param( 'calendars__dynamic__week_days__start', [" . $days_selection_arr['dynamic__week_days__start'] . "] ); ";
 
 	// FixIn: 10.3.0.9.
 	if ( false !== strpos( get_bk_option( 'booking_skin' ), 'light__24_8' ) ) {
@@ -88,7 +102,7 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	}
 
 
-	// Defined in  BS
+	// Defined in  BS.
 	$script .= "_wpbc.set_other_param( 'is_enabled_booking_recurrent_time',  " . ( ( get_bk_option( 'booking_recurrent_time' ) !== 'On' ) ? 'false' : 'true' ) . " ); ";
 	$script .= "_wpbc.set_other_param( 'is_allow_several_months_on_mobile',  " . ( ( get_bk_option( 'booking_calendar_allow_several_months_on_mobile' ) !== 'On' ) ? 'false' : 'true' ) . " ); ";
 	$script .= "_wpbc.set_other_param( 'is_enabled_change_over',  "            . (
@@ -104,7 +118,7 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	$script .= "_wpbc.set_other_param( 'update', '" . esc_attr( WP_BK_VERSION_NUM ) . "' ); ";
 	$script .= "_wpbc.set_other_param( 'version', '" . wpbc_get_version_type__and_mu() . "' ); ";
 
-	// Warning Messages
+	// Warning Messages.
 	$script .= "_wpbc.set_message( 'message_dates_times_unavailable', "        . wp_json_encode( __( 'These dates and times in this calendar are already booked or unavailable.', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_choose_alternative_dates', "       . wp_json_encode( __( 'Please choose alternative date(s), times, or adjust the number of slots booked.', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_cannot_save_in_one_resource', "    . wp_json_encode( __( 'It is not possible to store this sequence of the dates into the one same resource.', 'booking' ) ) . " ); ";
@@ -124,14 +138,28 @@ function wpbc_localize_js_vars( $where_to_load = 'both' ){                      
 	$script .= "_wpbc.set_message( 'message_error_range_time', "               . wp_json_encode( __( 'The time(s) may be booked, or already in the past!', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_error_duration_time', "            . wp_json_encode( __( 'The time(s) may be booked, or already in the past!', 'booking' ) ) . " ); ";
 
+	$script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";
+	return $script;
+}
+
+
+/**
+ * Define General inline  JavaScript variables for the Booking Calendar
+ * This function  run  after ENQUEUE of WPBC  JavaScript files
+ *
+ * @param string $where_to_load  - 'both'.
+ *
+ * @return void
+ */
+function wpbc_localize_js_vars( $where_to_load = 'both' ) {
+
 	$script_before = 'var wpbc_url_ajax =' . wp_json_encode( admin_url( 'admin-ajax.php' ) ) . ';';
 	wp_add_inline_script( 'wpbc_all', $script_before, 'before' );
 
-	$script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' ['.wpbc_get_version_type__and_mu() .  "] LOADED ==' );";
-
+	$script = wpbc_get_localized_js_vars();
 
 	// Load this _wpbc only  after  loading of all scripts                                                              // FixIn: 10.1.3.4.
-	$script  = " function wpbc_init__head(){ " . $script . " } ";
+	$script  = ' function wpbc_init__head(){ ' . $script . ' } ';
 	$script .= "( function() { if ( document.readyState === 'loading' ){ document.addEventListener( 'DOMContentLoaded', wpbc_init__head ); } else { wpbc_init__head(); } }() );";
 
 	wp_add_inline_script( 'wpbc_all', $script );

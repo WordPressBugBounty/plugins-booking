@@ -304,9 +304,9 @@ class WPBC_Welcome {
 	public function title_section() {
 
 		list( $display_version ) = explode( '-', WPDEV_BK_VERSION );
-
+		//$display_version = WP_BK_VERSION_NUM;
 		?>
-		<h1><?php echo wp_kses_post( sprintf( 'Welcome to Booking Calendar %s1', $display_version ) ); ?></h1>
+		<h1><?php echo wp_kses_post( sprintf( 'Welcome to Booking Calendar %s', $display_version ) ); ?></h1>
 		<div class="about-text"><?php
 			echo ( 'Booking Calendar is ready to receive and manage bookings from your visitors!' );
 			?></div>
@@ -473,7 +473,7 @@ if(0){
 
 			$this->section_9_8_css();
 
-			//wpbc_welcome_section_10_9_3( $this );
+			wpbc_welcome_section_10_10( $this );
 
 			wpbc_welcome_section_10_9( $this );
 

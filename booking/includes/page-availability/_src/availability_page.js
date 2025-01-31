@@ -380,6 +380,7 @@ function wpbc_show_inline_booking_calendar( calendar_params_arr ){
 	function wpbc__inline_booking_calendar__apply_css_to_days( date, calendar_params_arr, datepick_this ){
 
 		var today_date = new Date( _wpbc.get_other_param( 'today_arr' )[ 0 ], (parseInt( _wpbc.get_other_param( 'today_arr' )[ 1 ] ) - 1), _wpbc.get_other_param( 'today_arr' )[ 2 ], 0, 0, 0 );
+		var real_today_date = new Date( _wpbc.get_other_param( 'time_local_arr' )[ 0 ], (parseInt( _wpbc.get_other_param( 'time_local_arr' )[ 1 ] ) - 1), _wpbc.get_other_param( 'time_local_arr' )[ 2 ], 0, 0, 0 );
 
 		var class_day  = ( date.getMonth() + 1 ) + '-' + date.getDate() + '-' + date.getFullYear();						// '1-9-2023'
 		var sql_class_day = wpbc__get__sql_class_date( date );																			// '2023-01-09'
@@ -395,15 +396,18 @@ function wpbc_show_inline_booking_calendar( calendar_params_arr ){
 				return [ !!false, css_date__standard + ' date_user_unavailable' 	+ ' weekdays_unavailable' ];
 			}
 		}
-
-		// BEFORE_AFTER :: Set unavailable days Before / After the Today date
-		if ( 	( (wpbc_dates__days_between( date, today_date )) < parseInt(_wpbc.get_other_param( 'availability__unavailable_from_today' )) )
-			 || (
-				   ( parseInt( '0' + parseInt( _wpbc.get_other_param( 'availability__available_from_today' ) ) ) > 0 )
-				&& ( wpbc_dates__days_between( date, today_date ) > parseInt( '0' + parseInt( _wpbc.get_other_param( 'availability__available_from_today' ) ) ) )
-				)
-		){
-			return [ !!false, css_date__standard + ' date_user_unavailable' 		+ ' before_after_unavailable' ];
+		// 10.9.6.3.
+		var date_midnight = new Date( parseInt( date.getFullYear() ), (parseInt( date.getMonth() ) - 0), parseInt( date.getDate() ), 0, 0, 0 );
+		// BEFORE_AFTER :: Set unavailable days Before / After the Today date.
+		//if ( ((wpbc_dates__days_between( date, real_today_date )) < parseInt( _wpbc.get_other_param( 'availability__unavailable_from_today' ) ))
+		if (
+			( (today_date.getTime() - date_midnight.getTime() ) > 0 )
+			|| (
+				(parseInt( '0' + parseInt( _wpbc.get_other_param( 'availability__available_from_today' ) ) ) > 0)
+				&& (wpbc_dates__days_between( date_midnight, real_today_date ) >= parseInt( '0' + parseInt( _wpbc.get_other_param( 'availability__available_from_today' ) ) ))
+			)
+		) {
+			return [ false, css_date__standard + ' date_user_unavailable' + ' before_after_unavailable' ];
 		}
 
 		// SEASONS ::  					Booking > Resources > Availability page

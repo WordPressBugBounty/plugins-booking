@@ -242,9 +242,11 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 	);
 	// ---------------------------------------------------------------------------------------------------------
 	$templates[ 'pro|optgroup_sf_s'] = array( 'optgroup' => true, 'close' => false, 'title' => '&nbsp;' . __( 'Advanced Form', 'booking' ) . ' (' . __( 'Pro Versions', 'booking' ) . ')'  );
-	$templates[ 'pro|appointments30' ] = array( 'title' => __('Time-Based Appointments', 'booking') .  ' ('.  ' 30 ' . __( 'minutes', 'booking' ) . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
-	$templates['pro|wizard'] = array( 'title' => __( 'Wizard (several steps)', 'booking' ) . ' - ' . __('No times','booking'), 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
-	$templates[ 'pro|wizard_times30' ] = array( 'title' => __('Wizard', 'booking') .  ' ('.__('Time slots', 'booking') . ' 30 ' . __( 'minutes', 'booking' ) . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
+
+	$templates[ 'pro|appointments_service_a' ] = array( 'title' => __( 'Service-Based Appointments', 'booking' ), 'disabled' => ( ! class_exists( 'wpdev_bk_biz_s' ) ) );  // FixIn: 10.9.6.5.
+	$templates[ 'pro|appointments30' ]         = array( 'title' => __( 'Time-Based Appointments', 'booking') .  ' ('.  ' 30 ' . __( 'minutes', 'booking' ) . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
+	$templates[ 'pro|wizard' ]                 = array( 'title' => __( 'Wizard (several steps)', 'booking' ) . ' - ' . __('No times','booking'), 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
+	$templates[ 'pro|wizard_times30' ]         = array( 'title' => __( 'Wizard', 'booking') .  ' ('.__('Time slots', 'booking') . ' 30 ' . __( 'minutes', 'booking' ) . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );
 
 	/*
 		$templates[ 'pro|wizard_times15' ] 		= array( 'title' => __('Wizard', 'booking') .  ' ('.__('Time slots', 'booking') . ' 15 ' . __( 'minutes', 'booking' ) . ' (AM/PM)' . ')', 'disabled' => ( ! class_exists( 'wpdev_bk_personal' ) ) );

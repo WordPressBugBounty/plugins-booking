@@ -60,7 +60,7 @@ class WPBC_CSS extends WPBC_JS_CSS{
 
         if ( $where_to_load == 'admin' ) {                                                                              // Admin CSS files
 			wp_enqueue_style( 'wpbc-bootstrap-icons',       wpbc_plugin_url( '/assets/libs/bootstrap-icons/bootstrap-icons.css' ),          array(), WP_BK_VERSION_NUM );           // FixIn: 9.0.1.1.
-
+			// Several concataned css files.
 	        wp_enqueue_style( 'wpbc-all-admin',             wpbc_plugin_url( '/_dist/all/_out/wpbc_all_admin.min.css' ),                    array(), WP_BK_VERSION_NUM);
 
             wp_enqueue_style( 'wpbc-chosen',                wpbc_plugin_url( '/assets/libs/chosen/chosen.css' ),        array(), WP_BK_VERSION_NUM);
@@ -112,35 +112,38 @@ class WPBC_CSS extends WPBC_JS_CSS{
         }
 
 		$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
-        if (
-				   ( $where_to_load != 'admin' )
-				|| ( wpbc_is_new_booking_page() )
-			    || ( wpbc_is_setup_wizard_page() )
-				|| ( wpbc_is_settings_form_page() )
-				// || ( wpbc_is_availability_page() )                                                                      //FixIn: 10.0.0.5  Error at  -> WP Booking Calendar > Availability > Season Availability page
-	            || ( ( wpbc_is_settings_page() ) && ( strpos( $server_request_uri, 'tab=payment' ) !== false ) )
-        ){                                       // Client or Add New Booking page
+		if (
+			( 'admin' !== $where_to_load ) ||
+			( wpbc_is_new_booking_page() ) ||
+			( wpbc_is_setup_wizard_page() ) ||
+			( wpbc_is_settings_form_page() ) ||
+			( ( wpbc_is_settings_page() ) && ( strpos( $server_request_uri, 'tab=payment' ) !== false ) )
+			// || ( wpbc_is_availability_page() )     // FixIn: 10.0.0.5  Error at  -> WP Booking Calendar > Availability > Season Availability page.
+		) {
+			// Client or Add New Booking page.
 
-	        if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || ( wpbc_is_setup_wizard_page() ) ) {                                                // FixIn: 8.7.11.10.
-				wp_enqueue_style( 'wpbc-time_picker',        wpbc_plugin_url( '/css/wpbc_time-selector.css' ),          array(), WP_BK_VERSION_NUM );
+			if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || ( wpbc_is_setup_wizard_page() ) ) {                                                // FixIn: 8.7.11.10.
+				wp_enqueue_style( 'wpbc-time_picker', wpbc_plugin_url( '/css/wpbc_time-selector.css' ), array(), WP_BK_VERSION_NUM );
 
-		        $time_picker_skin_path = wpbc_get_time_picker_skin_url();
-		        if ( ! empty( $time_picker_skin_path ) ) {
-		        	wp_enqueue_style('wpbc-time_picker-skin', $time_picker_skin_path ,                                  array('wpbc-time_picker'), WP_BK_VERSION_NUM);
-		        }
+				$time_picker_skin_path = wpbc_get_time_picker_skin_url();
+				if ( ! empty( $time_picker_skin_path ) ) {
+					wp_enqueue_style( 'wpbc-time_picker-skin', $time_picker_skin_path, array( 'wpbc-time_picker' ), WP_BK_VERSION_NUM );
+				}
 			}
-            wp_enqueue_style( 'wpbc-client-pages',          wpbc_plugin_url( '/css/client.css' ),                       array(), WP_BK_VERSION_NUM );
-            wp_enqueue_style( 'wpbc-fe-form_fields',        wpbc_plugin_url( '/css/_out/wpbc_fe__form_fields.css' ),    array('wpbc-client-pages'), WP_BK_VERSION_NUM );
-        }
+			wp_enqueue_style( 'wpbc-client-pages', wpbc_plugin_url( '/css/client.css' ), array(), WP_BK_VERSION_NUM );
+			// Several concataned css files.
+			wp_enqueue_style( 'wpbc-all-client', wpbc_plugin_url( '/_dist/all/_out/wpbc_all_client.css' ), array( 'wpbc-client-pages' ), WP_BK_VERSION_NUM );
+		}
 
-        wp_enqueue_style('wpbc-calendar',   wpbc_plugin_url( '/css/calendar.css' ),                                     array(), WP_BK_VERSION_NUM);
-                                                                                                                                                // Calendar Skins
-        $calendar_skin_path = wpbc_get_calendar_skin_url();
-        if ( ! empty( $calendar_skin_path ) )
-            wp_enqueue_style('wpbc-calendar-skin', $calendar_skin_path ,                                                array(), WP_BK_VERSION_NUM);
-    
-        do_action( 'wpbc_enqueue_css_files', $where_to_load );        
-    }
+		wp_enqueue_style( 'wpbc-calendar', wpbc_plugin_url( '/css/calendar.css' ), array(), WP_BK_VERSION_NUM );
+		// Calendar Skins.
+		$calendar_skin_path = wpbc_get_calendar_skin_url();
+		if ( ! empty( $calendar_skin_path ) ) {
+			wp_enqueue_style( 'wpbc-calendar-skin', $calendar_skin_path, array(), WP_BK_VERSION_NUM );
+		}
+
+		do_action( 'wpbc_enqueue_css_files', $where_to_load );
+	}
 
 
     public function remove_conflicts( $where_to_load ) {

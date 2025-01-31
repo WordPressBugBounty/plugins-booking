@@ -1,7 +1,4 @@
-var time_buffer_value = 0;					// Customization of bufer time for DAN
-var is_check_start_time_gone = true;		// Check  start time or end time for the time, which is gone already TODAY.	// FixIn: 10.5.2.3.
 var start_time_checking_index;
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Get dots for partially  booked dates.
@@ -367,30 +364,40 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 	}
 
 
-	function isTimeTodayGone( myTime, sort_date_array ){
-		var date_to_check = sort_date_array[ 0 ];
-		if ( is_check_start_time_gone == false ){
-			date_to_check = sort_date_array[ (sort_date_array.length - 1) ];
-		}
-
-		if ( parseInt( date_to_check[ 0 ] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[ 0 ] ) ) return true;
-		if ( (parseInt( date_to_check[ 0 ] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[ 0 ] )) && (parseInt( date_to_check[ 1 ] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[ 1 ] )) )
-			return true;
-		if ( (parseInt( date_to_check[ 0 ] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[ 0 ] )) && (parseInt( date_to_check[ 1 ] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[ 1 ] )) && (parseInt( date_to_check[ 2 ] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[ 2 ] )) )
-			return true;
-		if ( (parseInt( date_to_check[ 0 ] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[ 0 ] )) &&
-			(parseInt( date_to_check[ 1 ] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[ 1 ] )) &&
-			(parseInt( date_to_check[ 2 ] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[ 2 ] )) ){
-			var mytime_value = myTime.split( ":" );
-			mytime_value = mytime_value[ 0 ] * 60 + parseInt( mytime_value[ 1 ] );
-
-			var current_time_value = _wpbc.get_other_param( 'today_arr' )[ 3 ] * 60 + parseInt( _wpbc.get_other_param( 'today_arr' )[ 4 ] );
-
-			if ( current_time_value > mytime_value ) return true;
-
-		}
-		return false;
+function isTimeTodayGone( myTime, sort_date_array ){
+	var date_to_check = sort_date_array[ 0 ];
+	if ( parseInt( date_to_check[0] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[0] ) ) {
+		return true;
 	}
+	if (
+		 (parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
+		 (parseInt( date_to_check[1] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[1] ))
+	){
+		return true;
+	}
+	if (
+		 (parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
+		 (parseInt( date_to_check[1] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[1] )) &&
+		 (parseInt( date_to_check[2] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[2] ))
+	) {
+		return true;
+	}
+	if (
+		(parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
+		(parseInt( date_to_check[1] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[1] )) &&
+		(parseInt( date_to_check[2] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[2] ))
+	) {
+		var mytime_value = myTime.split( ":" );
+		mytime_value     = parseInt( mytime_value[0] ) * 60 + parseInt( mytime_value[1] );
+
+		var current_time_value = parseInt( _wpbc.get_other_param( 'today_arr' )[3] ) * 60 + parseInt( _wpbc.get_other_param( 'today_arr' )[4] );
+
+		if ( current_time_value > mytime_value ) {
+			return true;
+		}
+	}
+	return false;
+}
 
 
 	function checkTimeInside( mytime, is_start_time, bk_type ){
@@ -457,11 +464,12 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 			sort_date_array[ i ] = [ parseInt( sort_date_array[ i ][ 0 ] * 1 ), parseInt( sort_date_array[ i ][ 1 ] * 1 ), parseInt( sort_date_array[ i ][ 2 ] * 1 ) ]; // [2009,7,1],...
 		}
 
-		if ( ((is_check_start_time_gone) && (is_start_time)) ||
-			((!is_check_start_time_gone) && (!is_start_time)) ){
-
-			if ( isTimeTodayGone( mytime, sort_date_array ) ) return false;
+		if ( is_start_time ) {
+			if ( isTimeTodayGone( mytime, sort_date_array ) ) {
+				return false;
+			}
 		}
+
 		//  CHECK FOR BOOKING INSIDE OF     S E L E C T E D    DAY RANGE AND FOR TOTALLY BOOKED DAYS AT THE START AND END OF RANGE
 		work_date_array = sort_date_array;
 		for ( var j = 0; j < work_date_array.length; j++ ){

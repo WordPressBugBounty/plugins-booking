@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.9.5
+Stable tag: 10.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -306,32 +306,21 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
-= 10.9.5 =
+= 10.10 =
 - Changes in **all** versions:
-	* **Improvement**: Prevent blocking Wizard Setup at Steps 4/5 in some systems.
-
-= 10.9.4.2 =
-- Changes in **all** versions:
-	* **Improvement**: Loading of JavaScript variables,  such  as _wpbc.
-
-= 10.9.4.1 =
-- Changes in **all** versions:
-	* **Fix**: Resolved issue on Search Form: Uncaught TypeError: child_resources_arr is null (10.9.5.2)
-
-= 10.9.4 =
-- Changes in **all** versions:
-	* **New**: Added new "Calendar Color Theme": 24_9__green_5
-	* **Improvement**: Resolving CSS conflict issues of Booking Calendar with different WP themes or plugins (such as with  Elementor).
-	* **Improvement**: Huge code refactoring and update escaping functions to apply for best practices.
-	* **Improvement**: Loads all JS at the page footer, by default. It's prevent of the common issues, when the jQuery library were loaded several times in the page.
-	* **Fix**: Showing "Unavailable days from today" hint relative to WordPress timezone, e.g.: "Unavailable: 28 Dec, 12:49 - 28 Dec, 17:48"	(10.9.4.2)
-	* **Fix**: Uncaught TypeError: $current.size is not a function (10.9.4.4)
-	* **Fix**: CSS issue of showing Apply availability  button  in mobile devices at  WP Booking Calendar > Availability > Days Availability page. (10.9.4.5)
-	* **Fix**: Resolved conflict issue: Uncaught TypeError: _wpbc.bookings_in_calendar__get_for_date(...)[child_resource_id] is undefined (10.9.5.1)
+	* **Improvement**: Automatically hide/disable past times when selecting today's date.(10.9.6.4).
+	* **Improvement**: "Unavailable time from current time" now follows the local WordPress timezone. Added help tooltips in WP Booking Calendar > Settings > General > Availability.  (10.9.6.3)
+	* **Improvement**: Removed default colons (:) from field labels. You can manually add them when editing forms in Simple Mode at WP Booking Calendar > Settings > Booking Form. (10.9.6.2)
+	* **Under the hood**: Introduced a new JavaScript event: 'wpbc_before_booking_create', triggered before a booking is created. Developers can bind actions using: jQuery('body').on('wpbc_before_booking_create', function(event, resource_id, params) { ... });  (10.9.6.1)
+	* **Fix**: Resolved CSS conflicts affecting calendar day cell width in certain WordPress themes.
 - Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Improvement**: Ability to change the "Commerce number (FUC)", Terminal number and "secret passphrase" in test  mode for Redsys payment system. (10.9.4.1)
+	* **New**: Added "**Appointments Based on Service Duration**" **form template** for quick service-based bookings. (10.9.6.5)
+	* **New**: Added support for **Saving "Option Titles"** in select boxes, checkboxes, and radio buttons using the format "Title@@Value". Example: [selectbox durationtime "Service A (20 min)@@00:20" "Service B (30 min)@@00:30"]. Display the title using [durationtime_val] (use configuration with  field name + "_val" sufix) or the value using [durationtime]. This feature enables better customization for service durations and other selected options with Titles and Option Value configuration.
+	* **New**: Introduced a **Steps Timeline Shortcode**: [steps_timeline steps_count="3" active_step="2" color="#cd7b32"],  where steps_count="N" - defines total number of steps; active_step="X" - highlights the current step; color="#RGB" - optional parameter to customize step color. (10.9.6.5)
+	* **Improvement**: "Limit available days from today" now follows the local timezone from midnight instead of UTC. Help tooltips added in WP Booking Calendar > Settings > General > Availability. (10.9.6.3)
+	* **Improvement**: If "Change hash after booking approval" is enabled, the hash now also updates when moving bookings to Pending or Trash.(10.9.6.1)
 
-= 10.9.1 - 10.9.3.2 =
+= 10.9.1 - 10.9.5 =
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 10.9 =
@@ -534,6 +523,9 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  - Get ready for our biggest update yet! Enjoy a new booking engine, improved performance, structured settings, an enhanced UI, and a smoother booking process with the new booking confirmation section. Paid versions bring features like time-slot capacity for multiple bookings per time-slot and more. Find more at [this page](https://wpbookingcalendar.com/updates/whats-new-in-booking-calendar-update-9-8/)
 
 == Upgrade Notice ==
+= 10.10 =
+Better time slot availability, timezone-based settings, improved form customization, new appointment templates, booking hash security, and UI fixes!
+
 = 10.9 =
 New unavailable time intervals from the current time, Redsys payment integration, improved calendar functionality, and usability fixes.
 

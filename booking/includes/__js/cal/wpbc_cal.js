@@ -562,15 +562,28 @@ function wpbc_calendar_show( resource_id ){
 		var is_intersect;
 		var is_check_in;
 
+		var today_time__real  = new Date( _wpbc.get_other_param( 'time_local_arr' )[0], ( parseInt( _wpbc.get_other_param( 'time_local_arr' )[1] ) - 1), _wpbc.get_other_param( 'time_local_arr' )[2], _wpbc.get_other_param( 'time_local_arr' )[3], _wpbc.get_other_param( 'time_local_arr' )[4], 0 );
+		var today_time__shift = new Date( _wpbc.get_other_param( 'today_arr'      )[0], ( parseInt( _wpbc.get_other_param(      'today_arr' )[1] ) - 1), _wpbc.get_other_param( 'today_arr'      )[2], _wpbc.get_other_param( 'today_arr'      )[3], _wpbc.get_other_param( 'today_arr'      )[4], 0 );
+
 		// 4. Loop  all  time Fields options		// FixIn: 10.3.0.2.
 		for ( let field_key = 0; field_key < time_fields_obj_arr.length; field_key++ ){
 
-			time_fields_obj_arr[ field_key ].disabled = 0;          // By default, this time field is not disabled
+			time_fields_obj_arr[ field_key ].disabled = 0;          // By default, this time field is not disabled.
 
 			time_fields_obj = time_fields_obj_arr[ field_key ];		// { times_as_seconds: [ 21600, 23400 ], value_option_24h: '06:00 - 06:30', name: 'rangetime2[]', jquery_option: jQuery_Object {}}
 
-			// Loop  all  selected dates
-			for ( var i = 0; i < selected_dates_arr.length; i++ ){
+			// Loop  all  selected dates.
+			for ( var i = 0; i < selected_dates_arr.length; i++ ) {
+
+				// Get Date: '2023-08-18'.
+				sql_date = selected_dates_arr[ i ];
+
+				var is_time_in_past = wpbc_check_is_time_in_past( today_time__shift, sql_date, time_fields_obj );
+				if ( is_time_in_past ) {
+					// This time for selected date already  in the past.
+					time_fields_obj_arr[field_key].disabled = 1;
+					break;											// exist  from   Dates LOOP.
+				}
 
 				// FixIn: 9.9.0.31.
 				if (
@@ -588,8 +601,6 @@ function wpbc_calendar_show( resource_id ){
 					}
 				}
 
-				// Get Date: '2023-08-18'
-				sql_date = selected_dates_arr[ i ];
 
 
 				var how_many_resources_intersected = 0;
@@ -645,6 +656,48 @@ function wpbc_calendar_show( resource_id ){
 
 		jQuery( ".booking_form_div" ).trigger( 'wpbc_hook_timeslots_disabled', [resource_id, selected_dates_arr] );					// Trigger hook on disabling timeslots.		Usage: 	jQuery( ".booking_form_div" ).on( 'wpbc_hook_timeslots_disabled', function ( event, bk_type, all_dates ){ ... } );		// FixIn: 8.7.11.9.
 	}
+
+
+		/**
+		 * Check if specific time(-slot) already  in the past for selected date
+		 *
+		 * @param js_current_time_to_check		- JS Date
+		 * @param sql_date						- '2025-01-26'
+		 * @param time_fields_obj				- Object
+		 * @returns {boolean}
+		 */
+		function wpbc_check_is_time_in_past( js_current_time_to_check, sql_date, time_fields_obj ) {
+
+			// FixIn: 10.9.6.4
+			var sql_date_arr = sql_date.split( '-' );
+			var sql_date__midnight = new Date( parseInt( sql_date_arr[0] ), ( parseInt( sql_date_arr[1] ) - 1 ), parseInt( sql_date_arr[2] ), 0, 0, 0 );
+			var sql_date__midnight_miliseconds = sql_date__midnight.getTime();
+
+			var is_intersect = false;
+
+			if ( time_fields_obj.times_as_seconds.length > 1 ) {
+
+				if ( js_current_time_to_check.getTime() > (sql_date__midnight_miliseconds + (parseInt( time_fields_obj.times_as_seconds[0] ) + 20) * 1000) ) {
+					is_intersect = true;
+				}
+				if ( js_current_time_to_check.getTime() > (sql_date__midnight_miliseconds + (parseInt( time_fields_obj.times_as_seconds[1] ) - 20) * 1000) ) {
+					is_intersect = true;
+				}
+
+			} else {
+				var is_check_in = (-1 !== time_fields_obj.name.indexOf( 'start' ));
+
+				var times_as_seconds_check = (is_check_in) ? parseInt( time_fields_obj.times_as_seconds ) + 20 : parseInt( time_fields_obj.times_as_seconds ) - 20;
+
+				times_as_seconds_check = sql_date__midnight_miliseconds + times_as_seconds_check * 1000;
+
+				if ( js_current_time_to_check.getTime() > times_as_seconds_check ) {
+					is_intersect = true;
+				}
+			}
+
+			return is_intersect;
+		}
 
 		/**
 		 * Is number inside /intersect  of array of intervals ?

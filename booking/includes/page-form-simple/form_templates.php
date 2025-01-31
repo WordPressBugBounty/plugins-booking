@@ -822,10 +822,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
     ){
         // FixIn: 8.6.1.15.
 		$form_content = '';
-        if ( wpbc_is_this_demo() ){
-            // $form_content .='<!-- In our Public Demo, JavaScript is restricted in the form. --> \n';
-            // $form_content .='<!-- As a result, the "Wizard Form Template" is unable to function here. --> \n';
-        }
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
         $form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
         $form_content .='<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n';
@@ -1101,7 +1097,179 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
            $form_content .='</div>';
     }
 
-    return $form_content;
+
+	if ( in_array( $form_type, array( 'appointments_service_a' ) ) ) {
+		// FixIn: 10.9.6.5.
+		$form_content = '';
+		$form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
+		$form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
+		$form_content .='<div class="wpbc_wizard__border_container"> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n';
+		$form_content .='		[steps_timline steps_count="3" active_step="1"] \n';
+		$form_content .='		<r> \n';
+		$form_content .='		 <c class="wpbc_aling_center"> \n';
+		$form_content .='			<l>' . esc_attr__( 'Select Service', 'booking' ) . ' *</l><br /><spacer>height:20px;</spacer> \n';
+		$form_content .='			[selectbox durationtime "Service A (20 min)@@00:20" "Service B (30 min)@@00:30" "Service C (45 min)@@00:45" "Service D (1 hour)@@01:00"]<spacer>height:15px;</spacer> \n';
+		$form_content .='		</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	    <hr><r> \n';
+		$form_content .='			<c class="wpbc_aling_right" > \n';
+		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2"> \n';
+		$form_content .='					' . esc_attr__( 'Continue to step', 'booking' ) . ' 2 \n';
+		$form_content .='				</a> \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2  wpbc_wizard_step_hidden" style="display:none;clear:both;"> \n';
+		$form_content .='		[steps_timline steps_count="3" active_step="2"]<hr> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c>  <l>' . esc_attr__( 'Select Date', 'booking' ) . ' *</l><br />  [calendar] </c> \n';
+		$form_content .='			<c>  <l>' . esc_attr__( 'Select Times', 'booking' ) . ' *</l><br /> \n';
+		$form_content .='			    [selectbox starttime "09:00" "09:30" "10:00" "10:30" "11:00" "11:30" "12:00" "12:30" "13:00" "13:30" "14:00" "14:30" "15:00" "15:30" "16:00" "16:30" "17:00" "17:30" "18:00"] \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+			$form_content .= '		<r> <c> \n';
+			$form_content .= '				<div class="form-hints"> \n';
+			$form_content .= '				' . esc_attr__( 'Date', 'booking' ) . ': &nbsp;<strong>[selected_dates_hint]</strong><spacer>width:2em;</spacer> \n';
+			$form_content .= '			   	' . esc_attr__( 'Time', 'booking' ) . ': &nbsp;<strong>[start_time_hint] - [end_time_hint]</strong> \n';
+			$form_content .= '				</div> \n';
+			$form_content .= '			</c> \n';
+			$form_content .= '			<c>' . esc_attr__( 'Total Cost', 'booking' ) . ': &nbsp;<strong>[cost_hint]</strong></c> \n';
+			$form_content .= '	    </r> \n';
+		}
+		$form_content .='	    <hr> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c class="wpbc_aling_right" > \n';
+		$form_content .='				<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1"> \n';
+		$form_content .='					' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a><spacer>width:20px;</spacer> \n';
+		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_3" > \n';
+		$form_content .='					' . esc_attr__( 'Continue to step', 'booking' ) . ' 3</a> \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step3 wpbc_wizard_step_hidden" style="display:none;clear:both;"> \n';
+		$form_content .='	[steps_timline steps_count="3" active_step="3"]<hr> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'First Name', 'booking' ) . ' *</l><br />[text* name] </c> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Last Name', 'booking' ) . ' *</l><br />[text* secondname] </c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Email', 'booking' ) . ' *</l><br />[email* email] </c> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Phone', 'booking' ) . '</l><br />[text phone] </c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Details', 'booking' ) . '</l><spacer></spacer> \n';
+		$form_content .='			[textarea details] </c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	<spacer>height:10px;</spacer> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
+		$form_content .='		<c> [captcha] </c> \n';
+		$form_content .='	</r> \n';
+		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+			$form_content .='	<r> <c> \n';
+			$form_content .='			<div class="form-hints"> \n';
+			$form_content .='				' . esc_attr__( 'Date', 'booking' ) . ': &nbsp;<strong>[selected_dates_hint]</strong><spacer>width:2em;</spacer> \n';
+			$form_content .='			   	' . esc_attr__( 'Time', 'booking' ) . ': &nbsp;<strong>[start_time_hint] - [end_time_hint]</strong> \n';
+			$form_content .='			</div> \n';
+			$form_content .='		</c> \n';
+			$form_content .='		<c>' . esc_attr__( 'Total Cost', 'booking' ) . ': &nbsp;<strong>[cost_hint]</strong></c> \n';
+			$form_content .='	</r> \n';
+		}
+		$form_content .='	<hr> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c class="wpbc_aling_right" > \n';
+		$form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2"> \n';
+		$form_content .='				' . esc_attr__( 'Back to step', 'booking' ) . ' 2</a><spacer>width:20px;</spacer> \n';
+		$form_content .='			[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
+		$form_content .='		</c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='</div>';
+	}
+
+	if ( in_array( $form_type, array( 'appointments_service_b' ) ) ) {
+		// FixIn: 10.9.6.5.
+		$form_content = '';
+		$form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
+		$form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
+		$form_content .='<div class="wpbc_wizard__border_container"> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n';
+		$form_content .='		[steps_timline steps_count="3" active_step="1"] \n';
+		$form_content .='		<r> \n';
+		$form_content .='		 <c class="wpbc_aling_center"> \n';
+		$form_content .='			<l>' . esc_attr__( 'Select Service', 'booking' ) . ' *</l><br /><spacer>height:20px;</spacer> \n';
+		$form_content .='			[selectbox durationtime "Service A (20 min)@@00:20" "Service B (30 min)@@00:30" "Service C (45 min)@@00:45" "Service D (1 hour)@@01:00"]<spacer>height:15px;</spacer> \n';
+		$form_content .='		</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	    <hr> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c>  <l>' . esc_attr__( 'Select Date', 'booking' ) . ' *</l><br />  [calendar] </c> \n';
+		$form_content .='			<c>  <l>' . esc_attr__( 'Select Times', 'booking' ) . ' *</l><br /> \n';
+		$form_content .='			    [selectbox starttime "09:00" "09:30" "10:00" "10:30" "11:00" "11:30" "12:00" "12:30" "13:00" "13:30" "14:00" "14:30" "15:00" "15:30" "16:00" "16:30" "17:00" "17:30" "18:00"] \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+			$form_content .= '		<r> <c> \n';
+			$form_content .= '				<div class="form-hints"> \n';
+			$form_content .= '				' . esc_attr__( 'Date', 'booking' ) . ': &nbsp;<strong>[selected_dates_hint]</strong><spacer>width:2em;</spacer> \n';
+			$form_content .= '			   	' . esc_attr__( 'Time', 'booking' ) . ': &nbsp;<strong>[start_time_hint] - [end_time_hint]</strong> \n';
+			$form_content .= '				</div> \n';
+			$form_content .= '			</c> \n';
+			$form_content .= '			<c>' . esc_attr__( 'Total Cost', 'booking' ) . ': &nbsp;<strong>[cost_hint]</strong></c> \n';
+			$form_content .= '	    </r> \n';
+		}
+		$form_content .='	    <hr> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c class="wpbc_aling_right" > \n';
+		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" > \n';
+		$form_content .='					' . esc_attr__( 'Continue to step', 'booking' ) . ' 2</a> \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;"> \n';
+		$form_content .='		[steps_timline steps_count="3" active_step="2"] \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c> <l>' . esc_attr__( 'First Name', 'booking' ) . ' *</l><br />[text* name] </c> \n';
+		$form_content .='			<c> <l>' . esc_attr__( 'Last Name', 'booking' ) . ' *</l><br />[text* secondname] </c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c> <l>' . esc_attr__( 'Email', 'booking' ) . ' *</l><br />[email* email] </c> \n';
+		$form_content .='			<c> <l>' . esc_attr__( 'Phone', 'booking' ) . '</l><br />[text phone] </c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c> <l>' . esc_attr__( 'Details', 'booking' ) . '</l><spacer></spacer> \n';
+		$form_content .='				[textarea details] </c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='		<spacer>height:10px;</spacer> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
+		$form_content .='			<c> [captcha] </c> \n';
+		$form_content .='		</r> \n';
+		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+			$form_content .='		<r> <c> \n';
+			$form_content .='				<div class="form-hints"> \n';
+			$form_content .='					' . esc_attr__( 'Date', 'booking' ) . ': &nbsp;<strong>[selected_dates_hint]</strong><spacer>width:2em;</spacer> \n';
+			$form_content .='				   	' . esc_attr__( 'Time', 'booking' ) . ': &nbsp;<strong>[start_time_hint] - [end_time_hint]</strong> \n';
+			$form_content .='				</div> \n';
+			$form_content .='			</c> \n';
+			$form_content .='			<c>' . esc_attr__( 'Total Cost', 'booking' ) . ': &nbsp;<strong>[cost_hint]</strong></c> \n';
+			$form_content .='		</r> \n';
+		}
+		$form_content .='		<hr> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c class="wpbc_aling_right" > \n';
+		$form_content .='				<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1"> \n';
+		$form_content .='					' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a><spacer>width:20px;</spacer> \n';
+		$form_content .='				[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='</div>';
+	}
+
+	return $form_content;
 }
 
 
@@ -1184,5 +1352,19 @@ function wpbc_get__predefined_booking_data__template( $form_type ){
         $form_content .='    <b>' . esc_attr__( 'Details', 'booking' ) . '</b>:    <f>[details]</f>\n';
         $form_content .='</div>';
     }
-    return $form_content;
+
+	if ( in_array( $form_type, array( 'appointments_service_a', 'appointments_service_b' ) ) ) {
+		$form_content = '';
+		$form_content .= '<div class="standard-content-form"> \n';
+		$form_content .= '    <b>' . esc_attr__( 'Service', 'booking' ) . '</b>:    <f>[durationtime_val]</f><br>\n';
+		$form_content .= '    <b>' . esc_attr__( 'Start Times', 'booking' ) . '</b>:<f>[starttime]</f><br>\n';
+		$form_content .= '    <b>' . esc_attr__( 'First Name', 'booking' ) . '</b>: <f>[name]</f><br>\n';
+		$form_content .= '    <b>' . esc_attr__( 'Last Name', 'booking' ) . '</b>:  <f>[secondname]</f><br>\n';
+		$form_content .= '    <b>' . esc_attr__( 'Email', 'booking' ) . '</b>:      <f>[email]</f><br>\n';
+		$form_content .= '    <b>' . esc_attr__( 'Phone', 'booking' ) . '</b>:      <f>[phone]</f><br>\n';
+		$form_content .= '    <b>' . esc_attr__( 'Details', 'booking' ) . '</b>:    <f>[details]</f>\n';
+		$form_content .= '</div>';
+	}
+
+	return $form_content;
 }

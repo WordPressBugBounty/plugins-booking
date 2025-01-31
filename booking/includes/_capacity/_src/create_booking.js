@@ -1,7 +1,7 @@
 "use strict";
 
 // ---------------------------------------------------------------------------------------------------------------------
-//  A j a x    A d d    N e w    B o o k i n g
+// ==  A j a x    A d d    N e w    B o o k i n g  ==
 // ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -25,38 +25,39 @@
  */
 function wpbc_ajx_booking__create( params ){
 
-console.groupCollapsed( 'WPBC_AJX_BOOKING__CREATE' );
-console.groupCollapsed( '== Before Ajax Send ==' );
-console.log( params );
-console.groupEnd();
+	console.groupCollapsed( 'WPBC_AJX_BOOKING__CREATE' );
+	console.groupCollapsed( '== Before Ajax Send ==' );
+	console.log( params );
+	console.groupEnd();
 
 	params = wpbc_captcha__simple__maybe_remove_in_ajx_params( params );
 
-	// Start Ajax
+	// Trigger hook  before sending request  to  create the booking.
+	jQuery( 'body' ).trigger( 'wpbc_before_booking_create', [ params['resource_id'], params ] );
+
+	// Start Ajax.
 	jQuery.post( wpbc_url_ajax,
-				{
-					action          : 'WPBC_AJX_BOOKING__CREATE',
-					wpbc_ajx_user_id: _wpbc.get_secure_param( 'user_id' ),
-					nonce           : _wpbc.get_secure_param( 'nonce' ),
-					wpbc_ajx_locale : _wpbc.get_secure_param( 'locale' ),
-
-					calendar_request_params : params
-
-					/**
-					 *  Usually  params = { 'resource_id'        : resource_id,
-					 *						'dates_ddmmyy_csv'   : document.getElementById( 'date_booking' + resource_id ).value,
-					 *						'formdata'           : formdata,
-					 *						'booking_hash'       : my_booking_hash,
-					 *						'custom_form'        : my_booking_form,
-					 *
-					 *						'captcha_chalange'   : captcha_chalange,
-					 *						'user_captcha'       : user_captcha,
-					 *
-					 *						'is_emails_send'     : is_send_emeils,
-					 *						'active_locale'      : wpdev_active_locale
-					 *				}
-					 */
-				},
+		{
+			action                 : 'WPBC_AJX_BOOKING__CREATE',
+			wpbc_ajx_user_id       : _wpbc.get_secure_param( 'user_id' ),
+			nonce                  : _wpbc.get_secure_param( 'nonce' ),
+			wpbc_ajx_locale        : _wpbc.get_secure_param( 'locale' ),
+			calendar_request_params: params,
+			/**
+			 *  Usually  params = { 'resource_id'        : resource_id,
+			 *						'dates_ddmmyy_csv'   : document.getElementById( 'date_booking' + resource_id ).value,
+			 *						'formdata'           : formdata,
+			 *						'booking_hash'       : my_booking_hash,
+			 *						'custom_form'        : my_booking_form,
+			 *
+			 *						'captcha_chalange'   : captcha_chalange,
+			 *						'user_captcha'       : user_captcha,
+			 *
+			 *						'is_emails_send'     : is_send_emeils,
+			 *						'active_locale'      : wpdev_active_locale
+			 *				}
+			 */
+		},
 
 				/**
 				 * S u c c e s s

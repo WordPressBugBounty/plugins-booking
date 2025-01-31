@@ -86,7 +86,12 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 	            $form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] ); // WPML
             }
 
-            $booking_form_show .= '  <b>' . $form_field['label'] . '</b>: ' . '<f>[' . $form_field['name'] . ']</f><br/>' . "\n";
+			if ( in_array( $form_field['type'], array( 'select', 'selectbox', 'checkbox' ) ) ) {
+				$booking_form_show .= '  <b>' . $form_field['label'] . '</b>: ' . '<f><span class="field_data_val"><span>[' . $form_field['name'] . '_val]</span> / </span>[' . $form_field['name'] . ']</f><br/>' . "\n";
+			} else {
+				$booking_form_show .= '  <b>' . $form_field['label'] . '</b>: ' . '<f>[' . $form_field['name'] . ']</f><br/>' . "\n";
+			}
+
         }
     }
 
@@ -356,16 +361,11 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			            $form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] );
 		            }
 
-		            if (
-							( $form_field['type'] != 'checkbox' ) &&
-							( $form_field['type'] != 'submit' )
-		            ){
-			            $html_form .= ' <l>' . $form_field['label'] .
-									( ( ! empty( $form_field['label'] ) )
-										            ? ( ( ( $form_field['required'] == 'On' ) ? '*' : '' ) . ':' )
-										            : '' )
-									. '</l><br>';
-		            }
+					if ( ( 'checkbox' !== $form_field['type'] ) && ( 'submit' !== $form_field['type'] ) ) {
+						$html_form .= ' <l>' . $form_field['label'] . ( ( ! empty( $form_field['label'] ) )
+								? ( ( 'On' === $form_field['required'] ) ? '*' : '' ) // FixIn: 10.9.6.2.
+								: '' ) . '</l><br>';
+					}
 
 					// -----------------------------------------------------------------------------------------------------
 	                // Field Shortcode
@@ -779,17 +779,14 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 					// L abel
 					// -----------------------------------------------------------------------------------------------------
 					$form_field['label'] = wpbc_lang( $form_field['label'] );
-					if ( function_exists( 'icl_translate' ) ) {                                                             // WPML
+					if ( function_exists( 'icl_translate' ) ) {                                                             // WPML.
 						$form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] );
 					}
-					if (
-						( $form_field['type'] != 'checkbox' ) &&
-						( $form_field['type'] != 'submit' ) &&
-						( ! empty( $form_field['label'] ) )
-					) {
-						$html_form .= ' <l for="'. $form_field['name'] . $params['resource_id'] . '" >' .
-							              $form_field['label'] . ( ( ( $form_field['required'] == 'On' ) ? '*' : '' ) . ':' ) .
-									  '</l><br>';
+
+					if ( ( 'checkbox' !== $form_field['type'] ) && ( 'submit' !== $form_field['type'] ) && ( ! empty( $form_field['label'] ) ) ) {
+						$html_form .= ' <l for="' . $form_field['name'] . $params['resource_id'] . '" >' .
+									$form_field['label'] . ( ( 'On' === $form_field['required'] ) ? '*' : '' ) . // FixIn: 10.9.6.2.
+									'</l><br>';
 					}
 
 					// -----------------------------------------------------------------------------------------------------

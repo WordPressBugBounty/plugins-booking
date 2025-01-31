@@ -916,6 +916,7 @@ div.datepick-inline table.datepick {
     min-width: var(--wpbc_cal_legend-day-cell-width, 40px);
     height: var(--wpbc_cal_legend-day-cell-height, 40px);
 }
+.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height table.datepick.wpbc_calendar,
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .wpbc_calendar_legend_day_cell_height {
     height: var(--wpbc_cal_legend-day-cell-height, 40px) !important;
     width: var(--wpbc_cal_legend-day-cell-width, 40px) !important;
@@ -929,6 +930,9 @@ div.datepick-inline table.datepick {
 /* ================================================================================================================== */
 /* Reset differnt CSS conflicts (such as with  Elementor) in HTML Tables with Booking Calendar plugin  ************** */
 /* ================================================================================================================== */
+table.datepick.wpbc_calendar{
+    margin:0;
+}
 .datepick-inline thead,
 .datepick-inline tbody,
 .datepick-inline tr,

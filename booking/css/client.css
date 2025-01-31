@@ -1562,7 +1562,7 @@ table.wpbc_ideal_payment_table {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  margin: 0;
+  margin: 0 0 15px;
   height: var(--wpbc_form-button-light-size-height);
   box-sizing: border-box;
   text-shadow: none;

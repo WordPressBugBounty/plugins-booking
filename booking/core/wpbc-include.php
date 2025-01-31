@@ -129,6 +129,7 @@ require_once( WPBC_PLUGIN_DIR . '/includes/_news/wpbc_news.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/flex_ui_elements.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/ui__settings_panel.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/toolbar_ui.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/ui__form_steps_timeline.php' );  // FixIn: 10.9.6.6.
 
 // Booking Listing
 require_once( WPBC_PLUGIN_DIR . '/includes/_listing_css_js/listing_ui.php' );

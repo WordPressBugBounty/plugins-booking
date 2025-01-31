@@ -284,6 +284,7 @@
 .wpbc_popup_modal .bookingtimeline_advanced_section0{
     display:none;
 }
+.wpbc_field_help_panel_background.wpbc_field_help_panel_field .put-in,
 .wpbc_popup_modal .put-in {
     cursor: pointer;
     font-weight: 600;
@@ -375,6 +376,7 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
     border-radius: 6px 6px 0 0;
 }
 /* Shortcode Text  field */
+.wpbc_field_help_panel_background.wpbc_field_help_panel_field .put-in,
 .wpbc_popup_modal .put-in {
     cursor: text;
     font-weight: 600;

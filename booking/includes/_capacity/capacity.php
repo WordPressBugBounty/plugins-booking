@@ -1655,25 +1655,22 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			// FixIn: 10.8.1.4.
 			if ( ! empty( $unavailable_days_num_from_today ) ) {
 				if ( 'm' === substr( $unavailable_days_num_from_today, - 1 ) ) {
-					$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' minutes' );                // + 0 days
+					$start_date_unix = strtotime( '+' . ( intval( $unavailable_days_num_from_today ) - 1 ) . ' minutes' );                // + 0 days
 				} else {
-					$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                   // + 0 days
+					$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                           // + 0 days
 				}
 			} else {
-				$unavailable_time_from_today = '0';
-				$start_date_unix = strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' );                   // + 0 days
+				$start_date_unix = strtotime( 'now' );
 			}
 
-			// FixIn: 9.9.0.17.
-			$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
-			$today_timestamp_wp_timezone  = strtotime( $date_with_wp_timezone );
-			$days_number = intval( (  $today_timestamp_wp_timezone - strtotime( $my_day_tag ) ) / 86400 );
+			$date_start__gmt                   = gmdate( 'Y-m-d H:i:s', $start_date_unix );                                         // '2025-01-25 12:50:10'
+			$date_start__midnight__wp_timezone = wpbc_datetime_localized__use_wp_timezone( $date_start__gmt, 'Y-m-d 00:00:00' );    // Local Midnight.
 
-			//$days_number = intval( ( strtotime( '+' . intval( $unavailable_days_num_from_today ) . ' days' ) - strtotime( $my_day_tag ) ) / 86400 );
-
+			// 'Today Midnight' - 'Calendar Day Cell' .
+			$days_number = intval( ( strtotime( $date_start__midnight__wp_timezone ) - strtotime( $my_day_tag ) ) / 86400 );
 
 			if ( $days_number > 0 ) {
-				// this date unavailable
+				// This date Unavailable.
 				$availability_per_day[ $my_day_tag ][ $resource_id ]->is_day_unavailable = true;
 				$availability_per_day[ $my_day_tag ][ $resource_id ]->_day_status        = 'from_today_unavailable';
 

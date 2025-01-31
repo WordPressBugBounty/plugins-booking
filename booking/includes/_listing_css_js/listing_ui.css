@@ -175,6 +175,10 @@
 	vertical-align: baseline;
   	border-radius: 2px;
 }
+/* Hide field value with empty [shortcode_name_val] data. Used in in Simple form fields mode.  */
+.field_data_val:has(span:empty) {
+  display: none;
+}
 .wpbc_listing_container .wpbc_list_row .wpbc_col_data .fieldvalue.fieldsearchvalue {
 	background: #ff9900;
 }

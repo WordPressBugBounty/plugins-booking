@@ -147,6 +147,7 @@ div.block_hints.datepick * {
     width: calc(var(--wpbc_cal_legend-day-cell-width, 40px) + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
     height: calc(var(--wpbc_cal_legend-day-cell-width, 40px) + var(--wpbc_cal-day-cells-padding, 0px) + var(--wpbc_cal-day-cells-padding, 0px)) !important;
 }
+.block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height table.datepick.wpbc_calendar,
 .block_hints.datepick .wpdev_hint_with_text .wpbc_calendar_legend_table_width_height .wpbc_calendar_legend_day_cell_height {
     height: var(--wpbc_cal_legend-day-cell-height, 40px) !important;
     border-width: 0;
@@ -154,6 +155,7 @@ div.block_hints.datepick * {
 .block_hints.datepick .datepick-inline {
     margin-top: -3px;
 }
+.block_hints .datepick-inline table.datepick.wpbc_calendar,
 .block_hints .datepick-inline,
 .block_hints .datepick-inline .datepick {
     background: transparent;
@@ -253,6 +255,7 @@ table.wpbc_calendar tr:nth-child(2n+1) > td {
     padding: 3px;
 }
 /* //FixIn: 10.9.2.2 */
+.datepick-inline table.datepick.wpbc_calendar,
 .datepick-inline .datepick,
 .datepick-inline:not(.wpbc_calendar_legend_table_width_height) .datepick thead,
 .datepick-inline:not(.wpbc_calendar_legend_table_width_height) .datepick tbody{

@@ -925,7 +925,10 @@ function wpbc_db_update_number_new_bookings( $id_of_new_bookings, $is_new = '0',
 							?>"
 					><div class="postbox-header" style="display: flex;flex-flow: row nowrap;border-bottom: 1px solid #ccd0d4;">
 						<h3 class='hndle' style="flex: 1 1 auto;border: none;">
-						  <span><?php  echo wp_kses_post( $title ); ?></span>
+						  <span><?php
+							  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							  echo $title;
+						  ?></span>
 						  <?php echo wp_kses_post( $params['dismiss_button'] ); ?>
 						</h3>
 						<?php if ( $params['is_show_minimize'] ) { ?>

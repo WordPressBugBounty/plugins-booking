@@ -983,7 +983,10 @@ function wpbc_send_email_trash( $trash_id_str, $is_send_emeils, $trashreason = '
         $formdata = $res->form;
         
         $previous_active_user = apply_bk_filter( 'wpbc_mu_set_environment_for_owner_of_resource', -1, $bktype );    // MU
-                
+
+		// Check for the ability to change HASH during Trash booking. //FixIn: 10.9.6.1.
+		make_bk_action( 'booking_trash_send_email', $res, '' );
+
         ////////////////////////////////////////////////////////////////////////
         // Load Data 
         ////////////////////////////////////////////////////////////////////////
