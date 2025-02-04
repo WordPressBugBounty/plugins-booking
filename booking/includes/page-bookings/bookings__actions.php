@@ -2503,7 +2503,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 		$edit_booking_url = 'admin.php?page=' . wpbc_get_new_booking_url( false, false)
 							. '&booking_type={{data.parsed_fields.resource_id}}&booking_hash={{data.parsed_fields.hash}}&parent_res=1' ;
-		$edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
+		// FixIn: 10.10.1.2  $edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
 		$edit_booking_url .= '&booking_form={{data.parsed_fields.wpbc_custom_booking_form}}';							// FixIn: 9.4.3.12.
 

@@ -215,3 +215,34 @@ function wpbc_get_booking_arr__from_hash_in_url( $booking_hash = false ){
 	return $result;
 
 }
+
+// FixIn: 10.10.1.1.
+/**
+ * Change hash of booking after approval / pending / trash / restore   booking(s)
+ *
+ * @param integer|string $booking_id_csd        - ID(s) of booking(s): integer or comma seperated integer string.
+ * @param bool           $is_approve_or_pending - Status of the action: approved or pending | trashed or restored.
+ *
+ * @return void
+ */
+function wpbc_hook__change_hash__afteraction( $booking_id_csd, $is_approve_or_pending ) {
+
+	$is_change_hash_after_approvement = get_bk_option( 'booking_is_change_hash_after_approvement' );
+
+	if ( 'Off' !== $is_change_hash_after_approvement ) {
+
+		if ( is_numeric( $booking_id_csd ) ) {
+			wpbc_hash__update_booking_hash( intval( $booking_id_csd ) );
+		} else {
+			$booking_id_csd = wpbc_clean_digit_or_csd( $booking_id_csd );
+			$booking_id_arr = explode( ',', $booking_id_csd );
+			foreach ( $booking_id_arr as $booking_id ) {
+				wpbc_hash__update_booking_hash( (int) $booking_id );
+			}
+		}
+	}
+}
+add_action( 'wpbc_booking_approved', 'wpbc_hook__change_hash__afteraction', 10, 2 );
+add_action( 'wpbc_booking_action__approved', 'wpbc_hook__change_hash__afteraction', 10, 2 );
+add_action( 'wpbc_booking_trash', 'wpbc_hook__change_hash__afteraction', 10, 2 );
+add_action( 'wpbc_booking_action__trash', 'wpbc_hook__change_hash__afteraction', 10, 2 );

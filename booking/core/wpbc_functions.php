@@ -929,7 +929,10 @@ function wpbc_db_update_number_new_bookings( $id_of_new_bookings, $is_new = '0',
 							  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							  echo $title;
 						  ?></span>
-						  <?php echo wp_kses_post( $params['dismiss_button'] ); ?>
+						  <?php
+							  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							  echo $params['dismiss_button'];
+						  ?>
 						</h3>
 						<?php if ( $params['is_show_minimize'] ) { ?>
 						<div  	title="<?php esc_attr_e('Click to toggle','booking'); ?>" class="handlediv"
@@ -1221,41 +1224,41 @@ function wpbc_db__booking_approve( $booking_id ) {
 
 	return true;
 }
-		
-		
-		/**
-		 * Approve specific booking and send email about this.
-		 *
-		 * @param int $booking_id - ID of booking
-		 * @param string $email_reason
-		 */
-		function wpbc_auto_approve_booking( $booking_id , $email_reason = '' ) {
-		
-			$booking_id = wpbc_clean_digit_or_csd( $booking_id );                   // Check  paramter  if it number or comma separated list  of numbers
-		
-			if ( is_numeric( $booking_id ) ) {                                                                                  // FixIn: 8.1.2.8.
-				if ( ! wpbc_is_booking_approved( $booking_id ) ) {
-					do_action( 'wpbc_booking_approved', $booking_id, 1 );                                						// FixIn: 8.7.6.1.
 
-					wpbc_send_email_approved( $booking_id, 1, $email_reason );
-				}
-			} else {
-				$booking_id_arr = explode( ',',$booking_id );
-				foreach ( $booking_id_arr as $bk_id ) {
-					if ( ! wpbc_is_booking_approved( $bk_id ) ) {
-						do_action( 'wpbc_booking_approved', $bk_id, 1 );                                						// FixIn: 8.7.6.1.
-						wpbc_send_email_approved( $bk_id, 1, $email_reason );
-					}
-				}
-			}
-		
-			$db_result = wpbc_db__booking_approve( $booking_id );
-		
-			if ( false === $db_result ){
-		
-				wpbc_redirect( site_url()  );
+
+/**
+ * Approve specific booking and send email about this.
+ *
+ * @param int    $booking_id - ID of booking
+ * @param string $email_reason
+ */
+function wpbc_auto_approve_booking( $booking_id, $email_reason = '' ) {
+
+	$booking_id = wpbc_clean_digit_or_csd( $booking_id );                   // Check  paramter  if it number or comma separated list  of numbers.
+
+	if ( is_numeric( $booking_id ) ) {                                                                                  // FixIn: 8.1.2.8.
+		if ( ! wpbc_is_booking_approved( $booking_id ) ) {
+			do_action( 'wpbc_booking_approved', $booking_id, 1 );                                                        // FixIn: 8.7.6.1.
+
+			wpbc_send_email_approved( $booking_id, 1, $email_reason );
+		}
+	} else {
+		$booking_id_arr = explode( ',', $booking_id );
+		foreach ( $booking_id_arr as $bk_id ) {
+			if ( ! wpbc_is_booking_approved( $bk_id ) ) {
+				do_action( 'wpbc_booking_approved', $bk_id, 1 );                                                        // FixIn: 8.7.6.1.
+				wpbc_send_email_approved( $bk_id, 1, $email_reason );
 			}
 		}
+	}
+
+	$db_result = wpbc_db__booking_approve( $booking_id );
+
+	if ( false === $db_result ) {
+
+		wpbc_redirect( site_url() );
+	}
+}
 
 
 /**

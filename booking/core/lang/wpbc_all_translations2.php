@@ -95,8 +95,8 @@
  $wpbc_all_translations[] = __('Details', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Select date', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Select Time', 'booking'); /* translators: 1: ... */ 
- $wpbc_all_translations[] = __('Continue to step', 'booking'); /* translators: 1: ... */ 
- $wpbc_all_translations[] = __('Back to step', 'booking'); /* translators: 1: ... */ 
+ $wpbc_all_translations[] = __('Next', 'booking'); /* translators: 1: ... */
+ $wpbc_all_translations[] = __('Back', 'booking'); /* translators: 1: ... */
  $wpbc_all_translations[] = __('Preview', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Update', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('To update preview, please click on %1$sSave Changes%2$s button.', 'booking'); /* translators: 1: ... */ 

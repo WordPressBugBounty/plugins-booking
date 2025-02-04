@@ -87,6 +87,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 								, 'onchange' => "jQuery('.wpbc_in_radio_container_selectbox').hide(); if ( 'time_slots_appointments' === jQuery( this ).val() ) {jQuery('.wpbc_ui_booking_timeslot_picker__get_on_off__div').show();}"//"console.log( 'ON CHANGE:', jQuery( this ).val() , 'in element:' , jQuery( this ) );"							// JavaScript code
 								, 'bottom_html' => '<div class="wpbc_in_radio_container_selectbox wpbc_ui_booking_timeslot_picker__get_on_off__div" style="display: none">'
 								                   . wpbc_stp_wiz__ui__bookings_types__timeslot_picker_selectbox__get()
+								                   . wpbc_stp_wiz__ui__bookings_types__appointments_type_selectbox__get()
 											.'</div>'
 							);
 							wpbc_flex_radio_container( $params_radio );
@@ -180,6 +181,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 																									   'step_data':{
 																												'wpbc_swp_booking_types': jQuery( '[name=\'wpbc_swp_booking_types\']:checked').val(),
 																												'wpbc_swp_booking_timeslot_picker': jQuery( '[name=\'wpbc_swp_booking_timeslot_picker\']').val(),
+																												'wpbc_swp_booking_appointments_type': jQuery( '[name=\'wpbc_swp_booking_appointments_type\']').val(),
 																												'wpbc_swp_booking_change_over_days_triangles': jQuery( '[name=\'wpbc_swp_booking_change_over_days_triangles\']').val()
 																											}
 
@@ -241,6 +243,26 @@ function wpbc_stp_wiz__ui__bookings_types__timeslot_picker_selectbox__get() {
 			<option <?php selected($booking_timeslot_picker,'Off'); ?> value="Off"><?php esc_html_e('Drop-down list','booking'); ?></option>
 		</select>
 	</div><?php
+	$toggle_box_html = ob_get_clean();
+
+	return $toggle_box_html;
+}
+
+
+/**
+ * Get toggle  On | Off  Selector  for 'Appointments_type'
+ */
+function wpbc_stp_wiz__ui__bookings_types__appointments_type_selectbox__get() {
+
+	ob_start();
+	?><div class="booking_appointments_type__get_on_off" style="max-width: 90%;margin: 0 auto;padding-bottom: 16px;">
+	<label style="margin: 0 0 8px;"><?php esc_html_e( 'Choose how to display appointment availability', 'booking' ); ?></label>
+	<select name="wpbc_swp_booking_appointments_type">
+		<option selected="SELECTED" value="rangetime"><?php esc_html_e( 'Based on Time Slots', 'booking' ); ?></option>
+		<option value="durationtime"><?php esc_html_e( 'Based on Service Duration', 'booking' ); ?></option>
+	</select>
+	</div><?php
+
 	$toggle_box_html = ob_get_clean();
 
 	return $toggle_box_html;

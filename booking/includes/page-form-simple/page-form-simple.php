@@ -327,6 +327,16 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
                                                                         , 'selected' => false
                                                                         , 'attr' => array()
                                                                     )
+                                                        , 'wizard_services_a' => array(
+                                                                          'title' => __( 'Wizard (Steps Timline)', 'booking' )
+                                                                        , 'id' => ''
+                                                                        , 'name' => ''
+                                                                        , 'style' => ''
+                                                                        , 'class' => ''
+                                                                        , 'disabled' => false
+                                                                        , 'selected' => false
+                                                                        , 'attr' => array()
+                                                                    )
                                                         , 'vertical' => array(
                                                                         'title' => __('Form under calendar', 'booking')
                                                                         , 'id' => ''
@@ -400,6 +410,7 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 											, 'value'             => $field_value_or_default
 											, 'options'           => $field_options
 											, 'attr' => array( 'onchange' => "javascript: if( 'wizard_2columns' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_width' ).val( '100' ); jQuery( '#booking_form_layout_width_px_pr' ).val( '%' ); jQuery( '#booking_form_layout_max_cols' ).val( '2' ); } "
+																			 		  . " if( 'wizard_services_a' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_width' ).val( '100' ); jQuery( '#booking_form_layout_width_px_pr' ).val( '%' ); jQuery( '#booking_form_layout_max_cols' ).val( '2' ); } "
 																			 		  . " if( 'vertical' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_max_cols' ).val( '2' ); jQuery( '#booking_form_layout_width' ).val( '100' ); jQuery( '#booking_form_layout_width_px_pr' ).val( '%' ); } "
 																			 		  . " if( 'form_right' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_max_cols' ).val( '1' ); jQuery( '#booking_form_layout_width' ).val( '440' ); jQuery( '#booking_form_layout_width_px_pr' ).val( 'px' ); } "
 																			 		  . " if( 'form_center' === jQuery( this ).val() ) { jQuery( '#booking_form_layout_max_cols' ).val( '1' ); jQuery( '#booking_form_layout_width' ).val( '440' ); jQuery( '#booking_form_layout_width_px_pr' ).val( 'px' ); } "
@@ -622,6 +633,72 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 		}
 
 
+	private function help_notice__show_time_fields_once() {
+
+		?>
+		<div class="wpbc-settings-notice notice-error notice-helpful-info0" style="margin: 0 0 30px;">
+		<?php
+		echo '<strong>';
+		esc_html_e( 'Error', 'booking' );
+		echo '!</strong>&nbsp;&nbsp;';
+
+			/* translators: 1: ... */
+		echo wp_kses_post( __( 'You can either use the time slots field or the start time and duration time fields, but not both. If you choose to use the start time and duration time fields, make sure to use them together.', 'booking' ) );
+		?>
+		</div>
+		<?php
+	}
+
+	private function help_notice__show_missed_time_fields() {
+
+		?>
+		<div class="wpbc-settings-notice notice-error notice-helpful-info0" style="margin: 0 0 30px;">
+		<?php
+		echo '<strong>';
+		esc_html_e( 'Error', 'booking' );
+		echo '!</strong>&nbsp;&nbsp;';
+
+			/* translators: 1: ... */
+		echo wp_kses_post( __( 'You must use both the start time field and the duration time field together.', 'booking' ) );
+		?>
+		</div>
+		<?php
+	}
+
+	private function is_exist_duplicated_time_fields( $visual_form_structure ) {
+
+		$time_fields_arr = array();
+		foreach ( $visual_form_structure as $field_arr ) {
+			if (
+				( isset( $field_arr['active'] ) ) &&
+				( isset( $field_arr['name'] ) ) &&
+				( 'on' === strtolower( $field_arr['active'] ) ) &&
+				( in_array( $field_arr['name'], array(
+					'rangetime',
+					'durationtime',
+					'starttime',
+					'endtime',
+				), true ) ) ) {
+				$time_fields_arr[] = $field_arr['name'];
+			}
+		}
+
+		if ( in_array( 'rangetime', $time_fields_arr, true ) ) {
+
+			if ( count( $time_fields_arr ) > 1 ) {
+				return 'duplicated_time_fields';
+			}
+
+		} else {
+
+			if ( count( $time_fields_arr ) === 1 ) {
+				return 'missed_time_fields';
+			}
+		}
+
+		return 'ok';
+	}
+
     /**
 	 * Show Fields Table */
     private function show_booking_form_fields_table( $booking_form_structure ) {
@@ -634,6 +711,14 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 	    if ( ! wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) {
 		    $obligatory_field_types[] = 'captcha';
 	    }
+
+
+		if ( 'duplicated_time_fields' === $this->is_exist_duplicated_time_fields( $booking_form_structure ) ) {
+			$this->help_notice__show_time_fields_once();
+		}
+		if ( 'missed_time_fields' === $this->is_exist_duplicated_time_fields( $booking_form_structure ) ) {
+			$this->help_notice__show_missed_time_fields();
+		}
 
         ?><table class="widefat wpbc_input_table sortable wpdevelop wpbc_table_form_free" cellspacing="0" cellpadding="0"> <?php //FixIn: 10.1.2.2 style="flex:0 1 49.9%;"> ?>
             <thead>
@@ -715,20 +800,23 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
                                         autocomplete="off"
                                     /> ';
 	                if (
-						   ( in_array( $form_field['name'], array( 'calendar', 'submit', 'captcha', 'rangetime' ) ) )
+						   ( in_array( $form_field['name'], array( 'calendar', 'submit', 'captcha', 'rangetime', 'durationtime', 'starttime', 'endtime' ), true ) )
 						|| ( in_array( $form_field['type'], array( 'calendar' ) ) )
 	                ){
 						$css_label = 'wpbc_label_approved';
 						$css_label = (( $form_field['name'] == 'calendar' ) || ( $form_field['type'] == 'calendar' ))  ? 'wpbc_label_deleted_resource' : $css_label;
 						$css_label = ( $form_field['name'] == 'submit' )    ? 'wpbc_label_resource' : $css_label;
 						$css_label = ( $form_field['name'] == 'captcha' )   ? 'wpbc_label_pending' : $css_label;
-						$css_label = ( $form_field['name'] == 'rangetime' ) ? 'wpbc_label_approved' : $css_label;
+						$css_label = ( in_array( $form_field['name'], array( 'rangetime', 'durationtime', 'starttime', 'endtime' ), true ) ) ? 'wpbc_label_approved' : $css_label;
 
 						$row .= 		'<div class="field_type_name_description"><div class="field_type_name_value wpbc_label '.$css_label.'" style="text-transform: uppercase;padding: 0 1em;">';
 
 		                if ( ( $form_field['name'] == 'calendar' ) ||
 							 ( $form_field['type'] == 'calendar' ) ) {			$row .= __( 'Calendar', 'booking' );
 		                } else if ( $form_field['name'] == 'rangetime' ) {		$row .= __( 'Time Slots', 'booking' );
+		                } else if ( $form_field['name'] == 'durationtime' ) {	$row .= __( 'Duration Time', 'booking' ) . ' / ' . __( 'Service Duration', 'booking' );
+		                } else if ( $form_field['name'] == 'starttime' ) {		$row .= __( 'Start Time', 'booking' );
+		                } else if ( $form_field['name'] == 'endtime' ) {		$row .= __( 'End Time', 'booking' );
 		                } else if ( $form_field['name'] == 'submit' ) {			$row .= $form_field['name'] . ' ' . __( 'Button', 'booking' );
 		                } else {												$row .= $form_field['name'];
 		                }
@@ -991,23 +1079,165 @@ $row .= $elemnt;
 																	, 'attr' => array(
 																						'placeholder' => "10:00 AM - 12:00 PM@@10:00 - 12:00\n12:00 PM - 02:00 PM@@12:00 - 14:00\n13:00 - 14:00\n11:00 - 15:00\n14:00 - 16:00\n16:00 - 18:00\n18:00 - 20:00"
 																					)
-																	, 'rows' => 5
+																	, 'rows' => 8
 																	, 'cols' => 37
 																)
                                     )
                                 );
         ?>
         </div>
-        <div class="wpbc_field_generator wpbc_field_generator_info_advanced">
-			<div class="clear" style="margin-top:20px;"></div>
-			<a onclick="javascript:wpbc_hide_fields_generators();" href="javascript:void(0)" style="margin: 0 15px;"
-		   		class="button button"><i class="menu_icon icon-1x wpbc_icn_visibility_off"></i>&nbsp;&nbsp;<?php esc_html_e( 'Close' ,'booking'); ?></a>
-        </div>        
-        <?php
-    }
+		<?php
 
-		/** General Fields Generator */
-		private function generate_field( $field_name = 'some_field_name', $field_options = array()  ) {
+		// FixIn: 10.10.1.4.
+		?>
+		<div class="wpbc_field_generator wpbc_field_generator_durationtime">
+			<?php
+			// __( 'Start Time', 'booking' ) . ' / ' . __( 'Duration Time', 'booking' ), .
+			$this->generate_field(
+				'durationtime_field_generator',
+				array(
+					'active'        => true,
+					'required'      => true,
+					'label'         => true,
+					'name'          => true,
+					'value'         => true,
+					'type'          => 'selectbox',
+					'required_attr' => array(
+						'disabled' => true,
+						'value'    => 'On',
+					),
+					'label_attr'    => array(
+						'placeholder' => __( 'Duration Time', 'booking' ),
+						'value'       => __( 'Duration Time', 'booking' ),
+					),
+					'name_attr'     => array(
+						'disabled'    => true,
+						'placeholder' => 'durationtime',
+						'value'       => 'durationtime',
+					),
+					'value_attr'    => array(
+						'value' => "Service A (15 min)@@00:15\nService B (20 min)@@00:20\nService C (30 min)@@00:30\nService D (1 hour)@@01:00\nService E (2 hours)@@02:00",
+						'attr'  => array(
+							'placeholder' => "Service A (15 min)@@00:15\nService B (20 min)@@00:20\nService C (30 min)@@00:30\nService D (1 hour)@@01:00\nService E (2 hours)@@02:00",
+						),
+						'rows'  => 8,
+						'cols'  => 37,
+					),
+				)
+			);
+			?>
+		</div>
+		<?php
+
+
+		// FixIn: 10.10.1.5.
+		?>
+		<div class="wpbc_field_generator wpbc_field_generator_starttime">
+			<?php
+			// __( 'Start Time', 'booking' ) . ' / ' . __( 'Duration Time', 'booking' ), .
+			$this->generate_field(
+				'starttime_field_generator',
+				array(
+					'active'        => true,
+					'required'      => true,
+					'label'         => true,
+					'name'          => true,
+					'value'         => true,
+					'type'          => 'selectbox',
+					'required_attr' => array(
+						'disabled' => true,
+						'value'    => 'On',
+					),
+					'label_attr'    => array(
+						'placeholder' => __( 'Start Time', 'booking' ),
+						'value'       => __( 'Start Time', 'booking' ),
+					),
+					'name_attr'     => array(
+						'disabled'    => true,
+						'placeholder' => 'starttime',
+						'value'       => 'starttime',
+					),
+					'value_attr'    => array(
+						'value' => "10:00 AM@@10:00\n10:30 AM@@10:30\n11:00 AM@@11:00\n11:30 AM@@11:30\n12:00 PM@@12:00\n12:30 PM@@12:30\n1:00 PM@@13:00\n1:30 PM@@13:30\n2:00 PM@@14:00\n2:30 PM@@14:30\n3:00 PM@@15:00\n3:30 PM@@15:30\n4:00 PM@@16:00\n4:30 PM@@16:30\n5:00 PM@@17:00\n5:30 PM@@17:30\n6:00 PM@@18:00",
+						'attr'  => array(
+							'placeholder' => "10:00 AM@@10:00\n10:30 AM@@10:30\n11:00 AM@@11:00\n11:30 AM@@11:30\n12:00 PM@@12:00\n12:30 PM@@12:30\n1:00 PM@@13:00\n1:30 PM@@13:30\n2:00 PM@@14:00\n2:30 PM@@14:30\n3:00 PM@@15:00\n3:30 PM@@15:30\n4:00 PM@@16:00\n4:30 PM@@16:30\n5:00 PM@@17:00\n5:30 PM@@17:30\n6:00 PM@@18:00",
+						),
+						'rows'  => 8,
+						'cols'  => 37,
+					),
+				)
+			);
+			?>
+		</div>
+		<?php
+
+
+		// FixIn: 10.10.1.5.
+		?>
+		<div class="wpbc_field_generator wpbc_field_generator_endtime">
+			<?php
+			// __( 'Start Time', 'booking' ) . ' / ' . __( 'Duration Time', 'booking' ), .
+			$this->generate_field(
+				'endtime_field_generator',
+				array(
+					'active'        => true,
+					'required'      => true,
+					'label'         => true,
+					'name'          => true,
+					'value'         => true,
+					'type'          => 'selectbox',
+					'required_attr' => array(
+						'disabled' => true,
+						'value'    => 'On',
+					),
+					'label_attr'    => array(
+						'placeholder' => __( 'End Time', 'booking' ),
+						'value'       => __( 'End Time', 'booking' ),
+					),
+					'name_attr'     => array(
+						'disabled'    => true,
+						'placeholder' => 'endtime',
+						'value'       => 'endtime',
+					),
+					'value_attr'    => array(
+						'value' => "10:00 AM@@10:00\n10:30 AM@@10:30\n11:00 AM@@11:00\n11:30 AM@@11:30\n12:00 PM@@12:00\n12:30 PM@@12:30\n1:00 PM@@13:00\n1:30 PM@@13:30\n2:00 PM@@14:00\n2:30 PM@@14:30\n3:00 PM@@15:00\n3:30 PM@@15:30\n4:00 PM@@16:00\n4:30 PM@@16:30\n5:00 PM@@17:00\n5:30 PM@@17:30\n6:00 PM@@18:00",
+						'attr'  => array(
+							'placeholder' => "10:00 AM@@10:00\n10:30 AM@@10:30\n11:00 AM@@11:00\n11:30 AM@@11:30\n12:00 PM@@12:00\n12:30 PM@@12:30\n1:00 PM@@13:00\n1:30 PM@@13:30\n2:00 PM@@14:00\n2:30 PM@@14:30\n3:00 PM@@15:00\n3:30 PM@@15:30\n4:00 PM@@16:00\n4:30 PM@@16:30\n5:00 PM@@17:00\n5:30 PM@@17:30\n6:00 PM@@18:00",
+						),
+						'rows'  => 8,
+						'cols'  => 37,
+					),
+				)
+			);
+			?>
+		</div>
+		<?php
+
+
+		// Close button.
+		?>
+		<div class="wpbc_field_generator wpbc_field_generator_info_advanced">
+			<div class="clear" style="margin-top:20px;"></div>
+			<a onclick="javascript:wpbc_hide_fields_generators();" href="javascript:void(0)" style="margin: 0 15px;" class="button button"><i class="menu_icon icon-1x wpbc_icn_visibility_off"></i>&nbsp;
+			<?php
+				esc_html_e( 'Close', 'booking' );
+			?>
+			</a>
+		</div>
+		<?php
+	}
+
+
+
+	/**
+	 * General Fields Generator
+	 *
+	 * @param $field_name
+	 * @param $field_options
+	 *
+	 * @return void
+	 */
+	private function generate_field( $field_name = 'some_field_name', $field_options = array()  ) {
 
 			$defaults = array(
 						'active'   => true
@@ -1028,7 +1258,7 @@ $row .= $elemnt;
 											)
 					  , 'value_attr' 	=> array( 	  'value' => ''
 													, 'attr' => array( 'placeholder' => "1\n2\n3\n4" )
-													, 'rows' => 2
+													, 'rows' => 8
 													, 'cols' => 37
 											)
 					  );
@@ -1138,7 +1368,9 @@ $row .= $elemnt;
 																	, 'class'             => ''
 																	, 'css'               => ''
 																	, 'placeholder'       => ''
-																	, 'description'       => sprintf( __('Enter dropdown options. One option per line.', 'booking'), '<strong>', '</strong>' )
+																	, 'description'       => __('Enter dropdown options. One option per line.', 'booking') //. '<br>'
+																			 //. (( 'durationtime_field_generator' !== $field_options['name'] ) ? '' : __( 'The option format is "Title@@Time Duration," where "Title" is usually the service name and "Time Duration" is defined in the format HH:MM (HH = hours from 00 to 23, MM = minutes from 00 to 59).', 'booking' ))
+																			 //. (( 'starttime_field_generator' !== $field_options['name'] ) ? '' : __( 'The option format is "Title@@Time," where "Title" is any text (typically the time in AM/PM format) and "Time" is defined in the 24-hour format (HH:MM), where HH = hours (00 to 23) and MM = minutes (00 to 59).', 'booking' ))
 																	, 'group'             => 'general'
 																	, 'tr_class'          => ''
 																	, 'only_field'        => false
@@ -1157,7 +1389,6 @@ $row .= $elemnt;
 															)
 															, true
 														);
-
 				do_action( 'wpbc_settings_form_page_after_values', $field_name, $field_options );                            //FixIn: TimeFreeGenerator
 
 				?>

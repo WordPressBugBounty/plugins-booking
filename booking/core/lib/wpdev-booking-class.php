@@ -309,7 +309,7 @@ class wpdev_booking {
 
 		    // Check situation when  we have editing "child booking resource",  so  need to  reupdate calendar and form  to have it for parent resource.
 		    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-		    if ( ( ! isset( $_GET['booking_pay'] ) ) && ( ! isset( $_GET['resource_no_update'] ) )
+		    if ( ( ! isset( $_GET['booking_pay'] ) )                       // FixIn: 10.10.1.2  && ( ! isset( $_GET['resource_no_update'] ) )
 				&& ( function_exists( 'wpbc_is_this_child_resource' ) )
 				&& ( wpbc_is_this_child_resource( $my_boook_type ) )
 		    ){
@@ -458,6 +458,9 @@ class wpdev_booking {
 			$form .= $this->wpdev_bk_personal->get_booking_form( $resource_id, $my_booking_form, $custom_params );
 		} else {
 			$form .= wpbc_simple_form__get_booking_form__as_html( $resource_id );
+
+			// Re-update other hints,  such  as availability times hint.
+			$form = apply_filters( 'wpbc_booking_form_content__after_load', $form, $resource_id, $my_booking_form );
 		}
 
 

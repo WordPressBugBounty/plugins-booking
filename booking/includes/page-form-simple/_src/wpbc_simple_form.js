@@ -147,8 +147,10 @@ function wpbc_reset_all_forms(){
 	jQuery('.wpbc_add_field_row').hide();
 	jQuery('.wpbc_edit_field_row').hide();
 
-	var field_type_array = [ 'text', 'textarea', 'select','selectbox', 'checkbox' , 'rangetime'];						//FixIn: TimeFreeGenerator
+	var field_type_array = [ 'text', 'textarea', 'select', 'selectbox', 'checkbox', 'rangetime', 'durationtime', 'starttime', 'endtime' ];						//FixIn: TimeFreeGenerator
 	var field_type;
+
+	jQuery( '.field_options_format').remove();
 
 	for (var i = 0; i < field_type_array.length; i++) {
 		field_type = field_type_array[i];
@@ -172,25 +174,43 @@ function wpbc_reset_all_forms(){
  * @param string selected_field_value
  */
 function wpbc_show_fields_generator( selected_field_value ) {
-	wpbc_reset_all_forms();
-	if ( selected_field_value == 'edit_rangetime' ){
-		// this field already  exist  in the booking form,  and thats why  we can  not add a new field,  and instead of that  edit it.
-		var range_time_edit_field = jQuery( '.wpbc_table_form_free :input[value="rangetime"]' );
-		var range_time_field_num = 0;
-
-		if ( range_time_edit_field.length > 0 ){
-			var range_time_edit_field_name = jQuery( range_time_edit_field.get( 0 ) ).attr( 'name' );
-			range_time_edit_field_name = range_time_edit_field_name.replaceAll( 'form_field_name[', '' ).replaceAll( ']', '' );
-			range_time_field_num = parseInt( range_time_edit_field_name );
-			if ( range_time_field_num > 0 ){
-				wpbc_start_edit_form_field( range_time_field_num );
-			}
+	if (
+		('text' === selected_field_value) ||
+		('textarea' === selected_field_value) ||
+		('select' === selected_field_value) ||
+		('selectbox' === selected_field_value) ||
+		('checkbox' === selected_field_value)
+	) {
+		if ('select' === selected_field_value){
+		jQuery( '#' + 'selectbox' + '_field_generator_name' ).prop( 'disabled', false );
 		}
-		if ( 0 == range_time_field_num ){
-			//alert( 'Ups... Something wrong.' );
-			selected_field_value = 'rangetime';
-		} else {
-			return;
+		jQuery( '#' + selected_field_value + '_field_generator_name' ).prop( 'disabled', false );
+	}
+
+	wpbc_reset_all_forms();
+
+	var time_fields_arr       = [ 'rangetime', 'durationtime', 'starttime', 'endtime' ];
+	var time_fields_arr_count = time_fields_arr.length;
+	for ( var i = 0; i < time_fields_arr_count; i++ ) {
+		// time_fields_arr[i] = 'rangetime'.
+		if ( 'edit_' + time_fields_arr[i] === selected_field_value ) {
+			// This field already  exist  in the booking form,  and thats why  we can  not add a new field,  and instead of that  edit it.
+			var range_time_edit_field = jQuery( '.wpbc_table_form_free :input[value="' + time_fields_arr[i] + '"]' );	// time_fields_arr[i] = 'rangetime'.
+			var range_time_field_num  = 0;
+
+			if ( range_time_edit_field.length > 0 ) {
+				var range_time_edit_field_name = jQuery( range_time_edit_field.get( 0 ) ).attr( 'name' );
+				range_time_edit_field_name     = range_time_edit_field_name.replaceAll( 'form_field_name[', '' ).replaceAll( ']', '' );
+				range_time_field_num           = parseInt( range_time_edit_field_name );
+				if ( range_time_field_num > 0 ) {
+					wpbc_start_edit_form_field( range_time_field_num );
+				}
+			}
+			if ( 0 === range_time_field_num ) {
+				selected_field_value = time_fields_arr[i];	// time_fields_arr[i] = 'rangetime'.
+			} else {
+				return;
+			}
 		}
 
 	}
@@ -230,14 +250,19 @@ function wpbc_hide_fields_generators() {
  */
 function wpbc_add_field ( field_name, field_type ) {
 
-	//FixIn: TimeFreeGenerator
-	if ( 'rangetime_field_generator' == field_name ) {
-		var replaced_result = wpbc_get_saved_value_from_timeslots_table();
-		if ( false === replaced_result ){
-			wpbc_hide_fields_generators();
-			//TOO: Show warning at  the top of page,  about error during saving timeslots
-			console.log( 'error during parsing timeslots tbale and savig it.' )
-			return;
+	// FixIn: TimeFreeGenerator.
+	var time_fields_arr = [ 'rangetime' ]; //, 'durationtime', 'starttime', 'endtime' ]; .
+	var time_fields_arr_count = time_fields_arr.length;
+	for ( var i = 0; i < time_fields_arr_count; i++ ) {
+		// time_fields_arr[i] = 'rangetime'.
+		if ( time_fields_arr[i] + '_field_generator' === field_name ) {
+			var replaced_result = wpbc_get_saved_value_from_timeslots_table();
+			if ( false === replaced_result ){
+				wpbc_hide_fields_generators();
+				//TOO: Show warning at  the top of page,  about error during saving timeslots
+				console.log( 'error during parsing timeslots tbale and savig it.' )
+				return;
+			}
 		}
 	}
 
@@ -298,12 +323,17 @@ function wpbc_add_field ( field_name, field_type ) {
 		////////////////////////////////////////////////////////////
 		row += '<td class="field_required">';
 
-			//FixIn:  TimeFreeGenerator
-			if ( 'rangetime' == field_name ) {
-				row +=      '<input type="checkbox" disabled="DISABLED" name="form_field_required['+ row_num +']" value="' + 'On' + '" ' + ' checked="checked" ' + ' autocomplete="off" />';
-			} else {
-				row += 		'<input type="checkbox" name="form_field_required[' + row_num + ']" value="' + row_required + '" ' + row_required_checked + ' autocomplete="off" />';
-			}
+		// FixIn:  TimeFreeGenerator.
+		if (
+			('rangetime' === field_name) ||
+			('durationtime' === field_name) ||
+			('starttime' === field_name) ||
+			('endtime' === field_name)
+		) {
+			row += '<input type="checkbox" disabled="DISABLED" name="form_field_required[' + row_num + ']" value="On"  checked="checked"  autocomplete="off" />';
+		} else {
+			row += '<input type="checkbox" name="form_field_required[' + row_num + ']" value="' + row_required + '" ' + row_required_checked + ' autocomplete="off" />';
+		}
 
 		row += '</td>';
 
@@ -359,45 +389,64 @@ function wpbc_start_edit_form_field( row_number ) {
 	jQuery('.wpbc_field_generator').hide();																	// Hide inside of generator sub section  relative to fields types
 
 
+	// FixIn: TimeFreeGenerator	- Exception - field with  name 'rangetime, have type 'rangetype' in Generator BUT, it have to  be saved as 'select' type'.
+	if ( 'rangetime' == field_name ) {
+		/**
+		 *  Field 'rangetime_field_generator' have DIV section, which have CSS class 'wpbc_field_generator_rangetime',
+		 *  but its also  defined with  type 'select'  for adding this field via    javascript:wpbc_add_field ( 'rangetime_field_generator', 'select' );
+		 */
 
-//FixIn: TimeFreeGenerator	- Exception - field with  name 'rangetime, have type 'rangetype' in Generator BUT, it have to  be saved as 'select' type'
-if ( 'rangetime' == field_name ) {
-/**
-*  Field 'rangetime_field_generator' have DIV section, which have CSS class 'wpbc_field_generator_rangetime',
-*  but its also  defined with  type 'select'  for adding this field via    javascript:wpbc_add_field ( 'rangetime_field_generator', 'select' );
-*/
+		field_type = 'rangetime';
 
-field_type = 'rangetime';
+		/**
+		 * During editing 'field_required' == false,  because this field does not exist  in the Table with exist fields,  but we need to  set it to  true and disabled.
+		 */
+	}
 
-/**
-* During editing 'field_required' == false,  because this field does not exist  in the Table with exist fields,  but we need to  set it to  true and disabled.
-*/
+	jQuery( '.wpbc_field_generator_' + field_type ).show();													            // Show specific generator sub section  relative to selected Field Type.
+	jQuery( '#wpbc_form_field_free_generator_metabox h3.hndle span' ).html( 'Edit: ' + field_name );
 
-}
-
-	jQuery('.wpbc_field_generator_' + field_type ).show();													// Show specific generator sub section  relative to selected Field Type
-	//jQuery('#wpbc_form_field_free_generator_metabox h3.hndle span').html( '<?php echo __('Edit', 'booking') . ': '  ?>' + field_name );
-	jQuery('#wpbc_form_field_free_generator_metabox h3.hndle span').html( 'Edit: ' + field_name );
-	//jQuery('#wpbc_form_field_free_generator_metabox h3.hndle span').html( this.options[this.selectedIndex].text )
 
 	jQuery( '#' + field_type + '_field_generator_active' ).prop( 'checked', field_active );
 	jQuery( '#' + field_type + '_field_generator_required' ).prop( 'checked', field_required );
 	jQuery( '#' + field_type + '_field_generator_label' ).val( field_label );
 	jQuery( '#' + field_type + '_field_generator_name' ).val( field_name );
 	jQuery( '#' + field_type + '_field_generator_value' ).val( field_value );
-	jQuery( '#' + field_type + '_field_generator_name' ).prop('disabled' , true);
+	jQuery( '#' + field_type + '_field_generator_name' ).prop( 'disabled', true );
 
-//FixIn: TimeFreeGenerator
-if ( 'rangetime' == field_name ) {
-jQuery( '#' + field_type + '_field_generator_required' ).prop( 'checked',  true ).prop( 'disabled', true );			// Set Disabled and Checked -- Required field
-wpbc_check_typed_values( field_name + '_field_generator' );															// Update Options and Titles for TimeSlots
-wpbc_timeslots_table__fill_rows();
-}
+	jQuery( '.field_options_format').remove();
 
-	jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]').hide();						// FixIn: 8.7.11.7.
-	jQuery( '#wpbc_settings__form_fields__toolbar').hide();
+	// FixIn: TimeFreeGenerator.
+	if ( ('rangetime' === field_name) ||
+		('durationtime' === field_name) ||
+		('starttime' === field_name) ||
+		('endtime' === field_name)
+	) {
+		jQuery( '#' + field_type + '_field_generator_required' ).prop( 'checked', true ).prop( 'disabled', true );		// Set Disabled and Checked -- Required field.
+		if ( 'durationtime' === field_name ) {
+			jQuery( '#' + field_type + '_field_generator_value' ).after(
+				'<div class="wpbc-settings-notice notice-info notice-helpful-info field_options_format" style="margin: 30px 0;">'+
+				'The option format is "Title@@Time Duration," where "Title" is usually the service name and "Time Duration" is defined in the format HH:MM (HH = hours from 00 to 23, MM = minutes from 00 to 59).'
+				+ '</div>'
+			);
+		}
+		if ( 'starttime' === field_name ) {
+			jQuery( '#' + field_type + '_field_generator_value' ).after(
+				'<div class="wpbc-settings-notice notice-info notice-helpful-info field_options_format" style="margin: 30px 0;">'+
+				'The option format is "Title@@Time," where "Title" is any text (typically the time in AM/PM format) and "Time" is defined in the 24-hour format (HH:MM), where HH = hours (00 to 23) and MM = minutes (00 to 59).'
+				+ '</div>'
+			);
+		}
+	}
+	if ( 'rangetime' === field_name ) {
+		wpbc_check_typed_values( field_name + '_field_generator' );														// Update Options and Titles for TimeSlots.
+		wpbc_timeslots_table__fill_rows();
+	}
 
-	wpbc_scroll_to('#wpbc_form_field_free_generator_metabox' );
+	jQuery( '#wpbc_form_field_free input.wpbc_submit_button[type="submit"],input.wpbc_submit_button[type="button"]' ).hide();						// FixIn: 8.7.11.7.
+	jQuery( '#wpbc_settings__form_fields__toolbar' ).hide();
+
+	wpbc_scroll_to( '#wpbc_form_field_free_generator_metabox' );
 }
 
 
@@ -409,14 +458,19 @@ wpbc_timeslots_table__fill_rows();
  */
 function wpbc_finish_edit_form_field( field_name, field_type ) {
 
-	//FixIn: TimeFreeGenerator
-	if ( 'rangetime_field_generator' == field_name ) {
-		var replaced_result = wpbc_get_saved_value_from_timeslots_table();
-		if ( false === replaced_result ) {
-			wpbc_hide_fields_generators();
-			//TODO: Show warning at  the top of page,  about error during saving timeslots
-			console.log( 'error during parsing timeslots tbale and savig it.' )
-			return;
+	// FixIn: TimeFreeGenerator.
+	var time_fields_arr       = [ 'rangetime', ]; // 'durationtime', 'starttime', 'endtime' ];
+	var time_fields_arr_count = time_fields_arr.length;
+	for ( var i = 0; i < time_fields_arr_count; i++ ) {
+		// time_fields_arr[i] = 'rangetime'.
+		if ( time_fields_arr[i] + '_field_generator' === field_name ) {
+			var replaced_result = wpbc_get_saved_value_from_timeslots_table();
+			if ( false === replaced_result ) {
+				wpbc_hide_fields_generators();
+				// TODO: Show warning at  the top of page,  about error during saving timeslots.
+				console.log( 'error during parsing timeslots table and savig it.' )
+				return;
+			}
 		}
 	}
 

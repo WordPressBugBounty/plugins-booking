@@ -85,8 +85,11 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
             if ( function_exists( 'icl_translate' ) ) {
 	            $form_field['label'] = icl_translate( 'wpml_custom', 'wpbc_custom_form_field_label_' . $form_field['name'], $form_field['label'] ); // WPML
             }
-
-			if ( in_array( $form_field['type'], array( 'select', 'selectbox', 'checkbox' ) ) ) {
+			// FixIn: 10.10.1.3.
+			if (
+				( in_array( $form_field['type'], array( 'select', 'selectbox', 'checkbox' ) ) ) &&
+				( in_array( $form_field['name'], array( 'rangetime', 'durationtime' ) ) )                               //, 'starttime', 'endtime'.
+			) {
 				$booking_form_show .= '  <b>' . $form_field['label'] . '</b>: ' . '<f><span class="field_data_val"><span>[' . $form_field['name'] . '_val]</span> / </span>[' . $form_field['name'] . ']</f><br/>' . "\n";
 			} else {
 				$booking_form_show .= '  <b>' . $form_field['label'] . '</b>: ' . '<f>[' . $form_field['name'] . ']</f><br/>' . "\n";
@@ -101,195 +104,281 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 }
 
 
+/**
+ * This function    get transfer    "Booking form"        from    "Simple (free)  -->  Paid"                        Free Structure -> Shortcodes
+ *
+ * usually later it saved    update_bk_option( 'booking_form', ... ) on $this->update()  function
+ *
+ * Get Booking form in Shortcodes - format  compatible with  premium versions
+ *
+ * @param $visual_form_structure
+ *
+ * @return string
+ */
+function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure = false ) {
 
-	/**
-	 * This function    get transfer    "Booking form"        from    "Simple (free)  -->  Paid"                        Free Structure -> Shortcodes
-	 *
-	 * usually later it saved 	update_bk_option( 'booking_form', ... ) on $this->update()  function
-	 *
-	 * Get Booking form in Shortcodes - format  compatible with  premium versions
-	 *
-	 * @param $visual_form_structure
-	 *
-	 * @return string
-	 */
-    function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure = false ) {
+	// -------------------------------------------------------------------------------------------------------------
+	// Get simple booking form  structure
+	// -------------------------------------------------------------------------------------------------------------
+	if ( empty( $visual_form_structure ) ) {
+		$visual_form_structure = wpbc_simple_form__db__get_visual_form_structure();
+	}
+	$visual_form_structure = maybe_unserialize( $visual_form_structure );
 
-		// -------------------------------------------------------------------------------------------------------------
-		// Get simple booking form  structure
-		// -------------------------------------------------------------------------------------------------------------
-	    if ( empty( $visual_form_structure ) ) {
-		    $visual_form_structure = wpbc_simple_form__db__get_visual_form_structure();
-	    }
-        $visual_form_structure = maybe_unserialize( $visual_form_structure );
+	// -------------------------------------------------------------------------------------------------------------
+	// Get Booking Form   - Structure -
+	// -------------------------------------------------------------------------------------------------------------
+	$booking_form_structure = get_bk_option( 'booking_form_structure_type' );
+	if ( empty( $booking_form_structure ) ) {
+		$booking_form_structure = 'vertical';
+	}
 
+	// -------------------------------------------------------------------------------------------------------------
+	// Booking Form
+	// -------------------------------------------------------------------------------------------------------------
+	$html_form                      = '';
+	$skip_already_exist_field_types = array();
+	$exist_fields_arr               = array();
 
-		// -------------------------------------------------------------------------------------------------------------
-		// Get Booking Form   - Structure -
-		// -------------------------------------------------------------------------------------------------------------
-	    $booking_form_structure = get_bk_option( 'booking_form_structure_type' );
-	    if ( empty( $booking_form_structure ) ) {
-		    $booking_form_structure = 'vertical';
-	    }
+	if ( in_array( $booking_form_structure, array( 'wizard_2columns', 'wizard_services_a' ), true ) ) {
 
-	    // -------------------------------------------------------------------------------------------------------------
-	    // Booking Form
-	    // -------------------------------------------------------------------------------------------------------------
-	    $html_form = '';
-	    $skip_already_exist_field_types = array();                                                                  // 'calendar', 'submit', 'captcha' );
-	    $exist_fields_arr               = array();
+		$wizard_step_number = 1;
 
-		// FixIn: 10.7.1.7.
-	    if ( 'wizard_2columns' == $booking_form_structure ) {
+		$skip_already_exist_field_types[] = 'submit';
 
-		    $skip_already_exist_field_types[] = 'submit';
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			// Add border form - class="wpbc_wizard__border_container".
+			$html_form .= '<div class="wpbc_wizard__border_container">' . "\n";
+		}
 
-		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1">' . "\n";
-		    $html_form .= '    <r>' . "\n";
+		$html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step' . esc_attr( $wizard_step_number ) . '">' . "\n";
 
-			$calendar_field_arr = wpbc_simple_form__visual__get_calendar( $visual_form_structure );
-			if ( ! empty( $calendar_field_arr ) ) {
-				$html_form .= '		<c style="margin-top:0;"> ' . "\n";
-			    // Get HTML content of All  Fields in booking form
-			    list( $html_all_fields, $calendar_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( array(
-															    'visual_form_structure'          => array( $calendar_field_arr ),
-															    'skip_already_exist_field_types' => array(),
-														    ) );
-				$html_form .= $html_all_fields;
-			    $html_form .= '		</c>' . "\n";
-				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $calendar_exist_fields_arr );
-			} else {
-				$html_form .= ' 	<c> <l>Select Date:</l><br /> [calendar] </c>' . "\n";
-				$skip_already_exist_field_types[] = 'calendar';
+		// Is 'durationtime' field exist ?
+		$rangetime_field_arr = wpbc_simple_form__visual__get_one_field( $visual_form_structure, 'durationtime' );
+		$wizard_steps_count  = ( ! empty( $rangetime_field_arr ) ) ? 3 : 2;
+		// Timeline Step #1.
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			$html_form .= '    <r>' . "\n";
+			$html_form .= '        <c class="wpbc_aling_center"> ' . "\n";
+			$html_form .= '            [steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '        </c>' . "\n";
+			$html_form .= '    </r>' . "\n";
+		}
+		$html_form .= '    <r>' . "\n";
+
+		if ( ! empty( $rangetime_field_arr ) ) {
+
+			$html_form .= '			<c class="wpbc_aling_center"> ' . "\n";
+
+			// Get HTML content of All  Fields in booking form.
+			list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr(
+				array(
+					'visual_form_structure'          => array( $rangetime_field_arr ),
+					'skip_already_exist_field_types' => array(),
+				)
+			);
+
+			$html_form .= $html_all_fields;
+			$html_form .= '		</c>' . "\n";
+
+			$skip_already_exist_field_types = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
+
+			$html_form .= '    </r>' . "\n";
+			$html_form .= '    <hr><r>' . "\n";
+			$html_form .= '			<c style="justify-content: flex-end;">' . "\n";
+			$html_form .= '     		<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number + 1 ) ) . '" >' . "\n";
+			$html_form .= '				' . esc_attr__( 'Next', 'booking' ) . "\n";
+			$html_form .= '				</a>' . "\n";
+			$html_form .= '			</c>' . "\n";
+			$html_form .= '    </r>' . "\n";
+			$html_form .= '  </div>' . "\n";
+			++$wizard_step_number;
+			$html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step' . esc_attr( $wizard_step_number ) . ' wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
+			$html_form .= '    <r>' . "\n";
+
+			// Timeline Step #2.
+			if ( 'wizard_services_a' === $booking_form_structure ) {
+				$html_form .= '			<c class="wpbc_aling_center"> ' . "\n";
+				$html_form .= '			[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+				$html_form .= '		</c>' . "\n";
+				$html_form .= '    </r>' . "\n";
+				$html_form .= '    <r>' . "\n";
 			}
+		}
 
 
-		    $rangetime_field_arr = wpbc_simple_form__visual__get_rangetime( $visual_form_structure );
-		    if ( ! empty( $rangetime_field_arr ) ) {
+		$calendar_field_arr = wpbc_simple_form__visual__get_calendar( $visual_form_structure );
+		if ( ! empty( $calendar_field_arr ) ) {
+			$html_form .= '		<c style="margin-top:0;"> ' . "\n";
+			// Get HTML content of All  Fields in booking form.
+			list( $html_all_fields, $calendar_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr(
+				array(
+					'visual_form_structure'          => array( $calendar_field_arr ),
+					'skip_already_exist_field_types' => array(),
+				)
+			);
+			$html_form .= $html_all_fields;
+			$html_form .= '		</c>' . "\n";
 
-			    $html_form .= '			<c style="margin-top:0;"> ' . "\n";
-			    // Get HTML content of All  Fields in booking form
-			    list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( array(
-															    'visual_form_structure'          => array( $rangetime_field_arr ),
-															    'skip_already_exist_field_types' => array(),
-														    ) );
+			$skip_already_exist_field_types = array_merge( $skip_already_exist_field_types, $calendar_exist_fields_arr );
+		} else {
+			$html_form                       .= ' 	<c> <l>Select Date:</l><br /> [calendar] </c>' . "\n";
+			$skip_already_exist_field_types[] = 'calendar';
+		}
+
+
+		$time_field_arr = array( 'rangetime', 'starttime', 'endtime' );
+		foreach ( $time_field_arr as $time_field_name ) {
+			$rangetime_field_arr = wpbc_simple_form__visual__get_one_field( $visual_form_structure, $time_field_name );
+			if ( ! empty( $rangetime_field_arr ) ) {
+
+				$html_form .= '			<c style="margin-top:0;"> ' . "\n";
+				// Get HTML content of All  Fields in booking form.
+				list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr(
+					array(
+						'visual_form_structure'          => array( $rangetime_field_arr ),
+						'skip_already_exist_field_types' => array(),
+					)
+				);
 				$html_form .= $html_all_fields;
-			    $html_form .= '		</c>' . "\n";
-				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
-		    }
+				$html_form .= '		</c>' . "\n";
 
-		    $html_form .= '    </r>' . "\n";
-		    $html_form .= '    <hr><r>' . "\n";
-		    $html_form .= '			<div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
-		    $html_form .= '     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" >' . "\n";
-		    $html_form .= '				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2' . "\n";
-		    $html_form .= '				</a>' . "\n";
-		    $html_form .= '			</div>' . "\n";
-		    $html_form .= '    </r>' . "\n";
-		    $html_form .= '  </div>' . "\n";
-		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
-
-
-	    }
-
-	    if ( 'form_right' == $booking_form_structure ) {
-		    $html_form .= '<r>'             . "\n";
-		    $html_form .= '  <c>'           . "\n";
-		    $html_form .= '    [calendar]'  . "\n";
-		    $html_form .= '  </c>'          . "\n";
-		    $html_form .= '  <c>'           . "\n";
-
-		    $skip_already_exist_field_types[] = 'calendar';
-	    }
-
-	    $html_form .= '<div class="wpbc__form__div">' . "\n";
-
-		// Get HTML content of All  Fields in booking form
-	    list( $html_all_fields, $exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr( array(
-															    'visual_form_structure'          => $visual_form_structure,
-															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
-														    ) );
-	    $exist_fields_arr  = array_merge( $exist_fields_arr, $skip_already_exist_field_types );
-	    $html_form        .= $html_all_fields;
-
-
-		// -------------------------------------------------------------------------------------------------------------
-	    // Double recheck if these fields NOT exist.  This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
-	    // -------------------------------------------------------------------------------------------------------------
-	    if ( ! in_array( 'calendar', $exist_fields_arr ) ) {
-		    $html_form = '[calendar]' . "\n" . $html_form;
-	    }
-		// Captcha ??
-	    if ( ( ! in_array( 'captcha', $exist_fields_arr ) ) && ( get_bk_option( 'booking_is_use_captcha' ) == 'On' ) ) {
-			$html_form .= '	<spacer>height:10px;</spacer>' . "\n";
-			$html_form .= '	<r>' . "\n";
-			$html_form .= '		<c> [captcha] </c>' . "\n";
-			$html_form .= '	</r>' . "\n";
-		}
-		// Submit ??
-	    if ( ! in_array( 'submit', $exist_fields_arr ) ) {
-			$submit_button_title = wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
-			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
-
-			$html_form .= '	<r>' . "\n";
-			$html_form .= '		<c> <p>[submit class:btn "' . esc_attr( $submit_button_title ) .'"]</p> </c>' . "\n";
-			$html_form .= '	</r>' . "\n";
-	    }
-		// -------------------------------------------------------------------------------------------------------------
-		// - End - This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
-		// -------------------------------------------------------------------------------------------------------------
-
-
-		$html_form .= '</div>' . "\n";
-
-		// -------------------------------------------------------------------------------------------------------------
-		// ==  Booking Form  ::  Structure  ==
-		// -------------------------------------------------------------------------------------------------------------
-		if ( 'form_right' == $booking_form_structure ) {
-			$html_form .= '	</c>' . "\n";
-			$html_form .= '	</r>' . "\n";
-		}
-	    // FixIn: 10.7.1.7.
-	    if ( 'wizard_2columns' == $booking_form_structure ) {
-
-		    $html_form .= '    <hr><r>' . "\n";
-		    $html_form .= '      <div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
-		    $html_form .= '			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp;' . "\n";
-
-			$submit_button_title = ( ! empty( $booking_data__parsed_fields ) )
-									? __( 'Change your Booking', 'booking' )
-									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
-
-			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
-			$submit_button_title = wp_kses_post( $submit_button_title );
-			$html_form .= '[submit class:btn "' . esc_attr( $submit_button_title ) . '"]';
-
-		    $html_form .= '      </div>' . "\n";
-		    $html_form .= '    </r>' . "\n";
-		    $html_form .= '  </div>' . "\n";
-	    }
-
-
-		$form_css_class_arr = array();
-
-		// Center Form
-		if ( 'form_center' == $booking_form_structure ) {
-			$form_css_class_arr[] = 'wpbc_booking_form_structure';
-			$form_css_class_arr[] = 'wpbc_form_center';
+				$skip_already_exist_field_types = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
+			}
 		}
 
-	    $html_form = '<div class="wpbc_booking_form_simple ' . implode( ' ', $form_css_class_arr ) . '">' . "\n" .
-	                    $html_form .
-	               '</div>';
+		$html_form .= '    </r>' . "\n";
+		$html_form .= '    <hr><r style="flex-flow: row nowrap;">' . "\n";
+		if ( $wizard_step_number > 1 ) {
+			$html_form .= '			<c style="justify-content: flex-start;">' . "\n";
+			$html_form .= '     		<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number - 1 ) ) . '" >' . "\n";
+			$html_form .= '				' . esc_attr__( 'Back', 'booking' ) . "\n";
+			$html_form .= '				</a>' . "\n";
+			$html_form .= '			</c>' . "\n";
+		}
+		$html_form .= '			<c style="justify-content: flex-end;">' . "\n";
+		$html_form .= '     		<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number + 1 ) ) . '" >' . "\n";
+		$html_form .= '				' . esc_attr__( 'Next', 'booking' ) . "\n";
+		$html_form .= '				</a>' . "\n";
+		$html_form .= '			</c>' . "\n";
+		$html_form .= '    </r>' . "\n";
+		$html_form .= '  </div>' . "\n";
+		++$wizard_step_number;
+		$html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step' . esc_attr( $wizard_step_number ) . ' wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
+		// Timeline Step #3.
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			$html_form .= '    <r>' . "\n";
+			$html_form .= '		<c class="wpbc_aling_center"> ' . "\n";
+			$html_form .= '				[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '		</c>' . "\n";
+			$html_form .= '    </r>' . "\n";
+		}
+	}
 
-		// Form Width
-		$form_layout_width       = get_bk_option( 'booking_form_layout_width' );
-		$form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
-		//FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar
-		$html_form = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar, .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
 
-        return $html_form;
-    }
+	if ( 'form_right' === $booking_form_structure ) {
+		$html_form .= '<r>' . "\n";
+		$html_form .= '  <c>' . "\n";
+		$html_form .= '    [calendar]' . "\n";
+		$html_form .= '  </c>' . "\n";
+		$html_form .= '  <c>' . "\n";
+
+		$skip_already_exist_field_types[] = 'calendar';
+	}
+
+	$html_form .= '<div class="wpbc__form__div">' . "\n";
+
+	// Get HTML content of All  Fields in booking form.
+	list( $html_all_fields, $exist_fields_arr ) = wpbc_simple_form__get_shortcode_content_of_all_fields__and_fields_arr(
+		array(
+			'visual_form_structure'          => $visual_form_structure,
+			'skip_already_exist_field_types' => $skip_already_exist_field_types,
+		)
+	);
+
+	$exist_fields_arr = array_merge( $exist_fields_arr, $skip_already_exist_field_types );
+	$html_form       .= $html_all_fields;
+
+
+	// -------------------------------------------------------------------------------------------------------------
+	// Double recheck if these fields NOT exist.  This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
+	// -------------------------------------------------------------------------------------------------------------
+	if ( ! in_array( 'calendar', $exist_fields_arr, true ) ) {
+		$html_form = '[calendar]' . "\n" . $html_form;
+	}
+	// Captcha ??
+	if ( ( ! in_array( 'captcha', $exist_fields_arr, true ) ) && ( 'On' === get_bk_option( 'booking_is_use_captcha' ) ) ) {
+		$html_form .= '	<spacer>height:10px;</spacer>' . "\n";
+		$html_form .= '	<r>' . "\n";
+		$html_form .= '		<c> [captcha] </c>' . "\n";
+		$html_form .= '	</r>' . "\n";
+	}
+	// Submit ??
+	if ( ! in_array( 'submit', $exist_fields_arr, true ) ) {
+		$submit_button_title = wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+		$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+
+		$html_form .= '	<r>' . "\n";
+		$html_form .= '		<c> <p>[submit class:btn "' . esc_attr( $submit_button_title ) . '"]</p> </c>' . "\n";
+		$html_form .= '	</r>' . "\n";
+	}
+	// -------------------------------------------------------------------------------------------------------------
+	// - End - This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
+	// -------------------------------------------------------------------------------------------------------------
+
+	$html_form .= '</div>' . "\n";
+
+	// -------------------------------------------------------------------------------------------------------------
+	// ==  Booking Form  ::  Structure  ==
+	// -------------------------------------------------------------------------------------------------------------
+	if ( 'form_right' === $booking_form_structure ) {
+		$html_form .= '	</c>' . "\n";
+		$html_form .= '	</r>' . "\n";
+	}
+
+	if ( in_array( $booking_form_structure, array( 'wizard_2columns', 'wizard_services_a' ), true ) ) {
+
+		$html_form .= '    <hr><r style="flex-flow: row nowrap;">' . "\n";
+		$html_form .= '			<c style="justify-content: flex-start;">' . "\n";
+		$html_form .= '     		<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number - 1 ) ) . '" >' . "\n";
+		$html_form .= '				' . esc_attr__( 'Back', 'booking' ) . "\n";
+		$html_form .= '				</a>' . "\n";
+		$html_form .= '			</c>' . "\n";
+		$html_form .= '      <c style="justify-content: flex-end;">' . "\n";
+
+		$submit_button_title = ( ! empty( $booking_data__parsed_fields ) ) ? __( 'Change your Booking', 'booking' )
+			: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+		$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+		$submit_button_title = wp_kses_post( $submit_button_title );
+		$html_form          .= '[submit class:btn "' . esc_attr( $submit_button_title ) . '"]';
+
+		$html_form .= '      </c>' . "\n";
+		$html_form .= '    </r>' . "\n";
+		$html_form .= '  </div>' . "\n";
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			$html_form .= '</div>' . "\n";    // Add border form - class="wpbc_wizard__border_container".
+		}
+	}
+
+
+	$form_css_class_arr = array();
+
+	// Center Form.
+	if ( 'form_center' === $booking_form_structure ) {
+		$form_css_class_arr[] = 'wpbc_booking_form_structure';
+		$form_css_class_arr[] = 'wpbc_form_center';
+	}
+
+	$html_form = '<div class="wpbc_booking_form_simple ' . implode( ' ', $form_css_class_arr ) . '">' . "\n" . $html_form . '</div>';
+
+	// Form Width.
+	$form_layout_width       = get_bk_option( 'booking_form_layout_width' );
+	$form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
+	// FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar .
+	$html_form = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar, .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
+
+	return $html_form;
+}
 
 		// -------------------------------------------------------------------------------------------------------------
 		// -> PAID. When  works in paid version  in simple mode,  system  get  data from  here
@@ -484,230 +573,310 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 		}
 
 
+/**
+ * Get HTML of booking form based on Visual Structure.        This func.  for pure FREE  version - getting HTML  content of booking form.
+ * Get booking form in HTML   in Free version
+ *
+ * @param $resource_id
+ *
+ * @return array|mixed|string|string[]
+ */
+function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 
+	$booking_data__parsed_fields = array();
+	$booking_data__dates         = array();
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_GET['booking_hash'] ) ) {
 
-	/**
-	 * Get HTML of booking form based on Visual Structure. 		This func.  for pure FREE  version - getting HTML  content of booking form.
-	 * Get booking form in HTML   in Free version
-	 *
-	 * @param $resource_id
-	 *
-	 * @return array|mixed|string|string[]
-	 */
-    function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing  /* FixIn: sanitize_unslash */
+		$get_booking_hash = ( ( isset( $_GET['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' );
 
-	    $booking_data__parsed_fields = array();
-	    $booking_data__dates         = array();
-	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	    if ( isset( $_GET['booking_hash'] ) ) {
-			$get_booking_hash = ( ( isset( $_GET['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
-		    $booking_id__resource_id = wpbc_hash__get_booking_id__resource_id( $get_booking_hash );
+		$booking_id__resource_id = wpbc_hash__get_booking_id__resource_id( $get_booking_hash );
 
-		    if ( $booking_id__resource_id != false ) {
+		if ( false !== $booking_id__resource_id ) {
+			$booking_data = wpbc_search_booking_by_id( $booking_id__resource_id[0] );
+			if ( false !== $booking_data ) {
+				$booking_data__parsed_fields = $booking_data->parsed_fields;
+				$booking_data__dates         = $booking_data->dates;
+			}
+		}
+	}
 
-			    $booking_data = wpbc_search_booking_by_id( $booking_id__resource_id[0] );
-			    if ( false !== $booking_data ) {
-				    $booking_data__parsed_fields = $booking_data->parsed_fields;
-				    $booking_data__dates         = $booking_data->dates;
-			    }
-		    }
-	    }
+	$visual_form_structure = wpbc_simple_form__db__get_visual_form_structure();
 
-        $visual_form_structure = wpbc_simple_form__db__get_visual_form_structure();
+	$booking_form_structure = get_bk_option( 'booking_form_structure_type' );
+	if ( empty( $booking_form_structure ) ) {
+		$booking_form_structure = 'vertical';
+	}
 
-	    $booking_form_structure = get_bk_option( 'booking_form_structure_type' );
-	    if ( empty( $booking_form_structure ) ) {
-		    $booking_form_structure = 'vertical';
-	    }
+	// -------------------------------------------------------------------------------------------------------------
+	// Booking Form
+	// -------------------------------------------------------------------------------------------------------------
+	$html_form = '';
 
-
-	    // -------------------------------------------------------------------------------------------------------------
-	    // Booking Form
-	    // -------------------------------------------------------------------------------------------------------------
-	    $html_form = '';
-		$skip_already_exist_field_types = array();                                                                  // 'calendar', 'submit', 'captcha' );
+	$skip_already_exist_field_types = array();
 
 		// FixIn: 10.7.1.7.
-	    if ( 'wizard_2columns' == $booking_form_structure ) {
+	if ( in_array( $booking_form_structure, array( 'wizard_2columns', 'wizard_services_a' ), true ) ) {
 
-		    $skip_already_exist_field_types[] = 'submit';
+		$wizard_step_number = 1;
 
-		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1">' . "\n";
-		    $html_form .= '		<r>' . "\n";
+		$skip_already_exist_field_types[] = 'submit';
 
-			$calendar_field_arr = wpbc_simple_form__visual__get_calendar( $visual_form_structure );
-			if ( ! empty( $calendar_field_arr ) ) {
-			    $html_form .= '			<c style="margin-top:0;"> ' . "\n";
-			    // Get HTML content of All  Fields in booking form
-			    list( $html_all_fields, $calendar_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( array(
-															    'visual_form_structure'          => array( $calendar_field_arr ),
-															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
-															    'resource_id'                    => $resource_id,
-															    'booking_data__parsed_fields'    => $booking_data__parsed_fields
-														    ) );
-				$html_form .= $html_all_fields;
-			    $html_form .= '		</c>' . "\n";
-				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $calendar_exist_fields_arr );
-			} else {
-		        $html_form .= '			<c> <l>Select Date:</l><br /> [calendar] </c>' . "\n";
-				$skip_already_exist_field_types[] = 'calendar';
-			}
-
-
-
-		    $rangetime_field_arr = wpbc_simple_form__visual__get_rangetime( $visual_form_structure );
-		    if ( ! empty( $rangetime_field_arr ) ) {
-
-			    $html_form .= '			<c style="margin-top:0;"> ' . "\n";
-			    // Get HTML content of All  Fields in booking form
-			    list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( array(
-															    'visual_form_structure'          => array( $rangetime_field_arr ),
-															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
-															    'resource_id'                    => $resource_id,
-															    'booking_data__parsed_fields'    => $booking_data__parsed_fields
-														    ) );
-				$html_form .= $html_all_fields;
-			    $html_form .= '		</c>' . "\n";
-				$skip_already_exist_field_types  = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
-		    }
-
-		    $html_form .= '		</r>' . "\n";
-		    $html_form .= '		<hr><r>' . "\n";
-		    $html_form .= '			<div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
-		    $html_form .= '     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" >' . "\n";
-		    $html_form .= '				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2' . "\n";
-		    $html_form .= '				</a>' . "\n";
-		    $html_form .= '			</div>' . "\n";
-		    $html_form .= '		</r>' . "\n";
-		    $html_form .= '  </div>' . "\n";
-		    $html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
-	    }
-
-	    if ( 'form_right' == $booking_form_structure ) {
-		    $html_form .= '<r>'             . "\n";
-		    $html_form .= '  <c>'           . "\n";
-		    $html_form .= '    [calendar]'  . "\n";
-		    $html_form .= '  </c>'          . "\n";
-		    $html_form .= '  <c>'           . "\n";
-
-		    $skip_already_exist_field_types[] = 'calendar';
-
-	    }
-	    $html_form .= '    <div class="wpbc__form__div">' . "\n";
-
-
-		// Get HTML content of All  Fields in booking form
-	    list( $html_all_fields, $exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr( array(
-															    'visual_form_structure'          => $visual_form_structure,
-															    'skip_already_exist_field_types' => $skip_already_exist_field_types,
-															    'resource_id'                    => $resource_id,
-															    'booking_data__parsed_fields'    => $booking_data__parsed_fields
-														    ) );
-	    $exist_fields_arr  = array_merge( $exist_fields_arr, $skip_already_exist_field_types );
-	    $html_form        .= $html_all_fields;
-
-		// -------------------------------------------------------------------------------------------------------------
-	    // Double recheck if these fields NOT exist.  This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
-	    // -------------------------------------------------------------------------------------------------------------
-	    if ( ! in_array( 'calendar', $exist_fields_arr ) ) {
-		    $html_form = '[calendar]' . "\n" . $html_form;
-	    }
-		// Captcha ??
-	    if ( ( ! in_array( 'captcha', $exist_fields_arr ) ) && ( get_bk_option( 'booking_is_use_captcha' ) == 'On' ) ) {
-			$html_form .= '	<spacer>height:10px;</spacer>' . "\n";
-			$html_form .= '	<r>' . "\n";
-			$html_form .= '		<c> [captcha] </c>' . "\n";
-			$html_form .= '	</r>' . "\n";
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			// Add border form - class="wpbc_wizard__border_container".
+			$html_form .= '<div class="wpbc_wizard__border_container">' . "\n";
 		}
-		// Submit ??
-	    if ( ! in_array( 'submit', $exist_fields_arr ) ) {
 
-			$submit_button_title = ( ! empty( $booking_data__parsed_fields ) )
-									? __( 'Change your Booking', 'booking' )
-									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+		$html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step' . esc_attr( $wizard_step_number ) . '">' . "\n";
 
-			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
-			$submit_button_title = wp_kses_post( $submit_button_title );                                                // FixIn: 10.6.5.2.
+		// Is 'durationtime' field exist ?
+		$rangetime_field_arr = wpbc_simple_form__visual__get_one_field( $visual_form_structure, 'durationtime' );
+		$wizard_steps_count  = ( ! empty( $rangetime_field_arr ) ) ? 3 : 2;
+		// Timeline Step #1.
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			$html_form .= '    <r>' . "\n";
+			$html_form .= '        <c class="wpbc_aling_center"> ' . "\n";
+			$html_form .= '            [steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '        </c>' . "\n";
+			$html_form .= '    </r>' . "\n";
+		}
+		$html_form .= '    <r>' . "\n";
 
-			$html_form .= '   	<r>' . "\n";
-			$html_form .= '   		<c> <p>'
-									. '<button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >'
-										. $submit_button_title
-									. '</button>'
-							  .'</p> </c>' . "\n";
-			$html_form .= '   	</r>' . "\n";
-	    }
-		// -------------------------------------------------------------------------------------------------------------
-		// - End - This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
-		// -------------------------------------------------------------------------------------------------------------
+		if ( ! empty( $rangetime_field_arr ) ) {
 
+			$html_form .= '			<c class="wpbc_aling_center"> ' . "\n";
 
-	    $html_form .= '    </div>' . "\n";
+			// Get HTML content of All  Fields in booking form.
+			list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr(
+				array(
+					'visual_form_structure'          => array( $rangetime_field_arr ),
+					'skip_already_exist_field_types' => $skip_already_exist_field_types,
+					'resource_id'                    => $resource_id,
+					'booking_data__parsed_fields'    => $booking_data__parsed_fields,
+				)
+			);
+			$html_form .= $html_all_fields;
+			$html_form .= '		</c>' . "\n";
 
-	    if ( 'form_right' == $booking_form_structure ) {
-		    $html_form .= '  </c>' . "\n";
-		    $html_form .= '</r>' . "\n";
-	    }
+			$skip_already_exist_field_types = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
 
-	    // FixIn: 10.7.1.7.
-	    if ( 'wizard_2columns' == $booking_form_structure ) {
+			$html_form .= '		</r>' . "\n";
+			$html_form .= '		<hr><r>' . "\n";
+			$html_form .= '			<c style="justify-content: flex-end;">' . "\n";
+			$html_form .= '     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number + 1 ) ) . '" >' . "\n";
+			$html_form .= '				' . esc_attr__( 'Next', 'booking' ) . "\n";
+			$html_form .= '				</a>' . "\n";
+			$html_form .= '			</c>' . "\n";
+			$html_form .= '		</r>' . "\n";
+			$html_form .= '  </div>' . "\n";
+			++$wizard_step_number;
+			$html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step' . esc_attr( ( $wizard_step_number ) ) . ' wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
+			$html_form .= '    <r>' . "\n";
 
-		    $html_form .= '    <hr><r>' . "\n";
-		    $html_form .= '		<div class="wpbc__field" style="justify-content: flex-end;">' . "\n";
-		    $html_form .= '			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp;' . "\n";
+			// Timeline Step #2.
+			if ( 'wizard_services_a' === $booking_form_structure ) {
+				$html_form .= '		<c class="wpbc_aling_center"> ' . "\n";
+				$html_form .= '				[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+				$html_form .= '		</c>' . "\n";
+				$html_form .= '    </r>' . "\n";
+				$html_form .= '    <r>' . "\n";
+			}
+		}
 
-			$submit_button_title = ( ! empty( $booking_data__parsed_fields ) )
-									? __( 'Change your Booking', 'booking' )
-									: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+		$calendar_field_arr = wpbc_simple_form__visual__get_calendar( $visual_form_structure );
+		if ( ! empty( $calendar_field_arr ) ) {
+			$html_form .= '			<c style="margin-top:0;"> ' . "\n";
+			// Get HTML content of All  Fields in booking form.
+			list( $html_all_fields, $calendar_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr(
+				array(
+					'visual_form_structure'          => array( $calendar_field_arr ),
+					'skip_already_exist_field_types' => $skip_already_exist_field_types,
+					'resource_id'                    => $resource_id,
+					'booking_data__parsed_fields'    => $booking_data__parsed_fields,
+				)
+			);
+			$html_form .= $html_all_fields;
+			$html_form .= '		</c>' . "\n";
 
-			$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
-			$submit_button_title = wp_kses_post( $submit_button_title );
-		    $html_form .= '         <button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >'
-										. $submit_button_title
-									. '</button>';
-
-		    $html_form .= '		</div>' . "\n";
-		    $html_form .= '    </r>' . "\n";
-		    $html_form .= '  </div>' . "\n";
-	    }
-	    // -------------------------------------------------------------------------------------------------------------
-	    // ==  Booking Form  ::  Structure  ==
-	    // -------------------------------------------------------------------------------------------------------------
-	    $form_css_class_arr = array();
-
-	    // Center Form
-	    if ( 'form_center' == $booking_form_structure ) {
-		    $form_css_class_arr[] = 'wpbc_booking_form_structure';
-		    $form_css_class_arr[] = 'wpbc_form_center';
-	    }
-	    $html_form = '<div class="wpbc_booking_form_simple ' . implode( ' ', $form_css_class_arr ) . '">' . "\n" .
-		                 $html_form .
-	                 '</div>';
-
-	    // Form Width
-	    $form_layout_width       = get_bk_option( 'booking_form_layout_width' );
-	    $form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
-		//FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar
-	    $html_form               = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar,  .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
-
-
-	    if ( ! empty( $booking_data__dates ) ) {
-		    $html_form .= wpbc_get_dates_selection_js_code( $booking_data__dates, $resource_id );                       // FixIn: 9.2.3.4.
-	    }
-
-	    $admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );
-		$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
-		$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
-	    if ( ( strpos( $server_request_uri, $admin_uri ) !== false ) && ( isset( $server_http_referer_uri ) ) ) {
-		    $html_form .= '<input type="hidden" name="wpdev_http_referer" id="wpdev_http_referer" value="' . $server_http_referer_uri . '" />';
-	    }
+			$skip_already_exist_field_types = array_merge( $skip_already_exist_field_types, $calendar_exist_fields_arr );
+		} else {
+			$html_form                       .= '			<c> <l>Select Date:</l><br /> [calendar] </c>' . "\n";
+			$skip_already_exist_field_types[] = 'calendar';
+		}
 
 
-	    // Parse Simple HTML tags
-	    $booking_form = wpbc_bf__replace_custom_html_shortcodes( $html_form );
+		$time_field_arr = array( 'rangetime', 'starttime', 'endtime' );
+		foreach ( $time_field_arr as $time_field_name ) {
+			$rangetime_field_arr = wpbc_simple_form__visual__get_one_field( $visual_form_structure, $time_field_name );
+			if ( ! empty( $rangetime_field_arr ) ) {
 
-        return $booking_form;
-    }
+				$html_form .= '			<c style="margin-top:0;"> ' . "\n";
+				// Get HTML content of All  Fields in booking form.
+				list( $html_all_fields, $range_time_exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr(
+					array(
+						'visual_form_structure'          => array( $rangetime_field_arr ),
+						'skip_already_exist_field_types' => $skip_already_exist_field_types,
+						'resource_id'                    => $resource_id,
+						'booking_data__parsed_fields'    => $booking_data__parsed_fields,
+					)
+				);
+				$html_form .= $html_all_fields;
+				$html_form .= '		</c>' . "\n";
+
+				$skip_already_exist_field_types = array_merge( $skip_already_exist_field_types, $range_time_exist_fields_arr );
+			}
+		}
+
+		$html_form .= '		</r>' . "\n";
+		$html_form .= '		<hr><r style="flex-flow: row nowrap;">' . "\n";
+		if ( $wizard_step_number > 1 ) {
+			$html_form .= '			<c style="justify-content: flex-start;">' . "\n";
+			$html_form .= '     		<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number - 1 ) ) . '" >' . "\n";
+			$html_form .= '				' . esc_attr__( 'Back', 'booking' ) . "\n";
+			$html_form .= '				</a>' . "\n";
+			$html_form .= '			</c>' . "\n";
+		}
+		$html_form .= '			<c style="justify-content: flex-end;">' . "\n";
+		$html_form .= '     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number + 1 ) ) . '" >' . "\n";
+		$html_form .= '				' . esc_attr__( 'Next', 'booking' ) . "\n";
+		$html_form .= '				</a>' . "\n";
+		$html_form .= '			</c>' . "\n";
+		$html_form .= '		</r>' . "\n";
+		$html_form .= '  </div>' . "\n";
+		++$wizard_step_number;
+		$html_form .= '  <div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step' . esc_attr( ( $wizard_step_number ) ) . ' wpbc_wizard_step_hidden" style="display:none;clear:both;">' . "\n";
+		// Timeline Step #3.
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			$html_form .= '    <r>' . "\n";
+			$html_form .= '		<c class="wpbc_aling_center"> ' . "\n";
+			$html_form .= '				[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '		</c>' . "\n";
+			$html_form .= '    </r>' . "\n";
+		}
+	}
+
+	if ( 'form_right' === $booking_form_structure ) {
+		$html_form .= '<r>' . "\n";
+		$html_form .= '  <c>' . "\n";
+		$html_form .= '    [calendar]' . "\n";
+		$html_form .= '  </c>' . "\n";
+		$html_form .= '  <c>' . "\n";
+
+		$skip_already_exist_field_types[] = 'calendar';
+	}
+	$html_form .= '    <div class="wpbc__form__div">' . "\n";
+
+
+	// Get HTML content of All  Fields in booking form.
+	list( $html_all_fields, $exist_fields_arr ) = wpbc_simple_form__get_html_content_of_all_fields__and_fields_arr(
+		array(
+			'visual_form_structure'          => $visual_form_structure,
+			'skip_already_exist_field_types' => $skip_already_exist_field_types,
+			'resource_id'                    => $resource_id,
+			'booking_data__parsed_fields'    => $booking_data__parsed_fields,
+		)
+	);
+	$exist_fields_arr = array_merge( $exist_fields_arr, $skip_already_exist_field_types );
+	$html_form       .= $html_all_fields;
+
+	// -------------------------------------------------------------------------------------------------------------
+	// Double recheck if these fields NOT exist.  This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
+	// -------------------------------------------------------------------------------------------------------------
+	if ( ! in_array( 'calendar', $exist_fields_arr ) ) {
+		$html_form = '[calendar]' . "\n" . $html_form;
+	}
+	// Captcha ??
+	if ( ( ! in_array( 'captcha', $exist_fields_arr ) ) && ( get_bk_option( 'booking_is_use_captcha' ) == 'On' ) ) {
+		$html_form .= '	<spacer>height:10px;</spacer>' . "\n";
+		$html_form .= '	<r>' . "\n";
+		$html_form .= '		<c> [captcha] </c>' . "\n";
+		$html_form .= '	</r>' . "\n";
+	}
+	// Submit ??
+	if ( ! in_array( 'submit', $exist_fields_arr ) ) {
+
+		$submit_button_title = ( ! empty( $booking_data__parsed_fields ) ) ? __( 'Change your Booking', 'booking' )
+			: wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+
+		$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+		$submit_button_title = wp_kses_post( $submit_button_title );                                                // FixIn: 10.6.5.2.
+
+		$html_form .= '   	<r>' . "\n";
+		$html_form .= '   		<c> <p>';
+		$html_form .= '<button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' . $submit_button_title . '</button>';
+		$html_form .= '</p> </c>' . "\n";
+		$html_form .= '   	</r>' . "\n";
+	}
+	// -------------------------------------------------------------------------------------------------------------
+	// - End - This double rechecking for MIGRATION period started on 2024-08-17. Later it can be removed
+	// -------------------------------------------------------------------------------------------------------------
+
+
+	$html_form .= '    </div>' . "\n";
+
+	if ( 'form_right' === $booking_form_structure ) {
+		$html_form .= '  </c>' . "\n";
+		$html_form .= '</r>' . "\n";
+	}
+
+	if ( in_array( $booking_form_structure, array( 'wizard_2columns', 'wizard_services_a' ), true ) ) {
+		$html_form .= '    <hr><r style="flex-flow: row nowrap;">' . "\n";
+		$html_form .= '			<c style="justify-content: flex-start;">' . "\n";
+		$html_form .= '     		<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_' . esc_attr( ( $wizard_step_number - 1 ) ) . '" >' . "\n";
+		$html_form .= '				' . esc_attr__( 'Back', 'booking' ) . "\n";
+		$html_form .= '				</a>' . "\n";
+		$html_form .= '			</c>' . "\n";
+		$html_form .= '		<c style="justify-content: flex-end;">' . "\n";
+
+		$submit_button_title = ( ! empty( $booking_data__parsed_fields ) ) ? __( 'Change your Booking', 'booking' ) : wpbc_simple_form__visual__get_send_button_title( $visual_form_structure );
+		$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
+		$submit_button_title = wp_kses_post( $submit_button_title );
+
+		$html_form .= '         <button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' . $submit_button_title . '</button>';
+		$html_form .= '		</c>' . "\n";
+		$html_form .= '    </r>' . "\n";
+		$html_form .= '  </div>' . "\n";
+		if ( 'wizard_services_a' === $booking_form_structure ) {
+			$html_form .= '</div>' . "\n";    // Add border form - class="wpbc_wizard__border_container".
+		}
+	}
+
+	// -------------------------------------------------------------------------------------------------------------
+	// ==  Booking Form  ::  Structure  ==
+	// -------------------------------------------------------------------------------------------------------------
+	$form_css_class_arr = array();
+
+	// Center Form.
+	if ( 'form_center' === $booking_form_structure ) {
+		$form_css_class_arr[] = 'wpbc_booking_form_structure';
+		$form_css_class_arr[] = 'wpbc_form_center';
+	}
+	$html_form = '<div class="wpbc_booking_form_simple ' . implode( ' ', $form_css_class_arr ) . '">' . "\n" . $html_form . '</div>';
+
+	// Form Width.
+	$form_layout_width       = get_bk_option( 'booking_form_layout_width' );
+	$form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
+	// FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar .
+	$html_form = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar,  .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
+
+
+	if ( ! empty( $booking_data__dates ) ) {
+		$html_form .= wpbc_get_dates_selection_js_code( $booking_data__dates, $resource_id );                           // FixIn: 9.2.3.4.
+	}
+
+	$admin_uri               = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );
+	$server_request_uri      = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	if ( ( strpos( $server_request_uri, $admin_uri ) !== false ) && ( isset( $server_http_referer_uri ) ) ) {
+		$html_form .= '<input type="hidden" name="wpdev_http_referer" id="wpdev_http_referer" value="' . $server_http_referer_uri . '" />';
+	}
+
+	// Parse Simple HTML tags.
+	$booking_form = wpbc_bf__replace_custom_html_shortcodes( $html_form );
+
+	return $booking_form;
+}
 
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -1040,38 +1209,42 @@ function wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure 
 			return $button_title;
 		}
 
-		/**
-		 * Get Range Time Field structure,  if this field exist and if this field enabled
-		 *
-		 * @param $visual_form_structure
-		 *
-		 * @return mixed|string
-		 */
-		function wpbc_simple_form__visual__get_rangetime( $visual_form_structure ) {
 
-			foreach ( $visual_form_structure as $field_arr ) {
-				if ( ( 'rangetime' === $field_arr['name'] ) && ( 'On' == $field_arr['active'] ) ) {
-					return $field_arr;
-				}
-			}
 
-			return false;
+/**
+ * Get Calendar Field structure,  if this field exist and if this field enabled
+ *
+ * @param $visual_form_structure
+ *
+ * @return mixed|string
+ */
+function wpbc_simple_form__visual__get_calendar( $visual_form_structure ) {
+
+	foreach ( $visual_form_structure as $field_arr ) {
+		if ( 'calendar' === $field_arr['type'] ) {
+			return $field_arr;
 		}
+	}
 
-		/**
-		 * Get Calendar Field structure,  if this field exist and if this field enabled
-		 *
-		 * @param $visual_form_structure
-		 *
-		 * @return mixed|string
-		 */
-		function wpbc_simple_form__visual__get_calendar( $visual_form_structure ) {
+	return false;
+}
 
-			foreach ( $visual_form_structure as $field_arr ) {
-				if ( 'calendar' === $field_arr['type'] ) {
-					return $field_arr;
-				}
-			}
 
-			return false;
+/**
+ * Get specific field with specific name
+ *
+ * @param array  $visual_form_structure - array of visual form structure.
+ * @param string $field_name            - name of field to  get.  'durationtime' | 'starttime' | 'endtime' | 'rangetime' ...
+ *
+ * @return false|mixed
+ */
+function wpbc_simple_form__visual__get_one_field( $visual_form_structure, $field_name = 'starttime' ) {
+
+	foreach ( $visual_form_structure as $field_arr ) {
+		if ( ( $field_name === $field_arr['name'] ) && ( 'On' === $field_arr['active'] ) ) {
+			return $field_arr;
 		}
+	}
+
+	return false;
+}

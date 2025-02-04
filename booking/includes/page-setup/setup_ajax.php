@@ -304,6 +304,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 					if (! empty($cleaned_data_booking_feedback_arr)){
 						if ( 'On' === $cleaned_data_booking_feedback_arr['wpbc_swp_accept_send'] ) {
 							$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr , array( 'type' => 'Type: ' . $cleaned_data ['wpbc_swp_booking_types'] ) );
+							if ( 'time_slots_appointments' === $cleaned_data ['wpbc_swp_booking_types'] ) {
+								$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr, array( 'appointments_type' => 'Appointment: ' . $cleaned_data ['wpbc_swp_booking_appointments_type'] ) );
+							}
 							wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
 							delete_bk_option( 'booking_feedback__send_email' );
 						}
@@ -318,7 +321,11 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|hints-dev';
 						}
 						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    // FixIn: 10.7.1.4.
+							if ( 'durationtime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ) {
+								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments_service_a';    // FixIn: 10.7.1.4.
+							} else {
+								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    // FixIn: 10.7.1.4.
+							}
 						}
 						if ( 'changeover_multi_dates_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
 							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|wizard';

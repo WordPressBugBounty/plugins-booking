@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.7
-Stable tag: 10.10
+Stable tag: 10.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -306,6 +306,19 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.10.1 =
+- Changes in **all** versions:
+	* **New**: Added a new form layout, "**Wizard (Steps Timeline)**", on the Settings > Booking Form page. This layout displays a wizard with a "Steps" timeline at the top of the form. It also features improved borders for a cleaner look.
+	* **New**: Added ability to set **Service selection with specific duration** and start time for appointment bookings. In the Setup Wizard, you can select "Wizard (Steps Timeline) - Service Duration." This feature is ideal for appointment types based on service duration, such as salon or doctor appointments, consultations, product demos, table bookings, and more.
+	* **Tip and Trick**: **Add a time duration field** in the Settings > Booking Form page with the reserved name "**durationtime**" and options like: "**Service A (15 min)@@00:15**" or "**Service D (1 hour)@@01:00**". The option format is "Title@@Time Duration," where "Title" is usually the service name and "Time Duration" is defined in the format HH:MM (HH = hours from 00 to 23, MM = minutes from 00 to 59). (10.10.1.4)
+	* **Tip and Trick**: **Add a start time field** in the Settings > Booking Form page with the reserved name "**starttime**" and options like: "**8:15 AM@@08:15**" or "4:20 PM@@16:20." The option format is "Title@@Time," where "Title" is any text (typically the time in AM/PM format) and "Time" is defined in the 24-hour format (HH:MM), where HH = hours (00 to 23) and MM = minutes (00 to 59).
+	* **Improvement**: Updated the timepicker color scheme to a more modern style.
+	* **Fix**: Changed the booking hash by default after approval, pending, trash, or restore actions. This helps prevent unauthorized visitors from editing bookings by using outdated booking hashes. (10.10.1.1)
+	* **Fix**: In the simple booking form, only show the title and value for the time slot field. Hide them for other select boxes or checkboxes to avoid duplicating data, such as "Data A / Data A." (10.10.1.3)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: Removed the legacy option: "Disable changing booking resource while editing a booking." (10.10.1.2) *(Business Large, MultiUser)*
+	* **Fix**: Resolved an issue with using translation shortcodes in the "Warning for Missing Dates" message in the Search Form.  *(Business Large, MultiUser)*
+
 = 10.10 =
 - Changes in **all** versions:
 	* **Improvement**: Automatically hide/disable past times when selecting today's date.(10.9.6.4).
@@ -356,9 +369,6 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  	* **Fix** Showing warning message at some servers: "WPBC Error. JavaScript library "datepick" was not defined.". (10.6.6.1)
  	* **Fix** Resolved issue of generating payment request links at some servers. (10.6.6.3)
 
-= 10.6.1 - 10.6.5 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
 = 10.6 =
 - Changes in **all** versions:
 	* **New** Implemented a structured settings dashboard with brief descriptions for each feature. This update enhances user navigation, making it easier to locate and configure the desired settings.
@@ -372,9 +382,6 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  	* **Improvement** Replaced the "From" email address with the website's "Administration Email Address" for all newly activated regular users. This prevents emails from being marked as spam if the user's email is not from the website's domain. (10.5.2.5)  *(MultiUser)*
  	* **Fix** Resolved an issue with saving the correct color of the "Send" button after the second click on dates while using the range dates selection mode. (10.5.2.3)
  	* **Fix** Resolved the issue of date/time hints not displaying in the booking form when no date was selected. Previously, '0' would be shown if only the time was selected. (10.5.2.7)
-
-= 10.5.1 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 10.5 =
 - Changes in **all** versions:
@@ -419,9 +426,6 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 	* **New** Added Change Over Days in Timeline views for pro versions. Timeline and Calendar Overview now show change over days as triangles for check-in/out dates, making it easier to identify these dates and providing a better overview of bookings if your system uses the change over days functionality.
 	* **Fix** Fixed the issue of invalid Start/End Time in some configurations when using range days selection mode and change-over days. (10.2.3.2)
 
-= 10.2.1 - 10.2.2 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
 = 10.2 =
 - Changes in **all** versions:
 	* **New** Added a **Configurable Confirmation section**. You can now decide what to show in the "Confirmation Window" after a booking is created. Enable or disable content and configure it with shortcodes to display information in the "Personal Information" and "Booking Details" sections of the Booking Confirmation window.
@@ -437,9 +441,6 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 	* **Improvement**  Updated the view of the "Back to Super Admin" button when a super booking admin user simulates a login as a "Regular User." (10.1.5.2) *(MultiUser)*
 	* **Improvement**  Updated the spinners for cost and date hints in the booking form to improve user experience and clarity. *(Business Medium/Large, MultiUser)*
 	* **Under hood**: Introduced a new hook 'wpbc_visitor_action__booking_trash' that triggers when visitors cancel their own booking. Example usage: function your_cust_func_wpbc_visitor_action__booking_trash ( $booking_id, $resource_id ) { /* Your code here */ } add_action( 'wpbc_visitor_action__booking_trash', 'your_cust_func_wpbc_visitor_action__booking_trash', 100, 2 );  (10.2.0.3)
-
-= 10.1.1 - 10.1.4 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 10.1 =
 - Changes in **all** versions:
@@ -501,22 +502,7 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 	* **New** Sage/Opayo gateway becoming a payment product under the Elavon brand. Update name of payment gateway from SagePay to **Opayo - Elavon**. For more information, visit: https://www.elavon.co.uk/resource-center/news-and-insights/opayo-migration-faqs.html  (9.9.0.34) *(Business Small/Medium/Large, MultiUser)*
 	* Many improvements and fixes. Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
-= 9.9.1 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
 = 9.9 =
-- Changes in **all** versions:
-	* **New Feature**: Redesigned "Top Tabs" for page selection in the Booking Calendar Admin UI. This update enhances space utilization, resulting in a clearer and smoother interface for users. (9.8.15.2)
-	* **New** Resource menu page simplifies embedding your booking form. Easily integrate booking form into an existing page or create a new page with the booking form in just a few clicks. (9.8.15.7)
-	* **New** Introducing General Import Conditions options for importing events into the Booking Calendar for all booking resources. You can now enable the option **Import if Dates Available** to import events only if dates are available in the source calendar. Additionally, the option **Import Only New Events** allows you to import only if the event has not been imported before. This last option replaces the legacy "Force import" option and can be configured at Booking > Settings > Sync > "General" page in the "Import advanced" section.  (9.8.15.8)
-	* **Translation Update**: German, French, Italian translation has been updated
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New** Integrated **PayPal Standard Checkout** payment gateway. Enjoy various payment methods, including **card payments and PayPal**. Choose from different designs for PayPal buttons. The system now automatically responds from  the PayPal, updating the booking status and payment status.  *(Business Small/Medium/Large, MultiUser)*
-	* **New** The Prices menu now includes options such as "Seasonal Rates" (formerly "Rates"), "Duration-Based Cost" (formerly "Valuation days"), "Partial Payments" (formerly "Deposit"), "Form Options Costs" (formerly "Advanced costs"), and "Payment Gateways." This centralized location allows you to manage all prices for bookings in one place.  *(Business Medium/Large, MultiUser)*
-	* **New** Simplify the process of adding the booking form to your website with the **new 'Publish' button** on the Booking > Resources page. Easily add the booking form to an existing or new page with just a few clicks. (9.8.15.5)
-	* Many improvements and fixes. Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
-= 9.8.14 - 9.8.0.1 =
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 = 9.8 =

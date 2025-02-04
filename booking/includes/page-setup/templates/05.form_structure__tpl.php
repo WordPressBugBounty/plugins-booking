@@ -233,12 +233,13 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 	//  Templates
 	// ---------------------------------------------------------------------------------------------------------
 	$templates = array(
-		'optgroup_sf_free_s' => array( 'optgroup' => true, 'close' => false, 'title' => '&nbsp;' . __( 'Simple Form', 'booking' ) . ' (' . __( 'Free Version', 'booking' ) . ')' ),
-		'free|wizard_2columns' => array( 'title' => __('Wizard (several steps)', 'booking') ),
-		'free|vertical'      => array( 'title' => __( 'Form under calendar', 'booking' ) ),
-		'free|form_right'    => array( 'title' => __( 'Form at right side of calendar', 'booking' ) ),
-		'free|form_center'   => array( 'title' => __( 'Form and calendar are centered', 'booking' ) ),
-		'optgroup_sf_free_e' => array( 'optgroup' => true, 'close' => true )
+		'optgroup_sf_free_s'     => array( 'optgroup' => true, 'close' => false, 'title' => '&nbsp;' . __( 'Simple Form', 'booking' ) . ' (' . __( 'Free Version', 'booking' ) . ')' ),
+		'free|wizard_2columns'   => array( 'title' => __( 'Wizard (several steps)', 'booking' ) ),
+		'free|wizard_services_a' => array( 'title' => __( 'Wizard (Steps Timline)', 'booking' ) . ' - ' . __( 'Service Duration', 'booking' ) ),
+		'free|vertical'          => array( 'title' => __( 'Form under calendar', 'booking' ) ),
+		'free|form_right'        => array( 'title' => __( 'Form at right side of calendar', 'booking' ) ),
+		'free|form_center'       => array( 'title' => __( 'Form and calendar are centered', 'booking' ) ),
+		'optgroup_sf_free_e'     => array( 'optgroup' => true, 'close' => true ),
 	);
 	// ---------------------------------------------------------------------------------------------------------
 	$templates[ 'pro|optgroup_sf_s'] = array( 'optgroup' => true, 'close' => false, 'title' => '&nbsp;' . __( 'Advanced Form', 'booking' ) . ' (' . __( 'Pro Versions', 'booking' ) . ')'  );
@@ -334,7 +335,11 @@ function wpbc_stp_wiz__ui__form_structure__dropdown_form_template(){
 		){
 			jQuery(document).ready(function(){
 				if ( 'time_slots_appointments' === data.booking_wizard_data.save_and_continue__bookings_types.wpbc_swp_booking_types ) {
-					jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="free|wizard_2columns"]' ).prop('selected', true);
+					if ( 'durationtime' === data.booking_wizard_data.save_and_continue__bookings_types.wpbc_swp_booking_appointments_type ){
+						jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="free|wizard_services_a"]' ).prop('selected', true);
+					} else {
+						jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="free|wizard_2columns"]' ).prop('selected', true);
+					}
 				} else {
 					jQuery( '#<?php echo esc_attr( $el_id ); ?> option[value="free|form_right"]' ).prop('selected', true);
 				}
@@ -436,6 +441,7 @@ function wpbc_stp_wiz__ui__form_structure__bottom_buttons(){
 																									   'step_data':{
 																												'wpbc_swp_booking_types': jQuery( '[name=\'wpbc_swp_booking_types\']:checked').val(),
 																												'wpbc_swp_booking_timeslot_picker': jQuery( '[name=\'wpbc_swp_booking_timeslot_picker\']').val(),
+																												'wpbc_swp_booking_appointments_type': jQuery( '[name=\'wpbc_swp_booking_appointments_type\']').val(),
 																												'wpbc_swp_booking_change_over_days_triangles': jQuery( '[name=\'wpbc_swp_booking_change_over_days_triangles\']').val()
 																											}
 

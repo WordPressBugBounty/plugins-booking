@@ -358,7 +358,7 @@ function form_submit_send( bk_type, formdata, captcha_chalange, user_captcha ,wp
 }
 
 
-//<![CDATA[
+
 function send_ajax_submit( resource_id, formdata, captcha_chalange, user_captcha, is_send_emeils, my_booking_hash, my_booking_form, wpdev_active_locale ){
 
     // Disable Submit | Show spin loader
@@ -382,25 +382,37 @@ function send_ajax_submit( resource_id, formdata, captcha_chalange, user_captcha
         return;
     }
 }
-//]]>
 
 
-// Hint labels inside of input boxes
-jQuery(document).ready( function(){
 
-    jQuery('div.inside_hint').on( 'click', function(){                   // FixIn: 8.7.11.12.
-            jQuery(this).css('visibility', 'hidden').siblings('.has-inside-hint').trigger( 'focus' );   // FixIn: 8.7.11.12.
-    });
+// Hint labels inside of input boxes.
+jQuery( document ).ready(
+	function () {
 
-    jQuery('input.has-inside-hint').on( 'blur', function(){                   // FixIn: 8.7.11.12.
-        if ( this.value == '' )
-            jQuery(this).siblings('.inside_hint').css('visibility', '');
-    }).on( 'focus', function(){                                                 // FixIn: 8.7.11.12.
-            jQuery(this).siblings('.inside_hint').css('visibility', 'hidden');
-    });
+		jQuery( 'div.inside_hint' ).on(
+			'click',
+			function () {
+				jQuery( this ).css( 'visibility', 'hidden' ).siblings( '.has-inside-hint' ).trigger( 'focus' );   // FixIn: 8.7.11.12.
+			}
+		);
 
-    jQuery('.booking_form_div input[type=button]').prop("disabled", false);
-});
+		jQuery( 'input.has-inside-hint' ).on(
+			'blur',
+			function () {
+				if ( '' === this.value ) {
+					jQuery( this ).siblings( '.inside_hint' ).css( 'visibility', '' );  // FixIn: 8.7.11.12.
+				}
+			}
+		).on(
+			'focus',
+			function () {
+				jQuery( this ).siblings( '.inside_hint' ).css( 'visibility', 'hidden' );  // FixIn: 8.7.11.12.
+			}
+		);
+
+		jQuery( '.booking_form_div input[type=button]' ).prop( "disabled", false );
+	}
+);
 
 
 // FixIn: 8.4.0.2.
@@ -412,9 +424,9 @@ jQuery(document).ready( function(){
  */
 function wpbc_check_errors_in_booking_form( bk_type ) {
 
-    var is_error_in_field = false;  // By default, all  is good - no error
+	var is_error_in_field = false;  // By default, all  is good - no error.
 
-    var my_form = jQuery( '#booking_form' + bk_type );
+	var my_form = jQuery( '#booking_form' + bk_type );
 
     if ( my_form.length ) {
 
@@ -612,30 +624,30 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
  * @param step_num
  * @returns {boolean}
  */
-function wpbc_wizard_step( el, step_num, step_from ){
-    var br_id = jQuery( el ).closest( 'form' ).find( 'input[name^="bk_type"]' ).val();
+function wpbc_wizard_step(el, step_num, step_from) {
+	var br_id = jQuery( el ).closest( 'form' ).find( 'input[name^="bk_type"]' ).val();
 
-    // FixIn: 8.8.1.5.
-    if ( ( undefined == step_from ) || ( step_num > step_from ) ){
-        if ( 1 != step_num ){                                                                       // FixIn: 8.7.7.8.
-            var is_error = wpbc_check_errors_in_booking_form( br_id );
-            if ( is_error ){
-                return false;
-            }
-        }
-    }
+	// FixIn: 8.8.1.5.
+	if ( (undefined == step_from) || (step_num > step_from) ) {
+		if ( 1 != step_num ) {                                                                       					// FixIn: 8.7.7.8.
+			var is_error = wpbc_check_errors_in_booking_form( br_id );
+			if ( is_error ) {
+				return false;
+			}
+		}
+	}
 
-    if ( wpbc_is_some_elements_visible( br_id, ['rangetime', 'durationtime', 'starttime', 'endtime'] ) ){
-        if ( wpbc_is_this_time_selection_not_available( br_id, document.getElementById( 'booking_form' + br_id ) ) ){
-            return false;
-        }
-    }
+	if ( wpbc_is_some_elements_visible( br_id, [ 'rangetime', 'durationtime', 'starttime', 'endtime' ] ) ) {
+		if ( wpbc_is_this_time_selection_not_available( br_id, document.getElementById( 'booking_form' + br_id ) ) ) {
+			return false;
+		}
+	}
 
-    if ( br_id != undefined ){
-        jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" ).css( {"display": "none"} ).removeClass('wpbc_wizard_step_hidden');
-        jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num ).css( {"display": "block"} );
-        return jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num );
-    }
+	if ( br_id != undefined ) {
+		jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" ).css( { "display": "none" } ).removeClass( 'wpbc_wizard_step_hidden' );
+		jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num ).css( { "display": "block" } );
+		return jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num );
+	}
 }
 
 
@@ -644,27 +656,39 @@ function wpbc_wizard_step( el, step_num, step_from ){
  */
 function wpbc_hook__init_booking_form_wizard_buttons() {
 
-    // CSS classes in Wizard Next / Prior links can  be like this:  <a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">Step 1</a>   |  <a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2">Step 2</a>
+	// CSS classes in Wizard Next / Prior links can  be like this:  <a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">Step 1</a>   |  <a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2">Step 2</a> .
 
-    jQuery( '.wpbc_wizard_step_button' ).attr( {
-        href: 'javascript:void(0)'
-    } );
+	jQuery( '.wpbc_wizard_step_button' ).attr(
+		{
+			href: 'javascript:void(0)',
+		}
+	);
 
-    jQuery( '.wpbc_wizard_step_button' ).on( 'click', function ( event ){
+	jQuery( '.wpbc_wizard_step_button' ).on(
+		'click',
+		function (event) {
+			var found_steps_arr = jQuery( this ).attr( 'class' ).match( /wpbc\_wizard\_step\_([\d]+)([\s'"]+|$)/ );
 
-        var found_steps_arr = jQuery( this ).attr( 'class' ).match( /wpbc\_wizard\_step\_([\d]+)([\s'"]+|$)/ );
-
-        if ( (null !== found_steps_arr) && (found_steps_arr.length > 2) ){
-            var step = parseInt( found_steps_arr[ 1 ] );
-            if ( step > 0 ){
-                var jq_step_element = wpbc_wizard_step( this, step );
-                if ( false !== jq_step_element ) {
-                    wpbc_do_scroll( jq_step_element );
-                    // wpbc_do_scroll( jQuery('.wpbc_wizard_step:visible') );
-                }
-            }
-        }
-    } );
+			if ( (null !== found_steps_arr) && (found_steps_arr.length > 2) ) {
+				var step = parseInt( found_steps_arr[1] );
+				if ( step > 0 ) {
+					var jq_step_element;
+					// Check actual step in booking form for getting step_from number.
+					var this_formsteps_arr = jQuery( this ).parents( '.wpbc_wizard_step' ).attr( 'class' ).match( /wpbc\_wizard\_step([\d]+)([\s'"]+|$)/ );
+					if ( (null !== this_formsteps_arr) && (this_formsteps_arr.length > 2) ) {
+						var step_from   = parseInt( this_formsteps_arr[1] );
+						jq_step_element = wpbc_wizard_step( this, step, step_from );
+					} else {
+						jq_step_element = wpbc_wizard_step( this, step );
+					}
+					// Do Scroll.
+					if ( false !== jq_step_element ) {
+						wpbc_do_scroll( jq_step_element ); // wpbc_do_scroll( jQuery('.wpbc_wizard_step:visible') );.
+					}
+				}
+			}
+		}
+	);
 }
 
 // FixIn: 10.1.3.2.

@@ -1320,7 +1320,7 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
         $default_options['booking_default_booking_resource'] = '';                  // All resources
      $mu_option4delete[]='booking_default_booking_resource'; 
-        $default_options['booking_is_change_hash_after_approvement'] = 'Off';
+        $default_options['booking_is_change_hash_after_approvement'] = 'On';     // FixIn: 10.10.1.1.
      $mu_option4delete[]='booking_is_change_hash_after_approvement'; 
         $default_options['booking_email_modification_adress'] = htmlspecialchars( '"Booking system" <' . get_option( 'admin_email' ) . '>' );
         $default_options['booking_email_modification_subject'] = __( 'The reservation has been modified', 'booking' );
@@ -1537,8 +1537,8 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
         $default_options['booking_is_dissbale_booking_for_different_sub_resources'] = 'Off';
      $mu_option4delete[]='booking_is_dissbale_booking_for_different_sub_resources';                 
-        $default_options['booking_is_resource_no_update__during_editing'] = 'On';										// FixIn: 9.4.2.3.
-     $mu_option4delete[]='booking_is_resource_no_update__during_editing';
+// FixIn: 10.10.1.2          $default_options['booking_is_resource_no_update__during_editing'] = 'On';										// FixIn: 9.4.2.3.
+// FixIn: 10.10.1.2       $mu_option4delete[]='booking_is_resource_no_update__during_editing';
         $default_options['booking_search_form_show'] = str_replace( '\\n\\r', "\n", wpbc_get_default_search_form_template( 'standard_search_form' ) );     	//FixIn:6.1.0.1		// FixIn: 8.5.2.11.
      $mu_option4delete[]='booking_search_form_show';                 
         $default_options['booking_found_search_item'] = str_replace( '\\n\\r', "\n", wpbc_get_default_search_results_template( 'advanced_search_results' ) );  //FixIn:6.1.0.1		// FixIn: 8.5.2.11.

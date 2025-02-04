@@ -133,7 +133,13 @@ function wpbc_simple_form__page_save_submit(){
 	// -------------------------------------------------------------------------------------------------------------
     $skip_obligatory_field_types = array( 'calendar', 'submit', 'email' );
 
-    $if_exist_required = array( 'rangetime', 'captcha' );																		//FixIn:  TimeFreeGenerator
+	$if_exist_required = array(
+		'rangetime',
+		'captcha',
+		'durationtime',
+		'starttime',
+		'endtime',
+	);                                                                        //FixIn:  TimeFreeGenerator
 
     $visual_form_structure = array();
 

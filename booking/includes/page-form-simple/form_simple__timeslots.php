@@ -27,23 +27,28 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return mixed
  */
-function wpbc_form_gen_free_fields_selection_rangetime( $params,  $visual_form_structure ){
+function wpbc_form_gen_free_fields_selection_rangetime( $params, $visual_form_structure ) {
 
-	foreach ( $visual_form_structure as $form_field_el ) {
-		if (  ( isset( $form_field_el['name'] ) ) && ( 'rangetime' == $form_field_el['name'] )  ){
+	$fields_add_once_arr = array( 'rangetime', 'durationtime', 'starttime', 'endtime' );
+	foreach ( $fields_add_once_arr as $fields_add_once_name ) {
 
-			if (! empty($params['rangetime'])){
+		foreach ( $visual_form_structure as $form_field_el ) {
+			if ( ( isset( $form_field_el['name'] ) ) && ( $fields_add_once_name === $form_field_el['name'] ) ) {
 
-				$save = $params['rangetime'];
+				if ( ! empty( $params[ $fields_add_once_name ] ) ) {
 
-				unset( $params['rangetime'] );
+					$save = $params[ $fields_add_once_name ];
 
-				$params['edit_rangetime'] = $save;
+					unset( $params[ $fields_add_once_name ] );
+
+					$params[ 'edit_' . $fields_add_once_name ] = $save;
+				}
 			}
 		}
 	}
-    return $params;
+	return $params;
 }
+
 add_filter( 'wpbc_form_gen_free_fields_selection', 'wpbc_form_gen_free_fields_selection_rangetime', 10, 2 );
 
 

@@ -19,24 +19,24 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 class WPBC_TinyMCE_Buttons {
     
     //                                                                              <editor-fold   defaultstate="collapsed"   desc=" I n i t    +    H o o k s" >
-    private $settings = array();
-    
-    function __construct( $params ) {
-        
-        $this->settings = array(
-                                  'tiny_prefix'         => 'wpbc_tiny'
-                                , 'tiny_icon_url'       => ''															//WPBC_PLUGIN_URL . '/assets/img/bc_black-16x16.png'
-                                , 'tiny_js_plugin'      => WPBC_PLUGIN_URL . '/js/wpbc_tinymce_btn.js'
-                                , 'tiny_js_function'    => 'wpbc_init_tinymce_buttons'                     				// This function NAME exist inside of this JS file: ['tiny_js_plugin']
-                                , 'tiny_btn_row'        => 1
-                                , 'pages_where_insert'  => array()		// FixIn: 10.6.5.1.
-                                , 'buttons'             => array()		// FixIn: 10.6.5.1.
-                            );
-        
-        $this->settings = wp_parse_args( $params, $this->settings );
-        
-        add_action( 'init', array( $this, 'define_init_hooks' ) );   // Define init hooks
-    }
+	private $settings = array();
+
+	public function __construct( $params ) {
+
+		$this->settings = array(
+			'tiny_prefix'        => 'wpbc_tiny',
+			'tiny_icon_url'      => '',                                             // WPBC_PLUGIN_URL . '/assets/img/bc_black-16x16.png'.
+			'tiny_js_plugin'     => WPBC_PLUGIN_URL . '/js/wpbc_tinymce_btn.js',
+			'tiny_js_function'   => 'wpbc_init_tinymce_buttons',                    // This function NAME exist inside of this JS file: ['tiny_js_plugin'].
+			'tiny_btn_row'       => 1,
+			'pages_where_insert' => array(),        // FixIn: 10.6.5.1.
+			'buttons'            => array(),        // FixIn: 10.6.5.1.
+		);
+
+		$this->settings = wp_parse_args( $params, $this->settings );
+
+		add_action( 'init', array( $this, 'define_init_hooks' ) );   // Define init hooks.
+	}
     
     /** Init all hooks for showing Button in Tiny Toolbar */
     public function define_init_hooks() {
@@ -80,88 +80,91 @@ class WPBC_TinyMCE_Buttons {
         }            
     }
     //                                                                              </editor-fold>
-                                                                                  
-                                                                                  
+
+
     //                                                                              <editor-fold   defaultstate="collapsed"   desc=" TinyMCE - Add Button " >    
 
-    /**
+	/**
 	 * Load JS file  - TinyMCE plugin
-     * 
-     * @param array $plugins
-     * @return array
-     */
-    public function load_tiny_js_plugin( $plugins ){
-    
-        $plugins[ $this->settings['tiny_prefix'] . '_quicktags'] = $this->settings['tiny_js_plugin'];
-        
-        return $plugins;
-    }
-    
-    
-    /**
+	 *
+	 * @param array $plugins
+	 *
+	 * @return array
+	 */
+	public function load_tiny_js_plugin( $plugins ) {
+
+		$plugins[ $this->settings['tiny_prefix'] . '_quicktags' ] = $this->settings['tiny_js_plugin'];
+
+		return $plugins;
+	}
+
+
+	/**
 	 * Add the custom TinyMCE buttons
-     * 
-     * @param array $buttons
-     * @return array
-     */
-    public function add_tiny_button( $buttons ) {
-                
-        array_push( $buttons, "separator" );
-        
-        foreach ( $this->settings['buttons'] as $type => $strings ) {
-            array_push( $buttons, $this->settings['tiny_prefix'] . '_' . $type );
-        }
+	 *
+	 * @param array $buttons
+	 *
+	 * @return array
+	 */
+	public function add_tiny_button( $buttons ) {
 
-        return $buttons;        
-    }
-    
-    
-    /** Add the old style button to the non-TinyMCE editor views */
-    public function add_html_button() {
-        
-        $buttonshtml = '';
-        $datajs='';
-        
-        foreach ( $this->settings['buttons'] as $type => $props ) {
+		array_push( $buttons, 'separator' );
 
-            $buttonshtml .= '<input type="button" class="ed_button button button-small" onclick="'
-                                .$props['js_func_name_click'].'(\'' . $type . '\')" title="' . $props['hint'] . '" value="' . $props['title'] . '" />';
+		foreach ( $this->settings['buttons'] as $type => $strings ) {
+			array_push( $buttons, $this->settings['tiny_prefix'] . '_' . $type );
+		}
 
-            $datajs.= " wpbc_tiny_btn_data['$type'] = {\n";
-            $datajs.= '		title: "' . esc_js( $props['title'] ) . '",' . "\n";
-            $datajs.= '		tag: "' . esc_js( $props['bookmark'] ) . '",' . "\n";
-            $datajs.= '		tag_close: "' . esc_js( $props['is_close_bookmark'] ) . '",' . "\n";
-            $datajs.= '		cal_count: "' . get_bk_option( 'booking_client_cal_count' )  . '"' . "\n";
-            $datajs.=  "\n	};\n";
-        }
-        
-        ?><script type="text/javascript">
-            // <![CDATA[
-            
-                function wpbc_add_html_button_to_toolbar(){                     // Add buttons  ( HTML view )
-                    if ( jQuery( '#ed_toolbar' ).length == 0 ) 
-                        setTimeout( 'wpbc_add_html_button_to_toolbar()' , 100 );
-                    else 
-                        jQuery("#ed_toolbar").append( '<?php
-							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-							echo wp_specialchars_decode( esc_js( $buttonshtml ), ENT_COMPAT ); ?>');
-                }                
-                jQuery(document).ready(function(){ 
-                    setTimeout( 'wpbc_add_html_button_to_toolbar()' , 100 );
-                });
+		return $buttons;
+	}
 
-                var selected_booking_shortcode = 'bookingform';
-                var wpbc_tiny_btn_data={};
-                <?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $datajs; ?>
-                
-            // ]]>
-        </script><?php
-        
-    }
-    
-    
+
+	/** Add the old style button to the non-TinyMCE editor views */
+	public function add_html_button() {
+
+		$buttonshtml = '';
+		$datajs      = '';
+
+		foreach ( $this->settings['buttons'] as $type => $props ) {
+
+			$buttonshtml .= '<input type="button" class="ed_button button button-small" onclick="' . $props['js_func_name_click'] . '(\'' . $type . '\')" title="' . $props['hint'] . '" value="' . $props['title'] . '" />';
+
+			$datajs .= " wpbc_tiny_btn_data['$type'] = {\n";
+			$datajs .= '		title: "' . esc_js( $props['title'] ) . '",' . "\n";
+			$datajs .= '		tag: "' . esc_js( $props['bookmark'] ) . '",' . "\n";
+			$datajs .= '		tag_close: "' . esc_js( $props['is_close_bookmark'] ) . '",' . "\n";
+			$datajs .= '		cal_count: "' . get_bk_option( 'booking_client_cal_count' ) . '"' . "\n";
+			$datajs .= "\n	};\n";
+		}
+
+		?>
+		<script type="text/javascript">
+			// <![CDATA[
+			function wpbc_add_html_button_to_toolbar() {                     // Add buttons  ( HTML view ).
+				if ( jQuery( '#ed_toolbar' ).length == 0 )
+					setTimeout( 'wpbc_add_html_button_to_toolbar()', 100 );
+				else {
+					jQuery( "#ed_toolbar" ).append( '<?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_specialchars_decode( esc_js( $buttonshtml ), ENT_COMPAT ); ?>' );
+				}
+			}
+
+			jQuery( document ).ready( function () {
+				setTimeout( 'wpbc_add_html_button_to_toolbar()', 100 );
+			} );
+
+			var selected_booking_shortcode = 'bookingform';
+			var wpbc_tiny_btn_data         = {};
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $datajs; ?>
+			// ]]>
+		</script>
+		<?php
+
+	}
+
+
     public function insert_button() {
         
         $script = '';

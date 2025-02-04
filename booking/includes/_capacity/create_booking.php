@@ -571,6 +571,8 @@ function wpbc_booking_save( $request_params ){
 				wpbc_send_email_approved( $payment_params['booking_id'], 1 );
 			}
 
+			do_action( 'wpbc_booking_is_approved_during_creation' , $payment_params['booking_id'] , (int) $is_booking_approved );  // FixIn: 10.10.1.1.
+
 			// Payment request from admin panel,  if needed
 			if(
 				   ( $payment_params['is_from_admin_panel'] )
@@ -581,7 +583,7 @@ function wpbc_booking_save( $request_params ){
 				$is_send = wpbc_send_email_payment_request( $payment_params['booking_id'], $payment_params['resource_id'], $email_content , $payment_reason );
 			}
 
-			do_action( 'wpbc_booking_approved' , $payment_params['booking_id'] , (int) $is_booking_approved );
+
 
 		} else {
 
@@ -1175,14 +1177,15 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 				$is_edit_booking['resource_id'] = intval( $my_booking_id_type[1] );
 
 				//TODO: test it. Check situation when  we have editing "child booking resource",  so  need to  re-update calendar and form  to have it for parent resource.        // FixIn: 6.1.1.9.
-				if ( strpos( $server_request_url, 'resource_no_update' ) === false ) {                                  // FixIn: 9.4.2.3.
+				// FixIn: 10.10.1.2
+				//if ( strpos( $server_request_url, 'resource_no_update' ) === false ) {                                  // FixIn: 9.4.2.3.
 
 					if ( ( function_exists( 'wpbc_is_this_child_resource' ) ) && ( wpbc_is_this_child_resource( $is_edit_booking['resource_id'] ) ) ) {
 						$bk_parent_br_id = wpbc_get_parent_resource( $is_edit_booking['resource_id'] );
 
 						$is_edit_booking['resource_id'] = intval( $bk_parent_br_id );
 					}
-				}
+				//}
 			}
 		}
 		return $is_edit_booking;
@@ -1212,7 +1215,7 @@ function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
 
 		$how_many_items_to_book = 1;
 
-		//TODO: Check about some URL parameter: '&resource_no_update' to book parent resource as single resource!
+		//TODO: Check about some URL parameter: '&resource_no_update' to book parent resource as single resource!  // FixIn: 10.10.1.2
 		if (
                ( class_exists( 'wpdev_bk_biz_l' ) )
 			&& ( 0 !== wpbc_get_child_resources_number( $resource_id ) )                                        // Here several  child booking resources

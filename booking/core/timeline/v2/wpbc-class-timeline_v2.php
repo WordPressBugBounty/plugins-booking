@@ -3010,7 +3010,7 @@ if(1)
 						$bk_hash = (isset( $bookings[$bk_id]->hash )) ? $bookings[$bk_id]->hash : '';
 						$bk_booking_type = $bookings[$bk_id]->booking_type;
 						$edit_booking_url = $bk_url_add . '&booking_type=' . $bk_booking_type . '&booking_hash=' . $bk_hash . '&parent_res=1';
-						$edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
+						// FixIn: 10.10.1.2  $edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
 						if ( ! empty( $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'] ) ) {
 							$edit_booking_url .= '&booking_form=' . $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'];					// FixIn: 9.4.3.12.

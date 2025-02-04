@@ -683,6 +683,7 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
 }
 .wpbc_steps_for_timeline_container {
   max-width: Min(400px,100%);
+  min-width: 200px;
   margin: 3px 0 0;
   width: 100%;
   --wpbc_steps_for_timeline_step_color: #d6d6d6;
@@ -759,6 +760,14 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   -ms-flex-pack: center!important;
   justify-content: center!important
 }
+/*!   ==  Simple booking form - Center ==  */
+.wpbc_container_booking_form .wpbc_booking_form_simple .wpbc_aling_center .wpbc__field {
+  -ms-flex-pack: center!important;
+  justify-content: center!important
+}
+.wpbc_container_booking_form .wpbc_booking_form_simple .wpbc_aling_center .wpbc__field label {
+  text-align: center!important
+}
 /*!   ==  Center Calendar ? ==  */
 .wpbc_aling_center .wpbc_calendar_wraper {
   display: -ms-flexbox;
@@ -778,7 +787,7 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
     margin: 7px 15px
   }
 }
-/*!   ==  Wizard Form Tmeplate - Bordered Well Padding  =============================================================  */
+/*!   ==  Wizard Form Tmeplate - Bordered Well Padding  ============================================================  */
 .wpbc_wizard__border_container {
   box-shadow: rgba(0,0,0,.05) 0 2px 6px 0;
   border: 1px solid #ccc;

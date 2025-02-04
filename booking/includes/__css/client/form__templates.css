@@ -14,6 +14,13 @@
 .wpbc_aling_center .wpbc_times_selector {
 	justify-content: center !important;
 }
+/*!   ==  Simple booking form - Center ==  */
+.wpbc_container_booking_form .wpbc_booking_form_simple .wpbc_aling_center .wpbc__field {
+	justify-content: center !important;
+}
+.wpbc_container_booking_form .wpbc_booking_form_simple .wpbc_aling_center .wpbc__field label{
+	 text-align: center !important;
+}
 /*!   ==  Center Calendar ? ==  */
 .wpbc_aling_center .wpbc_calendar_wraper{
   display: flex;
@@ -26,7 +33,7 @@
 		margin: 7px 15px;
 	}
 }
-/*!   ==  Wizard Form Tmeplate - Bordered Well Padding  =============================================================  */
+/*!   ==  Wizard Form Tmeplate - Bordered Well Padding  ============================================================  */
 .wpbc_wizard__border_container {
 	box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 6px 0px;
 	border: 1px solid rgb(204, 204, 204);

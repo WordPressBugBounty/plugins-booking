@@ -13,10 +13,10 @@
 
 function wpbc_ui_settings__panel__click( left_vert_nav_menu_a, section_id_to_show, text_for_path ){
 
-    // Update text in Top Menu
-    jQuery( '.wpbc_settings_path_el_active' ).html(
-      '<a onclick="javascript:wpbc_ui_settings__panel__click( \''+ left_vert_nav_menu_a +'\', \''+ section_id_to_show +'\', \''+ text_for_path +'\' );" href="javascript:void(0);">' + text_for_path + '</a>'
-    );
+	// Update text in Top Menu.
+	jQuery( '.wpbc_settings_path_el_active' ).html(
+		'<a onclick="javascript:wpbc_ui_settings__panel__click( \'' + left_vert_nav_menu_a + '\', \'' + section_id_to_show + '\', \'' + text_for_path + '\' );" href="javascript:void(0);">' + text_for_path + '</a>'
+	);
 
     // Show / Hide section  and enable Left Vert Menu item
     wpbc_navigation_click_show_section( left_vert_nav_menu_a, section_id_to_show , '.postbox' , false);
@@ -310,7 +310,7 @@ function wpbc_admin_show_message( message, m_type, m_delay, is_append ){        
         } );
 
     });    
-}( jQuery ) );    
+}( jQuery ) );
 
 /**
 	 * Ajax Request
@@ -319,36 +319,45 @@ function wpbc_admin_show_message( message, m_type, m_delay, is_append ){        
  * @param {type} window_id
  * @returns {undefined}
  */
-//<![CDATA[
-function wpbc_verify_window_opening( us_id, window_id ){
+function wpbc_verify_window_opening(us_id, window_id) {
 
-        var is_closed = 0;
+	var is_closed = 0;
 
-        if (jQuery('#' + window_id ).hasClass('closed') == true){
-            jQuery('#' + window_id ).removeClass('closed');
-        } else {
-            jQuery('#' + window_id ).addClass('closed');
-            is_closed = 1;
-        }
+	if ( jQuery( '#' + window_id ).hasClass( 'closed' ) == true ) {
+		jQuery( '#' + window_id ).removeClass( 'closed' );
+	} else {
+		jQuery( '#' + window_id ).addClass( 'closed' );
+		is_closed = 1;
+	}
 
-
-        jQuery.ajax({                                           // Start Ajax Sending
-                url: wpbc_url_ajax,
-                type:'POST',
-                success: function (data, textStatus){if( textStatus == 'success')   jQuery('#ajax_respond').html( data );},
-                error:function (XMLHttpRequest, textStatus, errorThrown){ window.status = 'Ajax sending Error status:'+ textStatus; alert(XMLHttpRequest.status + ' ' + XMLHttpRequest.statusText); if ( XMLHttpRequest.status == 500 ) { alert('Error: 500'); } } ,
-                // beforeSend: someFunction,
-                data:{
-                    action:     'USER_SAVE_WINDOW_STATE',
-                    user_id:    us_id ,
-                    window:     window_id,
-                    is_closed:  is_closed,
-                    wpbc_nonce: jQuery('#wpbc_admin_panel_nonce').val() 
-                }
-        });
+	jQuery.ajax(
+		{
+		// Start Ajax Sending.
+		url    : wpbc_url_ajax,
+		type   : 'POST',
+		success: function (data, textStatus) {
+			if ( textStatus == 'success' ) jQuery( '#ajax_respond' ).html( data );
+		},
+		error  : function (XMLHttpRequest, textStatus, errorThrown) {
+			window.status = 'Ajax sending Error status:' + textStatus;
+			alert( XMLHttpRequest.status + ' ' + XMLHttpRequest.statusText );
+			if ( XMLHttpRequest.status == 500 ) {
+				alert( 'Error: 500' );
+			}
+		},
+		// beforeSend: someFunction,
+		data: {
+			action    : 'USER_SAVE_WINDOW_STATE',
+			user_id   : us_id,
+			window    : window_id,
+			is_closed : is_closed,
+			wpbc_nonce: jQuery( '#wpbc_admin_panel_nonce' ).val()
+		}
+	}
+	);
 
 }
-//]]>
+
 
 
 
@@ -360,10 +369,9 @@ function wpbc_verify_window_opening( us_id, window_id ){
  * @param {string} data_value - serialized data
  * @param {int} is_reload  -  { 0 | 1 } reload or not page
  */
-//<![CDATA[
 function wpbc_save_custom_user_data( us_id, data_name, data_value , is_reload ){
 
-        wpbc_admin_show_message_processing( 'saving' );   
+	wpbc_admin_show_message_processing( 'saving' );
 
         jQuery.ajax({                                           // Start Ajax Sending
                 url: wpbc_url_ajax,
@@ -380,9 +388,8 @@ function wpbc_save_custom_user_data( us_id, data_name, data_value , is_reload ){
                     wpbc_nonce: jQuery('#wpbc_admin_panel_nonce').val() 
                 }
         });
-
 }
-//]]>
+
 
 
 
@@ -757,7 +764,6 @@ function wpbc_reset_wp_editor_content( editor_textarea_id, editor_textarea_conte
  * @param {type} window_id
  * @returns {undefined}
  */
-//<![CDATA[
 function wpbc_dismiss_window(us_id,  window_id ){
 
     jQuery.ajax({                                           // Start Ajax Sending                        
@@ -776,13 +782,12 @@ function wpbc_dismiss_window(us_id,  window_id ){
             }
     });
 }
-//]]>
 
 /**
  * Hide HTML element with animation during 0.5 second
  *
  * @param window_id  - HTML ID of element, such as 'wpbc_my_window' - without # symbol
  */
-function wpbc_hide_window( window_id ){
-    jQuery( '#' + window_id ).slideUp( 800 );
-}            
+function wpbc_hide_window(window_id) {
+	jQuery( '#' + window_id ).slideUp( 800 );
+}

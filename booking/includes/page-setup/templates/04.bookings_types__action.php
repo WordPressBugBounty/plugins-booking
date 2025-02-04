@@ -40,6 +40,7 @@ function wpbc_template__bookings_types__action_validate_data( $post_data ){
 	$escaped_data = array(
 		'wpbc_swp_booking_types'            => '',          // Can be: 'full_days_bookings' | 'time_slots_appointments' | 'changeover_multi_dates_bookings'
 		'wpbc_swp_booking_timeslot_picker'  => get_bk_option('booking_timeslot_picker'),
+		'wpbc_swp_booking_appointments_type'  => 'rangetime',
 		'wpbc_swp_booking_change_over_days_triangles'  => get_bk_option('booking_change_over_days_triangles')
 	);
 
@@ -48,6 +49,10 @@ function wpbc_template__bookings_types__action_validate_data( $post_data ){
 			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
 	}
 	$key = 'wpbc_swp_booking_timeslot_picker';
+	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
+			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+	}
+	$key = 'wpbc_swp_booking_appointments_type';
 	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
 			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
 	}
@@ -132,24 +137,33 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 			    update_bk_option( 'booking_timeslot_picker', ( 'On' === $cleaned_data['wpbc_swp_booking_timeslot_picker'] ) ? 'On' : 'Off' );
 
 			    if ( class_exists( 'wpdev_bk_personal' ) ) {
+
 					// FixIn: 10.7.1.4.
-				    update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments30' ) ) );
-				    update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments30' ) ) );
+					if ( 'rangetime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ){
+						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments30' ) ) );
+						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments30' ) ) );
+					} else{
+						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments_service_a' ) ) );
+						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments_service_a' ) ) );
+					}
 
-					//    update_bk_option( 'booking_form',       str_replace( '\\n\\', '', wpbc_get__booking_form__template( '2_columns_times_30_minutes_wizard' ) ) );
-					//    update_bk_option( 'booking_form_show',  str_replace( '\\n\\', '', wpbc_get__booking_data__template( '2_columns_times_30_minutes_wizard' ) ) );
 			    } else {
-				    // Free
+				    // Free.
 
-				    // Structure
-				    $booking_form_structure = 'wizard_2columns';                                                        // vertical  form_right  form_center
+				    // Structure.
+					$booking_form_structure = ( 'rangetime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ) ? 'wizard_2columns' : 'wizard_services_a';  // vertical  form_right  form_center.
+
 				    update_bk_option( 'booking_form_structure_type', $booking_form_structure );
 				    update_bk_option( 'booking_form_layout_width', '100' );
 				    update_bk_option( 'booking_form_layout_width_px_pr', '%' );
 				    update_bk_option( 'booking_form_layout_max_cols', 2 );
 
 					// Default Form
-				    $visual_form_structure = wpbc_simple_form__visual__get_default_form__times_30min();
+					if ( 'wizard_services_a' === $booking_form_structure ) {
+						$visual_form_structure = wpbc_simple_form__visual__get_default_form__service_duration_a();
+					} else {
+						$visual_form_structure = wpbc_simple_form__visual__get_default_form__times_30min();
+					}
 
 					update_bk_option( 'booking_form_visual', $visual_form_structure );
 				    update_bk_option( 'booking_form',       wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ) );

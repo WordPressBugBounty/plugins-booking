@@ -149,7 +149,7 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 		<r> \n\
 			<div class="wpbc__field" style="justify-content: flex-end"> \n\
      			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2"> \n\ 
-				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2 \n\ 
+				' . esc_attr__( 'Next', 'booking' ) . ' \n\ 
 				</a> \n\
 			</div> \n\ 
 		</r> \n\ 
@@ -175,7 +175,7 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	<hr> \n\
 	<r> \n\
 		<div class="wpbc__field" style="justify-content: flex-end"> \n\
-			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp; \n\ 
+			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back', 'booking' ) . '</a>&nbsp;&nbsp;&nbsp; \n\ 
 			[submit "' . __( 'Send', 'booking' ) . '"] \n\ 
 		</div> \n\ 
 	</r> \n\
@@ -531,7 +531,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='		<hr><r> \n';
         $form_content .='			<div class="wpbc__field" style="justify-content: flex-end;"> \n';
         $form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" > \n';
-        $form_content .='				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2 \n';
+        $form_content .='				' . esc_attr__( 'Next', 'booking' ) . ' \n';
         $form_content .='				</a> \n';
         $form_content .='			</div> \n';
         $form_content .='		</r> \n';
@@ -566,7 +566,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         }
         $form_content .='	<hr><r> \n';
         $form_content .='		<div class="wpbc__field" style="justify-content: flex-end;"> \n';
-        $form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp; \n';
+        $form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back', 'booking' ) . '</a>&nbsp;&nbsp;&nbsp; \n';
         $form_content .='			[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
         $form_content .='		</div> \n';
         $form_content .='	</r> \n';
@@ -861,7 +861,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='		<r> \n';
         $form_content .='			<div class="wpbc__field" style="justify-content: flex-end;"> \n';
         $form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" > \n';
-        $form_content .='				' . esc_attr__( 'Continue to step', 'booking' ) . ' 2 \n';
+        $form_content .='				' . esc_attr__( 'Next', 'booking' ) . ' \n';
         $form_content .='				</a> \n';
         $form_content .='			</div> \n';
         $form_content .='		</r> \n';
@@ -900,7 +900,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='	<hr> \n';
         $form_content .='	<r> \n';
         $form_content .='		<div class="wpbc__field" style="justify-content: flex-end;"> \n';
-        $form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a>&nbsp;&nbsp;&nbsp; \n';
+        $form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back', 'booking' ) . '</a>&nbsp;&nbsp;&nbsp; \n';
         $form_content .='			[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
         $form_content .='		</div> \n';
         $form_content .='	</r> \n';
@@ -1115,7 +1115,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='	    <hr><r> \n';
 		$form_content .='			<c class="wpbc_aling_right" > \n';
 		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2"> \n';
-		$form_content .='					' . esc_attr__( 'Continue to step', 'booking' ) . ' 2 \n';
+		$form_content .='					' . esc_attr__( 'Next', 'booking' ) . ' \n';
 		$form_content .='				</a> \n';
 		$form_content .='			</c> \n';
 		$form_content .='		</r> \n';
@@ -1142,9 +1142,9 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='		<r> \n';
 		$form_content .='			<c class="wpbc_aling_right" > \n';
 		$form_content .='				<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1"> \n';
-		$form_content .='					' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a><spacer>width:20px;</spacer> \n';
+		$form_content .='					' . esc_attr__( 'Back', 'booking' ) . '</a><spacer>width:20px;</spacer> \n';
 		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_3" > \n';
-		$form_content .='					' . esc_attr__( 'Continue to step', 'booking' ) . ' 3</a> \n';
+		$form_content .='					' . esc_attr__( 'Next', 'booking' ) . '</a> \n';
 		$form_content .='			</c> \n';
 		$form_content .='		</r> \n';
 		$form_content .='	</div> \n';
@@ -1181,7 +1181,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='	<r> \n';
 		$form_content .='		<c class="wpbc_aling_right" > \n';
 		$form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2"> \n';
-		$form_content .='				' . esc_attr__( 'Back to step', 'booking' ) . ' 2</a><spacer>width:20px;</spacer> \n';
+		$form_content .='				' . esc_attr__( 'Back', 'booking' ) . '</a><spacer>width:20px;</spacer> \n';
 		$form_content .='			[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
 		$form_content .='		</c> \n';
 		$form_content .='	</r> \n';
@@ -1224,7 +1224,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='		<r> \n';
 		$form_content .='			<c class="wpbc_aling_right" > \n';
 		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" > \n';
-		$form_content .='					' . esc_attr__( 'Continue to step', 'booking' ) . ' 2</a> \n';
+		$form_content .='					' . esc_attr__( 'Next', 'booking' ) . '</a> \n';
 		$form_content .='			</c> \n';
 		$form_content .='		</r> \n';
 		$form_content .='	</div> \n';
@@ -1261,7 +1261,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='		<r> \n';
 		$form_content .='			<c class="wpbc_aling_right" > \n';
 		$form_content .='				<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1"> \n';
-		$form_content .='					' . esc_attr__( 'Back to step', 'booking' ) . ' 1</a><spacer>width:20px;</spacer> \n';
+		$form_content .='					' . esc_attr__( 'Back', 'booking' ) . '</a><spacer>width:20px;</spacer> \n';
 		$form_content .='				[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
 		$form_content .='			</c> \n';
 		$form_content .='		</r> \n';

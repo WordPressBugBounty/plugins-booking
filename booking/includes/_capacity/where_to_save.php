@@ -186,6 +186,7 @@ function wpbc__where_to_save_booking( $local_params ){
 															, $day_sql_key2, count( $available_res_in_day_arr ), $how_many_items_to_book )
 												. '</strong><hr><code>'
 							                    . wp_json_encode( $available_slots )
+							                    // . wp_json_encode( $local_params, $availability_per_days )
 							                    . '</code></p>'
 							             . '</div>'
 

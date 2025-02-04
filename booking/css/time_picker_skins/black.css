@@ -1,41 +1,30 @@
-/*******************************************************************************/
-/*  C O L O R    S K I N          **********************************************/
-/*******************************************************************************/
-/* For better compatibility, please change here only following properties:     */
-/*
-*        background , background-color, background-repeat, background-image,  background-repeat, background-position
-*        border
-*        box-shadow, -moz-box-shadow, -webkit-box-shadow
-*        border-radius, -moz-border-radius, -webkit-border-radius
-*        color
-*        font-weight
-*        text-shadow
-*        text-transform
-*
-*/
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*   C h i l d     T i m e     P i c k e r     T h e m e     of     "../css/time_picker_skins/light__24_8.css"        */
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* -  BLACK -     C o l o r     S c h e m e                                                                           */
+/* ------------------------------------------------------------------------------------------------------------------ */
+@import url("light__24_8.css");
+/* For best compatibility, please change parameters only in :root { ... } section */
+:root {
+	--wpbc_timepicker-font-size: 15px;
 
-/*   S K I N  -  BLACK  **********************************************************************************************/
-/* Button */
-.wpbc_times_selector div {
-	color: #bbb;;
-	border:2px solid transparent;
-	background: #595959;
-	border-radius: 5px;
-	text-align: center;
-	font-weight: 400;
-	font-size: 1em;
-	box-shadow: 0px 0 4px transparent;
-}
+	--wpbc_timepicker-bg-color: #1d2327;
+	--wpbc_timepicker-text-color: #d0d0d0;
+	--wpbc_timepicker-border-color: #1d2327;
+	--wpbc_timepicker-bg-color-opacity: 100%;
 
-/* Button - Mouse Over */
-.wpbc_times_selector div:hover{
-  color: #ddddcf;
-}
-/* Button - Selected */
-.wpbc_times_selector div.wpbc_time_selected{
-	background: #404040;
-	color: #ddddcf;
-	box-shadow: 0 0 4px #585858;
-	font-weight: 600;
-	border: 2px solid transparent;
+	--wpbc_timepicker-hover-bg-color: #425977;
+	--wpbc_timepicker-hover-text-color: #f0f6ff;
+	--wpbc_timepicker-hover-border-color: #6b87aa;
+	--wpbc_timepicker-hover-bg-color-opacity: 75%;
+
+	--wpbc_timepicker-selected-bg-color: #476a99;
+	--wpbc_timepicker-selected-text-color: #f0f6ff;
+	--wpbc_timepicker-selected-border-color: var(--wpbc_timepicker-selected-bg-color);
+	--wpbc_timepicker-selected-bg-color-opacity: 100%;
+
+	--wpbc_timepicker-border-width: 2px;
+	--wpbc_timepicker-border-radius: 5px;
+	--wpbc_timepicker-padding: 0.15em 1em;
+	--wpbc_timepicker-margin: 0.25em 1em 0.25em 0;
 }

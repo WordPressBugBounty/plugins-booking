@@ -39,6 +39,7 @@
 
 .wpbc_steps_for_timeline_container {
     max-width: Min(400px, 100%);
+    min-width: 200px;
     margin: 3px 0 0;
     width: 100%;
     --wpbc_steps_for_timeline_step_color: #d6d6d6;

@@ -1482,8 +1482,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         // <editor-fold     defaultstate="collapsed"                        desc=" Advanced "  >
         
 
-        $this->fields = apply_filters( 'wpbc_settings_edit_url_hash', $this->fields, $default_options_values ); 
-        $this->fields = apply_filters( 'wpbc_settings_resource_no_update__during_editing', $this->fields, $default_options_values );
+        $this->fields = apply_filters( 'wpbc_settings_edit_url_hash', $this->fields, $default_options_values );
+        // FixIn: 10.10.1.2  $this->fields = apply_filters( 'wpbc_settings_resource_no_update__during_editing', $this->fields, $default_options_values );
 
         // Show advanced settings of JavaScript loading
         
