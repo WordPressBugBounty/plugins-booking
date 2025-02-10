@@ -461,7 +461,6 @@ div.wpbc_ui_radio_footer p.wpbc_ui_radio_choice_description {
 a.wpbc_ui_settings__text_pro,
 a.wpbc_ui_settings__text_pro:hover {
   text-decoration: underline;
-  -webkit-text-decoration-style: dashed;
   text-decoration-style: dashed;
   text-underline-offset: 3px
 }

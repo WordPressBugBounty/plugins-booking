@@ -725,7 +725,6 @@ hr.wpbc_tl_popover_booking_separator {
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_1 .flex_tl_resource_title a:focus,
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_1 .flex_tl_resource_title a:hover {
   text-decoration: underline;
-  -webkit-text-decoration-style: dashed;
   text-decoration-style: dashed;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px
@@ -1108,7 +1107,6 @@ hr.wpbc_tl_popover_booking_separator {
   outline: 0;
   box-shadow: 0 0 0 2px #a6bbe5;
   box-shadow: 0 0 4px -1px #000;
-  -webkit-text-decoration-style: dashed;
   text-decoration-style: dashed;
   text-decoration-thickness: 0;
   text-underline-offset: 2px

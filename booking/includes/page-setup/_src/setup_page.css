@@ -302,3 +302,21 @@ div.wpbc_container.wpbc_form .wpbc_swp_section label {
     border-left: 4px solid #9580aa;
 }
 
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* ==  Section  for Appointment type selection  at Step #4 ==  */
+/* ------------------------------------------------------------------------------------------------------------------ */
+.wpbc_container_booking_form .wpbc__field .wpbc_ui_booking_timeslot_picker__get_on_off__div {
+	padding-left: 15px;
+}
+
+.wpbc_container_booking_form .wpbc__field .booking_appointments_type__get_on_off label.wpbc-form-radio,
+.wpbc_container_booking_form .wpbc__field .booking_appointments_type__get_on_off label.wpbc-form-radio:hover{
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 10px 0;
+	font-weight: 400;
+}
+.wpbc_container_booking_form .wpbc__field .booking_appointments_type__get_on_off .wpbc-form-radio input {
+	margin: 0 10px 0 5px;
+}

@@ -132,7 +132,7 @@ function wpbc_ui_el__radio_container_click( _this ) {
 		return false;
 	}
 
-	var j_radio = jQuery( _this ).find( 'input[type=radio]' );
+	var j_radio = jQuery( _this ).find( 'input[type=radio]:not(.wpbc-form-radio-internal)' );
 	if ( j_radio.length ) {
 		j_radio.prop( 'checked', true ).trigger( 'change' );
 	}
