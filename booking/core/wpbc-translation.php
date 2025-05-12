@@ -809,7 +809,7 @@ function wpbc_update_translations__from_wp() {
 				return $translations_arr;
 			}
 
-			require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+			require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 			$api = translations_api( 'plugins', array(
 														'slug'    => 'booking',
@@ -1209,7 +1209,7 @@ function wpbc_show_translation_status_from_wpbc( $is_echo = true, $params = arra
 		function wpbc_get_available_language_locales_from_wp_org_api(){
 
 			// Get Language names for all  Locales
-			require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+			require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 			/**
 			 * Array(   ["nl_NL"] => array ( language = "nl_NL"
 											 version = "5.9"

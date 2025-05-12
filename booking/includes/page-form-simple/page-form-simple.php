@@ -50,23 +50,56 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
     }
 
     public function tabs() {
-        
-        $tabs = array();
-                
+
+
+		// Init vars.
+		$separator_i    = 0;
+		$tabs           = array();
+		$subtabs        = array();
+		$subtab_default = array(
+			'type'            => 'subtab',                        // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'.
+			'title'           => '',                              // Example: __( 'Dashboard'                                                                   // Title of TAB.
+			'page_title'      => '',                              // __( 'Search Availability'                                                                  // Title of Page.
+			'hint'            => '',                              // __( 'Configure the layout and functionality of both the search form and search results.'   // Hint.
+			'link'            => '',                              // wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_dashboard_tab',        // Link.
+			'css_classes'     => '',                              // cls CSS .
+			'font_icon'       => 'wpbc_icn_dashboard',
+			'font_icon_right' => 'wpbc-bi-question-circle',                              // 'wpbc-bi-question-circle' .
+			'default'         => false,                           // Is this sub tab activated by default or not: true || false.
+		);
+
         $tabs[ 'form' ] = array(
+			'is_show_top_path'                   => false,                                // true | false.  By default value is: false.
+			'left_navigation__default_view_mode' => 'compact',                           // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'page_title'                         => __( 'Booking Form', 'booking'),                               // Header - Title.  If false, than hidden.
+			'page_description'                   => __('Add, remove, or customize fields in your booking form.','booking'),                               // Header - Title Description.  If false, than hidden.
                               'title'     => __( 'Booking Form', 'booking')             // Title of TAB
-                            , 'page_title'=> __( 'Fields Settings', 'booking')      // Title of Page    
-                            , 'hint'      => __( 'Customize fields in booking form', 'booking')               // Hint
-                            //, 'link'      => ''                                 // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
-                            //, 'position'  => ''                                 // 'left'  ||  'right'  ||  ''
+                            , 'page_title'=> __( 'Booking Form', 'booking')      // Title of Page
+                            , 'hint'      => __( 'Add, remove, or customize fields in your booking form.', 'booking')               // Hint
                             //, 'css_classes'=> ''                                // CSS class(es)
-                            //, 'icon'      => ''                                 // Icon - link to the real PNG img
                             , 'font_icon' => 'wpbc_icn_dashboard _customize dashboard rtt draw'         // CSS definition  of forn Icon
-                            //, 'default'   => false                               // Is this tab activated by default or not: true || false. 
-                            //, 'disabled'  => false                              // Is this tab disbaled: true || false. 
-                            //, 'hided'     => false                              // Is this tab hided: true || false. 
-                            , 'subtabs'   => array()   
+                            , 'default'   => false                               // Is this tab activated by default or not: true || false.
+                            , 'subtabs'   => array()
+							, 'folder_style'     => 'order:10;',
                     );
+
+		$section_id              = 'wpbc_general_settings_booking_form_fields_metabox';
+		$subtabs['booking_form_fields'] = array_merge(
+			$subtab_default,
+			array(
+				'title'           => __( 'Booking Form Fields', 'booking' ),
+				'page_title'      => __( 'Booking Form Fields', 'booking' ),
+				'hint'            => __( 'Add, remove, or customize fields in your booking form.', 'booking' ),
+				'font_icon'       => 'wpbc-bi-ui-radios',
+				'font_icon_right' => 'wpbc-bi-question-circle',
+				'css_classes'     => 'do_expand__' . $section_id . '_link', // sub_bold', .
+				//'onclick'         => "wpbc_admin_ui__do__open_url__expand_section( '" . wpbc_get_settings_url() . "', '" . $section_id . "' );",
+				'link'            => wpbc_get_settings_url() . '&tab=form',
+				'default'         => true,
+			)
+		);
+		$tabs[ 'form' ]['subtabs'] = $subtabs;
+
 
         if ( ! class_exists( 'wpdev_bk_personal' ) )																	// FixIn: 8.1.1.12.
         	$tabs[ 'upgrade-link' ] = array(
@@ -79,7 +112,8 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
                             //, 'icon' => ''                                    // Icon - link to the real PNG img
                             , 'font_icon' => 'wpbc_icn_redeem'// CSS definition  of forn Icon
                             //, 'default' => false                              // Is this tab activated by default or not: true || false. 
-                            //, 'subtabs' => array()            
+                            //, 'subtabs' => array()
+							, 'folder_style' => 'order:9999;'
         );
         
         return $tabs;
@@ -622,7 +656,7 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 				<div style="margin-right: 1em;font-weight: 600;"><?php esc_html_e('Global Settings','booking'); ?>: </div>
 				<i style="margin-right: 5px;<?php echo ( get_bk_option( 'booking_is_use_captcha' ) === 'On' ) ? 'color: #036aab' : ''; ?>"
 				   class="wpbc_set_nav__right_icon menu_icon icon-1x <?php echo ( get_bk_option( 'booking_is_use_captcha' ) === 'On' ) ? 'wpbc-bi-toggle2-on wpbc_set_nav__icon_on' : 'wpbc-bi-toggle2-off'; ?>"
-				></i><a href="<?php echo esc_url( wpbc_get_settings_url() ) . '&scroll_to_section=wpbc_general_settings_form_tab'; ?>">
+				></i><a href="<?php echo esc_url( wpbc_get_settings_url() ) . '&tab=form&subtab=form_options#do_expand__wpbc_general_settings_form_metabox#do_other_actions__blink_captcha'; ?>">
 					<span ><?php
 						esc_html_e( 'CAPTCHA', 'booking' );
 						echo ' ';
@@ -1466,12 +1500,9 @@ function wpbc_register_js__page_form_simple( $hook ) {
 		( isset( $_REQUEST['page'] ) ) && ( 'wpbc-settings' === $_REQUEST['page'] )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		&& ( isset( $_REQUEST['tab'] ) ) && ( 'form' === $_REQUEST['tab'] )          // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	) {
-
 		// wpbc_load_js__required_for_modals();
 		// wpbc_load_js__required_for_media_upload();
-
 		wp_enqueue_script( 'wpbc_simple_form', wpbc_plugin_url( '/includes/page-form-simple/_src/wpbc_simple_form.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
-		// wp_enqueue_script( 'wpbc-admin-support', 			wpbc_plugin_url( '/core/any/js/admin-support.js' ), 							array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );		// Required for sending dismiss requests
 	}
 }
 

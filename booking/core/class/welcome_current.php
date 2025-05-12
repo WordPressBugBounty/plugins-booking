@@ -4,9 +4,126 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 
+function wpbc_welcome_section_10_11( $obj ){
+
+	$section_param_arr = array( 'version_num' => '10.11', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+
+
+	  // $obj->asset_path = 'http://beta/assets/';	// TODO: 2024-06-01 comment this
+
+
+	// <editor-fold     defaultstate="collapsed"                        desc=" = F R E E = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = F R E E =
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Major Admin Interface Overhaul!' ) ); ?></h2>
+			<span style="font-size: 1em;"><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'A complete redesign of the Booking Calendar admin panel brings a **modern, clean, and user-focused UI**, helping you configure settings faster and manage bookings more efficiently.' ) ); ?></span>
+			<div class="wpbc_wn_col" style="flex: 1 1 55%;margin: 20px 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.11/booking_calendar_settings_dashboard_page.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 45%;margin: 10px 0;">
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Brand New Admin Panel Experience!**' ) ); ?></h3>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fresh New Logo**: We\'ve updated the Booking Calendar logo with a clean and modern design based on the initials \'b\' and \'c\'.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Full-Screen Mode**: Hide the WordPress interface and focus entirely on booking management. Just click the full-screen icon at the top right of any admin page.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Universal Left Sidebar Menu**: Easily access all settings from a new side menu that works in wide, compact, or minimized modes—fully optimized for mobile too.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fixed Top Bar**: The new horizontal bar stays visible while scrolling and contains essential buttons like “Full Screen.”' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col"  style="flex: 1 1 45%;margin: 0;">
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Redesigned Booking Listing Page' ) ); ?></h3>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Modern UI**: Clean and intuitive design, focused on clear display of booking dates, statuses, and key details.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Smarter Date View**: See booking dates displayed based on their type (single day, multiple days, or time slots).' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Expandable Details**: Hover or click to expand and view full booking information.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Dropdown Actions**: All booking actions are now in an easy-to-use dropdown next to each entry.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improved Bulk Actions**: Located in the top left, automatically expands when bookings are selected.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Enhanced Pagination**: Easily browse bookings with new navigation and items-per-page controls.' ) ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.11/booking_calendar_booking_listing_page.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col" style="flex: 1 1 55%;margin: 20px 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.11/booking_calendar_timeline_view_page__multi_resources.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Screenshot from  paid versions of Booking Calendar' ) ); ?></span></span>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 45%;margin: 10px 0;">
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Other Improvements**' ) ); ?></h3>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Timeline View**: Refreshed layout and better booking resource selection in paid versions.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Settings Menu Structure**: Settings pages are now grouped more logically in the sidebar for quicker access.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Accessibility**: Improved keyboard navigation for calendars and time pickers to meet EAA standards.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Edit Past Bookings**: Add &allow_past to the URL to allow editing bookings in the past from the admin panel.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Reset Filters**: If no bookings are found, a new “Reset Filter” link will appear to reload all bookings.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="justify-content: center;">
+			<?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '...and hundreds of other small improvements and refinements!' ) ); ?>
+		</div>
+	</div>
+	<?php
+
+
+	// </editor-fold>
+
+	// <editor-fold     defaultstate="collapsed"                        desc="  = M I X E D = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = M I X E D =
+	// -----------------------------------------------------------------------------------------------------------------
+	/*
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Additional Improvements in Free and Pro versions' ) ); ?></h2>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col">
+				<ul>
+					<?php // Free. ?>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New**: You can ...' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement** ...' ) ); ?></li>
+				</ul>
+
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Improvements in Pro Versions' ) ); ?></h3>
+				<ul>
+					<?php // Pro. ?>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; We\'ve addressed ...' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; Fixed a ....' ) ); ?></li>
+				</ul>
+
+			</div>
+
+		</div>
+	</div><?php
+	*/
+	// </editor-fold>
+
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
 function wpbc_welcome_section_10_10( $obj ){
 
-	$section_param_arr = array( 'version_num' => '10.10', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '10.10', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 

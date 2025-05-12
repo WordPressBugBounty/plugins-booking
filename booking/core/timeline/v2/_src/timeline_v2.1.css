@@ -1132,15 +1132,6 @@ hr.wpbc_tl_popover_booking_separator {
 		margin-left:auto;
 		margin-right:0px;
 	}
-/* Top  search  form  for searching bookings by  ID */
-.wpbc_toolbar_search_by_id_bookings{
-	align-self: flex-end;
-}
-@media (max-width: 501px) {
-	.wpbc_toolbar_search_by_id_bookings {
-		display:none;
-	}
-}
 /* ==  2024-07-26 =================================================================================================== */
 .flex_tl__scrolling_sections {
 	display: flex;

@@ -1767,6 +1767,15 @@ table.wpbc_ideal_payment_table {
 .wpbc_theme_dark_1 .wpbc_after_booking_thank_you_section .wpbc_ty__container * {
     color: #fff;
 }
+/* Show correct  text  color for iDeal in Confirmation  window */
+.wpbc_after_booking_thank_you_section .wpbc_ty__container .wpbc_ty__content input[type=text],
+.wpbc_after_booking_thank_you_section .wpbc_ty__container .wpbc_ty__content select,
+.wpbc_after_booking_thank_you_section .wpbc_ty__container .wpbc_ty__content textarea{
+  color: var(--wpbc_form-field-text-color);
+}
+.wpbc_ideal_payment_table td {
+  vertical-align: middle;
+}
 .wpbc_theme_dark_1 .wpbc_after_booking_thank_you_section .wpbc_ty__container{
     border: 1px solid rgb(0, 0, 0);
     background: #626262;

@@ -983,7 +983,7 @@ class WPBC_TimelineFlex {
 
 						?><div style="margin:10px;font-weight:600;font-size:1.05em;"><?php
 
-						echo wp_kses_post( sprintf( 'Delete booking with %s', htmlspecialchars_decode( '<strong></strong><a href="' . esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id__to_del ) . '">' . 'ID = ' . $booking_id__to_del . '</a></strong>' ) ) );
+						echo wp_kses_post( sprintf( 'Delete booking with %s', htmlspecialchars_decode( '<strong></strong><a href="' . esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing&wh_booking_id=' . $booking_id__to_del ) . '">' . 'ID = ' . $booking_id__to_del . '</a></strong>' ) ) );
 
 						?></div><?php
 					}
@@ -3003,7 +3003,7 @@ if(1)
 					// Link
 					$header_title .= '<a 	class=\'button button-secondary\' 
 											title=\'' . esc_attr( str_replace( "'", '', __( 'Booking Listing', 'booking' ) ) ) . '\' 
-											href=\''.wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&view_mode=vm_listing&tab=actions\' ><i class=\'wpbc_icn_gps_fixed\'></i></a>';
+											href=\''.wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&tab=vm_booking_listing\' ><i class=\'wpbc_icn_gps_fixed\'></i></a>';
 					//Edit
 					if ( class_exists( 'wpdev_bk_personal' ) ) {
 						$bk_url_add = wpbc_get_new_booking_url( true, false );
@@ -3059,8 +3059,8 @@ if(1)
 					//Edit
 					if ( class_exists( 'wpdev_bk_personal' ) ) {
 
-						// $edit_booking_url_admin = wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&view_mode=vm_listing&tab=actions';
-						// $trash_booking_url_admin = wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&view_mode=vm_listing&tab=actions';
+						// $edit_booking_url_admin = wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&tab=vm_booking_listing';
+						// $trash_booking_url_admin = wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&tab=vm_booking_listing';
 
 						$is_change_hash_after_approvement = get_bk_option( 'booking_is_change_hash_after_approvement' );    // FixIn: 8.6.1.6.
 						if ( ( ! $is_approved ) || ( 'On' != $is_change_hash_after_approvement ) ) {                                                                 // FixIn: 8.2.1.14.
@@ -3524,7 +3524,7 @@ function wpbc_timeline_enqueue_css_files( $where_to_load ) {
 	if  ( in_array( $where_to_load, array( 'admin', 'both', 'client' ) ) ) {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-		if (    ( ( isset($_REQUEST['view_mode']) ) && ( $_REQUEST['view_mode']== 'vm_calendar' ) ) || ( 'client' == $where_to_load )  ){
+		if (    ( ( isset($_REQUEST['tab']) ) && ( $_REQUEST['tab']== 'vm_calendar' ) ) || ( 'client' == $where_to_load )  ){
 
 			wp_enqueue_style( 'wpbc-flex-timeline'
 				, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/timeline_v2.1.css'                    			/* wpbc_plugin_url( '/src/css/code_mirror.css' ) */

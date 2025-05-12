@@ -10,106 +10,92 @@
  * @modified 2013.10.16
  */
 
-class WPBC_CSS extends WPBC_JS_CSS{
+class WPBC_CSS extends WPBC_JS_CSS {
 
-    public function define() {
-        
-        $this->setType('css');
-        
-        /*
-        // Exmaples of usage Font Avesome: http://fontawesome.io/icons/
-        
-        $this->add( array(
-                            'handle' => 'font-awesome',
-                            'src' => WPBC_PLUGIN_URL . 'assets/libs/font-awesome-4.3.0/css/font-awesome.css' ,
-                            'deps' => false,
-                            'version' => '4.3.0',
-                            'where_to_load' => array( 'admin' ),
-                            'condition' => false    
-                  ) );   
-        
-        // Exmaples of usage Font Avesome 3.2.1 (benefits of this version - support IE7): http://fontawesome.io/3.2.1/examples/ 
-        $this->add( array(
-                            'handle' => 'font-awesome',
-                            'src' => WPBC_PLUGIN_URL . '/assets/libs/font-awesome/css/font-awesome.css' ,
-                            'deps' => false,
-                            'version' => '3.2.1',
-                            'where_to_load' => array( 'admin' ),
-                            'condition' => false    
-                  ) );            
-        $this->add( array(
-                            'handle' => 'font-awesome-ie7',
-                            'src' => WPBC_PLUGIN_URL . '/assets/libs/font-awesome/css/font-awesome-ie7.css' ,
-                            'deps' => array('font-awesome'),
-                            'version' => '3.2.1',
-                            'where_to_load' => array( 'admin' ),
-                            'condition' => 'IE 7'                               // CSS condition. Exmaple: <!--[if IE 7]>    
-                  ) );  
-        */
-    }
+	public function define() {
+
+		$this->setType( 'css' );
+
+		/**
+		 * // Exmaples of usage Font Avesome: http://fontawesome.io/icons/
+		 *
+		 * $this->add( array(
+		 *                'handle' => 'font-awesome',
+		 *                'src' => WPBC_PLUGIN_URL . 'assets/libs/font-awesome-4.3.0/css/font-awesome.css' ,
+		 *                'deps' => false,
+		 *                'version' => '4.3.0',
+		 *                'where_to_load' => array( 'admin' ),
+		 *                'condition' => false
+		 *      ) );
+		 *
+		 * // Exmaples of usage Font Avesome 3.2.1 (benefits of this version - support IE7): http://fontawesome.io/3.2.1/examples/
+		 * $this->add( array(
+		 *                'handle' => 'font-awesome',
+		 *                'src' => WPBC_PLUGIN_URL . '/assets/libs/font-awesome/css/font-awesome.css' ,
+		 *                'deps' => false,
+		 *                'version' => '3.2.1',
+		 *                'where_to_load' => array( 'admin' ),
+		 *                'condition' => false
+		 *      ) );
+		 * $this->add( array(
+		 *                'handle' => 'font-awesome-ie7',
+		 *                'src' => WPBC_PLUGIN_URL . '/assets/libs/font-awesome/css/font-awesome-ie7.css' ,
+		 *                'deps' => array('font-awesome'),
+		 *                'version' => '3.2.1',
+		 *                'where_to_load' => array( 'admin' ),
+		 *                'condition' => 'IE 7'                               // CSS condition. Exmaple: <!--[if IE 7]>
+		 *      ) );
+		 */
+	}
 
 
     public function enqueue( $where_to_load ) {
-	    //FixIn: 9.8.1
-	    wp_enqueue_style( 'wpdevelop-bts',              wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap.css' ),                  array(), WP_BK_VERSION_NUM );           //FixIn: 9.0.1.1.1
-	    wp_enqueue_style( 'wpdevelop-bts-theme',        wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap-theme.css' ),            array(), WP_BK_VERSION_NUM );           //FixIn: 9.0.1.1.1
-	    wp_enqueue_style( 'wpbc-tippy-popover',         wpbc_plugin_url( '/assets/libs/tippy.js/themes/wpbc-tippy-popover.css' ),           array(), WP_BK_VERSION_NUM );           // FixIn: 9.0.1.1.
-	    wp_enqueue_style( 'wpbc-tippy-times',           wpbc_plugin_url( '/assets/libs/tippy.js/themes/wpbc-tippy-times.css' ),             array(), WP_BK_VERSION_NUM );           // FixIn: 9.0.1.1.
-	    wp_enqueue_style( 'wpbc-material-design-icons', wpbc_plugin_url( '/assets/libs/material-design-icons/material-design-icons.css' ),  array(), WP_BK_VERSION_NUM );           //FixIn: 9.2.1.4    // FixIn: 9.0.1.1.
-	    wp_enqueue_style( 'wpbc-ui-both',               wpbc_plugin_url( '/css/wpbc_ui_both.css' ),                                         array(), WP_BK_VERSION_NUM );           // FixIn: 10.0.0.25.
+	    //FixIn: 9.8.1.
+	    wp_enqueue_style( 'wpdevelop-bts',              wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap.css' ),                  array(), WP_BK_VERSION_NUM );   // FixIn: 9.0.1.1.1.
+	    wp_enqueue_style( 'wpdevelop-bts-theme',        wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap-theme.css' ),            array(), WP_BK_VERSION_NUM );
+	    wp_enqueue_style( 'wpbc-tippy-popover',         wpbc_plugin_url( '/assets/libs/tippy.js/themes/wpbc-tippy-popover.css' ),           array(), WP_BK_VERSION_NUM );
+	    wp_enqueue_style( 'wpbc-tippy-times',           wpbc_plugin_url( '/assets/libs/tippy.js/themes/wpbc-tippy-times.css' ),             array(), WP_BK_VERSION_NUM );
+	    wp_enqueue_style( 'wpbc-material-design-icons', wpbc_plugin_url( '/assets/libs/material-design-icons/material-design-icons.css' ),  array(), WP_BK_VERSION_NUM );   // FixIn: 9.2.1.4.
+	    wp_enqueue_style( 'wpbc-ui-both',               wpbc_plugin_url( '/css/wpbc_ui_both.css' ),                                         array(), WP_BK_VERSION_NUM );   // FixIn: 10.0.0.25.
 
-        if ( $where_to_load == 'admin' ) {                                                                              // Admin CSS files
-			wp_enqueue_style( 'wpbc-bootstrap-icons',       wpbc_plugin_url( '/assets/libs/bootstrap-icons/bootstrap-icons.css' ),          array(), WP_BK_VERSION_NUM );           // FixIn: 9.0.1.1.
+		if ( 'admin' === $where_to_load ) {                                                                                                                           // Admin CSS files.
+			wp_enqueue_style( 'wpbc-bootstrap-icons', wpbc_plugin_url( '/assets/libs/bootstrap-icons/bootstrap-icons.css' ), array(), WP_BK_VERSION_NUM );            // FixIn: 9.0.1.1.
 			// Several concataned css files.
-	        wp_enqueue_style( 'wpbc-all-admin',             wpbc_plugin_url( '/_dist/all/_out/wpbc_all_admin.min.css' ),                    array(), WP_BK_VERSION_NUM);
+			wp_enqueue_style( 'wpbc-all-admin', wpbc_plugin_url( '/_dist/all/_out/wpbc_all_admin.min.css' ), array(), WP_BK_VERSION_NUM );
 
-            wp_enqueue_style( 'wpbc-chosen',                wpbc_plugin_url( '/assets/libs/chosen/chosen.css' ),        array(), WP_BK_VERSION_NUM);
-            wp_enqueue_style( 'wpbc-admin-support',         wpbc_plugin_url( '/core/any/css/admin-support.css' ),       array(), WP_BK_VERSION_NUM);            
+            wp_enqueue_style( 'wpbc-admin-support',         wpbc_plugin_url( '/core/any/css/admin-support.css' ),       array(), WP_BK_VERSION_NUM);
             wp_enqueue_style( 'wpbc-admin-menu',            wpbc_plugin_url( '/core/any/css/admin-menu.css' ),          array(), WP_BK_VERSION_NUM);
             wp_enqueue_style( 'wpbc-admin-toolbar',         wpbc_plugin_url( '/core/any/css/admin-toolbar.css' ),       array(), WP_BK_VERSION_NUM);
-            wp_enqueue_style( 'wpbc-settings-page',         wpbc_plugin_url( '/core/any/css/settings-page.css' ),       array(), WP_BK_VERSION_NUM);            
-            wp_enqueue_style( 'wpbc-admin-listing-table',   wpbc_plugin_url( '/core/any/css/admin-listing-table.css' ), array(), WP_BK_VERSION_NUM);            
-            wp_enqueue_style( 'wpbc-br-table',              wpbc_plugin_url( '/core/any/css/admin-br-table.css' ),      array(), WP_BK_VERSION_NUM);                        
-            wp_enqueue_style( 'wpbc-flex-table',            wpbc_plugin_url( '/core/any/css/wpbc_flextable.css' ),      array(), WP_BK_VERSION_NUM);        // Flex: Booking resources Table    // FixIn: 9.9.0.7.
+            wp_enqueue_style( 'wpbc-settings-page',         wpbc_plugin_url( '/core/any/css/settings-page.css' ),       array(), WP_BK_VERSION_NUM);
+            wp_enqueue_style( 'wpbc-admin-listing-table',   wpbc_plugin_url( '/core/any/css/admin-listing-table.css' ), array(), WP_BK_VERSION_NUM);
+            wp_enqueue_style( 'wpbc-br-table',              wpbc_plugin_url( '/core/any/css/admin-br-table.css' ),      array(), WP_BK_VERSION_NUM);
+			// Flex: Booking resources Table    // FixIn: 9.9.0.7.
+			wp_enqueue_style( 'wpbc-flex-table',            wpbc_plugin_url( '/core/any/css/wpbc_flextable.css' ),      array(), WP_BK_VERSION_NUM);
             wp_enqueue_style( 'wpbc-admin-modal-popups',    wpbc_plugin_url( '/css/modal.css' ),                        array(), WP_BK_VERSION_NUM);
-            wp_enqueue_style( 'wpbc-admin-pages',           wpbc_plugin_url( '/css/admin.css' ),                        array(), WP_BK_VERSION_NUM);            
-            wp_enqueue_style( 'wpbc-admin-skin',            wpbc_plugin_url( '/css/admin-skin.css' ),                   array( 'wpbc-admin-pages' ), WP_BK_VERSION_NUM );           // FixIn: 8.0.2.4.
-	        wp_enqueue_style( 'wpbc-admin-skin-modern_1',   wpbc_plugin_url( '/css/admin-skin-modern_1.css' ),          array( 'wpbc-admin-skin' ),  WP_BK_VERSION_NUM );           // FixIn: 9.5.5.1.
+            wp_enqueue_style( 'wpbc-admin-pages',           wpbc_plugin_url( '/css/admin.css' ),                        array(), WP_BK_VERSION_NUM);
+			wp_enqueue_style( 'wpbc-admin-skin',            wpbc_plugin_url( '/css/admin-skin.css' ),                   array( 'wpbc-admin-pages' ), WP_BK_VERSION_NUM );           // FixIn: 8.0.2.4.
 
-			global $wp_version;
 
-			if (    ( version_compare( $wp_version, '5.3', '>=' ) )
-			     || ( version_compare( $wp_version, '5.3-RC2-46574', '>=' ) )
-			){
-				/* The SVG is arrow-down-alt2 from Dashicons. */
-				$css      = "
-					.wp-core-ui .wpdevelop .control-group .btn-toolbar .input-group > select,
-					.wp-core-ui .wpdevelop select.form-control {
-						background: #fff url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E') no-repeat right 5px top 55%;
-					    padding: 2px 30px 2px 10px;
-					}
-				";
-				wp_add_inline_style( 'wpbc-admin-pages', $css );
+			$wpbc_inline_css = '';
+			if ( ( ! class_exists( 'wpdev_bk_personal' ) ) || ( wpbc_mu__is_simulated_login_as_user() ) ) {             // FixIn: 10.1.5.2.
+				// FixIn: 10.1.3.1.
+				//$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(-n+1) a { color: #adc636; } ";
+				if ( 'hide' !== get_bk_option( 'booking_menu_go_pro' ) ) {
+					// Mark last item in menu 'Get Pro' as a button
+					//$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { font-weight: 600;background-color: #0b9300;color: #fff;margin: 10px 10px 0;display: block;text-align: center;border-radius: 3px;transition: all .3s;box-shadow: none; } ";
+					$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { font-weight: 600;background-color: #075c00;color: #fff;margin: 10px 10px 0;display: block;text-align: center;border-radius: 3px;transition: all .3s;box-shadow: none; } ";
+					$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) { margin-top: 10px;border-top: 1px solid #535454; } ";
+				}
+			} else {
+				// Horizontal Lines in Menu. // FixIn: 10.1.3.1.
+				$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-child(4) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";
+				$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";
 			}
+			wp_add_inline_style( 'wpbc-admin-pages', $wpbc_inline_css );
 
-	        $wpbc_inline_css = '';
-	        if ( ( ! class_exists( 'wpdev_bk_personal' ) ) || ( wpbc_mu__is_simulated_login_as_user() ) ) {             // FixIn: 10.1.5.2.
-		        // FixIn: 10.1.3.1.
-		        //$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(-n+1) a { color: #adc636; } ";
-		        if ( 'hide' !== get_bk_option( 'booking_menu_go_pro' ) ) {
-					// Mark last item in menu 'Get Pro'  as a button
-			        //$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { font-weight: 600;background-color: #0b9300;color: #fff;margin: 10px 10px 0;display: block;text-align: center;border-radius: 3px;transition: all .3s;box-shadow: none; } ";
-			        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { font-weight: 600;background-color: #075c00;color: #fff;margin: 10px 10px 0;display: block;text-align: center;border-radius: 3px;transition: all .3s;box-shadow: none; } ";
-			        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) { margin-top: 10px;border-top: 1px solid #535454; } ";
-		        }
-	        } else {
-
-		        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-child(4) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";              // FixIn: 10.1.3.1.
-		        $wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(1) a { border-top: 1px solid #535454;padding-top: 10px;margin-top: 6px; } ";         // FixIn: 10.1.3.1.
-	        }
-
-	        wp_add_inline_style( 'wpbc-admin-pages', $wpbc_inline_css );
         }
+
+
 
 		$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 		if (
@@ -117,6 +103,7 @@ class WPBC_CSS extends WPBC_JS_CSS{
 			( wpbc_is_new_booking_page() ) ||
 			( wpbc_is_setup_wizard_page() ) ||
 			( wpbc_is_settings_form_page() ) ||
+			( wpbc_is_settings_color_themes_page() ) ||
 			( ( wpbc_is_settings_page() ) && ( strpos( $server_request_uri, 'tab=payment' ) !== false ) )
 			// || ( wpbc_is_availability_page() )     // FixIn: 10.0.0.5  Error at  -> WP Booking Calendar > Availability > Season Availability page.
 		) {
@@ -146,39 +133,33 @@ class WPBC_CSS extends WPBC_JS_CSS{
 	}
 
 
-    public function remove_conflicts( $where_to_load ) {
+	public function remove_conflicts( $where_to_load ) {
 
-    	// FixIn: 8.1.3.12.
-        if (
-        	     wpbc_is_bookings_page()
-        	  || wpbc_is_new_booking_page()
-              || wpbc_is_setup_wizard_page()
-        	  || wpbc_is_settings_form_page()
-        	  || wpbc_is_resources_page()
-        	  || wpbc_is_settings_page()
-           ) {
-            if (function_exists('wp_dequeue_style')) {
-                /*
-                wp_dequeue_style( 'cs-alert' );
-                wp_dequeue_style( 'cs-framework' );
-                wp_dequeue_style( 'cs-font-awesome' );
-                wp_dequeue_style( 'icomoon' );           
-                */            
-                wp_dequeue_style( 'chosen'); 
-                wp_dequeue_style( 'toolset-font-awesome-css' );                               // Remove this script sitepress-multilingual-cms/res/css/font-awesome.min.css?ver=3.1.6, which is load by the "sitepress-multilingual-cms"
-                wp_dequeue_style( 'toolset-font-awesome' );                          // FixIn: 5.4.5.8.
-                wp_dequeue_style( 'the7-fontello-css' );
-					wp_dequeue_style( 'dt-awsome-fonts-back-css' );                 //FixIn: 8.2.1.10           fix conflict  with https://the7.io/
-	                wp_dequeue_style( 'dt-awsome-fonts-css' );
-	                wp_dequeue_style( 'dt-fontello-css' );
-                wp_dequeue_style( 'cs_icons_data_css_default');                         // FixIn: 8.1.3.12.
-	            wp_dequeue_style( 'icons-style' );                                      // FixIn: 8.2.1.22.
-	            wp_dequeue_style( 'fontawesome-style' );                                // FixIn: 8.2.1.22.
-	            wp_dequeue_style( 'bootstrap-style' );                                  // FixIn: 8.2.1.22.
-	            wp_dequeue_style( 'bootstrap-theme-style' );                            // FixIn: 8.2.1.22.
-            } 
-        }
-    }
+		// FixIn: 8.1.3.12.
+		if (
+			wpbc_is_bookings_page() || wpbc_is_new_booking_page() || wpbc_is_setup_wizard_page() || wpbc_is_settings_form_page() || wpbc_is_settings_color_themes_page() || wpbc_is_resources_page() || wpbc_is_settings_page() ) {
+			if ( function_exists( 'wp_dequeue_style' ) ) {
+				/**
+				// wp_dequeue_style( 'cs-alert' );
+				// wp_dequeue_style( 'cs-framework' );
+				// wp_dequeue_style( 'cs-font-awesome' );
+				// wp_dequeue_style( 'icomoon' );
+				*/
+				wp_dequeue_style( 'chosen' );
+				wp_dequeue_style( 'toolset-font-awesome-css' );                          // Remove this script sitepress-multilingual-cms/res/css/font-awesome.min.css?ver=3.1.6, which is load by the "sitepress-multilingual-cms".
+				wp_dequeue_style( 'toolset-font-awesome' );                              // FixIn: 5.4.5.8.
+				wp_dequeue_style( 'the7-fontello-css' );
+				wp_dequeue_style( 'dt-awsome-fonts-back-css' );                          // FixIn: 8.2.1.10             fix conflict  with https://the7.io/.
+				wp_dequeue_style( 'dt-awsome-fonts-css' );
+				wp_dequeue_style( 'dt-fontello-css' );
+				wp_dequeue_style( 'cs_icons_data_css_default' );                         // FixIn: 8.1.3.12.
+				wp_dequeue_style( 'icons-style' );                                       // FixIn: 8.2.1.22.
+				wp_dequeue_style( 'fontawesome-style' );                                 // FixIn: 8.2.1.22.
+				wp_dequeue_style( 'bootstrap-style' );                                   // FixIn: 8.2.1.22.
+				wp_dequeue_style( 'bootstrap-theme-style' );                             // FixIn: 8.2.1.22.
+			}
+		}
+	}
 }
 
 

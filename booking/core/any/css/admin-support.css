@@ -78,8 +78,8 @@
 .wpbc_page .notice {
 	background: #fff;
 	border-left: 4px solid #fff;
-	-webkit-box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
-	box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+	-webkit-box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.02);
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.02);
 	margin: 5px 15px 2px;
 	padding: 1px 12px;
 }
@@ -121,7 +121,7 @@
 
     left: auto;
     width: auto !important;
-    right: 5px;
+    right: 0;
     margin: 0;
 }
 .wpbc_page_top div.wpbc_inner_message {

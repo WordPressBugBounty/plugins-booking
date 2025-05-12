@@ -460,23 +460,24 @@ function wpbc_dashboard_section_news() {
 			<div style="width: 99%;margin-right:0;" >
 				<span class="bk_header" style="padding: 0;">Booking Calendar News:</span><?php
 
-				wpbc_is_dismissed( 'wpbc_dashboard_section_news' );        // FixIn: 8.1.3.10.
-
-				?><br/><br/>
-				<div id="bk_news" class="rssSummary"> <span style="font-size:13px;text-align:center;">Loading...</span></div>
-				<div id="ajax_bk_respond" class="rssSummary" style="display:none;"></div>
-				<script type="text/javascript">
-					jQuery.ajax({
-						url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
-						type:'POST',
-						success: function (data, textStatus){ if( textStatus == 'success' ) jQuery('#ajax_bk_respond').html( data ); },
-						error: function (XMLHttpRequest, textStatus, errorThrown){ window.status = 'Ajax sending Error status:' + textStatus; },
-						data:{
-							action: 'CHECK_BK_NEWS',
-							wpbc_nonce: document.getElementById('wpbc_admin_panel_nonce_dashboard').value
-						}
-					});
-				</script>
+				$is_panel_visible = wpbc_is_dismissed( 'wpbc_dashboard_section_news' );        // FixIn: 10.10.3.1.
+				if ( $is_panel_visible ) {
+					?><br/><br/>
+					<div id="bk_news" class="rssSummary"> <span style="font-size:13px;text-align:center;">Loading...</span></div>
+					<div id="ajax_bk_respond" class="rssSummary" style="display:none;"></div>
+					<script type="text/javascript">
+						jQuery.ajax({
+							url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
+							type:'POST',
+							success: function (data, textStatus){ if( textStatus == 'success' ) jQuery('#ajax_bk_respond').html( data ); },
+							error: function (XMLHttpRequest, textStatus, errorThrown){ window.status = 'Ajax sending Error status:' + textStatus; },
+							data:{
+								action: 'CHECK_BK_NEWS',
+								wpbc_nonce: document.getElementById('wpbc_admin_panel_nonce_dashboard').value
+							}
+						});
+					</script>
+				<?php } ?>
 			</div>
 		</div>
 
@@ -649,20 +650,20 @@ function wpbc_dashboard_section_statistic( $counter ) {
 			<span class="bk_header"><?php esc_html_e('Statistic' ,'booking'); ?>:</span>
 			<table class="bk_table">
 				<tr>
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>"><span><?php echo esc_html( $counter['booking_today'] ); ?></span></a> </td>
-					<td class="actual-bookings"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Bookings for today' ,'booking'); ?></a> </td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&tab=vm_booking_listing&overwrite=1' ); ?>"><span><?php echo esc_html( $counter['booking_today'] ); ?></span></a> </td>
+					<td class="actual-bookings"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Bookings for today' ,'booking'); ?></a> </td>
 				</tr>
 				<tr class="first">
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><span><?php echo esc_html( $counter['was_made_today'] ); ?></span></a> </td>
-					<td class="new-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('New booking(s) made today' ,'booking'); ?></a> </td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"><span><?php echo esc_html( $counter['was_made_today'] ); ?></span></a> </td>
+					<td class="new-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('New booking(s) made today' ,'booking'); ?></a> </td>
 				</tr>
 				<tr class="first">
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['new'] ); ?></span></a> </td>
-					<td class=""> <a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><?php esc_html_e('New (unverified) booking(s)' ,'booking'); ?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['new'] ); ?></span></a> </td>
+					<td class=""> <a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"><?php esc_html_e('New (unverified) booking(s)' ,'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['pending'] ); ?></span></a></td>
-					<td class="pending"><a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Pending booking(s)' ,'booking'); ?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['pending'] ); ?></span></a></td>
+					<td class="pending"><a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Pending booking(s)' ,'booking'); ?></a></td>
 				</tr>
 			</table>
 		</div>
@@ -670,20 +671,20 @@ function wpbc_dashboard_section_statistic( $counter ) {
 			<span class="bk_header"><?php esc_html_e('Agenda' ,'booking'); ?>:</span>
 			<table class="bk_table">
 				<tr>
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_in_today'] ); ?></span></a></td>
-					<td class="pending"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check in - Today', 'booking'); ?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=10&tab=vm_booking_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_in_today'] ); ?></span></a></td>
+					<td class="pending"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=10&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check in - Today', 'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_out_today'] ); ?></span></a></td>
-					<td class=""><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check out - Today', 'booking'); ?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=11&tab=vm_booking_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_out_today'] ); ?></span></a></td>
+					<td class=""><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=11&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check out - Today', 'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_in_tomorrow'] ); ?></span></a></td>
-					<td class="new-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check in - Tomorrow', 'booking'); ?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=7&tab=vm_booking_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_in_tomorrow'] ); ?></span></a></td>
+					<td class="new-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=7&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check in - Tomorrow', 'booking'); ?></a></td>
 				</tr>
 				<tr>
-					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_out_tomorrow'] ); ?></span></a></td>
-					<td class="actual-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check out - Tomorrow', 'booking'); ?></a></td>
+					<td class="first"> <a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=8&tab=vm_booking_listing&overwrite=1' ); ?>"><span class=""><?php echo esc_html( $counter['check_out_tomorrow'] ); ?></span></a></td>
+					<td class="actual-bookings"><a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=8&tab=vm_booking_listing&overwrite=1' ); ?>" class=""><?php esc_html_e('Check out - Tomorrow', 'booking'); ?></a></td>
 				</tr>
 
 			</table>
@@ -834,12 +835,12 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 						<span><?php echo esc_html( $counter['was_made_today'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_was_made_today">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class="">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>" class="">
 						<?php esc_html_e('New booking(s) made today' ,'booking');?>
 					</a>
 				</div>
@@ -850,12 +851,12 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&tab=vm_booking_listing&overwrite=1' ); ?>">
 						<span><?php echo esc_html( $counter['booking_today'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_made_for_today">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>" class="">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_trash=0&wh_booking_date[]=1&tab=vm_booking_listing&overwrite=1' ); ?>" class="">
 						<?php esc_html_e('Booking(s) for today' ,'booking');?>
 					</a>
 				</div>
@@ -866,12 +867,12 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 						<span class=""><?php echo esc_html( $counter['pending'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_pending">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>" class="">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>" class="">
 						<?php esc_html_e('Pending booking(s)' ,'booking');?>
 					</a>
 				</div>
@@ -883,12 +884,12 @@ function wpbc_flex_dashboard_show(){
 			?>
 			<div class="wpbc_flex_dashboard_item">
 				<div class="wpbc_flex_dashboard_item_number">
-					<a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+					<a href="<?php echo esc_url( $bk_admin_url.'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 						<span class=""><?php echo esc_html( $counter['new'] ); ?></span>
 					</a>
 				</div>
 				<div class="wpbc_flex_dashboard_item_text wpbc_flex_dashboard_item_text_new">
-					<a href="<?php echo esc_url( $bk_admin_url. '&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New (unverified) booking(s)', 'booking' ); ?>
+					<a href="<?php echo esc_url( $bk_admin_url. '&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New (unverified) booking(s)', 'booking' ); ?>
 					</a>
 				</div>
 			</div>

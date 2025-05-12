@@ -785,9 +785,12 @@ function wpbc_booking_activate() {
 		    $wp_queries[] = "ALTER TABLE {$wpdb->prefix}booking ADD booking_options TEXT AFTER booking_id";
 	    }
 
-	    // FixIn: 8.7.9.1.
-        if ( ! wpbc_is_table_exists('bookingdates') ) { // Check if tables not exist yet
-            $simple_sql = "CREATE TABLE {$wpdb->prefix}bookingdates (
+		$is_insert_test_bookings = false;
+
+		// FixIn: 8.7.9.1.
+		if ( ! wpbc_is_table_exists( 'bookingdates' ) ) {
+			// Check if tables not exist yet.
+			$simple_sql = "CREATE TABLE {$wpdb->prefix}bookingdates (
                      booking_dates_id bigint(20) unsigned NOT NULL auto_increment,
                      booking_id bigint(20) unsigned NOT NULL,
                      booking_date datetime NOT NULL default '0000-00-00 00:00:00',
@@ -798,60 +801,55 @@ function wpbc_booking_activate() {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query( $simple_sql );
 
-            if( ! class_exists( 'wpdev_bk_personal' ) ) {
-                $wp_queries[] = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
-                     'text^name1^Jony~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^Reserve a room with sea view', NOW() );";
-            }
-        }
+			if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+				$is_insert_test_bookings = true;
+			}
+		}
 
-        
-        // If we remove this index,  so  then its can  significant impact  to the speed of page loading at the Booking Listing and Timelines.
-        /**
-        (
-            [0] =>  SELECT *  FROM wp_booking as bk WHERE  EXISTS (
-                                           SELECT *
-                                           FROM wp_bookingdates as dt
-                                           WHERE  bk.booking_id = dt.booking_id  AND ( dt.booking_date >= '2016-11-01 00:00:00' )  AND ( dt.booking_date <= '2016-12-31 23:59:59' )  )   AND bk.trash = 0   AND (         ( bk.booking_type IN  ( 14,15,16,17,18,20,21,22,23,1,2,3,4,5,26,6,7,8,9,10,11,12,24,25 ) )      )   ORDER BY booking_type DESC  LIMIT 0, 100000 
-            [TIME] => 18.3653769493
-            [2] => do_action('toplevel_page_wpbc'), call_user_func_array, WPBC_Admin_Menus->content, do_action('wpbc_page_structure_show'), call_user_func_array, WPBC_Page_Structure->content_structure, WPBC_Page_CalendarOverview->content, WPBC_Timeline->admin_init, wpbc_get_bookings_objects
-        )
-        (
-            [0] =>  SELECT COUNT(*) as count FROM wp_booking as bk WHERE  EXISTS (
-                                           SELECT *
-                                           FROM wp_bookingdates as dt
-                                           WHERE  bk.booking_id = dt.booking_id  AND ( dt.booking_date >= '2016-11-01 00:00:00' )  AND ( dt.booking_date <= '2016-12-31 23:59:59' )  )   AND bk.trash = 0   AND (         ( bk.booking_type IN  ( 14,15,16,17,18,20,21,22,23,1,2,3,4,5,26,6,7,8,9,10,11,12,24,25 ) )      )  
-            [TIME] => 18.0764019489
-            [2] => do_action('toplevel_page_wpbc'), call_user_func_array, WPBC_Admin_Menus->content, do_action('wpbc_page_structure_show'), call_user_func_array, WPBC_Page_Structure->content_structure, WPBC_Page_CalendarOverview->content, WPBC_Timeline->admin_init, wpbc_get_bookings_objects
-        )
-        */
-        
-        // Index for SPEED opening Booking Listing and Timeline with  thousands of Bookings,  otherwise,  without this index, speed will be TOO SLOW...
-        if  (wpbc_is_index_in_table_exists('bookingdates','booking_id_dates') == 0) {
-            $simple_sql = "CREATE UNIQUE INDEX booking_id_dates ON {$wpdb->prefix}bookingdates ( booking_id, booking_date);";
+		if ( 0 === wpbc_is_index_in_table_exists( 'bookingdates', 'booking_id_dates' ) ) {
+			// If we remove this index,  so  then its can  significant impact  to the speed of page loading at the Booking Listing and Timelines.
+			// Index for SPEED opening Booking Listing and Timeline with  thousands of Bookings,  otherwise,  without this index, speed will be TOO SLOW...
+			$simple_sql = "CREATE UNIQUE INDEX booking_id_dates ON {$wpdb->prefix}bookingdates ( booking_id, booking_date);";
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query( $simple_sql );
-        }
-            
-       
-        if (count($wp_queries)>0) {
+		}
+
+
+		if ( count( $wp_queries ) > 0 ) {
 			foreach ( $wp_queries as $wp_q ) {
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 				$wpdb->query( $wp_q );
 			}
 
-            if( ! class_exists( 'wpdev_bk_personal' ) ) {
-                $temp_id = $wpdb->insert_id;
-                $wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates (
-                         booking_id,
-                         booking_date
-                        ) VALUES
-                        ( ". $temp_id .", CURDATE()+ INTERVAL 2 day ),
-                        ( ". $temp_id .", CURDATE()+ INTERVAL 3 day ),
-                        ( ". $temp_id .", CURDATE()+ INTERVAL 4 day );";
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-				$wpdb->query( $wp_queries_sub );
-            }
-        }
+			if ( $is_insert_test_bookings ) {
+				// -- Test Booking #1 --
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
+                     'text^name1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', NOW() );";
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+				$temp_id        = $wpdb->insert_id;
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date ) VALUES
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 2 day ),
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 3 day ),
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 4 day );";
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+				// -- Test Booking #2 --
+				$is_appr    = 1;
+				$start_time = '10:00';
+				$end_time   = '10:30';
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date, is_new ) VALUES (
+                     'selectbox^rangetime1^".$start_time." - ".$end_time."~text^name1^Sophia~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing a one day time slot booking.', NOW(), 0 );";
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+				$temp_id = $wpdb->insert_id;
+
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved ) VALUES
+									( ". $temp_id .", CURDATE()+ INTERVAL \"5 " . $start_time. ":01\" DAY_SECOND ,". $is_appr." ),
+									( ". $temp_id .", CURDATE()+ INTERVAL \"5 " . $end_time  . ":02\" DAY_SECOND ,". $is_appr." );";
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			}
+		}
 
 	    // FixIn: 9.2.3.3.
 		if ( wpbc_is_field_in_table_exists( 'booking', 'hash' ) == 0 ) {  //HASH_EDIT
@@ -996,9 +994,6 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
 	// FixIn: 9.6.3.5.
     $default_options['booking_listing_default_view_mode'] = 'vm_booking_listing';	// 'vm_calendar';		// FixIn: 9.6.3.5.
  $mu_option4delete[]='booking_listing_default_view_mode';
-
-//    $default_options['booking_admin_panel_skin'] = 'modern_1';	            // 'modern_1'       //FixIn: 9.5.5.7	// FixIn: 10.1.1.3.
-// $mu_option4delete[]='booking_admin_panel_skin';
 
     $default_options['booking_view_days_num'] = (  ( ! class_exists( 'wpdev_bk_personal' ) ) ? '90' : '30' );
  $mu_option4delete[]='booking_view_days_num';

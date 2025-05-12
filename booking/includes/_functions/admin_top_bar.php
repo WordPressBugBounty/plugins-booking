@@ -79,7 +79,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 				array(
 					'id' => 'wpbc_bar_booking_listing',
 					'title' => __( 'Booking Listing', 'booking' ),
-					'href' => wpbc_get_bookings_url() . '&view_mode=vm_listing',
+					'href' => wpbc_get_bookings_url() . '&tab=vm_booking_listing',
 					'parent' => 'wpbc_bar_bookings',
 				)
 		);
@@ -87,7 +87,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 				array(
 					'id' => 'wpbc_bar_calendar_overview',
 					'title' => __( 'Timeline View', 'booking' ),
-					'href' => wpbc_get_bookings_url() . '&view_mode=vm_calendar',
+					'href' => wpbc_get_bookings_url() . '&tab=vm_calendar',
 					'parent' => 'wpbc_bar_bookings',
 				)
 		);
@@ -144,7 +144,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 					array(
 						'id' => 'wpbc_bar_seasons_filters',
 						'title' => __( 'Seasons', 'booking' ),
-						'href' => wpbc_get_availability_url() . '&tab=filter',
+						'href' => wpbc_get_availability_url() . '',
 						'parent' => 'wpbc_bar_availability'
 					)
 				);
@@ -200,7 +200,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 				array(
 					'id' => 'wpbc_bar_seasons_costs',
 					'title' => __( 'Seasons', 'booking' ),
-					'href' =>  wpbc_get_price_url() . '&tab=filter',
+					'href' =>  wpbc_get_price_url() . '',
 					'parent' => 'wpbc_bar_prices'
 				)
 			);

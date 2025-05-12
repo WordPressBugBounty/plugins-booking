@@ -203,7 +203,12 @@ function wpbc_stp_wiz__ui__color_theme__bottom_buttons(){
  *
  * @return void
  */
-function wpbc_stp_wiz__widget__color_theme__skins(){
+function wpbc_stp_wiz__widget__color_theme__skins( $params = array() ) {
+
+	$defaults = array(
+		'is_use_js_for_templates' => true,
+	);
+	$params   = wp_parse_args( $params, $defaults );
     ?>
 	<div class="wpbc_widget wpbc_widget__color_theme__skins">
 		<div class="wpbc_widget_header">
@@ -216,11 +221,11 @@ function wpbc_stp_wiz__widget__color_theme__skins(){
 				<div class="ui_group    ui_group__color_theme__today_availability">
 				<?php
 
-					wpbc_stp_wiz__ui__color_theme__form_color_theme();
+					wpbc_stp_wiz__ui__color_theme__form_color_theme( $params );
 
-					wpbc_stp_wiz__ui__color_theme__calendar_skins();
+					wpbc_stp_wiz__ui__color_theme__calendar_skins( $params );
 
-					wpbc_stp_wiz__ui__color_theme__timepicker_skins();
+					wpbc_stp_wiz__ui__color_theme__timepicker_skins( $params );
 				?>
 				</div>
 			</div>
@@ -239,7 +244,13 @@ function wpbc_stp_wiz__widget__color_theme__skins(){
 /**
  *  Calendar Skins  - DropDown List
  */
-function wpbc_stp_wiz__ui__color_theme__calendar_skins(){
+function wpbc_stp_wiz__ui__color_theme__calendar_skins( $params = array() ){
+
+	$defaults = array(
+		'is_use_js_for_templates' => true,
+	);
+	$params   = wp_parse_args( $params, $defaults );
+
 
 	$booking_action = 'set_calendar_skins';
 
@@ -321,7 +332,9 @@ function wpbc_stp_wiz__ui__color_theme__calendar_skins(){
 	?></div><?php
 
 	// Set checked specific OPTION depends on last action from  user
-	?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
+	if ( $params['is_use_js_for_templates'] ) {
+		echo '<# ';
+		if ( 0 ) { ?><script type="text/javascript"><?php } ?>
 
 		// Set selected option  in dropdown list based on  data. value
 		jQuery( document ).ready( function (){
@@ -345,17 +358,21 @@ function wpbc_stp_wiz__ui__color_theme__calendar_skins(){
 			// 	wpbc__css__change_skin( jQuery( this ).val() , 'wpbc-time_picker-skin-css' );
 			// });
 		} );
-
-	<?php if (0) { ?></script><?php } ?> #><?php
-
-
+		<?php echo '#> '; if (0) { ?></script><?php }
+	}
 }
 
 
 /**
  *  Time Picker Skins  - DropDown List
  */
-function wpbc_stp_wiz__ui__color_theme__timepicker_skins(){
+function wpbc_stp_wiz__ui__color_theme__timepicker_skins( $params = array() ){
+
+	$defaults = array(
+		'is_use_js_for_templates' => true,
+	);
+	$params   = wp_parse_args( $params, $defaults );
+
 
 	$booking_action = 'set_time_picker_skin';
 
@@ -426,7 +443,9 @@ function wpbc_stp_wiz__ui__color_theme__timepicker_skins(){
 	?></div><?php
 
 	// Set checked specific OPTION depends on last action from  user
-	?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
+	if ( $params['is_use_js_for_templates'] ) {
+		echo '<# ';
+		if ( 0 ) { ?><script type="text/javascript"><?php } ?>
 
 		// Set selected option  in dropdown list based on  data. value
 		jQuery( document ).ready( function (){
@@ -455,16 +474,22 @@ function wpbc_stp_wiz__ui__color_theme__timepicker_skins(){
 
 		} );
 
-	<?php if (0) { ?></script><?php } ?> #><?php
-
-
+		<?php
+		echo ' #>';
+		if (0) { ?></script><?php }
+	}
 }
 
 
 /**
  *  Time Picker Skins  - DropDown List
  */
-function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
+function wpbc_stp_wiz__ui__color_theme__form_color_theme( $params = array() ){
+
+	$defaults = array(
+		'is_use_js_for_templates' => true,
+	);
+	$params   = wp_parse_args( $params, $defaults );
 
 	$booking_action = 'set_form_color_theme';
 
@@ -526,7 +551,9 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
 	?></div><?php
 
 	// Set checked specific OPTION depends on last action from  user
-	?><# <?php if (0) { ?><script type="text/javascript"><?php } ?>
+	if ( $params['is_use_js_for_templates'] ) {
+		echo '<# ';
+		if ( 0 ) { ?><script type="text/javascript"><?php } ?>
 
 		// Set selected option  in dropdown list based on  data. value
 		jQuery( document ).ready( function (){
@@ -565,7 +592,6 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
 				}
 			}
 
-
 			// // Set selected option  in dropdown list based on  data. value
 			//jQuery( '#ui_btn_cstm__set_time_picker_skin option[value="<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin + '"]' ).prop( 'selected', true );
 			//wpbc__css__change_skin( '<?php //echo esc_url( WPBC_PLUGIN_URL ); ?>//' + data.ajx_cleaned_params.customize_plugin__time_picker_skin  , 'wpbc-time_picker-skin-css' );
@@ -576,13 +602,11 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme(){
 			// jQuery( '.wpbc_radio__set_time_picker_skin' ).on('change', function ( event, resource_id, inst ){
 			// 	wpbc__css__change_skin( jQuery( this ).val() , 'wpbc-time_picker-skin-css' );
 			// });
-
-
 		} );
-
-	<?php if (0) { ?></script><?php } ?> #><?php
-
-
+		<?php
+		echo ' #>';
+		if (0) { ?></script><?php }
+	}
 }
 
 

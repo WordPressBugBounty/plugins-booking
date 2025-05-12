@@ -558,7 +558,9 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_i
 
 /* C e l l   O V E R   Dates - Background */
 .wpbc_timeslot_day_bg_as_available .datepick-inline .times_clock.datepick-days-cell-over  .wpbc-cell-box,
-.datepick-inline .datepick .datepick-days-cell-over  .wpbc-cell-box{
+.datepick-inline .datepick .datepick-days-cell-over  .wpbc-cell-box,
+/* ( EAA ) */
+.datepick-inline .datepick .wpbc-cell-box:has(a:focus) {
     background: transparent;
     background: rgb( from var(--wpbc_cal-hover-day-color) r g b / var(--wpbc_cal-day-bg-color-opacity) );
     border: var( --wpbc_cal-day-cell-border-width ) solid var( --wpbc_cal-hover-day-color );
@@ -566,7 +568,9 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_i
 /* C e l l   O V E R   Dates - Text color */
 .datepick-inline  .datepick-one-month .datepick .datepick-days-cell-over .wpbc_time_dots,                                                /*  //FixIn: 8.9.4.13 */
 .datepick-inline  .datepick-one-month .datepick td.datepick-days-cell-over a:hover,
-.datepick-inline  .datepick-one-month .datepick td.datepick-days-cell-over a{
+.datepick-inline  .datepick-one-month .datepick td.datepick-days-cell-over a,
+/* ( EAA ) */
+.datepick-inline  .datepick-one-month .datepick td a:focus{
     color: var( --wpbc_cal-hover-text-color );
     text-shadow: none;
 }
@@ -666,4 +670,12 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 .datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date_approved .wpbc-cell-box,
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date_approved .wpbc-cell-box{
   border: var( --wpbc_cal-day-cell-border-width ) solid var( --wpbc_cal-approved-day-color );
+}
+/* EAA: Accessibility Standards - Highlight on Focus */
+.datepick-inline .calendar-links .datepick-prev a:focus,
+.datepick-inline .calendar-links .datepick-next a:focus {
+	font-size: var(--wpbc_cal-text-prev-next-links-size);
+	line-height: 1.25em;
+	box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color), 0 1px 2px rgba(0, 0, 0, .15);
+	outline: 0;
 }

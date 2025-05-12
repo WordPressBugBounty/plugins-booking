@@ -335,20 +335,19 @@ class WPBC_Page_SettingsGeneralSync extends WPBC_Page_Structure {
 
         $subtabs[ 'general' ] = array(
                               'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
-							, 'title'      => __( 'General', 'booking' ) 												// Title of TAB
-							, 'page_title' => __( 'General Settings', 'booking' ) . ' - ' . __( 'Sync', 'booking' )		// Title of Page
-							, 'hint'       => __( 'General Settings', 'booking' ) . ' - ' . __( 'Sync', 'booking' )		// Hint
+							, 'title'      => __( 'Sync Options', 'booking' ) 												// Title of TAB
+							, 'page_title' => __( 'Sync Options', 'booking' )  	 // Title of Page
+							, 'hint'       => __( 'Configure import/export rules, timezones, and which fields to include in sync operations.', 'booking' )  		// Hint.
                             , 'link' => ''                                      // link
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
-                            //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-	                        , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
-                            , 'default' =>  true                                // Is this sub tab activated by default or not: true || false.
+							, 'font_icon' => 'wpbc_icn_cloud_sync'
+							, 'default' =>  true                                // Is this sub tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false.
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
-							//, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
+
                         );
 
         $tabs[ 'sync' ]['subtabs'] = $subtabs;

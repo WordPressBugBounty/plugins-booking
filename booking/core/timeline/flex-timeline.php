@@ -27,4 +27,4 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 
-require_once( WPBC_PLUGIN_DIR . '/core/timeline/v2/wpbc-class-timeline_v2.php' );          // Version 2.0   of  Timeline
+require_once WPBC_PLUGIN_DIR . '/core/timeline/v2/wpbc-class-timeline_v2.php';          // Version 2.0   of  Timeline

@@ -158,7 +158,8 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					if (       (     undefined != response_data[ 'ajx_cleaned_params' ])
 							&& ( 'reset_done' === response_data[ 'ajx_cleaned_params' ][ 'ui_reset' ])
 					){
-						location.reload();
+						window.location.href = response_data[ 'ajx_cleaned_params' ]['ui_reset_url'];
+						// location.reload();
 						return;
 					}
 
@@ -169,12 +170,15 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 
 						wpbc_pagination_echo(
 							wpbc_ajx_booking_listing.get_other_param( 'pagination_container' ),
+							wpbc_ajx_booking_listing.get_other_param( 'pagination_container_header' ),
+							wpbc_ajx_booking_listing.get_other_param( 'pagination_container_footer' ),
 							{
 								'page_active': response_data[ 'ajx_search_params' ][ 'page_num' ],
 								'pages_count': Math.ceil( response_data[ 'ajx_count' ] / response_data[ 'ajx_search_params' ][ 'page_items_count' ] ),
 
 								'page_items_count': response_data[ 'ajx_search_params' ][ 'page_items_count' ],
-								'sort_type'       : response_data[ 'ajx_search_params' ][ 'sort_type' ]
+								'sort_type'       : response_data[ 'ajx_search_params' ][ 'sort_type' ],
+								'total_count'     : response_data[ 'ajx_count' ],
 							}
 						);
 						wpbc_ajx_booking_define_ui_hooks();						// Redefine Hooks, because we show new DOM elements
@@ -183,11 +187,15 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 
 						wpbc_ajx_booking__actual_listing__hide();
 						jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html(
-											'<div class="wpbc-settings-notice0 notice-warning0" style="text-align:center;margin-left:-50px;">' +
-												'<strong>' + 'No results found for current filter options...' + '</strong>' +
-												//'<strong>' + 'No results found...' + '</strong>' +
-											'</div>'
-									);
+							'<div class="wpbc-settings-notice0 notice-warning0" style="text-align:center;font-size: 15px;margin: 2em 0;">' +
+								'<p><strong>No results found for current filter options...</strong></p>' +
+								'<p><strong><a  href="javascript:void(0)" ' +
+									' onclick="javascript:wpbc_ajx_booking_send_search_request_with_params( {' +
+										' \'ui_reset\': \'make_reset\', ' +
+										' \'page_num\': 1 ' +
+									'} );">Reset filters</a> to show all bookings.</strong></p>' +
+							'</div>'
+						);
 					}
 
 					// Update new booking count
@@ -235,14 +243,17 @@ function wpbc_ajx_booking_show_listing( json_items_arr, json_search_params, json
 //console.log( 'json_items_arr' , json_items_arr, json_search_params );
 	jQuery( '.wpbc_ajx_under_toolbar_row' ).css( "display", "flex" );													// FixIn: 9.6.1.5.
 	var list_header_tpl = wp.template( 'wpbc_ajx_booking_list_header' );
+	var list_footer_tpl = wp.template( 'wpbc_ajx_booking_list_footer' );
 	var list_row_tpl    = wp.template( 'wpbc_ajx_booking_list_row' );
 
 
-	// Header
+	// Header.
 	jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html( list_header_tpl() );
-
-	// Body
+	// Send to template all request params: jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html( list_header_tpl(wpbc_ajx_booking_listing.search_get_all_params()) );
+	// Body.
 	jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).append( '<div class="wpbc_selectable_body"></div>' );
+	// Footer.
+	jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).append( list_footer_tpl() );
 
 	// R o w s
 console.groupCollapsed( 'LISTING_ROWS' );																				// LISTING_ROWS
@@ -270,25 +281,30 @@ console.groupEnd(); 																									// LISTING_ROWS
 	 */
 	function wpbc_ajx_define_templates__resource_manipulation( json_items_arr, json_search_params, json_booking_resources ){
 
-		// Change booking resource
-		var change_booking_resource_tpl = wp.template( 'wpbc_ajx_change_booking_resource' );
+		// -------------------------------------------------------------------------------------------------------------
+		// New. 2025-04-21.
+		// -------------------------------------------------------------------------------------------------------------
+		// Change booking resource in Modal.
+		var modal__change_booking_resource = wp.template( 'wpbc_ajx__modal__change_booking_resource' );
 
-		jQuery( '#wpbc_hidden_template__change_booking_resource' ).html(
-																			change_booking_resource_tpl( {
+		jQuery( '#section_in_in_modal__change_booking_resource' ).html(
+																			modal__change_booking_resource( {
 																							'ajx_search_params'    : json_search_params,
 																							'ajx_booking_resources': json_booking_resources
 																			} )
 																	);
 
-		// Duplicate booking resource
-		var duplicate_booking_to_other_resource_tpl = wp.template( 'wpbc_ajx_duplicate_booking_to_other_resource' );
+		// Duplicate booking into another resource in Modal. New. 2025-04-21.
+		var modal__duplicate_booking_to_other_resource = wp.template( 'wpbc_ajx__modal__duplicate_booking_to_other_resource' );
 
-		jQuery( '#wpbc_hidden_template__duplicate_booking_to_other_resource' ).html(
-																			duplicate_booking_to_other_resource_tpl( {
+		jQuery( '#section_in_in_modal__duplicate_booking_to_other_resource' ).html(
+																			modal__duplicate_booking_to_other_resource( {
 																							'ajx_search_params'    : json_search_params,
 																							'ajx_booking_resources': json_booking_resources
 																			} )
 																	);
+		// -------------------------------------------------------------------------------------------------------------
+
 	}
 
 
@@ -380,34 +396,42 @@ function wpbc_ajx_booking_send_search_request_for_keyword( element_id ) {
 /**
  *   Define Dynamic Hooks  (like pagination click, which renew each time with new listing showing)  ------------- */
 
-/**
- * Define HTML ui Hooks: on KeyUp | Change | -> Sort Order & Number Items / Page
- * We are hcnaged it each  time, when showing new listing, because DOM elements chnaged
- */
-function wpbc_ajx_booking_define_ui_hooks(){
+	/**
+	 * Define HTML ui Hooks: on KeyUp | Change | -> Sort Order & Number Items / Page
+	 * We are hcnaged it each  time, when showing new listing, because DOM elements chnaged
+	 */
+	function wpbc_ajx_booking_define_ui_hooks() {
 
-	if ( 'function' === typeof( wpbc_define_tippy_tooltips ) ) {
-		wpbc_define_tippy_tooltips( '.wpbc_listing_container ' );
+		if ( 'function' === typeof (wpbc_define_tippy_tooltips) ) {
+			wpbc_define_tippy_tooltips( '.wpbc__list__table ' );
+		}
+
+		wpbc_ajx_booking__ui_define__locale();
+		wpbc_ajx_booking__ui_define__remark();
+
+		wpbc_boo_listing__init_hook__sort_by();
+
+		// Items Per Page.
+		jQuery( '.wpbc_items_per_page' ).on(
+			'change',
+			function (event) {
+				wpbc_ajx_booking_send_search_request_with_params(
+					{
+						'page_items_count': jQuery( this ).val(),
+						'page_num'        : 1
+					}
+				);
+			}
+		);
+
+		// Sorting.
+		jQuery( '.wpbc_items_sort_type' ).on(
+			'change',
+			function (event) {
+				wpbc_ajx_booking_send_search_request_with_params( { 'sort_type': jQuery( this ).val() } );
+			}
+		);
 	}
-
-	wpbc_ajx_booking__ui_define__locale();
-	wpbc_ajx_booking__ui_define__remark();
-
-	// Items Per Page
-	jQuery( '.wpbc_items_per_page' ).on( 'change', function( event ){
-
-		wpbc_ajx_booking_send_search_request_with_params( {
-											'page_items_count'  : jQuery( this ).val(),
-											'page_num': 1
-										} );
-	} );
-
-	// Sorting
-	jQuery( '.wpbc_items_sort_type' ).on( 'change', function( event ){
-
-		wpbc_ajx_booking_send_search_request_with_params( {'sort_type': jQuery( this ).val()} );
-	} );
-}
 
 
 /**

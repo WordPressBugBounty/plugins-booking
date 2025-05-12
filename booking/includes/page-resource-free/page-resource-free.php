@@ -32,13 +32,13 @@ class WPBC_Page_Settings__bresources extends WPBC_Page_Structure {
 
         $tabs[ 'resources' ] = array(
                               'title'       => __('Resource','booking')            // Title of TAB
-                            , 'hint'        => __('Customization of booking resource', 'booking')                      // Hint
+                            , 'hint'        => __('Create unique calendars with individual availability.', 'booking')                      // Hint
                             , 'page_title'  => ucwords( __('Booking resource','booking') )                               // Title of Page
                             //, 'link'      => ''                                 // Can be skiped,  then generated link based on Page and Tab tags. Or can  be external link
                             //, 'position'  => 'left'                             // 'left'  ||  'right'  ||  ''
                             //, 'css_classes'=> ''                                // CSS class(es)
                             //, 'icon'      => ''                                 // Icon - link to the real PNG img
-                            , 'font_icon' => 'wpbc_icn_checklist'           // CSS definition  of font Icon
+                            , 'font_icon' => 'wpbc-bi-list 0wpbc_icn_checklist'           // CSS definition  of font Icon
                             , 'default'   => true                           // Is this tab activated by default or not: true || false.
                             //, 'disabled'  => false                        // Is this tab disabled: true || false.
                             , 'hided'     => true                           // Is this tab hided: true || false.
@@ -225,7 +225,7 @@ class WPBC_Page_Settings__bresources extends WPBC_Page_Structure {
 
 		if ( $is_panel_visible ) {
 			?>
-			<div id="toolbar_booking_resources" style="position:relative;margin-bottom:5em;">
+			<div id="toolbar_booking_resources" style="position:relative;margin-bottom: 5em;padding:1px;border:5px solid #fff;border-radius:5px;box-shadow: 0 3px 15px 0px #d4d4d4;">
 				<div class="wpdvlp-top-tabs wpbc_blur">
 					<div class="wpdvlp-tabs-wrapper">
 						<div class="nav-tabs">

@@ -46,10 +46,6 @@ class WPBC_AJX__Availability {
 									, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/availability_page.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 									, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );                     //FixIn: 9.8.1
 
-				wp_enqueue_script( 'wpbc-general_ui_js_css'
-					, wpbc_plugin_url( '/includes/_general_ui_js_css/_out/wpbc_main_ui_funcs.js' )
-					, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );										//FixIn: 9.8.1
-
 				wp_enqueue_script( 'wpbc_all',         wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ),                 	array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );          // FixIn: 9.8.6.1.
 				wp_enqueue_script( 'wpbc-main-client', wpbc_plugin_url( '/js/client.js' ),     array( 'wpbc-datepick' ),    WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 				wp_enqueue_script( 'wpbc-times',       wpbc_plugin_url( '/js/wpbc_times.js' ), array( 'wpbc-main-client' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
@@ -161,7 +157,7 @@ class WPBC_AJX__Availability {
 		 */
 		public function hook__page_footer_tmpl( $page ){
 
-			// page=wpbc&view_mode=vm_booking_listing
+			// page=wpbc&tab=vm_booking_listing
 			if ( 'wpbc-ajx_booking_availability'  === $page ) {		// from >>	do_action( 'wpbc_hook_settings_page_footer', 'wpbc-ajx_booking_availability' ); as availability_page.php in bottom  of content method
 				$this->template__main_page_content();
 
@@ -357,9 +353,7 @@ class WPBC_AJX__Availability {
 					echo '</script>';
 					return  false;
 				}
-				/*
-				?><# console.log( ' == TEMPLATE PARAMS "wpbc_ajx_change_booking_resource" == ', data ); #><?php
-				*/
+
 				$booking_action = 'select_booking_resource';
 
 				$el_id = 'ui_btn_' . $booking_action;

@@ -44,8 +44,6 @@ class WPBC_AJX__Setup_Wizard__Templates {
 			wp_enqueue_script( 'wpbc-main-client', 	wpbc_plugin_url( '/js/client.js' ), 				array( 'wpbc-datepick' ), 	 WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 			wp_enqueue_script( 'wpbc-times', 		wpbc_plugin_url( '/js/wpbc_times.js' ), 			array( 'wpbc-main-client' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 
-			wp_enqueue_script( 'wpbc-general_ui_js_css',  wpbc_plugin_url( '/includes/_general_ui_js_css/_out/wpbc_main_ui_funcs.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
-
 			wp_enqueue_script( 'wpbc-settings_obj',  	 trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/settings_obj.js',	array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc-setup_wizard_obj',  trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/setup_obj.js', 		array( 'wpbc-settings_obj' ), WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc-setup_wizard_show', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/setup_show.js',		array( 'wpbc-setup_wizard_obj' ), WP_BK_VERSION_NUM, $in_footer );

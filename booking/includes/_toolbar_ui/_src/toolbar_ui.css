@@ -58,6 +58,7 @@
 		color: #23282d;
 		/*box-shadow: 0 0 0 1px #4f94d4, 0 0 2px 1px rgba(79, 148, 212, 0.8);		This is Default: WordPress */
 		box-shadow: 0 0 0 0px #4f94d4, 0 0 1px 1px rgba(79, 148, 212, 0.8);
+		box-shadow: 0 0 0 1px #fff,0 0 0 3px #2271b1;
 		z-index: 1;
 		text-decoration: none;
 
@@ -142,6 +143,7 @@
 .ui_element .wpbc_ui_button_primary.focus:not(.inactive),
 .ui_element .wpbc_ui_button_primary:focus:not(.inactive) {
 	box-shadow:0 0 0 0px #fff, 0 0 2px 1px #a4d7ff;
+	box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
 }
 /* :active  ---- */
 .ui_element .wpbc_ui_button_primary.active:not(.inactive),
@@ -184,11 +186,15 @@
 	border-color: #d58582;
 	color: #fdfdfd;
 	text-shadow: none;
+	box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+	border-color:transparent;
 }
 /* :focus  ---- */
 .ui_element .wpbc_ui_button_danger.focus:not(.inactive),
 .ui_element .wpbc_ui_button_danger:focus:not(.inactive) {
 	box-shadow:0 0 0 0px #fff, 0 0 2px 1px #a4d7ff;
+	box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+	border-color:transparent;
 }
 /* :active  ---- */
 .ui_element .wpbc_ui_button_danger.active:not(.inactive),
@@ -199,6 +205,8 @@
 	border-color: #c05d5a;
 	box-shadow: inset 0 1px 7px -3px rgba(0, 0, 0, .1);
 	color: #f3f2f2;
+	box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+	border-color:transparent;
 }
 /* :disabled  ---- */
 .ui_element .wpbc_ui_button_danger[disabled],
@@ -724,6 +732,10 @@
 
 	font-size: 1em;
 	line-height: 1.42857143;
+
+	margin: 1px 5px;
+	padding: 8px 15px;
+	border-radius: 2px;
 }
 /* ---------------------------- A :hover :focus .active -------------------- */
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu > li > a:hover,
@@ -733,6 +745,7 @@
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu > .active > a:focus {
 	color: #fff;
 	background: #08c;
+	background: var(--wpbc_ui_dropdown__active-a-background);
 	text-decoration: none;
 	outline: none;
 	box-shadow: none;
@@ -845,10 +858,7 @@
  *																										// FixIn: 9.6.1.5.
 				?><div class="wpbc_ajx_toolbar wpbc_no_borders"><?php
 					?><div class="ui_container ui_container_small"><?php
-						?><div class="ui_group"><?php
-							?><div class="ui_element"><?php
-								wpbc_ajx__ui__options_checkbox__send_emails( $escaped_search_request_params, wpbc_ajx_get__request_params__names_default( 'default' ) );
-							?></div><?php
+						?><div class="ui_group"><?php ...
 						?></div><?php
 					?></div><?php
 				?></div><?php
@@ -1219,7 +1229,8 @@ div#wh_booking_type_chosen   .chzn-container.chzn-container-multi	.chzn-with-dro
 /**********************************************************************************************************************/
 /* Blur   ----------------------------------------------------------------------------------------------------------- */
 .wpbc_blur {
-	filter: blur(0.75px);
+	/*filter: blur(0.75px);*/
+	filter: blur(1px);
 	pointer-events: none;
 	user-select: none
 }

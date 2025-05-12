@@ -1,13 +1,14 @@
 (function ($) {
-
-	$(function() {
+	$( function () {
 
 		// if Shepherd is undefined, exit.
-		if (!window.Shepherd) return;
+		if ( ! window.Shepherd ) {
+			return;
+		}
 
-		var button_classes = 'button button-primary';
+		var button_classes    = 'button button-primary';
 		var plugins_page_tour = window.wpbc_plugins_page_tour = new Shepherd.Tour();
-		var main_tour = window.wpbc_main_tour = new Shepherd.Tour();
+		var main_tour         = window.wpbc_main_tour = new Shepherd.Tour();
 
 		// Set up the defaults for each step
 		main_tour.options.defaults = plugins_page_tour.options.defaults = {

@@ -29,7 +29,7 @@ if ( ! defined( 'WPBC_EMAIL_APPROVED_ID' ) )       define( 'WPBC_EMAIL_APPROVED_
                                                                                                                 */
 
 
-require_once( WPBC_PLUGIN_DIR . '/core/any/api-emails.php' );           // API
+require_once WPBC_PLUGIN_DIR . '/core/any/api-emails.php';           // API
 
 
 
@@ -586,19 +586,18 @@ class WPBC_Settings_Page_Email_Approved extends WPBC_Page_Structure {
         $subtabs['approved'] = array( 
                             'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
         					, 'title' => '<span>' . esc_html__( 'Approved', 'booking' ) . $sufix . '</span>' 					// Title of TAB
-                            , 'page_title' => __('Emails Settings', 'booking')  // Title of Page   
+                            , 'page_title' => __('Emails Settings', 'booking')  .  ' - <span>' . esc_html__( 'Approved', 'booking' ) . $sufix . '</span>'  // Title of Page.
                             , 'hint' => __('Customization of email template, which is sent to Visitor after approval of booking' ,'booking')   //FixIn: 8.1.2.17.1
                             , 'link' => ''                                      // link
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
-                            , 'default' =>  false                                // Is this sub tab activated by default or not: true || false. 
+                                                        , 'default' =>  false                                // Is this sub tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
-							, 'is_use_left_navigation' 	=> true
+							, 'font_icon' => 'wpbc_icn_done_all'
 							, 'show_checked_icon' 		=> true
 							, 'checked_data' 			=> WPBC_EMAIL_NEW_ADMIN_PREFIX . WPBC_EMAIL_APPROVED_ID		// This is where we get content
                         );
@@ -937,7 +936,7 @@ function wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $fo
     // Links ///////////////////////////////////////////////////////////////////
     $replace[ 'moderatelink' ]  = htmlspecialchars_decode( 
                                                         //    '<a href="' . 
-                                                            esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id ) 
+                                                            esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing&wh_booking_id=' . $booking_id )
                                                         //    . '">' . esc_html__('here', 'booking') . '</a>'
                                                         );    
     $replace[ 'visitorbookingediturl' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingediturl]', $booking_id );
@@ -1032,12 +1031,13 @@ function wpbc_send_email_approved( $approved_id_str, $is_send_emeils, $denyreaso
         if ( $mail_api->fields_values['enabled'] == 'Off' )     return false;       // Email  template deactivated - exit.
 
 
-        $replace = wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $formdata );
-        $replace[ 'denyreason' ] = $denyreason;                                 // FixIn: 7.0.1.1.
-        $replace[ 'approvereason' ] = $denyreason;                              // FixIn: 7.0.1.1.
-        $replace[ 'reason' ] = $denyreason;                                     // FixIn: 7.0.1.1.
-	    if ( ! empty( $res->remark ) )                                    							// FixIn: 8.1.2.6.
-			$replace[ 'remark' ] = $res->remark;                                // FixIn: 7.2.1.19.
+		$replace                  = wpbc__get_replace_shortcodes__email_approved( $booking_id, $bktype, $formdata );
+		$replace['denyreason']    = $denyreason;                                     // FixIn: 7.0.1.1.
+		$replace['approvereason'] = $denyreason;                                     // FixIn: 7.0.1.1.
+		$replace['reason']        = $denyreason;                                     // FixIn: 7.0.1.1.
+		if ( ! empty( $res->remark ) ) {
+			$replace['remark'] = $res->remark;
+		}                                // FixIn: 7.2.1.19.
 
         // Replace shortcodes with  custom URL parameter,  like: 'visitorbookingediturl', 'visitorbookingcancelurl', 'visitorbookingpayurl'
         foreach ( array( 'visitorbookingediturl', 'visitorbookingcancelurl', 'visitorbookingpayurl' , 'visitorbookingslisting' ) as $url_shortcode ) {                     //FixIn: 7.0.1.8	//FixIn: 8.1.3.5.1

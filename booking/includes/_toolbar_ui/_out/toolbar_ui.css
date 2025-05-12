@@ -48,6 +48,7 @@
   border-color: #d8d8d8;
   color: #23282d;
   box-shadow: 0 0 0 0 #4f94d4,0 0 1px 1px rgba(79,148,212,.8);
+  box-shadow: 0 0 0 1px #fff,0 0 0 3px #2271b1;
   z-index: 1;
   text-decoration: none;
   outline: transparent solid 2px;
@@ -110,7 +111,8 @@
 }
 .ui_element .wpbc_ui_button_primary.focus:not(.inactive),
 .ui_element .wpbc_ui_button_primary:focus:not(.inactive) {
-  box-shadow: 0 0 0 0 #fff,0 0 2px 1px #a4d7ff
+  box-shadow: 0 0 0 0 #fff,0 0 2px 1px #a4d7ff;
+  box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1
 }
 .ui_element .wpbc_ui_button_primary.active:focus:not(.inactive),
 .ui_element .wpbc_ui_button_primary.active:hover:not(.inactive),
@@ -145,22 +147,26 @@
 .ui_element .wpbc_ui_button_danger:focus:not(.inactive),
 .ui_element .wpbc_ui_button_danger:hover:not(.inactive) {
   background: #e6716f;
-  border-color: #d58582;
+  border-color: transparent;
   color: #fdfdfd;
-  text-shadow: none
+  text-shadow: none;
+  box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1
 }
 .ui_element .wpbc_ui_button_danger.focus:not(.inactive),
 .ui_element .wpbc_ui_button_danger:focus:not(.inactive) {
-  box-shadow: 0 0 0 0 #fff,0 0 2px 1px #a4d7ff
+  box-shadow: 0 0 0 0 #fff,0 0 2px 1px #a4d7ff;
+  box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+  border-color: transparent
 }
 .ui_element .wpbc_ui_button_danger.active:focus:not(.inactive),
 .ui_element .wpbc_ui_button_danger.active:hover:not(.inactive),
 .ui_element .wpbc_ui_button_danger.active:not(.inactive),
 .ui_element .wpbc_ui_button_danger:active:not(.inactive) {
   background: #ba4c48;
-  border-color: #c05d5a;
+  border-color: transparent;
   box-shadow: inset 0 1px 7px -3px rgba(0,0,0,.1);
-  color: #f3f2f2
+  color: #f3f2f2;
+  box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1
 }
 .ui_element .wpbc_ui_button_danger-disabled,
 .ui_element .wpbc_ui_button_danger.disabled,
@@ -633,12 +639,14 @@
   color: #333;
   text-decoration: none;
   font-weight: 400;
-  padding: 5px 15px;
+  padding: 8px 15px;
   white-space: nowrap;
   display: block;
   clear: both;
   font-size: 1em;
-  line-height: 1.42857143
+  line-height: 1.42857143;
+  margin: 1px 5px;
+  border-radius: 2px
 }
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu > .active > a,
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu > .active > a:focus,
@@ -647,6 +655,7 @@
 .ui_element .wpbc_ui_dropdown .ui_dropdown_menu > li > a:hover {
   color: #fff;
   background: #08c;
+  background: var(--wpbc_ui_dropdown__active-a-background);
   text-decoration: none;
   outline: 0;
   box-shadow: none
@@ -1005,7 +1014,7 @@ div.wpbc_ajx_toolbar.wpbc_no_borders {
   box-shadow: none
 }
 .wpbc_blur {
-  filter: blur(.75px);
+  filter: blur(1px);
   pointer-events: none;
   -webkit-user-select: none;
   -ms-user-select: none;

@@ -45,6 +45,7 @@ class WPBC_Page_SettingsUp extends WPBC_Page_Structure {
 		, 'font_icon' => 'wpbc_icn_redeem'                 // CSS definition  of forn Icon
 		, 'default' => true                // Is this tab activated by default or not: true || false.
 		, 'hided'   => true                                // Is this tab hided: true || false.
+			, 'folder_style' => 'order:9999;'
 		);
 
 		return $tabs;

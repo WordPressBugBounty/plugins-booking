@@ -451,20 +451,19 @@ class WPBC_Page_SettingsImportGCal extends WPBC_Page_Structure {
         
         $subtabs[ 'gcal' ] = array( 
                             'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
-                            , 'title' => __('Import Google Calendar Events', 'booking')	//__('Google Calendar' ,'booking') . '  - ' . __('Events Import' ,'booking')         // Title of TAB    
-                            , 'page_title' => __('Import Google Calendar Events', 'booking')		//__('Import Settings' ,'booking')    // Title of Page   
-                            , 'hint' => __('Import Google Calendar Events' ,'booking')      // Hint    
+                            , 'title' => __('Import Google Calendar', 'booking')	//__('Google Calendar' ,'booking') . '  - ' . __('Events Import' ,'booking')         // Title of TAB
+                            , 'page_title' => __('Import Google Calendar Events', 'booking')		//__('Import Settings' ,'booking')    // Title of Page
+                            , 'hint' => __('Set up and configure the import of Google Calendar events using the API.' ,'booking')      // Hint
                             , 'link' => ''                                      // link
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
-                            //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
+                            , 'font_icon' => 'wpbc-bi-google'   // CSS definition of Font Icon
                             , 'default' =>  false                               // Is this sub tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
-							//, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
+
                         );
         
         $tabs[ 'sync' ]['subtabs'] = $subtabs;

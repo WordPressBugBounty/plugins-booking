@@ -980,7 +980,7 @@ function wpbc_shortcode_config__content__booking() {
 																								, 'options'           => $options
 																							)
 																				);
-									?><a href="<?php echo esc_url( wpbc_get_availability_url() . '&tab=filter' ); ?>"
+									?><a href="<?php echo esc_url( wpbc_get_availability_url() . '' ); ?>"
 										 title="<?php echo esc_attr( __( 'Add new season', 'booking' ) ); ?>"
 									   class="wpbc_ui_control wpbc_ui_button tooltip_top" ><i class="menu_icon icon-1x wpbc_icn_add _circle_outline"></i></a><?php
 								?></div>
@@ -1211,7 +1211,7 @@ function wpbc_shortcode_config__content__booking() {
 																					)
 																		);
 
-									?><a href="<?php echo esc_url( wpbc_get_availability_url() . '&tab=filter' ); ?>"
+									?><a href="<?php echo esc_url( wpbc_get_availability_url() . '' ); ?>"
 										 title="<?php echo esc_attr( __( 'Add new season', 'booking' ) ); ?>"
 									   class="wpbc_ui_control wpbc_ui_button tooltip_top" ><i class="menu_icon icon-1x wpbc_icn_add _circle_outline"></i></a><?php
 

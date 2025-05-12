@@ -344,6 +344,25 @@ function wpbc_is_settings_form_page( $server_param = 'REQUEST_URI' ) {
 	return false;
 }
 
+
+/**
+ * Check if this WP Booking Calendar > Settings > Booking Form page
+ *
+ * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
+ * @return boolean true | false
+ */
+function wpbc_is_settings_color_themes_page( $server_param = 'REQUEST_URI' ) {
+	// Regular  user overwrite settings.
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( false !== strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) ) && ( false !== strpos( $_SERVER[ $server_param ], '&tab=color_themes' ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 /**
  * Check if this Booking > Availability page
  *
@@ -487,4 +506,45 @@ function wpbc_get_params_in_url( $page_param , $exclude_params = array(), $only_
 	}
 
 	return $url;
+}
+
+
+function wpbc_left_vertival_nav__get_tab_url( $page_tag, $tab_name, $subtab_name = false, $tags = array( 'tab' => 'tab', 'subtab' => 'subtab' ) ) {
+
+	if ( false === $subtab_name ) {
+		return esc_url( admin_url( add_query_arg( array( 'page' => $page_tag, $tags['tab'] => $tab_name, ), 'admin.php' ) ) );
+	} else {
+		return esc_url( admin_url( add_query_arg( array( 'page' => $page_tag, $tags['tab'] => $tab_name, $tags['subtab'] => $subtab_name, ), 'admin.php' ) ) );
+	}
+}
+
+/**
+ * Get  back  URL  for going from  edit season filter or rate to  specfic main  page.
+ *
+ * @return string|null
+ */
+function wpbc_get_back_button_url__for_seasons() {
+
+	$page_params_arr = array(
+		'page'     => 'wpbc-availability',
+		'page_num' => 1,
+	);
+
+	if ( ! empty( $_REQUEST['page'] ) ) {                                                       // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$page_params_arr['page'] = sanitize_text_field( wp_unslash( $_REQUEST['page'] ) );      // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	}
+	if ( ! empty( $_REQUEST['tab'] ) ) {                                                       // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$page_params_arr['tab'] = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ) );       // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	}
+	if ( ! empty( $_REQUEST['page_num'] ) ) {                                                  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$page_params_arr['page_num'] = intval( $_REQUEST['page_num'] );                        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	}
+
+	$back_url = admin_url(
+		add_query_arg(
+			$page_params_arr,
+			'admin.php'
+		)
+	);
+	return $back_url;
 }

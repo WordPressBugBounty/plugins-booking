@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 	 */
 	function wpbc_hook_settings_page_footer_templates_simple_form( $page ){
 
-		if ( 'form_field_free_settings'  === $page ) {
+		if ( ( 'form_field_free_settings' === $page ) || ( 'color_themes_settings' === $page ) ) {
 
 			wpbc_template__form_simple__change_calendar_skin();
 

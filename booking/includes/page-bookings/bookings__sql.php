@@ -379,7 +379,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 
 		// 4. Include dates into bookings   (Wide and Short dates view)
-		$bookings_with_dates = wpbc_ajx_include_bookingdates_in_bookings( $bookings_obj, $booking_dates_obj );
+		$bookings_with_dates = wpbc_ajx_include_bookingdates_in_the_bookings( $bookings_obj, $booking_dates_obj );
 																   /**
 																   Array (  [182] => stdClass Object (
 
@@ -1258,7 +1258,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 			                              ) " ;
 
 					// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-					if ( ( isset($_REQUEST['view_mode']) ) && ( $_REQUEST['view_mode']== 'vm_calendar' ) ) {
+					if ( ( isset($_REQUEST['tab']) ) && ( $_REQUEST['tab']== 'vm_calendar' ) ) {
 
 						// Skip the bookings from the children  resources, if we are in the Calendar view mode at the admin panel
 
@@ -1602,7 +1602,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 													    * [181] => stdClass Object (
 													    * ....
 		 */
-		function wpbc_ajx_include_bookingdates_in_bookings( $bookings_obj, $booking_dates_obj ){
+		function wpbc_ajx_include_bookingdates_in_the_bookings( $bookings_obj, $booking_dates_obj ){
 
 			$bookings_arr = array();
 			foreach ( $bookings_obj as $booking ) {
@@ -1778,8 +1778,9 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				$booking_data_arr  = wpbc_parse_booking_data_fields_formats( $booking_data_arr );
 
 				// Get SHORT / WIDE Dates showing data -----------------------------------------------------------------
-				$short_dates_content = wpbc_get_formated_dates__short( $booking->short_dates, (boolean) $booking->approved, $booking->short_dates_child_id, $resources_arr );
-				$wide_dates_content  = wpbc_get_formated_dates__wide(  $booking->dates,       (boolean) $booking->approved, $booking->child_id,             $resources_arr );
+				$dates_attr = array( 'date_html_tag' => 'span' );
+				$short_dates_content = wpbc_get_formated_dates__short( $booking->short_dates, (boolean) $booking->approved, $booking->short_dates_child_id, $resources_arr, $dates_attr );
+				$wide_dates_content  = wpbc_get_formated_dates__wide(  $booking->dates,       (boolean) $booking->approved, $booking->child_id,             $resources_arr, $dates_attr );
 
 				//------------------------------------------------------------------------------------------------------
 				// Payment Status
@@ -1870,7 +1871,9 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 																													'form_show'   => $parsed_form_show,     //wp_strip_all_tags( $parsed_form_show ),
 																													'dates_short' => $booking->short_dates
 																											) );
-
+				$booking_data_arr['visitorbookingpayurl'] = ( class_exists( 'wpdev_bk_biz_s' ) )
+					? apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingpayurl]', $booking_id )
+					: '';
 				// =====================================================================================================
 				$bookings_arr[ $booking_id ]->parsed_fields = $booking_data_arr;
 
@@ -1878,6 +1881,18 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				// =====================================================================================================
 				$bookings_arr[ $booking_id ]->templates = array(
 																'form_show'              => $parsed_form_show,
+																'form_show_simple'       => wp_kses( 	trim( stripslashes( $parsed_form_show ) ),
+																									// array_merge(
+																										array(
+																												'span' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
+																												'b' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
+																												'strong' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
+																												'i' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
+																												'class' => array(),
+																												'style'  => array()
+																										 )
+																									//	, wp_kses_allowed_html( 'post' ) )
+																),
 																'form_show_nohtml'       => wp_strip_all_tags( $parsed_form_show ),
 																'short_dates_content'    => $short_dates_content,
 																'wide_dates_content'     => $wide_dates_content,
@@ -1889,41 +1904,72 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 		}
 
 
+			//TODO: Refactor this function  to make this simpler,  for prevent of issues in future.
 			/**
 			 * Get SHORT Dates showing data
 			 *
-			 * @param array $short_dates_arr - Array  of dates
-			 * @param bool  $is_approved     - is dates approved or not
-			 * @param type  $dates_type_id_arr
-			 * @param type  $booking_resources_arr
+			 * @param array $short_dates_arr - Array  of dates.
+			 * @param bool $is_approved      - true or false
+			 * @param $dates_type_id_arr
+			 * @param $booking_resources_arr
+			 * @param array $attr	         - [ 'date_html_tag' => 'a' ] .
 			 *
 			 * @return string
 			 */
-			function wpbc_get_formated_dates__short( $short_dates_arr, $is_approved = false, $dates_type_id_arr = array() , $booking_resources_arr = array() ){
+			function wpbc_get_formated_dates__short( $short_dates_arr, $is_approved = false, $dates_type_id_arr = array(), $booking_resources_arr = array(), $attr = array() ) {
 
-				$css_class_approved  = ( $is_approved ) ? 'approved' : '';
-				$short_dates_content = '';
-				$date_number         = 0;
+				$defaults = array(
+					'date_html_tag' => 'a',
+				);
+				$params   = wp_parse_args( $attr, $defaults );
 
+				$css_class_approved      = ( $is_approved ) ? 'approved' : '';
+				$short_dates_content     = '';
+				$short_dates_content_arr = array();
+				$date_number             = 0;
+				$previous_formatted_date = '';
+				$previous_short_dates_content_sup;
 			    foreach ( $short_dates_arr as $dt ) {
 
-			        if ( $dt == '-' ) {
-
-			            $short_dates_content .= '<span class="date_tire"> - </span>';
-
-					} elseif ( $dt == ',' ) {
-
-			            $short_dates_content .= '<span class="date_tire">, </span>';
-
+					if ( '-' === $dt ) {
+						$short_dates_content_arr[] = '<span class="date_tire"> - </span>';
+					} elseif ( ',' === $dt ) {
+						$short_dates_content_arr[] = '<span class="date_tire date_comma">, </span>';
 					} else {
 
 						list( $formatted_date, $formatted_time ) = wpbc_get_date_in_correct_format( $dt );
 
-			            $short_dates_content .= '<a href="javascript:void(0)" onclick="javascript:wpbc_ajx_click_on_dates_toggle(this);" class="wpbc_label wpbc_label_booking_dates ' . $css_class_approved . '"><span>';
-						$short_dates_content .=         $formatted_date;
-			            $short_dates_content .=         '<sup class="field-booking-time">' . $formatted_time . '</sup>';
+						$short_dates_content     = '';
+						$short_dates_content_sup = '';  // Times and booking resources.
 
-							// BL
+						if ( 'a' === $params['date_html_tag'] ) {
+							$short_dates_content .= '<a href="javascript:void(0)" onclick="javascript:wpbc_ajx_click_on_dates_toggle(this);" ';
+						} else {
+							$short_dates_content .= '<' . $params['date_html_tag'];
+						}
+						$short_dates_content .= ' class="wpbc_label wpbc_label_booking_dates ' . $css_class_approved . '">';
+
+						$short_dates_content .= '<span>';
+
+						if ( $previous_formatted_date !== $formatted_date ) {
+							$short_dates_content .= $formatted_date;
+							$short_dates_content_sup .= '<sup class="field-booking-time">' . $formatted_time . '</sup>';
+						} else {
+							// same date (probaly  it is one date) !
+							if ( count( $short_dates_content_arr ) > 0 ) {
+								// Unset tire: '-'.
+								unset( $short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ] );
+								if ( ! empty( wp_strip_all_tags( $previous_short_dates_content_sup ) ) ) {
+									$tag_closed_span_and_a = $short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ];
+									// unset time_sup
+									unset( $short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ] );
+									$short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ] = $tag_closed_span_and_a;
+								}
+								$short_dates_content_sup .= '<sup class="field-booking-time">' . wp_strip_all_tags( $previous_short_dates_content_sup ) . ' - ' . $formatted_time . '</sup>';
+							}
+						}
+
+							// BL.
 					        if (
 								   ( class_exists( 'wpdev_bk_biz_l' ) )
 								&& ( ! empty( $dates_type_id_arr[ $date_number ] ) )
@@ -1939,13 +1985,22 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 							        $resource_title = substr( $resource_title, 0, 13 ) . '...' . substr( $resource_title, - 3 );
 						        }
 
-						        $short_dates_content .= '<sup class="field-booking-time date_from_dif_type"> ' . $resource_title . '</sup>';
+						        $short_dates_content_sup .= '<sup class="field-booking-time date_from_dif_type"> ' . $resource_title . '</sup>';
 					        }
 
-			            $short_dates_content .= '</span></a>';
+						$short_dates_content_arr[] = $short_dates_content;
+						$short_dates_content_arr[] = $short_dates_content_sup;
+						$short_dates_content_arr[] = '</span></' . $params['date_html_tag'] . '>';
+
+
+
+						$previous_short_dates_content_sup = $short_dates_content_sup;
+						$previous_formatted_date = $formatted_date;
 			        }
 			        $date_number++;
 			    }
+
+				$short_dates_content = implode( '', $short_dates_content_arr );
 
 			    return $short_dates_content;
 			}
@@ -1961,7 +2016,12 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 			 *
 			 * @return string
 			 */
-			function wpbc_get_formated_dates__wide( $dates_arr, $is_approved = false, $dates_type_id_arr = array(), $booking_resources_arr = array() ){
+			function wpbc_get_formated_dates__wide( $dates_arr, $is_approved = false, $dates_type_id_arr = array(), $booking_resources_arr = array(), $attr = array() ) {
+
+				$defaults = array(
+					'date_html_tag' => 'a',
+				);
+				$params   = wp_parse_args( $attr, $defaults );
 
 				$wide_dates_arr = array();
 
@@ -1971,7 +2031,15 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 					list( $formatted_date, $formatted_time ) = wpbc_get_date_in_correct_format( $sql_booking_date );
 
-					$wide_date  = '<a href="javascript:void(0)" onclick="javascript:wpbc_ajx_click_on_dates_toggle(this);" class="wpbc_label wpbc_label_booking_dates ' . $css_class_approved . '"><span>';
+					$wide_date = '';
+					if ( 'a' === $params['date_html_tag'] ) {
+						$wide_date .= '<a href="javascript:void(0)" onclick="javascript:wpbc_ajx_click_on_dates_toggle(this);" ';
+					} else {
+						$wide_date .= '<' . $params['date_html_tag'];
+					}
+					$wide_date .= ' class="wpbc_label wpbc_label_booking_dates ' . $css_class_approved . '">';
+					$wide_date .= '<span>';
+
 					$wide_date .=      $formatted_date;
 					$wide_date .=      '<sup class="field-booking-time">' . $formatted_time . '</sup>';
 
@@ -1992,12 +2060,12 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 							$wide_date .= '<sup class="field-booking-time date_from_dif_type"> ' . $resource_title . '</sup>';
 						}
 
-					$wide_date .= '</span></a>';
+					$wide_date .= '</span></' . $params['date_html_tag'] . '>';
 
 					$wide_dates_arr[] = $wide_date;
 				}
 
-				$wide_dates_content  = implode( '<span class="date_tire">, </span>' , $wide_dates_arr );
+				$wide_dates_content  = implode( '<span class="date_tire date_comma">, </span>' , $wide_dates_arr );
 
 			    return $wide_dates_content;
 			}

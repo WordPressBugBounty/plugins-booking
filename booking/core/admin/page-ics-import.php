@@ -56,21 +56,20 @@ class WPBC_Page_SettingsImportFeeds extends WPBC_Page_Structure {
         
         $subtabs[ 'import' ] = array( 
                             'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
-                            , 'title' => __('Import' ,'booking') . ' - .ics'           // Title of TAB    
-                            , 'page_title' => __('Import' ,'booking') . ' .ics '  
+                            , 'title'      => __('Import' ,'booking') . ' - .ics'           // Title of TAB
+                            , 'page_title' => __('Import Bookings via .ics' ,'booking')
 											//. ' <span style="padding: 10px;font-size: 12px;font-style: italic;vertical-align: top;">Beta</span>'  // Title of Page
-                            , 'hint' => __('Import' ,'booking') . ' .ics/ical ' . __('feeds', 'booking')		 // Hint    
+                            , 'hint' => __('Set up and configure the import of events using .ics feeds.' ,'booking')  		 // Hint
                             , 'link' => ''                                      // link
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
-                            //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-	                        , 'header_font_icon' => 'wpbc_icn_sync_alt'   // CSS definition of Font Icon			// FixIn: 9.6.1.4.
-                            , 'default' =>  ! true                                // Is this sub tab activated by default or not: true || false.		// FixIn: 8.1.1.10.
+                            , 'font_icon' => 'wpbc-bi-box-arrow-in-down-right'
+	                        , 'default' =>  false                                // Is this sub tab activated by default or not: true || false.		// FixIn: 8.1.1.10.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
-							//, 'is_use_left_navigation' 	=> true				// We commented this line to  have the vertical subline of menu
+
                         );
         
         $tabs[ 'sync' ]['subtabs'] = $subtabs;

@@ -25,14 +25,14 @@ function wpbc_define_listing_page_parameters( $page_tag ) {
     if ( wpbc_is_bookings_page() ) {                                            // We are inside of this page. Menu item selected.
 
 	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	    if ( ( isset( $_REQUEST['view_mode'] ) ) && ( 'vm_booking_listing' === $_REQUEST['view_mode'] ) ) {             //FixIn: 9.2.0
+	    if ( ( isset( $_REQUEST['tab'] ) ) && ( 'vm_booking_listing' === $_REQUEST['tab'] ) ) {             //FixIn: 9.2.0
 		    return;
 	    }
 
 		$booking_default_view_mode = wpbc_get_default_saved_view_mode_for_wpbc_page();
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-		if ( ! isset( $_REQUEST['view_mode'] ) ) {
-			$_REQUEST['view_mode'] = $booking_default_view_mode;                        // Set to REQUEST
+		if ( ! isset( $_REQUEST['tab'] ) ) {
+			$_REQUEST['tab'] = $booking_default_view_mode;                        // Set to REQUEST
 		}
 
         // Get saved filters set, (if its not set in request yet), like "tab"  & "view_mode" and overload $_REQUEST
@@ -54,19 +54,20 @@ add_action('wpbc_define_nav_tabs', 'wpbc_define_listing_page_parameters', 1  ); 
 function wpbc_get_default_saved_view_mode_for_wpbc_page() {
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	if ( ! isset( $_REQUEST['view_mode'] ) ) {
+	if ( ! isset( $_REQUEST['tab'] ) ) {
 		$booking_default_view_mode = get_bk_option( 'booking_listing_default_view_mode' );
 	} else {
-		$booking_default_view_mode = sanitize_text_field( wp_unslash( $_REQUEST['view_mode'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
-	}
-//$booking_default_view_mode='vm_listing';    //TODO:2023-05-20 remove it!!!!!!
-	if ( ! in_array( $booking_default_view_mode, array( 'vm_calendar', 'vm_booking_listing' ) ) ) {                     //FixIn: 9.2.1  // FixIn: 9.6.3.5.
-		$booking_default_view_mode = 'vm_booking_listing';
+		$booking_default_view_mode = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ) );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
 	}
 
-	$booking_default_view_mode = ( 'vm_listing' == $booking_default_view_mode ) ? 'vm_booking_listing' : $booking_default_view_mode;        // FixIn: 9.6.3.5.
+	// TODO:2023-05-20 remove it!!.  'vm_booking_listing';.
+	if ( ! in_array( $booking_default_view_mode, array( 'vm_calendar', 'vm_booking_listing' ), true ) ) {
+		$booking_default_view_mode = 'vm_booking_listing';                                                              // FixIn: 9.2.1 // FixIn: 9.6.3.5.
+	}
 
-    return $booking_default_view_mode;                                          // 'vm_calendar' / 'vm_booking_listing' ;
+	$booking_default_view_mode = ( 'vm_listing' === $booking_default_view_mode ) ? 'vm_booking_listing' : $booking_default_view_mode;        // FixIn: 9.6.3.5.
+
+	return $booking_default_view_mode;             // 'vm_calendar' / 'vm_booking_listing'.
 }
 
 
@@ -78,47 +79,39 @@ function wpbc_get_default_saved_view_mode_for_wpbc_page() {
  * @param string $filter_name - name of saved filter set. Currntly  is using only  one "Default"
  */
 function wpbc_set_default_saved_params_to_request_for_booking_listing( $filter_name ) {
-//debuge($_REQUEST);
-    // Exclude some parameters from the saved Default parameters - the values of these parameters are loading from General Booking Settings page or from the request.
-    $exclude_options_from_saved_params = array( 
-                                                'tab'                           // Default
-                                                , 'page'                        // From plugin
-                                                , 'view_mode'                   // Default
-                                                , 'wh_booking_type'             // Default
-                                                , 'view_days_num'               // Default
-                                                , 'blank_field__this_field_only_for_formatting_buttons'         // Skip this, this parameter for formating purpose in toolbar
-                                              );         
-    $wpdevbk_filter_params = array();
+
+	// Exclude some parameters from the saved Default parameters - the values of these parameters are loading from General Booking Settings page or from the request.
+	$exclude_options_from_saved_params = array(
+		'tab',  // Default.
+		'page', // From plugin.
+		'wh_booking_type', // Default.
+		'view_days_num',   // Default.
+		'blank_field__this_field_only_for_formatting_buttons',  // Skip this, this parameter for formating purpose in toolbar.
+	);
+
+	$wpdevbk_filter_params = array();
+
+	// Get here default View mode saved in a General Booking Settings page.
+	$booking_default_view_mode = wpbc_get_default_saved_view_mode_for_wpbc_page();
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ! isset( $_REQUEST['tab'] ) ) {
+		$wpdevbk_filter_params['tab'] = $booking_default_view_mode;
+	}
+	// 'vm_calendar' / 'vm_booking_listing' ;.
+	$_REQUEST['tab'] = $booking_default_view_mode;
 
 
-    // Get here default View mode saved in a General Booking Settings page
-    $booking_default_view_mode = wpbc_get_default_saved_view_mode_for_wpbc_page();
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-    if ( !isset( $_REQUEST['view_mode'] ) )
-        $wpdevbk_filter_params['view_mode'] = $booking_default_view_mode;       // 'vm_calendar' / 'vm_booking_listing' ;
-    $_REQUEST['view_mode'] = $booking_default_view_mode;                        // Set to REQUEST
-    
-//    if ( !isset( $_REQUEST['view_mode'] ) ) {
-//        $booking_default_view_mode = get_bk_option( 'booking_listing_default_view_mode' );
-//        if ( $booking_default_view_mode !== false ) {
-//            $wpdevbk_filter_params['view_mode'] = $booking_default_view_mode;   // 'vm_calendar' / 'vm_booking_listing' ;
-//            $_REQUEST['view_mode'] = $booking_default_view_mode;                // Set to REQUEST
-//        } else
-//            $_REQUEST['view_mode'] = 'vm_booking_listing';
-//    }
-
-    // Get here default view_days_num
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-    if ( !isset( $_REQUEST['view_days_num'] ) ) {
-        $booking_view_days_num = get_bk_option( 'booking_view_days_num' );
-        if ( $booking_view_days_num !== false ) {
-            $wpdevbk_filter_params['view_days_num'] = $booking_view_days_num;   // '30' 
-            $_REQUEST['view_days_num'] = $booking_view_days_num;
-        } else
-            $_REQUEST['view_days_num'] = '365';
-    }
-
-
+	// Get here default view_days_num.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ! isset( $_REQUEST['view_days_num'] ) ) {
+		$booking_view_days_num = get_bk_option( 'booking_view_days_num' );
+		if ( false !== $booking_view_days_num ) {
+			$wpdevbk_filter_params['view_days_num'] = $booking_view_days_num;   // '30'.
+			$_REQUEST['view_days_num']              = $booking_view_days_num;
+		} else {
+			$_REQUEST['view_days_num'] = '365';
+		}
+	}
 }
 
 

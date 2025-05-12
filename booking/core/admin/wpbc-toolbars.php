@@ -24,10 +24,6 @@ function wpbc_timeline_toolbar() {
 
     wpbc_clear_div();
 
-    //wpbc_toolbar_search_by_id_bookings();                                       // Search bookings by  ID - form  at the top  right side of the page
-
-    //wpbc_toolbar_btn__view_mode();                                              //  Vertical Buttons				// FixIn: 9.8.15.2.
-
     //  Toolbar ////////////////////////////////////////////////////////////////
 
     ?><div id="toolbar_booking_listing" class="wpbc_timeline_toolbar_container"><?php
@@ -84,25 +80,6 @@ function wpbc_timeline_toolbar() {
 
 }
 
-/**
- * Show Search  by  Booking ID form  at  top right side of Calendar  Overview page
- *
- * @param $page_tag
- * @param $active_page_tab
- * @param $active_page_subtab
- *
- * @return false|void
- */
-function wpbc_calendar_overview__search_by_id_bookings( $page_tag, $active_page_tab, $active_page_subtab ) {
-
-	if ( ( 'wpbc' !== $page_tag ) || ( 'vm_calendar' !== $active_page_tab ) ) {
-		return false;
-	}
-	?><span class="wpdevelop wpbc_page wpbc_toolbar_search_by_id_bookings"><?php
-		wpbc_toolbar_search_by_id_bookings();                                       // Search bookings by  ID - form  at the top  right side of the page
-	?></span><?php
-}
-add_bk_action('wpbc_h1_header_content_end', 'wpbc_calendar_overview__search_by_id_bookings');
 
 
 /** T o o l b a r   C o n t a i n e r   f o r   Add New Booking */
@@ -306,44 +283,6 @@ function wpbc_toolbar_is_send_emails_btn( $style = 'position:absolute;right:0px;
 }
 
 
-/** Search form  by booking ID (at top right side of page)  */
-function wpbc_toolbar_search_by_id_bookings() {
-
-    $bk_admin_url = wpbc_get_params_in_url( wpbc_get_bookings_url( true, false ), array('view_mode', 'wh_booking_id', 'page_num' ) );
-
-    ?>
-    <div style=" position: absolute; right: 23px; top: 11px;z-index: 9;">
-        <form name="booking_filters_formID" action="<?php echo esc_url( $bk_admin_url . '&view_mode=vm_listing'  ); ?>" method="post" id="booking_filters_formID" >
-        <?php
-
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-            if (isset($_REQUEST['wh_booking_id']))  $wh_booking_id = wpbc_clean_digit_or_csd( $_REQUEST['wh_booking_id'] );                    //  {'1', '2', .... }.
-            else                                    $wh_booking_id = '';
-
-
-            $params = array(  'label_for' => 'wh_booking_id'
-                                      , 'label' => ''//__('Keyword:', 'booking')
-                                      , 'items' => array(
-                                 array( 'type' => 'text', 'id' => 'wh_booking_id', 'value' => $wh_booking_id, 'placeholder' => __('Booking ID', 'booking'), 'style' => 'border-right: none;' )
-                                , array(
-                                    'type' => 'button'
-                                    , 'title' => __('Go', 'booking')
-                                    , 'class' => 'button-secondary'
-                                    , 'font_icon' => 'wpbc_icn_search'
-                                    , 'icon_position' => 'right'
-                                    , 'action' => "jQuery('#booking_filters_formID').trigger( 'submit' );" )
-                                       )
-                                );
-            ?><div class="control-group wpbc-no-padding" ><?php
-                      wpbc_bs_input_group( $params );
-            ?></div><?php
-        ?>
-        </form>
-        <?php wpbc_clear_div(); ?>
-    </div>
-    <?php
-}
-
 
 // ---------------------------------------------------------------------------------------------------------------------
 //   U I    E l e m e n t s
@@ -376,53 +315,6 @@ function wpbc_bs_dropdown_menu_help() {
                         ) );
 }
 
-
-/** View Mode   -   B u t t o n */
-function wpbc_toolbar_btn__view_mode() {
-
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$selected_view_mode = ( isset( $_REQUEST['view_mode'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['view_mode'] ) ) : '';
-
-    $bk_admin_url = wpbc_get_params_in_url( wpbc_get_bookings_url( false ), array('view_mode', 'wh_booking_id', 'page_num' ) );
-
-    $params = array();
-
-
-	// FixIn: 9.6.3.5.
-	$is_selected = ( ( $selected_view_mode == 'vm_booking_listing' ) || ( $selected_view_mode == 'vm_listing' ) ) ? true : false;
-
-	$params['btn_vm_listing_new'] = array(
-								  'title' => ''
-								, 'hint' => array( 'title' => __('Booking Listing' ,'booking') , 'position' => 'top' )
-								, 'selected' => $is_selected
-								, 'link' => wpbc_get_bookings_url('booking-listing', true ) . '&view_mode=vm_booking_listing'
-								, 'icon' => ''
-								, 'font_icon' => 'wpbc-bi-collection'//'glyphicon glyphicon-align-justify'
-							);
-
-
-    $bk_admin_url = wpbc_get_params_in_url( wpbc_get_bookings_url( false ) , array()              // Exclude Value of this parameter
-                                            , array( 'page', 'tab', 'tab_cvm', 'wh_booking_type', 'scroll_start_date', 'scroll_month', 'view_days_num'
-                                                     , 'wh_trash'               // FixIn: 6.1.1.10.
-                                                ) // Only  this parameters
-                                           );
-    $params['btn_vm_calendar'] = array(
-                                  'title' => ''
-                                , 'hint' => array( 'title' => __('Timeline View' ,'booking') , 'position' => 'bottom' )
-                                , 'selected' => ( $selected_view_mode == 'vm_calendar' ) ? true : false
-                                , 'link' => $bk_admin_url . '&view_mode=vm_calendar'
-                                , 'icon' => ''
-                                , 'font_icon' => 'wpbc-bi-calendar2-range'// 'glyphicon glyphicon-calendar'
-                            );
-
-    ?><div style="position:absolute;" class="wpbc_mode_switcher"><?php
-
-        wpbc_bs_vertical_buttons_group( $params );
-
-    ?></div><?php
-}
-
-// FixIn: 9.6.3.5.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Toolbar   Actions    B u t t o n s   -   T i m e l i n e   //////////////////
@@ -645,7 +537,7 @@ function wpbc_toolbar_btn__timeline_navigation() {
                                                                               )
                                                                         )
                                                     , 'divider2' => 'divider'
-                                                    , 'buttons' => array( array(  'type' => 'group', 'class' => 'btn-group' ),
+                                                    , 'buttons' => array( array(  'type' => 'group', 'class' => 'btn-group0', 'style'=>'display: flex;flex-flow: row nowrap;align-items: center;justify-content: flex-end;' ),
                                                                         array(
                                                                                   'type' => 'button'
                                                                                 , 'title' => __('Apply' ,'booking') // Title of the button
@@ -676,7 +568,7 @@ function wpbc_toolbar_btn__timeline_navigation() {
                                                                                 , 'icon' => ''
                                                                                 , 'font_icon' => ''
                                                                                 , 'icon_position' => 'left'         // Position  of icon relative to Text: left | right
-                                                                                , 'style' => ''                     // Any CSS class here
+                                                                                , 'style' => 'margin:0 10px;'                     // Any CSS class here
                                                                                 , 'mobile_show_text' => false       // Show  or hide text,  when viewing on Mobile devices (small window size).
                                                                                 , 'attr' => array()
                                                                               )

@@ -55,3 +55,10 @@
 	color: var(--wpbc_timepicker-selected-text-color);
 	background: rgb(from var(--wpbc_timepicker-selected-bg-color) r g b / var(--wpbc_timepicker-selected-bg-color-opacity));
 }
+/* FixIn: EAA - Highlight on Focus*/
+.wpbc_times_selector div:not(.wpbc_time_selected):focus {
+	/*border: var(--wpbc_timepicker-border-width) solid var(--wpbc_timepicker-hover-border-color);*/
+	border: var(--wpbc_timepicker-border-width) solid var(--wpbc_timepicker-selected-bg-color);
+	color: var(--wpbc_timepicker-hover-text-color);
+	background: rgb(from var(--wpbc_timepicker-hover-bg-color) r g b / var(--wpbc_timepicker-hover-bg-color-opacity));
+}

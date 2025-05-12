@@ -4,8 +4,8 @@ Donate link: https://wpbookingcalendar.com/buy/
 Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
-Tested up to: 6.7
-Stable tag: 10.10.2
+Tested up to: 6.8
+Stable tag: 10.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,40 +240,40 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- German 85.96% [ 2106 / 2450 ], fuzzy 318, not translated 26
-- French (France) 82.33% [ 2017 / 2450 ], fuzzy 358, not translated 75
-- Dutch 81.96% [ 2008 / 2450 ], fuzzy 365, not translated 77
-- Hungarian 79.39% [ 1945 / 2450 ], fuzzy 410, not translated 95
-- Korean 79.39% [ 1945 / 2450 ], fuzzy 407, not translated 98
-- Spanish (Spain) 73.06% [ 1790 / 2450 ], fuzzy 433, not translated 227
-- Portuguese (Brazil) 68.94% [ 1689 / 2450 ], fuzzy 543, not translated 218
-- Greek 68.53% [ 1679 / 2450 ], fuzzy 553, not translated 218
-- Turkish 67.63% [ 1657 / 2450 ], fuzzy 572, not translated 221
-- Danish 66.73% [ 1635 / 2450 ], fuzzy 597, not translated 218
-- Italian 65.88% [ 1614 / 2450 ], fuzzy 486, not translated 350
-- Spanish (Mexico) 63.31% [ 1551 / 2450 ], fuzzy 627, not translated 272
-- Finnish 62.94% [ 1542 / 2450 ], fuzzy 633, not translated 275
-- Polish 62.9% [ 1541 / 2450 ], fuzzy 623, not translated 286
-- Romanian 62.37% [ 1528 / 2450 ], fuzzy 636, not translated 286
-- Swedish 62% [ 1519 / 2450 ], fuzzy 648, not translated 283
-- Russian 61.35% [ 1503 / 2450 ], fuzzy 870, not translated 77
-- Norwegian (Bokmål) 61.18% [ 1499 / 2450 ], fuzzy 658, not translated 293
-- Arabic 60.94% [ 1493 / 2450 ], fuzzy 667, not translated 290
-- Slovenian 59.35% [ 1454 / 2450 ], fuzzy 685, not translated 311
-- Chinese (Taiwan) 57.76% [ 1415 / 2450 ], fuzzy 725, not translated 310
-- Portuguese (Portugal) 57.31% [ 1404 / 2450 ], fuzzy 705, not translated 341
-- Bulgarian 57.14% [ 1400 / 2450 ], fuzzy 712, not translated 338
-- Japanese 56.45% [ 1383 / 2450 ], fuzzy 227, not translated 840
-- Chinese (China) 55.39% [ 1357 / 2450 ], fuzzy 711, not translated 382
-- Ukrainian 55.02% [ 1348 / 2450 ], fuzzy 719, not translated 383
-- Thai 54% [ 1323 / 2450 ], fuzzy 761, not translated 366
-- Hebrew 53.67% [ 1315 / 2450 ], fuzzy 749, not translated 386
-- Galician 52.29% [ 1281 / 2450 ], fuzzy 801, not translated 368
-- Slovak 48.61% [ 1191 / 2450 ], fuzzy 726, not translated 533
-- Catalan 47.31% [ 1159 / 2450 ], fuzzy 748, not translated 543
-- Croatian 47.06% [ 1153 / 2450 ], fuzzy 749, not translated 548
-- Czech 40.9% [ 1002 / 2450 ], fuzzy 805, not translated 643
-- Chinese (Hong Kong) 27.76% [ 680 / 2450 ], fuzzy 104, not translated 1666
+- Norwegian (Bokmål) 82.71% [ 2109 / 2550 ], fuzzy 64, not translated 377
+- German 82.59% [ 2106 / 2550 ], fuzzy 390, not translated 54
+- French (France) 79.1% [ 2017 / 2550 ], fuzzy 425, not translated 108
+- Dutch 78.75% [ 2008 / 2550 ], fuzzy 434, not translated 108
+- Hungarian 76.27% [ 1945 / 2550 ], fuzzy 478, not translated 127
+- Korean 76.27% [ 1945 / 2550 ], fuzzy 473, not translated 132
+- Spanish (Spain) 70.2% [ 1790 / 2550 ], fuzzy 498, not translated 262
+- Portuguese (Brazil) 66.24% [ 1689 / 2550 ], fuzzy 607, not translated 254
+- Greek 65.84% [ 1679 / 2550 ], fuzzy 618, not translated 253
+- Turkish 64.98% [ 1657 / 2550 ], fuzzy 635, not translated 258
+- Danish 64.12% [ 1635 / 2550 ], fuzzy 660, not translated 255
+- Italian 63.29% [ 1614 / 2550 ], fuzzy 547, not translated 389
+- Spanish (Mexico) 60.82% [ 1551 / 2550 ], fuzzy 689, not translated 310
+- Finnish 60.47% [ 1542 / 2550 ], fuzzy 695, not translated 313
+- Polish 60.43% [ 1541 / 2550 ], fuzzy 687, not translated 322
+- Romanian 59.92% [ 1528 / 2550 ], fuzzy 699, not translated 323
+- Swedish 59.57% [ 1519 / 2550 ], fuzzy 709, not translated 322
+- Arabic 59.02% [ 1505 / 2550 ], fuzzy 722, not translated 323
+- Russian 58.94% [ 1503 / 2550 ], fuzzy 938, not translated 109
+- Bulgarian 57.18% [ 1458 / 2550 ], fuzzy 736, not translated 356
+- Slovenian 57.02% [ 1454 / 2550 ], fuzzy 747, not translated 349
+- Chinese (Taiwan) 55.49% [ 1415 / 2550 ], fuzzy 787, not translated 348
+- Portuguese (Portugal) 55.06% [ 1404 / 2550 ], fuzzy 770, not translated 376
+- Japanese 54.24% [ 1383 / 2550 ], fuzzy 283, not translated 884
+- Chinese (China) 53.22% [ 1357 / 2550 ], fuzzy 772, not translated 421
+- Ukrainian 52.86% [ 1348 / 2550 ], fuzzy 782, not translated 420
+- Catalan 52% [ 1326 / 2550 ], fuzzy 705, not translated 519
+- Thai 51.88% [ 1323 / 2550 ], fuzzy 822, not translated 405
+- Hebrew 51.57% [ 1315 / 2550 ], fuzzy 810, not translated 425
+- Galician 50.24% [ 1281 / 2550 ], fuzzy 862, not translated 407
+- Slovak 46.71% [ 1191 / 2550 ], fuzzy 786, not translated 573
+- Croatian 45.22% [ 1153 / 2550 ], fuzzy 806, not translated 591
+- Czech 39.29% [ 1002 / 2550 ], fuzzy 862, not translated 686
+- Chinese (Hong Kong) 26.67% [ 680 / 2550 ], fuzzy 144, not translated 1726
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -306,6 +306,41 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
 
 == Changelog ==
+= 10.11.1 =
+- Changes in **all** versions:
+	* **New**: Added 4 new calendar skins.
+	* **Fix**: Fixed position of the actions button on mobile devices.
+
+= 10.11 =
+- Changes in **all** versions:
+	* **New**: **New Logo**: Booking Calendar now features a refreshed logo using the initials “b” and “c” for a cleaner, more modern visual identity.
+	* **New**: Major update to the **booking admin interface** for a cleaner and more modern experience focused on essential elements.
+	* **New**: Added **Full-Screen Mode** on all admin pages. Click the full-screen icon in the top right to focus only on the booking panel.
+	* **New**: Introduced a **Universal Left Sidebar Menu** to access all settings. Supports wide, compact, or minimized view. Improved for mobile usability.
+	* **New**: **Top Horizontal Bar** stays visible during scrolling, with quick access to save settings, full-screen mode, etc.
+	* **New**: Fully redesigned **Booking Listing Page** with a cleaner UI focused on booking dates, status, and labels.
+	* **New**: Booking dates now appear on the left in the format best suited to the booking type (e.g. multi-day vs. single time-slot).
+	* **New**: Option to expand booking dates or full details with hover/click on arrow icon.
+	* **New**: All booking actions are grouped in a dropdown at the right side of each booking.
+	* **New**: Many actions now open pop-up windows for additional info (e.g. action reason input).
+	* **New**: Bulk actions menu relocated to top-left; auto-expands with additonal actions when bookings are selected.
+	* **New**: Improved pagination showing total bookings, current page range, “Back/Next” buttons, and dropdown page navigation at the footer.
+	* **New**: UI elements redesigned for clarity and accessibility; visual focus cues improved.
+	* **New**: Refreshed **Timeline View** layout; booking resource selection improved in paid versions.
+	* **New**: Reorganized **Settings Pages** Structure in the left sidebar for faster access to specific settings.
+	* **Improvement**: Improved accessibility support for calendar day highlighting during keyboard selection (EAA compliant).
+	* **Improvement**: Enhanced time picker accessibility for keyboard users (EAA compliant).
+	* **Improvement**: Allowed editing of past bookings by appending &allow_past to the booking URL. For example: https://server.com/wp-admin/admin.php?page=wpbc-new&booking_type=2&booking_hash=c5cbdef7abfa3423bb9ae8e8dd36157d&parent_res=1&booking_form&is_show_payment_form=Off&allow_past (10.10.3.2)
+	* **Improvement**: If no bookings found in Booking Listing, a “Reset Filter” link appears to show all bookings.
+	* **Under Hood**: Updated URL slugs for Booking Listing (&tab=vm_booking_listing) and Timeline (&tab=vm_calendar) pages.
+	* **Fix**: Prevented loading of Booking Calendar News images when the news section is closed. (10.10.3.1)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: Updated Redsys payment system to log more detailed info if a payment fails. (2025-03-06)
+	* **Improvement**: If the “Redirect to Thank You Page” option is enabled in Settings > General > Booking Confirmation, the system now redirects even when payment forms are active. Previously, it would show the confirmation on the same page. (10.10.3.3)
+	* **Under Hood**: Removed support for Opayo (SagePay) as protocol 3.0 is no longer supported by the provider.
+	* **Under Hood**: Removed support for the legacy PayPal Standard gateway. Only PayPal Standard Checkout is now supported.
+	* ...and hundreds of other small improvements and refinements!
+
 = 10.10.2 =
 - Changes in **all** versions:
 	* **Improvement**: Changed the option "Choose how to display appointment availability" in the Wizard setup  to radio  buttons selection.
@@ -497,28 +532,10 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 	* **New** **Pre-Check-in Date Hint Shortcode**: Introduced the [pre_checkin_date_hint] shortcode, which shows the date that is N days before the selected check-in date. You can select the number of days for the [pre_checkin_date_hint] shortcode at the WP Booking Calendar > Settings General page in "Form Options" section". (10.0.0.31) (Business Medium/Large, MultiUser)
 	* Many improvements and fixes. Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
-= 10.0 =
-- Changes in **all** versions:
-	* **New**: **Easy Shortcode Integration**. Discover the simplicity of integrating Booking Calendar shortcodes into your pages. Our updated UI for the configuration popup dialog simplifies the process of inserting booking forms, availability calendars, and other Booking Calendar shortcodes. Configuring all parameters is now super easy with our new structured wizard-style configuration dialog. Add the Booking Calendar to your page by using Booking Calendar Blocks in the WP Block Editor or by clicking on the Booking Calendar icon in the WP Classic Editor.
-	* **New**: Added "Unavailable Dates" legend item under the calendar. Easily configure it at WP Booking Calendar > Settings General page in the "Calendar" section (9.9.0.5).
-	* **Improvement** Ability to dismiss the booking statistic section at Booking > Settings General page in "Info / News" for improved admin panel loading speed. (9.9.0.8).
-	* **Improvement** Enhanced **Performance** - To improve the speed of page loading in the admin panel, statistic functions will now run only on the Dashboard and Booking Calendar settings pages. This optimization ensures a smoother user experience by focusing resource-intensive tasks only where necessary. (9.9.0.40)
-	* **Improvement** Prevent showing real preview in Elementor to reduce potential conflicts; instead, show 'WP Booking Calendar Shortcode block' (9.9.0.39).
-	* **Improvement** Prevent execution of Booking Calendar shortcodes while editing posts/pages, reducing potential conflicts (9.9.0.39).
-	* **Under hood**: Customize showing booked time slots as inactive slots with a red background after selecting specific dates. Configure this in the ../{Booking Calendar Folder}/js/wpbc_time-selector.js file  by searching //FixIn: 9.9.0.2 (9.9.0.2).
-	* **Translation**. German, Hungarian translation update
-	* **Fix** Resolved more than 6 different issues. Find more at [this page](https://wpbookingcalendar.com/changelog/)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New** **UI Design of Resource Page**. Easily toggle between table header tabs to view specific information, such as the shortcode for embedding into pages, costs, default form, or parent/child relation for defining booking resource capacity. The interface is now clearer and more straightforward for a seamless experience. (9.9.0.6) (9.9.0.7) *(Personal, Business Small/Medium/Large, MultiUser)*
-	* **New** Added **search booking resources** field to Options toolbar for easy searching by ID or Title keywords (9.9.0.11) *(Personal, Business Small/Medium/Large, MultiUser)*
-	* **New** Super **easy configuration of "Conditional Days Selection"**. You can now easily: a) Set the number of days for selection based on a specific weekday. b) Determine the number of days for selection in a specific season. c) Choose weekdays as start days for selection during a specific season. d) Define the number of days for selection starting from a specific date. *(Business Medium/Large, MultiUser)*
-	* **New** New shortcode **[total_cost]** for displaying taxes or additional fees based on the total booking cost. This shortcode is used for displaying additional cost hints without affecting cost calculations. Since the total cost has already been calculated at this stage. For example, if you want to **show the tax cost as 20% inclusive part of the total booking cost**, set up your booking form fields like this: **[checkbox tax_fee default:on ""] Tax: [tax_fee_hint]**. Now, define the additional cost for tax_fee at WP Booking Calendar > Prices > Form Options Costs page: **tax_fee = ( [total_cost] * 0.2 )**  *(Business Medium/Large, MultiUser)* (9.9.0.32)
-	* **New** Track Changes: **Booking Edit Notification**. Whenever a booking is edited, a note stating 'The booking has been edited' will be generated for the booking. This note also contains the URL of the page where the user made the modifications. With this feature, you gain control over tracking changes to booking details. *(Personal, Business Small/Medium/Large, MultiUser)*
-	* **New** Save Booking Notes. Now, booking notes such as "Imported from Google Calendar," "Payment section displayed," "Total cost manually entered," "Automatically calculated cost," etc., will be saved only if the "Logging actions for booking" option is activated in the WP Booking Calendar > Settings General page in the "Admin Panel" section. (9.9.0.41) *(Personal, Business Small/Medium/Large, MultiUser)*
-	* **New** Sage/Opayo gateway becoming a payment product under the Elavon brand. Update name of payment gateway from SagePay to **Opayo - Elavon**. For more information, visit: https://www.elavon.co.uk/resource-center/news-and-insights/opayo-migration-faqs.html  (9.9.0.34) *(Business Small/Medium/Large, MultiUser)*
-	* Many improvements and fixes. Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
 == Upgrade Notice ==
+= 10.11 =
+Major admin panel redesign with a modern UI, new full-screen mode, smarter booking list, improved settings navigation, and enhanced accessibility across all Booking Calendar pages.
+
 = 10.10 =
 Better time slot availability, timezone-based settings, improved form customization, new appointment templates, booking hash security, and UI fixes!
 

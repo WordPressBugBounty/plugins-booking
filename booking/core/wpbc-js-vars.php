@@ -28,6 +28,11 @@ function wpbc_get_localized_js_vars() {
 	// FixIn: 10.8.1.4.
 	$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( 'now' ) );
 
+	if ( ( isset( $_REQUEST['allow_past'] ) ) || ( wpbc_is_new_booking_page() && ( isset( $_GET['booking_hash'] ) ) ) ) {           // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing                                                                                 // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		// Get time in past. //FixIn: 10.10.3.2.
+		$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( '-' . intval( wpbc_get_max_visible_days_in_calendar() ) . ' days' ) );        // - 365 days or more
+	}
+
 	$script .= "_wpbc.set_other_param( 'time_gmt_arr', [" . wpbc_datetime_localized__no_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) . ']  ); ';
 	$script .= "_wpbc.set_other_param( 'time_local_arr', [" . wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) . ']  ); ';
 
@@ -36,7 +41,10 @@ function wpbc_get_localized_js_vars() {
 	if ( ! empty( $unavailable_time_from_today ) ) {
 		if ( 'm' === substr( $unavailable_time_from_today, - 1 ) ) {
 
-			$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $unavailable_time_from_today ) - 1 ) . ' minutes' ) );
+			// Get time ONLY, if it is not in past. //FixIn: 10.10.3.2.
+			if ( ( ! isset( $_REQUEST['allow_past'] ) ) && ( ! ( wpbc_is_new_booking_page() && ( isset( $_GET['booking_hash'] ) ) ) ) ) {   // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+				$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( '+' . ( intval( $unavailable_time_from_today ) - 1 ) . ' minutes' ) );
+			}
 
 			// Local timezone unavailable time.                                                                         // FixIn: 10.9.6.3.
 			$local_unavailable_datetime_ymdhis = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y-m-d H:i:s' );             // Local unavailable.

@@ -48,6 +48,15 @@
 					el.trigger( 'change' );
 				});
 
+				// Execute a function when the user presses a key (13 - Enter) on the keyboard. (FixIn: EAA)
+				el.next( '.wpbc_times_selector' ).find( 'div' ).not( '.wpbc_time_picker_disabled' ).on( "keypress", function (event) {
+					if ( 13 === event.which ) {
+						event.preventDefault();
+						console.log( jQuery( this ) );
+						jQuery( this ).trigger( 'click' );
+					}
+				} );
+
 				el.hide();
 
 				times_options = [];
@@ -77,6 +86,7 @@
 				select_div += '<div '
 									+ ' data-value="' + el_item.value + '" '
 									+ ' class="' + css_class + '" '
+									+ ' tabindex="0" '
 					         + '>'
 									+ el_item.title
 							 + '</div>'

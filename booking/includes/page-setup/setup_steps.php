@@ -440,7 +440,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 					box-shadow: 0 0 10px #c1c1c1;
 					border-radius: 9px;
 					background: transparent;
-					right: 20px;
+					right: 69px;
 					top: 40px;
 				}
 

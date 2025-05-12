@@ -964,15 +964,6 @@ hr.wpbc_tl_popover_booking_separator {
   margin-left: auto;
   margin-right: 0
 }
-.wpbc_toolbar_search_by_id_bookings {
-  -ms-flex-item-align: end;
-  align-self: flex-end
-}
-@media (max-width:501px) {
-  .wpbc_toolbar_search_by_id_bookings {
-    display: none
-  }
-}
 .flex_tl__scrolling_sections {
   display: -ms-flexbox;
   display: flex;

@@ -11,6 +11,53 @@
  * @modified 2015-04-09
   */
 
+function wpbc_parse_url_and_get_params_arr( url ) {
+
+	var url_parameters     = url.split( '?' )[1];
+	var result_params_arr  = {};
+	var url_parameters_arr = url_parameters.split( /\?|&/ );
+	var param_length       = url_parameters_arr.length;
+	for ( var i = 0; i < param_length; i++ ) {
+		if ( ! url_parameters_arr[i] ) {
+			continue;
+		}
+		var ary                   = url_parameters_arr[i].split( '=' );
+		result_params_arr[ary[0]] = ary[1];
+	}
+	return result_params_arr;
+}
+
+function wpbc_ui_settings__menu__click( url, left_vert_nav_menu_a, section_id_to_show, text_for_path ){
+
+	var current_page_params     = wpbc_parse_url_and_get_params_arr( window.location.href );
+	var destination_page_params = wpbc_parse_url_and_get_params_arr( url );
+
+	var is_this_same_page = 0;
+
+	if (current_page_params['page'] === destination_page_params['page']){
+		is_this_same_page++;
+	}
+	if (
+		(  (typeof( current_page_params['tab'] ) === 'undefined') &&  (typeof( destination_page_params['tab'] ) === 'undefined') ) ||
+		(  (current_page_params['tab'] === destination_page_params['tab']) )
+	) {
+		is_this_same_page++;
+	}
+	if (
+		(  (typeof( current_page_params['subtab'] ) === 'undefined') &&  (typeof( destination_page_params['subtab'] ) === 'undefined') ) ||
+		(  (current_page_params['subtab'] === destination_page_params['subtab']) )
+	) {
+		is_this_same_page++;
+	}
+
+	if ( 3 === is_this_same_page ) {
+		wpbc_ui_settings__panel__click( left_vert_nav_menu_a, section_id_to_show, text_for_path )
+	} else {
+		window.location.href = url;
+	}
+
+}
+
 function wpbc_ui_settings__panel__click( left_vert_nav_menu_a, section_id_to_show, text_for_path ){
 
 	// Update text in Top Menu.
@@ -21,8 +68,10 @@ function wpbc_ui_settings__panel__click( left_vert_nav_menu_a, section_id_to_sho
     // Show / Hide section  and enable Left Vert Menu item
     wpbc_navigation_click_show_section( left_vert_nav_menu_a, section_id_to_show , '.postbox' , false);
 
-    //wpbc_scroll_to( '.wpbc_settings_path_el_active' );        // Scroll  to  path
-    wpbc_scroll_to( '.wpbc_page_top__header_tabs' );            // Scroll  to  Top
+    // wpbc_scroll_to( '.wpbc_settings_path_el_active' );        // Scroll  to  path.
+    // wpbc_scroll_to( '.wpbc_page_top__header_tabs' );            // Scroll  to  Top.
+    wpbc_scroll_to( '.wpbc_settings_page_header_title' );            // Scroll  to  Top.
+
 }
 
 
@@ -65,24 +114,38 @@ function wpbc_navigation_click_show_section( _this, section_id_to_show ){
  * @param {type} object_name
  * @returns {undefined}
  */
-function wpbc_scroll_to( object_name ) {    
-    if ( jQuery( object_name ).length > 0 ) {        
-        var targetOffset = jQuery( object_name ).offset().top;
-        // targetOffset = targetOffset - 50;
-        if (targetOffset<0) targetOffset = 0;
-        if ( jQuery('#wpadminbar').length > 0 ) targetOffset = targetOffset - 50;
-        else  targetOffset = targetOffset - 20;
-        jQuery('html,body').animate({scrollTop: targetOffset}, 500);
-        return targetOffset;
-    }
-    return 0;
+function wpbc_scroll_to(object_name) {
+
+	if ( jQuery( object_name ).length > 0 ) {
+		var targetOffset = jQuery( object_name ).offset().top;
+		if ( targetOffset < 0 ) {
+			targetOffset = 0;
+		}
+		if ( jQuery( '#wpadminbar' ).length > 0 ) {
+			targetOffset = targetOffset - 50 - 40;
+		} else {
+			targetOffset = targetOffset - 20;
+		}
+		jQuery( 'html,body' ).animate( { scrollTop: targetOffset }, 500 );
+		return targetOffset;
+	}
+	return 0;
 }
 
-jQuery( document ).ready(function(){
-    setTimeout(function() {
-            wpbc_scroll_to( window.location.hash );
-    }, 100)
-}); 
+/**
+ * Auto scroll to  unchor after  page loaded.
+ */
+jQuery( document ).ready(
+	function () {
+		setTimeout(
+			function () {
+				// window.location.hash  = #section_id  /  doc: https://developer.mozilla.org/en-US/docs/Web/API/Location .
+				wpbc_scroll_to( window.location.hash );
+			},
+			100
+		);
+	}
+);
 
 function wpbc_animate_border( element, time, colors, x ) {
 
@@ -223,15 +286,16 @@ function wpbc_admin_show_message( message, m_type, m_delay, is_append ){        
       jQuery('#' + selector_id + '_container li input[type=checkbox],#' + selector_id + '_container li input[type=radio]').prop('checked', false);
       jQuery('#' + selector_id + '_container').hide();
     }
-    // Show Container depend from the selected option in dropdown list
+
+    // Show Container depend from the selected option in dropdown list.
     function wpbc_show_selected_in_dropdown( selector_id, title, value ){
         jQuery('#' + selector_id + '_selector .wpbc_selected_in_dropdown').html( title );
         jQuery('#' + selector_id ).val( value );
         jQuery('#' + selector_id ).trigger('change');
     }
 
-    // Show Container depend from the selected Radio Option and Selectbox value in dropdown list
-    // Exmaple: wpbc_show_selected_in_dropdown__radio_select_option( 'wh_booking_date', 'wh_booking_date2', 'wh_booking_datedays_interval_Radios' );
+    // Show Container depend from the selected Radio Option and Selectbox value in dropdown list.
+    // Exmaple: wpbc_show_selected_in_dropdown__radio_select_option( 'wh_booking_date', 'wh_booking_date2', 'wh_booking_datedays_interval_Radios' );.
     function wpbc_show_selected_in_dropdown__radio_select_option( selector_id, selector_id2, radio_name ){
 
         // Get selected value in radio buttons
@@ -289,28 +353,6 @@ function wpbc_admin_show_message( message, m_type, m_delay, is_append ){        
 /**
  * End:   Dropdown BS List elements  -------------------------------------------------------------------------------- */
 
-// FixIn: 9.6.3.5.
-
-/* Mark rows in listing as selected by adding specific CLASS*/
-( function( $ ){            
-    $( document ).ready(function(){
-
-        
-        $('.wpbc-listing-row input[type="checkbox"]').on( 'change', function(){    
-            
-            $('.wpbc-listing-row').find('.check-column').find(':checkbox').each( function() {
-                if ( $(this).is(':checked') ) {                    
-                    $(this).parent().parent().parent().parent().addClass('row_selected_color');                                    
-                } else {
-                    $(this).parent().parent().parent().parent().removeClass('row_selected_color');
-                }
-
-            });
-            
-        } );
-
-    });    
-}( jQuery ) );
 
 /**
 	 * Ajax Request
@@ -358,9 +400,6 @@ function wpbc_verify_window_opening(us_id, window_id) {
 
 }
 
-
-
-
 /**
 	 * Ajax Request - Saving Custom Data for User
  * 
@@ -390,13 +429,7 @@ function wpbc_save_custom_user_data( us_id, data_name, data_value , is_reload ){
         });
 }
 
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Contact Form
-////////////////////////////////////////////////////////////////////////////////
+// Contact Form.
 function wpbc_submit_client_form( submit_form, wpdev_active_locale ){
     
     var count = submit_form.elements.length;
@@ -537,7 +570,6 @@ function wpbc_submit_client_form( submit_form, wpdev_active_locale ){
     submit_form.submit();                                                       // Submit Form,  if previously  was no interuptions 
 }
 
-
 /**
  * Show message under specific element
  * 
@@ -568,8 +600,7 @@ function wpbc_show_message_under_element( element , errorMessage , message_type)
             .fadeOut( 2000 ); 
 }
 
-
-// Show Error Message in Booking Form  at Front End
+// Show Error Message in Booking Form  at Front End.
 function wpbc_show_error_message( element , errorMessage) {
 
     // Scroll to the element
@@ -648,9 +679,8 @@ function wpbc_reload_page_with_paramater( url, param, value ) {
     window.location.href = parser.href;
 }
 
-// jQuery(window).load(function(){
+// Deprecated:.
 jQuery( window ).on( "load", function (){       // FixIn: 8.7.9.7.
-
 
     // Color Text picker ///////////////////////////////////////////////////////
     if ( jQuery('.field-text-color').length > 0 ) {
@@ -720,14 +750,9 @@ jQuery( window ).on( "load", function (){       // FixIn: 8.7.9.7.
             event.stopPropagation();
         });
     }
-    
-});            
+});
 
-
-
-////////////////////////////////////////////////////////////////////////////
-// Support Functions
-////////////////////////////////////////////////////////////////////////////
+// -- Support Functions ------------------------------------------------------------------------------------------------
 
 /**
  * Reset of WP Editor or TextArea Content

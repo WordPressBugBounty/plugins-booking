@@ -90,8 +90,6 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 	    parent::__construct();
 
 		add_filter( 'admin_body_class', array( $this, 'add_loading_classes' ) );
-
-	    // add_action( 'wpbc_page_show_left_navigation_custom', array( $this, 'left_navigation_custom__settings_all' ) );
     }
 
 
@@ -104,9 +102,10 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
         $tabs = array();
         $tabs[ 'step_01' ] = array(
+			'left_navigation__default_view_mode' => 'none',                               // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
                               'title'		=> __( 'Setup', 'booking' )						// Title of TAB
-                            , 'hint'		=> __( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Hint
-                            , 'page_title'	=> __( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Title of Page
+                            , 'hint'		=> false//__( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Hint
+                            , 'page_title'	=> false//__( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Title of Page
                             , 'link'		=> ''								// Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
                             , 'position'	=> ''                               // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
@@ -122,21 +121,17 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
         $subtabs['path_setup'] = array(
                               'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
                             , 'title'     => __( 'Setup', 'booking' )						// Title of TAB
-                            , 'page_title'=> __( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Title of Page
-                            , 'hint'      => __( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Hint
+                            , 'page_title'=> false//__( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Title of Page
+                            , 'hint'      => false//__( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Hint
                             , 'link' => '#path_setup'                                      								// link
                             , 'position' => ''                                  	// 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               	// CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 	// Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   			// CSS definition of Font Icon
-                            , 'header_font_icon' => 'wpbc_icn_donut_large'   		// CSS definition of Font Icon			// FixIn: 9.6.1.4.
-                            , 'default' 	=> true                                	// Is this sub tab activated by default or not: true || false.
+                                                        , 'default' 	=> true                                	// Is this sub tab activated by default or not: true || false.
                             , 'disabled' 	=> false                               	// Is this sub tab deactivated: true || false.
                             , 'checkbox'  	=> false                              	// or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' 	=> 'content'                            // Function to load as content of this TAB
-							//, 'is_use_left_navigation' 			=> true			// == Show $tabs[ 'step_01' ]['title'] -> "Setup" Menu at  left side instead of Old top menu (which  is hidden in setup_page.css .wpbc_top_tabs_sub_menu{...},  in case if we do not use navigation  path, e.g. $tabs[ 'step_01' ]['subtabs']['path_setup'][ 'is_use_navigation_path'] = false;
-							//, 'is_use_left_navigation_custom' 	=> true			// == Usually  used Together with 'is_use_left_navigation': true, and defined CUSTOM left  menu,  instead of submenu.  Need to use  add_action( 'wpbc_page_show_left_navigation_custom', array( $this, 'left_navigation_custom__settings_all' ) );  in constructor  and custom  func:  left_navigation_custom__settings_all
-							, 'show_checked_icon' 		=> false
 							, 'is_use_navigation_path' 	=> array(
 										'path' => array(
 											'go_back_to_dashboard' => array(
@@ -272,6 +267,12 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 		?><script type="text/javascript"><?php
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo wpbc_jq_ready_start();
+			if( $this->is_full_screen ) {
+			?>
+				jQuery( '.wpbc_ui__top_nav__btn_full_screen,.wpbc_ui__top_nav__btn_normal_screen' ).toggleClass( 'wpbc_ui__hide' );
+				wpbc_check_full_screen_mode();
+			<?php
+			}
 			?>
 
 			// Set Security - Nonce for Ajax  - Listing
@@ -284,8 +285,7 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
 			// Send Ajax and then show content
 			wpbc_ajx__setup_wizard_page__send_request_with_params( <?php echo wp_json_encode( $escaped_request_params_arr ); ?> );
-
-		<?php
+			<?php
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo wpbc_jq_ready_end();
 		?></script><?php
@@ -313,21 +313,6 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
 		return $classes;
 	}
-
-
-	/**
-	 * Show custom tabs for Toolbar at . - . R i g h t . s i d e.
-	 *
-	 * @param string $menu_in_page_tag - active page
-	 *
-	public function left_navigation_custom__settings_all( $menu_in_page_tag ) {
-
-		if ( $this->in_page() == $menu_in_page_tag ) {
-
-			wpbc_page_show_left_navigation_custom__settings_all();
-		}
-	}
-	*/
 }
 add_action('wpbc_menu_created', array( new WPBC_Page_AJX_Setup_Wizard() , '__construct') );    // Executed after creation of Menu
 

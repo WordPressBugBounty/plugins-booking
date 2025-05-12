@@ -473,6 +473,8 @@ if(0){
 
 			$this->section_9_8_css();
 
+			wpbc_welcome_section_10_11( $this );
+
 			wpbc_welcome_section_10_10( $this );
 
 			wpbc_welcome_section_10_9( $this );

@@ -289,7 +289,7 @@ function wpbc_get_server_ip() {																					// FixIn: 9.8.14.3.
  * 					[type] => 3
  * 					[resource] => 3
  * 					[content] => '........'
- * 					[moderatelink] => http://beta/wp-admin/admin.php?page=wpbc&view_mode=vm_listing&tab=actions&wh_booking_id=26
+ * 					[moderatelink] => http://beta/wp-admin/admin.php?page=wpbc&tab=vm_booking_listing&wh_booking_id=26
  * 					[visitorbookingediturl] => http://beta/?booking_hash=0d55671fd055fd64423294f89d6b58e6
  * 					[visitorbookingcancelurl] => http://beta/?booking_hash=0d55671fd055fd64423294f89d6b58e6&booking_cancel=1
  * 					[visitorbookingpayurl] => http://beta/?booking_hash=0d55671fd055fd64423294f89d6b58e6&booking_pay=1
@@ -461,7 +461,7 @@ $replace['selected_short_dates_hint']     =     wpbc_get_dates_short_format( $sq
 	// Links ///////////////////////////////////////////////////////////////////
 	$replace[ 'moderatelink' ]  = htmlspecialchars_decode(
 														//    '<a href="' .
-															esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id )
+															esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing&wh_booking_id=' . $booking_id )
 														//    . '">' . esc_html__('here', 'booking') . '</a>'
 														);
 	$replace[ 'visitorbookingediturl' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingediturl]', $booking_id );

@@ -14,6 +14,70 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
+	/**
+	 * Get Logo for conversation.
+	 *
+	 * @param string $svg_color - main color.
+	 * @param string $svg_color_alt - alt color.
+	 *
+	 * @return void
+	 */
+	function wpbc_get_svg_logo( $svg_color = '#000', $svg_color_alt = '#fff', $opacity = '0.1' ) {
+
+		$svg_icon_integarted = '<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="150 150 850 850">'
+								. '<path style="fill:' . $svg_color . '" d="M224.3 117.81c0-7.62 6.18-13.8 13.8-13.8h104.13c7.62 0 13.8 6.18 13.8 13.8v239.06c-58.48 32.03-105.14 82.96-131.74 144.58V117.81z"/>'
+								. '<path style="fill:' . $svg_color . ';" d="M224.3 620.3c0-152.27 123.43-275.7 275.7-275.7 69.48 0 132.95 25.7 181.43 68.11l-93.55 93.55c-24.31-18.76-54.79-29.92-87.88-29.92-79.51 0-143.96 64.45-143.96 143.96S420.49 764.26 500 764.26c33.09 0 63.57-11.16 87.88-29.92l93.55 93.55C632.95 870.3 569.48 896 500 896c-152.27 0-275.7-123.44-275.7-275.7z"/>'
+								. '<path style="fill:' . $svg_color_alt . '" fill-opacity="' . $opacity . '" d="m681.43 827.89-93.55-93.55c34.11-26.33 56.08-67.62 56.08-114.04s-21.97-87.71-56.08-114.04l93.55-93.55c57.78 50.54 94.27 124.8 94.27 207.59s-36.49 157.05-94.27 207.59z"/>'
+							. '</svg>';
+
+
+//		$svg_icon_integarted = '<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" version="1.1" viewBox="0 0 600 600">
+//								  <path id="O_Letter" d="M298.22 197.55c-92.32 0-167.15 77.82-167.15 173.81s74.84 173.82 167.15 173.82 167.15-77.82 167.15-173.82-74.84-173.81-167.15-173.81Zm0 264.53c-50.1 0-90.71-40.61-90.71-90.71s40.61-90.71 90.71-90.71 90.71 40.61 90.71 90.71-40.61 90.71-90.71 90.71Z" style="fill:' . $svg_color_alt . ';" fill-opacity="' . $opacity . '" />
+//								  <path id="C_Letter" d="M363.75 434.1c-14.85 15.51-35.16 25.76-57.84 27.66-54.87 4.6-101.64-41.14-98.23-96.1 2.94-47.44 42.35-85.01 90.54-85.01 24.84 0 47.34 9.98 63.72 26.16 5.86 5.78 15.29 5.73 21.11-.09l35.14-35.14c5.69-5.69 5.9-14.87.43-20.77-30.41-32.83-73.1-53.26-120.4-53.26-92.32 0-167.15 77.82-167.15 173.81s74.84 173.82 167.15 173.82c48.49 0 92.15-21.47 122.68-55.76 5.29-5.94 5.02-14.97-.6-20.59l-35.05-35.05c-5.98-5.98-15.67-5.79-21.51.32Z" style="fill:' . $svg_color . ';"/>
+//								  <path d="M130.69 357.28v2.59c0 .27.06.53.17.76a123.1 123.1 0 0 1-.17-3.35Zm4.51-50.82c12.34-39.07 38.32-70.02 77.79-97.04.92-.63 1.48-1.67 1.48-2.79V59.95c0-4.28-3.68-7.76-8.22-7.76h-3.76c-18.56 0-73.17 40.3-71.79 60.62l-.17 192.91c0 2.74 3.86 3.34 4.68.73Z"  style="fill:' . $svg_color . ';"/>
+//								</svg>';
+//
+//		$svg_icon_integarted = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+//								  <path d="M311.92 214.22c-92.32 0-167.15 77.82-167.15 173.81s74.84 173.82 167.15 173.82 167.15-77.82 167.15-173.82-74.84-173.81-167.15-173.81Zm0 264.53c-50.1 0-90.71-40.61-90.71-90.71s40.61-90.71 90.71-90.71 90.71 40.61 90.71 90.71-40.61 90.71-90.71 90.71Z" style="fill:' . $svg_color_alt . ';" fill-opacity="' . $opacity . '" />
+//								  <path d="M377.45 450.77c-14.85 15.51-35.16 25.76-57.84 27.66-54.87 4.6-101.64-41.14-98.23-96.1 2.94-47.44 42.35-85.01 90.54-85.01 24.84 0 47.34 9.98 63.72 26.16 5.86 5.78 15.29 5.73 21.11-.09l35.14-35.14c5.69-5.69 5.9-14.87.43-20.77-30.41-32.83-73.1-53.26-120.4-53.26-92.32 0-167.15 77.82-167.15 173.81s74.84 173.82 167.15 173.82c48.49 0 92.15-21.47 122.68-55.76 5.29-5.94 5.02-14.97-.6-20.59l-35.05-35.05c-5.98-5.98-15.67-5.79-21.51.32Z"  style="fill:' . $svg_color . ';"/>
+//								  <path d="M149.45 318.12c12.34-39.07 38.32-70.02 77.79-97.04.92-.63 1.48-1.67 1.48-2.79V71.62c0-4.28-3.68-7.76-8.22-7.76h-3.76c-18.56 0-73.17 40.3-71.79 60.62l-.17 192.91c0 2.74 3.86 3.34 4.68.73Z"  style="fill:' . $svg_color . ';"/>
+//								</svg>';
+//
+//		$svg_icon_integarted = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 550">
+//								  <path d="M275 176.36c-92.32 0-167.15 77.82-167.15 173.81S182.69 523.99 275 523.99s167.15-77.82 167.15-173.82S367.31 176.36 275 176.36Zm0 264.53c-50.1 0-90.71-40.61-90.71-90.71s40.61-90.71 90.71-90.71 90.71 40.61 90.71 90.71-40.61 90.71-90.71 90.71Z" style="fill:#ffd25b"/>
+//								  <path d="M340.53 412.91c-14.85 15.51-35.16 25.76-57.84 27.66-54.87 4.6-101.64-41.14-98.23-96.1 2.94-47.44 42.35-85.01 90.54-85.01 24.84 0 47.34 9.98 63.72 26.16 5.86 5.78 15.29 5.73 21.11-.09l35.14-35.14c5.69-5.69 5.9-14.87.43-20.77-30.41-32.83-73.1-53.26-120.4-53.26-92.32 0-167.15 77.82-167.15 173.81S182.69 523.99 275 523.99c48.49 0 92.15-21.47 122.68-55.76 5.29-5.94 5.02-14.97-.6-20.59l-35.05-35.05c-5.98-5.98-15.67-5.79-21.51.32Z" style="fill:#193db2"/>
+//								  <path d="M112.53 280.27c12.34-39.07 38.32-70.02 77.79-97.04.92-.63 1.48-1.67 1.48-2.79V33.76c0-4.28-3.68-7.76-8.22-7.76h-3.76c-18.56 0-73.17 40.3-71.79 60.62l-.17 192.91c0 2.74 3.86 3.34 4.68.73Z" style="fill:#451fff"/>
+//								</svg>';
+
+		$svg_icon_integarted = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 550">'
+								. '<path d="M275 162.36c-92.32 0-167.15 77.82-167.15 173.81S182.69 509.99 275 509.99s167.15-77.82 167.15-173.82S367.31 162.36 275 162.36Zm0 264.53c-50.1 0-90.71-40.61-90.71-90.71s40.61-90.71 90.71-90.71 90.71 40.61 90.71 90.71-40.61 90.71-90.71 90.71Z" style="fill:' . $svg_color_alt . ';" fill-opacity="' . $opacity . '" />'
+								. '<path d="M340.53 398.91c-14.85 15.51-35.16 25.76-57.84 27.66-54.87 4.6-101.64-41.14-98.23-96.1 2.94-47.44 42.35-85.01 90.54-85.01 24.84 0 47.34 9.98 63.72 26.16 5.86 5.78 15.29 5.73 21.11-.09l35.14-35.14c5.69-5.69 5.9-14.87.43-20.77-30.41-32.83-73.1-53.26-120.4-53.26-92.32 0-167.15 77.82-167.15 173.81S182.69 509.99 275 509.99c48.49 0 92.15-21.47 122.68-55.76 5.29-5.94 5.02-14.97-.6-20.59l-35.05-35.05c-5.98-5.98-15.67-5.79-21.51.32Z"  style="fill:' . $svg_color . ';"/>'
+								. '<path d="M112.53 261.27c12.34-39.07 38.32-70.02 77.79-97.04.92-.63 1.48-1.67 1.48-2.79V14.76c0-4.28-3.68-7.76-8.22-7.76h-3.76c-18.56 0-73.17 40.3-71.79 60.62l-.17 192.91c0 2.74 3.86 3.34 4.68.73Z"  style="fill:' . $svg_color . ';"/>'
+							. '</svg>';
+
+
+		return $svg_icon_integarted;
+	}
+
+
+	/**
+	 * Get Logo for Background Image.
+	 *
+	 * @param string $svg_color - main color.
+	 * @param string $svg_color_alt - alt color.
+	 *
+	 * @return void
+	 */
+	function wpbc_get_svg_logo_for_background( $svg_color = '#000', $svg_color_alt = '#fff', $opacity = '0.2' ) {
+
+		$svg_icon_integarted = wpbc_get_svg_logo( $svg_color, $svg_color_alt, $opacity  );
+
+		$svg_icon_integarted = sprintf( 'data:image/svg+xml;base64,%s', base64_encode( $svg_icon_integarted ) );
+
+		return $svg_icon_integarted;
+	}
+
+
 	// <editor-fold     defaultstate="collapsed"                        desc="  ==  Get html  preview of shortcode for Edit pages  ==  "  >
 
 		/**
@@ -919,10 +983,21 @@ function wpbc_db_update_number_new_bookings( $id_of_new_bookings, $is_new = '0',
 												}
 											}
 						?>"
-						style="<?php		if ( ! $params['is_section_visible_after_load'] ) {
-												echo 'display:none';
-											}
-							?>"
+						style="<?php
+
+						$force_visible = false;
+
+						// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+						$do_expand = ( ( isset( $_REQUEST['do_expand'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['do_expand'] ) ) : '' );
+
+						if ( $my_close_open_win_id === $do_expand ) {
+							$force_visible = true;
+						}
+
+						if ( ( ! $params['is_section_visible_after_load'] ) && ( ! $force_visible ) ) {
+							echo 'display:none';
+						}
+						?>"
 					><div class="postbox-header" style="display: flex;flex-flow: row nowrap;border-bottom: 1px solid #ccd0d4;">
 						<h3 class='hndle' style="flex: 1 1 auto;border: none;">
 						  <span><?php
@@ -1608,3 +1683,51 @@ function wpbc_auto_cancel_booking( $booking_id, $email_reason = '' ) {
 
 
 	// </editor-fold>
+
+
+
+/**
+ * Temp  fix of styles for edit specific season filter or rate.
+ *
+ * @return void
+ */
+function wpbc_add_css_to_hide_seasons() {
+
+	// TODO: 2025-05-03 temp  fix of view edit filter
+	?>
+	<style tye="text/css">
+		.wpdvlp-sub-tabs,
+		#wpbc_dcoupons_table, #wpbc_discountcoupons,
+		#bulk-action-selector-bottom,
+		#toolbar_booking_resources,
+		#toolbar_seasonfilters,
+		#wpbc_seasonfilters,
+		#wpbc_booking_resource_table{
+			display: none !important;
+		}
+		.wpbc_round_white_panel {
+			background: #fff;
+			padding: 1px 20px 20px;
+			border-radius: 10px
+		}
+		.header_for_cost_object_edit {
+			font-size: 20px;
+			padding: 0 0 15px;
+			border-bottom: 2px solid #f2f2f2;
+			margin: 15px 0;
+			line-height: 1.5;
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: flex-start;
+		}
+			.in_header_container_for_resource_title {
+				color: #5379aa;
+				margin-left: 0.3em;
+			}
+			.header_for_cost_object_edit__close i.wpbc_icn_close::before {
+				font-size: 22px;
+			}
+	</style>
+	<?php
+}

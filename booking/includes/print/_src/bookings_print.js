@@ -19,10 +19,10 @@ function wpbc_print_dialog__show( booking_id_arr ){
 }
 
 function wpbc_print_dialog__define_content( booking_id_arr = [] ){
-	// Set content
-	jQuery( '#wpbc__print_frame__inner' ).html( jQuery( '.wpbc_ajx_booking_listing_container' ).html() );
-	// Define the same classes
-	jQuery( '#wpbc__print_frame__inner' ).addClass( 'wpbc_listing_container wpbc_selectable_table wpbc_ajx_booking_listing_container' );
+	// Set content.
+	jQuery( '#wpbc__print_frame__inner' ).html( jQuery( '.wpbc__list__table' ).html() );
+	// Define the same classes.
+	jQuery( '#wpbc__print_frame__inner' ).addClass( 'wpbc__list__table wpbc_selectable_table' );
 	/*
 	jQuery( '#wpbc__print_frame__inner .check-column').hide();
 	jQuery( '#wpbc__print_frame__inner .wpbc_actions_buttons').hide();
@@ -62,7 +62,7 @@ function wpbc_print_dialog__define_content( booking_id_arr = [] ){
 	// Add remark to the content of booking details
 	jQuery( '#wpbc__print_frame__inner .wpbc_selectable_body .wpbc_listing_usual_row' ).find( '.set_booking_note_text' ).each( function ( index ){
 
-		var remark_text = jQuery( this ).val();
+		var remark_text = jQuery( this ).val().replace( /\r\n|\r|\n/g, "<br />" );
 
 		if ( '' != remark_text ){
 

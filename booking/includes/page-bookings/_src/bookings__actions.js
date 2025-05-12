@@ -13,6 +13,8 @@ function wpbc_ajx_booking_ajax_action_request( action_param = {} ){
 console.groupCollapsed( 'WPBC_AJX_BOOKING_ACTIONS' ); console.log( ' == Ajax Actions :: Params == ', action_param );
 //is_this_action = true;
 
+	wpbc_admin_show_message_processing( '' );
+
 	wpbc_booking_listing_reload_button__spin_start();
 
 	// Get redefined Locale,  if action on single booking !
@@ -185,7 +187,7 @@ function wpbc_ajx_click_on_dates_toggle(this_date){
  */
 function wpbc_ajx_booking__ui_define__locale(){
 
-	jQuery( '.wpbc_listing_container select' ).each( function ( index ){
+	jQuery( '.wpbc__list__table select' ).each( function ( index ){
 
 		var selection = jQuery( this ).attr( "value_of_selected_option" );			// Define selected select boxes
 
@@ -214,7 +216,7 @@ function wpbc_ajx_booking__ui_define__locale(){
  */
 function wpbc_ajx_booking__ui_define__remark(){
 
-	jQuery( '.wpbc_listing_container .ui_remark_section textarea' ).each( function ( index ){
+	jQuery( '.wpbc__list__table .ui_remark_section textarea' ).each( function ( index ){
 		var text_val = jQuery( this ).val();
 		if ( (undefined !== text_val) && ('' != text_val) ){
 
@@ -288,23 +290,9 @@ function wpbc_ajx_booking__ui_click_save__change_resource( this_el, booking_acti
 
 	wpbc_button_enable_loading_icon( this_el );
 
-	// wpbc_ajx_booking__ui_click_close__change_resource();
+
 }
 
-function wpbc_ajx_booking__ui_click_close__change_resource(){
-
-	var cbrce;
-
-	// Get Resource section
-	cbrce = jQuery("#change_booking_resource__section").detach();
-
-	// Append it to hidden HTML template section  at  the bottom  of the page
-	cbrce.appendTo(jQuery("#wpbc_hidden_template__change_booking_resource"));
-	cbrce = null;
-
-	// Hide all change booking resources sections
-	jQuery(".ui__change_booking_resource__section_in_booking").hide();
-}
 
 /**
  *   Duplicate booking in other resource   ---------------------------------------------------------------------- */
@@ -345,23 +333,9 @@ function wpbc_ajx_booking__ui_click_save__duplicate_booking( this_el, booking_ac
 
 	wpbc_button_enable_loading_icon( this_el );
 
-	// wpbc_ajx_booking__ui_click_close__change_resource();
+
 }
 
-function wpbc_ajx_booking__ui_click_close__duplicate_booking(){
-
-	var cbrce;
-
-	// Get Resource section
-	cbrce = jQuery("#duplicate_booking_to_other_resource__section").detach();
-
-	// Append it to hidden HTML template section  at  the bottom  of the page
-	cbrce.appendTo(jQuery("#wpbc_hidden_template__duplicate_booking_to_other_resource"));
-	cbrce = null;
-
-	// Hide all change booking resources sections
-	jQuery(".ui__duplicate_booking_to_other_resource__section_in_booking").hide();
-}
 
 /**
  *   Change payment status   ------------------------------------------------------------------------------------ */
@@ -388,6 +362,7 @@ function wpbc_ajx_booking__ui_click_show__set_payment_status( booking_id ){
 	jQuery( "#ui__set_payment_status__section_in_booking_" + booking_id ).toggle();
 }
 
+//TODO: delete
 function wpbc_ajx_booking__ui_click_save__set_payment_status( booking_id, this_el, booking_action, el_id ){
 
 	wpbc_ajx_booking_ajax_action_request( {

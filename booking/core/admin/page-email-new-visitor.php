@@ -29,7 +29,7 @@ if ( ! defined( 'WPBC_EMAIL_NEW_VISITOR_ID' ) )       define( 'WPBC_EMAIL_NEW_VI
                                                                                                                 */
 
 
-require_once( WPBC_PLUGIN_DIR . '/core/any/api-emails.php' );           // API
+require_once WPBC_PLUGIN_DIR . '/core/any/api-emails.php';           // API
 
 
 
@@ -561,19 +561,18 @@ class WPBC_Settings_Page_Email_NewVisitor extends WPBC_Page_Structure {
         $subtabs['new-visitor'] = array( 
                             'type' => 'subtab'                                  // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'
                             , 'title' =>  __('New Booking' ,'booking') . ' (' . __('visitor' ,'booking') . ')'        // Title of TAB    //__('New for Visitor' ,'booking')        // Title of TAB
-                            , 'page_title' => __('Emails Settings', 'booking')  // Title of Page   
+                            , 'page_title' => __('Emails Settings', 'booking')  .  ' - <span>' . esc_html(__('New Booking' ,'booking') . ' - ' . ucfirst( __('visitor' ,'booking') ) ) . '</span>'  // Title of Page.
                             , 'hint' => __('Customization of email template, which is sending to Visitor after new booking' ,'booking')   // Hint    
                             , 'link' => ''                                      // link
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             //, 'icon' => 'http://.../icon.png'                 // Icon - link to the real PNG img
                             //, 'font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon
-			 				, 'header_font_icon' => 'wpbc_icn_mail_outline'   // CSS definition of Font Icon			// FixIn: 9.5.5.3.
-                            , 'default' =>  false                                // Is this sub tab activated by default or not: true || false. 
+			 				                            , 'default' =>  false                                // Is this sub tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this sub tab deactivated: true || false. 
                             , 'checkbox'  => false                              // or definition array  for specific checkbox: array( 'checked' => true, 'name' => 'feature1_active_status' )   //, 'checkbox'  => array( 'checked' => $is_checked, 'name' => 'enabled_active_status' )
                             , 'content' => 'content'                            // Function to load as conten of this TAB
-							, 'is_use_left_navigation' 	=> true
+							, 'font_icon' => 'wpbc-bi-envelope-plus 0wpbc_icn_mark_email_unread'
 							, 'show_checked_icon' 		=> true
 							, 'checked_data' 			=> WPBC_EMAIL_NEW_ADMIN_PREFIX . WPBC_EMAIL_NEW_VISITOR_ID		// This is where we get content
                         );
@@ -906,7 +905,7 @@ function wpbc__get_replace_shortcodes__email_new_visitor( $booking_id, $bktype, 
     // Links ///////////////////////////////////////////////////////////////////
     $replace[ 'moderatelink' ]  = htmlspecialchars_decode( 
                                                         //    '<a href="' . 
-                                                            esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $booking_id ) 
+                                                            esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing&wh_booking_id=' . $booking_id )
                                                         //    . '">' . esc_html__('here', 'booking') . '</a>'
                                                         );    
     $replace[ 'visitorbookingediturl' ]     = apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingediturl]', $booking_id );

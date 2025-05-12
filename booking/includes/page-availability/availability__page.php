@@ -36,16 +36,18 @@ class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
 
     public function tabs() {
 
-        $tabs = array();
+
+         $tabs = array();
         $tabs[ 'availability' ] = array(
                               'title'		=> __( 'Days Availability', 'booking' )										// Title of TAB				//FixIn: 9.8.15.2.2
-                            , 'hint'		=> __( 'Define available and unavailable days for calendar(s)', 'booking' )						// Hint
-                            , 'page_title'	=> __( 'Calendar Availability', 'booking' )						// Title of Page
+                            , 'hint'		=> __( 'Define available and unavailable days for your calendar(s).', 'booking' )						// Hint
+                            , 'page_title'	=> __( 'Days Availability', 'booking' )						// Title of Page
                             , 'link'		=> ''								// Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
                             , 'position'	=> ''                               // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             , 'icon'		=> ''                               // Icon - link to the real PNG img
                             , 'font_icon'	=> 'wpbc-bi-calendar2-check'//'wpbc_icn_free_cancellation'		// CSS definition  of forn Icon
+						    , 'font_icon_right'                    => 'wpbc-bi-question-circle'
                             , 'default'		=> true								// Is this tab activated by default or not: true || false.
                             , 'disabled'	=> false                            // Is this tab disbaled: true || false.
                             , 'hided'		=> false                            // Is this tab hided: true || false.
@@ -212,6 +214,7 @@ if ( 	( false !== $escaped_request_params_arr )
 
 			wpbc_js_for_bookings_page();                                            	// JavaScript functions
 
+			$this->wpbc_toolbar_toolbar_tabs( $this->in_page() );
 		    wpbc_ajx_availability__toolbar( $escaped_request_params_arr );
 
 		?></span><?php
@@ -249,7 +252,7 @@ if ( 	( false !== $escaped_request_params_arr )
 
 			?>
 			<div id="ajx_nonce_calendar_section"></div>
-			<div class="wpbc_listing_container wpbc_selectable_table wpbc_ajx_availability_container wpdevelop" wpbc_loaded="first_time">
+			<div class="wpbc_ajx_availability_container wpbc_selectable_table wpdevelop" wpbc_loaded="first_time">
 				<style type="text/css">
 					.wpbc_calendar_loading .wpbc_icn_autorenew::before{
 						font-size: 1.2em;
@@ -406,7 +409,22 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
 
     public function tabs() {
 
+
+		$separator_i = 0;
+		$subtab_default = array(
+			'type'            => 'subtab',                        // Required| Possible values:  'subtab' | 'separator' | 'button' | 'goto-link' | 'html'.
+			'title'           => '',                              // Example: __( 'Dashboard'                                                                   // Title of TAB.
+			'page_title'      => '',                              // __( 'Search Availability'                                                                  // Title of Page.
+			'hint'            => '',                              // __( 'Configure the layout and functionality of both the search form and search results.'   // Hint.
+			'link'            => '',                              // wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_dashboard_tab',        // Link.
+			'css_classes'     => '',                              // cls CSS .
+			'font_icon'       => 'wpbc_icn_dashboard',
+			'font_icon_right' => 'wpbc-bi-question-circle',                              // 'wpbc-bi-question-circle' .
+			'default'         => false,                           // Is this sub tab activated by default or not: true || false.
+		);
+
         $tabs = array();
+		$tabs[ 'general_availability' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:200;' ) );
         $tabs[ 'general_availability' ] = array(
                               'title'		=> __( 'General Availability', 'booking' )										// Title of TAB				//FixIn: 9.8.15.2.2
                             , 'hint'		=> __( 'Define unavailable weekdays for all calendar(s) and unavailable dates depend from today date', 'booking' )						// Hint
@@ -416,10 +434,12 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
                             , 'css_classes' => 'wpbc_top_tab__general_availability'                               // CSS class(es)
                             , 'icon'		=> ''                               // Icon - link to the real PNG img
                             , 'font_icon'	=> 'wpbc-bi-calendar2-day 0wpbc-bi-calendar2-check'//'wpbc_icn_free_cancellation'		// CSS definition  of forn Icon
+							, 'font_icon_right' => 'wpbc-bi-question-circle'
                             , 'default'		=> false								// Is this tab activated by default or not: true || false.
                             , 'disabled'	=> false                            // Is this tab disbaled: true || false.
                             , 'hided'		=> false                            // Is this tab hided: true || false.
                             , 'subtabs'		=> array()
+							, 'folder_style'     => 'order:200;',
         );
         // $subtabs = array();
         // $tabs[ 'items' ][ 'subtabs' ] = $subtabs;

@@ -49,7 +49,7 @@ function wpbc_welcome_panel() {
 
 function wpbc_welcome_panel__version2__content() {
 
-	?><div class="wpbc_welcome_panel" style="margin: 0 0 20px;"><?php
+	?><div class="wpbc_welcome_panel" style="margin: 100px 0 20px;"><?php
 
 		wpbc_ui_settings__panel__welcome();
 
@@ -269,7 +269,7 @@ function wpbc_ui_settings__panel__welcome(){
 						<li><div class="welcome-icon"><?php
 							/* translators: 1: ... */
 							echo esc_html( sprintf( __( 'Check %1$sBooking Listing%2$s page for new bookings.', 'booking' )
-										, '<a href="' . esc_url( wpbc_get_bookings_url(true, false) . '&view_mode=vm_listing' ) . '">', '</a>'
+										, '<a href="' . esc_url( wpbc_get_bookings_url(true, false) . '&tab=vm_booking_listing' ) . '">', '</a>'
 									) );
 						?></div></li>
 						<li><div class="welcome-icon"><?php

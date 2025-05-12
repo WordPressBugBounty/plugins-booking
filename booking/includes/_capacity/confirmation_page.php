@@ -175,7 +175,7 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
 				 *		$booking_dates_obj = wpbc_ajx_get__booking_dates_obj__sql( $bookings_obj );
 				 *
 				 *		// 4. Include dates into bookings   (Wide and Short dates view)
-				 *		$bookings_with_dates = wpbc_ajx_include_bookingdates_in_bookings( $bookings_obj, $booking_dates_obj );
+				 *		$bookings_with_dates = wpbc_ajx_include_bookingdates_in_the_bookings( $bookings_obj, $booking_dates_obj );
 				 *
 				 *		// 5. Parse forms
 				 *		$parsed_bookings = wpbc_ajx_parse_bookings( $bookings_with_dates, $resources_arr );  ??

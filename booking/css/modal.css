@@ -49,18 +49,9 @@
 .wpbc_modal__import_google_calendar__section #booking_gcal_events_from,
 .wpbc_modal__import_google_calendar__section .booking_gcal_events_from_offset {
     float:left;
-    margin:5px 0 0 0 !important;
 }
-.wpbc_modal__import_google_calendar__section .booking_gcal_events_from_offset label,
-.wpbc_modal__import_google_calendar__section .booking_gcal_events_until_offset label {
-    margin: 0 10px;
-    float:left;
-    line-height: 29px;
-}
-.wpbc_modal__import_google_calendar__section input[type=text],
-.wpbc_modal__import_google_calendar__section select {
-    height:28px;
-}
+
+
 .wpbc_modal__import_google_calendar__section th {
     vertical-align: middle;
 }
@@ -68,11 +59,7 @@
 .wpbc_modal__import_google_calendar__section td {
     border:none;
 }
-.wpbc_modal__import_google_calendar__section label {
-    line-height: 28px;
-    margin: 0;
-    vertical-align: middle;
-}
+
 .wpbc_modal__import_google_calendar__section #booking_gcal_events_from_offset_type,
 .wpbc_modal__import_google_calendar__section #booking_gcal_events_until_offset_type {
     vertical-align: initial;
@@ -553,14 +540,14 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
         .wp-core-ui .wpbc_page .button.wpbc_ui_button_danger.focus:not(.inactive),
         .wp-core-ui .wpbc_page .button.wpbc_ui_button_danger:focus:not(.inactive) {
             background: #e6716f;
-            border-color: #d58582;
+            /*border-color: #d58582;*/
             color: #fdfdfd;
             text-shadow: none;
         }
         /* :focus  ---- */
         .wp-core-ui .wpbc_page .button.wpbc_ui_button_danger.focus:not(.inactive),
         .wp-core-ui .wpbc_page .button.wpbc_ui_button_danger:focus:not(.inactive) {
-            box-shadow:0 0 0 0px #fff, 0 0 2px 1px #a4d7ff;
+            /*box-shadow:0 0 0 0px #fff, 0 0 2px 1px #a4d7ff;*/
         }
         /* :active  ---- */
         .wp-core-ui .wpbc_page .button.wpbc_ui_button_danger.active:not(.inactive),
@@ -569,7 +556,7 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
         .wp-core-ui .wpbc_page .button.wpbc_ui_button_danger:active:not(.inactive) {
             background: #ba4c48;
             border-color: #c05d5a;
-            box-shadow: inset 0 1px 7px -3px rgba(0, 0, 0, .1);
+            /*box-shadow: inset 0 1px 7px -3px rgba(0, 0, 0, .1);*/
             color: #f3f2f2;
         }
         /* :disabled  ---- */
@@ -584,7 +571,6 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
             text-shadow: none !important;
             cursor: default;
         }
-
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* Weekdays conditions toolbar */
@@ -633,7 +619,6 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
         .form-table td fieldset .wpbc_shortcode_config__rules__help_section li {
             line-height: 2.5;
         }
-
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* Select Day - Weekday */

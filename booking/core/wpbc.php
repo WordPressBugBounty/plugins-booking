@@ -178,6 +178,9 @@ public function define_admin_menu(){
 							  . '<path d="M7 10a1 1 0 0 0 0-2H1v2h6zm2-3h6V5H9a1 1 0 0 0 0 2z"/>'
 							. '</svg>';
 
+	//$svg_icon_integarted = wpbc_get_svg_logo( '#aaa', '#aaa', '0.2' );
+	$svg_icon_integarted = wpbc_get_svg_logo( '#aaa', '#aaa', '0.4' );
+
     self::$instance->admin_menu['master'] = new WPBC_Admin_Menus(
                                                     'wpbc' , array (
                                                     'in_menu' => 'root'

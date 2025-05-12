@@ -38,7 +38,7 @@ OR (for showing with   JavaScript) :
 	<script type="text/javascript">
 		jQuery( document ).ready( function (){
 
-			wpbc_pagination_echo( '.wpbc_rules_pagination',
+			wpbc_pagination_echo( '.wpbc_rules_pagination','.wpbc_rules_pagination_header','.wpbc_rules_pagination_footer',
 									{
 										'page_active': page_number,
 										'pages_count': Math.ceil( ajx_count / ajx_page_items_count )
@@ -92,7 +92,6 @@ class WPBC_Pagination {
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
 
-			//wp_enqueue_script( 'wpbc-live_search', wpbc_plugin_url( '/_out/js/live_search.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc-pagination'
 				, trailingslashit( plugins_url( '', __FILE__ ) ) . 'pagination.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
 				, array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
@@ -140,12 +139,144 @@ class WPBC_Pagination {
 
 		if ( $this->get_settings( 'load_on_page' ) === $page ) {
 
-			$this->template__pagination();
+			$this->template__prev_next();
+			$this->template__items_per_page();
+			$this->template__active_page_in_selectbox();
 		}
 	}
 
+	/**
+	 * Pagination - " 1 - 9 of many | < > "
+	 *
+	 * @return void
+	 */
+	private function template__prev_next() {
 
-	private function template__pagination(){
+		?>
+		<script type="text/html" id="tmpl-wpbc_pagination__prev_next">
+			<div class="wpbc_pagination__prev_next   wpbc_pagination_el">
+				<#
+					var items = {};
+					items['start'] = ( data.page_active - 1 ) * data.page_items_count + 1;
+					items['end'] = data.page_active * data.page_items_count;
+					items['end'] = ( items['end'] > data.total_count ) ? data.total_count : items['end'];
+					items['total'] = data.total_count;
+				#>
+				<# if ( data.pages_count > 1 ) { #>
+				<?php
+					echo '<div class="wpbc_ui_el">{{items.start}} - {{items.end}} ' . esc_html__( 'of', 'booking' ) . ' {{items.total}}</div>';
+				?>
+				<# } else { #>
+				<?php
+					echo '<div class="wpbc_ui_el">{{items.start}} - {{items.end}} ' . esc_html__( 'bookings', 'booking' ) . ' </div>';
+				?>
+				<# } #>
+				<# if ( data.pages_count > 1 ) { #>
+				<div class="wpbc_ui_el">
+					<a class="wpbc_ui_el__a <# if ( 1 == data.page_active ) { #> disabled<# } #>"
+					   href="javascript:void(0)"
+					<# if ( 1 != data.page_active ) { #> onclick="javascript:<?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $this->get_settings( 'on_click' ); ?>( parseInt( {{ data.page_active }} ) - 1 );" <# } #>
+					>
+					<?php
+					echo '<i class="menu_icon icon-1x wpbc_icn_chevron_left"></i>';
+					?>
+					</a>
+				</div>
+				<# } #>
+				<# if ( data.pages_count > 1 ) { #>
+				<div class="wpbc_ui_el">
+					<a class="wpbc_ui_el__a <# if ( data.pages_count == data.page_active ) { #> disabled<# } #>"
+					   href="javascript:void(0)"
+					<# if ( data.pages_count != data.page_active ) { #> onclick="javascript:<?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $this->get_settings( 'on_click' ); ?>( parseInt( {{ data.page_active }} ) + 1 );" <# } #>
+					>
+					<?php
+					echo '<i class="menu_icon icon-1x wpbc_icn_chevron_right"></i>';
+					?>
+					</a>
+				</div>
+				<# } #>
+
+			</div>
+		</script><?php
+
+	}
+
+
+	/**
+	 * Pagination - select Number of Items / Page.
+	 *
+	 * @return void
+	 */
+	private function template__items_per_page() {
+		?>
+		<script type="text/html" id="tmpl-wpbc_pagination_items_per_page">
+			<div class="wpbc_pagination_items_per_page wpbc_pagination_el">
+				<div class="">
+					<label class="wpbc_ui_el"><?php esc_html_e( 'Show', 'booking' ); ?></label>
+					<select class="wpbc_ui_el  wpbc_items_per_page" autocomplete="off">
+						<#
+							var my_options_arr = [5, 10, 50, 100];
+							var is_selected = '';
+							_.each(
+								my_options_arr,
+								function ( p_val, p_key, p_data ) {
+									is_selected = '';
+									if ( data.page_items_count == p_val ) {
+										is_selected = ' selected="selected" ';
+									}
+									#><option value="{{p_val}}" {{is_selected}}>{{p_val}}</option><#
+								}
+							);
+						#>
+					</select>
+					<label class="wpbc_ui_el"><?php esc_html_e( 'per page', 'booking' ); ?></label>
+				</div>
+			</div>
+		</script>
+		<?php
+	}
+
+	/**
+	 * Pagination - Active page Number in Selectbox
+	 *
+	 * @return void
+	 */
+	private function template__active_page_in_selectbox(){
+		?>
+		<script type="text/html" id="tmpl-wpbc_pagination_active_page_in_selectbox">
+			<div class="wpbc_pagination_active_page_in_selectbox wpbc_pagination_el">
+				<# if ( data.pages_count > 1 ) { #>
+				<div class="">
+					<label class="wpbc_ui_el"><?php esc_html_e( 'Page', 'booking' ); ?>: </label>
+					<select class="wpbc_ui_el"
+							autocomplete="off"
+							onchange="javascript:<?php
+										// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+										echo $this->get_settings( 'on_click' );
+									  ?>( ( parseInt( jQuery( this ).val() ) ) );"
+					>
+						<#
+							var is_selected = '';
+							for ( var pg_num = 1; pg_num <= data.pages_count; pg_num++ ){
+								is_selected = ( pg_num == data.page_active ) ? ' selected="selected" ' : '';
+								#><option value="{{pg_num}}" {{is_selected}}>{{pg_num}}</option><#
+							}
+						#>
+					</select>
+				</div>
+				<# } #>
+			</div>
+		</script>
+		<?php
+	}
+
+
+
+	private function template__pagination_old(){
 
 		// Pagination
 		?><script type="text/html" id="tmpl-wpbc_pagination">
@@ -290,22 +421,29 @@ class WPBC_Pagination {
 	public function show( $params = array() ) {
 		$defaults = array(
 							'page_active' => 1,
-							'pages_count' => 1
+							'pages_count' => 1,
+							'total_count' => 1
 					);
 		$params   = wp_parse_args( $params, $defaults );
 		?>
 		<script type="text/javascript">
 
-			jQuery( document ).ready( function (){
+			jQuery( document ).ready( function () {
 
-				wpbc_pagination_echo( '<?php echo esc_attr( $this->get_settings( 'container' ) ); ?>', <?php
+				wpbc_pagination_echo(
+					'<?php echo esc_attr( $this->get_settings( 'container' ) ); ?>',
+					'<?php echo esc_attr( $this->get_settings( 'container_header' ) ); ?>',
+					'<?php echo esc_attr( $this->get_settings( 'container_footer' ) ); ?>',
+					<?php
 					echo wp_json_encode(
 						array(
 							'page_active' => $params['page_active'],
-							'pages_count' => $params['pages_count']
+							'pages_count' => $params['pages_count'],
+							'total_count' => $params['total_count'],
 						)
 					);
-					?> );
+					?>
+				);
 			} );
 		</script>
 		<?php

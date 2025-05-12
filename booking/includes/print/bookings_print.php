@@ -19,11 +19,10 @@ class WPBC_Print {
 	 * Define HOOKs for loading CSS and  JavaScript files
 	 */
 	public function init_load_css_js_tpl() {
-		// JS & CSS
+		// JS & CSS.
 
-		// Load only  at  AJX_Bookings Settings Page
-		if ( 'vm_booking_listing' == wpbc_ajx_booking_listing__get_default_view_mode() ) {
-		//if  ( strpos( $_SERVER['REQUEST_URI'], 'view_mode=vm_booking_listing' ) !== false ) {
+		// Load only  at  AJX_Bookings Settings Page.
+		if ( 'vm_booking_listing' === wpbc_get_default_saved_view_mode_for_wpbc_page() ) {
 
 			add_action( 'wpbc_enqueue_js_files', array( $this, 'js_load_files' ), 50 );
 			add_action( 'wpbc_enqueue_css_files', array( $this, 'enqueue_css_files' ), 50 );
@@ -80,7 +79,7 @@ class WPBC_Print {
 	 */
 	public function hook__page_footer_tmpl( $page ){
 
-		// page=wpbc&view_mode=vm_booking_listing
+		// page=wpbc&tab=vm_booking_listing
 		if ( 'wpbc-ajx_booking'  === $page ) {		// it's from >>	do_action( 'wpbc_hook_settings_page_footer', 'wpbc-ajx_booking' );
 			$this->wpbc_write_content_for_modal_print();
 		}

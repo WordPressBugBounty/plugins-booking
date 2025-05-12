@@ -68,7 +68,8 @@ function wpbc_setup_wizard_page__show_content() {
 	wpbc_check_full_screen_mode();
 
 	// Scroll to top
-	wpbc_scroll_to(  '.wpbc_page_top__header_tabs' );
+	// wpbc_scroll_to(  '.wpbc_page_top__header_tabs' );
+	wpbc_scroll_to(  '.wpbc__container_place__steps_for_timeline' );
 }
 
 /**
@@ -184,28 +185,6 @@ function wpbc_setup_wizard_page__define_ui_hooks(){
 
 
 }
-
-
-//TODO: maybe relocate this functions in other utils js file ?
-
-// =====================================================================================================================
-// == Full Screen  -  support functions   ==
-// =====================================================================================================================
-
-/**
- * Check Full  screen mode,  by  removing top tab
- */
-function wpbc_check_full_screen_mode(){
-	if ( jQuery( 'body' ).hasClass( 'wpbc_admin_full_screen' ) ) {
-		jQuery( 'html' ).removeClass( 'wp-toolbar' );
-	} else {
-		jQuery( 'html' ).addClass( 'wp-toolbar' );
-	}
-}
-jQuery( document ).ready( function () {
-	wpbc_check_full_screen_mode();
-} );
-
 
 
 // ---------------------------------------------------------------------------------------------------------------------

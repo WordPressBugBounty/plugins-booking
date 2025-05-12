@@ -317,7 +317,7 @@ function wpbc_ui_settings__panel__calendar( $params = array() ) {
 	 */
 	function wpbc_ui_settings_panel__card__calendar( $params = array() ){
 
-		$title   = esc_attr__( 'Calendar Appearance', 'booking' );
+		$title   = esc_attr__( 'Calendar Settings', 'booking' );
 
 		if ( ! empty( $params['is_use_permalink'] ) ) {
 			$permalink = wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_calendar_tab';
@@ -346,7 +346,7 @@ function wpbc_ui_settings__panel__calendar( $params = array() ) {
 	echo $onclick; ?>" href="<?php
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo $permalink; ?>">
-					<?php esc_html_e( 'Adjust the calendar\'s display by choosing a theme, setting how many months can be scrolled, and defining the legend.', 'booking' ); ?>
+					<?php esc_html_e( 'Customize various calendar settings, specify how many months can be scrolled, and defining the legend.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -691,11 +691,13 @@ function wpbc_ui_settings__panel__form( $params = array() ){
 
 		if ( ! empty( $params['is_use_permalink'] ) ) {
 			$permalink = wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_form_tab';
-			$onclick   = "";
+			$onclick   = '';
 		} else {
 			$permalink = 'javascript:void(0);';
 			$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_form_tab a' ,'#wpbc_general_settings_form_metabox', '" . $title . "' );";
 		}
+		$onclick   = '';
+		$permalink = wpbc_get_settings_url() . '&tab=form&subtab=form_options';
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__form_options">
 			<div class="wpbc_ui_settings__text_row">
@@ -733,11 +735,13 @@ function wpbc_ui_settings__panel__form( $params = array() ){
 
 		if ( ! empty( $params['is_use_permalink'] ) ) {
 			$permalink = wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_time_slots_tab';
-			$onclick   = "";
+			$onclick   = '';
 		} else {
 			$permalink = 'javascript:void(0);';
 			$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_time_slots_tab a' ,'#wpbc_general_settings_time_slots_metabox', '" . $title . "' );";
 		}
+		$permalink = wpbc_get_settings_url() . '&tab=color_themes';
+		$onclick   = '';
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__time_slots_options">
 			<div class="wpbc_ui_settings__text_row">
@@ -2181,14 +2185,14 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_trending_up"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[0]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[0]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
 						<a class="wpbc_ui_settings__text_color__black2" style="font-weight: 600;"
-						   href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[0]=3&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'All Bookings', 'booking' ); ?>
+						   href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[0]=3&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'All Bookings', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php
@@ -2201,13 +2205,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc-bi-eye"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a class="wpbc_ui_settings__text_color__blue" href="<?php echo esc_url( $bk_admin_url .'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New (unverified) booking(s)', 'booking' ); ?>
+						<a class="wpbc_ui_settings__text_color__blue" href="<?php echo esc_url( $bk_admin_url .'&wh_what_bookings=new&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New (unverified) booking(s)', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php
@@ -2220,13 +2224,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc-bi-slash-circle 0wpbc_icn_block"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__orange" href="<?php echo esc_url( $bk_admin_url .'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+						<a  class="wpbc_ui_settings__text_color__orange" href="<?php echo esc_url( $bk_admin_url .'&wh_approved=0&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 							<?php esc_html_e( 'Pending booking(s)' ,'booking'); ?>
 						</a>
 					</div>
@@ -2240,13 +2244,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc-bi-check2-circle 0check-circle 0wpbc_icn_check_circle_outline"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_approved=1&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_approved=1&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__green" href="<?php echo esc_url( $bk_admin_url .'&wh_approved=1&wh_trash=0&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+						<a  class="wpbc_ui_settings__text_color__green" href="<?php echo esc_url( $bk_admin_url .'&wh_approved=1&wh_trash=0&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 							<?php esc_html_e( 'Approved booking(s)' ,'booking'); ?>
 						</a>
 					</div>
@@ -2259,13 +2263,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_tune"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=1&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__green" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=1&view_mode=vm_listing&overwrite=1' ); ?>">
+						<a  class="wpbc_ui_settings__text_color__green" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=1&tab=vm_booking_listing&overwrite=1' ); ?>">
 							<?php esc_html_e( 'Booking(s) for today' ,'booking');?>
 						</a>
 					</div>
@@ -2279,13 +2283,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_tune"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__red" href="<?php echo esc_url( $bk_admin_url . '&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New booking(s) made today', 'booking' ); ?>
+						<a  class="wpbc_ui_settings__text_color__red" href="<?php echo esc_url( $bk_admin_url . '&wh_trash=0&wh_modification_date[]=1&wh_booking_date[]=3&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'New booking(s) made today', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php
@@ -2298,13 +2302,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_tune"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=10&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__red2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=10&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check in - Today', 'booking' ); ?>
+						<a  class="wpbc_ui_settings__text_color__red2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=10&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check in - Today', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php
@@ -2317,13 +2321,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_tune"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=11&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__blue2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=11&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check out - Today', 'booking' ); ?>
+						<a  class="wpbc_ui_settings__text_color__blue2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=11&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check out - Today', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php
@@ -2336,13 +2340,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_tune"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=7&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__orange2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=7&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check in - Tomorrow', 'booking' ); ?>
+						<a  class="wpbc_ui_settings__text_color__orange2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=7&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check in - Tomorrow', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php
@@ -2355,13 +2359,13 @@ function wpbc_ui_settings__panel__statistic(){
 					<div class="wpbc_ui_settings__text_row">
 						<i class="menu_icon icon-1x wpbc_icn_tune"></i>
 						<h1>
-							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1' ); ?>">
+							<a href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=8&tab=vm_booking_listing&overwrite=1' ); ?>">
 								<span class="wpbc_ui_settings__text_color__black2"><?php echo esc_html( $statistic_cards_arr[$count_name] ); ?></span>
 							</a>
 						</h1>
 					</div>
 					<div class="wpbc_ui_settings__text_row">
-						<a  class="wpbc_ui_settings__text_color__green2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=8&view_mode=vm_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check out - Tomorrow', 'booking' ); ?>
+						<a  class="wpbc_ui_settings__text_color__green2" href="<?php echo esc_url( $bk_admin_url .'&wh_trash=0&wh_booking_date[]=8&tab=vm_booking_listing&overwrite=1' ); ?>"> <?php esc_html_e( 'Check out - Tomorrow', 'booking' ); ?>
 						</a>
 					</div>
 				</div><?php

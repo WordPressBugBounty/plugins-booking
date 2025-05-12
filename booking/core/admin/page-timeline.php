@@ -23,17 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
         
     private $timeline;
-    
-    public function __construct() {
-        
-        parent::__construct();
 
-        // Redefine TAGs Names,  becasue 'tab' slug already used in the system  for definition  of active toolbar.
-        $this->tags['tab']    = 'view_mode';
-        $this->tags['subtab'] = 'bottom_nav';
-    }
-    
-    
     public function in_page() {
         return 'wpbc';
     }
@@ -42,16 +32,19 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
         
         $tabs = array();
         $tabs[ 'vm_calendar' ] = array(
+			'is_show_top_path'                   => false,                               // true | false.  By default value is: false.
+			'is_show_top_navigation'             => true,                                // true | false.  By default value is: false.
+			'left_navigation__default_view_mode' => 'min',                               // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'page_title'                         => false,                               // Header - Title.  If false, than hidden.
+			'page_description'                   => false,                               // Header - Title Description.  If false, than hidden.
                               'title' => __('Timeline View','booking')            // Title of TAB
                             , 'hint' => __('Timeline View', 'booking')                      // Hint
-                            , 'page_title' => __('Timeline View', 'booking')                                // Title of Page
                             , 'link' => ''                                      // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
                             , 'position' => ''                                  // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => ''                               // CSS class(es)
                             , 'icon' => ''                                      // Icon - link to the real PNG img
                             , 'font_icon' => 'wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom'             			// CSS definition  of forn Icon		// FixIn: 9.5.5.3.
-                            , 'header_font_icon' => 'wpbc_icn_rotate_90 wpbc_icn_align_vertical_bottom'             	// CSS definition  of forn Icon		// FixIn: 9.5.5.3.
-                            , 'default' => false                                 // Is this tab activated by default or not: true || false.
+                                                        , 'default' => false                                 // Is this tab activated by default or not: true || false.
                             , 'disabled' => false                               // Is this tab disbaled: true || false. 
                             , 'hided'   => true                                 // Is this tab hided: true || false.
                             , 'subtabs' => array()
@@ -79,18 +72,21 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
         
         wpbc_js_for_bookings_page();                                            // JavaScript functions
         
-        wpbc_welcome_panel();                                                   // Welcome Panel (links)
 
         make_bk_action( 'wpbc_check_request_param__wh_booking_type' );          // Setting $_REQUEST['wh_booking_type'] - remove empty and duplicates ID of booking resources in this list        
         
         make_bk_action( 'check_for_resources_of_notsuperadmin_in_booking_listing' );    // If "Regular User",  then filter resources in $_REQUEST['wh_booking_type'] to show only resources of this user
         
         wpbc_set_request_params_for_timeline();                                 // Set initial $_REQUEST['view_days_num'] depend from selected booking resources
-        
-        //   T o o l b a r s   /////////////////////////////////////////////////
-        wpbc_timeline_toolbar();                                                
-     
-        ?><div class="clear" style="height:25px;"></div><?php
+
+		//   T o o l b a r s   /////////////////////////////////////////////////
+		if ( WPBC_NEW_LISTING ) {
+			wpbc_ui__timeline__resource_selection();
+		} else {
+			wpbc_timeline_toolbar();
+			?><div class="clear" style="height:25px;"></div><?php
+		}
+
 
             // Show    T i m e L i n e   ///////////////////////////////////////
 
@@ -115,7 +111,9 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
 			}
 
             ////////////////////////////////////////////////////////////////////
-            
+
+        	wpbc_welcome_panel();                                                   // Welcome Panel (links)
+
             wpbc_show_booking_footer();           
         
         ?></span><!-- wpdevelop class --><?php 

@@ -71,6 +71,8 @@
 .wpbc_flextable .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_id{
 	flex: 0 1 35px;
 	width:35px;
+	padding-right:0;
+	padding-left:0;
 }
 /* 3rd column - Title */
 .wpbc_flextable .wpbc_flextable_row .wpbc_flextable_col.wpbc_resource_name{
@@ -85,6 +87,8 @@
 }
 	.wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_title{
 		flex: 1 1 30%;
+		flex: 1 1 10em;
+		border-right: 1px solid #ccc;
 	}
 	.wpbc_flextable .wpbc_selectable_body .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_title{
 		/*flex: 1 1 31%;*/
@@ -97,6 +101,7 @@
 .wpbc_flextable .wpbc_selectable_body .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_labels{
 	flex: 1 1 10%;
 	flex: 1 1 10em;
+	display:none;
 }
 .wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_other{
 	flex: 1 1 auto;
@@ -122,13 +127,13 @@
 }
 /* STRIPED Table */
 .wpbc_flextable .wpbc_flextable_row{
-	background-color: #f3f3f3;
-	border-left: 4px solid #f3f3f3;
+	background-color: #fefefe;
+	border-left: 4px solid #fefefe;
 	border-bottom: 1px solid #dddddd;
 }
 .wpbc_flextable .wpbc_flextable_row:nth-of-type(2n+1){
-	background-color: #f8f8f8;
-	border-left: 4px solid #f8f8f8;
+	background-color: var(--wpbc_ui_listing__back_alt_color);
+	border-left: 4px solid var(--wpbc_ui_listing__back_alt_color);
 }
 .wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row,
 .wpbc_flextable .wpbc_selectable_foot .wpbc_flextable_row{
@@ -219,11 +224,10 @@
 }
 .wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_other{
 	text-align:center;
-	border-left: 1px solid #ccc;
 }
 	@media screen and (max-width: 1155px) {
 		.wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_other{
-			border-left: 0px solid #ccc;		/* MOBILE: show checkbox centered in a row*/
+			border-left: 0;		/* MOBILE: show checkbox centered in a row*/
 		}
 	}
 /* Pagination  button  color */
@@ -272,7 +276,8 @@
 .wpbc_resource_field__switchable{
 	display:none;
 }
-.wpbc_resource_field__switchable.wpbc_resource_field__publish{
+/*.wpbc_resource_field__switchable.wpbc_resource_field__publish*/
+.wpbc_booking_resource_table:not(.wpbc_booking_resource_prices_table) .wpbc_resource_field__switchable.wpbc_resource_field__extra__labels {
 	display:flex;
 }
 
@@ -424,8 +429,8 @@
 .wpbc_flextable_labels .wpbc_label_capacity_number:focus,
 .wpbc_flextable_labels .wpbc_label_capacity_number:active,
 .wpbc_flextable_labels .wpbc_label_capacity_number:hover {
-	background: #fff;
-  	color: #868686;
+	background: #8faa45;
+  	color: #fff;
 	font-size: 70%;
 	padding: 1px 6px 2px;
 	border-radius: 3px;
@@ -534,6 +539,7 @@
 
 .wpbc_booking_resource_prices_table .wpbc_flextable .wpbc_flextable_row .wpbc_flextable_col.wpbc_resource_cost {
 	flex: 0 1 12em;
+	flex: 0 1 5em;
 	margin-right: 1em;
 	margin-left: 1px;
 }
@@ -552,10 +558,13 @@
 .wpbc_booking_resource_prices_table .wpbc_flextable .wpbc_flextable_row .wpbc_flextable_col.wpbc_resource_name {
 	flex: 1 1 10em;
 	min-width: Min(19em, 99%);
+	flex: 1 1 12em;
+	min-width: Min(15em, 99%);
 }
 .wpbc_booking_resource_prices_table .wpbc_flextable_col.wpbc_flextable_col_other.wpbc_other_resource_fields {
 	padding: 0;
 	flex: 1 1 50%;
+	flex: 1 1 54%;
 }
 
 /* Container depends size ! */
@@ -599,11 +608,11 @@
 /* ================================================================================================================== */
 /* Disable show LEFT BLUE BORDER in table selected ROWS */
 .wpbc_searchable_resources_table .wpbc_flextable .wpbc_flextable_row.wpbc_flextable_row_selected {
-	border-left: 4px solid #f3f3f3;
+	border-left: 4px solid #fefefe;
 	border-bottom: 1px solid #dddddd;
 }
 .wpbc_searchable_resources_table .wpbc_flextable .wpbc_flextable_row.wpbc_flextable_row_selected:nth-of-type(2n+1){
-	border-left: 4px solid #f8f8f8;
+	border-left: 4px solid #f9f9fa;
 }
 /*  ::  H e a d e r s  ::  */
 .wpbc_searchable_resources_table .wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_title {
@@ -611,7 +620,7 @@
 	padding-left: 0px;
 }
 .wpbc_searchable_resources_table .wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_other{
-	border-left: none;
+	border-left: 0;
 	flex: 1 1 auto;
 }
 .wpbc_searchable_resources_table .wpbc_flextable .wpbc_selectable_head .wpbc_flextable_row .wpbc_flextable_col.wpbc_flextable_col_id{
@@ -653,7 +662,7 @@
 	justify-content: flex-start;
 	align-items: center;
 	flex: 1 1 100%;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 600;
 }
 .wpbc_flextable_resource_title .wpbc_show_hide_children_icon {

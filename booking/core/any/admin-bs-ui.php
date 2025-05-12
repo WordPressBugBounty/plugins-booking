@@ -1659,7 +1659,7 @@ function wpbc_bs_dropdown_menu( $args = array() ) {
                                   'title' => ''
                                 , 'hint' => array( 'title' => __('Timeline View' ,'booking') , 'position' => 'bottom' )
                                 , 'selected' => ( $selected_view_mode == 'vm_calendar' ) ? true : false
-                                , 'link' => $bk_admin_url . '&view_mode=vm_calendar'
+                                , 'link' => $bk_admin_url . '&tab=vm_calendar'
                                 , 'icon' => ''
                                 , 'font_icon' => 'glyphicon glyphicon-calendar'
                             );

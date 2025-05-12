@@ -294,7 +294,7 @@ function wpbc_ui_settings__panel__bookings_manage( $params = array() ){
 	function wpbc_ui_settings_panel__card__booking_listing( $params = array() ){
 
 		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
-		$url = ' href="' . esc_url( wpbc_get_bookings_url() . '&view_mode=vm_listing' ) . '" ';
+		$url = ' href="' . esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing' ) . '" ';
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__booking_listing">
 			<div class="wpbc_ui_settings__text_row">
@@ -329,7 +329,7 @@ function wpbc_ui_settings__panel__bookings_manage( $params = array() ){
 	function wpbc_ui_settings_panel__card__timeline_view( $params = array() ){
 
 		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
-		$url = ' href="' . esc_url( wpbc_get_bookings_url() . '&view_mode=vm_calendar' ) . '" ';
+		$url = ' href="' . esc_url( wpbc_get_bookings_url() . '&tab=vm_calendar' ) . '" ';
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__timeline_view">
 			<div class="wpbc_ui_settings__text_row">
@@ -469,7 +469,7 @@ function wpbc_ui_settings__panel__days_availability( $params = array() ){
 	function wpbc_ui_settings_panel__card__days_availability( $params = array() ){
 
 		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
-		$url = ' href="' . esc_url( wpbc_get_availability_url() . '&view_mode=vm_listing' ) . '" ';
+		$url = ' href="' . esc_url( wpbc_get_availability_url() . '' ) . '" ';
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__booking_listing">
 			<div class="wpbc_ui_settings__text_row">
@@ -504,7 +504,7 @@ function wpbc_ui_settings__panel__days_availability( $params = array() ){
 	function wpbc_ui_settings_panel__card__season_availability( $params = array() ){
 
 		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
-		$url = ' href="' . esc_url( wpbc_get_availability_url() . '&view_mode=vm_calendar' ) . '" ';
+		$url = ' href="' . esc_url( wpbc_get_availability_url() . '' ) . '" ';
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__timeline_view">
 			<div class="wpbc_ui_settings__text_row">

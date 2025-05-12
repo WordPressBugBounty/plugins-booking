@@ -141,7 +141,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {
 	/*  if admin edit ?
                 var my_message = '<?php echo esc_js( __('Updated successfully' ,'booking') ) ; ?>';
                 wpbc_admin_show_message( my_message, 'success', 3000 );
-				location.href='<?php echo wpbc_get_bookings_url() ;?>&view_mode=vm_listing&tab=actions&wh_booking_id=<?php echo  $is_edit_booking['booking_id'] ; ?>';
+				location.href='<?php echo wpbc_get_bookings_url() ;?>&tab=vm_booking_listing&wh_booking_id=<?php echo  $is_edit_booking['booking_id'] ; ?>';
     */
 
 
@@ -721,7 +721,7 @@ function wpbc_booking_save( $request_params ){
 			// && ( empty( $local_params['is_duplicate_booking'] ) )
 		){
 			$confirmation_params_arr['ty_is_redirect'] = 'page';
-			$confirmation_params_arr['ty_url'] = wpbc_get_bookings_url() . '&view_mode=vm_listing&tab=actions&wh_booking_id=' . $confirmation_params_arr['booking_id'];
+			$confirmation_params_arr['ty_url'] = wpbc_get_bookings_url() . '&tab=vm_booking_listing&wh_booking_id=' . $confirmation_params_arr['booking_id'];
 		}
 	}
 	$confirmation = wpbc_booking_confirmation( $confirmation_params_arr );

@@ -498,28 +498,36 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_get_availability_per_days_arr( $params ) {
 
-	if ( 0 ) {      //FixIn: 9.8.3.1 ?
+	if ( 0 ) {      // FixIn: 9.8.3.1 ?
 		wpbc_set_limit_php( 300 );      // Set 300 seconds for php execution.
 	}
 
-	$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+	$server_request_uri      = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );    /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
-    $defaults = array(
-					  'dates_to_check'      => 'CURDATE'                                    //  'CURDATE'  |  'ALL'  |  [ '2023-07-15' , '2023-07-21' ]
-    				, 'approved'            => ( ( get_bk_option( 'booking_is_show_pending_days_as_available' ) == 'On' ) ? '1' : 'all' )     // 'all' | 0 | 1
-				    , 'resource_id'         => '1'                                          // Single or parent booking resource!!!!       // arrays | CSD | int ???
-				    , 'additional_bk_types' => array()                                      // arrays | CSD | int       // OPTIONAL    -> aggregate_resource_id_arr ... it is array of booking resources from aggregate shortcode parameter
-				    , 'skip_booking_id'     => wpbc_get_booking_id__from_hash_in_url() 		// int | ''                 // CSD         '3,5'
-                    , 'as_single_resource'  => false                                        // get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources'
-	                , 'max_days_count'      => wpbc_get_max_visible_days_in_calendar()      // 365
-	                , 'timeslots_to_check_intersect' => array()                             // array( '12:20 - 12:55', '13:00 - 14:00' )   //TODO: ? do we really need it, because below we get it from function
-                    , 'request_uri'         => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri )     //  front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages
-						, 'custom_form'         => ''                                   // Required for checking all available time-slots and compare with  booked time slots
-    			);
-	$params   = wp_parse_args( $params, $defaults );
 
-	// FixIn: 10.7.1.2.
-	if ( false !== strpos( $params['request_uri'], 'allow_past' ) ) {
+	$defaults = array(
+		'dates_to_check'               => 'CURDATE',                                          // v:   'CURDATE'  |  'ALL'  |    arr:  '2023-07-15' , '2023-07-21'.
+		'approved'                     => ( ( 'On' === get_bk_option( 'booking_is_show_pending_days_as_available' ) ) ? '1' : 'all' ),   // v:  'all' | 0 | 1.
+		'resource_id'                  => '1',                                                                          // Single or parent booking resource!!!!  // arrays | CSD | int ???.
+		'additional_bk_types'          => array(),                   // arrays | CSD | int // OPTIONAL -> aggregate_resource_id_arr ... it is array of booking resources from aggregate shortcode parameter.
+		'skip_booking_id'              => wpbc_get_booking_id__from_hash_in_url(),                                      // int | '' // CSD  '3,5'.
+		'as_single_resource'           => false,                                              // get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources'.
+		'max_days_count'               => wpbc_get_max_visible_days_in_calendar(),            // 365.
+		'timeslots_to_check_intersect' => array(),                                            // arr:  '12:20 - 12:55', '13:00 - 14:00' )         // TODO: ? do we really need it, because below we get it from function.
+		'request_uri'                  => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ),  // front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages.
+		'custom_form'                  => '',                                                 // Required for checking all available time-slots and compare with  booked time slots.
+	);
+
+	$params = wp_parse_args( $params, $defaults );
+
+	// FixIn: 10.7.1.2. //FixIn: 10.10.3.2.
+	if (
+		( false !== strpos( $params['request_uri'], 'allow_past' ) ) ||
+		(
+			( false !== strpos( $params['request_uri'], 'page=wpbc-new' ) ) &&
+			( false !== strpos( $params['request_uri'], 'booking_hash' ) )
+		)
+	) {
 		$params['dates_to_check'] = 'ALL';
 	}
 

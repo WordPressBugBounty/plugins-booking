@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 // General Settings API - Saving different options
 class  WPBC_Settings_API_General extends WPBC_Settings_API {
-    
+
 
     /**
 	 * Override Settings API Constructor
@@ -49,28 +49,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
         // <editor-fold     defaultstate="collapsed"                        desc=" C a l e n d a r    S e c t i o n "  >
 
-        $this->fields['booking_skin'] = array(   
-                                    'type'          => 'select'
-                                    , 'default'     => $default_options_values['booking_skin']      // '/css/skins/traditional.css'         // Activation|Deactivation  of this options in wpbc-activation  file.  // Default value in wpbc_get_default_options('booking_skin')
-                                    //, 'value' => '/css/skins/standard.css'    //This will override value loaded from DB
-                                    , 'title'       => __('Calendar Skin', 'booking')
-                                    , 'description' => __('Select the skin of the booking calendar' ,'booking')
-                                    , 'options'     => wpbc_get_calendar_skin_options()
-                                    , 'group'       => 'calendar'
-                            );
 
-//        //Show | Hide links for Advanced JavaScript section 
-//        $this->fields['booking_skin_help'] = array(    
-//                                  'type' => 'html'
-//                                , 'html'  => 
-//                                          '<div class="wpbc-settings-notice notice-info" style="text-align:left;">' 
-//                                            . '<strong>' . esc_html__('Note!' ,'booking') . '</strong> '
-//                                            . sprintf( __( 'If you have customized your own calendar skin, please save it to: %s Its will save your custom skin during future updates of plugin.', 'booking' ), '<code>/wp-content/uploads/wpbc_skins/</code><br/>' )                
-//                                          . '</div>'  
-//                                , 'cols'  => 2
-//                                , 'group' => 'calendar'
-//            );
-        
         //  Number of months  //////////////////////////////////////////////////
         $months_options = array();
         for ($mm = 1; $mm < 12; $mm++) { $months_options[ $mm . 'm' ] = $mm . ' ' .  __('month(s)' ,'booking'); }
@@ -105,7 +84,17 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                                             )
                                     , 'group'       => 'calendar'
                             );
-        
+
+	    $this->fields['booking_calendar_allow_several_months_on_mobile'] = array(
+	                            'type'          => 'checkbox'
+	                            , 'default'     => $default_options_values['booking_calendar_allow_several_months_on_mobile']   //'Off'
+	                            , 'title'       => __('Allow multiple months to be shown on mobile' ,'booking')  //__('Use time selections as recurrent time slots' ,'booking')
+	                            , 'label'       => __('Enable this option to allow multiple months to be shown in the calendar on mobile devices. By default, the calendar only shows one month on mobile devices for easy scrolling.' ,'booking')
+	                            //, 'description' => ''
+	                            , 'group'       => 'calendar'
+	                            , 'tr_class'    => ''
+	        );
+
         //  Divider  ///////////////////////////////////////////////////////////        
         $this->fields['hr_calendar_after_week_day'] = array( 'type' => 'hr', 'group' => 'calendar' );
                 
@@ -157,15 +146,6 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
 	    $this->fields = apply_filters( 'wpbc_settings_calendar_check_in_out_times',   $this->fields, $default_options_values );      // Check In/Out Times
 
-	    $this->fields['booking_calendar_allow_several_months_on_mobile'] = array(
-	                            'type'          => 'checkbox'
-	                            , 'default'     => $default_options_values['booking_calendar_allow_several_months_on_mobile']   //'Off'
-	                            , 'title'       => __('Allow multiple months to be shown on mobile' ,'booking')  //__('Use time selections as recurrent time slots' ,'booking')
-	                            , 'label'       => __('Enable this option to allow multiple months to be shown in the calendar on mobile devices. By default, the calendar only shows one month on mobile devices for easy scrolling.' ,'booking')
-	                            //, 'description' => ''
-	                            , 'group'       => 'calendar'
-	                            , 'tr_class'    => 'wpbc_recurrent_check_in_out_time_slots'
-	        );
 
         // </editor-fold>
 
@@ -452,83 +432,6 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         // </editor-fold>
 
 
-
-        // <editor-fold     defaultstate="collapsed"                        desc=" T i m e    S l o t s "  >
-
-		$my_close_open_alert_id = 'bk_alert_booking_timeslot_picker__help_tip';
-	    $this->fields['booking_timeslot_picker__help_tip'] = array(
-                            'type'          => 'pure_html'
-                            , 'group'       => 'time_slots'
-	                        , 'html' => '<tr><td colspan="2">'
-	                                    .'<div class="wpbc-general-settings-notice wpbc-settings-notice notice-info">'
-											. '<strong class="alert-heading">' . esc_html__( 'Note', 'booking' ) . '!</strong> '
-											/* translators: 1: ... */
-											. sprintf( __( 'You can enable or disable, as well as configure %1$sTime Slots%2$s for your booking form on the Settings > %3$sBooking Form%4$s page.', 'booking' ),
-													'<strong>', '</strong>',
-												    '<strong><a href="' . esc_url( wpbc_get_settings_url( true, false ) . '&tab=form' ) . '">', '</a></strong>'
-												)
-	                                    . '</div>'
-
-								    .'</td> </tr>'
-                    );
-
-
-		// FixIn: 8.7.11.10.
-	    $this->fields['booking_timeslot_picker'] = array(
-	                            'type'          => 'checkbox'
-	                            , 'default'     => $default_options_values['booking_timeslot_picker']   //'Off'
-	                            , 'title'       => __('Time picker for time slots' ,'booking')
-	                            , 'label'       => __('Show time slots as a time picker instead of a select box.' ,'booking')
-	                            , 'description' => ''
-
-	                            , 'group'       => 'time_slots'
-	                            , 'tr_class'    => 'wpbc_timeslot_picker'
-	        );
-
-        //  Time Picker Skin  /////////////////////////////////////////////////////
-        $timeslot_picker_skins_options  = array();
-
-        // Skins in the Custom User folder (need to create it manually):    http://example.com/wp-content/uploads/wpbc_skins/ ( This folder do not owerwrited during update of plugin )
-        $upload_dir = wp_upload_dir();
-		// FixIn: 8.9.4.8.
-        $files_in_folder = wpbc_dir_list( array(  WPBC_PLUGIN_DIR . '/css/time_picker_skins/', $upload_dir['basedir'].'/wpbc_time_picker_skins/' ) );  // Folders where to look about Time Picker skins
-
-        foreach ( $files_in_folder as $skin_file ) {                                                                            // Example: $skin_file['/css/skins/standard.css'] => 'Standard';
-			//FixIn: 8.9.4.8    // FixIn: 9.1.2.10.
-            $skin_file[1] = str_replace( array( WPBC_PLUGIN_DIR, WPBC_PLUGIN_URL,  $upload_dir['basedir'] ), '', $skin_file[1] );                 // Get relative path for Time Picker skin
-            $timeslot_picker_skins_options[ $skin_file[1] ] = $skin_file[2];
-        }
-
-        $this->fields['booking_timeslot_picker_skin'] = array(
-                                    'type'          => 'select'
-                                    , 'default'     => $default_options_values['booking_timeslot_picker_skin']      // '/css/skins/traditional.css'         // Activation|Deactivation  of this options in wpbc-activation  file.  // Default value in wpbc_get_default_options('booking_skin')
-                                    //, 'value' => '/css/time_picker_skins/grey.css'    //This will override value loaded from DB
-                                    , 'title'       => __('Time Picker Skin', 'booking')
-                                    , 'description' => __('Select the skin of the time picker' ,'booking')
-                                    , 'options'     => $timeslot_picker_skins_options
-                                    , 'group'       => 'time_slots'
-                            );
-
-
-
-		// FixIn: 8.2.1.27.
-	    $this->fields['booking_timeslot_day_bg_as_available'] = array(
-	                            'type'          => 'checkbox'
-	                            , 'default'     => $default_options_values['booking_timeslot_day_bg_as_available']   //'Off'
-	                            , 'title'       => __('Do not change background color for partially booked days' ,'booking')
-	                            , 'label'       => __('Show partially booked days with same background as in legend item' ,'booking')
-	                            , 'description' => '<span class="description0" style="line-height: 1.7em;margin: 0 0 0 -10px;"><strong>' . esc_html__('Note' ,'booking') .':</strong> '
-                                                        . sprintf(__('Partially booked item - day, which is booked for the specific time-slot(s).' ,'booking'),'<b>','</b>')
-                                                   . '</span>'
-
-	                            , 'group'       => 'time_slots'
-	                            , 'tr_class'    => 'wpbc_timeslot_day_bg_as_available'
-	        );
-
-
-	    // </editor-fold>
-
-
         // <editor-fold     defaultstate="collapsed"                        desc=" A v a i l a b i l i t y "  >
         
         //  Unavailable Weekdays  /////////////////////////////////////////////
@@ -628,121 +531,6 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $this->fields = apply_filters( 'wpbc_settings_calendar_extend_unavailable_interval', $this->fields, $default_options_values );
         
         // </editor-fold>
-        
-        
-        // <editor-fold     defaultstate="collapsed"                        desc=" F o r m    S e c t i o n "  >
-
-
-        //  Start Day of the week  /////////////////////////////////////////////
-		/*
-	    if ( ! class_exists('wpdev_bk_personal') )
-		    $this->fields['booking_form_structure_type'] = array(
-                                    'type'          => 'select'
-                                    , 'default' => $default_options_values['booking_form_structure_type']                   // '2'
-                                    // , 'value' => false
-                                    , 'title'       => __('Booking form structure', 'booking')
-                                    , 'description' => __('Select how to show your booking form.' ,'booking')
-		                            , 'description_tag' => 'p'
-                                    , 'options'     => array(
-                                                              'vertical' => __('Form under calendar' ,'booking')
-                                                            , 'form_right' => __('Form at right side of calendar' ,'booking')
-                                                            )
-                                    , 'group'       => 'form'
-                            );
-		*/
-        $this->fields['booking_form_theme'] = array(
-                                'type'          => 'select'
-                                , 'default'     => $default_options_values['booking_form_theme']           //'Off'
-                                , 'title'       => __('Color Theme' ,'booking')
-                                , 'description' => __('Select a color theme for your booking form that matches the look of your website.' ,'booking') //. ' <sup style="color:#7812bd;"><strong>&#946;eta '.__('feature','booking').'</strong></sup>'
-	        							           . '<div class="wpbc-general-settings-notice wpbc-settings-notice notice-info">'
-                                                   .    __('When you select a color theme, it also change the calendar and time-slot picker skins to match your choice. Customize these options separately as needed.' ,'booking')
-                                                   .'</div>'
-
-                                , 'options' => array(
-						                                ''                  => __( 'Light', 'booking' ),
-						                                'wpbc_theme_dark_1' => __( 'Dark', 'booking' )
-					                                )
-                                , 'group'       => 'form'
-            );
-
-        $this->fields['booking_is_use_captcha'] = array(
-                                'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_use_captcha']           //'Off'
-                                , 'title'       => __('CAPTCHA' ,'booking')
-                                , 'label'       => __('Check the box to activate CAPTCHA inside the booking form.' ,'booking')
-								, 'description' =>  '<div class="wpbc-general-settings-notice wpbc-settings-notice notice-warning" style="margin-top:-10px;">'
-												   .  '<strong>' . esc_html__('Note' ,'booking') . '!</strong> ' .
-								                    __( 'If your website uses a cache plugin or system, exclude pages with booking forms from caching to ensure CAPTCHA functions correctly.', 'booking' )
-												   .'</div>'
-                                , 'group'       => 'form'
-            );
-        $this->fields['booking_is_use_autofill_4_logged_user'] = array(
-                                'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_use_autofill_4_logged_user']         // 'Off'
-                                , 'title'       => __('Auto-fill fields' ,'booking')
-                                , 'label'       => __('Check the box to activate auto-fill form fields for logged in users.' ,'booking')
-                                , 'description' => ''
-                                , 'group'       => 'form'
-            );
-
-		$this->fields['hr_calendar_after_autofill'] = array( 'type' => 'hr', 'group' => 'form' );
-
-		if ( class_exists( 'wpdev_bk_personal' ) )                                                                      // FixIn: 8.1.1.12.
-            $this->fields['booking_is_use_simple_booking_form'] = array(
-                                'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_use_simple_booking_form']        //'Off'
-                                , 'title'       => __('Simple' ,'booking') . ' ' . __('Booking Form', 'booking')
-                                , 'label'       => __('Check the box, if you want to use simple booking form customization from Free plugin version at Settings - Form page.' ,'booking')
-                                , 'description' => ''
-                                , 'group'       => 'form'
-            );
-		if ( class_exists( 'wpdev_bk_personal' ) )                                                                      // FixIn: 8.1.1.12.
-            $this->fields['booking_is_use_codehighlighter_booking_form'] = array(
-                                'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_use_codehighlighter_booking_form']        //'Off'
-                                , 'title'       => __('Syntax highlighter' ,'booking')
-                                , 'label'       => __('Check the box, if you want to use syntax highlighter during customization booking form.' ,'booking')
-                                , 'description' => ''
-                                , 'group'       => 'form'
-            );
-
-
-		// FixIn: 10.0.0.31.
-	    if ( class_exists( 'wpdev_bk_biz_m' ) ){
-		   $this->fields['booking_number_for_pre_checkin_date_hint'] = array(
-		                                    'type'          => 'select'
-		                                    , 'default'     => $default_options_values['booking_number_for_pre_checkin_date_hint']                                  //'0'
-		                                    , 'title'       => __( 'Pre-Check-in Display Duration', 'booking' )
-		                                    /* translators: 1: ... */
-		                                    , 'description' => sprintf( __( 'Select the number of days for the %s shortcode.', 'booking' ), '<strong>[pre_checkin_date_hint]</strong>' )
-		                                                     . ' '
-		                                                     /* translators: 1: ... */
-		                                                     . sprintf( __( 'This shortcode is used in the booking form to display the date %1$sN days before%2$s the selected check-in date.', 'booking' )
- 					                                                    , '<a href="'. esc_url( wpbc_get_settings_url() ) . '&tab=form">', '</a>' )
-					                                                  //, '<a href="'.wpbc_get_settings_url( true, false ) . '&scroll_to_section=wpbc_general_settings_form_tab">', '</a>' )
-		                                    , 'options'     => array_combine( range( 1, 91 ), range( 1, 91 ) )
-		                                    , 'group'       => 'form'
-		                            );
-		}
-//        if (  class_exists( 'wpdev_bk_personal' ) ){        // FixIn: 8.8.1.14.
-//
-//	        $this->fields['booking_send_button_title'] = array(
-//	                                'type'          => 'text'
-//	                                , 'default'     => $default_options_values['booking_send_button_title']             // 'Send'
-//	                                , 'placeholder' => __( 'Send', 'booking' )
-//	                                , 'title'       => __( 'Title of send button' ,'booking' )
-//	                                , 'description' => sprintf( __( 'Enter %1$stitle of submit button%2$s in the booking form', 'booking' ),'<b>','</b>')
-//	                                , 'description_tag' => 'p'
-//	                                , 'css'         => 'width:100%'
-//	                                , 'group'       => 'form'
-//	                                , 'tr_class'    => 'wpbc_send_button_title'
-//	                        );
-//		}
-
-
-	    // </editor-fold>
-
 
 
 	    // <editor-fold     defaultstate="collapsed"                        desc=" B o o k i n g    C o n f i r m a t i o n "  >
@@ -1119,22 +907,8 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'options'     => $field_options
                                 , 'group'       => 'booking_listing'
                         );
-//	    // FixIn: 9.5.5.7.
-//        $this->fields['booking_admin_panel_skin'] = array(
-//                                  'type'        => 'select'
-//                                , 'default'     => $default_options_values['booking_admin_panel_skin']                  // 'modern_1'
-//                                , 'title'       => __('Theme of booking admin panel', 'booking')
-//                                , 'description' => __('Select theme of your booking admin panel' ,'booking')
-//                                , 'options'     => array(
-//														      'modern_1' => __( 'Modern Theme', 'booking' )
-//													        , 'legacy'   => __( 'Legacy Theme', 'booking' )
-//							                            )
-//                                , 'group'       => 'booking_listing'
-//                        );
-//
-//	    // FixIn: 9.6.3.5.
 
-        //Default booking resources 
+        // Default booking resources.
         $this->fields = apply_filters( 'wpbc_settings_booking_listing_br_default_count', $this->fields, $default_options_values );
 
 
@@ -1756,7 +1530,7 @@ if(1){
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_is_delete_if_deactive']         //'Off'            
                                 , 'title'       => __('Delete booking data, when plugin deactivated' ,'booking')
-                                , 'label'       => __('Check this box to delete all booking data when you uninstal this plugin.' ,'booking')
+                                , 'label'       => __('Turn on to delete all booking data when you uninstall this plugin.' ,'booking')
                                 , 'description' => ''
                                 , 'group'       => 'uninstall'
 	                            , 'toggle_class' => 'wpbc_toggle_danger'
@@ -2146,58 +1920,7 @@ if(1){
                         ";         
 
 
-        // Select  specific Time Picker skin,  depending from  selection  of Calendar skin      // FixIn: 8.7.11.10.
-        $js_script .= " jQuery('#set_gen_booking_skin').on( 'change', function(){    
-        
-                            var wpbc_selected_skin = jQuery('select[name=\"set_gen_booking_skin\"] option:selected').val(); 
-                            var wpbc_cal_skin_arr = [      
-													'/css/skins/black-2.css',
-													'/css/skins/black.css',
-													'/css/skins/multidays.css',
-													'/css/skins/premium-black.css',
-													'/css/skins/premium-light.css',
-													'/css/skins/premium-marine.css',
-													'/css/skins/premium-steel.css',
-													'/css/skins/standard.css',
-													'/css/skins/traditional-light.css',
-													'/css/skins/traditional.css',
-													'/css/skins/green-01.css'
-                                                ];
-                            var wpbc_time_skin_arr = [      
-													'/css/time_picker_skins/black.css',
-													'/css/time_picker_skins/black.css',
-													'/css/time_picker_skins/green.css',
-													'/css/time_picker_skins/black.css',
-													'/css/time_picker_skins/light__24_8.css',
-													'/css/time_picker_skins/marine.css',
-													'/css/time_picker_skins/light__24_8.css',
-													'/css/time_picker_skins/blue.css',
-													'/css/time_picker_skins/orange.css',
-													'/css/time_picker_skins/light__24_8.css',
-													'/css/time_picker_skins/light__24_8.css'
-                                                ];  
-                            if ( wpbc_cal_skin_arr.indexOf( wpbc_selected_skin ) >= 0 ) {
-								jQuery( '#set_gen_booking_timeslot_picker_skin' ).find( 'option' ).prop( 'selected', false );								
-								jQuery( '#set_gen_booking_timeslot_picker_skin' ).find( 'option[value=\"'+ wpbc_time_skin_arr[ wpbc_cal_skin_arr.indexOf( wpbc_selected_skin ) ]  +'\"]' ).prop( 'selected', true );																
-                            }
-        
-						} ); ";
 
-        // If selected Dark  theme then  select  Dark  calendar  skin,  as well.
-        $js_script .= " jQuery('#set_gen_booking_form_theme').on( 'change', function(){           
-                            var wpbc_selected_theme = jQuery('select[name=\"set_gen_booking_form_theme\"] option:selected').val(); 
-                            var wpbc_cal_dark_skin_path = '/css/skins/24_9__dark_1.css';		                            							  
-                            if ( 'wpbc_theme_dark_1' === wpbc_selected_theme ) {
-								jQuery( '#set_gen_booking_skin' ).find( 'option' ).prop( 'selected', false );								
-								jQuery( '#set_gen_booking_skin' ).find( 'option[value=\"'+ wpbc_cal_dark_skin_path  +'\"]' ).prop( 'selected', true ).trigger('change');																
-                            }
-                            var wpbc_cal_light_skin_path = '/css/skins/24_9__light_square_1.css';		
-                            if ( '' === wpbc_selected_theme ) {
-								jQuery( '#set_gen_booking_skin' ).find( 'option' ).prop( 'selected', false );								
-								jQuery( '#set_gen_booking_skin' ).find( 'option[value=\"'+ wpbc_cal_light_skin_path  +'\"]' ).prop( 'selected', true ).trigger('change');																
-                            }
-        
-						} ); ";
 
 
 		// =============================================================================================================        // FixIn: 10.1.5.4.
@@ -2393,7 +2116,7 @@ function wpbc_hook_settings_page_footer__define_code_mirror( $page_name ) {
 
 		wpbc_codemirror()->set_codemirror( array(
 			'textarea_id' => '#set_gen_booking_confirmation__personal_info__content'
-			 , 'preview_id'   => '#wpbc_add_form_html_preview'
+			 // , 'preview_id'   => '#wpbc_add_form_html_preview'
 		) );
 		wpbc_codemirror()->set_codemirror( array(
 			'textarea_id' => '#set_gen_booking_confirmation__booking_details__content'

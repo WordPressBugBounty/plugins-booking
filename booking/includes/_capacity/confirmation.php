@@ -363,11 +363,11 @@ function wpbc_booking_confirmation( $params_arr ){
 	}
 
 
-
-	// If showing payment form,  that  we do not make redirection  and show Message only
-	if ( ! empty( $confirmation['ty_payment_gateways'] ) ) {
-		$confirmation['ty_is_redirect'] = 'message';
-	}
+	// FixIn: 10.10.3.3.
+	//	// If showing payment form,  that  we do not make redirection  and show Message only.
+	//	if ( ! empty( $confirmation['ty_payment_gateways'] ) ) {
+	//		$confirmation['ty_is_redirect'] = 'message';
+	//	}
 
 	if ( 'page' == $confirmation['ty_is_redirect'] ) {
 
@@ -381,6 +381,11 @@ function wpbc_booking_confirmation( $params_arr ){
 			$confirmation['ty_url'] = wpbc_make_link_absolute( wpbc_lang( get_bk_option( 'booking_thank_you_page_URL' ) ) );  // '/thank-you'
 
 			$confirmation['ty_url'] .= ( ( false === strpos( $confirmation['ty_url'], '?' ) ) ? '?' : '&' ) . 'booking_hash=' . $booking_hash;
+
+			// FixIn: 10.10.3.3.
+			if ( ! empty( $confirmation['ty_payment_gateways'] ) ) {
+				$confirmation['ty_url'] .= ( ( false === strpos( $confirmation['ty_url'], '?' ) ) ? '?' : '&' ) . 'booking_pay=1';
+			}
 		}
 
 	} else {
