@@ -65,7 +65,7 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 	add_action( 'init', 'wpbc_init_shortcode__wpbc_booking_confirmation', 9999 );                                       // <- priority  to  load it last
 
 
-	/**
+/**
 	 * Universal shortcode worker
 	 *
 	 * @param array $attr
@@ -74,7 +74,7 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 	 *
 	 * @return string
 	 */
-	function wpbc_shortcode__booking_confirmation( $attr = array(), $content = null, $tag = '' ) {
+function wpbc_shortcode__booking_confirmation( $attr = array(), $content = null, $tag = '' ) {
 
 		// ob_start();
 
@@ -91,26 +91,24 @@ function wpbc_shortcode__booking_confirmation_debug($attr, $content, $tag) {
 
 		$return = '';
 
-		switch ( $attr['mode'] ) {
+	switch ( $attr['mode'] ) {
 
-		    case 'booking_confirm':
+		case 'booking_confirm':
+			$return .= wpbc_do_shortcode__booking_confirm( $attr );
+			break;
 
-			    $return .= wpbc_do_shortcode__booking_confirm( $attr );
-		        break;
-
-		    default:
-			    $return = '<p style="font-size:9px;">'
-			              . 'Invalid shortcode configuration: <strong>[' . $tag . ' ... ]</strong> with the following parameters: ' . wp_json_encode( $attr ) . '. '
-			              /* translators: 1: ... */
-			              . sprintf( __( 'Find more in the %1$sFAQ%2$s', 'booking' ), '<a href="https://wpbookingcalendar.com/faq/">', '</a>.' )
-			              . '</p>';
-		}
+		default:
+				$return = '<p style="font-size:9px;">Invalid shortcode configuration: <strong>[' . esc_html( $tag ) . ' ... ]</strong>. ' . // FixIn: 10.11.2.1.
+						/* translators: 1: ... */
+						sprintf( __( 'Find more in the %1$sFAQ%2$s', 'booking' ), '<a href="https://wpbookingcalendar.com/faq/">', '</a>.' ) .
+						'</p>';
+	}
 
 		// $possible_output = ob_get_clean();
 		// $return .= $possible_output;
 
-	    return $return ;
-	}
+	return $return ;
+}
 
 
 

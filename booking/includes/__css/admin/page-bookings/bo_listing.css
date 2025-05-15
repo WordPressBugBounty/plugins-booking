@@ -253,6 +253,9 @@
 			/* C O L */
 			.wpbc_listing_col {
 				flex: 0 1 auto;
+			}
+			.wpbc_listing_col .booking_details_simple,
+			.wpbc_listing_col .booking_details_simple * {
 				font-size: var(--wpbc_ui__gen__font-size);
 			}
 		/* Booking Row */

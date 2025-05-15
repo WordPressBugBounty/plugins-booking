@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.11
+Stable tag: 10.11.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -288,27 +288,24 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 == Screenshots ==
 1. **Time-Slot Appointment Bookings**: This screenshot displays the front-end booking form, configured in a 2-column layout with light theme. It allows users to select **single day** in the calendar and **time slots** in the booking form.
 2. **Full-Day Bookings**: In this screenshot, you can see the front-end booking form, configured in a centered layout with a dark theme. It enables users to select and **book multiple days in the calendar**.
-3. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
-4. **Calendar Availability**: Select dates, choose the available/unavailable status, and apply it. It's that simple to set dates as unavailable.
-5. **Calendar Overview**: Get a clear overview of all your bookings.
-6. **Calendar Overview**: Easily review all your bookings for the year/weeks/days through an intuitive interface with quick action buttons.
-7. **Booking Listing**: You can easily manage all your bookings in one place by searching bookings by keyword, dates, status, and other parameters.
-8. **Booking Listing** panel provides a smooth user experience by working instantly without page refresh.
-9. **Edit Bookings**: Admin can easily modify booking details of existing bookings from Booking admin panel.
-10. **Add New Bookings.** Quickly create new bookings directly from your admin panel.
-11. **Settings**. Configure the plugin to your specific requirements by adjusting different parameters.
-12. **Form fields**. Customize your booking form by adding new fields or modifying existing ones, and define form structure to match your website's style.
-13. **Emails**. Customize email templates for sending automatic notifications to both you and your customers about booking creation, approval, cancellation, and more.
-14. **Sync**. Keep your bookings in sync with other platforms by configuring import/export through .ics feeds (iCal) to third-party services like Google Calendar, Airbnb, booking.com, and more.
-15. **Insert Booking Calendar to a page**. Easily insert the booking form on any page of your website using WordPress blocks or Booking Calendar widgets for sidebars or configure shortcode block in page builders like Elementor.
-16. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
-17. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
-18. **Time-Slot Appointment Bookings in Legacy Calendar Theme**: Users can select **single day** in the calendar and **time slots** in the booking form.
+3. **Booking Listing**: You can easily manage all your bookings in one place by searching bookings by keyword, dates, status, and other parameters.
+4. **Booking Listing** panel provides a smooth user experience by working instantly without page refresh.
+5. **Timeline View**: Get a clear overview of all your bookings.
+6. **Add New Bookings.** Quickly create new bookings directly from your admin panel.
+7. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
+8. **Settings**. Configure the plugin to your specific requirements by adjusting different parameters.
+9. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
+10. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
-= 10.11.1 =
+= 10.11.2 =
 - Changes in **all** versions:
 	* **New**: Added 4 new calendar skins.
+	* **Fix**: Resolved vulnerability of SCSS related to the parameters of [wpbc ...] shortcode. (10.11.2)
+
+= 10.11.1 =
+- Changes in **all** versions:
+	* **New**: Added 5 new calendar skins.
 	* **Fix**: Fixed position of the actions button on mobile devices.
 
 = 10.11 =

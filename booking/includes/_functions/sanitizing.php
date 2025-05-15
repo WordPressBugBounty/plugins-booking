@@ -746,23 +746,25 @@ function wpbc_clean_string_for_form( $value ){
  *
  * @return array
  */
-function wpbc_escape_shortcode_params( $attr ) {                													//FixIn: 9.7.3.6.1
+function wpbc_escape_shortcode_params( $attr ) {
 
 	if ( is_array( $attr ) ) {
 
 		$scaped_attr = array();
 
 		foreach ( $attr as $attr_key => $attr_val ) {
-			$attr_key = esc_attr( $attr_key );
-			$attr_val = esc_attr( $attr_val );
+			$attr_key = sanitize_text_field( $attr_key );        // FixIn: 10.11.2.1.
+			$attr_val = sanitize_text_field( $attr_val );        // FixIn: 10.11.2.1.
+
 			$scaped_attr[ $attr_key ] = $attr_val;
 		}
+
 		return $scaped_attr;
 	}
 
-	if ( is_string( $attr ) ) {                            //FixIn: 9.7.3.6.2
+	if ( is_string( $attr ) ) {
 
-		$scaped_attr = esc_attr( $attr );
+		$scaped_attr = sanitize_text_field( $attr );        // FixIn: 10.11.2.1.
 
 		return $scaped_attr;
 	}
