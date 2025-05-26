@@ -230,8 +230,16 @@ abstract class WPBC_Menu_Structure {
 
 		foreach ( $this_page_arr as $this_page ) {
 
-			foreach ( $this->tabs() as $this_tab_tag => $this_tab ) {               // Get First Tab Element,  which  MUST be subtab element, all other tabs, can  be links,  not really  showing content!!!
-				break;
+			foreach ( $this->tabs() as $this_tab_tag => $this_tab ) {
+
+				// FixIn: 10.11.3.5
+				$skip_type_arr = array( 'separator', 'button', 'goto-link', 'html' );
+
+				if ( ( ! empty( $this_tab['type'] ) ) && ( in_array( $this_tab['type'], $skip_type_arr, true ) ) ) {
+					// Probably  it is separator,  and we have not content here !
+				} else {
+					break;     // Get First Tab Element,  which  MUST be subtab element, all other tabs, can  be links,  not really  showing content!!!
+				}
 			}
 
 			if ( empty( $this_tab ) ) {
@@ -471,15 +479,21 @@ abstract class WPBC_Menu_Structure {
 			foreach ( $local_top_main_menu_arr as $tab_tag => $tab_array ) {
 
 				if ( ! isset( self::$nav_tabs[ $this_page ][ $tab_tag ] ) ) {                 // If this tab  ( for exmaple "payment") declared previously,  then  does not do  anything.
+					self::$nav_tabs[ $this_page ][ $tab_tag ] = array();
+				}
 
-					self::$nav_tabs[ $this_page ][ $tab_tag ]            = $local_top_main_menu_arr[ $tab_tag ];
+				foreach ( $local_top_main_menu_arr[ $tab_tag ] as $page_prop_name => $page_prop_value ) {
+					if ( 'subtabs' !== $page_prop_name ) {
+						self::$nav_tabs[ $this_page ][ $tab_tag ][ $page_prop_name ] = $page_prop_value;
+					}
+				}
+
+				if ( ! isset( self::$nav_tabs[ $this_page ][ $tab_tag ]['subtabs'] ) ) {
 					self::$nav_tabs[ $this_page ][ $tab_tag ]['subtabs'] = array();
 				}
+				// Merge subtabs (Ex: PayPal and Sage) and attach to current tab: (Ex: payment).
+				self::$nav_tabs[ $this_page ][ $tab_tag ]['subtabs'] = array_merge( self::$nav_tabs[ $this_page ][ $tab_tag ]['subtabs'], $local_vert_left_menu_arr[ $tab_tag ] );
 
-				if ( isset( self::$nav_tabs[ $this_page ] ) ) {
-					// Merge subtabs (Ex: PayPal and Sage) and attach to current tab: (Ex: payment).
-					self::$nav_tabs[ $this_page ][ $tab_tag ]['subtabs'] = array_merge( self::$nav_tabs[ $this_page ][ $tab_tag ]['subtabs'], $local_vert_left_menu_arr[ $tab_tag ] );
-				}
 			}
 		}
 	}

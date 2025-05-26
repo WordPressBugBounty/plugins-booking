@@ -509,6 +509,10 @@ select option.wpbc_child_resource{
     display:block;
 }
 /* Table with Fields elements */
+.wpbc_table_form_free {
+	/* //FixIn: 10.11.3.4. */
+	position:relative;
+}
 .wpbc_table_form_free tr th{
     font-size: 12px;
     text-align: center;

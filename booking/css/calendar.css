@@ -31,7 +31,7 @@
 /* SIZE: Set width of calendar with several months */           /* FixIn: 9.7.3.4 */
 /* FixIn: Standard entire calendar WIDTH ============================================================================ */
 .wpbc_no_custom_width.bk_calendar_frame { width: 100%; width: calc(100% - 4px); min-width:201px; }
-.wpbc_no_custom_width.cal_month_num_1 {   max-width: 341px; }
+.wpbc_no_custom_width.cal_month_num_1 {   max-width: 341px; /*max-width: Min(390px, 100%);*/ }
 .wpbc_no_custom_width.cal_month_num_2 {   max-width: 682px; }
 .wpbc_no_custom_width.cal_month_num_3 {   max-width: 1023px; }
 .wpbc_no_custom_width.cal_month_num_4 {   max-width: 1364px; }
@@ -941,4 +941,12 @@ table.datepick.wpbc_calendar{
     background: transparent !important;
     padding: 0 !important;
     border-color: transparent !important;
+}
+/* Remove underline of dates in calendar. (10.11.3.1) */
+.datepick-inline a:active,
+.datepick-inline a:focus,
+.datepick-inline a:hover,
+.datepick-inline a{
+  text-decoration: none !important;
+  outline:0 !important;
 }

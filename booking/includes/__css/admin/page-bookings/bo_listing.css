@@ -315,9 +315,12 @@
 .wpbc_col_data a.booking_details_simple__expand:hover{
 	color: var(--wpbc_ui__gen__text-color);
 	text-decoration: none;
-	cursor: pointer;
 	outline: none;
 	box-shadow: none;
+}
+.wpbc_col_data a.booking_details_simple__expand,
+.wpbc_col_data a.booking_details_simple__expand:hover {
+	cursor: pointer;
 }
 /* ================================================================================================================== */
 /* == S p e c i f ic   .  R o w s  .  C o l u m n s == */

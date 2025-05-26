@@ -215,11 +215,13 @@ function wpbc_template__booking_listing_row__section_col__booking_data(){
 			   onclick="javascript:jQuery(this).parents('.wpbc_row_wrap').toggleClass('max_height_a');jQuery(this).parents('.wpbc_row_wrap').find('.wpbc_btn_expand_down_a .menu_icon').toggle();"
 			   class="booking_details_simple__expand"
 			><div class="booking_details_simple">{{{booking_details_simple}}}</div></a>
-			<a title="<?php echo esc_js( __( 'Collapse', 'booking' ) ); ?>"
+			<span <?php /* ?>
+			   title="<?php echo esc_js( __( 'Collapse', 'booking' ) ); ?>"
 			   href="javascript:void(0)"
 			   onclick="javascript:jQuery(this).parents('.wpbc_row_wrap').toggleClass('max_height_a');jQuery(this).parents('.wpbc_row_wrap').find('.wpbc_btn_expand_down_a .menu_icon').toggle();"
+ 				<?php  // FixIn: 10.11.3.2  */ ?>
 			   class="booking_details_simple__expand"
-			><div class="booking_details_full">{{{booking_details}}}</div></a>
+			><div class="booking_details_full">{{{booking_details}}}</div></span>
 		</div>
 	</div>
 	<?php

@@ -2,7 +2,7 @@
 /* Child calendar theme    of    "/css/skins/24_9__light.css"                          C O L O R    S K I N           */
 /* ------------------------------------------------------------------------------------------------------------------ */
 @import url("24_9__light.css");
-/* Color Scheme: - Green 6 */
+/* Color Scheme: - 25_5 Square 1 */
 :root {
 	--wpbc_cal-day-cell-border-radius: 0;
 	--wpbc_cal-day-cell-border-width: 0;
@@ -38,7 +38,9 @@
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date2approve,
 .datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date_approved,
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date_approved {
-	--wpbc_cal-day-bg-color-opacity: 30%;
+	--wpbc_cal-day-bg-color-opacity: 75%;
+	--wpbc_cal-approved-day-color: #B73D3D;
+	--wpbc_cal-pending-day-color: #FFF5C3;
 }
 /* Pending */
 div.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date2approve .wpbc-cell-box .wpbc-co-in svg polygon, /* Check In  */

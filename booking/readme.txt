@@ -1,11 +1,11 @@
-﻿=== WP Booking Calendar ===
+﻿=== Booking Calendar ===
 Contributors: wpdevelop, oplugins
 Donate link: https://wpbookingcalendar.com/buy/
 Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.11.2
+Stable tag: 10.11.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,6 +240,7 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
+- Danish 100.00% [ 2550 / 2550 ]
 - Norwegian (Bokmål) 82.71% [ 2109 / 2550 ], fuzzy 64, not translated 377
 - German 82.59% [ 2106 / 2550 ], fuzzy 390, not translated 54
 - French (France) 79.1% [ 2017 / 2550 ], fuzzy 425, not translated 108
@@ -250,7 +251,6 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 - Portuguese (Brazil) 66.24% [ 1689 / 2550 ], fuzzy 607, not translated 254
 - Greek 65.84% [ 1679 / 2550 ], fuzzy 618, not translated 253
 - Turkish 64.98% [ 1657 / 2550 ], fuzzy 635, not translated 258
-- Danish 64.12% [ 1635 / 2550 ], fuzzy 660, not translated 255
 - Italian 63.29% [ 1614 / 2550 ], fuzzy 547, not translated 389
 - Spanish (Mexico) 60.82% [ 1551 / 2550 ], fuzzy 689, not translated 310
 - Finnish 60.47% [ 1542 / 2550 ], fuzzy 695, not translated 313
@@ -286,18 +286,32 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 
 
 == Screenshots ==
-1. **Time-Slot Appointment Bookings**: This screenshot displays the front-end booking form, configured in a 2-column layout with light theme. It allows users to select **single day** in the calendar and **time slots** in the booking form.
-2. **Full-Day Bookings**: In this screenshot, you can see the front-end booking form, configured in a centered layout with a dark theme. It enables users to select and **book multiple days in the calendar**.
-3. **Booking Listing**: You can easily manage all your bookings in one place by searching bookings by keyword, dates, status, and other parameters.
-4. **Booking Listing** panel provides a smooth user experience by working instantly without page refresh.
-5. **Timeline View**: Get a clear overview of all your bookings.
-6. **Add New Bookings.** Quickly create new bookings directly from your admin panel.
-7. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
-8. **Settings**. Configure the plugin to your specific requirements by adjusting different parameters.
-9. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
-10. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
+1. **Time-Slot Appointment Bookings**.
+2. **Time-Slot Appointment Bookings**: This screenshot displays the front-end booking form, configured in a 2-column layout with light theme. It allows users to select **single day** in the calendar and **time slots** in the booking form.
+3. **Full-Day Bookings**.
+4. **Full-Day Bookings**: In this screenshot, you can see the front-end booking form, configured in a centered layout with a dark theme. It enables users to select and **book multiple days in the calendar**.
+5. **Booking Listing**: You can easily manage all your bookings in one place by searching bookings by keyword, dates, status, and other parameters.
+6. **Booking Listing** panel provides a smooth user experience by working instantly without page refresh.
+7. **Timeline View**: Get a clear overview of all your bookings.
+8. **Add New Bookings.** Quickly create new bookings directly from your admin panel.
+9. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
+10. **Settings**. Configure the plugin to your specific requirements by adjusting different parameters.
+11. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
+12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.11.3 =
+- Changes in **all** versions:
+	* **New**: Added options "Allow booking in the past" at the WP Booking Calendar > Add Booking page for ability to  submit the bookings in the past.
+	* **Improvement**: Remove link from expanded booking details in Booking Listing page for ability to "copy" the booking details. Previosly it was as a link to colapse the view of expanded booking details. (10.11.3.2)
+	* **Improvement**: Remove underline of dates in calendar in different themes conflicts. (10.11.3.1)
+	* **Improvement**: Fix showing change-over days colors in new calendar skins: 25_5_***
+	* **Improvement**: Updated Booking Calendar icon for "blocks" and Tiny  toolbar at  posts and pages. (10.11.3.3)
+	* **Translation**: Local Danish translation updated by Finn Sommer.
+	* **Fix**: Overflow width size on the WP Booking Calendar > Settings > Booking Form page (10.11.3.4)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Resolved showing Availability > Season Availability page. It showed blank page in updatess 10.11 - 10.11.2. (10.11.3.5)
+
 = 10.11.2 =
 - Changes in **all** versions:
 	* **New**: Added 4 new calendar skins.

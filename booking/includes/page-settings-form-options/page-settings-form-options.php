@@ -304,6 +304,7 @@ class WPBC_Page_Settings_Form_Options extends WPBC_Page_Structure {
 				'link'            => wpbc_get_settings_url() . '&tab=form&field_type=timeslots',
 				// 'onclick'         => "wpbc_admin_ui__do__open_url__expand_section( '" . $this_settings_url . "', '" . $section_id . "' );",//.
 				'default'         => false,
+				'style'           => 'order:109',
 			)
 		);
 

@@ -46,6 +46,13 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
     }
 
     public function in_page() {
+
+		if ( class_exists( 'wpdev_bk_personal' ) ) {
+			$is_use_simgple_form = get_bk_option( 'booking_is_use_simple_booking_form' );											// FixIn: 8.1.1.12.
+			if ( 'On' !== $is_use_simgple_form ) {
+				return 'test' . (string) wp_rand( 100000, 1000000 );
+			}
+		}
         return 'wpbc-settings';
     }
 

@@ -28,9 +28,6 @@ require_once WPBC_PLUGIN_DIR . '/core/wpbc-core.php';                        // 
 require_once WPBC_PLUGIN_DIR . '/core/any/class-css-js.php';                 // Abstract. Loading CSS & JS files                 = Package: Any =.
 require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-settings-api.php';     // Abstract. Settings API.
 
-// TODO: OLD file: Check  func there  and delete it:
-// require_once WPBC_PLUGIN_DIR . '/core/any/old-admin-page-structure.php';                                             // Abstract. Page Structure in Admin Panel.
-
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-settings-page-parts.php';                                   // Settings Template - "Settins Parts", which used in the class-page-structure.php .
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-menu-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2025-02-09.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-page-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2024-12-23.
@@ -272,3 +269,4 @@ require_once WPBC_PLUGIN_DIR . '/core/wpbc-activation.php';
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-dev-api.php';                     // API for Booking Calendar integrations.
 
 make_bk_action( 'wpbc_loaded_php_files' );
+do_action( 'wpbc_loaded_php_files' );

@@ -20,9 +20,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *  Define Slug
  *  Define where to show
  */
-class WPBC_Page_Settings__bresources extends WPBC_Page_Structure {
+class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
 
     public function in_page() {
+		if ( class_exists( 'wpdev_bk_personal' ) ) {
+			return (string) wp_rand( 100000, 1000000 );
+		}
         return 'wpbc-resources';
     }
 
@@ -39,7 +42,7 @@ class WPBC_Page_Settings__bresources extends WPBC_Page_Structure {
                             //, 'css_classes'=> ''                                // CSS class(es)
                             //, 'icon'      => ''                                 // Icon - link to the real PNG img
                             , 'font_icon' => 'wpbc-bi-list 0wpbc_icn_checklist'           // CSS definition  of font Icon
-                            , 'default'   => true                           // Is this tab activated by default or not: true || false.
+                            , 'default'   => ( ! class_exists( 'wpdev_bk_personal' ) )                           // Is this tab activated by default or not: true || false.
                             //, 'disabled'  => false                        // Is this tab disabled: true || false.
                             , 'hided'     => true                           // Is this tab hided: true || false.
                             , 'subtabs'   => array()
@@ -435,4 +438,4 @@ class WPBC_Page_Settings__bresources extends WPBC_Page_Structure {
 
 }
 
-add_action('wpbc_menu_created', array( new WPBC_Page_Settings__bresources() , '__construct') );    // Executed after creation of Menu
+add_action('wpbc_menu_created', array( new WPBC_Page_Settings__bresource() , '__construct') );    // Executed after creation of Menu

@@ -2670,9 +2670,12 @@ div.wpbc_ajx_toolbar {
 .wpbc_col_data a.booking_details_simple__expand:hover {
   color: var(--wpbc_ui__gen__text-color);
   text-decoration: none;
-  cursor: pointer;
   outline: 0;
   box-shadow: none
+}
+.wpbc_col_data a.booking_details_simple__expand,
+.wpbc_col_data a.booking_details_simple__expand:hover {
+  cursor: pointer
 }
 .wpbc_a_col__check {
   -ms-flex: 0 0 40px;

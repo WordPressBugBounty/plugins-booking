@@ -156,10 +156,13 @@ function wpbc_add_new_booking_toolbar() {
 
             ?><div class="control-group wpbc-no-padding" style="float:right;margin-right: 0;margin-left: 15px;"><?php
 
-                if ( function_exists( 'wpbc_toolbar_btn__auto_fill' ) )
-                    wpbc_toolbar_btn__auto_fill();
+				wpbc_toolbar_btn__add_past_booking();
 
-                wpbc_toolbar_btn__add_new_booking();
+				if ( function_exists( 'wpbc_toolbar_btn__auto_fill' ) ) {
+					wpbc_toolbar_btn__auto_fill();
+				}
+
+				wpbc_toolbar_btn__add_new_booking();
 
             ?></div><?php
             ////////////////////////////////////////////////////////////////////
@@ -878,6 +881,51 @@ function wpbc_toolbar_btn__calendar_options_reset() {
 								"
              ><?php esc_html_e('Reset' , 'booking' ); ?></a><?php
     ?></div><?php
+}
+
+/**
+ * Button for ability to  add bookings in the past.
+ *
+ * @return void
+ */
+function wpbc_toolbar_btn__add_past_booking() {
+
+	if ( isset( $_GET['allow_past'] ) ) {                                                                               // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		return;
+	}
+
+	$link = wpbc_get_new_booking_url();
+
+	$link .= ( ! empty( $_REQUEST['booking_type'] ) ) ? '&booking_type=' . intval( $_REQUEST['booking_type'] ) : '';                               // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	$link .= ( ! empty( $_REQUEST['booking_form'] ) ) ? '&booking_form=' . sanitize_text_field( wp_unslash( $_REQUEST['booking_form'] ) ) : '';    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	$link .= ( ! empty( $_REQUEST['booking_hash'] ) ) ? '&booking_form=' . sanitize_text_field( wp_unslash( $_REQUEST['booking_hash'] ) ) : '';    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	$link .= ( ! empty( $_REQUEST['is_show_payment_form'] ) ) ? '&is_show_payment_form=Off' : '';                                                  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	$link .= ( ! empty( $_REQUEST['parent_res'] ) ) ? '&parent_res=' . intval( $_REQUEST['parent_res'] ) : '';                                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+
+	$el_id    = 'is_allow_bookings_in_past';
+	$el_value = 'Off';
+
+	$params_checkbox = array(
+							  'id'       => $el_id 		// HTML ID  of element
+							, 'name'     => $el_id
+							, 'label'    => array( 'title' => __( 'Allow booking in the past', 'booking' ) , 'position' => 'right' )           // FixIn: 9.6.1.5.
+							, 'style'    => '' 					// CSS of select element
+							, 'class'    => '' 					// CSS Class of select element
+							, 'disabled' => false
+							, 'attr'     => array() 							// Any  additional attributes, if this radio | checkbox element
+							, 'legend'   => ''									// aria-label parameter
+							, 'value'    => $el_value 							// Some Value from optins array that selected by default
+							, 'selected' => ( ( 'On' == $el_value ) ? true : false )		// Selected or not
+							//, 'onfocus' =>  "console.log( 'ON FOCUS:',  jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"					// JavaScript code
+							, 'onchange' => "window.location.href='". $link . "&allow_past=1';"					// JavaScript code
+							, 'hint' 	=> array( 'title' => __('Allow booking in the past' ,'booking') , 'position' => 'top' )
+						);
+
+	?><div class="btn-group" style="display: inline-flex;min-height: 31px;flex-flow: row nowrap;align-items: center;"><?php
+
+	wpbc_flex_toggle( $params_checkbox );
+
+	?></div><?php
 }
 
 
