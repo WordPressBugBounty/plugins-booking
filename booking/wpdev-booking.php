@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.11.3
+Version: 10.11.4
 License: GPLv2 or later
 */
 
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '10.11.3' );
+	define( 'WP_BK_VERSION_NUM', '10.11.4' );
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
 	define( 'WP_BK_MINOR_UPDATE', true );
@@ -90,7 +90,7 @@ if ( true ) {
 	}                                                                                                                   // Set 0 for no filling or 2 for 241 bookings or more for more.
 } else {
 	// :: DEBUG
-	define( 'WP_BK_BETA_DATA_FILL', 2 );
+	define( 'WP_BK_BETA_DATA_FILL', 1 );
 	define( 'WP_BK_BETA_DATA_FILL_AS', 'BL' );                                                                          // BL - Dates   ,   MU - Times.
 }
 

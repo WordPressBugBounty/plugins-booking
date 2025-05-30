@@ -45,8 +45,8 @@
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date2approve,
 .datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date_approved,
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date_approved {
-	--wpbc_cal-approved-day-color: #FFF;
-	--wpbc_cal-pending-day-color: #FFF;
+	/*--wpbc_cal-approved-day-color: #FFF;*/
+	/*--wpbc_cal-pending-day-color: #FFF;*/
 }
 /* Pending */
 div.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date2approve .wpbc-cell-box .wpbc-co-in svg polygon, /* Check In  */

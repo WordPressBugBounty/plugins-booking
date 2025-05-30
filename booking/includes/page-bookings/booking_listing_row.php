@@ -27,8 +27,9 @@ function wpbc_template__booking_listing_header() {
 					<div class="content_text"><input type="checkbox" /></div>
 				</div>
 				<div class="wpbc__list__col">
-					<div class="wpbc_ui_el__divider"><div class="wpbc_ui_el__vertical_space"></div></div>
 					<div class="content_text"><?php WPBC_Listing_Actions__Bulk_Actions::get_button(); ?></div>
+					<div class="wpbc_ui_el__divider"><div class="wpbc_ui_el__vertical_space"></div></div>
+					<div class="content_text"><?php WPBC_Listing_Filters__Expand_Colapse_All::get_button(); ?></div>
 				</div>
 				<div class="wpbc__list__col col__right">
 					<div class="content_text"><?php WPBC_Listing_Filters__Sort_By::get_button(); ?></div>
@@ -502,13 +503,15 @@ function wpbc_template__booking_listing__action_pending() {
 	$html_for_drop_down_option  = "<# if ( '1' == data['approved']) { #>";
 	$html_for_drop_down_option .= "<a 	class=\"ul_dropdown_menu_li_action ul_dropdown_menu_li_action_" . $booking_action . "\"
 										href=\"javascript:void(0)\" 
-							           	onclick=\"if ( wpbc_are_you_sure('" . esc_js( __( 'Do you really want to set booking as pending ?', 'booking' ) ) . "') ) {
-										wpbc_ajx_booking_ajax_action_request( { 
-																			'booking_action' : '{$booking_action}', 
-																			'booking_id'     : {{data['parsed_fields']['booking_id']}}  
-																		} ); 
-										wpbc_button_enable_loading_icon( this );										
-								  }\">" .
+							           	onclick=\"if ( ! wpbc_is_modal_accessible( '#wpbc_modal__set_booking_pending__section' ) ) {
+													return false;
+												}
+												jQuery( '.wpbc_modal__title__reason__booking_id' ).html( 'ID: ' + {{data.parsed_fields.booking_id}} );
+												jQuery( '#wpbc_modal__set_booking_pending__booking_id').val('{{data.parsed_fields.booking_id}}');
+												jQuery( '#wpbc_modal__set_booking_pending__section' ).wpbc_my_modal( 'show' );
+												jQuery( '#wpbc_modal__set_booking_pending__value' ).trigger( 'focus' );
+								  			\"
+									>" .
 										esc_js( __( 'Set as Pending', 'booking' ) ) .
 										"<i class='menu_icon icon-1x wpbc_icn_hourglass_empty'></i>" .
 									'</a>';
@@ -586,14 +589,15 @@ function wpbc_template__booking_listing__action_trash() {
 
 	$html_for_drop_down_option  = "<# if ( '0' == data['parsed_fields']['trash'] ) { #>";
 	$html_for_drop_down_option .= "<a  	class=\"ul_dropdown_menu_li_action ul_dropdown_menu_li_action_" . $booking_action . "\"
-										href=\"javascript:void(0)\"  
-							           	onclick=\"if ( wpbc_are_you_sure('" . esc_attr( __( 'Do you really want to do this ?', 'booking' ) ) . "') ) {
-							           			wpbc_ajx_booking_ajax_action_request( { 
-							           				'booking_action' : '{$booking_action}', 
-							           				'booking_id'     : {{data['parsed_fields']['booking_id']}} 
-												} ); 
-							 					wpbc_button_enable_loading_icon( this );
-							 					}\"
+										href=\"javascript:void(0)\"
+							           	onclick=\"if ( ! wpbc_is_modal_accessible( '#wpbc_modal__move_booking_to_trash__section' ) ) {
+													return false;
+												}
+												jQuery( '#wpbc_modal__move_booking_to_trash__booking_id').val('{{data.parsed_fields.booking_id}}');
+												jQuery( '.wpbc_modal__title__reason__booking_id' ).html( 'ID: ' + {{data['parsed_fields']['booking_id']}} );
+												jQuery( '#wpbc_modal__move_booking_to_trash__section' ).wpbc_my_modal( 'show' );
+												jQuery( '#wpbc_modal__move_booking_to_trash__value' ).trigger( 'focus' );							
+							 					\"
 									>" .
 										esc_js( __( 'Reject - move to trash', 'booking' ) ) .
 										"<i class='menu_icon icon-1x wpbc_icn_delete_outline'></i>" .
@@ -619,13 +623,14 @@ function wpbc_template__booking_listing__action_trash_restore() {
 	$html_for_drop_down_option  = "<# if ( '1' == data['parsed_fields']['trash'] ) { #>";
 	$html_for_drop_down_option .= "<a  	class=\"ul_dropdown_menu_li_action ul_dropdown_menu_li_action_" . $booking_action . "\"
 										href=\"javascript:void(0)\"  
-							           	onclick=\"if ( wpbc_are_you_sure('" . esc_attr( __( 'Do you really want to do this ?', 'booking' ) ) . "') ) {
-							           			wpbc_ajx_booking_ajax_action_request( { 
-							           				'booking_action' : '{$booking_action}', 
-							           				'booking_id'     : {{data['parsed_fields']['booking_id']}} 
-												} ); 
-							 					wpbc_button_enable_loading_icon( this );
-							 					}\"
+							           	onclick=\"if ( ! wpbc_is_modal_accessible( '#wpbc_modal__restore_booking_from_trash__section' ) ) {
+													return false;
+												}
+												jQuery( '#wpbc_modal__restore_booking_from_trash__booking_id').val('{{data.parsed_fields.booking_id}}');												          
+												jQuery( '.wpbc_modal__title__reason__booking_id' ).html( 'ID: ' + {{data.parsed_fields.booking_id}} );
+												jQuery( '#wpbc_modal__restore_booking_from_trash__section' ).wpbc_my_modal( 'show' );
+												jQuery( '#wpbc_modal__restore_booking_from_trash__value' ).trigger( 'focus' );
+											\"
 									>" .
 										esc_js( __( 'Restore', 'booking' ) ) .
 										"<i class='menu_icon icon-1x wpbc_icn_rotate_left'></i>" .
@@ -651,13 +656,14 @@ function wpbc_template__booking_listing__action_delete() {
 	$html_for_drop_down_option  = "<# if ( '1' == data['parsed_fields']['trash'] ) { #>";
 	$html_for_drop_down_option .= "<a  	class=\"ul_dropdown_menu_li_action ul_dropdown_menu_li_action_" . $booking_action . "\"
 										href=\"javascript:void(0)\"  
-							           	onclick=\"if ( wpbc_are_you_sure('" . esc_attr( __( 'Do you really want to do this ?', 'booking' ) ) . "') ) {
-							           			wpbc_ajx_booking_ajax_action_request( { 
-							           				'booking_action' : '{$booking_action}', 
-							           				'booking_id'     : {{data['parsed_fields']['booking_id']}} 
-												} ); 
-							 					wpbc_button_enable_loading_icon( this );
-							 					}\"
+							           	onclick=\"if ( ! wpbc_is_modal_accessible( '#wpbc_modal__delete_booking_completely__section' ) ) {
+													return false;
+												}
+												jQuery( '#wpbc_modal__delete_booking_completely__booking_id').val('{{data.parsed_fields.booking_id}}');
+												jQuery( '.wpbc_modal__title__reason__booking_id' ).html( 'ID: ' + {{data['parsed_fields']['booking_id']}} );
+												jQuery( '#wpbc_modal__delete_booking_completely__section' ).wpbc_my_modal( 'show' );
+												jQuery( '#wpbc_modal__delete_booking_completely__value' ).trigger( 'focus' );
+							 					\"
 									>" .
 										esc_js( __( 'Completely Delete', 'booking' ) ) .
 										"<i class='menu_icon icon-1x wpbc_icn_close'></i>" .

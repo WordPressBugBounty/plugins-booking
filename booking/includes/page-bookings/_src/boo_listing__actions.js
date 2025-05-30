@@ -262,3 +262,27 @@ function wpbc_boo_listing__init_hook__sort_by() {
 		jQuery( '.ul_dropdown_menu__' + el_id + ' .ul_dropdown_menu_toggle .selected_value' ).html( '---' );
 	}
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// == Listing Header Table ==
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * == "Expand All Rows" Button ==
+ */
+function wpbc_boo_listing__click__expand_all_rows() {
+	jQuery( '.wpbc_row_wrap' ).removeClass( 'max_height_a' );
+	jQuery( '.wpbc_row_wrap .wpbc_icn_expand_less' ).show();
+	jQuery( '.wpbc_row_wrap .wpbc_icn_expand_more' ).hide();
+	jQuery( '.wpbc_btn_expand_colapse_all' ).toggle();
+}
+
+
+/**
+ * == "Colpase All Rows" Button ==
+ */
+function wpbc_boo_listing__click__colapse_all_rows() {
+	jQuery( '.wpbc_row_wrap' ).addClass( 'max_height_a' );
+	jQuery( '.wpbc_row_wrap .wpbc_icn_expand_less' ).hide();
+	jQuery( '.wpbc_row_wrap .wpbc_icn_expand_more' ).show();
+	jQuery( '.wpbc_btn_expand_colapse_all' ).toggle();
+}

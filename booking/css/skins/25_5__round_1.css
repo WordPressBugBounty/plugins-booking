@@ -38,11 +38,10 @@
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date2approve,
 .datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date_approved,
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date_approved {
-	--wpbc_cal-approved-day-color: #662424;
+	/*--wpbc_cal-approved-day-color: #936565;*/
 	--wpbc_cal-approved-text-color: #662424;
-	--wpbc_cal-pending-day-color: #74664b;
+	/*--wpbc_cal-pending-day-color: #9d9380;*/
 	--wpbc_cal-pending-text-color: #74664b;
-
 }
 /* Pending */
 div.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date2approve .wpbc-cell-box .wpbc-co-in svg polygon, /* Check In  */

@@ -232,13 +232,13 @@ abstract class WPBC_Menu_Structure {
 
 			foreach ( $this->tabs() as $this_tab_tag => $this_tab ) {
 
-				// FixIn: 10.11.3.5
-				$skip_type_arr = array( 'separator', 'button', 'goto-link', 'html' );
+				// FixIn: 10.11.3.5.1.
+				$not_skip_type_arr = array( 'tab', 'subtab' );
 
-				if ( ( ! empty( $this_tab['type'] ) ) && ( in_array( $this_tab['type'], $skip_type_arr, true ) ) ) {
-					// Probably  it is separator,  and we have not content here !
-				} else {
-					break;     // Get First Tab Element,  which  MUST be subtab element, all other tabs, can  be links,  not really  showing content!!!
+				if ( ( empty( $this_tab['type'] ) ) || ( in_array( $this_tab['type'], $not_skip_type_arr, true ) ) ) {
+					// Probably  it is not the separator,  and we have no content here !
+					// Get First Tab Element,  which  MUST be subtab element, all other tabs, can  be links,  not really  showing content!!!
+					break;
 				}
 			}
 

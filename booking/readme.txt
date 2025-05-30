@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.11.3
+Stable tag: 10.11.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -300,6 +300,18 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.11.4 =
+- Changes in **all** versions:
+	* **New**: Added button in Booking Listing  header to Expand / Collapse all booking rows. (10.11.4.6)
+	* **Improvement**: Auto open "check out" calendar, if selected date in check in calendar in "Dates Filter" option in Booking Listing page.(10.11.4.2)
+	* **Improvement**: Improvement of consistent menu  items in Bulk Actions menu and in the booking "Action menu". Pending / Trash / Restore / Delete options has the same color and same opening popup dialog. (10.11.4.1)
+	* **Improvement**: Refactoring code of access menu pages. 10.11.3.5.1.
+	* **Improvement**: Update default calendar  skins for initial  setup. (10.11.4.2.)
+	* **Improvement**: Update default form  type for initial  setup. (10.11.4.3.)
+	* **Fix**: Fatal error: Can't inherit abstract function WPBC_Menu_Structure::in_page() (previously declared abstract in WPBC_Page_Structure) in ../wp-content/plugins/booking/includes/ui_settings/class-page-structure.php on line 0 (10.11.4.4.)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: Update number of usage discount coupons, only if it's not editing of the bookings. (10.11.3.6)
+
 = 10.11.3 =
 - Changes in **all** versions:
 	* **New**: Added options "Allow booking in the past" at the WP Booking Calendar > Add Booking page for ability to  submit the bookings in the past.

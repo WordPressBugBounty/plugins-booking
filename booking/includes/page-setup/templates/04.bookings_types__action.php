@@ -101,8 +101,15 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 				    // Structure
 				    $booking_form_structure = 'form_right';                                                             // vertical  form_right  form_center
+				    // $booking_form_structure = 'wizard_services_a'; // FixIn: 10.11.4.3.
 				    update_bk_option( 'booking_form_structure_type' , $booking_form_structure );
-				    update_bk_option( 'booking_form_layout_max_cols' , 1 );
+				    // update_bk_option( 'booking_form_layout_max_cols' , 1 );
+
+					// FixIn: 10.11.4.3.
+				    update_bk_option( 'booking_form_layout_width', '440' );
+				    update_bk_option( 'booking_form_layout_width_px_pr', 'px' );
+				    update_bk_option( 'booking_form_layout_max_cols', 1 );
+
 
 					// Default Form
 				    $visual_form_structure = wpbc_simple_form__visual__get_default_form__without_times();
@@ -128,7 +135,8 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				update_bk_option( 'booking_recurrent_time' , 'On');                             // Use selected times for each booking date
 
 		        update_bk_option( 'booking_legend_is_show_item_partially', 'Off');              // Legend Item
-				update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );
+				// update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );
+				update_bk_option( 'booking_skin', '/css/skins/25_5__square_7.css' ); // FixIn: 10.11.4.2.
 				update_bk_option( 'booking_form_theme', '' );
 		        break;
 
@@ -152,6 +160,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 				    // Structure.
 					$booking_form_structure = ( 'rangetime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ) ? 'wizard_2columns' : 'wizard_services_a';  // vertical  form_right  form_center.
+					$booking_form_structure = 'wizard_services_a'; // FixIn: 10.11.4.3.
 
 				    update_bk_option( 'booking_form_structure_type', $booking_form_structure );
 				    update_bk_option( 'booking_form_layout_width', '100' );
@@ -159,7 +168,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				    update_bk_option( 'booking_form_layout_max_cols', 2 );
 
 					// Default Form
-					if ( 'wizard_services_a' === $booking_form_structure ) {
+					if ( 'rangetime' !== $cleaned_data['wpbc_swp_booking_appointments_type'] ) {
 						$visual_form_structure = wpbc_simple_form__visual__get_default_form__service_duration_a();
 					} else {
 						$visual_form_structure = wpbc_simple_form__visual__get_default_form__times_30min();
@@ -177,7 +186,8 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				update_bk_option( 'booking_legend_text_for_item_partially', __( 'Partially booked', 'booking' ) );
 				update_bk_option( 'booking_legend_is_show_item_partially', 'On');              // Legend Item
 			    //
-				update_bk_option( 'booking_skin', '/css/skins/24_9__light.css' );
+				// update_bk_option( 'booking_skin', '/css/skins/24_9__light.css' );
+				update_bk_option( 'booking_skin', '/css/skins/25_5__round_1.css' ); // FixIn: 10.11.4.2.
 				update_bk_option( 'booking_form_theme', '' );
 				// booking_timeslot_picker_skin
 

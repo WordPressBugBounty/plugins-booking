@@ -47,6 +47,7 @@ if ( WPBC_NEW_LISTING ) {
 	// Booking Listing - Filters - ...
 	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/bo_listing_toolbar.php';
 	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/sort_by.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/expand_colapse_all.php';
 	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/resource_choosen.php';
 	// Booking Listing - Actions - Bulk Actions.
 	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/bulk_actions_dropdown.php';

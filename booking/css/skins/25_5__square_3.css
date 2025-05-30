@@ -33,3 +33,20 @@
   --wpbc_cal-timespartly-text-color: #909e50;
   --wpbc_cal-day-cells-padding: 2px;
 }
+/* Exception  for change/over days */
+.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date2approve,
+.datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date2approve,
+.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date_approved,
+.datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date_approved {
+	--wpbc_cal-approved-day-color: #ccc;
+	--wpbc_cal-pending-day-color: #ccc;
+}
+/* Pending */
+div.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date2approve .wpbc-cell-box .wpbc-co-in svg polygon, /* Check In  */
+div.datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date2approve .wpbc-cell-box .wpbc-co-out svg polygon, /* Check Out */
+	/* Approved */
+div.datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date_approved .wpbc-cell-box .wpbc-co-in svg polygon, /* Check In  */
+div.datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date_approved .wpbc-cell-box .wpbc-co-out svg polygon /* Check Out */
+{
+	fill-opacity: 20%;
+}

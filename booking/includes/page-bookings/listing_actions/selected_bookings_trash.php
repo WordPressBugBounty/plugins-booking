@@ -46,7 +46,8 @@ class WPBC_Listing_Actions__To_Trash{
 							\" 
 					title=\"" . esc_attr( __( 'Move selected bookings to trash', 'booking' ) ) . "\"
 				 >" .
-					esc_js( __( 'Move to trash', 'booking' ) ) .
+					// esc_js( __( 'Move to trash', 'booking' ) ) .
+					esc_js( __(  'Reject - move to trash', 'booking'  ) ) .
 					' <i class="menu_icon icon-1x wpbc_icn_delete_outline"></i>' .
 				'</a>';
 
@@ -100,7 +101,9 @@ class WPBC_Listing_Actions__To_Trash{
 								href="javascript:void(0);"
 								onclick="javascript: wpbc_ajx_booking_ajax_action_request( {
 														'booking_action'       : '<?php echo esc_js( self::ACTION ); ?>',
-														'booking_id'           : wpbc_get_selected_row_id(),
+														'booking_id'           : ( '' !== jQuery( '#wpbc_modal__move_booking_to_trash__booking_id').val() )
+																					? jQuery( '#wpbc_modal__move_booking_to_trash__booking_id').val()
+																					: wpbc_get_selected_row_id(),
 														'reason_of_action'     : jQuery( '#wpbc_modal__move_booking_to_trash__value' ).val(),
 														'ui_clicked_element_id': 'wpbc_modal__move_booking_to_trash__button_send'
 												} );
@@ -122,6 +125,14 @@ class WPBC_Listing_Actions__To_Trash{
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
+			<script type="text/javascript">
+				// Remove booking ID from  hidden input
+				jQuery( '#wpbc_modal__move_booking_to_trash__section' ).on( 'hide.wpbc.modal', function (event) {
+					// var modal = jQuery( this );
+					// modal.find( '.modal-body input[type="hidden"]' ).val( '' );
+					jQuery( '#wpbc_modal__move_booking_to_trash__booking_id').val( '' );
+				} );
+			</script>
 		</span>
 		<?php
 	}

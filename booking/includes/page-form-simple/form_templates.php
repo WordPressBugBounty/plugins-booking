@@ -511,6 +511,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content = '';
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
         $form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
+        $form_content .='<div class="wpbc_wizard__border_container"> \n';
         $form_content .='<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n';
         $form_content .='		<r> \n';
         $form_content .='			<c> <l>' . esc_attr__( 'Select Date', 'booking' )  . ':</l><br /> [calendar] </c> \n';
@@ -571,6 +572,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='		</div> \n';
         $form_content .='	</r> \n';
         $form_content .='</div> \n';
+        $form_content .='</div> \n'; // class=wpbc_wizard__border_container.
 
 	}
 

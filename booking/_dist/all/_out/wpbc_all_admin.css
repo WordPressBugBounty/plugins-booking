@@ -3177,12 +3177,11 @@ div.wpbc_ajx_toolbar {
   border-left: 2px solid var(--wpbc_ui_listing__pending_color)
 }
 .ul_dropdown_menu_li_action_move_booking_to_trash.hide_button_if_no_selection,
-.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a.ul_dropdown_menu_li_action_move_booking_to_trash.hide_button_if_no_selection:not(:hover,:focus) {
-  border-left: 2px solid var(--wpbc_ui_listing__trash_color);
-  color: var(--wpbc_ui_dropdown__a-color)
+.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a.ul_dropdown_menu_li_action_move_booking_to_trash.hide_button_if_no_selection:not(:hover,:focus),
+.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a.ul_dropdown_menu_li_action_move_booking_to_trash:not(:hover,:focus) {
+  color: #d79249
 }
 .wpbc_ui_el__dropdown .ul_dropdown_menu > li > a.ul_dropdown_menu_li_action_delete_booking_completely:not(:hover,:focus),
-.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a.ul_dropdown_menu_li_action_move_booking_to_trash:not(:hover,:focus),
 .wpbc_ui_el__dropdown .ul_dropdown_menu > li > a.ul_dropdown_menu_li_trash_color:not(:hover,:focus) {
   color: var(--wpbc_ui_listing__trash_color)
 }

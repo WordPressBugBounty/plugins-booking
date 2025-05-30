@@ -128,7 +128,7 @@ function wpbc_create_examples_4_demo( $my_bk_types = array() ){
 	          }
 
 	          $evry_one         = $max_days + wp_rand( 1, 5 );                                                  // Multiplier of interval between 2 dates of different bookings
-	          $days_start_shift = wp_rand( $max_days, ( 3 * $max_days ) );//(ceil($max_num_bookings/2)) * $max_days;           // How long far ago we are start bookings
+	          $days_start_shift = wp_rand( $max_days, ( 90 * $max_days ) );//(ceil($max_num_bookings/2)) * $max_days;           // How long far ago we are start bookings
 
 	          // Fill Development server by initial bookings
 	          if ( ( ( defined( 'WP_BK_BETA_DATA_FILL' ) ) && ( WP_BK_BETA_DATA_FILL > 0 ) ) && ( isset( $_SERVER['HTTP_HOST'] ) ) && ( 'beta' === $_SERVER['HTTP_HOST'] ) ) {
@@ -823,18 +823,33 @@ function wpbc_booking_activate() {
 
 			if ( $is_insert_test_bookings ) {
 				// -- Test Booking #1 --
+				$is_appr    = 1;
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
                      'text^name1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', NOW() );";
 				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 				$temp_id        = $wpdb->insert_id;
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date ) VALUES
-                        ( " . $temp_id . ", CURDATE()+ INTERVAL 2 day ),
-                        ( " . $temp_id . ", CURDATE()+ INTERVAL 3 day ),
-                        ( " . $temp_id . ", CURDATE()+ INTERVAL 4 day );";
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 2 day ,". $is_appr."  ),
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 3 day ,". $is_appr."  ),
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 4 day ,". $is_appr."  );";
 				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 				// -- Test Booking #2 --
+				$is_appr    = 0;
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
+                     'text^name1^Emma~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^999-77-77~textarea^details1^This is a test booking showing booking for several days.', NOW() );";
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+				$temp_id        = $wpdb->insert_id;
+				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 28 day ,". $is_appr." ),
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 29 day ,". $is_appr." ),
+                        ( " . $temp_id . ", CURDATE()+ INTERVAL 30 day ,". $is_appr." );";
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+
+				// -- Test Booking #3 --
 				$is_appr    = 1;
 				$start_time = '10:00';
 				$end_time   = '10:30';
@@ -845,9 +860,11 @@ function wpbc_booking_activate() {
 				$temp_id = $wpdb->insert_id;
 
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved ) VALUES
-									( ". $temp_id .", CURDATE()+ INTERVAL \"5 " . $start_time. ":01\" DAY_SECOND ,". $is_appr." ),
-									( ". $temp_id .", CURDATE()+ INTERVAL \"5 " . $end_time  . ":02\" DAY_SECOND ,". $is_appr." );";
+									( ". $temp_id .", CURDATE()+ INTERVAL \"8 " . $start_time. ":01\" DAY_SECOND ,". $is_appr." ),
+									( ". $temp_id .", CURDATE()+ INTERVAL \"8 " . $end_time  . ":02\" DAY_SECOND ,". $is_appr." );";
 				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+
 			}
 		}
 
@@ -989,7 +1006,9 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
 
     $default_options['booking_admin_cal_count'] = ($is_demo) ? '3' : '2';       
  $mu_option4delete[]='booking_admin_cal_count';                                 // $multiuser_general_option[] = implode( '', array_keys( array_slice( $default_options, -1 ) ) );
-    $default_options['booking_skin'] = '/css/skins/24_9__light_square_1.css';
+    // $default_options['booking_skin'] = '/css/skins/24_9__light_square_1.css'; //.
+    // $default_options['booking_skin'] = '/css/skins/24_9__green_5.css';         // FixIn: 10.11.4.2.
+    $default_options['booking_skin'] = '/css/skins/25_5__square_7.css';           // FixIn: 10.11.4.2.
  $mu_option4delete[]='booking_skin';
 	// FixIn: 9.6.3.5.
     $default_options['booking_listing_default_view_mode'] = 'vm_booking_listing';	// 'vm_calendar';		// FixIn: 9.6.3.5.
@@ -1286,12 +1305,19 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
 	// FixIn: 8.0.1.6.
 	//$default_options['booking_form_structure_type'] = 'vertical';
-	$default_options['booking_form_structure_type'] = 'form_right';        // FixIn: 10.3.0.6.
+	// $default_options['booking_form_structure_type'] = 'form_right';        // FixIn: 10.3.0.6.
+	$default_options['booking_form_structure_type'] = 'wizard_services_a'; // FixIn: 10.11.4.3.
 	$default_options['booking_menu_go_pro'] 		= 'show';	// show | hide
 
-	$default_options['booking_form_layout_width'] 		= '440';
-	$default_options['booking_form_layout_width_px_pr'] = 'px';
-	$default_options['booking_form_layout_max_cols'] = 1;
+//	$default_options['booking_form_layout_width']       = '440';
+//	$default_options['booking_form_layout_width_px_pr'] = 'px';
+//	$default_options['booking_form_layout_max_cols']    = 1;
+
+	// FixIn: 10.11.4.3.
+	$default_options['booking_form_layout_width']       = '100';
+	$default_options['booking_form_layout_width_px_pr'] = '%';
+	$default_options['booking_form_layout_max_cols']    = 2;
+
 
 	// -----------------------------------------------------------------------------------------------------------------
     // PS

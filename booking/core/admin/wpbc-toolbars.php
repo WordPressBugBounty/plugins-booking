@@ -1534,18 +1534,22 @@ function wpbc_js_for_bookings_page() {
 
 /** Datepicker activation JavaScript */
 function wpbc_datepicker_js() {
-
-    ?><script type="text/javascript">
-        //jQuery(document).ready( function(){
+	?>
+	<script type="text/javascript">
 		<?php
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo wpbc_jq_ready_start();
+		echo wpbc_jq_ready_start();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 			if ( 'function' === typeof( jQuery('input.wpdevbk-filters-section-calendar').datepick ) ) {
 				jQuery( 'input.wpdevbk-filters-section-calendar' ).datepick(
 					{
 						beforeShowDay   : function ( date ) {
 							return [true, 'date_available'];
+						},
+						onSelect        : function ( string_dates, js_dates_arr ){  /**
+																	 *	string_dates   =   '23.08.2023 - 26.08.2023'    |    '23.08.2023 - 23.08.2023'    |    '19.09.2023, 24.08.2023, 30.09.2023'
+																	 *  js_dates_arr   =   range: [ Date (Aug 23 2023), Date (Aug 25 2023)]     |     multiple: [ Date(Oct 24 2023), Date(Oct 20 2023), Date(Oct 16 2023) ]
+																	 */
+									return wpbc_filters_section_calendar_selected_day( string_dates, {}, this );
 						},
 						showOn          : 'focus',
 						multiSelect     : 0,
@@ -1561,21 +1565,30 @@ function wpbc_datepicker_js() {
 						showStatus      : false,
 						multiSeparator  : ', ',
 						closeAtTop      : null,																			//!false,
-						firstDay        :<?php echo intval(get_bk_option( 'booking_start_day_weeek' )); ?>,
+						firstDay        : <?php echo intval( get_bk_option( 'booking_start_day_weeek' ) ); ?>,
 						gotoCurrent     : false,
 						hideIfNoPrevNext: true,
 						useThemeRoller  : false,
 						mandatory       : true
 					}
 				);
+				function wpbc_filters_section_calendar_selected_day( string_dates, params_arr, _this ) {
+					// FixIn: 10.11.4.2.
+					if ( 'ui_wh_booking_date_checkin' === jQuery( _this ).attr( 'id' ) ) {
+						setTimeout( function () {
+							jQuery( '#ui_wh_booking_date_checkout' ).val( string_dates );
+							jQuery( '#ui_wh_booking_date_checkout' ).trigger( 'focus' );
+						}, 100 );
+					}
+				}
 			} else {
 				console.log( 'WPBC Error. JavaScript library "datepick" was not defined.' );
 			}
 		<?php
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo wpbc_jq_ready_end(); ?>
-        //});
-        </script><?php
+		echo wpbc_jq_ready_end();   // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?>
+	</script>
+	<?php
 }
 
 
