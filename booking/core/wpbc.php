@@ -367,14 +367,25 @@ public function define_admin_menu(){
     private function includes() {
         require_once WPBC_PLUGIN_DIR . '/core/wpbc-include.php' ; 
     }
-    
-        
-    private function define_version() {
-        
-        // GET VERSION NUMBER
-        $plugin_data = wpbc_file__read_header_info(  WPBC_FILE , array( 'Name' => 'Plugin Name', 'PluginURI' => 'Plugin URI', 'Version' => 'Version', 'Description' => 'Description', 'Author' => 'Author', 'AuthorURI' => 'Author URI', 'TextDomain' => 'Text Domain', 'DomainPath' => 'Domain Path' ) , 'plugin' );
-        if (!defined('WPDEV_BK_VERSION'))    define('WPDEV_BK_VERSION',   $plugin_data['Version'] );
-    }
+
+
+	private function define_version() {
+
+		// GET VERSION NUMBER
+		$plugin_data = wpbc_file__read_header_info( WPBC_FILE, array(
+			'Name'        => 'Plugin Name',
+			'PluginURI'   => 'Plugin URI',
+			'Version'     => 'Version',
+			'Description' => 'Description',
+			'Author'      => 'Author',
+			'AuthorURI'   => 'Author URI',
+			'TextDomain'  => 'Text Domain',
+			'DomainPath'  => 'Domain Path',
+		), 'plugin' );
+		if ( ! defined( 'WPDEV_BK_VERSION' ) ) {
+			define( 'WPDEV_BK_VERSION', $plugin_data['Version'] );
+		}
+	}
 
 
     // Cloning instances of the class is forbidden

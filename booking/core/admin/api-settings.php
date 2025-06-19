@@ -525,7 +525,23 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
         //  Limit available days from today  ///////////////////////////////////        
         $this->fields = apply_filters( 'wpbc_settings_calendar_unavailable_days', $this->fields, $default_options_values );
-        
+
+		$this->fields['booking_unavailable_days_num_from_today__warning'] = array(
+			'type'            => 'html',
+			'html'            => '<div class="wpbc-settings-notice notice-warning notice-helpful-info">' .
+								 '<strong>' . esc_html__('Note' ,'booking') . '!</strong> ' .
+								 __( 'These options do not apply in the admin panel. These options apply only on the front-end side.', 'booking' ) .
+								 '</div>',
+			'class'           => '',
+			'css'             => 'margin:0;padding:0;border:0;',
+			'description'     => '',
+			'cols'            => 1,
+			'group'           => 'availability',
+			'tr_class'        => '',
+			'description_tag' => 'div',
+		);
+
+
 
         //  Extend unavailable booking dates interval - cleaning  //////////////        
         $this->fields = apply_filters( 'wpbc_settings_calendar_extend_unavailable_interval', $this->fields, $default_options_values );

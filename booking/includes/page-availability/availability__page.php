@@ -21,40 +21,38 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
 
 
-   	public function __construct() {
+	public function __construct() {
 
-        parent::__construct();
+		parent::__construct();
 
 		add_action( 'wpbc_toolbar_top_tabs_insert', array( $this, 'wpbc_toolbar_toolbar_tabs' ) );
-    }
+	}
 
 
-    public function in_page() {
-        return 'wpbc-availability';
-    }
+	public function in_page() {
+		return 'wpbc-availability';
+	}
 
 
     public function tabs() {
-
-
-         $tabs = array();
-        $tabs[ 'availability' ] = array(
-                              'title'		=> __( 'Days Availability', 'booking' )										// Title of TAB				//FixIn: 9.8.15.2.2
-                            , 'hint'		=> __( 'Define available and unavailable days for your calendar(s).', 'booking' )						// Hint
-                            , 'page_title'	=> __( 'Days Availability', 'booking' )						// Title of Page
-                            , 'link'		=> ''								// Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
-                            , 'position'	=> ''                               // 'left'  ||  'right'  ||  ''
-                            , 'css_classes' => ''                               // CSS class(es)
-                            , 'icon'		=> ''                               // Icon - link to the real PNG img
-                            , 'font_icon'	=> 'wpbc-bi-calendar2-check'//'wpbc_icn_free_cancellation'		// CSS definition  of forn Icon
-						    , 'font_icon_right'                    => 'wpbc-bi-question-circle'
-                            , 'default'		=> true								// Is this tab activated by default or not: true || false.
-                            , 'disabled'	=> false                            // Is this tab disbaled: true || false.
-                            , 'hided'		=> false                            // Is this tab hided: true || false.
-                            , 'subtabs'		=> array()
-        );
-        // $subtabs = array();
-        // $tabs[ 'items' ][ 'subtabs' ] = $subtabs;
+		$tabs = array();
+		$tabs['availability'] = array(
+			'is_show_top_path'                   => false,  // true | false.  By default value is: false.
+			'left_navigation__default_view_mode' => 'compact',  // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'title'                              => __( 'Days Availability', 'booking' ),  // Title of TAB //FixIn: 9.8.15.2.2.
+			'hint'                               => __( 'Define available and unavailable days for your calendar(s).', 'booking' ),   // Hint.
+			'page_title'                         => __( 'Days Availability', 'booking' ),   // Title of Page.
+			'link'                               => '',   // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link.
+			'position'                           => '',   // 'left'  /  'right'  /  ''.
+			'css_classes'                        => '',   // CSS c l a s s(es).
+			'icon'                               => '',   // Icon - link to the real PNG img.
+			'font_icon'                          => 'wpbc-bi-calendar2-check',   // 'wpbc_icn_free_cancellation' // CSS definition  of forn Icon.
+			'font_icon_right'                    => 'wpbc-bi-question-circle',
+			'default'                            => true,    // Is this tab activated by default or not: true || false.
+			'disabled'                           => false,   // Is this tab disbaled: true || false.
+			'hided'                              => false,   // Is this tab hided: true || false.
+			'subtabs'                            => array(),
+		);
         return $tabs;
     }
 

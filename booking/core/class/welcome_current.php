@@ -3,6 +3,50 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
+function wpbc_welcome_section_10_12( $obj ){
+
+	$section_param_arr = array( 'version_num' => '10.12', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+
+
+	//   $obj->asset_path = 'http://beta/assets/';	// TODO: 2024-06-01 comment this
+
+
+	// <editor-fold     defaultstate="collapsed"                        desc=" = F R E E = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = F R E E =
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'New Skin & Improved Pro Vesions Structure' ) ); ?></h2>
+			<span style="font-size: 1em;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'A complete redesign of the Booking Calendar admin panel brings a **modern, clean, and user-focused UI**, helping you configure settings faster and manage bookings more efficiently.' ) ); ?></span>
+			<div class="wpbc_wn_col" style="flex: 1 1 70px;margin: 0px 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.12/calendar_skin_green_25_6.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 45%;margin: 10px 0;">
+				<!--h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Brand New Admin Panel Experience!**' ) ); ?></h3-->
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New Green Calendar Skin**: to enhance your calendar appearance.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improved Plugin Structure:**: All Pro versions now require the Free version for better auto-updates and streamlined add-on management.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Smarter Stripe Integration:**: Prevents duplicate customer entries—payments now stay linked to the same user.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fixes and Enhancements:**: Time slot blocking, cost display corrections, and test card links for Stripe, PayPal, and Redsys added.' ) ); ?></li>
+				</ul>
+		<div class="wpbc_wn_section" style="justify-content: center;margin-top:2em;">
+			<?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '...and other small improvements and refinements!' ) ); ?>
+		</div>
+			</div>
+		</div>
+
+	</div>
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
 
 function wpbc_welcome_section_10_11( $obj ){
 
@@ -75,8 +119,9 @@ function wpbc_welcome_section_10_11( $obj ){
 				</ul>
 			</div>
 		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
 		<div class="wpbc_wn_section" style="justify-content: center;">
-			<?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '...and hundreds of other small improvements and refinements!' ) ); ?>
+			<?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Check information about the other updates on ' ) ); ?>&nbsp;<a href="https://wpbookingcalendar.com/wn/"> this page</a>.
 		</div>
 	</div>
 	<?php
@@ -84,38 +129,6 @@ function wpbc_welcome_section_10_11( $obj ){
 
 	// </editor-fold>
 
-	// <editor-fold     defaultstate="collapsed"                        desc="  = M I X E D = "  >
-	// -----------------------------------------------------------------------------------------------------------------
-	//  = M I X E D =
-	// -----------------------------------------------------------------------------------------------------------------
-	/*
-	?>
-	<div class="wpbc_wn_container">
-		<div class="wpbc_wn_section">
-			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Additional Improvements in Free and Pro versions' ) ); ?></h2>
-		</div>
-
-		<div class="wpbc_wn_section">
-			<div class="wpbc_wn_col">
-				<ul>
-					<?php // Free. ?>
-					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New**: You can ...' ) ); ?></li>
-					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement** ...' ) ); ?></li>
-				</ul>
-
-				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Improvements in Pro Versions' ) ); ?></h3>
-				<ul>
-					<?php // Pro. ?>
-					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; We\'ve addressed ...' ) ); ?></li>
-					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; Fixed a ....' ) ); ?></li>
-				</ul>
-
-			</div>
-
-		</div>
-	</div><?php
-	*/
-	// </editor-fold>
 
 
 	$obj->expand_section_end( $section_param_arr );

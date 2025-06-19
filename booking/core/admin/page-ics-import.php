@@ -645,7 +645,10 @@ function wpbc_ics_import_export__show_help_info( $is_import = true ) {
 		<ol style="list-style-type: decimal !important;list-style-position: inside;margin-left: 15px;">
 			<li><?php
 				/* translators: 1: ... */
-				echo wp_kses_post( sprintf( __( 'Install %s plugin.', 'booking' ), '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a>' ) );
+				echo wp_kses_post( sprintf( __( 'Install %s plugin.', 'booking' ), '<a  class="thickbox open-plugin-details-modal" target="_blank"  href="plugin-install.php?tab=plugin-information&plugin=booking-manager&TB_iframe=true&width=772&height=435" aria-label="Booking Manager" data-title="Booking Manager"><strong>Booking Manager</strong></a>' ) );
+				echo ' ';
+				/* translators: 1: URL of Booking Manager plugin  page.*/
+				echo wp_kses_post( sprintf( __( 'WordPress directory %s page.', 'booking' ), '<a target="_blank" href="https://wordpress.org/plugins/booking-manager/"><strong>Booking Manager</strong></a>' ) );
 			?></li>
 			<li> <?php esc_html_e( 'Configure ULR feed(s) at this settings page.', 'booking' ); ?>
 				<div class="wpbc-settings-notice notice-info" 

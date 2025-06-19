@@ -2,12 +2,12 @@
 /*
 Plugin Name: Booking Calendar
 Plugin URI: https://wpbookingcalendar.com/demo/
-Description: <a href="https://wpbookingcalendar.com/"><strong>Booking Calendar</strong></a> is the original first and most popular WordPress booking plugin. <strong>Show your availability</strong> on a calendar, receive and manage <strong>full-day</strong> or <strong>time-slot bookings</strong> in a modern and intuitive booking panel. <strong>Sync</strong> your events and <strong>schedule appointments</strong> with ease using this <strong>awesome booking system</strong>.
+Description: Booking Calendar is the original WordPress booking plugin — trusted since 2009. Easily add a calendar to your site, display availability, and accept bookings for appointments, events, time slots, or full-day reservations.
 Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.11.4
+Version: 10.12.0
 License: GPLv2 or later
 */
 
@@ -34,10 +34,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '10.11.4' );
+	define( 'WP_BK_VERSION_NUM', '10.12.0' );
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
-	define( 'WP_BK_MINOR_UPDATE', true );
+	define( 'WP_BK_MINOR_UPDATE', !true );
 }
 
 

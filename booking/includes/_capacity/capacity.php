@@ -342,6 +342,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		$params_for_dates = wp_parse_args( $params, $defaults );
 
 
+		// $params_for_dates['is_days_always_available'] = in_array( $params_for_dates['resource_id'], array( '1' ) );  // Set some resources as always avavailable.
+
 		if ( $params_for_dates['is_days_always_available'] ) {          // All  bookings showing as available dates.
 			return array();
 		}
@@ -994,7 +996,8 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			// Week Days unavailable                            >>>            'weekday_unavailable'
 			$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__weekday_unavailable( $availability_per_day, $my_day_tag, $resource_id );
 
-			if ( ( ! $is_this_bap_page ) || ( ! $is_this_hash_page ) ) {
+			// if ( ( ! $is_this_bap_page ) || ( ! $is_this_hash_page ) ) {
+			if ( ( ! $is_this_bap_page ) && ( ! $is_this_hash_page ) ) {
 				// Do not apply these settings at Booking > Add booking page, when we edit booking - e.g. exist 'booking_hash'
 
 				// Unavailable days from today                  >>>            'from_today_unavailable'
@@ -1023,19 +1026,22 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			// Entire    D A Y    statuses
 			// =========================================================================================================
 
-			if  ( $availability_per_day[ $my_day_tag ][ $resource_id ]->is_day_unavailable ) {
-				// Reduce DAY day_availability,  if some season or days unavailable or full by  bookings
-				$availability_per_day[ $my_day_tag ][ 'day_availability' ]--;
+			if ( $availability_per_day[ $my_day_tag ][ $resource_id ]->is_day_unavailable ) {
+				// Set merged time interval  as fully  unavailable.
+				$availability_per_day[ $my_day_tag ][ $resource_id ]->booked_time_slots['merged_seconds'] = array( array( 0, 86400 ) );  // FixIn: 10.11.5.1.
+				// Reduce DAY day_availability,  if some season or days unavailable or full by  bookings.
+				--$availability_per_day[ $my_day_tag ]['day_availability'];
 			}
 
-			// 'resource_availability' | 'weekday_unavailable' | 'from_today_unavailable' | 'limit_available_from_today' | 'season_filter' | 'full_day_booking' | 'time_slots_booking' | 'available'
+			// 'resource_availability' | 'weekday_unavailable' | 'from_today_unavailable' | 'limit_available_from_today' | 'season_filter' | 'full_day_booking' | 'time_slots_booking' | 'available'.
 			$availability_per_day[ $my_day_tag ]['statuses']['day_status'][] = $availability_per_day[ $my_day_tag ][ $resource_id ]->_day_status;
 
-			// 'approved' | 'pending'
+			// 'approved' | 'pending'.
 			$availability_per_day[ $my_day_tag ]['statuses']['bookings_status'][] = implode( '|', $availability_per_day[ $my_day_tag ][ $resource_id ]->pending_approved );
 
-			// Go to next child booking resource
+			// Go to next child booking resource.
 		}
+
 		// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		// R E S O U R C E S   -   E n d
 		// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

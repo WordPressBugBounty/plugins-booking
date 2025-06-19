@@ -1886,6 +1886,7 @@ body.wpbc_admin_full_screen div.wpbc_admin {
   max-width: 0
 }
 .wpbc_settings_page_wrapper.none .wpbc_ui_el__vert_left_bar__content,
+.wpbc_settings_page_wrapper:not(.compact) .hide_in_max_mode,
 div.wpbc_settings_page_wrapper.none .hide_in_compact_mode {
   display: none
 }
@@ -1904,6 +1905,9 @@ div.wpbc_settings_page_wrapper.min .hide_in_compact_mode {
 }
 div.wpbc_settings_page_wrapper.compact .hide_in_compact_mode {
   display: none
+}
+div.wpbc_settings_page_wrapper.compact .hide_in_max_mode {
+  display: block
 }
 .wpbc_settings_page_wrapper.max .wpbc_ui_el__vert_left_bar__wrapper {
   max-width: var(--wpbc_ui_left_vert_nav__width_max)

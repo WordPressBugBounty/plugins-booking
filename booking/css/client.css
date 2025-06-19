@@ -1619,12 +1619,19 @@ table.wpbc_ideal_payment_table {
 
 /* ================================================================================================================== */
 /* Stripe */
+.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe * {
+	color: #fff;
+}
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe {
     background: 90% 50% / 80px auto no-repeat url("../inc/assets/stripe.svg"), #fff;
     background-color: rgb(77, 77, 77);
     padding-right: 130px;
     border: 2px solid rgb(77, 77, 77);
     color: #fff;
+}
+.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe.bccom_button_gw_stripe {
+	background: 90% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/stripe.svg"), #fff;
+	background-color: rgb(77, 77, 77);
 }
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover

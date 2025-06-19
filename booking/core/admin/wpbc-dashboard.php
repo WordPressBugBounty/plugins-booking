@@ -511,17 +511,23 @@ function wpbc_dashboard_section_news() {
 
 	function wpbc_dashboard_info_get_version_type_sites() {
 
+		$json_version = get_json_property_from_meta( 'max usage' );
+		if ( ! empty( $json_version ) ) {
+			// $json_edition = get_json_property_from_meta( 'edition' ); if ( ! empty( $json_edition ) ) { $json_version = $json_version . ' | ' . $json_edition; }
+			return $json_version;
+		}
+
 		$v_type = '';
-		if ( strpos( strtolower( WPDEV_BK_VERSION ), 'multisite' ) !== false ) {
+		if ( false !== strpos( strtolower( WPDEV_BK_VERSION ), 'multisite' ) ) {
 			$v_type = '5';
-		} else if ( strpos( strtolower( WPDEV_BK_VERSION ), 'develop' ) !== false ) {
+		} else if ( false !== strpos( strtolower( WPDEV_BK_VERSION ), 'develop' ) ) {
 			$v_type = '2';
 		}
 
 		if ( ! empty( $v_type ) ) {
 			return ' ' . $v_type . ' ' . __( 'websites', 'booking' );
 		} else {
-			return  ' 1' . ' ' . __( 'website', 'booking' );
+			return ' 1' . ' ' . __( 'website', 'booking' );
 		}
 	}
 

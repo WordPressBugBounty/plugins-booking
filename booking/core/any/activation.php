@@ -59,7 +59,8 @@ abstract class WPBC_Install {
 		// Warning message in plugin info.
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 4 );
 
-		$this->check_if_need_to_update();                                                                  // Check upgrade, if was no activation process
+		// TODO: 2025-06-06 - required to  be commented,  if we use the Pro version  as separate plugin.
+		//$this->check_if_need_to_update();                                                                  // Check upgrade, if was no activation process
 	}
 
     
@@ -113,6 +114,14 @@ abstract class WPBC_Install {
                 <?php
             }
 
+			$version = wpbc_get_plugin_version_title();
+
+			if ( 'Free' !== $version ) {
+				$plugin_meta[0] .= ' | ' . __( 'Version type', 'booking' ) . ': <strong>Free + ' . ucfirst( $version ) . '</strong>';
+			} else {
+				$plugin_meta[0] .= ' | ' . __( 'Version type', 'booking' ) . ': <strong>' . ucfirst( $version ) . '</strong>';
+			}
+
             /*
             [$plugin_meta] => Array
                 (
@@ -154,7 +163,8 @@ abstract class WPBC_Install {
         $this_plugin = plugin_basename( WPBC_FILE );
 
         if ( $file == $this_plugin ) {
-            
+
+
             array_unshift( $links, $this->init_option['link_settings'] );
             
             //array_unshift( $links, $this->init_option['link_whats_new'] );
@@ -171,7 +181,14 @@ abstract class WPBC_Install {
 
 
 			if ( ! class_exists( 'wpdev_bk_personal' ) ) {
-				array_unshift( $links, $this->init_option['link_up'] );
+				if ( wpbc_is_updated_paid_to_free() ) {
+					array_unshift(
+						$links,
+						'<a style="font-weight:600;" class="wpbc_plugins_links__start_tour" title="' . esc_attr( __( 'Request Update', 'booking' ) ) . '" href="' . esc_url( 'https://wpbookingcalendar.com/request-update/' ) . '">' . esc_attr__( 'Request Pro Version', 'booking' ) . '</a>'
+					);
+				} else {
+					array_unshift( $links, $this->init_option['link_up'] );
+				}
 			} else {
 				if ( ! class_exists( 'wpdev_bk_multiuser' ) ) {
 					array_unshift( $links, $this->init_option['link_upgrade'] );

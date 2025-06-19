@@ -207,7 +207,7 @@ function wpbc_booking_confirmation( $params_arr ){
 														, 'str_dates__dd_mm_yyyy' => $params_arr['str_dates__dd_mm_yyyy']       // '14.11.2023, 15.11.2023, 16.11.2023, 17.11.2023'
 														, 'times_array' 	      => $params_arr['times_array']                 // [  ["10","00","00"], ["12","00","00"]  ]
 														, 'form_data'             => $params_arr['form_data']     		 	    // 'text^selected_short_timedates_hint4^06/11/2018 14:00...'
-																, 'is_discount_calculate' => ! true                                 // Default  true
+																, 'is_discount_calculate' => false            // FixIn: 10.11.5.7.                      // Default  true
 																, 'is_only_original_cost' => false                                  // Default  false
 												) );
 				$total_cost_without_discount = floatval( $total_cost_without_discount );                                            // from double  > float

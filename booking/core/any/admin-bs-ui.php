@@ -2078,6 +2078,14 @@ function wpbc_bs_javascript_tooltips() {
 				},
 				placement: 'right',
 			} );
+			// FixIn: 10.11.5.8.
+			wpbc_tippy( parent_class + '.tooltip_right_offset', {
+				content( reference ){
+					return wpbc_get_tippy_tooltip_title_text( reference );
+				},
+				offset: [0, 25],
+				placement: 'right',
+			} );
 			wpbc_tippy( parent_class + '.tooltip_left', {
 				content( reference ){
 					return wpbc_get_tippy_tooltip_title_text( reference );

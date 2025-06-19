@@ -82,6 +82,38 @@ function wpbc_get_plugin_version_type(){
 
 
 /**
+ * Get Title of the version type.
+ *
+ * @return string
+ */
+function wpbc_get_plugin_version_title() {
+	$title        = 'Free';
+	$version_type = wpbc_get_version_type__and_mu();
+	switch ( $version_type ) {
+		case 'personal':
+			$title = 'Personal';
+			break;
+		case 'biz_s':
+			$title = 'Business Small';
+			break;
+		case 'biz_m':
+			$title = 'Business Medium';
+			break;
+		case 'biz_l':
+			$title = 'Business Large';
+			break;
+		case 'multiuser':
+			$title = 'MultiUser';
+			break;
+		default:
+			$title = 'Free';
+	}
+
+	return $title;
+}
+
+
+/**
  * Check if user accidentially update Booking Calendar Paid version to Free
  *
  * @return bool
@@ -181,6 +213,43 @@ function wpbc_file__read_header_info( $file, $default_headers, $context = '' ) {
 	return $file_data;
 }
 
+
+function get_json_property_from_meta( $property_key ) {
+
+	if ( ! defined( 'WPBC_PRO_FILE' ) ) {
+		return null;
+	}
+
+	$meta_file_path = plugin_dir_path( WPBC_PRO_FILE ) . 'meta.json';
+
+	if ( ! file_exists( $meta_file_path ) ) {
+		return null;
+	}
+
+	global $wp_filesystem;
+
+	if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+	}
+
+	if ( empty( $wp_filesystem ) ) {
+		WP_Filesystem();
+	}
+
+	$json_contents = $wp_filesystem->get_contents( $meta_file_path );
+
+	if ( empty( $json_contents ) ) {
+		return null;
+	}
+
+	$data = json_decode( $json_contents, true );
+
+	if ( json_last_error() !== JSON_ERROR_NONE ) {
+		return null;
+	}
+
+	return isset( $data[ $property_key ] ) ? $data[ $property_key ] : null;
+}
 
 /**
  * Check  if we need BLUR this section -- add CSS Class for specific versions

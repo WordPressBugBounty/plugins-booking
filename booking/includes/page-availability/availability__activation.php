@@ -45,7 +45,7 @@ function wpbc_activation__dates_availability() {
 		$wpdb->query( $simple_sql );
 	}
 }
-add_bk_action( 'wpbc_activation_after_db_actions', 'wpbc_activation__dates_availability' );
+add_bk_action( 'wpbc_free_version_activation', 'wpbc_activation__dates_availability' );
 
 
 /**
@@ -57,4 +57,4 @@ function wpbc_deactivation__dates_availability() {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}booking_dates_props" );
 }
-add_bk_action( 'wpbc_other_versions_deactivation', 'wpbc_deactivation__dates_availability' );
+add_bk_action( 'wpbc_free_version_deactivation', 'wpbc_deactivation__dates_availability' );

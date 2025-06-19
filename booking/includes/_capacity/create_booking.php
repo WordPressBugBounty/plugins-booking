@@ -802,8 +802,8 @@ function wpbc_booking_save( $request_params ){
  *                  'form_data'   =>             If 'ok' form data can be different here, 'custom_form' parameter, so it can add 'wpbc_custom_booking_form' field for identification, what custom booking form was used,
  *             ]
  */
-function wpbc_db__booking_save( $create_params, $where_to_save_booking ) {
-
+function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
+	//FixIn: 10.11.5.4
 	/**
 	 * Tip:  $create_params['all_booking_data_arr']         - contain:       [ 'field_name' => [ 'type' = "checkbox", 'original_name' = "fixed_fee2[]", 'name' = "fixed_fee", 'value' = "true" ]   , ... ]
 	 *       $create_params['structured_booking_data_arr']  - contain:       [ 'field_name' => 'field_value'   , ... ]

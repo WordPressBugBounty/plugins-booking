@@ -637,9 +637,6 @@ body[class*="page_wpbc"] #wpcontent .wrap.wpbc_page{
 	border-right:1px solid #ddd;
 	border-bottom:1px solid #ddd;
 }
-.wpbc_page div.wpbc_inner_message {
-	/*margin-top:1px;*/
-}
 /* Read booking button -- EYE   ------------------------------------------------------------------------------------- */
 /* //FixIn: 9.6.1.2 */
 /*

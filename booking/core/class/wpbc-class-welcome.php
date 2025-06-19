@@ -473,33 +473,35 @@ if(0){
 
 			$this->section_9_8_css();
 
+			wpbc_welcome_section_10_12( $this );
+
 			wpbc_welcome_section_10_11( $this );
 
-			wpbc_welcome_section_10_10( $this );
-
-			wpbc_welcome_section_10_9( $this );
-
-			wpbc_welcome_section_10_8( $this );
-
-			wpbc_welcome_section_10_7( $this );
-
-			wpbc_welcome_section_10_6( $this );
-
-			wpbc_welcome_section_10_5( $this );
-
-			wpbc_welcome_section_10_4( $this );
-
-			wpbc_welcome_section_10_3( $this );
-
-			wpbc_welcome_section_10_2( $this );
-
-			wpbc_welcome_section_10_1( $this );
-
-			wpbc_welcome_section_10_0( $this );
-
-			wpbc_welcome_section_9_9( $this );
-
-			wpbc_welcome_section_9_8( $this );
+//			wpbc_welcome_section_10_10( $this );
+//
+//			wpbc_welcome_section_10_9( $this );
+//
+//			wpbc_welcome_section_10_8( $this );
+//
+//			wpbc_welcome_section_10_7( $this );
+//
+//			wpbc_welcome_section_10_6( $this );
+//
+//			wpbc_welcome_section_10_5( $this );
+//
+//			wpbc_welcome_section_10_4( $this );
+//
+//			wpbc_welcome_section_10_3( $this );
+//
+//			wpbc_welcome_section_10_2( $this );
+//
+//			wpbc_welcome_section_10_1( $this );
+//
+//			wpbc_welcome_section_10_0( $this );
+//
+//			wpbc_welcome_section_9_9( $this );
+//
+//			wpbc_welcome_section_9_8( $this );
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// Footer

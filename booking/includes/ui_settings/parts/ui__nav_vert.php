@@ -223,7 +223,7 @@ function wpbc_ui__vert_left_bar__do_toggle() {
 	$el_arr['onclick']         .= '}';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Toggle side menu', 'booking' ),
-		'position' => 'bottom',
+		'position' => 'right',
 	);
 	wpbc_ui_el__a( $el_arr );
 }
@@ -242,7 +242,7 @@ function wpbc_ui__vert_left_bar__do_max() {
 	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-right';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Open side menu', 'booking' ),
-		'position' => 'bottom',
+		'position' => 'top',
 	);
 	wpbc_ui_el__a( $el_arr );
 }
@@ -261,7 +261,7 @@ function wpbc_ui__vert_left_bar__do_compact() {
 	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-left';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Set side menu compact', 'booking' ),
-		'position' => 'bottom',
+		'position' => 'top',
 	);
 	wpbc_ui_el__a( $el_arr );
 }
@@ -458,9 +458,14 @@ function wpbc_ui__vert_menu__item_main( $menu_slug, $menu_item_arr ) {
 				onclick="javascript: wpbc_admin_ui__sidebar_left__do_max(); if( ! jQuery( this ).parents('.wpbc_ui_el__level__folder').hasClass('expanded') ) { jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');jQuery( this ).parents('.wpbc_ui_el__level__folder').addClass('expanded'); } else {jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');} "
 				class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__folder">
 				<?php if ( ! empty( $menu_item_arr['font_icon'] ) ) { ?>
-				<i 	class="wpbc_ui_el__vert_nav_icon  menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
-					title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
-				></i>
+					<?php // Show icon in max mode, without right tooltip, thanks to '.hide_in_compact_mode'. // FixIn: 10.11.5.8. ?>
+					<i 	class="wpbc_ui_el__vert_nav_icon hide_in_compact_mode  menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
+						title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
+					></i>
+					<?php // Show icon in compact mode, with right tooltip, thanks to '.hide_in_max_mode'. // FixIn: 10.11.5.8. ?>
+					<i 	class="wpbc_ui_el__vert_nav_icon hide_in_max_mode tooltip_right_offset menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
+						data-original-title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ) . ' - ' . esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
+					></i>
 				<?php } ?>
 				<span class="wpbc_ui_el__vert_nav_title hide_in_compact_mode"><?php echo wp_kses_post( $menu_item_arr['title'] ); ?></span>
 				<i class="wpbc_ui_el__vert_nav_icon_right tooltip_right menu_icon icon-1x wpbc_ui_el__vert_nav_icon_expanded  hide_in_compact_mode wpbc-bi-dash-square-dotted" data-original-title="<?php echo esc_attr_e( 'Collapse', 'booking' ); ?>"></i>
@@ -478,9 +483,14 @@ function wpbc_ui__vert_menu__item_main( $menu_slug, $menu_item_arr ) {
 				<?php } ?>
 				class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__single">
 				<?php if ( ! empty( $menu_item_arr['font_icon'] ) ) { ?>
-				<i 	class="wpbc_ui_el__vert_nav_icon menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
-					title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
-				></i>
+					<?php // Show icon in max mode, without right tooltip, thanks to '.hide_in_compact_mode'. // FixIn: 10.11.5.8. ?>
+					<i 	class="wpbc_ui_el__vert_nav_icon hide_in_compact_mode menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
+						title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
+					></i>
+					<?php // Show icon in compact mode, with right tooltip, thanks to '.hide_in_max_mode'. // FixIn: 10.11.5.8. ?>
+					<i 	class="wpbc_ui_el__vert_nav_icon hide_in_max_mode tooltip_right_offset  menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
+						data-original-title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ) . ' - ' .  esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
+					></i>
 				<?php } ?>
 				<span class="wpbc_ui_el__vert_nav_title hide_in_compact_mode"><?php echo wp_kses_post( $menu_item_arr['title'] ); ?></span>
 				<?php
