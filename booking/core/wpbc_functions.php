@@ -78,6 +78,37 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		return $svg_icon_integarted;
 	}
 
+/**
+ * Get Logo as HTML element.
+ *
+ * @param array $params - logo parameters.
+ *
+ * @return string
+ */
+function wpbc_get_svg_logo_for_html( $params = array() ) {
+
+	// FixIn: 10.12.1.6.
+	$defaults = array(
+		'svg_color'     => '#ccc',
+		'svg_color_alt' => '#aaa',
+		'opacity'       => '0.4',
+		'style_default' => 'background-repeat: no-repeat; background-position: center; display: inline-block; vertical-align: top;',
+		'style_adjust'  => 'background-size: 18px auto; width: 20px; height: 20px; margin-top: 6px;',                   // This parameters, the adjust size of the logo and position.
+		'css_class'     => '',
+	);
+
+	$params = wp_parse_args( $params, $defaults );
+
+	$svg_logo_for_background = wpbc_get_svg_logo_for_background( $params['svg_color'], $params['svg_color_alt'], $params['opacity'] );
+
+	$svg_icon_integarted  = '<i';
+	$svg_icon_integarted .= ' class="wpbc_svg_logo ' . esc_attr( $params['css_class'] ) . '"';
+	$svg_icon_integarted .= ' style="' . esc_attr( $params['style_default'] ) . esc_attr( $params['style_adjust'] );
+	$svg_icon_integarted .= 'background-image: url(\'' . esc_attr( $svg_logo_for_background ) . '\') !important;"';
+	$svg_icon_integarted .= '></i>';
+
+	return $svg_icon_integarted;
+}
 
 	// <editor-fold     defaultstate="collapsed"                        desc="  ==  Get html  preview of shortcode for Edit pages  ==  "  >
 
@@ -762,13 +793,13 @@ function wpbc_db_update_number_new_bookings( $id_of_new_bookings, $is_new = '0',
 		$id_of_new_bookings = implode( ',', $id_of_new_bookings );
 		$id_of_new_bookings = wpbc_clean_like_string_for_db( $id_of_new_bookings );
 
-
+		// FixIn: 10.12.1.5.
 		if ( 'all' === $id_of_new_bookings ) {
-			$update_sql = "UPDATE {$wpdb->prefix}booking AS bk SET bk.is_new = {$is_new}  WHERE bk.is_new != {$is_new} ";    // FixIn: 8.2.1.18.
+			$update_sql = "UPDATE {$wpdb->prefix}booking SET is_new = {$is_new}  WHERE is_new != {$is_new} ";    // FixIn: 8.2.1.18.
 
 			$update_sql = apply_bk_filter( 'update_sql_for_checking_new_bookings', $update_sql, 0, $user_id );
 		} else {
-			$update_sql = "UPDATE {$wpdb->prefix}booking AS bk SET bk.is_new = {$is_new} WHERE bk.booking_id IN  ( {$id_of_new_bookings} ) ";
+			$update_sql = "UPDATE {$wpdb->prefix}booking SET is_new = {$is_new} WHERE booking_id IN  ( {$id_of_new_bookings} ) ";
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
@@ -1294,7 +1325,7 @@ function wpbc_db__booking_approve( $booking_id ) {
 	// FixIn: 10.8.1.1.
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking AS bk SET bk.trash = 0 WHERE booking_id IN ({$booking_id})" ) ) {
+	if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking SET trash = 0 WHERE booking_id IN ({$booking_id})" ) ) {
 		return false;
 	}
 
@@ -1395,8 +1426,9 @@ function wpbc_auto_cancel_booking( $booking_id, $email_reason = '' ) {
 	}
 	// Send decline emails.
 	wpbc_send_email_trash( $booking_id, 1, $email_reason );
+	// FixIn: 10.12.1.5.
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking AS bk SET bk.trash = 1 WHERE booking_id IN ({$booking_id})" ) ) {
+	if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking SET trash = 1 WHERE booking_id IN ({$booking_id})" ) ) {
 
 		wpbc_redirect( site_url() );
 	}

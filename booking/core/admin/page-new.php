@@ -40,7 +40,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			'position'                           => '',                                    // Can be: 'left'  |  'right'  |  ''.
 			'css_classes'                        => '',                                    // this is CSS class(es).
 			'icon'                               => '',                                    // Icon - link to the real PNG img.
-			'font_icon'                          => 'wpbc-bi-calendar-plus',               // CSS definition  of forn Icon.
+			'font_icon'                          => 'wpbc-bi-plus',               // CSS definition  of forn Icon.
 			'default'                            => true,                                  // Is this tab activated by default or not: true || false.
 			'disabled'                           => false,                                 // Is this tab disbaled: true || false.
 			'hided'                              => true,                                  // Is this tab hided: true || false.

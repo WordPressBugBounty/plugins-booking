@@ -126,13 +126,6 @@ public function define_admin_menu(){
 	$title .=   '<span style="margin-top:-2px;'.$badge_style.'" class="wpbc_badge_count name_item update-plugins count-'.$update_count.'" title=""><span class="update-count bk-update-count" style="white-space: nowrap;word-wrap: normal;">' . number_format_i18n( $update_count ) . '</span></span>';
 	$title .= '</div>';
 
-	/**
-		global $menu;
-		if ( current_user_can(  ) ) {
-			$menu[] = array( '', 'read', 'separator-wpbc', '', 'wp-menu-separator wpbc' );
-		}
-		debuge($menu);
-	*/
 
     $booking_menu_position = get_bk_option( 'booking_menu_position' );
     switch ( $booking_menu_position ) {

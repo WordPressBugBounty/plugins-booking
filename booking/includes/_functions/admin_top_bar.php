@@ -38,20 +38,12 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 	if (   ( ($current_user->user_level < $level) && (! $is_super_admin)  ) || !is_admin_bar_showing() ) return;
 
 
-	$update_count = wpbc_db_get_number_new_bookings();
+	$update_title = wpbc_get_svg_logo_for_html() . '&nbsp;' . 'Booking Calendar';
 
-	$title = 'Booking Calendar';//__('Booking Calendar' ,'booking');	// FixIn: 9.1.3.3.
-	$update_title = ''// '<img src="'.WPBC_PLUGIN_URL .'/assets/img/icon-16x16.png" style="height: 16px;vertical-align: sub;" />&nbsp;'
-					. $title;
-
-
-
-	$is_user_activated = apply_bk_filter('multiuser_is_current_user_active',  true );           // FixIn: 6.0.1.17.
-	if ( ( $update_count > 0) && ( $is_user_activated ) ) {
-		$update_count_title = "&nbsp;<span class='booking-count bk-update-count' style='background: #f0f0f1;color: #2c3338;display: inline;padding: 2px 5px;font-weight: 600;border-radius: 10px;'>"
-							  . number_format_i18n($update_count)
-							  . "</span>" ; //id='booking-count'
-		$update_title .= $update_count_title;
+	$is_user_activated = apply_bk_filter( 'multiuser_is_current_user_active', true ); // FixIn: 6.0.1.17.
+	$update_count      = wpbc_db_get_number_new_bookings();
+	if ( ( $update_count > 0 ) && ( $is_user_activated ) ) {
+		$update_title .= "&nbsp;<span class='booking-count bk-update-count' style='background: #f0f0f1;color: #2c3338;display: inline;padding: 2px 5px;font-weight: 600;border-radius: 10px;'>" . number_format_i18n( $update_count ) . '</span>';
 	}
 
 	$link_bookings = wpbc_get_bookings_url();

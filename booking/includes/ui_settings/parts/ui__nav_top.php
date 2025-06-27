@@ -137,6 +137,37 @@ function wpbc_ui__top_nav__btn_full_screen() {
 		'position' => 'top',
 	);
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_full_screen';
+
+	if ( ! wpbc_is_setup_wizard_page() ) {
+
+		// Params for saving user option.
+		$user_cust_option = 'is_full_screen';
+		$nonce_action     = $user_cust_option . '_nonce_act';
+
+		$el_arr['attr'] = array(
+			'data-wpbc-u-save-name'    => $user_cust_option,
+			'data-wpbc-u-save-value'   => 'On',
+			'data-wpbc-u-save-nonce'   => wp_create_nonce( $nonce_action ), // do not need to  make escaping the values because: wpbc_get_custom_attr() should handle escaping.
+			'data-wpbc-u-save-user-id' => wpbc_get_current_user_id(),
+			'data-wpbc-u-save-action'  => $nonce_action,
+		);
+		$el_arr['onclick'] .= 'wpbc_save_custom_user_data_from_element(this);';
+
+		?><script type="text/javascript"><?php
+
+			$is_full_screen = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), $user_cust_option );
+			$is_full_screen = ( 'On' === $is_full_screen );
+
+			echo wpbc_jq_ready_start();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+			if ( $is_full_screen ) {
+				echo " jQuery( '.wpbc_ui__top_nav__btn_full_screen,.wpbc_ui__top_nav__btn_normal_screen' ).toggleClass( 'wpbc_ui__hide' ); ";
+			}
+			echo ' wpbc_check_full_screen_mode(); ';
+			echo wpbc_jq_ready_end();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		?></script><?php
+	}
 	wpbc_ui_el__a( $el_arr );
 }
 
@@ -160,5 +191,39 @@ function wpbc_ui__top_nav__btn_normal_screen() {
 		'position' => 'top',
 	);
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_normal_screen wpbc_ui__hide';
+
+	// Params for saving user option.
+	$user_cust_option = 'is_full_screen';
+	$nonce_action     = $user_cust_option . '_nonce_act';
+	$el_arr['attr']   = array(
+		'data-wpbc-u-save-name'    => $user_cust_option,
+		'data-wpbc-u-save-value'   => 'Off',
+		'data-wpbc-u-save-nonce'   => wp_create_nonce( $nonce_action ), // do not need to  make escaping the values because: wpbc_get_custom_attr() should handle escaping.
+		'data-wpbc-u-save-user-id' => wpbc_get_current_user_id(),
+		'data-wpbc-u-save-action'  => $nonce_action,
+	);
+	$el_arr['onclick'] .= 'wpbc_save_custom_user_data_from_element(this);';
+
 	wpbc_ui_el__a( $el_arr );
 }
+
+
+/**
+ * Set the admin full screen class
+ *
+ * @param bool $classes Body classes.
+ *
+ * @return array
+ */
+function wpbc_check_full_screen_mode_on_loading( $classes ) {
+
+	$is_full_screen = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), 'is_full_screen' );
+	$is_full_screen = ( 'On' === $is_full_screen );
+
+	if ( ( wpbc_is_this_plugin_page() ) && ( $is_full_screen ) && ( ! wpbc_is_setup_wizard_page() ) ) {
+		$classes .= ' wpbc_admin_full_screen';
+	}
+
+	return $classes;
+}
+add_filter( 'admin_body_class', 'wpbc_check_full_screen_mode_on_loading' );

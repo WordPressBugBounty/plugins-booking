@@ -166,8 +166,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		                ORDER BY dt.booking_date";
 		}
 
-		// Show past bookings, as well
-		// $my_sql = str_replace( 'AND dt.booking_date >= CURDATE()', '', $my_sql );
+
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$sql__dates_obj__arr = $wpdb->get_results( $my_sql );
@@ -186,7 +185,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 			 *
 			 * @param array $params     [ 'dates_to_check' => 'CURDATE' ]   |   [ 'dates_to_check' => 'ALL' ]   |   [ 'dates_to_check' => [ '2023-07-15' , '2023-07-21' ]  ]
 			 *
-			 * @return string           ' AND (  dt.booking_date >= CURDATE()  ) '
+			 * @return string           ' AND (  dt.booking_date >= C URDATE()  ) '
 			 */
 			function wpbc_get__sql_where__for__dates( $params ){
 
@@ -200,9 +199,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 					return   '';
 
-				} else if ( 'CURDATE' == $params['dates_to_check'] ) {                                                  // Current dates        ->   CURDATE()
+				} else if ( 'CURDATE' == $params['dates_to_check'] ) {                                                  // Current dates        ->   CURDATE
 
-					return   ' AND (  dt.booking_date >= CURDATE()  ) ' ;
+					return   ' AND (  dt.booking_date >= ' . wpbc_sql_date_math_expr_explicit('', 'curdate') . '  ) ' ;
 
 				} else if ( is_array( $params['dates_to_check'] ) ) {                                                   // Specific Date(s)     ->   [ '2023-07-15' , '2023-07-21' ]
 
@@ -220,7 +219,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 				}
 
 				// Default CURDATE
-				return ' AND (  dt.booking_date >= CURDATE()  ) ';
+				return ' AND (  dt.booking_date >= ' . wpbc_sql_date_math_expr_explicit('', 'curdate') . '  ) ';
 			}
 
 
@@ -646,7 +645,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		$date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
 		$today_inix_timestamp  = strtotime( $date_with_wp_timezone );
 
-	} else if ( 'CURDATE' == $params['dates_to_check'] ) {                                                              // Current dates        ->   CURDATE()
+	} else if ( 'CURDATE' == $params['dates_to_check'] ) {                                                              // Current dates        ->   CURDATE
 
 		$start_day_number     = 1;
 		// $today_inix_timestamp = strtotime( gmdate( 'Y-m-d 00:00:00', strtotime( 'now' ) ) );                              // Today 00:00:00

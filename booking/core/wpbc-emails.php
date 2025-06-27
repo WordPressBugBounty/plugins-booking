@@ -102,9 +102,9 @@ function wpbc_wp_mail( $mail_recipient, $mail_subject, $mail_body, $mail_headers
     $wpbc_email_return_path = new wpbc_email_return_path();
 
     // $mail_recipient = str_replace( '"', '', $mail_recipient );               //FixIn:5.4.3
-    if ( ! wpbc_is_this_demo() )                                                // FixIn: 6.1.1.19.
-        @wp_mail($mail_recipient, $mail_subject, $mail_body, $mail_headers);
-
+	if ( wpbc_email_api_is_allow_send( true, '', '' ) ) {
+		@wp_mail( $mail_recipient, $mail_subject, $mail_body, $mail_headers );
+	}
     unset( $wpbc_email_return_path );
 }
 
@@ -536,21 +536,28 @@ function wpbc_email_api_get_headers_after( $mail_headers, $email_id , $fields_va
 add_filter( 'wpbc_email_api_get_headers_after', 'wpbc_email_api_get_headers_after', 10, 5 );    // Hook fire in api-email.php
 
 
-/** 
-	 * Check if we can send Email - block  sending in live demos
- * 
- * @param bool $is_send_email 
- * @param string $email_id
- * @param array $fields_values - list  of params to  parse: 'content', 'header_content', 'footer_content' for different languges, etc ....
+/**
+ * Check if we can send Email - block  sending in live demos
+ *
+ * @param bool   $is_send_email  - is send emails?.
+ * @param string $email_id      - email  id.
+ * @param array  $fields_values - list  of params to  parse: 'content', 'header_content', 'footer_content' for different languges, etc ....
+ *
  * @return bool
  */
 function wpbc_email_api_is_allow_send( $is_send_email, $email_id, $fields_values ) {
-//debuge($fields_values);    
-    if ( wpbc_is_this_demo() )   
-        $is_send_email = false;
 
-    return  $is_send_email;
+	if ( wpbc_is_this_demo() ) {
+		$is_send_email = false;
+	}
+	// FixIn: 10.12.1.5.
+	if ( WPBC_IS_PLAYGROUND ) {
+		$is_send_email = false;
+	}
+
+	return $is_send_email;
 }
+
 add_filter( 'wpbc_email_api_is_allow_send', 'wpbc_email_api_is_allow_send', 10, 3 );    // Hook fire in api-email.php
 
 

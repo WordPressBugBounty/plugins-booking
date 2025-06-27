@@ -1166,42 +1166,40 @@ function wpbc_set_sql_where_for_dates( $wh_booking_date, $wh_booking_date2, $pre
 
                                                                                 // Actual
     if (  ( ( $wh_booking_date  === '' ) && ( $wh_booking_date2  === '' ) ) || ($wh_booking_date  === '0') ) {
-        $sql_where =               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      // FixIn: 8.5.2.14.
+        $sql_where =               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;      // FixIn: 8.5.2.14.
 
     } else  if ($wh_booking_date  === '1') {                                    // Today								// FixIn: 7.1.2.8.
-        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;
-        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;     // FixIn: 8.4.7.21.
+        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '23:59:59' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;
+        $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;     // FixIn: 8.4.7.21.
 
 
     } else if ($wh_booking_date  === '2') {                                     // Previous
-        $sql_where =               $and_pre."( ".$pref."booking_date <= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      // FixIn: 8.5.2.16.
+        $sql_where =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;      // FixIn: 8.5.2.16.
 
     } else if ($wh_booking_date  === '3') {                                     // All
         $sql_where =  '';
 
     } else if ($wh_booking_date  === '4') {                                     // Next
-        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL ". $wh_booking_date2 . " DAY ) ) ".$and_suf ;
-        // $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL 1 DAY ) ) ".$and_suf ;
-	    $sql_where .=               $and_pre."( ".$pref."booking_date > ( CURDATE() ) ) ".$and_suf ;                    // FixIn: 8.0.1.1.
+        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL ". $wh_booking_date2 . " DAY", 'curdate' ) . ") ) ".$and_suf ;
+        // $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
+	    $sql_where .=               $and_pre."( ".$pref."booking_date > ( " . wpbc_sql_date_math_expr_explicit('', 'curdate') . " ) ) ".$and_suf ;                    // FixIn: 8.0.1.1.
 
     } else if ($wh_booking_date  === '5') {                                     // Prior
         $wh_booking_date2 = str_replace('-', '', $wh_booking_date2);
-        $sql_where  =               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL ". $wh_booking_date2 . " DAY ) ) ".$and_suf ;
-        $sql_where .=               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+        $sql_where  =               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL ". $wh_booking_date2 . " DAY", 'curdate' ) . ") ) ".$and_suf ;
+        $sql_where .=               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
     } else  if ($wh_booking_date  === '7') {                                    // Check In date - Today/Tomorrow
-          // $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;
-          // $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() ) ) ".$and_suf ;
-          $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '1 23:59:59' DAY_SECOND ) ) ".$and_suf ;
-          $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+          $sql_where  =               $and_pre."( ".$pref."booking_date <= ( " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '47:59:59' HOUR_SECOND", 'curdate' ) . " ) ) ".$and_suf ;
+          $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
     } else  if ($wh_booking_date  === '8') {                                    // Check Out date - Tomorrow
-        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '1 23:59:59' DAY_SECOND ) ) ".$and_suf ;
-        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+		$sql_where  =               $and_pre."( ".$pref."booking_date <= ( " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '47:59:59' HOUR_SECOND", 'curdate' ) . " ) ) ".$and_suf ;
+        $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
     } else  if ($wh_booking_date  === '9') {                                    // Today check in/out
-        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
-        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL 1 DAY ) ) ".$and_suf ;
+        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
+        $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
     } else {                                                                    // Fixed
 
@@ -1236,16 +1234,16 @@ function wpbc_set_sql_where_for_modification_date( $wh_modification_date, $wh_mo
     else                 { $and_pre = ''; $and_suf = ' AND '; }
 
     if ($wh_modification_date  === '1') {                                       // Today
-        $sql_where  =               $and_pre."( ".$pref."modification_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;    // FixIn: 8.4.7.22.
-        $sql_where .=               $and_pre."( ".$pref."modification_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;    // FixIn: 8.4.7.22.
+        $sql_where  =               $and_pre."( ".$pref."modification_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '23:59:59' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;    // FixIn: 8.4.7.22.
+        $sql_where .=               $and_pre."( ".$pref."modification_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;    // FixIn: 8.4.7.22.
 
     } else if ($wh_modification_date  === '3') {                                // All
         $sql_where =  '';
 
     } else if ($wh_modification_date  === '5') {                                // Prior
         $wh_modification_date2 = str_replace('-', '', $wh_modification_date2);
-        $sql_where  =               $and_pre."( ".$pref."modification_date >= ( CURDATE() - INTERVAL ". $wh_modification_date2 . " DAY ) ) ".$and_suf ;
-        $sql_where .=               $and_pre."( ".$pref."modification_date <= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+        $sql_where  =               $and_pre."( ".$pref."modification_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL ". $wh_modification_date2 . " DAY", 'curdate' ) . ") ) ".$and_suf ;
+        $sql_where .=               $and_pre."( ".$pref."modification_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
     } else {                                                                    // Fixed
 
@@ -1257,4 +1255,114 @@ function wpbc_set_sql_where_for_modification_date( $wh_modification_date, $wh_mo
     }
 
     return $sql_where;
+}
+
+
+/**
+ * Generate SQL-compatible datetime/date expression based on explicit base function and optional interval.
+ *
+ * @param string $mysql_expr  - MySQL-style interval expression. Examples: "- INTERVAL '00:00:01' HOUR_SECOND", "+ INTERVAL 5 DAY", etc.
+ * @param string $base_func   - 'curdate'|'now' Either 'curdate' (default) for CURDATE() / date('now'), or 'now' for NOW() / datetime('now').
+ *
+ * @return string  SQL expression (unquoted), adapted for MySQL or SQLite.
+ *
+ * Exmaples:
+ *           wpbc_sql_date_math_expr_explicit("- INTERVAL '00:00:01' HOUR_SECOND", 'curdate')    | MySQL:  CURDATE() - INTERVAL '00:00:01' HOUR_SECOND    # SQLite: datetime('now', '-1 seconds') (auto-upgraded)
+ *           wpbc_sql_date_math_expr_explicit("+ INTERVAL 2 DAY", 'curdate')                     | MySQL:  CURDATE() + INTERVAL 2 DAY                     # SQLite: date('now', '+2 days')
+ *           wpbc_sql_date_math_expr_explicit('', 'now');                                        | MySQL: NOW()                                           # SQLite: datetime('now') |.
+ *           wpbc_sql_date_math_expr_explicit();                                                 | MySQL: CURDATE()                                       # SQLite: date('now')
+ *           wpbc_sql_date_math_expr_explicit("+ INTERVAL 30 MINUTE", 'curdate')                 | MySQL: CURDATE() + INTERVAL 30 MINUTE                  # SQLite: datetime('now', '+1800 seconds') (auto-upgraded)
+ */
+function wpbc_sql_date_math_expr_explicit( $mysql_expr = '', $base_func = 'curdate' ) {
+	global $wpdb;
+
+	$is_sqlite          = ( get_class( $wpdb ) === 'WP_SQLite_DB' );
+	$original_base_func = strtolower( $base_func );
+	$base_func          = $original_base_func;
+
+	// Fallback if invalid.
+	if ( ! in_array( $base_func, array( 'curdate', 'now' ), true ) ) {
+		$base_func = 'curdate';
+	}
+
+	// Promote to datetime() if base is 'curdate' and delta is time-based.
+	$has_time_delta = ( false !== stripos( $mysql_expr, 'HOUR' ) ||
+						false !== stripos( $mysql_expr, 'MINUTE' ) ||
+						false !== stripos( $mysql_expr, 'SECOND' ) ||
+						false !== strpos( $mysql_expr, ':' ) );
+
+	if ( $is_sqlite && 'curdate' === $base_func && $has_time_delta ) {
+		$base_func = 'now';  // auto-promote for SQLite.
+	}
+
+	$mysql_base_func  = ( 'curdate' === $base_func ) ? 'CURDATE()' : 'NOW()';
+	$sqlite_base_func = ( 'curdate' === $base_func ) ? 'date' : 'datetime';
+
+	if ( empty( $mysql_expr ) ) {
+		return $is_sqlite ? "{$sqlite_base_func}('now')" : $mysql_base_func;
+	}
+
+	if ( ! $is_sqlite ) {
+		return "{$mysql_base_func} {$mysql_expr}";
+	}
+
+	$modifiers = wpbc__convert_mysql_interval_to_sqlite_modifiers( $mysql_expr );
+
+	// Fix: anchor to midnight if original func was 'curdate' with time math.
+	if ( 'curdate' === $original_base_func && $has_time_delta ) {
+		return "datetime('now','start of day'{$modifiers})";
+	}
+
+	return "{$sqlite_base_func}('now'{$modifiers})";
+}
+
+
+
+/**
+ * Convert MySQL-style interval expression to SQLite-compatible modifier(s)
+ *
+ * @param string $expr  - expression.
+ *
+ * @return string
+ *
+ * Supports:
+ * - INTERVAL 5 DAY
+ * - INTERVAL '00:00:01' HOUR_SECOND
+ * - Multiple modifiers if needed (returns ', '+X unit', '+Y unit'...')
+ */
+function wpbc__convert_mysql_interval_to_sqlite_modifiers( $expr ) {
+
+	$expr = trim( $expr );
+
+	if ( preg_match( '/([+-])?\s*INTERVAL\s+(\'?)([^\'\s]+)\2\s+([A-Z_]+)/i', $expr, $m ) ) {
+		$sign  = ( '-' === $m[1] ) ? '-' : '+';
+		$value = $m[3];
+		$type  = strtoupper( $m[4] );
+
+		switch ( $type ) {
+			case 'DAY':
+				return ", '{$sign}{$value} days'";
+
+			case 'HOUR_SECOND':
+			case 'SECOND':
+				$seconds = 0;
+				if ( strpos( $value, ':' ) !== false ) {
+					$parts = array_map( 'intval', explode( ':', $value ) );
+					if ( count( $parts ) === 3 ) {
+						$seconds = $parts[0] * 3600 + $parts[1] * 60 + $parts[2];
+					} elseif ( count( $parts ) === 2 ) {
+						$seconds = $parts[0] * 60 + $parts[1];
+					}
+				} else {
+					$seconds = intval( $value );
+				}
+
+				return ", '{$sign}{$seconds} seconds'";
+
+			default:
+				return ", '{$sign}{$value} " . strtolower( $type ) . "'";
+		}
+	}
+
+	return '';
 }

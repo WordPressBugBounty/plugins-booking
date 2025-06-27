@@ -525,7 +525,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 		$tabs['advanced']['subtabs'] = $subtabs;
 
 		$tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:900;' ) );
-		$tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:1000;' ) );
+		// $tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:1000;' ) );
 
 		return $tabs;
 	}

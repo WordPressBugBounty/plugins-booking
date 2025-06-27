@@ -1,11 +1,11 @@
-﻿=== WP Booking Calendar ===
+﻿=== Booking Calendar ===
 Contributors: wpdevelop, oplugins
 Donate link: https://wpbookingcalendar.com/buy/
 Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.12.0
+Stable tag: 10.12.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -275,7 +275,6 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 - Czech                        39.17% [ 1002 / 2558 ], fuzzy 869, not translated 687
 - Chinese (Hong Kong)          26.58% [ 680 / 2558 ], fuzzy 149, not translated 1729
 
-
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
 = Tech support =
@@ -301,6 +300,21 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.12.1 =
+- Changes in **all** versions:
+	* **Improvement**: **Improved Sidebar Navigation**: The left sidebar is now sticky and scrollable for easier access. (10.12.1.2).
+	* **Improvement**: **Better Tooltips**: Tooltips now show when hovering over collapsed menu items in compact mode. (10.11.5.8.2.)
+	* **Improvement**: **Color Scheme Support**: The plugin buttons now matches the WordPress admin color scheme you’ve selected in your profile. (10.12.1.3.)
+	* **Improvement**: **Fullscreen Mode Memory**: Booking Calendar remembers whether you used fullscreen or normal mode and reopens in the same way next time.
+	* **Improvement**: **WP Playground Support**: Now compatible with the WordPress Playground environment. (10.12.1.3.)
+	* **Improvement**: **Top Bar Logo**: A Booking Calendar logo has been added to the top WordPress admin bar. (10.12.1.6.)
+	* **Improvement**: **Expand / colapse Left Sidebar buttons**: Added additional expand/colapse left sidebar buttons at bottom of the screen. (10.12.1.7.)
+	* **Improvement**: During auto-creation of pages with booking form try to set "Full width" theme template, if available.
+	**Fix**: Top news messages are now displaying correctly. (10.12.1.1).
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+ 	* **Fix**: Correct showing PayPal button titles on bWP Booking Calendar > Settings > Payment Setup > PayPal page.
+ 	* **Fix**: Fatal error during activation of paid version of Booking Calendar, if by some reason, the Booking Calendar Free version  was not activated,  yet. Uncaught Error: Class "WPBC_Action_Scheduler_Compatibility" not found in ../wp-content/plugins/booking-calendar-com/includes/activation/activation-pro.php:337
+
 = 10.12.0 =
 - Changes in **all** versions:
 	* **New**: Added a new green calendar skin.
@@ -534,6 +548,9 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 
 
 == Upgrade Notice ==
+= 10.12 =
+Pro versions now require the Free version for updates. New Skin and many small improvements.
+
 = 10.11 =
 Major admin panel redesign with a modern UI, new full-screen mode, smarter booking list, improved settings navigation, and enhanced accessibility across all Booking Calendar pages.
 

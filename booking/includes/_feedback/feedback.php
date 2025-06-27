@@ -531,9 +531,9 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 
 // debuge('In email', htmlentities($to), $subject, htmlentities($message), $headers, $attachments)  ;
 // debuge( '$to, $subject, $message, $headers, $attachments',htmlspecialchars($to), htmlspecialchars($subject), htmlspecialchars($message), htmlspecialchars($headers), htmlspecialchars($attachments));
-
-	$return = wp_mail( $to, $subject, $message, $headers, $attachments );
-
+	if ( wpbc_email_api_is_allow_send( true, '', '' ) ) {
+		$return = wp_mail( $to, $subject, $message, $headers, $attachments );
+	}
 }
 
 

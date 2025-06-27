@@ -1309,8 +1309,19 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 }
 
 
-
-
+/* == Fix minimum form heights in some WP themes, like "Twenty Five" == */
+.is-layout-constrained > div:has(.wpbc_form) {
+	margin: 5px auto 0;
+	max-width: Min(900px, 100%);
+	font-size: 16px;
+	font-weight: 400;
+	padding: 0 10px;
+}
+.is-layout-constrained .wpbc_form {
+	max-width: Min(900px, 100%);
+	padding: 0;
+	margin: 1em auto 0;
+}
 
 /* //FixIn: 10.0.0.25 */
 /* ================================================================================================================== */
@@ -1629,7 +1640,7 @@ table.wpbc_ideal_payment_table {
     border: 2px solid rgb(77, 77, 77);
     color: #fff;
 }
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe.bccom_button_gw_stripe {
+.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe.wpbc_button_gw_bccom {
 	background: 90% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/stripe.svg"), #fff;
 	background-color: rgb(77, 77, 77);
 }
@@ -1645,7 +1656,6 @@ table.wpbc_ideal_payment_table {
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver,
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white
 {
-    background: 90% 50% / 30% 50% no-repeat url("../inc/assets/paypal_commerce.svg"), transparent;
     padding-right: 115px;
     background-color: #ffc439 !important;
     border: 2px solid #ffc439 !important;
@@ -1655,6 +1665,11 @@ table.wpbc_ideal_payment_table {
     text-indent:-9999px;
     background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_commerce.svg"), #ffc439 !important;
     min-width: 175px;
+}
+.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow.wpbc_button_gw_bccom,
+.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver.wpbc_button_gw_bccom,
+.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white.wpbc_button_gw_bccom {
+	background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_commerce.svg"), #ffc439 !important;
 }
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:focus,
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:hover,
@@ -1671,7 +1686,6 @@ table.wpbc_ideal_payment_table {
     /* PayPal Blue */
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue,
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black {
-        background: 90% 50% / 30% 50% no-repeat url("../inc/assets/paypal_white_full.svg"), transparent;
         padding-right: 115px;
         background-color: #009cde !important;
         border: 2px solid #009cde !important;
@@ -1681,6 +1695,10 @@ table.wpbc_ideal_payment_table {
         text-indent:-9999px;
         background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_white_full.svg"), #009cde !important;
         min-width: 175px;
+    }
+    .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue.wpbc_button_gw_bccom,
+    .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black.wpbc_button_gw_bccom {
+        background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_white_full.svg"), #009cde !important;
     }
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue:focus,
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue:hover,
@@ -1697,6 +1715,9 @@ table.wpbc_ideal_payment_table {
         border: 2px solid #eee !important;
         background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_commerce.svg"), #eee !important;
     }
+    .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver.wpbc_button_gw_bccom {
+        background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_commerce.svg"), #eee !important;
+    }
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver:focus,
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver:hover {
         background-color: #e2e2e2 !important;
@@ -1708,6 +1729,9 @@ table.wpbc_ideal_payment_table {
         border: 1px solid #2C2E2F !important;
         background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_commerce.svg"), #fff !important;
     }
+    .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white.wpbc_button_gw_bccom {
+        background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_commerce.svg"), #fff !important;
+    }
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white:focus,
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white:hover {
         background-color: #fff !important;
@@ -1718,6 +1742,9 @@ table.wpbc_ideal_payment_table {
         background-color: #2c2e2f !important;
         border: 2px solid #2c2e2f !important;
         background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_white_full.svg"), #2c2e2f !important;
+    }
+    .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black.wpbc_button_gw_bccom {
+        background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_white_full.svg"), #2c2e2f !important;
     }
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black:focus,
     .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black:hover {

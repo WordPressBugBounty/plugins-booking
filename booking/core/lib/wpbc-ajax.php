@@ -188,9 +188,9 @@ function wpbc_ajax_TRASH_RESTORE() {
 				// wpbc_send_email_approved($approved_id_str, $is_send_emeils,$denyreason);									// FixIn: 8.1.2.7.
 			}
 		}
-
+		// FixIn: 10.12.1.5.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking AS bk SET bk.trash = {$is_trash} WHERE booking_id IN ({$approved_id_str})" ) ) {
+		if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking SET trash = {$is_trash} WHERE booking_id IN ({$approved_id_str})" ) ) {
 			?>
 			<script type="text/javascript">
 				var my_message = '<?php echo esc_attr( html_entity_decode( esc_js( get_debuge_error( 'Error during trash booking in DB', __FILE__, __LINE__ ) ), ENT_QUOTES ) ); ?>';

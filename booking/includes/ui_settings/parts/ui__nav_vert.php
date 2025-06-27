@@ -93,6 +93,10 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	// Ability to click on panel, only if there 'min' class - panel minimized!
 	echo '<div class="wpbc_ui_el__vert_left_bar__wrapper" onclick="javascript:if ( jQuery( this ).parent(\'.wpbc_settings_page_wrapper\').hasClass(\'min\') ) { wpbc_admin_ui__sidebar_left__do_max(); }" >';
 
+	// FixIn: 10.12.1.7.
+	wpbc_ui__vert_left_bar__side_button__do_compact();
+	wpbc_ui__vert_left_bar__side_button__do_max();
+
 	$active_page_arr = array(
 		'active_page'   => $args['active_page'],          // wpbc-settings.
 		'active_tab'    => $args ['active_tab'],          // calendar_appearance.
@@ -237,7 +241,7 @@ function wpbc_ui__vert_left_bar__do_max() {
 
 	$el_arr                    = array();
 	$el_arr['container_style'] = '';
-	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_open_left_vertical_nav wpbc_ui__hide';
+	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_open_left_vertical_nav wpbc_ui__hide hide_in_compact_mode0';
 	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_max(); ';
 	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-right';
 	$el_arr['hint']            = array(
@@ -313,6 +317,7 @@ function wpbc_ui__vert_left_bar__do_min() {
  */
 function wpbc_ui__vert_menu__show_section_header_go_back( $page_title ) {
 
+	// FixIn: 10.12.1.7.
 	?>
 	<a onclick="javascript:wpbc_admin_ui__sidebar_left__show_section('main_menus');" href="javascript:void(0)"
 	   class="wpbc_ui_el__go_back wpbc_ui_el  hide_in_compact_mode" >
@@ -563,9 +568,14 @@ function wpbc_ui__vert_menu__item_sub( $menu_slug, $menu_item_arr ) {
 			<?php } ?>
 		>
 			<?php if ( ! empty( $menu_item_arr['font_icon'] ) ) { ?>
-			<i class="wpbc_ui_el__vert_nav_icon  menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
-			   title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
-			></i>
+				<?php // Show icon in max mode, without right tooltip, thanks to '.hide_in_compact_mode'. // FixIn: 10.11.5.8.2. ?>
+				<i class="wpbc_ui_el__vert_nav_icon hide_in_compact_mode menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
+				   title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
+				></i>
+				<?php // Show icon in compact mode, with right tooltip, thanks to '.hide_in_max_mode'. // FixIn: 10.11.5.8.2. ?>
+				<i 	class="wpbc_ui_el__vert_nav_icon hide_in_max_mode tooltip_right_offset  menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
+					data-original-title="<?php echo ( ! empty( $menu_item_arr['hint'] ) ) ? esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ) . ' - ' .  esc_attr( wp_strip_all_tags( $menu_item_arr['hint'] ) ) : esc_attr( wp_strip_all_tags( $menu_item_arr['title'] ) ); ?>"
+				></i>
 			<?php } ?>
 			<span class="wpbc_ui_el__vert_nav_title hide_in_compact_mode"><?php echo wp_kses_post( $menu_item_arr['title'] ); ?></span>
 			<?php
@@ -631,4 +641,37 @@ function wpbc_ui__vert_menu__item_separtor( $menu_slug, $menu_item_arr ) {
 function wpbc_ui__vert_menu__item_html( $menu_slug, $menu_item_arr ) {
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo $menu_item_arr['html'];
+}
+
+// FixIn: 10.12.1.7.
+/**
+ * Show element - "Compact - Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_left_bar__side_button__do_compact() {
+
+	?>
+	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav" onclick="javascript:wpbc_admin_ui__sidebar_left__do_compact();" title="<?php esc_attr_e( 'Set side menu compact', 'booking' ); ?>">
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
+		</svg>
+	</button>
+	<?php
+}
+
+/**
+ * Show element - "Max - Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_left_bar__side_button__do_max() {
+
+	?>
+	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_left_vertical_nav" onclick="javascript:wpbc_admin_ui__sidebar_left__do_max();" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
+		</svg>
+	</button>
+	<?php
 }

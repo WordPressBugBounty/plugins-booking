@@ -797,7 +797,10 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   box-sizing: border-box;
   margin: auto;
   max-width: 100%;
-  width: 100%
+  width: 100%;
+  max-width: Min(900px,100%);
+  font-size: 16px;
+  font-weight: 400
 }
 .wpbc_wizard__border_container .wpbc_times_selector div {
   -ms-flex: 0 0 120px;

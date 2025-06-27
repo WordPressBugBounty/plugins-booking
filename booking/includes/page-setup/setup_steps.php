@@ -421,13 +421,14 @@ class WPBC_SETUP_WIZARD_STEPS {
 				return false;
 			}
 
+			// FixIn: 10.12.1.1.
 			?><style tye="text/css">
 				@media screen and (max-width: 782px) {
 					.ui_element.wpbc_page_top__wizard_button {
 						top: 49px !important;
 					}
 				}
-				.wpbc_header_news{
+				.wp-admin.wpbc_admin_full_screen .wpbc_header_news {
 					display: none !important;
 				}
 				.wpbc_admin_full_screen .wpbc_page_top__wizard_button {

@@ -807,7 +807,7 @@ function wpbc__sql__get_booked_dates( $params ){
 	// W H E R E
 	$sql_where  = '';
 	$sql_where .= ( '' != $params['approved'] ) ? " AND ( dt.approved = {$params['approved']} ) " : '';                 // Approved (1) or Pending (0) or All       // int
-	$sql_where .= " AND dt.booking_date >= CURDATE() ";                                                                 // Only actual bookings
+	$sql_where .= " AND dt.booking_date >= " . wpbc_sql_date_math_expr_explicit('', 'curdate') . " ";                                                                 // Only actual bookings
 	$sql_where .= " AND bk.trash != 1 ";                                                                                // Not in Trash                             // int
 	$sql_where .= " AND bk.booking_type IN ( {$params['resource_id']} ) ";                                              // For specific calendar (booking resource) // int
 	$sql_where .= ( '' != $params['skip_booking_id'] ) ? " AND dt.booking_id NOT IN ( {$params['skip_booking_id']} ) " : '' ;   // Skip  some bookings ?  Usually, during booking edit.

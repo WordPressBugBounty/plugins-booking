@@ -56,25 +56,6 @@ function wpbc_is_table_exists( $tablename ) {
 }
 
 
-// FixIn: 10.0.0.1.
-/**
- * Check  if we are in playground.wordpress.net ,  where used 'sqlite' DB
- *
- * @return bool
- */
-function wpbc_is_this_wp_playground_db(){
-
-	return false;
-
-	if (
-		   ( ( function_exists( 'sqlite_open' ) ) || ( class_exists( 'SQLite3' ) ) )
-		&& ( ! class_exists( 'wpdev_bk_personal' ) )
-	){
-		return true;
-	} else {
-		return false;
-	}
-}
 
 
 /**
@@ -87,9 +68,6 @@ function wpbc_is_this_wp_playground_db(){
  */
 function wpbc_is_field_in_table_exists( $tablename, $fieldname ) {
 
-	if ( wpbc_is_this_wp_playground_db() ) {
-		return 1;        // Probably  we are in playground.wordpress.net --> So  then all  such fields already  was created			// FixIn: 10.0.0.1.
-	}
 
 	global $wpdb;
 

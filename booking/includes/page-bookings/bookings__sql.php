@@ -1028,42 +1028,40 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 			                                                                                // Actual
 			    if (  ( ( $wh_booking_date  === '' ) && ( $wh_booking_date2  === '' ) ) || ($wh_booking_date  === '0') ) {
-			        $sql_where =               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      // FixIn: 8.5.2.14.
+			        $sql_where =               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;      // FixIn: 8.5.2.14.
 
 			    } else  if ($wh_booking_date  === '1') {                                    // Today								// FixIn: 7.1.2.8.
-			        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;
-			        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;     // FixIn: 8.4.7.21.
+			        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '23:59:59' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;
+			        $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;     // FixIn: 8.4.7.21.
 
 
 			    } else if ($wh_booking_date  === '2') {                                     // Previous
-			        $sql_where =               $and_pre."( ".$pref."booking_date <= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;      // FixIn: 8.5.2.16.
+			        $sql_where =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;      // FixIn: 8.5.2.16.
 
 			    } else if ($wh_booking_date  === '3') {                                     // All
 			        $sql_where =  '';
 
 			    } else if ($wh_booking_date  === '4') {                                     // Next
-			        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL ". $wh_booking_date2 . " DAY ) ) ".$and_suf ;
-			        // $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL 1 DAY ) ) ".$and_suf ;
-				    $sql_where .=               $and_pre."( ".$pref."booking_date > ( CURDATE() ) ) ".$and_suf ;                    // FixIn: 8.0.1.1.
+			        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL ". $wh_booking_date2 . " DAY", 'curdate' ) . ") ) ".$and_suf ;
+			        // $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
+				    $sql_where .=               $and_pre."( ".$pref."booking_date > ( " . wpbc_sql_date_math_expr_explicit('', 'curdate') . " ) ) ".$and_suf ;                    // FixIn: 8.0.1.1.
 
 			    } else if ($wh_booking_date  === '5') {                                     // Prior
 			        $wh_booking_date2 = str_replace('-', '', $wh_booking_date2);
-			        $sql_where  =               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL ". $wh_booking_date2 . " DAY ) ) ".$and_suf ;
-			        $sql_where .=               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+			        $sql_where  =               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL ". $wh_booking_date2 . " DAY", 'curdate' ) . ") ) ".$and_suf ;
+			        $sql_where .=               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
 			    } else  if ($wh_booking_date  === '7') {                                    // Check In date - Today/Tomorrow
-			          // $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;
-			          // $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() ) ) ".$and_suf ;
-			          $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '1 23:59:59' DAY_SECOND ) ) ".$and_suf ;
-			          $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+			          $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '47:59:59' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;
+			          $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
 			    } else  if ($wh_booking_date  === '8') {                                    // Check Out date - Tomorrow
-			        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL '1 23:59:59' DAY_SECOND ) ) ".$and_suf ;
-			        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+			        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '47:59:59' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;
+			        $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
 			    } else if ( ( $wh_booking_date === '9' ) || ( $wh_booking_date === '10' ) || ( $wh_booking_date === '11' ) ) {  // Today check in/out
-			        $sql_where  =               $and_pre."( ".$pref."booking_date <= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
-			        $sql_where .=               $and_pre."( ".$pref."booking_date >= ( CURDATE() - INTERVAL 1 DAY ) ) ".$and_suf ;
+			        $sql_where  =               $and_pre."( ".$pref."booking_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
+			        $sql_where .=               $and_pre."( ".$pref."booking_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
 			    } else {                                                                    // Fixed
 
@@ -1118,16 +1116,16 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 			    else                 { $and_pre = ''; $and_suf = ' AND '; }
 
 			    if ($wh_modification_date  === '1') {                                       // Today
-			        $sql_where  =               $and_pre."( ".$pref."modification_date <= ( CURDATE() + INTERVAL '23:59:59' HOUR_SECOND ) ) ".$and_suf ;    // FixIn: 8.4.7.22.
-			        $sql_where .=               $and_pre."( ".$pref."modification_date >= ( CURDATE() - INTERVAL '00:00:01' HOUR_SECOND ) ) ".$and_suf ;    // FixIn: 8.4.7.22.
+			        $sql_where  =               $and_pre."( ".$pref."modification_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '23:59:59' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;    // FixIn: 8.4.7.22.
+			        $sql_where .=               $and_pre."( ".$pref."modification_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL '00:00:01' HOUR_SECOND", 'curdate' ) . ") ) ".$and_suf ;    // FixIn: 8.4.7.22.
 
 			    } else if ($wh_modification_date  === '3') {                                // All
 			        $sql_where =  '';
 
 			    } else if ($wh_modification_date  === '5') {                                // Prior
 			        $wh_modification_date2 = str_replace('-', '', $wh_modification_date2);
-			        $sql_where  =               $and_pre."( ".$pref."modification_date >= ( CURDATE() - INTERVAL ". $wh_modification_date2 . " DAY ) ) ".$and_suf ;
-			        $sql_where .=               $and_pre."( ".$pref."modification_date <= ( CURDATE() + INTERVAL 1 DAY ) ) ".$and_suf ;
+			        $sql_where  =               $and_pre."( ".$pref."modification_date >= (" . wpbc_sql_date_math_expr_explicit( "- INTERVAL ". $wh_modification_date2 . " DAY", 'curdate' ) . ") ) ".$and_suf ;
+			        $sql_where .=               $and_pre."( ".$pref."modification_date <= (" . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 1 DAY", 'curdate' ) . ") ) ".$and_suf ;
 
 			    } else {                                                                    // Fixed
 

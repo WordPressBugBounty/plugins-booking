@@ -101,9 +101,9 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
  */
 function wpbc_hash__update_booking_hash( $booking_id, $resource_id = '1' ) {
 	global $wpdb;
-
+	// FixIn: 10.12.1.5.
 	$update_sql = $wpdb->prepare(
-		"UPDATE {$wpdb->prefix}booking AS bk SET bk.hash = MD5(%s) WHERE bk.booking_id = %d"
+		"UPDATE {$wpdb->prefix}booking SET hash = MD5(%s) WHERE booking_id = %d"
 		, time() . '_' . wp_rand( 1000, 1000000 )
 		, $booking_id
 	);

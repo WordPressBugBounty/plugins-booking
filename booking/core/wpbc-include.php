@@ -90,6 +90,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_functions/versions.php';             
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/sanitizing.php';                // Sanitizing.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/request.php';                   // Class for sanitizing $_REQUEST parameters and saving or getting it from  DB         // FixIn: 9.3.1.2.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/city_list.php';                 // City list.
+require_once WPBC_PLUGIN_DIR . '/includes/_functions/user-custom-data-saver.php';    // Saving custom user data.
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions.php';                               // Functions.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions_dates.php';                         // Function Dates                       New in 9.8.

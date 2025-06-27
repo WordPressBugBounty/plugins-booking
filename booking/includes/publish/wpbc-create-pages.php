@@ -69,6 +69,7 @@ function wpbc_create_page( $page_params = array() ){                            
 
 		// $post = get_post( $post_id );
 		// $post_url = get_permalink( $post_id );
+		wpbc_try_assign_full_width_template( $post_id );
 
 	} else {
 		if ( is_wp_error( $post_id ) ) {
@@ -81,6 +82,61 @@ function wpbc_create_page( $page_params = array() ){                            
 	}
 
 	return $post_id;
+}
+
+
+/**
+ * Attempt to assign a "Full Width" template to a newly created page.
+ *
+ * This function checks if a "Full Width" page template is available in the current theme,
+ * and assigns it to the given post if found. It supports both classic (PHP template files)
+ * and block (FSE) themes.
+ *
+ * - For classic themes, it searches `get_page_templates()` for a template name containing both "full" and "width".
+ * - For block themes, it searches registered `wp_template` entries for the active theme,
+ *   and sets the post's `template` property if a matching template is found.
+ *
+ * @param int $post_id The ID of the post to assign the template to.
+ * @return bool True if a "Full Width" template was found and assigned; false otherwise.
+ */
+function wpbc_try_assign_full_width_template( $post_id ) {
+
+	if ( ( ! $post_id ) || ( is_wp_error( $post_id ) ) ) {
+		return;
+	}
+
+	$found = false;
+
+	// CLASSIC THEMES: Check PHP-based templates.
+	$classic_templates = get_page_templates( get_post( $post_id ) );
+	foreach ( $classic_templates as $template_name => $template_file ) {
+		if ( ( false !== stripos( $template_name, 'full' ) ) && ( false !== stripos( $template_name, 'width' ) ) ) {
+			update_post_meta( $post_id, '_wp_page_template', $template_file );
+			$found = true;
+			break;
+		}
+	}
+
+	// BLOCK THEMES (FSE): Check for full width template.
+	if ( ! $found && function_exists( 'wp_theme_has_theme_json' ) && wp_theme_has_theme_json() ) {
+		$theme_slug = get_stylesheet();
+		$templates  = get_block_templates( array(), 'wp_template' );
+
+		foreach ( $templates as $template ) {
+			if ( ( $template->theme === $theme_slug ) && ( false !== stripos( $template->title, 'full' ) ) && ( false !== stripos( $template->title, 'width' ) ) ) {
+				wp_update_post(
+					array(
+						'ID'       => $post_id,
+						'template' => $template->slug,
+					)
+				);
+				$found = true;
+				break;
+			}
+		}
+	}
+
+	return $found;
 }
 
 
@@ -315,10 +371,11 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 	global $wp_rewrite;
 	if ( is_null( $wp_rewrite ) ) {                                                                                     // FixIn: 9.7.1.1.
 
-		// Maybe it was not init,  yet
+		// Maybe it was not init,  yet.
 		if ( ! has_action( 'init', 'wpbc_create_page_with_booking_form' ) ) {
 			add_action( 'init', 'wpbc_create_page_with_booking_form', 99 );                                             // <- priority  to  load it last
 		}
+
 		return false;
 	}
 
@@ -326,9 +383,9 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 	$post_url = '';
 
 	// FixIn: 10.9.2.5.
-	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url
+	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url.
 		$post_name_slug = 'wp-booking-calendar';
-	} else {                                                    // Old page already was Created     - Use old url
+	} else {                                                    // Old page already was Created     - Use old url.
 		$post_name_slug = 'wpbc-booking';
 	}
 	$wp_post = get_page_by_path( $post_name_slug );
@@ -338,25 +395,39 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 		$page_params = array(
 			'post_title'   => esc_html( __( 'Booking Form', 'booking' ) ),
 			'post_content' => '[booking resource_id=1]',
-			'post_name'    => $post_name_slug
+			'post_name'    => $post_name_slug,
 		);
+		if ( WPBC_IS_PLAYGROUND ) {
+			$page_params['post_content'] = '<style type="text/css"> h1, h2, h3, h4, h5, h6 { font-weight: 500; font-family: var(--wp--preset--font-family--body); } </style>' .
+					// '<div class="alignfull" style="margin: 5px auto 0;max-width: Min(900px, 100%);font-size: 16px;font-weight: 400;">' . $page_params['post_content'] . '</div>';
+					$page_params['post_content'];
+		}
 		$post_id = wpbc_create_page( $page_params );
 
 		if ( ! empty( $post_id ) ) {
-			$post_url = wpbc_make_link_relative( get_permalink(  $post_id ) );
+			$post_url = wpbc_make_link_relative( get_permalink( $post_id ) );
+			if ( WPBC_IS_PLAYGROUND ) {
+				update_option( 'show_on_front', 'page' );
+				update_option( 'page_on_front', $post_id );
+			}
 		}
-
 	} else {
-		$post_url = wpbc_make_link_relative( get_permalink(  $wp_post->ID ) );                                          // Page already exist,  so we need to update the
+		$post_url = wpbc_make_link_relative( get_permalink( $wp_post->ID ) );                                          // Page already exist,  so we need to update the.
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// Check  if existing page has our shortcode. We are checking for 'booking'  because it can  be '[booking]' or '[booking type=1]' ...
 	if ( ! wpbc_is_shortcode_exist_in_page( $post_url, '[booking' ) ) {
-		$is_sh_added = wpbc_add_shortcode_to_exist_page( $post_url, '[booking resource_id=1]' );
-	}
 
+		$shortcode_to_add = '[booking resource_id=1]';
+		if ( WPBC_IS_PLAYGROUND ) {
+			$shortcode_to_add = '<style type="text/css"> h1, h2, h3, h4, h5, h6 { font-weight: 500; font-family: var(--wp--preset--font-family--body); } </style>' .
+								// '<div class="alignfull" style="margin: 5px auto 0;max-width: Min(900px, 100%);font-size: 16px;font-weight: 400;">' . $shortcode_to_add . '</div>';
+								$shortcode_to_add;
+		}
+		$is_sh_added = wpbc_add_shortcode_to_exist_page( $post_url, $shortcode_to_add );
+	}
 }
 add_bk_action( 'wpbc_before_activation__add_options', 'wpbc_create_page_with_booking_form' );
 

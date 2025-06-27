@@ -29,13 +29,14 @@
 	box-shadow: var(--wpbc_ui__gen__panel_box-shadow);
 	transition: all .25s ease-in-out;
 	font-size: var(--wpbc_ui_left_vert_nav__font-size);
-	border-radius: 0 0 6px;
+	border-radius: 0 0 3px;
 	padding: 0;
 	margin: var(--wpbc_ui_left_vert_nav__margin);
 
 	overflow-y: auto;
 	scrollbar-width: thin;
 	overflow-x: hidden;
+	overflow: visible; /* FixIn: 10.12.1.2. */
 }
 
 /* == Responsive Sizes: < 600px (less top icons), < 782px (no wp left bar), < 960px (wp left bar colapse) =========== */
@@ -109,9 +110,38 @@
 .wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper:hover { max-width: calc( var(--wpbc_ui_left_vert_nav__width_min) + 15px ); }
 /* -- End Sizes ----------------------------------------------------------------------------------------------------- */
 /* Navigation  elements */
-.wpbc_ui_el__vert_left_bar__content{
-
+/* Mark vertical menu sticky. // FixIn: 10.12.1.2. */
+.wpbc_ui_el__vert_left_bar__content {
+	position: sticky;
+	top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + var(--wpbc_ui_top_nav__height));
+	max-height: calc(100vh - var(--wpbc_ui_top_nav__wp_top_menu_height) - var(--wpbc_ui_top_nav__height) - 2px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	scrollbar-width: none;
+	scrollbar-gutter: initial;
+	scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
+.wpbc_ui_el__vert_left_bar__content:hover {
+	scrollbar-width: thin;
+}
+/* Show scrollbar for mobile devices by  default */
+@media screen and (max-width: 960px) {
+	.wpbc_ui_el__vert_left_bar__content {
+		scrollbar-width: thin;
+		scrollbar-gutter: stable;
+	}
+}
+	/* Nof Fixed position for mobile */
+	@media screen and (max-width: 600px) {
+		.wpbc_ui_el__vert_left_bar__content {
+			position: static;
+		}
+	}
+/* Hide scrollbacr in compact mode, but still scroll. // FixIn: 10.12.1.2. */
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content{
+	scrollbar-width: none;
+}
+
 .wpbc_ui_el__vert_nav_item{
 
 }
@@ -234,6 +264,14 @@ a > .wpbc_ui_el__section_header {
 	align-items: center;
 	margin: 0 0 0 10px;
 	text-decoration: none;
+}
+/* Go Back  for Compact  mode. // FixIn: 10.12.1.7. */
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content  .wpbc_ui_el__go_back {
+  margin: 0;
+}
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content  .wpbc_ui_el__go_back .wpbc_icn_navigate_before::before {
+  font-size:22px;
+  line-height: 16px;
 }
 /* Animation */
 .wpbc_ui_el__vert_left_bar__section {
@@ -378,4 +416,50 @@ a > .wpbc_ui_el__section_header {
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a{
 	margin-left:0;
 	padding:0;
+}
+
+/* -- Side button - Colapse / Expand  -------------------------------------------------------------------------------   // FixIn: 10.12.1.7. */
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button {
+	width: 22px;
+	height: 41px;
+	background: #ffffffc2;
+	position: sticky;
+	top: 50%;
+	/*top: calc( 100% - 41px - var(--wpbc_ui_top_nav__height) - var(--wpbc_ui_top_nav__wp_top_menu_height) );*/
+	top: calc( 100% - 41px - 20px );
+	border-style: solid;
+	border-width: 1px 1px 1px 0px;
+	border-color: #e1e1e1;
+	border-radius: 0 3px 3px 0;
+	z-index: 1;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+	align-self: flex-end;
+	margin-right: -23px;
+	margin-top: -41px;
+}
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav svg {
+	transform: rotate(180deg);
+	left: -1px;
+	width: 14px;
+	height: 14px;
+}
+
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button svg {
+	width: 12px;
+	height: 12px;
+	display: block;
+	position: relative;
+	left: -2px;
+	transition: all 0.3s ease-in-out;
+}
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button:hover svg {
+	left: -4px;
+}
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav {
+	width: 24px;
+	height: 44px;
+}
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav:hover svg {
+	left: 1px;
 }

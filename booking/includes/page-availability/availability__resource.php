@@ -191,7 +191,7 @@ function wpbc_availability__get_dates_status__sql( $params ){
 																					// All  dates
 		} else if ( 'CURDATE' == $params['calendar_date'] ) {
 
-			$sql['where'] .= " AND calendar_date >= CURDATE() ";                    // Current dates
+			$sql['where'] .= " AND calendar_date >= " . wpbc_sql_date_math_expr_explicit('', 'curdate') . " ";                    // Current dates
 
 		} else {                                                                    // Specific Date(s)
 

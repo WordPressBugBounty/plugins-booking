@@ -289,6 +289,23 @@ function wpbc_get_setup_wizard_page_url( $is_absolute_url = true, $is_old = true
  *
  * @return boolean true | false
  */
+function wpbc_is_this_plugin_page( $server_param = 'REQUEST_URI' ) {
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc' ) !== false ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Check if this Booking Listing or Calendar Overview page
+ *
+ * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
+ * @return boolean true | false
+ */
 function wpbc_is_bookings_page( $server_param = 'REQUEST_URI' ) {
 	// Old.
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized

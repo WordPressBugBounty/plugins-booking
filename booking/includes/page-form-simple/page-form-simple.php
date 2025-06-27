@@ -109,8 +109,9 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 
 
         if ( ! class_exists( 'wpdev_bk_personal' ) )																	// FixIn: 8.1.1.12.
+			$tabs[ 'settings-upgrade' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:1000;' ) );
         	$tabs[ 'upgrade-link' ] = array(
-                              'title' => __('Free vs Pro','booking')                // Title of TAB
+                              'title' => __('Get Pro','booking')                // Title of TAB
                             , 'hint'  => __('Upgrade to higher versions', 'booking')              // Hint    
                             //, 'page_title' => __('Upgrade', 'booking')        // Title of Page    
                             , 'link' => 'https://wpbookingcalendar.com/features/'                    // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link

@@ -7,6 +7,9 @@
 
 	margin-top: calc(var(--wpbc_ui_top_nav__height) - 1px);
 }
+.wp-toolbar .wpbc_admin_full_screen .wpbc_settings_page_wrapper {
+	margin-top: calc(var(--wpbc_ui_top_nav__height) - 1px - 32px);
+}
 .wpbc_settings_page_content {
 	/*flex: 1 1 auto;*/
 	/*max-width: calc( 100% - var(--wpbc_ui_left_vert_nav__width_max) );*/
