@@ -145,6 +145,14 @@ function wpbc_admin_ui__do_expand_section() {
 	}
 }
 
+function wpbc_admin_ui__is_in_mobile_screen_size() {
+	return wpbc_admin_ui__is_in_this_screen_size( 605 );
+}
+
+function wpbc_admin_ui__is_in_this_screen_size(size) {
+	return (window.screen.width <= size);
+}
+
 /**
  * Open settings page  |  Expand section  |  Select Menu item.
  */
@@ -152,6 +160,10 @@ function wpbc_admin_ui__do__open_url__expand_section(url, section_id) {
 
 	// window.location.href = url + '&do_expand=' + section_id + '#do_expand__' + section_id; //.
 	window.location.href = url + '#do_expand__' + section_id;
+
+	if ( wpbc_admin_ui__is_in_mobile_screen_size() ) {
+		wpbc_admin_ui__sidebar_left__do_min();
+	}
 
 	wpbc_admin_ui__do_expand_section();
 }

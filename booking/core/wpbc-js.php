@@ -222,6 +222,10 @@ function wpbc_js_load_files( $where_to_load ) {
 		}
 		wp_enqueue_script( 'wpbc-admin-support', wpbc_plugin_url( '/core/any/js/admin-support.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
 		wp_enqueue_script( 'wpbc-chosen', wpbc_plugin_url( '/assets/libs/chosen/chosen.jquery.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );           // Chosen Library.
+
+		// FixIn: 10.12.2.3.  // docs: https://www.npmjs.com/package/simplebar#5-caveats .
+		wp_enqueue_script( 'wpbc-simplebar', wpbc_plugin_url( '/assets/libs/simplebar/dist/simplebar.min.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );           // Chosen Library.
+		wp_enqueue_style( 'wpbc-simplebar', wpbc_plugin_url( '/assets/libs/simplebar/dist/simplebar.min.css' ), array(), WP_BK_VERSION_NUM );
 	}
 	if ( in_array( $where_to_load, array( 'admin', 'both' ), true ) ) {
 		wp_enqueue_script( 'wpbc_all_admin', wpbc_plugin_url( '/_dist/all/_out/wpbc_all_admin.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );

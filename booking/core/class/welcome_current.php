@@ -47,7 +47,6 @@ function wpbc_welcome_section_10_12( $obj ){
 	$obj->expand_section_end( $section_param_arr );
 }
 
-
 function wpbc_welcome_section_10_11( $obj ){
 
 	$section_param_arr = array( 'version_num' => '10.11', 'show_expand' => false );

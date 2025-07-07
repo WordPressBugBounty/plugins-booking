@@ -107,8 +107,12 @@ function wpbc_try_assign_full_width_template( $post_id ) {
 
 	$found = false;
 
-	// CLASSIC THEMES: Check PHP-based templates.
-	$classic_templates = get_page_templates( get_post( $post_id ) );
+	// CLASSIC THEMES: Check PHP-based templates. // FixIn: 10.12.2.1.
+	if ( function_exists( 'get_page_templates' ) ) {
+		$classic_templates = get_page_templates( get_post( $post_id ) );
+	} else {
+		$classic_templates = array(); // Fallback.
+	}
 	foreach ( $classic_templates as $template_name => $template_file ) {
 		if ( ( false !== stripos( $template_name, 'full' ) ) && ( false !== stripos( $template_name, 'width' ) ) ) {
 			update_post_meta( $post_id, '_wp_page_template', $template_file );

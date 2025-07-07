@@ -236,7 +236,8 @@ console.log( ' == Ajax Feedback :: Response WPBC_AJX_BOOKING_ACTIONS == ', respo
 
 						var closed_timer = setTimeout( function (){
 																	if ( 5 == response_data['ajx_after_action_result_all_params_arr'][ 'feedback_stars' ] ){
-																		document.location.href = 'https://wordpress.org/plugins/booking/#reviews';
+																		document.location.href = 'https://wordpress.org/support/plugin/booking/reviews/#new-post';
+																		// document.location.href = 'https://wordpress.org/plugins/booking/#reviews';
 																		// document.location.href = 'https://wordpress.org/support/plugin/booking/reviews/?filter=5#new-post'
 																	}
 																}

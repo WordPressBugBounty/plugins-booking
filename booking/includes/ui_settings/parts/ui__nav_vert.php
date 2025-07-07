@@ -91,7 +91,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	$params   = wp_parse_args( $args, $defaults );
 
 	// Ability to click on panel, only if there 'min' class - panel minimized!
-	echo '<div class="wpbc_ui_el__vert_left_bar__wrapper" onclick="javascript:if ( jQuery( this ).parent(\'.wpbc_settings_page_wrapper\').hasClass(\'min\') ) { wpbc_admin_ui__sidebar_left__do_max(); }" >';
+	echo '<div class="wpbc_ui_el__vert_left_bar__wrapper" onclick0="javascript:if (( jQuery( this ).parent(\'.wpbc_settings_page_wrapper\').hasClass(\'min\') ) && ( ! wpbc_admin_ui__is_in_mobile_screen_size())) { wpbc_admin_ui__sidebar_left__do_max(); }" >';
 
 	// FixIn: 10.12.1.7.
 	wpbc_ui__vert_left_bar__side_button__do_compact();
@@ -204,8 +204,36 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	echo '   </div><!-- wpbc_ui_el__vert_left_bar__content -->';
 
 	echo '</div><!-- wpbc_ui_el__vert_left_bar__wrapper -->';
+
+	wpbc_start_element_scrollable__with_simplebar( '.wpbc_ui_el__vert_left_bar__content' );
 }
 
+
+/**
+ * Set Scrolable Element with Simplebar js library.
+ *
+ * @param string $jq_element - e.g.  '.wpbc_ui_el__vert_left_bar__content'
+ * @param string $options    - e.g. 'autoHide: false, scrollbarMinSize: 10'   -  options for the Simplebar. See  more: https://www.npmjs.com/package/simplebar#1-documentation
+ *
+ * @return void
+ */
+function wpbc_start_element_scrollable__with_simplebar( $jq_element, $options = 'autoHide: false' ) {
+
+	// FixIn: 10.12.2.3.
+
+	// Initial example:  new SimpleBar( jQuery( '.wpbc_ui_el__vert_left_bar__content' )[0], { autoHide: false } );.
+	?>
+	<script type="text/javascript">
+		(function() { var a = setInterval( function() {  if ( ( 'undefined' === typeof jQuery ) || ! window.jQuery ) { return; } clearInterval( a ); jQuery( document ).ready( function () {
+			jQuery( '.wpbc_ui_el__vert_left_bar__section' ).css( { "animation-duration": "1ms" } ); // Set animation of showing left siebar from left to right imediate to prevent flipping.
+			new SimpleBar( jQuery( '<?php echo esc_attr( $jq_element ); ?>' )[0], { <?php echo esc_attr( $options ); ?> } );
+			var wait_timer = setTimeout( function (){
+				jQuery( '.wpbc_ui_el__vert_left_bar__section' ).css( { "animation-duration": "200ms" } ); // Set animation to normal value.
+			}, 300 );
+		} ); }, 400 ); })();
+	</script>
+	<?php
+}
 
 /* == Elements in Left  menu ========================================================================================= */
 
@@ -652,7 +680,8 @@ function wpbc_ui__vert_menu__item_html( $menu_slug, $menu_item_arr ) {
 function wpbc_ui__vert_left_bar__side_button__do_compact() {
 
 	?>
-	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav" onclick="javascript:wpbc_admin_ui__sidebar_left__do_compact();" title="<?php esc_attr_e( 'Set side menu compact', 'booking' ); ?>">
+	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav"
+			onclick="javascript:wpbc_admin_ui__sidebar_left__do_min();" title="<?php esc_attr_e( 'Set side menu compact', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
 		</svg>
@@ -666,12 +695,19 @@ function wpbc_ui__vert_left_bar__side_button__do_compact() {
  * @return void
  */
 function wpbc_ui__vert_left_bar__side_button__do_max() {
-
 	?>
-	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_left_vertical_nav" onclick="javascript:wpbc_admin_ui__sidebar_left__do_max();" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
+	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_left_vertical_nav"
+			onclick="javascript:wpbc_admin_ui__sidebar_left__do_max();" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
 		</svg>
 	</button>
+	<script type="text/javascript">
+		<?php echo wpbc_jq_ready_start();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		if (wpbc_admin_ui__is_in_this_screen_size(789)){
+			jQuery( '.wpbc_ui__left_sidebar__side_button' ).toggleClass( 'wpbc_ui__hide' );
+		}
+		<?php echo wpbc_jq_ready_end();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</script>
 	<?php
 }

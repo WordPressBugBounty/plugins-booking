@@ -27,7 +27,6 @@ class WPBC_Welcome {
 	 */
 	public $asset_path = ( true ) ? 'https://wpbookingcalendar.com/assets/' : 'http://beta/assets/';
 
-
 	/**
 	 * Constructor
 	 */
@@ -47,131 +46,9 @@ class WPBC_Welcome {
 		}
 	}
 
-    private function css() {
-        
-        ?><style type="text/css">
-			.feature-section.three-col,
-			.feature-section.two-col {
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				align-items: flex-start;
-			}
-			.feature-section.two-col .col.col-1{
-				width:100%;
-			}
-			.feature-section.two-col .col.col-2{
-				width: 70%;
-				padding: 0 0 0 7%;
-				box-sizing: border-box;
-			}
-			@media (max-width: 782px) {
-				/* iPad mini and all iPhones  and other Mobile Devices */
-				.feature-section.three-col,
-				.feature-section.two-col {
-					display: block;
-				}
-			}
-
-            /* Welcome Page ***************************************************************/
-            .wpbc-welcome-page .about-text {
-                margin-right:0px;
-                margin-bottom:0px;
-                min-height: 50px;
-            }
-            .wpbc-welcome-page .wpbc-section-image {
-                border:none;
-                box-shadow: 0 1px 3px #777777;   
-            }
-            .wpbc-welcome-page .versions {
-                color: #999999;
-                font-size: 12px;
-                font-style: normal;
-                margin: 0;
-                text-align: right;
-                text-shadow: 0 -1px 0 #EEEEEE;
-            }
-            .wpbc-welcome-page .versions a,
-            .wpbc-welcome-page .versions a:hover{
-                color: #999;
-                text-decoration:none;
-            }
-            .wpbc-welcome-page .update-nag {
-                border-color: #E3C58E;
-                border-radius: 5px;
-                -moz-border-radius: 5px;
-                -webkit-border-radius: 5px;
-                box-shadow: 0 1px 3px #EEEEEE;
-                color: #998877;
-                font-size: 12px;
-                font-weight: 600;
-                margin: 15px 0 0;   
-                width:90%;
-            }
-            .wpbc-welcome-page .feature-section {
-                margin-top:20px;
-                border:none;                
-            }
-            .wpbc-welcome-page .feature-section div {
-                line-height: 1.5em;
-            }
-            .about-wrap.wpbc-welcome-page .feature-section .last-feature {
-                margin-right:0;
-            }
-            .about-wrap.wpbc-welcome-page .changelog {
-                margin-bottom: 10px;
-            }
-            .about-wrap.wpbc-welcome-page .feature-section h4 {
-                font-size: 1.2em;
-                margin-bottom: 0.6em;
-                margin-left: 0;
-                margin-right: 0;
-                margin-top: 1.4em;
-            }
-            .about-wrap.wpbc-welcome-page .feature-section {
-                overflow-x: hidden;
-                overflow-y: hidden;
-                padding-bottom: 20px;
-            }
-			.about-wrap.wpbc-welcome-page [class$="-col"]{
-				align-items: initial;
-			}
-            @media (max-width: 782px) {      /* iPad mini and all iPhones  and other Mobile Devices */
-                .wpbc-welcome-page .feature-section.one-col > div, 
-                .wpbc-welcome-page .feature-section.three-col > div, 
-                .wpbc-welcome-page .feature-section.two-col > div {
-                    border-bottom: none;
-                    margin:0px !important;
-                }
-                .wpbc-welcome-page .feature-section img{
-                    /*width:98% !important;*/
-                    /*margin:0 1% !important;*/
-	                margin:0!important;
-	                width: auto !important;
-					max-height: 285px;
-					overflow: hidden;
-                }
-				.about-wrap.wpbc-welcome-page .feature-section div.col {
-					display:block;
-					float:none;
-					width: 100% !important;
-					padding: 0;
-				}
-            }
-			.wpbc-welcome-page li.big_numbers::marker{
-				font-size:1.2em;
-				font-weight: 600;
-				line-height: 2.1em;
-			}
-
-        </style><?php
-    }
-    // SUPPORT /////////////////////////////////////////////////////////////////
-
-        public function show_separator() {
-            ?><div class="clear" style="height:1px;border-bottom:1px solid #DFDFDF;"></div><?php
-        }
-
+	public function show_separator() {
+		echo '<div class="clear" style="height:1px;border-bottom:1px solid #DFDFDF;"></div>';
+	}
 
 	public function show_header( $text = '', $header_type = 'h3', $style = '' ) {
 		echo '<', esc_attr( $header_type );
@@ -182,7 +59,6 @@ class WPBC_Welcome {
 		echo wp_kses_post( wpbc_replace_to_strong_symbols( $text ) );
 		echo '</', esc_attr( $header_type ), '>';
 	}
-
 
 	public function show_col_section( $sections_array = array() ) {
 
@@ -265,7 +141,6 @@ class WPBC_Welcome {
 		<?php
 	}
 
-
 	public function get_img( $img, $img_style = '' ) {
 
 		$is_full_link = strpos( $img, 'http' );
@@ -296,8 +171,6 @@ class WPBC_Welcome {
 	// Head.
 	public function admin_head() {
 		remove_submenu_page( 'index.php', 'wpbc-about' );
-		//remove_submenu_page( 'index.php', 'wpbc-getting-started' );
-		//remove_submenu_page( 'index.php', 'wpbc-about-premium' );
 	}
 
 	// Title
@@ -348,7 +221,7 @@ class WPBC_Welcome {
 
 		list( $display_version ) = explode( '-', WPDEV_BK_VERSION );
 		?>
-		<div class="changelog point-releases" style="margin-top: 45px;">
+		<div class="changelog point-releases" style="margin: 40px 0 50px;">
 			<h3><?php
 				echo( "Maintenance Release" ); ?></h3>
 			<p><strong><?php
@@ -396,134 +269,79 @@ class WPBC_Welcome {
 
 
     // CONTENT /////////////////////////////////////////////////////////////////
-    
-    public function content_whats_new() {
 
-        //$this->css();
-if(0){
-        ?>
-		<style type="text/css">
-			.feature-section.two-col {
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				align-items: flex-start;
-			}
-			.feature-section.two-col .col.col-1{
-				width:100%;
-			}
-			.feature-section.two-col .col.col-2{
-				width: 70%;
-				padding: 0 0 0 7%;
-				box-sizing: border-box;
-			}
-			@media (max-width: 782px) {
-				/* iPad mini and all iPhones  and other Mobile Devices */
-				.feature-section.two-col {
-					display: block;
-				}
-			}
-
-			.wpbc-changelog-list ul {
-				list-style: outside;
-			}
-			.wpbc-changelog-list ul li{
-				margin-bottom: 0.5em;
-				line-height: 1.5em;
-			}
-			.wpbc-changelog-list ul li strong{
-				padding:0 5px;		
-			}
-			.wpbc_expand_section_link,
-			a.wpbc_expand_section_link:hover,
-			a.wpbc_expand_section_link:focus {
-				color:#21759b;
-				cursor: pointer;
-				outline: 0;
-				border:none;
-				border-bottom:1px dashed #21759B;
-				text-decoration: none;      
-			}
-		</style><?php
-}
+	public function show_go_links() {
 		?>
-		<div class="wrap about-wrap wpbc-welcome-page">
+		<div style="display: flex;flex-flow: row wrap;justify-content: center;gap: 2em;margin: 3em 0 1em;">
+			<a class="button button-primary"
+			   href="<?php
+			   echo esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing' ); ?>"
+			   style="font-size: 20px;padding: 0.15em 1.5em;"><?php
+				esc_html_e( 'Go to Booking Admin Panel', 'booking' ); ?></a>
+			<?php
+			$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
+			if ( ! empty( $wp_post_booking_absolute ) ) {
+				?>
+				<a class="button button-secondary"
+				   style="font-size: 20px;padding: 0.15em 1em;"
+				   href="<?php
+				   echo esc_url( $wp_post_booking_absolute ); ?>"
+				><?php
+					esc_html_e( 'Go to page with booking form', 'booking' ); ?></a>
+			<?php
+			} ?>
+		</div>
+		<?php
+	}
 
-            <?php $this->title_section(); ?>
+	public function content_whats_new() {
 
-            <table class="about-text" style="margin-bottom:-40px;height:auto;font-size:1em;width:100%;" >
-                <tr>
-                    <td>
-                        <?php  list( $display_version ) = explode( '-', WPDEV_BK_VERSION );  ?>
-                        <!--Thank you for updating to the latest version. <strong><code><?php echo esc_html( $display_version ); ?></code></strong>
-                        <br/>Booking Calendar has become more polished, powerful and easy to use than ever before.-->
-                    </td>
-                    <!--td style="width:10%">
-                        <a  href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-getting-started' ), 'index.php' ) ) ); ?>"
-                            style="float: right; height: 36px; line-height: 34px;" 
-                            class="button-primary"
-                            >&nbsp;<strong>Get Started</strong> <span style="font-size: 20px;line-height: 18px;padding-left: 5px;">&rsaquo;&rsaquo;&rsaquo;</span>
-                        </a>
-                    </td-->
-                </tr>
-            </table>
-            <?php
+		echo '<div class="wrap about-wrap wpbc-welcome-page">';
 
-            $this->maintence_section();
+		$this->title_section();
 
-			$this->section_9_8_css();
+		$this->show_go_links();
 
-			wpbc_welcome_section_10_12( $this );
+		$this->maintence_section();
 
-			wpbc_welcome_section_10_11( $this );
+		$this->section_9_8_css();
 
-//			wpbc_welcome_section_10_10( $this );
-//
-//			wpbc_welcome_section_10_9( $this );
-//
-//			wpbc_welcome_section_10_8( $this );
-//
-//			wpbc_welcome_section_10_7( $this );
-//
-//			wpbc_welcome_section_10_6( $this );
-//
-//			wpbc_welcome_section_10_5( $this );
-//
-//			wpbc_welcome_section_10_4( $this );
-//
-//			wpbc_welcome_section_10_3( $this );
-//
-//			wpbc_welcome_section_10_2( $this );
-//
-//			wpbc_welcome_section_10_1( $this );
-//
-//			wpbc_welcome_section_10_0( $this );
-//
-//			wpbc_welcome_section_9_9( $this );
-//
-//			wpbc_welcome_section_9_8( $this );
+		wpbc_welcome_section_10_12( $this );
 
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			// Footer
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-			?>
-            <table class="about-text" style="margin-bottom:30px;height:auto;font-size:1em;width:100%;" >
-                <tr>
-                    <td>
+		wpbc_welcome_section_10_11( $this );
 
-                    </td>
-                    <!--td style="width:10%">
-                        <a  href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-getting-started' ), 'index.php' ) ) ); ?>"
-                            style="float: right; height: 36px; line-height: 34px;" 
-                            class="button-primary"
-                            >&nbsp;<strong>Get Started</strong> <span style="font-size: 20px;line-height: 18px;padding-left: 5px;">&rsaquo;&rsaquo;&rsaquo;</span>
-                        </a>
-                    </td-->
-                </tr>
-            </table>
-  
-        </div><?php
-    }
+		/*
+					wpbc_welcome_section_10_10( $this );
+
+					wpbc_welcome_section_10_9( $this );
+
+					wpbc_welcome_section_10_8( $this );
+
+					wpbc_welcome_section_10_7( $this );
+
+					wpbc_welcome_section_10_6( $this );
+
+					wpbc_welcome_section_10_5( $this );
+
+					wpbc_welcome_section_10_4( $this );
+
+					wpbc_welcome_section_10_3( $this );
+
+					wpbc_welcome_section_10_2( $this );
+
+					wpbc_welcome_section_10_1( $this );
+
+					wpbc_welcome_section_10_0( $this );
+
+					wpbc_welcome_section_9_9( $this );
+
+					wpbc_welcome_section_9_8( $this );
+		*/
+
+		$this->show_go_links();
+
+		echo '<div';
+	}
 
 
 	function expand_section_start( $section_param_arr ) {

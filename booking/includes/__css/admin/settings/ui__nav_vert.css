@@ -1,6 +1,6 @@
 /*! = Left Vertical Navigation Bar = */
 .wpbc_admin {
-	--wpbc_ui_left_vert_nav__width_min: 10px;
+	--wpbc_ui_left_vert_nav__width_min: 5px;
 	--wpbc_ui_left_vert_nav__width_compact: 48px;
 	--wpbc_ui_left_vert_nav__width_max: 250px;
 
@@ -107,7 +107,7 @@
 	}
 
 /* Make compact  size,  on hover of minimized panel*/
-.wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper:hover { max-width: calc( var(--wpbc_ui_left_vert_nav__width_min) + 15px ); }
+.wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper000:hover { max-width: calc( var(--wpbc_ui_left_vert_nav__width_min) + 15px ); }
 /* -- End Sizes ----------------------------------------------------------------------------------------------------- */
 /* Navigation  elements */
 /* Mark vertical menu sticky. // FixIn: 10.12.1.2. */
@@ -133,14 +133,59 @@
 }
 	/* Nof Fixed position for mobile */
 	@media screen and (max-width: 600px) {
-		.wpbc_ui_el__vert_left_bar__content {
+		.wpbc_ui_el__vert_left_bar__content0 {
 			position: static;
+			max-height: 100%; /* // FixIn: 10.12.2.2. */
+		}
+		.wpbc_admin {
+			--wpbc_ui_left_vert_nav__width_min: 0px;
 		}
 	}
 /* Hide scrollbacr in compact mode, but still scroll. // FixIn: 10.12.1.2. */
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content{
 	scrollbar-width: none;
 }
+
+/* === data-simplebar -- Scrolable JS ===============================================================================   // FixIn: 10.12.2.3. */
+[data-simplebar].wpbc_ui_el__vert_left_bar__content {
+	position: sticky;
+	top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + var(--wpbc_ui_top_nav__height));
+}
+[data-simplebar].wpbc_ui_el__vert_left_bar__content .simplebar-scrollbar::before {
+	background-color: #091a31;
+	background-color: #a7b1bf;
+	/*opacity: 0.5;*/
+}
+[data-simplebar].wpbc_ui_el__vert_left_bar__content.simplebar-scrollable-y {
+	padding-inline-end: 11px;  /* Default Width of the scrollbar/simplebar */
+}
+/* In compact  mode set  scroll  smaller. Inbstead of 11 set  7px */
+.wpbc_settings_page_wrapper.compact  .wpbc_ui_el__vert_left_bar__content.simplebar-scrollable-y .simplebar-track.simplebar-vertical {
+	width: 7px;
+}
+.wpbc_settings_page_wrapper.compact  [data-simplebar].wpbc_ui_el__vert_left_bar__content.simplebar-scrollable-y {
+	padding-inline-end: 7px;  /* Default Width of the scrollbar/simplebar */
+}
+@media screen and (max-width: 600px) {
+	[data-simplebar].wpbc_ui_el__vert_left_bar__content {
+		top: 0;
+	}
+	.wpbc_settings_page_wrapper.max .wpbc_ui_el__vert_left_bar__wrapper {
+		max-width: calc(100% - 25px); /* - 25px it is sidebar button ( expand / colapse )  width */
+		flex: 1 1 100%;
+	}
+	/* Hide content,  if opened left menu in mobile mode */
+	.wpbc_settings_page_wrapper.max .wpbc_settings_page_content * {
+		display: none;
+	}
+	.wpbc_settings_page_wrapper.max .wpbc_settings_page_content {
+		height: 100vh;
+	}
+	#wpbody-content:has(.wpbc_settings_page_wrapper.max) {
+		padding-bottom: 0px;
+	}
+}
+/* === End: data-simplebar -- Scrolable JS ========================================================================== */
 
 .wpbc_ui_el__vert_nav_item{
 
@@ -424,12 +469,13 @@ a > .wpbc_ui_el__section_header {
 	height: 41px;
 	background: #ffffffc2;
 	position: sticky;
-	top: 50%;
+	/*top: 50%;*/
 	/*top: calc( 100% - 41px - var(--wpbc_ui_top_nav__height) - var(--wpbc_ui_top_nav__wp_top_menu_height) );*/
-	top: calc( 100% - 41px - 20px );
+	/*top: calc( 100% - 41px - 20px );*/
 	border-style: solid;
 	border-width: 1px 1px 1px 0px;
 	border-color: #e1e1e1;
+	border-color: #fff;
 	border-radius: 0 3px 3px 0;
 	z-index: 1;
 	cursor: pointer;
@@ -437,14 +483,12 @@ a > .wpbc_ui_el__section_header {
 	align-self: flex-end;
 	margin-right: -23px;
 	margin-top: -41px;
+	box-shadow: 0 0 2px #0000000d;
+  margin-top: auto;
+  margin-bottom: 15px;
+  order: 1;
+  bottom: 15px;
 }
-.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav svg {
-	transform: rotate(180deg);
-	left: -1px;
-	width: 14px;
-	height: 14px;
-}
-
 .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button svg {
 	width: 12px;
 	height: 12px;
@@ -457,9 +501,15 @@ a > .wpbc_ui_el__section_header {
 	left: -4px;
 }
 .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav {
-	width: 24px;
-	height: 44px;
+	/*width: 24px;*/
+	/*height: 44px;*/
+}
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav svg {
+	transform: rotate(180deg);
+	left: -1px;
+	width: 14px;
+	height: 14px;
 }
 .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button.wpbc_ui__top_nav__btn_open_left_vertical_nav:hover svg {
-	left: 1px;
+	left: 2px;
 }
