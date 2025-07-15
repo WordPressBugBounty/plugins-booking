@@ -24,9 +24,6 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 //
 //		parent::__construct();
 //
-//		// Redefine TAGs Names,  becasue 'tab' slug already used in the system  for definition  of active toolbar.
-//		$this->tags['tab']    = 'view_mode';
-//		$this->tags['subtab'] = 'bottom_nav';
 //	}
 
 	public function in_page() {

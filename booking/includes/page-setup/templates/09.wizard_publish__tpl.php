@@ -355,6 +355,19 @@ function wpbc_stp_wiz__is_exist_published_page_with_booking_form() {
 		}
 	}
 
+	// FixIn: 10.12.3.1.
+	$front_page_id = get_option( 'page_on_front' );
+	if ( ! empty( $front_page_id ) ) {
+		$wp_post_booking_absolute = get_permalink( $front_page_id );
+		if ( ! empty( $wp_post_booking_absolute ) ) {
+			if ( wpbc_is_shortcode_exist_in_page_with_id( $front_page_id, '[booking' ) ) {
+				$is_wp_post_booking = true;
+
+				return $wp_post_booking_absolute;
+			}
+		}
+	}
+
 	return $is_wp_post_booking;
 }
 

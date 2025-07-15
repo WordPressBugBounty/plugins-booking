@@ -105,13 +105,15 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 
 	// Available Main Menu - slug => titles.
 	$root_menu_arr = wpbc_ui__get_root_menu_arr();
-
+// debuge( $args['page_nav_tabs'] ); die;
 	echo '  <div class="wpbc_ui_el__vert_left_bar__content">';
 
 	wpbc_ui__vert_left_bar__section__root_menu( $root_menu_arr );
 
 	// Loop to  show all  main  sections in vertical  menu.
 	foreach ( $root_menu_arr as $main_page_slug => $root_menu_options_arr ) {
+
+		$is_show_all_menus = false;
 
 		if ( 'menu' !== $root_menu_options_arr['type'] ) {
 			continue;
@@ -121,7 +123,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 
 		echo '  <div class="wpbc_ui_el__vert_left_bar__section wpbc_ui_el__vert_left_bar__section_' .
 			 esc_attr( $main_page_slug ) .
-			 (( $main_page_slug !== $active_page_arr['active_page'] ) ? ' wpbc_ui__hide ' : '') .
+			 ( ( ( $main_page_slug !== $active_page_arr['active_page'] ) && ( ! $is_show_all_menus ) ) ? ' wpbc_ui__hide ' : '' ) .
 			 '">';
 
 		// Show only active page settings list.
@@ -130,18 +132,21 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		}
 		$page_item_arr = $args['page_nav_tabs'][ $main_page_slug ];
 
-		// Section Header.
-		echo '<div class="wpbc_ui_el__row100 wpbc_ui_el__expand_colapse_btns">';
-
+		if ( $is_show_all_menus ) {
+			// Section Header.
+			echo '<div class="wpbc_ui_el__row100 wpbc_ui_el__expand_colapse_btns0">';
+			wpbc_ui__vert_menu__show_section_header( $page_title );
+			echo '</div>';
+		} else {
+			// Section Header.
+			echo '<div class="wpbc_ui_el__row100 wpbc_ui_el__expand_colapse_btns">';
 
 			wpbc_ui__vert_menu__show_section_header_go_back( $page_title );
-
 			wpbc_ui__vert_left_bar__do_compact();
 			wpbc_ui__vert_left_bar__do_max();
-
-		echo '</div>';
-
-		wpbc_ui_el__divider_horizontal();
+			echo '</div>';
+			wpbc_ui_el__divider_horizontal();
+		}
 
 		foreach ( $page_item_arr as $main_menu_slug => $menu_item_arr ) {
 

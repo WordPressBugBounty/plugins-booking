@@ -30,7 +30,7 @@ function wpbc_get_feedback_defaults( $param_name ){
 
     $defaults = array(
 	    'page_where_load' => 'wpbc-ajx_booking_availability',				// Name of page,  where to  load feedback. Defined in pages,  like this: 		do_action( 'wpbc_hook_settings_page_footer', 'wpbc-ajx_booking_availability' );
-		'max_version'     => '11.1',										// If version  of Booking Calendar 9.6 or newer than do not show this Feedback
+		'max_version'     => '12.0',										// If version  of Booking Calendar 12.0 or newer than do not show this Feedback
 		'feedback_email'  => 'feedback2@wpbookingcalendar.com'
 	);
 

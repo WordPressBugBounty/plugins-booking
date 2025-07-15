@@ -113,6 +113,13 @@ function wpbc_is_on_edit_page() {
 
 	// FixIn: 9.9.0.39.
 
+//	// Elementor.
+//	if (
+//		( ! empty( $_REQUEST['action'] ) ) && ( ( 'elementor' === $_REQUEST['action'] ) || ( 'elementor_ajax' === $_REQUEST['action'] ) )
+//	) {
+//		return false;
+//	}
+
 	if ( ( ! empty( $GLOBALS['pagenow'] ) ) && ( is_admin() ) ) {
 		if (
 			( 'post.php' === $GLOBALS['pagenow'] )                       // Edit - Post / Page.

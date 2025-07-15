@@ -183,6 +183,10 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__class.
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__resource.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.php';
 
+// Scheduller.
+// require_once WPBC_PLUGIN_DIR . '/includes/page-schedule/schedule-page.php';
+// Elementor Addons:   https://developers.elementor.com/docs/getting-started/first-addon/.
+// require_once WPBC_PLUGIN_DIR . '/includes/elementor-booking-form/wpbc-elementor.php';
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -235,7 +239,8 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-setup/setup__page.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_tour/wpbc_tour.php';              // FixIn: 10.4.0.1.
 
 
-require_once WPBC_PLUGIN_DIR . '/includes/_feedback/feedback.php';                                                   // FixIn: 9.2.3.6.
+require_once WPBC_PLUGIN_DIR . '/includes/_feedback/feedback.php';                                                      // FixIn: 9.2.3.6.
+require_once WPBC_PLUGIN_DIR . '/includes/_feedback_deactivation/feedback.php';                                         // FixIn: 10.12.3.4.
 
 // Old Working.
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpdev-booking-widget.php';            // W i d g e t s.
