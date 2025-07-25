@@ -154,10 +154,9 @@ class WPBC_Tour_01 {
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
 
-			wp_enqueue_script( 'wpbc_tether',    wpbc_plugin_url( '/assets/libs/tether/tether.js' ),                    array( 'jquery' ),          WP_BK_VERSION_NUM, $in_footer );
-			wp_enqueue_script( 'wpbc_shepherd',  wpbc_plugin_url( '/assets/libs/tether-shepherd/shepherd.js' ),         array( 'wpbc_tether' ),     WP_BK_VERSION_NUM, $in_footer );
+			wp_enqueue_script( 'wpbc_tether',    wpbc_plugin_url( '/vendors/tether/tether.js' ),                    array( 'jquery' ),          WP_BK_VERSION_NUM, $in_footer );
+			wp_enqueue_script( 'wpbc_shepherd',  wpbc_plugin_url( '/vendors/tether-shepherd/shepherd.js' ),         array( 'wpbc_tether' ),     WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc_tour_01',   trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/wpbc_tour.js',  array( 'wpbc_shepherd' ),   WP_BK_VERSION_NUM, $in_footer );
-			//wp_enqueue_script( 'wpbc_shepherd',   wpbc_plugin_url( '/assets/libs/shepherd.js/dist/esm/shepherd.mjs' )  , array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
 			$tour_data = array(
 				'plugins_page'    => array(
@@ -184,12 +183,6 @@ class WPBC_Tour_01 {
 	public function enqueue_css_files( $where_to_load ) {
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
-
-			//wp_enqueue_style( 'wpbc-tour_01', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/tour.css', array(), WP_BK_VERSION_NUM );
-			// wp_enqueue_style( 'wpbc_tour_01', wpbc_plugin_url('assets/libs/shepherd.js/dist/css/shepherd.css'), array(), WP_BK_VERSION_NUM );
-			// wp_enqueue_style( 'wpbc_shepherd', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/tether-shepherd/shepherd-theme-arrows-plain-buttons.css', array(), WP_BK_VERSION_NUM );
-			//wp_enqueue_style( 'wpbc_shepherd', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/tether-shepherd/shepherd-theme-dark.css', array(), WP_BK_VERSION_NUM );
-			//wp_enqueue_style( 'wpbc_shepherd', trailingslashit( plugins_url( '', __FILE__ ) ) .   '_out/tether-shepherd/shepherd-theme-arrows.css', array(), WP_BK_VERSION_NUM );
 
 			wp_enqueue_style( 'wpbc_tour_01',       trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/wpbc-tour.css',       array(), WP_BK_VERSION_NUM );
 

@@ -114,6 +114,10 @@
  */
 function wpbc_hook__init_timeselector(){
 
+	if ( true !== _wpbc.get_other_param( 'is_enabled_booking_timeslot_picker' ) ) {
+		return false;
+	}
+
 	// Load after page loaded
 	jQuery( 'select[name^="rangetime"]' ).wpbc_timeselector();
 	jQuery( 'select[name^="starttime"]' ).wpbc_timeselector();

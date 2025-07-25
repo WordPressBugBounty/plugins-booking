@@ -70,7 +70,8 @@ class WPBC_TinyMCE_Buttons {
             add_action( 'edit_page_form',       array( $this, 'add_html_button' ) );
             add_action( 'admin_head',           array( $this, 'insert_button') );			// Tiny Button
             add_action( 'admin_footer',         array( $this, 'modal_content' ) );			// Modal Content
-            
+
+
             // JS & CSS
 			wpbc_load_js__required_for_modals();
 

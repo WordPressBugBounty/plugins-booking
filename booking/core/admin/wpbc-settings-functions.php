@@ -214,8 +214,8 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 	if ( ( isset( $_GET['restore_dismissed'] ) ) && ( $_GET['restore_dismissed'] == 'On' ) ) {            // FixIn: 8.1.3.10.
 
 		update_bk_option( 'booking_is_show_powered_by_notice', 'On' );
-
 		update_bk_option( 'booking_wpdev_copyright_adminpanel', 'On' );
+		update_bk_option( 'booking_menu_go_pro', 'show' );
 
 		global $wpdb;
 

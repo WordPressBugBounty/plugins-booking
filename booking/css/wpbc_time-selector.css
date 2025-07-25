@@ -9,15 +9,21 @@
 	white-space: nowrap;
 	word-wrap: normal;
 	width: 100%;
+	gap: 15px;
 }
 /* Button */
 .wpbc_times_selector div {
-	flex: 0 0 150px;
-	margin: 7px 15px 0 0;
+	margin: 7px 0;
 	padding: 0.1em 1.5em;
 	cursor: pointer;
 	width: auto;
 	line-height: 2;
+
+	flex: 1 1 auto;
+	max-width: Min(250px, 100%);
+	white-space: wrap;
+	word-break: normal;
+
 }
 .wpbc_times_selector div.wpbc_time_picker_disabled:hover,
 .wpbc_times_selector div.wpbc_time_picker_disabled {

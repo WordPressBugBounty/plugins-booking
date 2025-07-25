@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_is_this_demo() {
 
-	// return false;  //.
+	 // return false;  //.
 
 	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
 		return false;        // If this is Booking Calendar Free version,  then it's not the demo.
@@ -128,28 +128,53 @@ function wpbc_is_updated_paid_to_free() {
 
 
 function wpbc_get_ver_sufix() {
-	if( strpos( strtolower(WPDEV_BK_VERSION) , 'multisite') !== false  ) {
+	if ( strpos( strtolower( WPDEV_BK_VERSION ), 'multisite' ) !== false ) {
 		$v_type = '-multi';
-	} else if( strpos( strtolower(WPDEV_BK_VERSION) , 'develop') !== false  ) {
+	} else if ( strpos( strtolower( WPDEV_BK_VERSION ), 'develop' ) !== false ) {
 		$v_type = '-dev';
 	} else {
 		$v_type = '';
 	}
 	$v = '';
-	if (class_exists('wpdev_bk_personal'))  $v = 'ps'. $v_type;
-	if (class_exists('wpdev_bk_biz_s'))     $v = 'bs'. $v_type;
-	if (class_exists('wpdev_bk_biz_m'))     $v = 'bm'. $v_type;
-	if (class_exists('wpdev_bk_biz_l'))     $v = 'bl'. $v_type;
-	if (class_exists('wpdev_bk_multiuser')) $v = '';
-	return $v ;
+	if ( class_exists( 'wpdev_bk_personal' ) ) {
+		$v = 'ps' . $v_type;
+	}
+	if ( class_exists( 'wpdev_bk_biz_s' ) ) {
+		$v = 'bs' . $v_type;
+	}
+	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
+		$v = 'bm' . $v_type;
+	}
+	if ( class_exists( 'wpdev_bk_biz_l' ) ) {
+		$v = 'bl' . $v_type;
+	}
+	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
+		$v = '';
+	}
+
+	return $v;
 }
 
-
+/**
+ * Get Up link.
+ *
+ * @return string
+ */
 function wpbc_up_link() {
-	if ( ! wpbc_is_this_demo() )
-		 $v = wpbc_get_ver_sufix();
-	else $v = '';
-	return 'https://wpbookingcalendar.com/' . ( ( empty($v) ) ? '' : 'upgrade-' . $v  . '/' ) ;
+
+	if ( ! wpbc_is_this_demo() ) {
+		$v = wpbc_get_ver_sufix();
+	} else {
+		$v = '';
+	}
+
+	if ( empty( $v ) ) {
+		$v = 'features/';
+	} else {
+		$v = 'upgrade-' . $v . '/';
+	}
+
+	return 'https://wpbookingcalendar.com/' . $v;
 }
 
 

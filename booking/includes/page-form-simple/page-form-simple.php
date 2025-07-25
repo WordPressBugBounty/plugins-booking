@@ -108,21 +108,21 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 		$tabs[ 'form' ]['subtabs'] = $subtabs;
 
 
-        if ( ! class_exists( 'wpdev_bk_personal' ) )																	// FixIn: 8.1.1.12.
-			$tabs[ 'settings-upgrade' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:1000;' ) );
-        	$tabs[ 'upgrade-link' ] = array(
-                              'title' => __('Get Pro','booking')                // Title of TAB
-                            , 'hint'  => __('Upgrade to higher versions', 'booking')              // Hint    
-                            //, 'page_title' => __('Upgrade', 'booking')        // Title of Page    
-                            , 'link' => 'https://wpbookingcalendar.com/features/'                    // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
-                            , 'position' => 'right'                             // 'left'  ||  'right'  ||  ''
-                            //, 'css_classes' => ''                             // CSS class(es)
-                            //, 'icon' => ''                                    // Icon - link to the real PNG img
-                            , 'font_icon' => 'wpbc_icn_redeem'// CSS definition  of forn Icon
-                            //, 'default' => false                              // Is this tab activated by default or not: true || false. 
-                            //, 'subtabs' => array()
-							, 'folder_style' => 'order:9999;'
-        );
+//        if ( ! class_exists( 'wpdev_bk_personal' ) )																	// FixIn: 8.1.1.12.
+//			// FixIn: 10.12.4.7.  $tabs[ 'settings-upgrade' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:1000;' ) );
+//        	$tabs[ 'upgrade-link' ] = array(
+//                              'title' => __('Get Pro','booking')                // Title of TAB
+//                            , 'hint'  => __('Upgrade to higher versions', 'booking')              // Hint
+//                            //, 'page_title' => __('Upgrade', 'booking')        // Title of Page
+//                            , 'link' => 'https://wpbookingcalendar.com/features/'                    // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
+//                            , 'position' => 'right'                             // 'left'  ||  'right'  ||  ''
+//                            //, 'css_classes' => ''                             // CSS class(es)
+//                            //, 'icon' => ''                                    // Icon - link to the real PNG img
+//                            , 'font_icon' => 'wpbc_icn_redeem'// CSS definition  of forn Icon
+//                            //, 'default' => false                              // Is this tab activated by default or not: true || false.
+//                            //, 'subtabs' => array()
+//							, 'folder_style' => 'order:9999;'
+//        );
         
         return $tabs;
     }
@@ -575,7 +575,7 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 						jQuery( '#ui_btn_cstm__set_time_picker_skin' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
 					} else {
 						jQuery( '.wpbc_center_preview,.wpbc_container.wpbc_container_booking_form' ).removeClass( 'wpbc_theme_dark_1' );
-						wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/skins/24_9__light_square_1.css';
+						wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/skins/25_5__square_1.css';
 						jQuery( '#ui_btn_cstm__set_calendar_skin' ).find( 'option' ).prop( 'selected', false );
 						jQuery( '#ui_btn_cstm__set_calendar_skin' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
 						wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/time_picker_skins/light__24_8.css';

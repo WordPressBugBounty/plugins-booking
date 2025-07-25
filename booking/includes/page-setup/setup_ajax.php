@@ -251,7 +251,8 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 			case 'skip_wizard':
 
 				$data_arr['current_step'] = 'welcome';
-				$data_arr['redirect_url'] = wpbc_get_settings_url();
+				// $data_arr['redirect_url'] = wpbc_get_settings_url();
+				$data_arr['redirect_url'] = wpbc_get_bookings_url();
 
 				$setup_steps->db__set_all_steps_as( true );        // Mark All Steps as Done
 
@@ -308,6 +309,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 								$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr, array( 'appointments_type' => 'Appointment: ' . $cleaned_data ['wpbc_swp_booking_appointments_type'] ) );
 							}
 							wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
+							update_bk_option( 'booking_feedback__after_send', $cleaned_data_booking_feedback_arr );
 							delete_bk_option( 'booking_feedback__send_email' );
 						}
 					}
@@ -322,7 +324,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 						}
 						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
 							if ( 'durationtime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ) {
-								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments_service_a';    // FixIn: 10.7.1.4.
+								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments_service_c';    // FixIn: 10.7.1.4.
 							} else {
 								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    // FixIn: 10.7.1.4.
 							}

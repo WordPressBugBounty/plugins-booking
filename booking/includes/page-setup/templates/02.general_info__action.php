@@ -86,8 +86,6 @@ function wpbc_template__general_info__action_validate_data( $post_data ){
  * @return void
  */
 function wpbc_setup_feedback__send_email( $feedback_description_arr ) {
-
-
 	$feedback_description = implode( "\n", $feedback_description_arr);
 
  	$us_data = wp_get_current_user();

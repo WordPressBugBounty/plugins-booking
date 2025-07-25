@@ -135,8 +135,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				update_bk_option( 'booking_recurrent_time' , 'On');                             // Use selected times for each booking date
 
 		        update_bk_option( 'booking_legend_is_show_item_partially', 'Off');              // Legend Item
-				// update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );
-				update_bk_option( 'booking_skin', '/css/skins/25_5__square_7.css' ); // FixIn: 10.11.4.2.
+				update_bk_option( 'booking_skin', '/css/skins/25_5__square_1.css' ); // FixIn: 10.11.4.2.
 				update_bk_option( 'booking_form_theme', '' );
 		        break;
 
@@ -151,8 +150,9 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments30' ) ) );
 						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments30' ) ) );
 					} else{
-						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments_service_a' ) ) );
-						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments_service_a' ) ) );
+						 // FixIn: 10.12.4.8.
+						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments_service_c' ) ) );
+						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments_service_c' ) ) );
 					}
 
 			    } else {
@@ -185,8 +185,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 				update_bk_option( 'booking_legend_text_for_item_partially', __( 'Partially booked', 'booking' ) );
 				update_bk_option( 'booking_legend_is_show_item_partially', 'On');              // Legend Item
-			    //
-				// update_bk_option( 'booking_skin', '/css/skins/24_9__light.css' );
+
 				update_bk_option( 'booking_skin', '/css/skins/25_5__round_1.css' ); // FixIn: 10.11.4.2.
 				update_bk_option( 'booking_form_theme', '' );
 				// booking_timeslot_picker_skin
@@ -235,7 +234,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				update_bk_option( 'booking_legend_text_for_item_partially', __( 'Changeover', 'booking' ) );
 				update_bk_option( 'booking_legend_is_show_item_partially', 'On');              // Legend Item
 
-			    update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );
+			    update_bk_option( 'booking_skin', '/css/skins/25_5__square_1.css' );
 				update_bk_option( 'booking_form_theme', '' );
 
 		        break;

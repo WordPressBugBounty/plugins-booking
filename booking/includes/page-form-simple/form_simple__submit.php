@@ -65,7 +65,7 @@ function wpbc_simple_form__page_save_submit(){
 			}
 			if ( '' === $wpbc_selected_theme ) {
 				//update_bk_option( 'booking_skin', '/css/skins/green-01.css' );
-                update_bk_option( 'booking_skin', '/css/skins/24_9__light_square_1.css' );               // FixIn: 10.4.0.1.
+                update_bk_option( 'booking_skin', '/css/skins/25_5__square_1.css' );               // FixIn: 10.4.0.1.
 				//update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/grey.css' );
 				update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/light__24_8.css' );      	// FixIn: 10.4.0.1.
 			}

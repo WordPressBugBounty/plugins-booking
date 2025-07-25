@@ -838,3 +838,44 @@ function wpbc_get_arr_of_selected_additional_calendars( bk_type ){              
     }
     return selected_additionl_calendars;
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Elementor Ready Widget Update.
+// ---------------------------------------------------------------------------------------------------------------------
+jQuery( function ($) {
+
+	if ( window.elementorFrontend ) {
+
+		elementorFrontend.hooks.addAction( 'frontend/element_ready/wpbc_widget_booking_form_1.default', function ($scope) {
+			// Simulate DOM ready,  after  updating Elementor Widget.
+			jQuery( document ).trigger( 'wpbc_elementor_ready' );
+		} );
+
+		// Catch all widget re-renders.
+		// elementorFrontend.hooks.addAction( 'frontend/element_ready/global', function ($scope) {
+		// 	console.log( 'Some widget was re-rendered:', $scope );
+		// } );
+	}
+} );
+
+// Elementor widget  reinit. So  we need to reinit all "jQuery( document ).ready( ...) " again with custom 'wpbc_elementor_ready' event.
+jQuery( document ).on( 'wpbc_elementor_ready', function () {
+
+	wpbc_hook__init_booking_form_wizard_buttons();
+
+	if ( 'function' === typeof (wpbc_hook__init_timeselector) ) {
+		wpbc_hook__init_timeselector();
+	}
+
+	if ( 'function' === typeof (wpbc_update_capacity_hint) ) {
+		jQuery( '.booking_form_div' ).on( 'wpbc_booking_date_or_option_selected', function (event, resource_id) {
+			wpbc_update_capacity_hint( resource_id );
+		} );
+	}
+
+	// TODO:
+	// <?php if ('wpbc_theme_dark_1' === get_bk_option( 'booking_form_theme' ) ){  ?>
+	// 	jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).addClass( 'wpbc_theme_dark_1' );
+	// <?php } ?>
+
+} );

@@ -757,3 +757,27 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 
 	return $return_array;
 }
+
+
+/**
+ * Check whether custom booking forms are enabled for the current user.
+ *
+ * This function determines if the current user is allowed to access custom booking forms
+ * based on plugin version and user permissions. It checks:
+ *   - If the business version of the plugin is active (`wpdev_bk_biz_m` class exists).
+ *   - If the user is a super admin (via `multiuser_is_user_can_be_here` filter).
+ *   - If regular users are allowed to use custom forms (via `booking_is_custom_forms_for_regular_users` option).
+ *
+ * @return bool True if custom forms are enabled for the current user; false otherwise.
+ */
+function wpbc_is_custom_forms_enabled() {
+
+	if ( ! class_exists( 'wpdev_bk_biz_m' ) ) {
+		return false;
+	}
+
+	$is_super_admin       = apply_bk_filter( 'multiuser_is_user_can_be_here', true, 'only_super_admin' );
+	$custom_forms_allowed = ( 'On' === get_bk_option( 'booking_is_custom_forms_for_regular_users' ) );
+
+	return $is_super_admin || $custom_forms_allowed;
+}

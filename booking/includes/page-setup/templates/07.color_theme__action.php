@@ -46,7 +46,7 @@ function wpbc_template__color_theme__action_validate_data( $post_data ){
 
 	$escaped_data = array(
 		'booking_form_theme'           => get_bk_option( 'booking_form_theme' ),            // ''
-		'booking_skin'                 => get_bk_option( 'booking_skin' ),                  // '/css/skins/24_9__light.css'
+		'booking_skin'                 => get_bk_option( 'booking_skin' ),                  // '/css/skins/25_5__round_1.css'
 		'booking_timeslot_picker_skin' => get_bk_option( 'booking_timeslot_picker_skin' )   // '/css/time_picker_skins/light__24_8.css'
 	);
 	// -----------------------------------------------------------------------------------------------------------------

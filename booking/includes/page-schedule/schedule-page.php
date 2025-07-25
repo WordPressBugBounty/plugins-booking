@@ -286,8 +286,8 @@ $escaped_request_params_arr = array();
 // FixIn: 10.0.0.5.
 if ( 0 ) {
 			$resource_id = 220;
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-			?><style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { height: 50px; } </style><?php
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet  // FixIn: 10.12.4.2.
+			?><style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { max-height: 50px; } </style><?php
 
 			?>
 			<div class="wpbc_calendar_wraper wpbc_change_over_triangle">

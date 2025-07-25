@@ -53,7 +53,27 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
                             , 'subtabs' => array()
             
         );
-        
+//        $tabs[ 'add-booking' ] = array(
+//			'is_show_top_path'                   => false,                                 // true | false.  By default value is: false.
+//			'left_navigation__default_view_mode' => 'min',                             // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+//			'page_title'                         => __( 'Add New Booking', 'booking' ),        // Header - Title.  If false, than hidden.
+//			'page_description'                   => __( 'Manually add new bookings from the Admin Panel.', 'booking' ), // Header - Title Description.  If false, than hidden.
+//			'title'                              => __( 'Add booking', 'booking' ),        // Title of TAB.
+//			'hint'                               => __( 'Add booking', 'booking' ),        // Hint.
+// 			'position'                           => '',                                    // Can be: 'left'  |  'right'  |  ''.
+//			'css_classes'                        => '',                                    // this is CSS class(es).
+//			'icon'                               => '',                                    // Icon - link to the real PNG img.
+//			'font_icon'                          => 'wpbc-bi-plus',               // CSS definition  of forn Icon.
+// 			'default'                            => false,                                 // Is this tab disbaled: true || false.
+// 			'disabled'                           => false,                                 // Is this tab disbaled: true || false.
+// 			'hided'                              => !false,                                  // Is this tab hided: true || false.
+// 			'subtabs'                            => array()
+//                            , 'link' =>  wpbc_get_new_booking_url__base(  )                                        // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
+//							//, 'font_icon_right' => 'wpbc-bi-question-circle'
+// 							, 'folder_style'     => 'order:101;',
+//        );
+//
+
         // $subtabs = array();                
         // $tabs[ 'bookings' ][ 'subtabs' ] = $subtabs;
         

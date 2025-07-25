@@ -29,6 +29,9 @@ function wpbc_calendar__load_data__ajx( params ){
 
 // console.groupEnd(); console.time('resource_id_' + params['resource_id']);
 console.groupCollapsed( 'WPBC_AJX_CALENDAR_LOAD' ); console.log( ' == Before Ajax Send - calendars_all__get() == ' , _wpbc.calendars_all__get() );
+	if ( 'function' === typeof (wpbc_hook__init_timeselector) ) {
+		wpbc_hook__init_timeselector();
+	}
 
 	// Start Ajax
 	jQuery.post( wpbc_url_ajax,
@@ -94,6 +97,9 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 					// Update calendar
 					wpbc_calendar__update_look( response_data[ 'resource_id' ] );
 
+					if ( 'function' === typeof (wpbc_hook__init_timeselector) ) {
+						wpbc_hook__init_timeselector();
+					}
 
 					if (
 							( 'undefined' !== typeof (response_data[ 'ajx_data' ][ 'ajx_after_action_message' ]) )

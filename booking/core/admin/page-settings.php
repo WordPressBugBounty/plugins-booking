@@ -105,7 +105,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 			'onclick'                            => "wpbc_admin_ui__do__open_url__expand_section( '" . wpbc_get_settings_url() . "', '" . 'wpbc_general_settings_dashboard_metabox' . "' );",
 			'folder_style'                       => 'order:10;',
 		);
-		$tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:10;' ) );
+		// FixIn: 10.12.4.7.  $tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:10;' ) );
 
 
 		// =============================================================================================================
@@ -245,7 +245,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 			'folder_style'     => 'order:20;',
 		);
 
-		$tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:20;' ) );
+		// FixIn: 10.12.4.7.  $tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:20;' ) );
 
 		// =============================================================================================================
 		// == Manage Bookings ==
@@ -524,7 +524,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 
 		$tabs['advanced']['subtabs'] = $subtabs;
 
-		$tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:900;' ) );
+		// FixIn: 10.12.4.7.  $tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:900;' ) );
 		// $tabs[ 'settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:1000;' ) );
 
 		return $tabs;

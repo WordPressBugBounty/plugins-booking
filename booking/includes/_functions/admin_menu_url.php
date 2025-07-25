@@ -113,19 +113,18 @@ function wpbc_is_on_edit_page() {
 
 	// FixIn: 9.9.0.39.
 
-//	// Elementor.
-//	if (
-//		( ! empty( $_REQUEST['action'] ) ) && ( ( 'elementor' === $_REQUEST['action'] ) || ( 'elementor_ajax' === $_REQUEST['action'] ) )
-//	) {
-//		return false;
-//	}
+	// Elementor.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( ( ! empty( $_REQUEST['action'] ) ) && ( ( 'elementor' === $_REQUEST['action'] ) || ( 'elementor_ajax' === $_REQUEST['action'] ) ) ) {
+		return false;
+	}
 
 	if ( ( ! empty( $GLOBALS['pagenow'] ) ) && ( is_admin() ) ) {
 		if (
 			( 'post.php' === $GLOBALS['pagenow'] )                       // Edit - Post / Page.
 			|| ( 'post-new.php' === $GLOBALS['pagenow'] )                // Add New - Post / Page.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-			|| ( ( 'admin-ajax.php' === $GLOBALS['pagenow'] ) && ( ! empty( $_REQUEST['action'] ) ) && ( 'elementor_ajax' === $_REQUEST['action'] ) )   // Elementor Edit page - Ajax.
+			// || ( ( 'admin-ajax.php' === $GLOBALS['pagenow'] ) && ( ! empty( $_REQUEST['action'] ) ) && ( 'elementor_ajax' === $_REQUEST['action'] ) )   // Elementor Edit page - Ajax.
 		) {
 			return true;
 		}

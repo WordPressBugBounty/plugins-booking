@@ -269,60 +269,18 @@ function wpbc_stp_wiz__ui__color_theme__calendar_skins( $params = array() ){
 
 	?><div class="ui_element ui_nowrap"><?php
 
-
-		// FixIn: 10.3.0.5.
-		//  Calendar Skin  /////////////////////////////////////////////////////
-		$cal_arr = wpbc_get_calendar_skin_options( WPBC_PLUGIN_URL );
-
-		$upload_dir = wp_upload_dir();							// Check  if this skin exist  in the Custom User folder at  the http://example.com/wp-content/uploads/wpbc_skins/
-		$custom_user_skin_folder = $upload_dir['basedir'] ;
-		$custom_user_skin_url    = $upload_dir['baseurl'] ;
-
-		$transformed_cal_arr = array();
-		foreach ( $cal_arr as $calendar_skin_url => $calendar_name ) {
-			if ( false !== strpos($calendar_skin_url, WPBC_PLUGIN_URL ) ){
-
-				$relative_cal_skin_path = str_replace( WPBC_PLUGIN_URL, '', $calendar_skin_url );
-
-				if ( file_exists( $custom_user_skin_folder .  $relative_cal_skin_path ) ) {
-					// Custom  Skin
-					$transformed_cal_arr[ $custom_user_skin_url . $relative_cal_skin_path ] = $calendar_name;
-				} else {
-					// Plugin Usual Skins
-					$transformed_cal_arr[ WPBC_PLUGIN_URL . $relative_cal_skin_path ] = $calendar_name;
-				}
-			} else {
-				// OptGroups
-				$transformed_cal_arr[ $calendar_skin_url ] = $calendar_name;
-			}
-		}
+		$transformed_cal_arr = wpbc_get_calendar_skin_options_with_legacy_sections();
 
 		$params_select = array(
-							  'id'       => $el_id 				// HTML ID  of element
-							, 'name'     => $booking_action
-							, 'label' => '' //__( 'Select the skin of the booking calendar', 'booking' )//__('Calendar Skin', 'booking')
-							, 'style'    => '' 					// CSS of select element
-									, 'class'    => 'wpbc_radio__set_days_customize_plugin' 					// CSS Class of select element
-							//, 'multiple' => true
-							//, 'attr' => array( 'value_of_selected_option' => '{{selected_locale_value}}' )			// Any additional attributes, if this radio | checkbox element
-							, 'disabled' => false
-							, 'disabled_options' => array()     								// If some options disabled, then it has to list here
-							, 'options' => $transformed_cal_arr
-							//, 'value' => isset( $escaped_search_request_params[ $el_id ] ) ?  $escaped_search_request_params[ $el_id ]  : $defaults[ $el_id ]		// Some Value from options array that selected by default
-//							, 'onfocus' =>  "console.log( 'ON FOCUS:', jQuery( this ).val(), 'in element:' , jQuery( this ) );"							// JavaScript code
-//							, 'onchange' => "wpbc_ajx_customize_plugin.search_set_param('customize_plugin__booking_skin', jQuery(this).val().replace( '" . WPBC_PLUGIN_URL . "', '') );"
-//							, 'onchange' =>  "jQuery(this).hide();
-//											 var jButton = jQuery('#button_locale_for_booking{{data[\'parsed_fields\'][\'booking_id\']}}');
-//											 jButton.show();
-//											 wpbc_button_enable_loading_icon( jButton.get(0) ); "
-//											 . " wpbc_ajx_booking_ajax_action_request( {
-//																						'booking_action' : '{$booking_action}',
-//																						'booking_id'     : {{data[\'parsed_fields\'][\'booking_id\']}},
-//																						'booking_meta_locale' : jQuery('#locale_for_booking{{data[\'parsed_fields\'][\'booking_id\']}} option:selected').val()
-//																					} );"
-
-						  );
-
+			'id'               => $el_id,  // HTML ID  of element.
+			'name'             => $booking_action,
+			'label'            => '',   // __( 'Select the skin of the booking calendar', 'booking' )//__('Calendar Skin', 'booking') .
+			'style'            => '',   // C S S of select element.
+			'class'            => 'wpbc_radio__set_days_customize_plugin',  // CSS Class of select element.
+			'disabled'         => false,
+			'disabled_options' => array(),  // If some options disabled, then it has to list here.
+			'options'          => $transformed_cal_arr,
+		);
 
 		wpbc_flex_select( $params_select );
 
@@ -583,7 +541,7 @@ function wpbc_stp_wiz__ui__color_theme__form_color_theme( $params = array() ){
 					jQuery( '#ui_btn_cstm__set_time_picker_skin' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
 				} else {
 					jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).removeClass( 'wpbc_theme_dark_1' );
-					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/skins/24_9__light_square_1.css';
+					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/skins/25_5__square_1.css';
 					jQuery( '#ui_btn_cstm__set_calendar_skins' ).find( 'option' ).prop( 'selected', false );
 					jQuery( '#ui_btn_cstm__set_calendar_skins' ).find( 'option[value="' + wpbc_cal_dark_skin_path + '"]' ).prop( 'selected', true ).trigger( 'change' );
 					wpbc_cal_dark_skin_path = '<?php echo esc_url( WPBC_PLUGIN_URL ); ?>/css/time_picker_skins/light__24_8.css';

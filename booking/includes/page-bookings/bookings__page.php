@@ -54,6 +54,7 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 			'hided'                              => true,                                // Is this tab hided: true || false.
 			'subtabs'                            => array(),
 		);
+
 		// $subtabs = array();
 		// $tabs[ 'items' ][ 'subtabs' ] = $subtabs;
 		return $tabs;

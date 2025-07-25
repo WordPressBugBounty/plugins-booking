@@ -136,6 +136,9 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
  */
 function wpbc__calendar__load( $params = array() ){
 
+	// TODO:2025-07-16
+	// return;
+
 	$defaults = array(
 						'resource_id'                     => '1',                   // $resource_id
 						'aggregate_resource_id_arr'       => array(),               // It is array  of booking resources from aggregate parameter()
@@ -307,23 +310,30 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {
 	$availability_per_days_arr = wpbc_get_availability_per_days_arr( $availability_per_days__params );
 
 
+	$ajx_data_arr = array( /**
+							 * Send JSON. It will make "wp_json_encode" - so pass only array, and This function call wp_die( '', '', array( 'response' => null, ) ) .
+							 * Pass JS OBJ: response_data in "jQuery.post( " function on success.
+							 */
+						   'ajx_data'           => $availability_per_days_arr,
+						   // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+						   'ajx_search_params'  => $_REQUEST[ $request_prefix ],
+						   'ajx_cleaned_params' => $request_params,
+						   'resource_id'        => $request_params['resource_id'],
+				);
+
+	// FixIn: 10.12.4.6.
+	if ( ! in_array( $request_params['resource_id'], $availability_per_days_arr['resources_id_arr__in_dates'] ) ) {
+		$ajx_data_arr['ajx_data']['ajx_after_action_message'] = 'Wrong ID of booking resource. Probably calendar (booking resource) with ID = ' . intval( $request_params['resource_id'] ) . ' not exists. Please check resource_id parameter in the Booking Calendar shortcode.';
+	}
+
+
+
 																		// Show message under calendar,  if needed.
 																		//$availability_per_days_arr['ajx_after_action_message'] = 'Ta Da :))';
 																		//$availability_per_days_arr['ajx_after_action_message_status']  = 'warning';
 
 	// Ajax ------------------------------------------------------------------------------------------------------------
-	wp_send_json( array(
-							/**
-							 * Send JSON. It will make "wp_json_encode" - so pass only array, and This function call wp_die( '', '', array( 'response' => null, ) ) .
-							 * Pass JS OBJ: response_data in "jQuery.post( " function on success.
-							 */
-					'ajx_data'              => $availability_per_days_arr,
-					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					'ajx_search_params'     => $_REQUEST[ $request_prefix ],
-					'ajx_cleaned_params'    => $request_params,
-
-					'resource_id'           => $request_params['resource_id']
-				) );
+	wp_send_json( $ajx_data_arr );
 
 }
 

@@ -183,14 +183,15 @@ div.datepick-inline table.datepick th,
 div.datepick-inline table.datepick td {
      border-width: 0;
 }
-.datepick-inline .datepick,
-.datepick-inline .calendar-links,
-.datepick-inline .calendar-links a,
-.datepick-inline .datepick-days-cell,
-.datepick-inline .datepick-days-cell a,
-.datepick-inline .datepick-days-cell div,
-.datepick-inline .datepick-title-row,
-.datepick-inline .datepick-title-row th {
+/* // FixIn: 10.12.4.2. */
+div.datepick-inline .datepick,
+div.datepick-inline .calendar-links,
+div.datepick-inline .calendar-links a,
+div.datepick-inline .datepick-days-cell,
+div.datepick-inline .datepick-days-cell a,
+div.datepick-inline .datepick-days-cell div,
+div.datepick-inline .datepick-title-row,
+div.datepick-inline .datepick-title-row th {
   font-size: var(--wpbc_cal-text-general-size);
 }
 /* Mo Tu We Th Fr Sa Su */
@@ -207,7 +208,8 @@ div.datepick-inline table.datepick td {
   font-size: var(--wpbc_cal-text-header-size);
 }
 /* Next/Prev Month Links */
-.datepick-inline .calendar-links {
+/* // FixIn: 10.12.4.2. */
+div.datepick-inline .calendar-links {
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-end;
@@ -216,8 +218,8 @@ div.datepick-inline table.datepick td {
   height: 40px;
   margin-bottom: -40px;
 }
-.datepick-inline .calendar-links .datepick-prev,
-.datepick-inline .calendar-links .datepick-next {
+div.datepick-inline .calendar-links .datepick-prev,
+div.datepick-inline .calendar-links .datepick-next {
   flex: 0 1 30px;
   display: flex;
   flex-flow: column wrap;
@@ -226,10 +228,10 @@ div.datepick-inline table.datepick td {
   margin: 0;
   line-height: 2em;
 }
-.datepick-inline .calendar-links .datepick-prev a,
-.datepick-inline .calendar-links .datepick-next a,
-.datepick-inline .calendar-links .datepick-prev a:hover,
-.datepick-inline .calendar-links .datepick-next a:hover{
+div.datepick-inline .calendar-links .datepick-prev a,
+div.datepick-inline .calendar-links .datepick-next a,
+div.datepick-inline .calendar-links .datepick-prev a:hover,
+div.datepick-inline .calendar-links .datepick-next a:hover{
 
 }
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -332,6 +334,7 @@ div.datepick-inline table.datepick.wpbc_calendar th,
 div.datepick-inline table.datepick.wpbc_calendar td.datepick-days-cell{
   border-width: var( --wpbc_cal-day-cells-padding ) !important;
   box-sizing: border-box;
+	border-style: solid;   /* // FixIn: 10.12.4.2. */
 }
 .datepick-inline th{
   border-color: var( --wpbc_cal-main-background-color ) !important;

@@ -6,7 +6,7 @@
 }
 @media (max-width: 400px) {
 	.wpbc_aling_right .wpbc_times_selector div {
-		margin: 7px 0 0 15px;
+		margin: 7px 0 0 0;
 	}
 }
 /*!   ==  Center  ==  */
@@ -30,7 +30,7 @@
 }
 @media (max-width: 400px) {
 	.wpbc_aling_center .wpbc_times_selector div {
-		margin: 7px 15px;
+		margin: 7px 0;
 	}
 }
 /*!   ==  Wizard Form Tmeplate - Bordered Well Padding  ============================================================  */
@@ -49,8 +49,13 @@
 	font-size: 16px;
 	font-weight: 400;
 }
+.wpbc_times_selector div,
 .wpbc_wizard__border_container .wpbc_times_selector div {
-	flex: 0 0 120px;
+	flex: 1 1 auto;
+	max-width: Min(260px, 100%);
+	/*min-width: Min(90px, 100%);*/
+	white-space: wrap;
+	word-break: normal;
 }
 .wpbc_theme_dark_1 .wpbc_wizard__border_container {
 	border: 1px solid rgb(0, 0, 0);
@@ -59,6 +64,9 @@
 	color: #bbb;
 	box-shadow: 0 0px 3px #3b3b3b;
 }
+.wpbc_theme_dark_1 .wpbc_wizard__border_container span,
+.wpbc_theme_dark_1 .wpbc_wizard__border_container p,
+.wpbc_theme_dark_1 .wpbc_wizard__border_container div,
 .wpbc_theme_dark_1 .wpbc_wizard__border_container label {
 	color: #fff;
 }

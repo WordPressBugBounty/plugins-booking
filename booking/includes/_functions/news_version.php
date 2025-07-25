@@ -89,13 +89,11 @@ function wpdev_ajax_check_bk_news( $sub_url = '' ){
  * Check  if user defined to  not show up_news section.
  *
  */
-function wpbc_is_show_up_news(){                                                                                        // FixIn: 8.1.3.9.
+function wpbc_is_show_up_news(){
 
-	$wpdev_copyright_adminpanel  = get_bk_option( 'booking_wpdev_copyright_adminpanel' );             // check
-	if ( 	( $wpdev_copyright_adminpanel === 'Off' )
-		 && ( ! wpbc_is_this_demo() )
-		 && ( class_exists('wpdev_bk_personal') )
-	) {
+	$is_show = get_bk_option( 'booking_wpdev_copyright_adminpanel' );
+
+	if ( ( 'Off' === $is_show ) && ( ! wpbc_is_this_demo() ) && ( class_exists( 'wpdev_bk_personal' ) ) ) {
 		return false;
 	} else {
 		return true;

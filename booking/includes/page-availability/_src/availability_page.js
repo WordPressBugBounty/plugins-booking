@@ -181,12 +181,12 @@ function wpbc_ajx_availability__calendar__show( calendar_params_arr ){
 		// Remove highlight day for today  date
 		jQuery( '.datepick-days-cell.datepick-today.datepick-days-cell-over' ).removeClass( 'datepick-days-cell-over' );
 
-		// Set height of calendar  cells if defined this option
+		// Set height of calendar  cells if defined this option  // FixIn: 10.12.4.2.
 		if ( '' !== calendar_params_arr.ajx_cleaned_params.calendar__view__cell_height ){
 			jQuery( 'head' ).append( '<style type="text/css">'
 										+ '.hasDatepick .datepick-inline .datepick-title-row th, '
 										+ '.hasDatepick .datepick-inline .datepick-days-cell {'
-											+ 'height: ' + calendar_params_arr.ajx_cleaned_params.calendar__view__cell_height + ' !important;'
+											+ 'max-height: ' + calendar_params_arr.ajx_cleaned_params.calendar__view__cell_height + ' !important;'
 										+ '}'
 									+'</style>' );
 		}

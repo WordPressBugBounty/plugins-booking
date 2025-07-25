@@ -3,6 +3,78 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
+function wpbc_welcome_section_10_13( $obj ){
+
+	$section_param_arr = array( 'version_num' => '10.13', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+
+
+	//   $obj->asset_path = 'http://beta/assets/';	// TODO: 2024-06-01 comment this
+
+
+	// <editor-fold     defaultstate="collapsed"                        desc=" = F R E E = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = F R E E =
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Smarter Bookings, Elementor Integration and Cleaner Interface' ) ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Booking Calendar meets Elementor!**' ) ); ?></h3>
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.13/elementor_01.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Full Elementor Support!**: Design and customize your booking forms directly inside the Elementor editor—with real-time form previews and a built-in skin selector. No more shortcode guesswork—just drag, configure, and save!' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Calendar Preloader:** We’ve added a smooth-loading preloader bar that prevents layout jumps on slower connections, ensuring a polished experience for your visitors.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New Booking Form Template – Service Selection Wizard (Pro):** Perfect for appointment-based bookings: this template features a left-side service selector with a streamlined date/time step for faster, easier bookings.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col" style="flex: 1 1 45%;margin: 10px 0;">
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Cleaner & More Intuitive Interface**' ) ); ?></h3>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Updated Sidebar Navigation:** All plugin menus now live in a single, collapsible sidebar—easier to navigate and quicker to access.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Visual Polish & UX Tweaks:** We’ve made subtle design upgrades across the board: improved calendar styling, better visual hierarchy, smarter warnings (e.g., duplicate calendar IDs), and more compact menu visuals in compact mode.' ) ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 50%;margin: 0px 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.13/vertical_menu_01.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
+			</div>
+		</div>
+		<hr class="wpbc_hr_dots"><?php // ---------------------------------------------------------------------- ?>
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col" style="flex: 1 1 45%;margin: 10px 0;">
+				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Smart Phone Validation**' ) ); ?></h3>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Auto-Detect & Format Phone Fields:** Phone fields now automatically detect and format numbers based on the user’s input and locale. Start typing +1 and the field instantly formats to +1 000 000 0000 (USA); type +34 for Spain and get +34 000 000 0000.' ) ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 50%;margin: 0px 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.13/phone_validattion_01.png' ) ); ?>" style="margin:10px auto;max-width:600px;" />
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull;  **Built-In Intelligence – No Setup Required** We intelligently detect phone fields by name (e.g., “phone”, “fone”, “tel”, “mobile”, “telefono”, etc.) and apply the right mask and placeholder automatically—no third-party APIs needed. Only valid digits are allowed; unsupported characters are blocked instantly.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
 function wpbc_welcome_section_10_12( $obj ){
 
 	$section_param_arr = array( 'version_num' => '10.12', 'show_expand' => false );

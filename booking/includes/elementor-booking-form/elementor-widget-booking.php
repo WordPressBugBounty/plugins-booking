@@ -36,7 +36,7 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 * @return string Widget title.
 	 */
 	public function get_title(): string {
-		return esc_html__( 'Booking Calendar - Booking Form', 'booking' );
+		return 'Booking Calendar'; // . ' - ' . esc_html__( 'Booking Form', 'booking' ); //.
 	}
 
 	/**
@@ -49,23 +49,7 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 * @return string Widget icon.
 	 */
 	public function get_icon(): string {
-		return 'wpbc_logo_1';
-		//return 'wpbc_logo_2';
-
-		$params = array(
-							'svg_color'     => '#444',
-							'svg_color_alt' => '#bbb',
-							'opacity'       => '0.35',
-							'style_default' => 'background-repeat: no-repeat; background-position: center; display: inline-block; vertical-align: middle;',
-							'style_adjust'  => 'background-size: 30px auto; width: 30px; height: 30px; margin-top: 0px;',  // This parameters, the adjust size of the logo and position.
-							'css_class'     => '',
-						);
-
-		// return wpbc_get_svg_logo_for_html( $params  );
-
-		// return wpbc_get_svg_logo_for_background( $params['svg_color'], $params['svg_color_alt'], $params['opacity'] );
-
-		return wpbc_get_svg_logo(  $params['svg_color'], $params['svg_color_alt'], $params['opacity'] );
+		return 'wpbc_logo_in_elementor';
 	}
 
 	/**
@@ -78,7 +62,7 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 * @return array Widget categories.
 	 */
 	public function get_categories(): array {
-		return [ 'general' ];
+		return [ 'basic', 'wpbc' ];
 	}
 
 	/**
@@ -104,7 +88,7 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 * @return string Widget help URL.
 	 */
 	public function get_custom_help_url(): string {
-		return 'https://wpbookingcalendar.com/faq/';
+		return 'https://wpbookingcalendar.com/contact/';
 	}
 
 	/**
@@ -117,15 +101,15 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 * @return array Widget promotion data.
 	 */
 	protected function get_upsale_data(): array {
-		return [
-			'condition' => true,
-			'image' => esc_url( ELEMENTOR_ASSETS_URL . 'images/go-pro.svg' ),
-			'image_alt' => esc_attr__( 'Upgrade', 'elementor-list-widget' ),
-			'title' => esc_html__( 'Promotion heading', 'elementor-list-widget' ),
-			'description' => esc_html__( 'Get the premium version of the widget with additional styling capabilities.', 'elementor-list-widget' ),
-			'upgrade_url' => esc_url( 'https://example.com/upgrade-to-pro/' ),
-			'upgrade_text' => esc_html__( 'Upgrade Now', 'elementor-list-widget' ),
-		];
+		return array(
+			'image'        => esc_url( ELEMENTOR_ASSETS_URL . 'images/go-pro.svg' ),
+			'image_alt'    => esc_attr__( 'Upgrade', 'booking' ),
+			'title'        => esc_html__( 'Booking Calendar Pro', 'booking' ),
+			'description'  => esc_html__( 'Get the premium version of the plugin with additional features.', 'booking' ),
+			'upgrade_url'  => esc_url( 'https://wpbookingcalendar.com/prices/' ),
+			'upgrade_text' => esc_html__( 'Upgrade Now', 'booking' ),
+			'condition'    => ! class_exists('wpdev_bk_personal'),
+		);
 	}
 
 	/**
@@ -138,7 +122,7 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 * @return bool Whether to optimize the DOM size.
 	 */
 	public function has_widget_inner_wrapper(): bool {
-		return false;
+		return true;
 	}
 
 	/**
@@ -165,114 +149,84 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	protected function register_controls(): void {
 
 		$this->start_controls_section(
-			'content_section',
+			'wpbc_booking_interface_section',
 			[
-				'label' => esc_html__( 'List Content', 'elementor-list-widget' ),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+				'label' => esc_html__( 'Booking Interface', 'booking' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
 
-		/* Start repeater */
-
-		$repeater = new \Elementor\Repeater();
-
-		$repeater->add_control(
-			'text',
+		$this->add_control(
+			'wpbc_booking_shortcode',
 			[
-				'label' => esc_html__( 'Text', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'List Item', 'elementor-list-widget' ),
-				'default' => esc_html__( 'List Item', 'elementor-list-widget' ),
+				'type'        => \Elementor\Controls_Manager::SELECT,
+				'label'       => esc_html__( 'Display Mode', 'booking' ),
+				'options'     => [
+					'booking'         => esc_html__( 'Booking Form', 'booking' ) . ' + ' . esc_html__( 'Calendar', 'booking' ),
+					'bookingcalendar' => esc_html__( 'Availability Calendar Only', 'booking' ),
+				],
+				'default'     => 'booking',
 				'label_block' => true,
-				'dynamic' => [
-					'active' => true,
-				],
 			]
 		);
 
-		$repeater->add_control(
-			'link',
-			[
-				'label' => esc_html__( 'Link', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::URL,
-				'dynamic' => [
-					'active' => true,
-				],
-			]
-		);
-
-		/* End repeater */
+		if ( class_exists( 'wpdev_bk_personal' ) ) {
+			$this->add_control(
+				'wpbc_booking_resource_id',
+				[
+					'label' => esc_html__( 'Select Booking Resource', 'booking' ),
+					'type'  => 'wpbc_resource_selection',
+				]
+			);
+		}
 
 		$this->add_control(
-			'list_items',
+			'wpbc_booking_months_number',
 			[
-				'label' => esc_html__( 'List Items', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::REPEATER,
-				'fields' => $repeater->get_controls(),           /* Use our repeater */
-				'default' => [
-					[
-						'text' => esc_html__( 'List Item #1', 'elementor-list-widget' ),
-						'link' => '',
-					],
-					[
-						'text' => esc_html__( 'List Item #2', 'elementor-list-widget' ),
-						'link' => '',
-					],
-					[
-						'text' => esc_html__( 'List Item #3', 'elementor-list-widget' ),
-						'link' => '',
-					],
-				],
-				'title_field' => '{{{ text }}}',
-			]
-		);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'marker_section',
-			[
-				'label' => esc_html__( 'List Marker', 'elementor-list-widget' ),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-			]
-		);
-
-		$this->add_control(
-			'marker_type',
-			[
-				'label' => esc_html__( 'Marker Type', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'label'   => esc_html__( 'Number of Visible Months', 'booking' ),
 				'options' => [
-					'ordered' => [
-						'title' => esc_html__( 'Ordered List', 'elementor-list-widget' ),
-						'icon' => 'eicon-editor-list-ol',
-					],
-					'unordered' => [
-						'title' => esc_html__( 'Unordered List', 'elementor-list-widget' ),
-						'icon' => 'eicon-editor-list-ul',
-					],
-					'other' => [
-						'title' => esc_html__( 'Custom List', 'elementor-list-widget' ),
-						'icon' => 'eicon-edit',
-					],
+					'1'  => '1 ' . esc_html__( 'month', 'booking' ),
+					'2'  => '2 ' . esc_html__( 'months', 'booking' ),
+					'3'  => '3 ' . esc_html__( 'months', 'booking' ),
+					'4'  => '4 ' . esc_html__( 'months', 'booking' ),
+					'5'  => '5 ' . esc_html__( 'months', 'booking' ),
+					'6'  => '6 ' . esc_html__( 'months', 'booking' ),
+					'7'  => '7 ' . esc_html__( 'months', 'booking' ),
+					'8'  => '8 ' . esc_html__( 'months', 'booking' ),
+					'9'  => '9 ' . esc_html__( 'months', 'booking' ),
+					'10' => '10 ' . esc_html__( 'months', 'booking' ),
+					'11' => '11 ' . esc_html__( 'months', 'booking' ),
+					'12' => '12 ' . esc_html__( 'months', 'booking' ),
 				],
-				'default' => 'ordered',
-				'toggle' => false,
+				'default' => '1',
 			]
 		);
 
+
+		if ( wpbc_is_custom_forms_enabled() ) {
+			$this->add_control(
+				'wpbc_custom_form_id',
+				[
+					'label' => esc_html__( 'Use Custom Form', 'booking' ),
+					'type'  => 'wpbc_custom_form_selection',
+					'condition' => [
+						'wpbc_booking_shortcode' => 'booking',
+					],
+				]
+			);
+		}
+
 		$this->add_control(
-			'marker_content',
+			'wpbc_go_button__form_fields',
 			[
-				'label' => esc_html__( 'Custom Marker', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Enter custom marker', 'elementor-list-widget' ),
-				'default' => '🧡',
+				'type'      => 'wpbc_go_button',
+				'text'      => esc_html__( 'Go to Form Fields Configuration', 'booking' ),
+				'icon'      => 'eicon-share-arrow',
+				'css_class' => 'e-btn-txt e-btn-txt-border',
+				'url'       => esc_url( wpbc_get_settings_url() . '&tab=form' ),
 				'condition' => [
-					'marker_type[value]' => 'other',
-				],
-				'selectors' => [
-					'{{WRAPPER}} .elementor-list-widget-text::marker' => 'content: "{{VALUE}}";',
+					'wpbc_booking_shortcode' => 'booking',
 				],
 			]
 		);
@@ -280,96 +234,27 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'style_content_section',
+			'wpbc_theme_section',
 			[
-				'label' => esc_html__( 'List Style', 'elementor-list-widget' ),
-				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+				'label' => esc_html__( 'Appearance & Color Themes', 'booking' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
 
 		$this->add_control(
-			'title_color',
+			'wpbc_calendar_skin_control',
 			[
-				'label' => esc_html__( 'Color', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .elementor-list-widget-text' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .elementor-list-widget-text > a' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->add_group_control(
-			\Elementor\Group_Control_Typography::get_type(),
-			[
-				'name' => 'icon_typography',
-				'selector' => '{{WRAPPER}} .elementor-list-widget-text, {{WRAPPER}} .elementor-list-widget-text > a',
-			]
-		);
-
-		$this->add_group_control(
-			\Elementor\Group_Control_Text_Shadow::get_type(),
-			[
-				'name' => 'text_shadow',
-				'selector' => '{{WRAPPER}} .elementor-list-widget-text',
+				'label'              => esc_html__( 'Calendar Theme (Skin)', 'booking' ),
+				'type'               => 'wpbc_calendar_skin_selection',
+				'frontend_available' => false,
+				'render_type'        => 'none',
+				'label_block' => true,
 			]
 		);
 
 		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'style_marker_section',
-			[
-				'label' => esc_html__( 'Marker Style', 'elementor-list-widget' ),
-				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
-			]
-		);
-
-		$this->add_control(
-			'marker_color',
-			[
-				'label' => esc_html__( 'Color', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .elementor-list-widget-text::marker' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->add_control(
-			'marker_spacing',
-			[
-				'label' => esc_html__( 'Spacing', 'elementor-list-widget' ),
-				'type' => \Elementor\Controls_Manager::SLIDER,
-				'size_units' => [ 'px', 'em', 'rem', 'custom' ],
-				'range' => [
-					'px' => [
-						'min' => 0,
-						'max' => 100,
-					],
-					'em' => [
-						'min' => 0,
-						'max' => 10,
-					],
-					'rem' => [
-						'min' => 0,
-						'max' => 10,
-					],
-				],
-				'default' => [
-					'unit' => 'px',
-					'size' => 40,
-				],
-				'selectors' => [
-					// '{{WRAPPER}} .elementor-list-widget' => 'padding-left: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .elementor-list-widget' => 'padding-inline-start: {{SIZE}}{{UNIT}};',
-				],
-			]
-		);
-
-		$this->end_controls_section();
-
 	}
+
 
 	/**
 	 * Render list widget output on the frontend.
@@ -381,85 +266,36 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	 */
 	protected function render(): void {
 
+		$shortcode_params = array();
+		$settings         = $this->get_settings_for_display();
 
-		echo do_shortcode( '[booking]' );
+		// Shortcode type.
+		$allowed_shortcodes = array( 'booking', 'bookingcalendar' );
+		$shortcode_type = in_array( $settings['wpbc_booking_shortcode'], $allowed_shortcodes, true ) ? $settings['wpbc_booking_shortcode'] : 'booking';
 
-		return;
+		// Number of months.
+		$months_number = isset( $settings['wpbc_booking_months_number'] ) ? intval( $settings['wpbc_booking_months_number'] ) : 1;
+		if ( $months_number > 1 ) {
+			$shortcode_params[] = "nummonths={$months_number}";
+		}
 
-		$settings = $this->get_settings_for_display();
-		$html_tag = [
-			'ordered' => 'ol',
-			'unordered' => 'ul',
-			'other' => 'ul',
-		];
-		$this->add_render_attribute( 'list', 'class', 'elementor-list-widget' );
-		?>
-		<<?php echo $html_tag[ $settings['marker_type'] ]; ?> <?php $this->print_render_attribute_string( 'list' ); ?>>
-			<?php
-			foreach ( $settings['list_items'] as $index => $item ) {
-				$repeater_setting_key = $this->get_repeater_setting_key( 'text', 'list_items', $index );
-				$this->add_render_attribute( $repeater_setting_key, 'class', 'elementor-list-widget-text' );
-				$this->add_inline_editing_attributes( $repeater_setting_key );
-				?>
-				<li <?php $this->print_render_attribute_string( $repeater_setting_key ); ?>>
-					<?php
-					$title = $settings['list_items'][$index]['text'];
+		// Booking resource (if personal version is active).
+		if ( class_exists( 'wpdev_bk_personal' ) && ! empty( $settings['wpbc_booking_resource_id'] ) && intval( $settings['wpbc_booking_resource_id'] ) > 1 ) {
+			$resource_id        = intval( $settings['wpbc_booking_resource_id'] );
+			$shortcode_params[] = "resource_id={$resource_id}";
+		}
 
-					if ( ! empty( $item['link']['url'] ) ) {
-						$this->add_link_attributes( "link_{$index}", $item['link'] );
-						$linked_title = sprintf( '<a %1$s>%2$s</a>', $this->get_render_attribute_string( "link_{$index}" ), $title );
-						echo $linked_title;
-					} else {
-						echo $title;
-					}
-					?>
-				</li>
-				<?php
+		// Is custom use form ?
+		if ( ( class_exists( 'wpdev_bk_biz_m' ) ) && ! empty( $settings['wpbc_custom_form_id'] ) ) {
+			$wpbc_custom_form_id = sanitize_text_field( $settings['wpbc_custom_form_id'] );
+			if ( 'standard' !== $wpbc_custom_form_id ) {
+				$shortcode_params[] = "form_type='{$wpbc_custom_form_id}'";
 			}
-			?>
-		</<?php echo $html_tag[ $settings['marker_type'] ]; ?>>
-		<?php
-	}
+		}
 
-	/**
-	 * Render list widget output in the editor.
-	 *
-	 * Written as a Backbone JavaScript template and used to generate the live preview.
-	 *
-	 * @since 1.0.0
-	 * @access protected
-	 */
-	protected function content_template(): void {
-		return;
-		?>
-		<#
-		html_tag = {
-			'ordered': 'ol',
-			'unordered': 'ul',
-			'other': 'ul',
-		};
-		view.addRenderAttribute( 'list', 'class', 'elementor-list-widget' );
-		#>
-		<{{{ html_tag[ settings.marker_type ] }}} {{{ view.getRenderAttributeString( 'list' ) }}}>
-			<# _.each( settings.list_items, function( item, index ) {
-				const repeater_setting_key = view.getRepeaterSettingKey( 'text', 'list_items', index );
-				view.addRenderAttribute( repeater_setting_key, 'class', 'elementor-list-widget-text' );
-				view.addInlineEditingAttributes( repeater_setting_key );
-				#>
-				<li {{{ view.getRenderAttributeString( repeater_setting_key ) }}}>
-					<# const title = item.text; #>
-					<# if ( item.link ) { #>
-						<# view.addRenderAttribute( `link_${index}`, item.link ); #>
-						<a href="{{ item.link.url }}" {{{ view.getRenderAttributeString( `link_${index}` ) }}}>
-							{{{title}}}
-						</a>
-					<# } else { #>
-						{{{title}}}
-					<# } #>
-				</li>
-			<# } ); #>
-		</{{{ html_tag[ settings.marker_type ] }}}>
-		<?php
-	}
+		// Final parameters string.
+		$shortcode_params_str = implode( ' ', $shortcode_params );
 
+		echo do_shortcode( '[' . $shortcode_type . ' ' . $shortcode_params_str . ']' );
+	}
 }

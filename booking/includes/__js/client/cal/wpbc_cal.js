@@ -210,8 +210,8 @@ function wpbc_calendar_show( resource_id ){
 
 		var is_day_selectable = false;
 
-		// If something not defined,  then  this date closed ---------------------------------------------------------------
-		if ( false === date_bookings_obj ){
+		// If something not defined,  then  this date closed --------------------------------------------------------------- // FixIn: 10.12.4.6.
+		if ( (false === date_bookings_obj) || ('undefined' === typeof (date_bookings_obj[resource_id])) ) {
 
 			css_classes__for_date.push( 'date_user_unavailable' );
 

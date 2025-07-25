@@ -781,10 +781,10 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
 }
 @media (max-width:400px) {
   .wpbc_aling_right .wpbc_times_selector div {
-    margin: 7px 0 0 15px
+    margin: 7px 0 0
   }
   .wpbc_aling_center .wpbc_times_selector div {
-    margin: 7px 15px
+    margin: 7px 0
   }
 }
 /*!   ==  Wizard Form Tmeplate - Bordered Well Padding  ============================================================  */
@@ -802,9 +802,13 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   font-size: 16px;
   font-weight: 400
 }
+.wpbc_times_selector div,
 .wpbc_wizard__border_container .wpbc_times_selector div {
-  -ms-flex: 0 0 120px;
-  flex: 0 0 120px
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  max-width: Min(260px,100%);
+  white-space: wrap;
+  word-break: normal
 }
 .wpbc_theme_dark_1 .wpbc_wizard__border_container {
   border: 1px solid #000;
@@ -812,6 +816,9 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   color: #bbb;
   box-shadow: 0 0 3px #3b3b3b
 }
-.wpbc_theme_dark_1 .wpbc_wizard__border_container label {
+.wpbc_theme_dark_1 .wpbc_wizard__border_container div,
+.wpbc_theme_dark_1 .wpbc_wizard__border_container label,
+.wpbc_theme_dark_1 .wpbc_wizard__border_container p,
+.wpbc_theme_dark_1 .wpbc_wizard__border_container span {
   color: #fff
 }

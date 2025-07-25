@@ -205,3 +205,19 @@
 	margin: 0 0 0 35px;
     font-size: 15px;
 }
+
+/* HTML: <div class="wpbc_spins_loader_other"></div> */
+.wpbc_spins_loader_other {
+	width: 50px;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: radial-gradient(farthest-side, #8ECE01 94%, #0000) top/2px 2px no-repeat,
+	conic-gradient(#0000 30%, #8ECE01);
+	-webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 2px), #000 0);
+	animation: wpbc_spins_loader_other_anim 0.75s infinite linear;
+}
+@keyframes wpbc_spins_loader_other_anim {
+	100% {
+		transform: rotate(1turn)
+	}
+}

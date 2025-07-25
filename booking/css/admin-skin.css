@@ -721,7 +721,6 @@ a.wpbc_is_new_button:hover {
 .wpbc_top_tab__general_availability,
 .wpbc_top_tab__payment_gateways {
 	order: 2;
-	border-left: 1px solid #cfcfcf !important;
 }
 
 /* Show WordPress notice messages (such as: "WordPress 6.4.2 is available!") at right side of the page. */

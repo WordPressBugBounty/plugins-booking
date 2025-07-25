@@ -11,8 +11,6 @@ class wpdev_booking {
 
     function __construct() {
 
-		// In AJAX request it DO NOT RUNNING.   Important note
-
 	    $this->popover_front_end_js_is_writed = false;
 
 	    if ( class_exists( 'wpdev_bk_personal' ) ) {
@@ -21,17 +19,16 @@ class wpdev_booking {
 		    $this->wpdev_bk_personal = false;
 	    }
 
-
-	    // User defined - hooks
-	    add_action( 'wpdev_bk_add_calendar', array( &$this, 'add_calendar_action' ), 10, 2 );
-	    add_action( 'wpdev_bk_add_form', array( &$this, 'add_booking_form_action' ), 10, 2 );
-	    add_bk_action( 'wpdevbk_add_form', array( &$this, 'add_booking_form_action' ) );
-	    add_filter( 'wpdev_bk_get_form', array( &$this, 'get_booking_form_action' ), 10, 2 );
-	    add_bk_filter( 'wpdevbk_get_booking_form', array( &$this, 'get_booking_form_action' ) );
-	    add_filter( 'wpdev_bk_get_showing_date_format', array( &$this, 'get_showing_date_format' ), 10, 1 );
+		// User defined - hooks
+		add_action( 'wpdev_bk_add_calendar', array( &$this, 'add_calendar_action' ), 10, 2 );
+		add_action( 'wpdev_bk_add_form', array( &$this, 'add_booking_form_action' ), 10, 2 );
+		add_bk_action( 'wpdevbk_add_form', array( &$this, 'add_booking_form_action' ) );
+		add_filter( 'wpdev_bk_get_form', array( &$this, 'get_booking_form_action' ), 10, 2 );
+		add_bk_filter( 'wpdevbk_get_booking_form', array( &$this, 'get_booking_form_action' ) );
+		add_filter( 'wpdev_bk_get_showing_date_format', array( &$this, 'get_showing_date_format' ), 10, 1 );
 
 	    // Get script for calendar activation
-	    add_bk_filter( 'pre_get_calendar_html', array( &$this, 'pre_get_calendar_html' ) );
+		add_bk_filter( 'pre_get_calendar_html', 'wpbc_pre_get_calendar_html' );
 
 	    add_action( 'init', array( $this, 'wpbc_shortcodes_init' ), 9999 );              // <- priority  to  load it last
     }
@@ -44,18 +41,16 @@ class wpdev_booking {
 	 * @return void
 	 */
 	function wpbc_shortcodes_init(){
-
-	    add_shortcode( 'booking',               array( &$this, 'booking_shortcode' ) );
-	    add_shortcode( 'bookingcalendar',       array( &$this, 'booking_calendar_only_shortcode' ) );
-	    add_shortcode( 'bookingform',           array( &$this, 'bookingform_shortcode' ) );
-	    add_shortcode( 'bookingedit',           array( &$this, 'bookingedit_shortcode' ) );
-	    add_shortcode( 'bookingsearch',         array( &$this, 'bookingsearch_shortcode' ) );
-	    add_shortcode( 'bookingsearchresults',  array( &$this, 'bookingsearchresults_shortcode' ) );
-	    add_shortcode( 'bookingselect',         array( &$this, 'bookingselect_shortcode' ) );
-	    add_shortcode( 'bookingresource',       array( &$this, 'bookingresource_shortcode' ) );
-	    add_shortcode( 'bookingtimeline',       array( &$this, 'bookingtimeline_shortcode' ) );
+	    add_shortcode( 'booking',                array( &$this, 'booking_shortcode' ) );
+	    add_shortcode( 'bookingcalendar',        array( &$this, 'booking_calendar_only_shortcode' ) );
+	    add_shortcode( 'bookingform',            array( &$this, 'bookingform_shortcode' ) );
+	    add_shortcode( 'bookingedit',            array( &$this, 'bookingedit_shortcode' ) );
+	    add_shortcode( 'bookingsearch',          array( &$this, 'bookingsearch_shortcode' ) );
+	    add_shortcode( 'bookingsearchresults',   array( &$this, 'bookingsearchresults_shortcode' ) );
+	    add_shortcode( 'bookingselect',          array( &$this, 'bookingselect_shortcode' ) );
+	    add_shortcode( 'bookingresource',        array( &$this, 'bookingresource_shortcode' ) );
+	    add_shortcode( 'bookingtimeline',        array( &$this, 'bookingtimeline_shortcode' ) );
 	    add_shortcode( 'bookingcustomerlisting', array( &$this, 'bookingcustomerlisting_shortcode' ) );					// FixIn: 8.1.3.5.
-
 	}
 	
 	
@@ -142,99 +137,6 @@ class wpdev_booking {
     
 
     // <editor-fold defaultstate="collapsed" desc="   C L I E N T   S I D E     &    H O O K S ">
-
-
-    // Get HTML for the initilizing inline calendars
-    function pre_get_calendar_html( $resource_id=1, $cal_count=1, $bk_otions=array() ){
-        //SHORTCODE:
-        /*
-         * [booking type=56 form_type='standard' nummonths=4 
-         *          options='{calendar months_num_in_row=2 width=682px cell_height=48px}']
-         */
-        
-        $bk_otions = wpbc_parse_calendar_options($bk_otions);
-        /*  options:
-            [months_num_in_row] => 2
-            [width] => 341px                define: width: 100%; max-width:341px;
-                [strong_width] => 341px     define: width:341px;
-            [cell_height] => 48px
-         */
-        $width = $months_num_in_row = $cell_height = '';
-        
-        if (!empty($bk_otions)){
-
-	        if ( isset( $bk_otions['months_num_in_row'] ) ) {
-		        $months_num_in_row = $bk_otions['months_num_in_row'];
-	        }
-
-	        if ( isset( $bk_otions['width'] ) ) {
-		        $width = 'width:100%;max-width:' . $bk_otions['width'] . ';';                                           // FixIn: 9.3.1.5.
-	        }
-	        if ( isset( $bk_otions['strong_width'] ) ) {
-		        $width .= 'width:' . $bk_otions['strong_width'] . ';';                                                  // FixIn: 9.3.1.6.
-	        }
-
-	        if ( isset( $bk_otions['cell_height'] ) ) {
-		        $cell_height = $bk_otions['cell_height'];
-	        }
-	        if ( isset( $bk_otions['strong_cell_height'] ) ) {                                                          // FixIn: 9.7.3.3.
-		        $cell_height = $bk_otions['strong_cell_height'] . '!important;';
-	        }
-        }
-        /* FixIn: 9.7.3.4 */
-
-		if ( ! empty( $cell_height ) ) {
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-			$style = '<style type="text/css" rel="stylesheet" >' . '.hasDatepick .datepick-inline .datepick-title-row th,' . '.hasDatepick .datepick-inline .datepick-days-cell{' . ' height: ' . $cell_height . '; ' . '}' . '</style>';
-		} else {
-			$style = '';
-		}
-
-        // FixIn: 8.2.1.27.
-        $booking_timeslot_day_bg_as_available = get_bk_option( 'booking_timeslot_day_bg_as_available' );
-
-        $booking_timeslot_day_bg_as_available = ( $booking_timeslot_day_bg_as_available === 'On' ) ? ' wpbc_timeslot_day_bg_as_available' : '';
-
-	    //FixIn: 9.8.1
-	    $is_custom_width_css = ( empty( $width ) ) ? ' wpbc_no_custom_width ' : '';
-
-        $calendar  = $style.
-                     '<div class="wpbc_cal_container bk_calendar_frame' . $is_custom_width_css . ' months_num_in_row_' . $months_num_in_row . ' cal_month_num_' . $cal_count . $booking_timeslot_day_bg_as_available . '" style="' . $width . '">' .
-                        '<div id="calendar_booking' . $resource_id . '">' .
-                     __('Calendar is loading...' ,'booking').
-                        '</div>'.
-                     '</div>'.
-                     '';
-        
-        $booking_is_show_powered_by_notice = get_bk_option( 'booking_is_show_powered_by_notice' );
-	    if ( ( ! class_exists( 'wpdev_bk_personal' ) ) && ( $booking_is_show_powered_by_notice == 'On' ) ) {
-		    $calendar .= '<div style="font-size:7px;text-align:left;margin:0 0 10px;text-shadow: none;">Powered by <a href="https://wpbookingcalendar.com" style="font-size:7px;" target="_blank" title="Booking Calendar plugin for WordPress">Booking Calendar</a></div>';
-	    }
-                
-        $calendar .= '<textarea id="date_booking' . $resource_id . '" name="date_booking' . $resource_id . '" autocomplete="off" style="display:none;"></textarea>';   // Calendar code
-        
-        $calendar .= wpbc_get_calendar_legend();                                                                        // FixIn: 9.4.3.6.
-
-        $calendar_css_class_outer = 'wpbc_calendar_wraper';
-
-        // FixIn: 7.0.1.24.
-        $is_booking_change_over_days_triangles = get_bk_option( 'booking_change_over_days_triangles' );
-        if ( $is_booking_change_over_days_triangles !== 'Off' ) {
-			$calendar_css_class_outer .= ' wpbc_change_over_triangle';
-        }
-
-
-		// filenames,  such  as 'multidays.css'
-	    $calendar_skin_name = basename( get_bk_option( 'booking_skin' ) );
-		if ( wpbc_is_calendar_skin_legacy( $calendar_skin_name ) ) {
-			$calendar_css_class_outer .= ' wpbc_calendar_skin_legacy'; //. wpbc_get_slug_format( get_bk_option( 'booking_skin' ) );
-		}
-
-	    $calendar = '<div class="' . esc_attr( $calendar_css_class_outer ) . '">' . $calendar . '</div>';
-
-        return $calendar;
-    }
-
 
 
     // Get booking form
@@ -406,7 +308,7 @@ class wpdev_booking {
 														'custom_form'                     => 'standard'                 // Because we show only  'AVAILABILITY CALENDAR' without the form,  at all.
 													));
 
-        $my_result = '<div style="clear:both;height:10px;"></div>' . $this->pre_get_calendar_html( $resource_id, $cal_count, $bk_otions );
+        $my_result = '<div style="clear:both;height:10px;"></div>' . wpbc_pre_get_calendar_html( $resource_id, $cal_count, $bk_otions );
 
         $my_result .=   ' ' . $start_script_code ;
 
@@ -432,7 +334,7 @@ class wpdev_booking {
         $nl = '<div style="clear:both;height:10px;"></div>';                                                            // New line
         if ($my_selected_dates_without_calendar=='') {
 			// Get HTML  with  [calendar] shortcode and Styles for calendar. Get legend html.
-            $calendar = $this->pre_get_calendar_html( $resource_id, $cal_count, $bk_otions );
+            $calendar = wpbc_pre_get_calendar_html( $resource_id, $cal_count, $bk_otions );
         } else {
             $calendar = '<textarea rows="3" cols="50" id="date_booking' . $resource_id . '" name="date_booking' . $resource_id . '"  autocomplete="off" style="display:none;">' . $my_selected_dates_without_calendar . '</textarea>';   // Calendar code
         }
@@ -533,16 +435,7 @@ class wpdev_booking {
                                     if (visible_calendars_count !== null ) {
                                         for (var i=0;i< visible_calendars_count ;i++){
                                           if ( _wpbc.get_other_param( "calendars__on_this_page" )[i] === ' . $resource_id . ' ) {
-                                              document.getElementById("'.$my_random_id.'").innerHTML = "<span style=\'color:#A00;font-size:10px;\'>'.
-							 							/* translators: 1: ... */
-							 							esc_js( sprintf( __( '%1$sWarning! Booking calendar for this booking resource are already at the page, please check more about this issue at %2$sthis page%3$s', 'booking' )
-                                                                , ''
-                                                                , ''
-                                                                , ': https://wpbookingcalendar.com/faq/why-the-booking-calendar-widget-not-show-on-page/'                                                            
-                                                        )  )
-                                                .'</span>";                                                                                                  
-                                              jQuery("#'.$my_random_id.'").animate( {opacity: 1}, 10000 ).fadeOut(5000);
-                                              return;
+                                          	console.log("%c Warning! The booking calendar for this resource with the ID = ' . $resource_id . ' is already on the page. Find more details here: https://wpbookingcalendar.com/faq/why-the-booking-calendar-widget-not-show-on-page/", "color: #e77; font-weight:bold");
                                           }
                                         }
                                         _wpbc.get_other_param( "calendars__on_this_page" )[ visible_calendars_count ]=' . intval( $resource_id ) . ';
@@ -551,7 +444,8 @@ class wpdev_booking {
         } else {
             //FixIn:6.1.1.16	// FixIn: 8.2.1.13.
 	        $return_form .= '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 // FixIn: 10.1.3.7.
-            $return_form .= ' if(typeof( showCostHintInsideBkForm ) == "function") {  showCostHintInsideBkForm(' . $resource_id . ');  } ';
+            $return_form .= ' if(typeof( wpbc_show_cost_hints_after_few_seconds ) == "function") {  wpbc_show_cost_hints_after_few_seconds(' . $resource_id . ');  } ';
+            $return_form .= ' else if (typeof( showCostHintInsideBkForm ) == "function") {  showCostHintInsideBkForm(' . $resource_id . ');  } ';	// Legacy function  support.
 			$return_form .= wpbc_jq_ready_end() . '</script>';                                                          // FixIn: 10.1.3.7.
         }
 

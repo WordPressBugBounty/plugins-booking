@@ -207,33 +207,7 @@ function wpbc_smpl_form__ui__calendar_skin_dropdown(){
 		//if ( ! wpbc_is_user_can( $booking_action, wpbc_get_current_user_id() ) ) { 	return false; 	}
 
 
-		// FixIn: 10.3.0.5.
-        //  Calendar Skin  /////////////////////////////////////////////////////
-		$cal_arr = wpbc_get_calendar_skin_options( WPBC_PLUGIN_URL );
-
-		$upload_dir = wp_upload_dir();							// Check  if this skin exist  in the Custom User folder at  the http://example.com/wp-content/uploads/wpbc_skins/
-		$custom_user_skin_folder = $upload_dir['basedir'] ;
-		$custom_user_skin_url    = $upload_dir['baseurl'] ;
-
-		$transformed_cal_arr = array();
-		foreach ( $cal_arr as $calendar_skin_url => $calendar_name ) {
-			if ( false !== strpos($calendar_skin_url, WPBC_PLUGIN_URL ) ){
-
-				$relative_cal_skin_path = str_replace( WPBC_PLUGIN_URL, '', $calendar_skin_url );
-
-				if ( file_exists( $custom_user_skin_folder .  $relative_cal_skin_path ) ) {
-					// Custom  Skin
-					$transformed_cal_arr[ $custom_user_skin_url . $relative_cal_skin_path ] = $calendar_name;
-				} else {
-					// Plugin Usual Skins
-					$transformed_cal_arr[ WPBC_PLUGIN_URL . $relative_cal_skin_path ] = $calendar_name;
-				}
-			} else {
-				// OptGroups
-				$transformed_cal_arr[ $calendar_skin_url ] = $calendar_name;
-			}
-		}
-
+		$transformed_cal_arr = wpbc_get_calendar_skin_options_with_legacy_sections();
 
 		$params_select = array(
 							  'id'       => $el_id 				// HTML ID  of element

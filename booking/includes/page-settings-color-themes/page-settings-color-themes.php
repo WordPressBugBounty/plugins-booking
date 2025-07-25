@@ -256,7 +256,7 @@ class WPBC_API_Settings_Color_Themes extends WPBC_Settings_API {
 								jQuery( '#set_gen_booking_skin' ).find( 'option' ).prop( 'selected', false );								
 								jQuery( '#set_gen_booking_skin' ).find( 'option[value=\"'+ wpbc_cal_dark_skin_path  +'\"]' ).prop( 'selected', true ).trigger('change');																
                             }
-                            var wpbc_cal_light_skin_path = '/css/skins/24_9__light_square_1.css';		
+                            var wpbc_cal_light_skin_path = '/css/skins/25_5__square_1.css';		
                             if ( '' === wpbc_selected_theme ) {
 								jQuery( '#set_gen_booking_skin' ).find( 'option' ).prop( 'selected', false );								
 								jQuery( '#set_gen_booking_skin' ).find( 'option[value=\"'+ wpbc_cal_light_skin_path  +'\"]' ).prop( 'selected', true ).trigger('change');																
@@ -410,7 +410,7 @@ class WPBC_Page_Settings_Color_Themes extends WPBC_Page_Structure {
 //		// We return  it as subtabs of Form tab!
 //		$tabs[ 'color_themes' ]['subtabs'] = $subtabs;
 
-		$tabs[ 'color_themes_settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:30;' ) );
+		// FixIn: 10.12.4.7.  $tabs[ 'color_themes_settings' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:30;' ) );
 
 		return $tabs;
 	}

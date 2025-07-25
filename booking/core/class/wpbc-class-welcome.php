@@ -306,9 +306,9 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
-		wpbc_welcome_section_10_12( $this );
-
-		wpbc_welcome_section_10_11( $this );
+		wpbc_welcome_section_10_13( $this );
+//		wpbc_welcome_section_10_12( $this );
+//		wpbc_welcome_section_10_11( $this );
 
 		/*
 					wpbc_welcome_section_10_10( $this );

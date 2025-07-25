@@ -31,7 +31,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$tabs                = array();
 		$tabs['add-booking'] = array(
 			'is_show_top_path'                   => false,                                 // true | false.  By default value is: false.
-			'left_navigation__default_view_mode' => 'compact',                             // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'left_navigation__default_view_mode' => 'min',                             // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'page_title'                         => __( 'Add New Booking', 'booking' ),        // Header - Title.  If false, than hidden.
 			'page_description'                   => __( 'Manually add new bookings from the Admin Panel.', 'booking' ), // Header - Title Description.  If false, than hidden.
 			'title'                              => __( 'Add booking', 'booking' ),        // Title of TAB.

@@ -494,9 +494,7 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
 
     $default_options['booking_admin_cal_count'] = ($is_demo) ? '3' : '2';       
  $mu_option4delete[]='booking_admin_cal_count';                                 // $multiuser_general_option[] = implode( '', array_keys( array_slice( $default_options, -1 ) ) );
-    // $default_options['booking_skin'] = '/css/skins/24_9__light_square_1.css'; //.
-    // $default_options['booking_skin'] = '/css/skins/24_9__green_5.css';         // FixIn: 10.11.4.2.
-    $default_options['booking_skin'] = '/css/skins/25_5__square_7.css';           // FixIn: 10.11.4.2.
+    $default_options['booking_skin'] = '/css/skins/25_5__square_1.css';           // FixIn: 10.11.4.2.
  $mu_option4delete[]='booking_skin';
 	// FixIn: 9.6.3.5.
     $default_options['booking_listing_default_view_mode'] = 'vm_booking_listing';	// 'vm_calendar';		// FixIn: 9.6.3.5.
@@ -655,19 +653,19 @@ $mu_option4delete[]= 'booking_timeslot_picker_skin';
  $mu_option4delete[]='booking_menu_position';  
     $default_options['booking_translation_load_from'] = 'wp.org';
  $mu_option4delete[]='booking_translation_load_from';
-    $default_options['booking_user_role_booking'] = ( $is_demo ) ? 'subscriber' : 'editor';
+    $default_options['booking_user_role_booking'] = 'subscriber';
  $mu_option4delete[]='booking_user_role_booking';  
-    $default_options['booking_user_role_availability'] = ( $is_demo ) ? 'subscriber' : 'editor';                        // FixIn: 9.5.2.2.
+    $default_options['booking_user_role_availability'] = 'subscriber';
  $mu_option4delete[]='booking_user_role_availability';
-    $default_options['booking_user_role_addbooking'] = ( $is_demo ) ? 'subscriber' : 'editor';
+    $default_options['booking_user_role_addbooking'] = 'subscriber';
  $mu_option4delete[]='booking_user_role_addbooking';
-    $default_options['booking_user_role_resources'] = ( $is_demo ) ? 'subscriber' : 'editor';
+    $default_options['booking_user_role_resources'] = 'subscriber';
  $mu_option4delete[]='booking_user_role_resources';  
-    $default_options['booking_user_role_settings'] = ( $is_demo ) ? 'subscriber' : 'administrator';
+    $default_options['booking_user_role_settings'] = 'subscriber';
  $mu_option4delete[]='booking_user_role_settings';  
 //FixIn: 9.8.15.2.6
 if ( class_exists( 'wpdev_bk_biz_m' ) ) {
-		$default_options['booking_user_role_prices'] = ( $is_demo ) ? 'subscriber' : 'editor';
+		$default_options['booking_user_role_prices'] = 'subscriber';
 	 $mu_option4delete[]='booking_user_role_prices';
 }
 

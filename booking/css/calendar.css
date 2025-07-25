@@ -208,18 +208,24 @@ CLAMP()
 /* HEIGHT: of    C E L L S   */
 .datepick-inline .datepick-title-row th,
 .datepick-inline .datepick-days-cell{
-    height: 48px;
+    /* max-height: 48px;	/* // FixIn: 10.12.4.2. */
+	height:auto;
+	aspect-ratio: 1 / 1;
 }
     @media (max-width: 400px) {
         div.datepick-inline table .datepick-title-row th,
         div.datepick-inline table .datepick-days-cell{
-            height: 40px !important;
+           /*  height: 40px !important;	/* // FixIn: 10.12.4.2. */
+			height:auto;
+			aspect-ratio: 1 / 1;
         }
     }
     /* HEIGHT: of    C E L L S  in POPUP calendar */
     #datepick-div.datepick-inline .datepick-title-row th,
     #datepick-div.datepick-inline .datepick-days-cell{
-        height: 35px;
+        /* height: 35px;	/* // FixIn: 10.12.4.2. */
+		height:auto;
+		aspect-ratio: 1 / 1;
     }
 
 /*******************************************************************************/
@@ -746,6 +752,7 @@ div#datepick-div textarea {
     height: 100%;
     padding: 0;
     margin: 0;
+	aspect-ratio: 1 / 1; /* // FixIn: 10.12.4.2. */
 }
 .wpbc-cell-box .wpbc-diagonal-el {
     display: none;                      /* Do not visible by  default ! */

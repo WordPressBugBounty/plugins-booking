@@ -51,15 +51,15 @@ class WPBC_CSS extends WPBC_JS_CSS {
 
     public function enqueue( $where_to_load ) {
 	    //FixIn: 9.8.1.
-	    wp_enqueue_style( 'wpdevelop-bts',              wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap.css' ),                  array(), WP_BK_VERSION_NUM );   // FixIn: 9.0.1.1.1.
-	    wp_enqueue_style( 'wpdevelop-bts-theme',        wpbc_plugin_url( '/assets/libs/bootstrap-css/css/bootstrap-theme.css' ),            array(), WP_BK_VERSION_NUM );
-	    wp_enqueue_style( 'wpbc-tippy-popover',         wpbc_plugin_url( '/assets/libs/tippy.js/themes/wpbc-tippy-popover.css' ),           array(), WP_BK_VERSION_NUM );
-	    wp_enqueue_style( 'wpbc-tippy-times',           wpbc_plugin_url( '/assets/libs/tippy.js/themes/wpbc-tippy-times.css' ),             array(), WP_BK_VERSION_NUM );
-	    wp_enqueue_style( 'wpbc-material-design-icons', wpbc_plugin_url( '/assets/libs/material-design-icons/material-design-icons.css' ),  array(), WP_BK_VERSION_NUM );   // FixIn: 9.2.1.4.
+	    wp_enqueue_style( 'wpdevelop-bts',              wpbc_plugin_url( '/vendors/_custom/bootstrap-css/css/bootstrap.css' ),                  array(), WP_BK_VERSION_NUM );   // FixIn: 9.0.1.1.1.
+	    wp_enqueue_style( 'wpdevelop-bts-theme',        wpbc_plugin_url( '/vendors/_custom/bootstrap-css/css/bootstrap-theme.css' ),            array(), WP_BK_VERSION_NUM );
+	    wp_enqueue_style( 'wpbc-tippy-popover',         wpbc_plugin_url( '/vendors/_custom/tippy.js/themes/wpbc-tippy-popover.css' ),           array(), WP_BK_VERSION_NUM );
+	    wp_enqueue_style( 'wpbc-tippy-times',           wpbc_plugin_url( '/vendors/_custom/tippy.js/themes/wpbc-tippy-times.css' ),             array(), WP_BK_VERSION_NUM );
+	    wp_enqueue_style( 'wpbc-material-design-icons', wpbc_plugin_url( '/vendors/_custom/material-design-icons/material-design-icons.css' ),  array(), WP_BK_VERSION_NUM );   // FixIn: 9.2.1.4.
 	    wp_enqueue_style( 'wpbc-ui-both',               wpbc_plugin_url( '/css/wpbc_ui_both.css' ),                                         array(), WP_BK_VERSION_NUM );   // FixIn: 10.0.0.25.
 
 		if ( 'admin' === $where_to_load ) {                                                                                                                           // Admin CSS files.
-			wp_enqueue_style( 'wpbc-bootstrap-icons', wpbc_plugin_url( '/assets/libs/bootstrap-icons/bootstrap-icons.css' ), array(), WP_BK_VERSION_NUM );            // FixIn: 9.0.1.1.
+			wp_enqueue_style( 'wpbc-bootstrap-icons', wpbc_plugin_url( '/vendors/_custom/bootstrap-icons/bootstrap-icons.css' ), array(), WP_BK_VERSION_NUM );            // FixIn: 9.0.1.1.
 			// Several concataned css files.
 			wp_enqueue_style( 'wpbc-all-admin', wpbc_plugin_url( '/_dist/all/_out/wpbc_all_admin.min.css' ), array(), WP_BK_VERSION_NUM );
 
@@ -77,7 +77,7 @@ class WPBC_CSS extends WPBC_JS_CSS {
 
 
 			$wpbc_inline_css = '';
-			if ( ( ! class_exists( 'wpdev_bk_personal' ) ) || ( wpbc_mu__is_simulated_login_as_user() ) ) {             // FixIn: 10.1.5.2.
+			if ( /*( ! class_exists( 'wpdev_bk_personal' ) ) ||*/ ( wpbc_mu__is_simulated_login_as_user() ) ) {             // FixIn: 10.1.5.2.
 				// FixIn: 10.1.3.1.
 				//$wpbc_inline_css .= " #adminmenu #toplevel_page_wpbc .wp-submenu li:nth-last-child(-n+1) a { color: #adc636; } ";
 				if ( 'hide' !== get_bk_option( 'booking_menu_go_pro' ) ) {
@@ -206,7 +206,7 @@ function wpbc_get_calendar_skin_url() {
 	// If still no file, then Default
 	// -----------------------------------------------------------------------------------------------------------------
 	if ( empty( $calendar_skin_path ) ) {
-		$calendar_skin_path = WPBC_PLUGIN_URL . '/css/skins/24_9__light.css';
+		$calendar_skin_path = WPBC_PLUGIN_URL . '/css/skins/25_5__round_1.css';
 	}
 
     return $calendar_skin_path;

@@ -171,8 +171,8 @@ function wpbc_exclude_from_delay_for_wp_rocket( $exclusions ) {
 		$exclusions[] = '/wp-content/plugins/booking(.*)/_dist/all/_out/wpbc_all.js';
 		$exclusions[] = '/wp-content/plugins/booking(.*)/js/datepick/jquery.datepick.wpbc.9.0.js';
 		$exclusions[] = '/wp-content/plugins/booking(.*)/js/wpbc_time-selector.js';
-		$exclusions[] = '/wp-content/plugins/booking(.*)/assets/libs/tippy.js';
-		$exclusions[] = '/wp-content/plugins/booking(.*)/assets/libs/popper/popper.js';
+		$exclusions[] = '/wp-content/plugins/booking(.*)/vendors/_custom/tippy.js';
+		$exclusions[] = '/wp-content/plugins/booking(.*)/vendors/_custom/popper/popper.js';
 		$exclusions[] = '/wp-content/plugins/booking(.*)/inc/js/biz_m.js';
 	*/
 

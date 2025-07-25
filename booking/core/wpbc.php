@@ -316,27 +316,6 @@ public function define_admin_menu(){
 											)
 										);
 	}
-
-
-
-	//FixIn: 8.0.1.6		// FixIn: 10.1.3.1.
-	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
-
-		$is_show_this_menu = get_bk_option('booking_menu_go_pro');
-
-		if ( 'hide' !== $is_show_this_menu )
-			self::$instance->admin_menu['go_pro'] = new WPBC_Admin_Menus(
-													'wpbc-go-pro' , array (
-														  'in_menu' 	  => 'wpbc'
-														, 'menu_title'    => __('Get Pro', 'booking')
-														/* translators: 1: ... */
-														, 'page_header'   => ucwords( sprintf( __( 'Need even more functionality? Check %1$s higher versions %2$s', 'booking' ), '', '' ) )
-														, 'browser_header'=> 'Booking Calendar'
-														, 'user_role' 	  => get_bk_option( 'booking_user_role_booking' )
-													)
-												);
-	}
-
 }
 
     
@@ -358,7 +337,7 @@ public function define_admin_menu(){
     
     // Include Files
     private function includes() {
-        require_once WPBC_PLUGIN_DIR . '/core/wpbc-include.php' ; 
+        require_once WPBC_PLUGIN_DIR . '/includes/wpbc-include.php' ;
     }
 
 

@@ -1004,6 +1004,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
         justify-content: space-between;
         align-items: flex-start;
         width:100%;
+		gap:3%;
     }
     .wpbc_container_booking_form .wpbc__field:not(.wpbc__cal) {
         flex: 1 1 14em;
@@ -1012,7 +1013,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
         justify-content: flex-start;
         align-items: flex-start;
         align-content: normal;
-        padding: 0 3% 0 0;
+        padding: 0;
         margin: 0.7em 0;
     }
     .wpbc_container_booking_form .wpbc__field:first-child{
@@ -1979,17 +1980,19 @@ table.wpbc_ideal_payment_table {
   border-right: 1px solid #f0f0f0;
   margin: 10px 0;
   line-height: 2;
-  padding: 5px 20px;
+  padding: 15px 20px;
   font-size: 1em;
   color: #444;
   border-radius: 8px;
+	font-size: 18px;
+  font-weight: 500;
 }
 .wpbc_wizard_step_hidden {
     display:none;
 }
 
-
-.wpbc_logo_1 {
+/* // FixIn: 10.12.4.0. */
+.wpbc_logo_20_for_black {
 	background-repeat: no-repeat;
 	background-position: center;
 	display: inline-block;
@@ -1999,4 +2002,13 @@ table.wpbc_ideal_payment_table {
 	height: 20px;
 	margin-top: 6px;
 	background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NTAgNTUwIj48cGF0aCBkPSJNMjc1IDE2Mi4zNmMtOTIuMzIgMC0xNjcuMTUgNzcuODItMTY3LjE1IDE3My44MVMxODIuNjkgNTA5Ljk5IDI3NSA1MDkuOTlzMTY3LjE1LTc3LjgyIDE2Ny4xNS0xNzMuODJTMzY3LjMxIDE2Mi4zNiAyNzUgMTYyLjM2Wm0wIDI2NC41M2MtNTAuMSAwLTkwLjcxLTQwLjYxLTkwLjcxLTkwLjcxczQwLjYxLTkwLjcxIDkwLjcxLTkwLjcxIDkwLjcxIDQwLjYxIDkwLjcxIDkwLjcxLTQwLjYxIDkwLjcxLTkwLjcxIDkwLjcxWiIgc3R5bGU9ImZpbGw6I2FhYTsiIGZpbGwtb3BhY2l0eT0iMC40IiAvPjxwYXRoIGQ9Ik0zNDAuNTMgMzk4LjkxYy0xNC44NSAxNS41MS0zNS4xNiAyNS43Ni01Ny44NCAyNy42Ni01NC44NyA0LjYtMTAxLjY0LTQxLjE0LTk4LjIzLTk2LjEgMi45NC00Ny40NCA0Mi4zNS04NS4wMSA5MC41NC04NS4wMSAyNC44NCAwIDQ3LjM0IDkuOTggNjMuNzIgMjYuMTYgNS44NiA1Ljc4IDE1LjI5IDUuNzMgMjEuMTEtLjA5bDM1LjE0LTM1LjE0YzUuNjktNS42OSA1LjktMTQuODcuNDMtMjAuNzctMzAuNDEtMzIuODMtNzMuMS01My4yNi0xMjAuNC01My4yNi05Mi4zMiAwLTE2Ny4xNSA3Ny44Mi0xNjcuMTUgMTczLjgxUzE4Mi42OSA1MDkuOTkgMjc1IDUwOS45OWM0OC40OSAwIDkyLjE1LTIxLjQ3IDEyMi42OC01NS43NiA1LjI5LTUuOTQgNS4wMi0xNC45Ny0uNi0yMC41OWwtMzUuMDUtMzUuMDVjLTUuOTgtNS45OC0xNS42Ny01Ljc5LTIxLjUxLjMyWiIgIHN0eWxlPSJmaWxsOiNjY2M7Ii8+PHBhdGggZD0iTTExMi41MyAyNjEuMjdjMTIuMzQtMzkuMDcgMzguMzItNzAuMDIgNzcuNzktOTcuMDQuOTItLjYzIDEuNDgtMS42NyAxLjQ4LTIuNzlWMTQuNzZjMC00LjI4LTMuNjgtNy43Ni04LjIyLTcuNzZoLTMuNzZjLTE4LjU2IDAtNzMuMTcgNDAuMy03MS43OSA2MC42MmwtLjE3IDE5Mi45MWMwIDIuNzQgMy44NiAzLjM0IDQuNjguNzNaIiAgc3R5bGU9ImZpbGw6I2NjYzsiLz48L3N2Zz4=') !important;
+}
+.wpbc_logo_30_for_white {
+	display: inline-block;
+	background-position: 0 1px;
+	background-repeat: no-repeat;
+	background-size: 30px auto;
+	width: 30px;
+	height: 30px;
+	background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NTAgNTUwIj48cGF0aCBkPSJNMjc1IDE2Mi4zNmMtOTIuMzIgMC0xNjcuMTUgNzcuODItMTY3LjE1IDE3My44MVMxODIuNjkgNTA5Ljk5IDI3NSA1MDkuOTlzMTY3LjE1LTc3LjgyIDE2Ny4xNS0xNzMuODJTMzY3LjMxIDE2Mi4zNiAyNzUgMTYyLjM2Wm0wIDI2NC41M2MtNTAuMSAwLTkwLjcxLTQwLjYxLTkwLjcxLTkwLjcxczQwLjYxLTkwLjcxIDkwLjcxLTkwLjcxIDkwLjcxIDQwLjYxIDkwLjcxIDkwLjcxLTQwLjYxIDkwLjcxLTkwLjcxIDkwLjcxWiIgc3R5bGU9ImZpbGw6I2U1ZTVlNTsiIGZpbGwtb3BhY2l0eT0iMS4wIiAvPjxwYXRoIGQ9Ik0zNDAuNTMgMzk4LjkxYy0xNC44NSAxNS41MS0zNS4xNiAyNS43Ni01Ny44NCAyNy42Ni01NC44NyA0LjYtMTAxLjY0LTQxLjE0LTk4LjIzLTk2LjEgMi45NC00Ny40NCA0Mi4zNS04NS4wMSA5MC41NC04NS4wMSAyNC44NCAwIDQ3LjM0IDkuOTggNjMuNzIgMjYuMTYgNS44NiA1Ljc4IDE1LjI5IDUuNzMgMjEuMTEtLjA5bDM1LjE0LTM1LjE0YzUuNjktNS42OSA1LjktMTQuODcuNDMtMjAuNzctMzAuNDEtMzIuODMtNzMuMS01My4yNi0xMjAuNC01My4yNi05Mi4zMiAwLTE2Ny4xNSA3Ny44Mi0xNjcuMTUgMTczLjgxUzE4Mi42OSA1MDkuOTkgMjc1IDUwOS45OWM0OC40OSAwIDkyLjE1LTIxLjQ3IDEyMi42OC01NS43NiA1LjI5LTUuOTQgNS4wMi0xNC45Ny0uNi0yMC41OWwtMzUuMDUtMzUuMDVjLTUuOTgtNS45OC0xNS42Ny01Ljc5LTIxLjUxLjMyWiIgIHN0eWxlPSJmaWxsOiM1NTU7Ii8+PHBhdGggZD0iTTExMi41MyAyNjEuMjdjMTIuMzQtMzkuMDcgMzguMzItNzAuMDIgNzcuNzktOTcuMDQuOTItLjYzIDEuNDgtMS42NyAxLjQ4LTIuNzlWMTQuNzZjMC00LjI4LTMuNjgtNy43Ni04LjIyLTcuNzZoLTMuNzZjLTE4LjU2IDAtNzMuMTcgNDAuMy03MS43OSA2MC42MmwtLjE3IDE5Mi45MWMwIDIuNzQgMy44NiAzLjM0IDQuNjguNzNaIiAgc3R5bGU9ImZpbGw6IzU1NTsiLz48L3N2Zz4=') !important;
 }

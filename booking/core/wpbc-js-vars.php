@@ -119,6 +119,9 @@ function wpbc_get_localized_js_vars() {
 																					     && ( wpbc_is_booking_used_check_in_out_time() )
 																						) ? 'true' : 'false'
 																				  ) . " ); ";
+
+	$script .= "_wpbc.set_other_param( 'is_enabled_booking_timeslot_picker',  " . ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) ? 'true' : 'false' ) . " ); ";
+
 	if ( class_exists( 'wpdev_bk_biz_l' ) ) {
 		$script .= "_wpbc.set_other_param( 'is_enabled_booking_search_results_days_select', '" . esc_js( get_bk_option( 'booking_search_results_days_select' ) ) . "' ); ";
 	}

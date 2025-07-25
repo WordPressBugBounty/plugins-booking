@@ -424,7 +424,7 @@ function wpbc_get__booking_data__template( $template_name ) {
 		case 'standard':
 		case '2_columns':
 		case 'calendar_next_to_form':
-
+		case 'wizard_no_times_a':
             $booking_form = '<div class="standard-content-form"> \n\
     <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
     <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
@@ -438,7 +438,6 @@ function wpbc_get__booking_data__template( $template_name ) {
 
 		case '2_columns_times_2_hours':
 		case '2_columns_times_30_minutes_wizard':
-
             $booking_form = '<div class="standard-content-form"> \n\
     <b>' . esc_html__('Times' ,'booking').'</b>:      <f>[rangetime]</f><br/> \n\
     <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
@@ -447,6 +446,19 @@ function wpbc_get__booking_data__template( $template_name ) {
     <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
     <b>' . esc_html__('Adults' ,'booking').'</b>:     <f>[visitors]</f><br/> \n\
     <b>' . esc_html__('Children' ,'booking').'</b>:   <f>[children]</f><br/> \n\
+    <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
+</div>';
+			break;
+
+
+
+		case 'appointments_service_c':
+            $booking_form = '<div class="standard-content-form"> \n\
+    <b>' . esc_html__('Times' ,'booking').'</b>:      <f>[rangetime]</f><br/> \n\
+    <b>' . esc_html__('First Name' ,'booking').'</b>: <f>[name]</f><br/> \n\
+    <b>' . esc_html__('Last Name' ,'booking').'</b>:  <f>[secondname]</f><br/> \n\
+    <b>' . esc_html__('Email' ,'booking').'</b>:      <f>[email]</f><br/> \n\
+    <b>' . esc_html__('Phone' ,'booking').'</b>:      <f>[phone]</f><br/> \n\
     <b>' . esc_html__('Details' ,'booking').'</b>:    <f>[details]</f> \n\
 </div>';
 			break;
@@ -1271,6 +1283,161 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='</div>';
 	}
 
+	// FixIn: 10.12.4.8.
+	if ( in_array( $form_type, array( 'appointments_service_c' ) ) ) {
+		$form_content = '';
+		$form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
+		$form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
+		$form_content .='<div class="wpbc_wizard__border_container"> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n';
+		$form_content .='		<r> \n';
+		$form_content .='		 <c style="flex: 1 1 160px;padding-right: 20px;margin: 12px 0;border-right: 1px solid #ccc;align-self: stretch;"> \n';
+		$form_content .='			 <r> \n';
+		$form_content .='				<c> \n';
+		$form_content .='			<l>' . esc_attr__( 'Select Service', 'booking' ) . ' *</l><br /><spacer>height:20px;</spacer> \n';
+		$form_content .='			[selectbox durationtime "Service A (20 min)@@00:20" "Service B (30 min)@@00:30" "Service C (45 min)@@00:45" "Service D (1 hour)@@01:00"]<spacer>height:15px;</spacer> \n';
+		$form_content .='					</c> \n';
+		$form_content .='			 </r> \n';
+		$form_content .='		</c> \n';
+		$form_content .='		<c style="flex: 1 1 70%;"> \n';
+		$form_content .='			<r style="gap: 30px;"> \n';
+		$form_content .='				<c style="flex: 1 1 220px;">  <l>' . esc_attr__( 'Select Date', 'booking' ) . ' *</l><br /><spacer>height:18px;</spacer>  [calendar] </c> \n';
+		$form_content .='				<c style="flex: 1 1 190px;">  <l>' . esc_attr__( 'Select Times', 'booking' ) . ' *</l><br /><spacer>height:20px;</spacer> \n';
+		$form_content .='			    [selectbox starttime "09:00" "09:30" "10:00" "10:30" "11:00" "11:30" "12:00" "12:30" "13:00" "13:30" "14:00" "14:30" "15:00" "15:30" "16:00" "16:30" "17:00" "17:30" "18:00"] \n';
+		$form_content .='				</c> \n';
+		$form_content .='			</r> \n';
+		$form_content .='		</c> \n';
+		$form_content .='		</r> \n';
+		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+			$form_content .= '		<r> <c> \n';
+			$form_content .= '				<div class="form-hints"> \n';
+			$form_content .= '				' . esc_attr__( 'Date', 'booking' ) . ': &nbsp;<strong>[selected_dates_hint]</strong><spacer>width:2em;</spacer> \n';
+			$form_content .= '			   	' . esc_attr__( 'Time', 'booking' ) . ': &nbsp;<strong>[start_time_hint] - [end_time_hint]</strong> \n';
+			$form_content .= '				</div> \n';
+			$form_content .= '			</c> \n';
+			$form_content .= '			<c>' . esc_attr__( 'Total Cost', 'booking' ) . ': &nbsp;<strong>[cost_hint]</strong></c> \n';
+			$form_content .= '	    </r> \n';
+		}
+		$form_content .='	    <hr> \n';
+		$form_content .='		<r> \n';
+		$form_content .='			<c class="wpbc_aling_right" > \n';
+		$form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" > \n';
+		$form_content .='					' . esc_attr__( 'Next', 'booking' ) . '</a> \n';
+		$form_content .='			</c> \n';
+		$form_content .='		</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;"> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'First Name', 'booking' ) . ' *</l><br />[text* name] </c> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Last Name', 'booking' ) . ' *</l><br />[text* secondname] </c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Email', 'booking' ) . ' *</l><br />[email* email] </c> \n';
+		$form_content .='		<c> <l>' . esc_attr__( 'Phone', 'booking' ) . '</l><br />[text phone] </c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	<r> \n';
+ 		$form_content .='		<c> <l>' . esc_attr__( 'Details', 'booking' ) . '</l><spacer></spacer> \n';
+		$form_content .='			[textarea details] </c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	<spacer>height:10px;</spacer> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
+		$form_content .='		<c> [captcha] </c> \n';
+		$form_content .='	</r> \n';
+		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+			$form_content .='	<r> <c> \n';
+			$form_content .='			<div class="form-hints"> \n';
+			$form_content .='				' . esc_attr__( 'Date', 'booking' ) . ': &nbsp;<strong>[selected_dates_hint]</strong><spacer>width:2em;</spacer> \n';
+			$form_content .='			   	' . esc_attr__( 'Time', 'booking' ) . ': &nbsp;<strong>[start_time_hint] - [end_time_hint]</strong> \n';
+			$form_content .='			</div> \n';
+			$form_content .='		</c> \n';
+			$form_content .='		<c>' . esc_attr__( 'Total Cost', 'booking' ) . ': &nbsp;<strong>[cost_hint]</strong></c> \n';
+			$form_content .='	</r> \n';
+		}
+		$form_content .='	<hr> \n';
+		$form_content .='	<r> \n';
+		$form_content .='		<c class="wpbc_aling_right" > \n';
+		$form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1"> \n';
+		$form_content .='				' . esc_attr__( 'Back', 'booking' ) . '</a><spacer>width:20px;</spacer> \n';
+		$form_content .='			[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
+		$form_content .='		</c> \n';
+		$form_content .='	</r> \n';
+		$form_content .='	</div> \n';
+		$form_content .='</div> \n';
+	}
+
+	// FixIn: 10.12.4.9.
+	if ( in_array( $form_type, array( 'wizard_no_times_a' ) ) ) {
+		$form_content = '';
+        $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
+        $form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
+		$form_content .='<div class="wpbc_wizard__border_container"> \n';
+        $form_content .='<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1"> \n';
+        $form_content .='		<r> \n';
+        $form_content .='			<c> [calendar] \n';
+        if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+            $form_content .='		</c> \n';
+            $form_content .='	</r> \n';
+            $form_content .='	<r> \n';
+            $form_content .='		<c> \n';
+            $form_content .='			<p> \n';
+            $form_content .='				' . esc_attr__( 'Dates', 'booking' ) . ': <strong>[selected_short_timedates_hint]</strong> \n';
+            $form_content .='				([nights_number_hint] - ' . esc_attr__( 'night(s)', 'booking' ) . ')<br> \n';
+            $form_content .='				' . esc_attr__( 'Full cost of the booking', 'booking' ) . ': <strong>[cost_hint]</strong> <br> \n';
+            $form_content .='			</p> \n';
+        }
+        $form_content .='			</c> \n';
+        $form_content .='		</r> <hr> \n';
+        $form_content .='		<r> \n';
+        $form_content .='			<div class="wpbc__field" style="justify-content: flex-end;"> \n';
+        $form_content .='     			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_2" > \n';
+        $form_content .='				' . esc_attr__( 'Next', 'booking' ) . ' \n';
+        $form_content .='				</a> \n';
+        $form_content .='			</div> \n';
+        $form_content .='		</r> \n';
+        $form_content .='</div> \n';
+        $form_content .='<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step2 wpbc_wizard_step_hidden" style="display:none;clear:both;"> \n';
+        $form_content .='	<r> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'First Name', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):</l><br />[text* name] </c> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'Last Name', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):</l><br />[text* secondname] </c> \n';
+        $form_content .='	</r> \n';
+        $form_content .='	<r> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'Email', 'booking' ) . ' (' . esc_attr__( 'required', 'booking' ) . '):</l><br />[email* email] </c> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'Phone', 'booking' ) . ':</l><br />[text phone] </c> \n';
+        $form_content .='	</r> \n';
+        $form_content .='	<r> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'Adults', 'booking' ) . ':</l><br />[selectbox visitors "1" "2" "3" "4" "5"] </c> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'Children', 'booking' ) . ':</l><br />[selectbox children "0" "1" "2" "3"] </c> \n';
+        $form_content .='	</r> \n';
+        $form_content .='	<r> \n';
+        $form_content .='		<c> <l>' . esc_attr__( 'Details', 'booking' ) . ':</l><spacer></spacer> \n';
+        $form_content .='			[textarea details] </c> \n';
+        $form_content .='	</r> \n';
+        $form_content .='	<spacer>height:10px;</spacer> \n';
+        $form_content .='	<r> \n';
+        $form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
+        $form_content .='		<c> [captcha] </c> \n';
+        $form_content .='	</r> \n';
+        if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
+            $form_content .='	<r> \n';
+            $form_content .='		<c><div class="form-hints"> \n';
+            $form_content .='			' . esc_attr__( 'Dates', 'booking' ) . ': <strong>[selected_short_timedates_hint]</strong> \n';
+            $form_content .='			([nights_number_hint] - ' . esc_attr__( 'night(s)', 'booking' ) . ')<br> \n';
+            $form_content .='			' . esc_attr__( 'Full cost of the booking', 'booking' ) . ': <strong>[cost_hint]</strong> <br> \n';
+            $form_content .='		</div></c> \n';
+            $form_content .='	</r> \n';
+        }
+        $form_content .='	<hr> \n';
+        $form_content .='	<r> \n';
+        $form_content .='		<div class="wpbc__field" style="justify-content: flex-end;"> \n';
+        $form_content .='			<a class="wpbc_button_light wpbc_wizard_step_button wpbc_wizard_step_1">' . esc_attr__( 'Back', 'booking' ) . '</a>&nbsp;&nbsp;&nbsp; \n';
+        $form_content .='			[submit "' . esc_attr__( 'Send', 'booking' ) . '"] \n';
+        $form_content .='		</div> \n';
+        $form_content .='	</r> \n';
+        $form_content .='</div> \n';
+		$form_content .='</div> \n';
+	}
+
 	return $form_content;
 }
 
@@ -1354,8 +1521,8 @@ function wpbc_get__predefined_booking_data__template( $form_type ){
         $form_content .='    <b>' . esc_attr__( 'Details', 'booking' ) . '</b>:    <f>[details]</f>\n';
         $form_content .='</div>';
     }
-
-	if ( in_array( $form_type, array( 'appointments_service_a', 'appointments_service_b' ) ) ) {
+ 	// FixIn: 10.12.4.8.
+	if ( in_array( $form_type, array( 'appointments_service_a', 'appointments_service_b', 'appointments_service_c' ) ) ) {
 		$form_content = '';
 		$form_content .= '<div class="standard-content-form"> \n';
 		$form_content .= '    <b>' . esc_attr__( 'Service', 'booking' ) . '</b>:    <f>[durationtime_val]</f><br>\n';
@@ -1365,6 +1532,20 @@ function wpbc_get__predefined_booking_data__template( $form_type ){
 		$form_content .= '    <b>' . esc_attr__( 'Email', 'booking' ) . '</b>:      <f>[email]</f><br>\n';
 		$form_content .= '    <b>' . esc_attr__( 'Phone', 'booking' ) . '</b>:      <f>[phone]</f><br>\n';
 		$form_content .= '    <b>' . esc_attr__( 'Details', 'booking' ) . '</b>:    <f>[details]</f>\n';
+		$form_content .= '</div>';
+	}
+
+ 	// FixIn: 10.12.4.9.
+	if ( in_array( $form_type, array( 'wizard_no_times_a' ) ) ) {
+		$form_content = '';
+		$form_content .= '<div class="standard-content-form"> \n';
+        $form_content .='    <b>' . esc_attr__( 'First Name', 'booking' ) . '</b>: <f>[name]</f><br>\n';
+        $form_content .='    <b>' . esc_attr__( 'Last Name', 'booking' ) . '</b>:  <f>[secondname]</f><br>\n';
+        $form_content .='    <b>' . esc_attr__( 'Email', 'booking' ) . '</b>:      <f>[email]</f><br>\n';
+        $form_content .='    <b>' . esc_attr__( 'Phone', 'booking' ) . '</b>:      <f>[phone]</f><br>\n';
+        $form_content .='    <b>' . esc_attr__( 'Adults', 'booking' ) . '</b>:     <f>[visitors]</f><br>\n';
+        $form_content .='    <b>' . esc_attr__( 'Children', 'booking' ) . '</b>:   <f>[children]</f><br>\n';
+        $form_content .='    <b>' . esc_attr__( 'Details', 'booking' ) . '</b>:    <f>[details]</f>\n';
 		$form_content .= '</div>';
 	}
 

@@ -285,8 +285,8 @@ if ( 	( false !== $escaped_request_params_arr )
 // FixIn: 10.0.0.5.
 if ( 0 ) {
 			$resource_id = 220;
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-			?><style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { height: 50px; } </style><?php
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet  // FixIn: 10.12.4.2.
+			?><style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { max-height: 50px; } </style><?php
 
 			?>
 			<div class="wpbc_calendar_wraper wpbc_change_over_triangle">
@@ -422,7 +422,7 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
 		);
 
         $tabs = array();
-		$tabs[ 'general_availability' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:200;' ) );
+		// FixIn: 10.12.4.7.  $tabs[ 'general_availability' . ( ++$separator_i ) ] = array_merge( $subtab_default, array( 'type' => 'separator' ,'folder_style' => 'order:200;' ) );
         $tabs[ 'general_availability' ] = array(
                               'title'		=> __( 'General Availability', 'booking' )										// Title of TAB				//FixIn: 9.8.15.2.2
                             , 'hint'		=> __( 'Define unavailable weekdays for all calendar(s) and unavailable dates depend from today date', 'booking' )						// Hint
