@@ -26,6 +26,16 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 							: 'false';
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'calendar_scroll_to' , " . $calendar_scroll_to . " ); ";
 
+
+	// Set Start / End Date in Calendar.
+	$params['calendar_dates_start'] = ( empty( $params['calendar_dates_start'] ) ) ? '' : $params['calendar_dates_start'];
+	$start_script_code             .= ' _wpbc.calendar__set_param_value( ' . $resource_id . " , 'calendar_dates_start' , '" . $params['calendar_dates_start'] . "' ); ";
+	$params['calendar_dates_end']   = ( empty( $params['calendar_dates_end'] ) ) ? '' : $params['calendar_dates_end'];
+	$start_script_code             .= ' _wpbc.calendar__set_param_value( ' . $resource_id . " , 'calendar_dates_end' , '" . $params['calendar_dates_end'] . "' ); ";
+	if ( ( ! empty( $params['calendar_dates_start'] ) ) || ( ! empty( $params['calendar_dates_end'] ) ) ) {
+		$start_script_code .= wpbc_get_localized_js__time_local( $params['calendar_dates_start'] );
+	}
+
 	// Max months to  scroll -------------------------------------------------------------------------------------------
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'booking_max_monthes_in_calendar' , '" . esc_js( get_bk_option( 'booking_max_monthes_in_calendar' ) ) . "' ); ";        // FixIn: 10.6.1.3.
 
@@ -39,13 +49,14 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 	// Days Selection
 	// -----------------------------------------------------------------------------------------------------------------
 	$days_selection_arr = wpbc__calendar__js_params__get_days_selection_arr();
+
 	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'days_select_mode', '" . $days_selection_arr['days_select_mode'] . "' ); ";
-	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'fixed__days_num', " .           $days_selection_arr['fixed__days_num'] . " ); ";
-	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'fixed__week_days__start',   [" .$days_selection_arr['fixed__week_days__start'] . "] ); ";
-	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_min', " .         $days_selection_arr['dynamic__days_min'] . " ); ";
-	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_max', " .         $days_selection_arr['dynamic__days_max'] . " ); ";
-	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_specific',    [" .$days_selection_arr['dynamic__days_specific'] . "] ); ";
-	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__week_days__start', [" .$days_selection_arr['dynamic__week_days__start'] . "] ); ";
+	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'fixed__days_num', " . $days_selection_arr['fixed__days_num'] . " ); ";
+	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'fixed__week_days__start',   [" . $days_selection_arr['fixed__week_days__start'] . "] ); ";
+	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_min', " . $days_selection_arr['dynamic__days_min'] . " ); ";
+	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_max', " . $days_selection_arr['dynamic__days_max'] . " ); ";
+	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_specific',    [" . $days_selection_arr['dynamic__days_specific'] . "] ); ";
+	$start_script_code .= "  _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__week_days__start', [" . $days_selection_arr['dynamic__week_days__start'] . "] ); ";
 
 	/**
 	 * For Debug ::
@@ -136,28 +147,27 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
  */
 function wpbc__calendar__load( $params = array() ){
 
-	// TODO:2025-07-16
-	// return;
-
 	$defaults = array(
-						'resource_id'                     => '1',                   // $resource_id
-						'aggregate_resource_id_arr'       => array(),               // It is array  of booking resources from aggregate parameter()
-						'selected_dates_without_calendar' => '',                    // $my_selected_dates_without_calendar
-						'calendar_number_of_months'       => 1,                     // $my_boook_count
-						'start_month_calendar'            => false,                  // $start_month_calendar
-						'shortcode_options'               => '',                     // options from the Booking Calendar shortcode. Usually  it's conditional dates selection parameters
-						'custom_form'                     => 'standard'
-					);
+		'resource_id'                     => '1',        // $resource_id.
+		'aggregate_resource_id_arr'       => array(),    // It is array  of booking resources from aggregate parameter().
+		'selected_dates_without_calendar' => '',         // $my_selected_dates_without_calendar.
+		'calendar_number_of_months'       => 1,          // $my_boook_count.
+		'start_month_calendar'            => false,      // $start_month_calendar.
+		'shortcode_options'               => '',         // options from the Booking Calendar shortcode. Usually  it's conditional dates selection parameters.
+		'custom_form'                     => 'standard',
+		'calendar_dates_start'                      => '',         // '2026-01-01'.
+		'calendar_dates_end'                        => '',         // '2026-07-26'.
+	);
 	$params   = wp_parse_args( $params, $defaults );
 
-	// Resource ID
+	// Resource ID.
 	$params['resource_id'] = (int) $params['resource_id'];
 
-	$start_script_code  = '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                   // FixIn: 10.1.3.7.
+	$start_script_code = '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                    // FixIn: 10.1.3.7.
 
-	//$start_script_code  .= " wpbc_calendar__loading__start( {$params['resource_id']} ); ";
+	// $start_script_code  .= " wpbc_calendar__loading__start( {$params['resource_id']} ); ";   //.
 
-	$start_script_code  .= wpbc__calendar__set_js_params__before_show( $params );
+	$start_script_code .= wpbc__calendar__set_js_params__before_show( $params );
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Show calendar
@@ -254,7 +264,8 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {
 	                                'request_uri'    => array( 'validate' => 's', 'default' => '' ),
 									'custom_form'    => array( 'validate' => 's', 'default' => 'standard' ),
 									'aggregate_resource_id_str' => array( 'validate' => 'digit_or_csd', 'default' => '' ),        // Comma separated string of resource ID,  which was used in 'aggregate' parameter.
-									'aggregate_type'            => array( 'validate' => 's', 'default' => 'all' )                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
+									'aggregate_type'            => array( 'validate' => 's', 'default' => 'all' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
+									'dates_to_check'            => array( 'validate' => 'array', 'default' => '' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
 																				 )
 											)
 					);
@@ -290,6 +301,10 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {
 //	, 'timeslots_to_check_intersect' => $timeslots_to_check_intersect  //TODO 2023-10-25: delete it, because we get it in wpbc_get_availability_per_days_arr()  //array( '12:20 - 12:55', '13:00 - 14:00' )
 								);
 
+	if ( ! empty( $request_params['dates_to_check'] ) ) {
+		$availability_per_days__params['dates_to_check'] = $request_params['dates_to_check'];  // Usually  if defined it is: [ '2025-01-01', '2025-12-31' ],  because of shortcode [booking resource_id=4 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' ...]
+	}
+
 	// If in Booking > Add booking page we use in URL .../wp-admin/admin.php?page=wpbc-new&booking_type=2&as_single_resource=1   then get  availability  only for single resource.
 	if (
 			( ! empty( $request_params['request_uri'] ) )
@@ -307,6 +322,7 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {
 	 */
 
 	// Get unavailable dates for calendar
+	// $availability_per_days__params['dates_to_check'] = array( '2025-01-01', '2025-12-31' );  // FixIn: 10.13.1.4.
 	$availability_per_days_arr = wpbc_get_availability_per_days_arr( $availability_per_days__params );
 
 

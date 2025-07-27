@@ -58,4 +58,10 @@ jQuery( document ).ready( function ($) {
 		);
 	} );
 
+	$( document ).on( 'click', '.wpbc-reset-dates-button', function () {
+		// Clear input values directly
+		$( 'input[data-setting="wpbc_booking_calendar_dates_start"]' ).val( '' ).trigger( 'input' );
+		$( 'input[data-setting="wpbc_booking_calendar_dates_end"]' ).val( '' ).trigger( 'input' );
+		$( 'input[data-setting="wpbc_booking_calendar_startmonth"]' ).val( '' ).trigger( 'input' );
+	} );
 } );

@@ -161,8 +161,9 @@ function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $bk_otion
 	/* FixIn: 9.7.3.4 */
 
 	if ( ! empty( $cell_height ) ) {
+		// FixIn: 10.13.1.3.
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-		$style = '<style type="text/css" rel="stylesheet" >.hasDatepick .datepick-inline .datepick-title-row th,.hasDatepick .datepick-inline .datepick-days-cell{ max-height: ' . $cell_height . '; }</style>';  // FixIn: 10.12.4.2.
+		$style = '<style type="text/css" rel="stylesheet" >.hasDatepick .datepick-inline .datepick-title-row th,.hasDatepick .datepick-inline .datepick-days-cell,.hasDatepick .datepick-inline .wpbc-cell-box{ max-height: ' . $cell_height . '; }</style>';  // FixIn: 10.12.4.2.
 	} else {
 		$style = '';
 	}

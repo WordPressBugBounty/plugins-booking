@@ -213,7 +213,10 @@ function wpbc_js_load_files( $where_to_load ) {
 			wp_enqueue_script( 'wpbc-time-selector',    wpbc_plugin_url( '/js/wpbc_time-selector.js'),               array( 'wpbc-times'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );             // FixIn: 8.7.11.10.
 	    // }
 		wp_enqueue_script( 'wpbc-imask',    wpbc_plugin_url( '/vendors/imask/dist/imask.js'), array( 'wpbc-main-client'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) ); // FixIn: 10.12.4.10.
-		wp_enqueue_script( 'wpbc-iphone-validator', wpbc_plugin_url( '/js/wpbc_phone_validator.js' ), array( 'wpbc-imask' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );                                // FixIn: 10.12.4.10.
+		$booking_is_use_phone_validation = get_bk_option( 'booking_is_use_phone_validation' );
+		if ( 'On' === $booking_is_use_phone_validation ) {
+			wp_enqueue_script( 'wpbc-iphone-validator', wpbc_plugin_url( '/js/wpbc_phone_validator.js' ), array( 'wpbc-imask' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );                                // FixIn: 10.12.4.10.
+		}
     }
 
 	if ( 'admin' === $where_to_load ) {

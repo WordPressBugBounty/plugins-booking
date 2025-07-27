@@ -1368,7 +1368,7 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 
 	// FixIn: 10.12.4.9.
 	if ( in_array( $form_type, array( 'wizard_no_times_a' ) ) ) {
-		$form_content = '';
+		$form_content = '<style type="text/css">.wpbc_container_booking_form .wpbc__field .wpbc_calendar_wraper:has(.cal_month_num_1){width:auto;} .wpbc_hints{float: right;margin: 10px;}</style>';
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
         $form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
 		$form_content .='<div class="wpbc_wizard__border_container"> \n';
@@ -1376,15 +1376,11 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='		<r> \n';
         $form_content .='			<c> [calendar] \n';
         if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
-            $form_content .='		</c> \n';
-            $form_content .='	</r> \n';
-            $form_content .='	<r> \n';
-            $form_content .='		<c> \n';
-            $form_content .='			<p> \n';
+            $form_content .='			<div class="wpbc_hints"> \n';
             $form_content .='				' . esc_attr__( 'Dates', 'booking' ) . ': <strong>[selected_short_timedates_hint]</strong> \n';
             $form_content .='				([nights_number_hint] - ' . esc_attr__( 'night(s)', 'booking' ) . ')<br> \n';
             $form_content .='				' . esc_attr__( 'Full cost of the booking', 'booking' ) . ': <strong>[cost_hint]</strong> <br> \n';
-            $form_content .='			</p> \n';
+            $form_content .='			</div> \n';
         }
         $form_content .='			</c> \n';
         $form_content .='		</r> <hr> \n';

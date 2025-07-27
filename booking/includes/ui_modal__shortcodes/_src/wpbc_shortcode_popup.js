@@ -435,6 +435,28 @@ function wpbc_set_shortcode(){
              wpbc_shortcode += ' startmonth=\'' + jQuery( '#' + shortcode_id + '_wpbc_startmonth_year' ).val().trim() + '-' + jQuery( '#' + shortcode_id + '_wpbc_startmonth_month' ).val().trim() + '\'';
         }
 
+        if (
+                ( jQuery('#' + shortcode_id + '_wpbc_calendar_dates_start_active').length > 0 )
+             && ( jQuery('#' + shortcode_id + '_wpbc_calendar_dates_start_active').is(':checked') )
+        ){
+             wpbc_shortcode += ' calendar_dates_start=\'' +
+				 jQuery( '#' + shortcode_id + '_wpbc_calendar_dates_start_year' ).val().trim() + '-' +
+				 jQuery( '#' + shortcode_id + '_wpbc_calendar_dates_start_month' ).val().trim() +  '-' +
+				 jQuery( '#' + shortcode_id + '_wpbc_calendar_dates_start_date' ).val().trim() +
+				 '\'';
+        }
+
+        if (
+                ( jQuery('#' + shortcode_id + '_wpbc_calendar_dates_end_active').length > 0 )
+             && ( jQuery('#' + shortcode_id + '_wpbc_calendar_dates_end_active').is(':checked') )
+        ){
+             wpbc_shortcode += ' calendar_dates_end=\'' +
+				 jQuery( '#' + shortcode_id + '_wpbc_calendar_dates_end_year' ).val().trim() + '-' +
+				 jQuery( '#' + shortcode_id + '_wpbc_calendar_dates_end_month' ).val().trim() +  '-' +
+				 jQuery( '#' + shortcode_id + '_wpbc_calendar_dates_end_date' ).val().trim() +
+				 '\'';
+        }
+
         if ( jQuery( '#' + shortcode_id + '_wpbc_aggregate' ).length > 0 ) {
             var wpbc_aggregate_temp = jQuery( '#' + shortcode_id + '_wpbc_aggregate' ).val();
 
@@ -656,6 +678,8 @@ function wpbc_set_shortcode(){
     /* R E S E T */
     function wpbc_shortcode_config__reset(shortcode_val){
         jQuery( '#' + shortcode_val + '_wpbc_startmonth_active' ).prop( 'checked', false ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_calendar_dates_start_active' ).prop( 'checked', false ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_calendar_dates_end_active' ).prop( 'checked', false ).trigger('change');
 
         jQuery( '#' + shortcode_val + '_wpbc_aggregate option:selected').prop( 'selected', false);
         jQuery( '#' + shortcode_val + '_wpbc_aggregate option:eq(0)'   ).prop( 'selected', true );
@@ -1146,6 +1170,16 @@ jQuery( document ).ready( function (){
                 +',#' + id + '_wpbc_startmonth_active'                       // Start Month Enable
                 +',#' + id + '_wpbc_startmonth_year'                         //  - Year
                 +',#' + id + '_wpbc_startmonth_month'                        //  - Month
+
+                +',#' + id + '_wpbc_calendar_dates_start_active'                       // Start Month Enable
+                +',#' + id + '_wpbc_calendar_dates_start_year'                         //  - Year
+                +',#' + id + '_wpbc_calendar_dates_start_month'                        //  - Month
+                +',#' + id + '_wpbc_calendar_dates_start_date'                        //  - Month
+
+                +',#' + id + '_wpbc_calendar_dates_end_active'                       // Start Month Enable
+                +',#' + id + '_wpbc_calendar_dates_end_year'                         //  - Year
+                +',#' + id + '_wpbc_calendar_dates_end_month'                        //  - Month
+                +',#' + id + '_wpbc_calendar_dates_end_date'                        //  - Month
 
                 +',#' + id + '_wpbc_aggregate'                               // Aggregate
                 +',#' + id + '_wpbc_aggregate__bookings_only'                // aggregate option

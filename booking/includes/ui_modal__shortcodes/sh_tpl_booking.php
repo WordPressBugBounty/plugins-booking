@@ -181,7 +181,13 @@ function wpbc_shortcode_config__content__booking() {
 		// 'START MONTH' -----------------------------------------------------------------------------------------------
 		?><div class="wpbc_sc_container__shortcode_section wpbc_sc_container__shortcode_section__other"><?php
 			?><table class="form-table"><tbody><?php
+
+				wpbc_shortcode_config_fields__calendar_dates_start( $shortcode_name . '_wpbc_calendar_dates_start', $shortcode_name );
+
+				wpbc_shortcode_config_fields__calendar_dates_end( $shortcode_name . '_wpbc_calendar_dates_end', $shortcode_name );
+
 				wpbc_shortcode_config_fields__start_month( $shortcode_name . '_wpbc_startmonth', $shortcode_name );
+
 			?></tbody></table><?php
 		?></div><?php
 
@@ -537,6 +543,217 @@ function wpbc_shortcode_config__content__booking() {
 			</tr><?php
 
 	}
+
+
+	/**
+	 * Shortcode Fields:  Start Dates
+	 *
+	 * @param $id
+	 * @param $group_key
+	 *
+	 * @return void
+	 */
+	function wpbc_shortcode_config_fields__calendar_dates_start( $id , $group_key ){
+
+			?><tr valign="top" class="<?php echo esc_attr( $group_key . '_standard_section' ); ?>">
+				<th scope="row" style="vertical-align: middle;"><label for="<?php echo esc_attr( $id ); ?>_active" class="wpbc-form-text"><?php
+						esc_html_e('Start dates', 'booking'); ?></label></th>
+				<td class=""><fieldset><?php
+
+					WPBC_Settings_API::field_checkbox_row_static( $id . '_active'
+																, array(
+																		  'type'              => 'checkbox'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'class'             => ''
+																		, 'css'               => ''
+																		, 'tr_class'          => ''
+																		, 'attr'              => array()
+																		, 'group'             => $group_key
+																		, 'only_field'        => true
+																		, 'is_new_line'       => false
+																		, 'value'             => false
+																	)
+							);
+
+					WPBC_Settings_API::field_select_row_static(  $id . '_year'
+																, array(
+																		  'type'              => 'select'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'multiple'          => false
+																		, 'group'             => $group_key
+																		, 'class'             => ''
+																		, 'css'               => 'width:5em;'
+																		, 'only_field'        => true
+																		, 'attr'              => array()
+																		, 'value'             => gmdate( 'Y' )
+																		, 'options'           => array_combine( range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) ), range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) )  )
+																	)
+									);
+
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> / </span><?php
+
+					WPBC_Settings_API::field_select_row_static(  $id . '_month'
+																, array(
+																		  'type'              => 'select'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'multiple'          => false
+																		, 'group'             => $group_key
+																		, 'class'             => ''
+																		, 'css'               => 'width:4em;'
+																		, 'only_field'        => true
+																		, 'attr'              => array()
+																		, 'value'             => gmdate('m')
+																		, 'options'           => array_combine(
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 12 ) ),
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 12 ) )
+																								)
+																	)
+									);
+
+
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> / </span><?php
+
+					WPBC_Settings_API::field_select_row_static(  $id . '_date'
+																, array(
+																		  'type'              => 'select'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'multiple'          => false
+																		, 'group'             => $group_key
+																		, 'class'             => ''
+																		, 'css'               => 'width:4em;'
+																		, 'only_field'        => true
+																		, 'attr'              => array()
+																		, 'value'             => gmdate('d')
+																		, 'options'           => array_combine(
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 31 ) ),
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 31 ) )
+																								)
+
+																	)
+									);
+
+					?><span class="description"> <?php esc_html_e('Earliest date visible/selectable in the calendar.' ,'booking'); ?></span></fieldset></td>
+			</tr><?php
+	}
+
+
+	/**
+	 * Shortcode Fields:  End  Dates
+	 *
+	 * @param $id
+	 * @param $group_key
+	 *
+	 * @return void
+	 */
+	function wpbc_shortcode_config_fields__calendar_dates_end( $id , $group_key ){
+
+			?><tr valign="top" class="<?php echo esc_attr( $group_key . '_standard_section' ); ?>">
+				<th scope="row" style="vertical-align: middle;"><label for="<?php echo esc_attr( $id ); ?>_active" class="wpbc-form-text"><?php
+						esc_html_e('End dates', 'booking'); ?></label></th>
+				<td class=""><fieldset><?php
+
+					WPBC_Settings_API::field_checkbox_row_static( $id . '_active'
+																, array(
+																		  'type'              => 'checkbox'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'class'             => ''
+																		, 'css'               => ''
+																		, 'tr_class'          => ''
+																		, 'attr'              => array()
+																		, 'group'             => $group_key
+																		, 'only_field'        => true
+																		, 'is_new_line'       => false
+																		, 'value'             => false
+																	)
+							);
+
+					WPBC_Settings_API::field_select_row_static(  $id . '_year'
+																, array(
+																		  'type'              => 'select'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'multiple'          => false
+																		, 'group'             => $group_key
+																		, 'class'             => ''
+																		, 'css'               => 'width:5em;'
+																		, 'only_field'        => true
+																		, 'attr'              => array()
+																		, 'value'             => intval( gmdate( 'Y' ) ) + 2
+																		, 'options'           => array_combine( range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) ), range( ( gmdate('Y') - 1 ), ( gmdate('Y') + 10 ) )  )
+																	)
+									);
+
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> / </span><?php
+
+					WPBC_Settings_API::field_select_row_static(  $id . '_month'
+																, array(
+																		  'type'              => 'select'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'multiple'          => false
+																		, 'group'             => $group_key
+																		, 'class'             => ''
+																		, 'css'               => 'width:4em;'
+																		, 'only_field'        => true
+																		, 'attr'              => array()
+																		, 'value'             => gmdate('m')
+																		, 'options'           => array_combine(
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 12 ) ),
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 12 ) )
+																								)
+
+																	)
+									);
+
+
+					?><span class="description" style="font-weight:600;flex:0;margin: 3px 0.5em 0.5em 0;"> / </span><?php
+
+					WPBC_Settings_API::field_select_row_static(  $id . '_date'
+																, array(
+																		  'type'              => 'select'
+																		, 'title'             => ''
+																		, 'description'       => ''
+																		, 'description_tag'   => 'span'
+																		, 'label'             => ''
+																		, 'multiple'          => false
+																		, 'group'             => $group_key
+																		, 'class'             => ''
+																		, 'css'               => 'width:4em;'
+																		, 'only_field'        => true
+																		, 'attr'              => array()
+																		, 'value'             => gmdate('d')
+																		, 'options'           => array_combine(
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 31 ) ),
+																									array_map( function ( $v ) { return str_pad( $v, 2, '0', STR_PAD_LEFT ); }, range( 1, 31 ) )
+																								)
+
+																	)
+									);
+
+					?><span class="description"> <?php esc_html_e('Latest date visible/selectable in the calendar.' ,'booking'); ?></span></fieldset></td>
+			</tr><?php
+	}
+
+
 
 	/**
 	 * Shortcode Fields:  AGGREGATE

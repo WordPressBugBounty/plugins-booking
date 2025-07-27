@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.13
+Stable tag: 10.13.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,40 +240,40 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- Danish                       98.46% [ 2550 / 2590 ], fuzzy 25, not translated 15
-- Dutch                        87.80% [ 2274 / 2590 ], fuzzy 302, not translated 14
-- Norwegian (Bokmål)           81.43% [ 2109 / 2590 ], fuzzy 89, not translated 392
-- German                       81.31% [ 2106 / 2590 ], fuzzy 415, not translated 69
-- French (France)              77.88% [ 2017 / 2590 ], fuzzy 450, not translated 123
-- Korean                       75.10% [ 1945 / 2590 ], fuzzy 498, not translated 147
-- Hungarian                    75.10% [ 1945 / 2590 ], fuzzy 503, not translated 142
-- Spanish (Spain)              69.11% [ 1790 / 2590 ], fuzzy 523, not translated 277
-- Portuguese (Brazil)          65.21% [ 1689 / 2590 ], fuzzy 632, not translated 269
-- Greek                        64.83% [ 1679 / 2590 ], fuzzy 643, not translated 268
-- Turkish                      63.98% [ 1657 / 2590 ], fuzzy 660, not translated 273
-- Italian                      62.32% [ 1614 / 2590 ], fuzzy 572, not translated 404
-- Spanish (Mexico)             59.88% [ 1551 / 2590 ], fuzzy 714, not translated 325
-- Finnish                      59.54% [ 1542 / 2590 ], fuzzy 719, not translated 329
-- Polish                       59.50% [ 1541 / 2590 ], fuzzy 711, not translated 338
-- Romanian                     59.00% [ 1528 / 2590 ], fuzzy 724, not translated 338
-- Swedish                      58.65% [ 1519 / 2590 ], fuzzy 733, not translated 338
-- Arabic                       58.11% [ 1505 / 2590 ], fuzzy 746, not translated 339
-- Russian                      58.03% [ 1503 / 2590 ], fuzzy 963, not translated 124
-- Bulgarian                    56.29% [ 1458 / 2590 ], fuzzy 761, not translated 371
-- Slovenian                    56.14% [ 1454 / 2590 ], fuzzy 771, not translated 365
-- Chinese (Taiwan)             54.63% [ 1415 / 2590 ], fuzzy 811, not translated 364
-- Portuguese (Portugal)        54.21% [ 1404 / 2590 ], fuzzy 795, not translated 391
-- Japanese                     53.40% [ 1383 / 2590 ], fuzzy 306, not translated 901
-- Chinese (China)              52.39% [ 1357 / 2590 ], fuzzy 797, not translated 436
-- Ukrainian                    52.05% [ 1348 / 2590 ], fuzzy 806, not translated 436
-- Catalan                      51.20% [ 1326 / 2590 ], fuzzy 729, not translated 535
-- Thai                         51.08% [ 1323 / 2590 ], fuzzy 846, not translated 421
-- Hebrew                       50.77% [ 1315 / 2590 ], fuzzy 834, not translated 441
-- Galician                     49.46% [ 1281 / 2590 ], fuzzy 886, not translated 423
-- Slovak                       45.98% [ 1191 / 2590 ], fuzzy 810, not translated 589
-- Croatian                     44.52% [ 1153 / 2590 ], fuzzy 829, not translated 608
-- Czech                        38.69% [ 1002 / 2590 ], fuzzy 885, not translated 703
-- Chinese (Hong Kong)          26.25% [ 680 / 2590 ], fuzzy 163, not translated 1747
+- Danish                       98.11% [ 2550 / 2599 ], fuzzy 29, not translated 20
+- Dutch                        87.50% [ 2274 / 2599 ], fuzzy 306, not translated 19
+- Norwegian (Bokmål)           81.15% [ 2109 / 2599 ], fuzzy 91, not translated 399
+- German                       81.03% [ 2106 / 2599 ], fuzzy 419, not translated 74
+- French (France)              77.61% [ 2017 / 2599 ], fuzzy 454, not translated 128
+- Korean                       74.84% [ 1945 / 2599 ], fuzzy 502, not translated 152
+- Hungarian                    74.84% [ 1945 / 2599 ], fuzzy 507, not translated 147
+- Spanish (Spain)              68.87% [ 1790 / 2599 ], fuzzy 525, not translated 284
+- Portuguese (Brazil)          64.99% [ 1689 / 2599 ], fuzzy 634, not translated 276
+- Greek                        64.60% [ 1679 / 2599 ], fuzzy 645, not translated 275
+- Turkish                      63.76% [ 1657 / 2599 ], fuzzy 662, not translated 280
+- Italian                      62.10% [ 1614 / 2599 ], fuzzy 574, not translated 411
+- Spanish (Mexico)             59.68% [ 1551 / 2599 ], fuzzy 716, not translated 332
+- Finnish                      59.33% [ 1542 / 2599 ], fuzzy 721, not translated 336
+- Polish                       59.29% [ 1541 / 2599 ], fuzzy 713, not translated 345
+- Romanian                     58.79% [ 1528 / 2599 ], fuzzy 726, not translated 345
+- Swedish                      58.45% [ 1519 / 2599 ], fuzzy 735, not translated 345
+- Arabic                       57.91% [ 1505 / 2599 ], fuzzy 748, not translated 346
+- Russian                      57.83% [ 1503 / 2599 ], fuzzy 967, not translated 129
+- Bulgarian                    56.10% [ 1458 / 2599 ], fuzzy 763, not translated 378
+- Slovenian                    55.94% [ 1454 / 2599 ], fuzzy 773, not translated 372
+- Chinese (Taiwan)             54.44% [ 1415 / 2599 ], fuzzy 813, not translated 371
+- Portuguese (Portugal)        54.02% [ 1404 / 2599 ], fuzzy 797, not translated 398
+- Japanese                     53.21% [ 1383 / 2599 ], fuzzy 310, not translated 906
+- Chinese (China)              52.21% [ 1357 / 2599 ], fuzzy 799, not translated 443
+- Ukrainian                    51.87% [ 1348 / 2599 ], fuzzy 808, not translated 443
+- Catalan                      51.02% [ 1326 / 2599 ], fuzzy 731, not translated 542
+- Thai                         50.90% [ 1323 / 2599 ], fuzzy 848, not translated 428
+- Hebrew                       50.60% [ 1315 / 2599 ], fuzzy 836, not translated 448
+- Galician                     49.29% [ 1281 / 2599 ], fuzzy 888, not translated 430
+- Slovak                       45.83% [ 1191 / 2599 ], fuzzy 812, not translated 596
+- Croatian                     44.36% [ 1153 / 2599 ], fuzzy 831, not translated 615
+- Czech                        38.55% [ 1002 / 2599 ], fuzzy 887, not translated 710
+- Chinese (Hong Kong)          26.16% [ 680 / 2599 ], fuzzy 164, not translated 1755
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -300,6 +300,19 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14 =
+- Changes in **all** versions:
+	* **New**:  Ability to **set the start and end dates for the calendar** using shortcode parameters. Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' startmonth='2025-3']  (10.13.1.4.)
+	* **New**:  New: If startmonth is omitted, the calendar will now automatically use the month from calendar_dates_start as the initial display month.  Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31'] (10.13.1.4)
+	* **New**:  New: New: You can now **allow users to submit bookings for past dates**, as long as those dates are within the visible range set by calendar_dates_start and calendar_dates_end in the shortcode. Useful for administrative or backdated bookings. Shortcode Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31']
+	* **New**:  New: Elementor native supports of these parameters   calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' in Advanced section.
+	* **Improvement**: When calendar_dates_start and calendar_dates_end are defined in the shortcode, the system skips checking availability from today, and instead starts from the defined calendar_dates_start. (10.13.1.4)
+	* **Improvement**: To **enable the new Smart Phone Validation** feature introduced in the previous update, go to: WP Booking Calendar > Settings > Booking Form > Form Options and enable the "Smart Phone Validation" option. It is disabled by default. (10.13.1.5)
+	* **Fix**:  Improved form phone validation by checking up to 20 times every 0.5 seconds if the phone field and iMask are available before initializing the validation. (10.13.1.1)
+	* **Fix**:  Enhanced phone mask detection to better match the most specific country code, improving accuracy. (10.13.1.2)
+	* **Fix**:  Enhanced phone mask detection to better match the most specific country code, improving accuracy. Previously, numbers starting with longer prefixes like +1340 or +1284 could incorrectly match the generic +1 (USA). Now the system selects the longest matching prefix for correct formatting. If no match is found, a default mask is used. (10.13.1.2)
+	* **Fix**:  Added support for the cell_height parameter in the Booking Calendar shortcode. Example: [booking nummonths=1 options='{calendar months_num_in_row=1 width=100% cell_height=40px}'] Previously, calendar cells used a 1:1 aspect ratio (height equal to width). If you want to keep that behavior, simply remove the cell_height parameter. (10.13.1.3)
+
 = 10.13 =
 - Changes in **all** versions:
 	* **New**: **Full Elementor support**! Add and configure Booking Calendar directly in the Elementor editor with real-time preview and skin selection. (10.12.4.0)
@@ -558,30 +571,14 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 	* **New** Added Change Over Days in Timeline views for pro versions. Timeline and Calendar Overview now show change over days as triangles for check-in/out dates, making it easier to identify these dates and providing a better overview of bookings if your system uses the change over days functionality.
 	* **Fix** Fixed the issue of invalid Start/End Time in some configurations when using range days selection mode and change-over days. (10.2.3.2)
 
-= 10.2.1 - 10.2.2 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
-= 10.2 =
-- Changes in **all** versions:
-	* **New** Added a **Configurable Confirmation section**. You can now decide what to show in the "Confirmation Window" after a booking is created. Enable or disable content and configure it with shortcodes to display information in the "Personal Information" and "Booking Details" sections of the Booking Confirmation window.
-	* **Support** WordPress 6.6
-	* **New** Updated typography for booking form elements. This enhancement provides a cleaner interface and helps prevent CSS conflicts with themes.
-	* **New** Added the option "**Use Selected Times for Each Booking Date**", which can be enabled if the '**Multiple Days**' selection mode is activated. This feature is useful for using the selected times as booked time slots on each selected date. Otherwise, the selected times will serve as the start time for the first date and the end time for the last date, with all middle dates fully booked. Enable this option on the Settings > General page in the "Calendar" section. (10.1.5.4)
-	* **New** Added the **'Partially Booked' calendar legend item**. Configure this feature on the Settings > General page in the "Calendar" section under the 'Show legend below calendar' option. (10.1.5.5)
-	* **New** Added the **[only_dates] shortcode** for email templates. This shortcode inserts only booking dates without times. (10.1.5.6)
-	* **Translation**. Added Korean translation, now 96% complete thanks to modelaid.
-	* Many improvements and fixes. Find more at [this page](https://wpbookingcalendar.com/changelog/)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Improvement**  Improved form times templates for enhanced usability and functionality. *(Personal, Business Small/Medium/Large, MultiUser)*
-	* **Improvement**  Updated the view of the "Back to Super Admin" button when a super booking admin user simulates a login as a "Regular User." (10.1.5.2) *(MultiUser)*
-	* **Improvement**  Updated the spinners for cost and date hints in the booking form to improve user experience and clarity. *(Business Medium/Large, MultiUser)*
-	* **Under hood**: Introduced a new hook 'wpbc_visitor_action__booking_trash' that triggers when visitors cancel their own booking. Example usage: function your_cust_func_wpbc_visitor_action__booking_trash ( $booking_id, $resource_id ) { /* Your code here */ } add_action( 'wpbc_visitor_action__booking_trash', 'your_cust_func_wpbc_visitor_action__booking_trash', 100, 2 );  (10.2.0.3)
-
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 
 == Upgrade Notice ==
-= 10.12 =
+= 10.14 =
+Control start and end dates for booking and availability. Elementor Integration, Smart Phone Validation, Improved Sidebar Menu!
+
+= 10.13 =
 Now with Elementor Integration and Smart Phone Validation and Improved Sidebar Menu!
 
 = 10.12 =

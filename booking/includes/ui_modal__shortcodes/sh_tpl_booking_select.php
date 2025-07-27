@@ -145,6 +145,11 @@ function wpbc_shortcode_config__content__bookingselect() {
 		// 'START MONTH' -----------------------------------------------------------------------------------------------
 		?><div class="wpbc_sc_container__shortcode_section wpbc_sc_container__shortcode_section__other"><?php
 			?><table class="form-table"><tbody><?php
+
+//				wpbc_shortcode_config_fields__calendar_dates_start( $shortcode_name . '_wpbc_calendar_dates_start', $shortcode_name );
+//
+//				wpbc_shortcode_config_fields__calendar_dates_end( $shortcode_name . '_wpbc_calendar_dates_end', $shortcode_name );
+
 				wpbc_shortcode_config_fields__start_month( $shortcode_name . '_wpbc_startmonth', $shortcode_name );
 			?></tbody></table><?php
 		?></div><?php

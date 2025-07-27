@@ -14,19 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 /**
- * Get script string for localised variables.
+ * Set local today  date ( can depend  from  the parameters in shortcode:  [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31'] )
+ *
+ * @param $start_it - default 'now',  but you can pass date: '2024-07-26'  (usually  from  the past to  set  ability to  select  the time slots in the past).
  *
  * @return string
  */
-function wpbc_get_localized_js_vars() {
+function wpbc_get_localized_js__time_local( $start_it = 'now' ) {
 
-	// $script  = 'var1 = '. wp_json_encode('var1') .'; ';      // JSON.parse(wpbc_global_var);  //.
-
-	$script  = '';
-	$script .= "_wpbc.set_other_param( 'locale_active', '" . esc_js( wpbc_get_maybe_reloaded_booking_locale() ) . "' ); ";
-
+	$script = '';
 	// FixIn: 10.8.1.4.
-	$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( 'now' ) );
+	$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( $start_it ) );
 
 	if ( ( isset( $_REQUEST['allow_past'] ) ) || ( wpbc_is_new_booking_page() && ( isset( $_GET['booking_hash'] ) ) ) ) {           // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing                                                                                 // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		// Get time in past. //FixIn: 10.10.3.2.
@@ -49,9 +47,9 @@ function wpbc_get_localized_js_vars() {
 			// Local timezone unavailable time.                                                                         // FixIn: 10.9.6.3.
 			$local_unavailable_datetime_ymdhis = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y-m-d H:i:s' );             // Local unavailable.
 			// Local timezone Now time.
-			$local_now_datetime_ymdhis = wpbc_datetime_localized__use_wp_timezone( strtotime( 'now' ), 'Y-m-d H:i:s' );            // Local Now.
+			$local_now_datetime_ymdhis = wpbc_datetime_localized__use_wp_timezone( strtotime( $start_it ), 'Y-m-d H:i:s' );            // Local Now.
 			// Local timezone Today midnight time.
-			$local_now_datetime_ymd000 = wpbc_datetime_localized__use_wp_timezone( strtotime( 'now' ), 'Y-m-d 00:00:00' );         // Local Midnight.
+			$local_now_datetime_ymd000 = wpbc_datetime_localized__use_wp_timezone( strtotime( $start_it ), 'Y-m-d 00:00:00' );         // Local Midnight.
 
 			// Check time from local MIDNIGHT to Unavailable.
 			$days_number_shift           = intval( ( strtotime( $local_unavailable_datetime_ymdhis ) - strtotime( $local_now_datetime_ymd000 ) ) / 86400 );
@@ -66,6 +64,27 @@ function wpbc_get_localized_js_vars() {
 
 	$script .= "_wpbc.set_other_param( 'today_arr', [" . $today_local . "]  ); ";
 
+	// FixIn: 10.8.1.4.
+	$script .= "_wpbc.set_other_param( 'availability__unavailable_from_today', '" . esc_js( $unavailable_time_from_today ) . "' ); ";    //Default: 0 '           Old JS: block_some_dates_from_today'		_wpbc.get_other_param( 'availability__unavailable_from_today' )
+
+	return $script;
+}
+
+
+/**
+ * Get script string for localised variables.
+ *
+ * @return string
+ */
+function wpbc_get_localized_js_vars() {
+
+	// $script  = 'var1 = '. wp_json_encode('var1') .'; ';      // JSON.parse(wpbc_global_var);  //.
+
+	$script  = '';
+	$script .= "_wpbc.set_other_param( 'locale_active', '" . esc_js( wpbc_get_maybe_reloaded_booking_locale() ) . "' ); ";
+
+	$script .= wpbc_get_localized_js__time_local();
+
 	$script .= "_wpbc.set_other_param( 'url_plugin', '" . esc_url( plugins_url( '', WPBC_FILE ) ) . "' ); ";
 
 	$get_booking_hash = ( ( isset( $_GET['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
@@ -77,8 +96,6 @@ function wpbc_get_localized_js_vars() {
 
 	$script .= "_wpbc.set_other_param( 'calendars__first_day', '"   . intval( get_bk_option( 'booking_start_day_weeek' ) )   . "' ); ";                             //."\n";
 	$script .= "_wpbc.set_other_param( 'calendars__max_monthes_in_calendar', '"   . esc_js( get_bk_option( 'booking_max_monthes_in_calendar' ) )   . "' ); ";
-	// FixIn: 10.8.1.4.
-	$script .= "_wpbc.set_other_param( 'availability__unavailable_from_today', '" . esc_js( $unavailable_time_from_today ) . "' ); ";    //Default: 0 '           Old JS: block_some_dates_from_today'		_wpbc.get_other_param( 'availability__unavailable_from_today' )
 	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 		$script .= "_wpbc.set_other_param( 'availability__available_from_today', '" . esc_js( get_bk_option( 'booking_available_days_num_from_today' ) ) . "' ); ";    //Default '' - all days. Old JS: 'wpbc_available_days_num_from_today'
 	}

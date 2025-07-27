@@ -240,6 +240,7 @@ $.extend(Datepick.prototype, {
 		// Check for settings on the control itself
 		var inlineSettings = ($.fn.metadata ? $(target).metadata() : {});
 		inst.settings = $.extend({}, settings || {}, inlineSettings || {});
+		this._adjustInstDate(inst);	// FixIn: Adjust cursor date (currently  rendering Month,  if we define the minDate in the future !!!  // FixIn: 10.13.1.4.
 		if (inst.inline) {
 			inst.dpDiv.addClass(this._inlineClass[
 				this._get(inst, 'useThemeRoller') ? 1 : 0]);

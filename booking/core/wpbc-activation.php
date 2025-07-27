@@ -523,9 +523,12 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
     $default_options['booking_type_of_thank_you_message'] = 'message';
  $mu_option4delete[]='booking_type_of_thank_you_message';
     $default_options['booking_thank_you_page_URL'] = '/thank-you';
- $mu_option4delete[]='booking_thank_you_page_URL';         
+ $mu_option4delete[]='booking_thank_you_page_URL';
     $default_options['booking_is_use_autofill_4_logged_user'] = ($is_demo) ? 'On' : 'Off';
- $mu_option4delete[]='booking_is_use_autofill_4_logged_user';      
+ $mu_option4delete[]='booking_is_use_autofill_4_logged_user';
+ 	// FixIn: 10.13.1.5.
+    $default_options['booking_is_use_phone_validation'] = 'Off';
+ $mu_option4delete[]='booking_is_use_phone_validation';
     $default_options['booking_date_format'] = get_option( 'date_format' );
  $mu_option4delete[]='booking_date_format';
     $default_options['booking_time_format'] = get_option( 'time_format' );	//'H:i';

@@ -463,6 +463,52 @@ function wpbc_get_redable_times( $dates_ymd_arr , $times_arr_his, $params = arra
 
 
 	/**
+	 * Check if     $date_sql1  <  $date_sql2
+	 *
+	 * @param string $date_sql1 : '2015-02-29'    |     '2015-02-29 00:00:00'
+	 * @param string $date_sql2 : '2015-02-30'    |     '2015-02-30 00:00:00'
+	 *
+	 * @return boolean              : true | false
+	 */
+	function wpbc_is_date_less_than( $date_sql1, $date_sql2 ) {
+
+		if ( empty( $date_sql2 ) ) {
+			return false;
+		}
+
+		$date_sql1 = wpbc_date_sql__ymd_his__to__ymd_000( $date_sql1 );
+		$date_sql2 = wpbc_date_sql__ymd_his__to__ymd_000( $date_sql2 );
+
+		$is_date_less = ( strtotime( $date_sql1 ) < strtotime( $date_sql2 ) );
+
+		return $is_date_less;
+	}
+
+
+	/**
+	 * Check if     $date_sql1  >  $date_sql2
+	 *
+	 * @param string $date_sql1 : '2015-02-29'    |     '2015-02-29 00:00:00'
+	 * @param string $date_sql2 : '2015-02-30'    |     '2015-02-30 00:00:00'
+	 *
+	 * @return boolean              : true | false
+	 */
+	function wpbc_is_date_higher_than( $date_sql1, $date_sql2 ) {
+
+		if ( empty( $date_sql2 ) ) {
+			return false;
+		}
+
+		$date_sql1 = wpbc_date_sql__ymd_his__to__ymd_000( $date_sql1 );
+		$date_sql2 = wpbc_date_sql__ymd_his__to__ymd_000( $date_sql2 );
+
+		$is_date_less = ( strtotime( $date_sql1 ) > strtotime( $date_sql2 ) );
+
+		return $is_date_less;
+	}
+
+
+	/**
 	 * Convert SQL date '2023-10-12 14:40:01'  -> '2023-10-12 00:00:00'
 	 *
 	 * @param $sql_date '2023-10-12 14:40:01'

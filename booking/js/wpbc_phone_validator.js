@@ -1,16 +1,44 @@
 (function () {
-	var a = setInterval( function () {
-		if ( ('undefined' === typeof jQuery) || !window.jQuery ) {
+
+	let phone_mask_counter = 0;
+
+	const a = setInterval( function () {
+
+		// Check for jQuery and IMask
+		if ( typeof jQuery === 'undefined' || !window.jQuery ) {
 			return;
 		}
-		clearInterval( a );
-		jQuery( document ).ready( function () {
 
-			wpbc_set_phone_mask();
+		const wpbc_is_imask_exist = (typeof IMask === 'function');
+		const jq_phone            = wpbc_get_jq_phone_fields();
+		const wpbc_is_phone_exist = jq_phone.length > 0;
 
-		} );
+		phone_mask_counter++;
+
+		// Try up to 20 times every 500ms (10s max total)
+		if ( phone_mask_counter >= 20 || (wpbc_is_phone_exist && wpbc_is_imask_exist) ) {
+			clearInterval( a );  // Stop retries
+
+			// Only run when DOM is ready
+			jQuery( document ).ready( function () {
+				wpbc_set_phone_mask();
+			} );
+		}
 	}, 500 );
 })();
+
+
+function wpbc_get_jq_phone_fields() {
+
+	return jQuery( '.wpbc_form input[type="tel"], ' +
+		'.wpbc_form input[name*="phone" i], ' +
+		'.wpbc_form input[name^="fone" i], ' +
+		'.wpbc_form input[name^="tel" i], ' +
+		'.wpbc_form input[name*="mobile" i], ' +
+		'.wpbc_form input[name*="telefono" i], ' +
+		'.wpbc_form input[name*="telefone" i], ' +
+		'.wpbc_form input[name*="telefon" i]' );
+}
 
 // FixIn: 10.12.4.10.
 function wpbc_set_phone_mask() {
@@ -38,14 +66,9 @@ function wpbc_set_phone_mask() {
 	 * Some fields contains a words in any places,  e.g.: name*="phone"
 	 * some fields, can  start  only  with these fields:  name^="tel"
 	 */
-	jQuery('.wpbc_form input[type="tel"], ' +
-       '.wpbc_form input[name*="phone" i], ' +
-       '.wpbc_form input[name^="fone" i], ' +
-       '.wpbc_form input[name^="tel" i], ' +
-       '.wpbc_form input[name*="mobile" i], ' +
-       '.wpbc_form input[name*="telefono" i], ' +
-       '.wpbc_form input[name*="telefone" i], ' +
-       '.wpbc_form input[name*="telefon" i]').each( function () {
+	var jq_phone_fields = wpbc_get_jq_phone_fields();
+
+	jq_phone_fields.each( function () {
 
 		const field_element = this;
 
@@ -64,7 +87,7 @@ function wpbc_set_phone_mask() {
 
 		// Set placeholder
 		const readable_mask = default_mask.mask.replace( /\+\d+/, '+' + default_mask.phonecode );
-		field_element.placeholder = readable_mask + ' (' + default_mask.iso3 + ')';
+		field_element.placeholder = readable_mask + (default_mask.iso3 ? ' (' + default_mask.iso3 + ')' : '');
 
 		// Create mask instance
 		const imask = IMask( field_element, {
@@ -74,9 +97,18 @@ function wpbc_set_phone_mask() {
 			overwrite      : false,
 			dispatch       : function (appended, dynamicMasked) {
 				const number = (dynamicMasked.value + appended).replace( /\D/g, '' );
-				return dynamicMasked.compiledMasks.find( function (m) {
-					return number.startsWith( m.startsWith );
-				} );
+				// return dynamicMasked.compiledMasks.find( function (m) {
+				// 	return number.startsWith( m.startsWith );
+				// } );
+				// FixIn: 10.13.1.2.
+
+				return dynamicMasked.compiledMasks
+					.filter( function (m) {
+						return number.startsWith( m.startsWith );
+					} )
+					.sort( function (a, b) {
+						return b.startsWith.length - a.startsWith.length; // longest prefix first
+					} )[0] || dynamicMasked.compiledMasks[(dynamicMasked.compiledMasks.length - 1)]; // return most specific match
 			}
 		} );
 
@@ -88,11 +120,8 @@ function wpbc_set_phone_mask() {
 		// 	}, 100 );
 		// }
 
-
 	} );
-
 }
-
 
 
 

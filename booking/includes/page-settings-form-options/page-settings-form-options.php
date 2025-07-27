@@ -94,6 +94,15 @@ class WPBC_API_Settings_Form_Options extends WPBC_Settings_API {
                                 , 'description' => ''
                                 , 'group'       => 'form'
             );
+		// FixIn: 10.13.1.5.
+        $this->fields['booking_is_use_phone_validation'] = array(
+                                'type'          => 'checkbox'
+                                , 'default'     => $default_options_values['booking_is_use_phone_validation']         // 'Off'
+                                , 'title'       => __('Smart Phone Validation' ,'booking')
+                                , 'label'       => sprintf( __('Enable option to ensure phone number fields are validated according to the user\'s country format %1s' ,'booking'), '+1 000 000 0000' )  /* translators: 1: Phone number format. */
+                                , 'description' => ''
+                                , 'group'       => 'form'
+            );
 
 		$this->fields['hr_calendar_after_autofill'] = array( 'type' => 'hr', 'group' => 'form' );
 

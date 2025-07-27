@@ -234,6 +234,70 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
+			'wpbc_booking_advanced_section',
+			[
+				'label' => esc_html__( 'Advanced', 'booking' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_calendar_dates_start',
+			[
+				'type'        => \Elementor\Controls_Manager::DATE_TIME,
+				'label'       => esc_html__( 'Earliest date visible/selectable in the calendar.', 'booking' ),
+				'default'     => '',
+				'label_block' => true,
+				'description' => '<strong>' . esc_html__('Optional', 'booking') . '!</strong> '  . esc_html__( 'Format: YYYY-MM-DD (e.g. 2025-07-26)', 'booking' ),
+				'picker_options' => [
+					'enableTime' => false,
+					'dateFormat' => 'Y-m-d',  // '2025-07-26' format
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_calendar_dates_end',
+			[
+				'type'        => \Elementor\Controls_Manager::DATE_TIME,
+				'label'       => esc_html__( 'Latest date visible/selectable in the calendar.', 'booking' ),
+				'default'     => '',
+				'label_block' => true,
+				'description' => '<strong>' . esc_html__('Optional', 'booking') . '!</strong> ' . esc_html__( 'Format: YYYY-MM-DD (e.g. 2025-12-31)', 'booking' ),
+				'picker_options' => [
+					'enableTime' => false,
+					'dateFormat' => 'Y-m-d',  // '2025-07-26' format
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_calendar_startmonth',
+			[
+				'type'        => \Elementor\Controls_Manager::DATE_TIME,
+				'label'       => esc_html__( 'Select start month of calendar after loading.', 'booking' ),
+				'default'     => '',
+				'label_block' => true,
+				'description' => '<strong>' . esc_html__('Optional', 'booking') . '!</strong> ' . esc_html__( 'Format: YYYY-MM (e.g. 2025-3)', 'booking' ),
+				'picker_options' => [
+					'enableTime' => false,
+					'dateFormat' => 'Y-m',  // '2025-07-26' format
+				],
+			]
+		);
+		$this->add_control(
+			'wpbc_booking_calendar_dates_reset_button',
+			[
+				'type' => \Elementor\Controls_Manager::RAW_HTML,
+				'raw'  => '<button type="button" class="elementor-button wpbc-reset-dates-button" style="margin-top:10px;">'.esc_html__('Reset Dates','booking').'</button>',
+				'content_classes' => 'wpbc-calendar-dates-reset-wrapper',
+			]
+		);
+
+		$this->end_controls_section();
+
+
+		$this->start_controls_section(
 			'wpbc_theme_section',
 			[
 				'label' => esc_html__( 'Appearance & Color Themes', 'booking' ),
@@ -292,6 +356,19 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 				$shortcode_params[] = "form_type='{$wpbc_custom_form_id}'";
 			}
 		}
+
+		// wpbc_booking_calendar_dates_start / calendar_dates_end / startmonth .
+		if ( ! empty( $settings['wpbc_booking_calendar_dates_start'] ) ) {
+			$shortcode_params[] = "calendar_dates_start='" . $settings['wpbc_booking_calendar_dates_start'] . "'";
+		}
+		if ( ! empty( $settings['wpbc_booking_calendar_dates_end'] ) ) {
+			$shortcode_params[] = "calendar_dates_end='" . $settings['wpbc_booking_calendar_dates_end'] . "'";
+		}
+		if ( ! empty( $settings['wpbc_booking_calendar_startmonth'] ) ) {
+			$shortcode_params[] = "startmonth='" . $settings['wpbc_booking_calendar_startmonth'] . "'";
+		}
+
+
 
 		// Final parameters string.
 		$shortcode_params_str = implode( ' ', $shortcode_params );

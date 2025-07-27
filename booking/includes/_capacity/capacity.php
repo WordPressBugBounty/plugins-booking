@@ -205,17 +205,28 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 				} else if ( is_array( $params['dates_to_check'] ) ) {                                                   // Specific Date(s)     ->   [ '2023-07-15' , '2023-07-21' ]
 
-					$dates_sql_array = array();
+					// FixIn: 10.13.1.4. -situation,  where in shortcode defined - [booking calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' ...]
+					if ( 2 === count( $params['dates_to_check'] ) ) {
 
-					for( $i = 0; $i <  count( $params['dates_to_check'] ); $i++) {
+						$dates_sql_str = " ( (  dt.booking_date >= '{$params['dates_to_check'][0]} 00:00:00'  ) AND (  dt.booking_date <= '{$params['dates_to_check'][1]} 23:59:59'  ) )";
 
-						$dates_sql_array[] =  "( (  dt.booking_date >= '{$params['dates_to_check'][$i]} 00:00:00'  ) AND (  dt.booking_date <= '{$params['dates_to_check'][$i]} 23:59:59'  ) )";
+					} else if ( 1 === count( $params['dates_to_check'] ) ) {
+
+						$dates_sql_str = " (  dt.booking_date >= '{$params['dates_to_check'][0]} 00:00:00'  )  ";
+
+					} else {
+						// Check booking dates inside of the each specific dates. I do not sure that this situation possible ??????
+						$dates_sql_array = array();
+
+						for( $i = 0; $i <  count( $params['dates_to_check'] ); $i++) {
+
+							$dates_sql_array[] =  "( (  dt.booking_date >= '{$params['dates_to_check'][$i]} 00:00:00'  ) AND (  dt.booking_date <= '{$params['dates_to_check'][$i]} 23:59:59'  ) )";
+						}
+
+						$dates_sql_str = implode( ' OR ', $dates_sql_array );
 					}
 
-					$dates_sql_str = implode( ' OR ', $dates_sql_array );
-
 					return   " AND (  {$dates_sql_str}  ) " ;
-
 				}
 
 				// Default CURDATE
@@ -999,11 +1010,25 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			if ( ( ! $is_this_bap_page ) && ( ! $is_this_hash_page ) ) {
 				// Do not apply these settings at Booking > Add booking page, when we edit booking - e.g. exist 'booking_hash'
 
-				// Unavailable days from today                  >>>            'from_today_unavailable'
-				$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__from_today_unavailable( $availability_per_day, $my_day_tag, $resource_id );
+				// Skip checking unavailable from  today,  if defined the calendar_dates_start='2025-02-10' calendar_dates_end='2025-12-31' in shortcode. // FixIn: 10.13.1.4.
+				$is_skip_check__from_today_unavailable = false;
+				if ( is_array( $params['dates_to_check'] ) ) {
+					if ( ( ( count( $params['dates_to_check'] ) ) > 0 ) && ( wpbc_is_date_less_than( $params['dates_to_check'][0], $my_day_tag ) ) ) {
+						$is_skip_check__from_today_unavailable = true;
+					}
+					if ( ( ( count( $params['dates_to_check'] ) ) > 1 ) && ( wpbc_is_date_higher_than( $params['dates_to_check'][1], $my_day_tag ) ) ) {
+						$is_skip_check__from_today_unavailable = true;
+					}
+				}
 
-				// Limit available days from today              >>>            'limit_available_from_today'
-				$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__limit_available_from_today( $availability_per_day, $my_day_tag, $resource_id );
+				if ( ! $is_skip_check__from_today_unavailable ) {
+
+					// Unavailable days from today                  >>>            'from_today_unavailable'.
+					$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__from_today_unavailable( $availability_per_day, $my_day_tag, $resource_id );
+
+					// Limit available days from today              >>>            'limit_available_from_today'.
+					$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__limit_available_from_today( $availability_per_day, $my_day_tag, $resource_id );
+				}
 			}
 			//==========================================================================================================
 

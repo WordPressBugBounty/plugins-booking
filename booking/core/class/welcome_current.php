@@ -3,6 +3,47 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
+function wpbc_welcome_section_10_14( $obj ){
+
+	$section_param_arr = array( 'version_num' => '10.14', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+
+
+	//   $obj->asset_path = 'http://beta/assets/';	// TODO: 2024-06-01 comment this
+
+
+	// <editor-fold     defaultstate="collapsed"                        desc=" = F R E E = "  >
+	// -----------------------------------------------------------------------------------------------------------------
+	//  = F R E E =
+	// -----------------------------------------------------------------------------------------------------------------
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Control start and end dates for booking and availability' ) ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.14/wp_booking_calendar_elementor_advanced_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Control which dates are shown!**: You can now control which dates are shown in the Booking Calendar by using two new shortcode parameters: **[booking resource_id=1 calendar_dates_start=\'2025-01-01\' calendar_dates_end=\'2025-12-31\']**' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New**:  Ability to **set the start and end dates for the calendar** using shortcode parameters. Example: [booking resource_id=1 calendar_dates_start=\'2025-01-01\' calendar_dates_end=\'2025-12-31\' startmonth=\'2025-3\']' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New**:  If startmonth is omitted, the calendar will now automatically use the month from calendar_dates_start as the initial display month.  Example: [booking resource_id=1 calendar_dates_start=\'2025-01-01\' calendar_dates_end=\'2025-12-31\']' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New**:  New: You can now **allow users to submit bookings for past dates**, as long as those dates are within the visible range set by calendar_dates_start and calendar_dates_end in the shortcode. Useful for administrative or backdated bookings. Shortcode Example: [booking resource_id=1 calendar_dates_start=\'2025-01-01\' calendar_dates_end=\'2025-12-31\']' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **New**:  Elementor native supports of these parameters calendar_dates_start=\'2025-01-01\' calendar_dates_end=\'2025-12-31\' in Advanced section.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: When calendar_dates_start and calendar_dates_end are defined in the shortcode, the system skips checking availability from today, and instead starts from the defined calendar_dates_start.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: To **enable the new Smart Phone Validation** feature introduced in the previous update, go to: WP Booking Calendar > Settings > Booking Form > Form Options and enable the "Smart Phone Validation" option. It is disabled by default.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
 function wpbc_welcome_section_10_13( $obj ){
 
 	$section_param_arr = array( 'version_num' => '10.13', 'show_expand' => false );
@@ -24,7 +65,7 @@ function wpbc_welcome_section_10_13( $obj ){
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
 				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Booking Calendar meets Elementor!**' ) ); ?></h3>
 				 <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
-				<img src="<?php echo esc_attr( $obj->section_img_url( '10.13/elementor_01.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<img src="<?php echo esc_attr( $obj->section_img_url( '10.13/wp_booking_calendar_elementor_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
 				<span><span style="font-size: 0.9em;font-style: italic;"><?php //echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Available in the  Booking Calendar Business Small or higher versions' ) ); ?></span></span>
 			</div>
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">

@@ -26,6 +26,28 @@ function wpbc_calendar__load_data__ajx( params ){
 	// FixIn: 9.8.6.2.
 	wpbc_calendar__blur__stop( params['resource_id'] );
 
+	// -----------------------------------------------------------------------------------------------------------------
+	// == Get start / end dates from  the Booking Calendar shortcode. ==
+	// Example: [booking calendar_dates_start='2026-01-01' calendar_dates_end='2026-12-31'  resource_id=1]              // FixIn: 10.13.1.4.
+	// -----------------------------------------------------------------------------------------------------------------
+	if ( false !== wpbc_calendar__get_dates_start( params['resource_id'] ) ) {
+		if ( ! params['dates_to_check'] ) { params['dates_to_check'] = []; }
+		var dates_start = wpbc_calendar__get_dates_start( params['resource_id'] );  // E.g. - local__min_date = new Date( 2025, 0, 1 );
+		if ( false !== dates_start ){
+			params['dates_to_check'][0] = wpbc__get__sql_class_date( dates_start );
+		}
+	}
+	if ( false !== wpbc_calendar__get_dates_end( params['resource_id'] ) ) {
+		if ( !params['dates_to_check'] ) { params['dates_to_check'] = []; }
+		var dates_end = wpbc_calendar__get_dates_end( params['resource_id'] );  // E.g. - local__min_date = new Date( 2025, 0, 1 );
+		if ( false !== dates_end ) {
+			params['dates_to_check'][1] = wpbc__get__sql_class_date( dates_end );
+			if ( !params['dates_to_check'][0] ) {
+				params['dates_to_check'][0] = wpbc__get__sql_class_date( new Date() );
+			}
+		}
+	}
+	// -----------------------------------------------------------------------------------------------------------------
 
 // console.groupEnd(); console.time('resource_id_' + params['resource_id']);
 console.groupCollapsed( 'WPBC_AJX_CALENDAR_LOAD' ); console.log( ' == Before Ajax Send - calendars_all__get() == ' , _wpbc.calendars_all__get() );

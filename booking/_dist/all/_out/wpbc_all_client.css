@@ -807,6 +807,7 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   max-width: Min(260px,100%);
+  min-width: Min(90px,100%);
   white-space: wrap;
   word-break: normal
 }

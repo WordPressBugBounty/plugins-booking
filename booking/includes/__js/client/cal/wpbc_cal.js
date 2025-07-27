@@ -87,6 +87,15 @@ function wpbc_calendar_show( resource_id ){
 	// cal_last_day_in_month = new Date( cal_last_day_in_month.getFullYear(), cal_last_day_in_month.getMonth() + 1, 0 );
 	// local__max_date = cal_last_day_in_month;			// FixIn: 10.0.0.26.
 
+	// Get start / end dates from  the Booking Calendar shortcode. Example: [booking calendar_dates_start='2026-01-01' calendar_dates_end='2026-12-31'  resource_id=1] // FixIn: 10.13.1.4.
+	if ( false !== wpbc_calendar__get_dates_start( resource_id ) ) {
+		local__min_date = wpbc_calendar__get_dates_start( resource_id );  // E.g. - local__min_date = new Date( 2025, 0, 1 );
+	}
+	if ( false !== wpbc_calendar__get_dates_end( resource_id ) ) {
+		local__max_date = wpbc_calendar__get_dates_end( resource_id );    // E.g. - local__max_date = new Date( 2025, 11, 31 );
+	}
+
+	// In case we edit booking in past or have specific parameter in URL.
 	if (   ( location.href.indexOf('page=wpbc-new') != -1 )
 		&& (
 			  ( location.href.indexOf('booking_hash') != -1 )                  // Comment this line for ability to add  booking in past days at  Booking > Add booking page.
@@ -2097,3 +2106,56 @@ jQuery( document ).ready( function (){
 		wpbc_calendars__auto_update_months_number();
 	}, 100 );
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+/*  ==  Check: calendar_dates_start: "2026-01-01", calendar_dates_end: "2026-12-31" ==  // FixIn: 10.13.1.4.
+// --------------------------------------------------------------------------------------------------------------------- */
+	/**
+	 * Get Start JS Date of starting dates in calendar, from the _wpbc object.
+	 *
+	 * @param integer resource_id - resource ID, e.g.: 1.
+	 */
+	function wpbc_calendar__get_dates_start( resource_id ) {
+		return wpbc_calendar__get_date_parameter( resource_id, 'calendar_dates_start' );
+	}
+
+	/**
+	 * Get End JS Date of ending dates in calendar, from the _wpbc object.
+	 *
+	 * @param integer resource_id - resource ID, e.g.: 1.
+	 */
+	function wpbc_calendar__get_dates_end(resource_id) {
+		return wpbc_calendar__get_date_parameter( resource_id, 'calendar_dates_end' );
+	}
+
+/**
+ * Get validates date parameter.
+ *
+ * @param resource_id   - 1
+ * @param parameter_str - 'calendar_dates_start' | 'calendar_dates_end' | ...
+ */
+function wpbc_calendar__get_date_parameter(resource_id, parameter_str) {
+
+	var date_expected_ymd = _wpbc.calendar__get_param_value( resource_id, parameter_str );
+
+	if ( ! date_expected_ymd ) {
+		return false;             // '' | 0 | null | undefined  -> false.
+	}
+
+	if ( -1 !== date_expected_ymd.indexOf( '-' ) ) {
+
+		var date_expected_ymd_arr = date_expected_ymd.split( '-' );	// '2025-07-26' -> ['2025', '07', '26']
+
+		if ( date_expected_ymd_arr.length > 0 ) {
+			var year  = (date_expected_ymd_arr.length > 0) ? parseInt( date_expected_ymd_arr[0] ) : new Date().getFullYear();	// Year.
+			var month = (date_expected_ymd_arr.length > 1) ? (parseInt( date_expected_ymd_arr[1] ) - 1) : 0;  // (month - 1) or 0 - Jan.
+			var day   = (date_expected_ymd_arr.length > 2) ? parseInt( date_expected_ymd_arr[2] ) : 1;  // date or Otherwise 1st of month
+
+			var date_js = new Date( year, month, day, 0, 0, 0, 0 );
+
+			return date_js;
+		}
+	}
+
+	return false;  // Fallback,  if we not parsed this parameter  'calendar_dates_start' = '2025-07-26',  for example because of 'calendar_dates_start' = 'sfsdf'.
+}
