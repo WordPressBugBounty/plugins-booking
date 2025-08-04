@@ -17,12 +17,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;                                                                                                               // Exit, if accessed directly.
 }
 
-// FixIn: 11.0.0.1.
+/**
+ * == All Page Parameters ==
+ *
+ * TODO Refactorig: Continue work with description of the:   List of all parameters, that possible to use in  public function tabs() { ... }
+
+'is_default_full_screen'                    => false,                                                                   // true | false.     Default: false.
+'right_vertical_sidebar__is_show'           => false,                                                                   // true | false.     Default: false.
+'right_vertical_sidebar__default_view_mode' => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
+'left_navigation__default_view_mode'        => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
+
+// TODO: recheck functionality  and ability to use:
+
+	'is_show_top_path'                          => true,                                                                    // true | false.  By default value is: false.
+	'is_show_top_navigation'                    => false,                                                                   // true | false.  By default value is: false.
+	'title'                                     => __( 'Booking Form Builder', 'booking' ),                                 // Title of TAB //FixIn: 9.8.15.2.2.
+	'hint'                                      => __( 'Define available days', 'booking' ),                                // Hint.
+	'page_title'                                => __( 'Booking Form Builder', 'booking' ),                                 // Title of Page.
+	'link'                                      => '',                                                                      // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link.
+	'position'                                  => '',                                                                      // 'left'  /  'right'  /  ''.
+	'css_classes'                               => '',                                                                      // CSS c l a s s(es).
+	'icon'                                      => '',                                                                      // Icon - link to the real PNG img.
+	'font_icon'                                 => 'wpbc_icn_flip_x0 wpbc-bi-input-cursor-text',                            // 'wpbc_icn_free_cancellation' // CSS definition  of forn Icon.
+	'font_icon_right'                           => 'wpbc-bi-asterisk',
+	'default'                                   => false,                                                                   // Is this tab activated by default or not: true || false.
+	'disabled'                                  => false,                                                                   // Is this tab disbaled: true || false.
+	'hided'                                     => false,                                                                   // Is this tab hided: true || false.
+	'subtabs'                                   => array(),
+	'folder_style'                              => 'order:11;',
+
+ */
+
 
 /**
  * Define Settings Page Structure
  */
 abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
+
+	// FixIn: 11.0.0.1.
 
 	/**
 	 * Constructor
@@ -46,6 +78,15 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	 * @return void
 	 */
 	public function maybe_update() {}
+
+
+	/**
+	 * Child classes ovveride  --  show vertical "Right Sidebar Content".
+	 *  // FixIn: 10.14.1.3.
+	 *
+	 * @return void
+	 */
+	public function right_sidebar_content(){}
 
 
 	// -----------------------------------------------------------------------------------------------------------------

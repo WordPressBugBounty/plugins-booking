@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.13.1
+Stable tag: 10.14.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -300,6 +300,14 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.1 =
+- Changes in **all** versions:
+	* **Improvement**:  Enhanced the warning message displayed during calendar loading if some JavaScript wasn't loaded correctly. (10.14.1.1).
+	* **Improvement**:  Refactoring functinality  of using 'Full  Screen' mode with parameter 'is_default_full_screen' => true  in ->tabs(...) method. (10.14.1.2).
+	* **Improvement**:  Prepare functionslity  for showing content in right sidebar in future updates.  (10.14.1.3).
+ 	* **Improvement**:  Add limitation of scrolling back to the past dates (if editing booking with  dates in the past,  or if enabled option "Allow booking in the past" on the Add Booking page) to the number of months defined in the "Number of months to scroll" option on the WP Booking Calendar > Settings > Calendar > Calendar Settings page. It's prevent of showing scroll dates until 1900 year. (10.14.1.4)
+ 	* **Fix**: Add the exception of not blocking the 'End Time' field options, if selected several dates started from  "today" date and option "Use selected times for each booking date" is disabled. Previosly  such  edn time options was blocked because system wrongly detected them  as times in the past. (10.14.1.5.)
+
 = 10.14 =
 - Changes in **all** versions:
 	* **New**:  Ability to **set the start and end dates for the calendar** using shortcode parameters. Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' startmonth='2025-3']  (10.13.1.4.)
@@ -508,71 +516,7 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  	* **Fix** Showing warning message at some servers: "WPBC Error. JavaScript library "datepick" was not defined.". (10.6.6.1)
  	* **Fix** Resolved issue of generating payment request links at some servers. (10.6.6.3)
 
-= 10.6.1 - 10.6.5 =
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
-= 10.6 =
-- Changes in **all** versions:
-	* **New** Implemented a structured settings dashboard with brief descriptions for each feature. This update enhances user navigation, making it easier to locate and configure the desired settings.
-	* **Improvement** Refactored code for improved efficiency and maintainability.
-	* **Translation**. Local German translation updated by Christian Hölscher.
-	* **Fix** Removed the highlighting of days in the calendar when the mouse cursor moves out of the calendar container. (10.5.2.4)
-	* **Fix** Resolved an issue with the dropdown list auto-closing after selecting the start date in the navigation panel on the Timeline view. (10.5.2.1)
-	* **Fix** Hidden notice messages from other plugins in the header on Booking Calendar pages to avoid interruptions to the normal workflow. (10.5.2.2)
-	* **Fix** Implemented validation to check the start time, ensuring that users cannot select times that have already passed for the current day. (10.5.2.3)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **Improvement** Replaced the "From" email address with the website's "Administration Email Address" for all newly activated regular users. This prevents emails from being marked as spam if the user's email is not from the website's domain. (10.5.2.5)  *(MultiUser)*
- 	* **Fix** Resolved an issue with saving the correct color of the "Send" button after the second click on dates while using the range dates selection mode. (10.5.2.3)
- 	* **Fix** Resolved the issue of date/time hints not displaying in the booking form when no date was selected. Previously, '0' would be shown if only the time was selected. (10.5.2.7)
-
-= 10.5.1 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
-= 10.5 =
-- Changes in **all** versions:
-	* **New** Added a new calendar color skin, '24_9__light', with rounded day cells for an updated aesthetic.
-	* **New** Added a new dark calendar theme, inspired by the '24_9__light' skin, with rounded day cells for a contemporary design.
-	* **New** Added a new "24_9__light_square_1" color scheme for the "24_9__light" Calendar Skin, giving your calendar a stylish new look with square rounded day cells.
-	* **New** Introduced easy configuration of calendar skin parameters through CSS variables. You can now adjust day cell radius, colors, and other parameters, enabling fast and efficient customization of your calendar skin.
-	* **New** Updated the UI for booking form fields setup. The code has been refactored and UI elements updated, resulting in a cleaner and clearer interface.
-	* **New** Added new field blocks, including Calendar, Captcha, and Send button. These fields can now be organized in the booking form, and you can configure the label or title for each.
-	* **New** Added new statistic options to the Dashboard Agenda: Check-in: Today, Check-out: Today, Check-in: Tomorrow, Check-out: Tomorrow
-	* **Improvement** Updated the Timeline View in the admin panel to display multiple time slot bookings with a small margin, improving clarity and organization. (10.5.0.1)
-	* **Fix** Addressed a possible issue that could arise when downgrading from the Paid to the Free version if the 'Range Days' selection mode was in use, as this mode is not supported in the Free version. (10.4.0.4)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **New** Added the ability to create and use multiple custom booking forms while setting up in "Simple Form" mode. This improvement provides a more efficient and user-friendly way to configure booking forms.  *(Business Medium / Large, MultiUser)*
- 	* **Improvement** Updated the UI of booking forms in "Advanced Form" mode. The code has been refactored, and toolbar UI elements have been updated for an improved user experience.
-	* **Under hood**:  Added a new hook that triggers after cost/dates hints are shown. To bind this event, use the following JavaScript: jQuery(".booking_form_div").on('after_show_cost_hints', function(event, resource_id) { ... });
-
-= 10.4 =
-- Changes in **all** versions:
-	* **New** Added a modern calendar skin called 'Light 24_8'.
-	* **New** Added 10 new color schemes for the 'Light 24_8' calendar skin, allowing for more customization and personalization.
-	* **New** Added a modern time picker skin called 'Light 24_8'.
-	* **New** Added a configuration shortcode button at WP Booking Calendar > Publish menu page for easy configuration and publishing of booking forms, availability calendars, or timelines into existing or new pages. (10.3.0.8)
-	* **Improvement** The Timeline Views and Booking Listing pages have been updated. They now feature a clearer and more sleek user interface.
-	* **Improvement** Grouped current and legacy calendar skins in the drop-down list on the Settings > General page in the "Calendar" section for better organization.
-	* **Improvement** Set the default structure of the booking form to 'Form at right side of calendar' during the initial installation of the plugin. (10.3.0.6)
-	* **Fix** Corrected preview updates in the 'Color Theme' section on the Settings > Booking Form page when using a custom calendar skin from '/wp-content/uploads/wpbc_skins/'. (10.3.0.5)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New** If the range days selection mode is activated, the check-in and check-out dates now display with a stronger color than the middle dates for clearer visibility. (10.3.0.9)
-	* **Improvement** Updated typography and styles for the booking resources select-box in the booking resources selection shortcode. (10.3.0.4) (10.3.0.4)
-	* **Fix** Fixed an issue with defining availability on the WP Booking Calendar > Availability > Days Availability page, which occurred if booking resources were previously deleted and now only one resource remains. (10.3.0.7)
-
-= 10.3 =
-- Changes in **all** versions:
-	* **New** Updated Calendar Overview and Timeline views. Timelines now have a minimum width for day/time cells for improved readability. You can scroll horizontally to search for specific date and time intervals.
-	* **New** Updated Bookings view in Calendar Overview and Timeline. Booking bars now have a transparent background for easier identification of specific dates under the booking pipeline.
-	* **Improvement** Updated typography in the Bookings view within the Calendar Overview and Timeline for a more polished appearance.
-	* **New** Added shortcode [add_to_google_cal_button] to show **"Add to Google Calendar" button in Booking Confirmation** widow. (10.3.0.1)
-	* **New** Added an option to remove booking summary details in export when clicking the "Add to Google Calendar" button. This can be enabled in the WP Booking Calendar > Settings > Sync > "General" page. (10.3.0.1)
-	* **Fix** Resolved several  issues. Find more at [this page](https://wpbookingcalendar.com/changelog/)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New** Added Change Over Days in Timeline views for pro versions. Timeline and Calendar Overview now show change over days as triangles for check-in/out dates, making it easier to identify these dates and providing a better overview of bookings if your system uses the change over days functionality.
-	* **Fix** Fixed the issue of invalid Start/End Time in some configurations when using range days selection mode and change-over days. (10.2.3.2)
-
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
 
 == Upgrade Notice ==
 = 10.14 =

@@ -63,9 +63,18 @@ abstract class WPBC_Menu_Structure {
 		// Defining Name of parameter in GET request - $_GET[ 'subtab' ] == 'paypal'.
 		$this->tags['subtab'] = 'subtab';
 
+		// FixIn: 10.14.1.2.
 		// This Hook fire after creation menu in class WPBC_Admin_Menus.
-		add_action( 'wpbc_define_nav_tabs', array( $this, 'wpbc_create_plugin_menu_structure_arr' ) );
+		add_action( 'wpbc_define_nav_tabs', array( $this, 'wpbc_create_plugin_menu_structure_arr' ), 10, 1 );
+
+		// Such calls requires for ability to use methods, such  as  $this->is_use_option__in_subtabs_or_tabs('...'),  which  can be run  only  after_tabs_defined !
+		// We set here priority 11, to load this function, after 'wpbc_create_plugin_menu_structure_arr', where defined all tabs.
+		add_action( 'wpbc_define_nav_tabs', array( $this, 'after_tabs_defined' ), 11, 1 );
+
+		// Right Vertical Sidebar.                                                                                      // FixIn: 10.14.1.3.
+		add_action( 'wpbc_ui__right_vertical_sidebar_content', array( $this, 'maybe_show_right_sidebar_content' ) );
 	}
+
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Abstract Methods
@@ -191,6 +200,78 @@ abstract class WPBC_Menu_Structure {
 	 */
 	abstract public function content();
 
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Right Vertical Sidebar.                                                                                          // FixIn: 10.14.1.3.
+	// -----------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Show content of right sidebar.  Overide it in child classes !
+	 *
+	 * @return void
+	 */
+	abstract public function right_sidebar_content();
+
+
+	/**
+	 * Helper method to show 'right sidebar' only if it is enabled page!
+	 *
+	 * @return void
+	 */
+	public function maybe_show_right_sidebar_content(){
+
+		if ( ! $this->is_page_activated() ) {
+			return false;
+		}
+
+		$this->right_sidebar_content();
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Methods After 'Tabs' defined.                                                                                    // FixIn: 10.14.1.2.
+	// -----------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * We already  prepeared all tabs and can use function such  as $this->is_page_activated();
+	 * // FixIn: 10.14.1.2.
+	 *
+	 * @return void
+	 */
+	public function after_tabs_defined() {
+
+		// This call -> Initiate definition  of all parameters  for current page.
+		$is_page_activated = $this->is_page_activated();
+
+		if ( $is_page_activated ) {
+			add_filter( 'admin_body_class', array( $this, 'admin_body_class__add_loading_classes' ) );
+		}
+	}
+
+
+	/**
+	 * Check if this page have to load in default Full  Screen  mode,
+	 * because of parameter 'is_default_full_screen' => false  in ->tabs(...) method.
+	 * If yes,  then  we add css class  'wpbc_admin_full_screen'  to  the body  of the page.
+	 * // FixIn: 10.14.1.2.
+	 *
+	 * @param string $classes - CSS classes.
+	 *
+	 * @return mixed|string
+	 */
+	public function admin_body_class__add_loading_classes( $classes ) {
+
+		// Such method  ->is_use_option__in_subtabs_or_tabs(...)  can be load only  after_tabs_defined !
+		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_default_full_screen' ) ) {
+			$classes .= ' wpbc_admin_full_screen';
+		}
+
+		return $classes;
+	}
+
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Getters
+	// -----------------------------------------------------------------------------------------------------------------
 
 	public function get_current_page_params() {
 		return $this->current_page_params;

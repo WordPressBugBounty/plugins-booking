@@ -239,45 +239,8 @@ function wpbc_ajx_booking__ui_define__remark(){
 	} );
 }
 
-/**
- * Actions ,when we click on "Remark" button.
- *
- * @param jq_button  -	this jQuery button  object
- */
-function wpbc_ajx_booking__ui_click__remark( jq_button ){
-
-	jq_button.parents('.ui_group').find('.ui_remark_section').toggle();
-}
 
 
-/**
- *   Change booking resource   ---------------------------------------------------------------------------------- */
-
-function wpbc_ajx_booking__ui_click_show__change_resource( booking_id, resource_id ){
-
-	// Define ID of booking to hidden input
-	jQuery( '#change_booking_resource__booking_id' ).val( booking_id );
-
-	// Select booking resource  that belong to  booking
-	jQuery( '#change_booking_resource__resource_select' ).val( resource_id ).trigger( 'change' );
-	var cbr;
-
-	// Get Resource section
-	cbr = jQuery( "#change_booking_resource__section" ).detach();
-
-	// Append it to booking ROW
-	cbr.appendTo( jQuery( "#ui__change_booking_resource__section_in_booking_" + booking_id ) );
-	cbr = null;
-
-	// Hide sections of "Change booking resource" in all other bookings ROWs
-	//jQuery( ".ui__change_booking_resource__section_in_booking" ).hide();
-	if ( ! jQuery( "#ui__change_booking_resource__section_in_booking_" + booking_id ).is(':visible') ){
-		jQuery( ".ui__under_actions_row__section_in_booking" ).hide();
-	}
-
-	// Show only "change booking resource" section  for current booking
-	jQuery( "#ui__change_booking_resource__section_in_booking_" + booking_id ).toggle();
-}
 
 function wpbc_ajx_booking__ui_click_save__change_resource( this_el, booking_action, el_id ){
 
@@ -294,33 +257,6 @@ function wpbc_ajx_booking__ui_click_save__change_resource( this_el, booking_acti
 }
 
 
-/**
- *   Duplicate booking in other resource   ---------------------------------------------------------------------- */
-
-function wpbc_ajx_booking__ui_click_show__duplicate_booking( booking_id, resource_id ){
-
-	// Define ID of booking to hidden input
-	jQuery( '#duplicate_booking_to_other_resource__booking_id' ).val( booking_id );
-
-	// Select booking resource  that belong to  booking
-	jQuery( '#duplicate_booking_to_other_resource__resource_select' ).val( resource_id ).trigger( 'change' );
-	var cbr;
-
-	// Get Resource section
-	cbr = jQuery( "#duplicate_booking_to_other_resource__section" ).detach();
-
-	// Append it to booking ROW
-	cbr.appendTo( jQuery( "#ui__duplicate_booking_to_other_resource__section_in_booking_" + booking_id ) );
-	cbr = null;
-
-	// Hide sections of "Duplicate booking" in all other bookings ROWs
-	if ( ! jQuery( "#ui__duplicate_booking_to_other_resource__section_in_booking_" + booking_id ).is(':visible') ){
-		jQuery( ".ui__under_actions_row__section_in_booking" ).hide();
-	}
-
-	// Show only "Duplicate booking" section  for current booking ROW
-	jQuery( "#ui__duplicate_booking_to_other_resource__section_in_booking_" + booking_id ).toggle();
-}
 
 function wpbc_ajx_booking__ui_click_save__duplicate_booking( this_el, booking_action, el_id ){
 
@@ -337,52 +273,8 @@ function wpbc_ajx_booking__ui_click_save__duplicate_booking( this_el, booking_ac
 }
 
 
-/**
- *   Change payment status   ------------------------------------------------------------------------------------ */
-
-function wpbc_ajx_booking__ui_click_show__set_payment_status( booking_id ){
-
-	var jSelect = jQuery( '#ui__set_payment_status__section_in_booking_' + booking_id ).find( 'select' )
-
-	var selected_pay_status = jSelect.attr( "ajx-selected-value" );
-
-	// Is it float - then  it's unknown
-	if ( !isNaN( parseFloat( selected_pay_status ) ) ){
-		jSelect.find( 'option[value="1"]' ).prop( 'selected', true );								// Unknown  value is '1' in select box
-	} else {
-		jSelect.find( 'option[value="' + selected_pay_status + '"]' ).prop( 'selected', true );		// Otherwise known payment status
-	}
-
-	// Hide sections of "Change booking resource" in all other bookings ROWs
-	if ( ! jQuery( "#ui__set_payment_status__section_in_booking_" + booking_id ).is(':visible') ){
-		jQuery( ".ui__under_actions_row__section_in_booking" ).hide();
-	}
-
-	// Show only "change booking resource" section  for current booking
-	jQuery( "#ui__set_payment_status__section_in_booking_" + booking_id ).toggle();
-}
 
 //TODO: delete
-function wpbc_ajx_booking__ui_click_save__set_payment_status( booking_id, this_el, booking_action, el_id ){
-
-	wpbc_ajx_booking_ajax_action_request( {
-											'booking_action'       : booking_action,
-											'booking_id'           : booking_id,
-											'selected_payment_status' : jQuery( '#ui_btn_set_payment_status' + booking_id ).val(),
-											'ui_clicked_element_id': el_id + '_save'
-	} );
-
-	wpbc_button_enable_loading_icon( this_el );
-
-	jQuery( '#' + el_id + '_cancel').hide();
-	//wpbc_button_enable_loading_icon( jQuery( '#' + el_id + '_cancel').get(0) );
-
-}
-
-function wpbc_ajx_booking__ui_click_close__set_payment_status(){
-	// Hide all change  payment status for booking
-	jQuery(".ui__set_payment_status__section_in_booking").hide();
-}
 
 
 /**

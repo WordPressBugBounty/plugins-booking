@@ -102,7 +102,9 @@ function wpbc_calendar_show( resource_id ){
 		   || ( location.href.indexOf('allow_past') != -1 )                // FixIn: 10.7.1.2.
 		)
 	){
-		local__min_date = null;
+		// local__min_date = null;
+		// FixIn: 10.14.1.4.
+		local__min_date  = new Date( _wpbc.get_other_param( 'time_local_arr' )[0], ( parseInt( _wpbc.get_other_param( 'time_local_arr' )[1] ) - 1), _wpbc.get_other_param( 'time_local_arr' )[2], _wpbc.get_other_param( 'time_local_arr' )[3], _wpbc.get_other_param( 'time_local_arr' )[4], 0 );
 		local__max_date = null;
 	}
 
@@ -585,15 +587,21 @@ function wpbc_calendar_show( resource_id ){
 			for ( var i = 0; i < selected_dates_arr.length; i++ ) {
 
 				// Get Date: '2023-08-18'.
-				sql_date = selected_dates_arr[ i ];
+				sql_date = selected_dates_arr[i];
 
 				var is_time_in_past = wpbc_check_is_time_in_past( today_time__shift, sql_date, time_fields_obj );
+				// Exception  for 'End Time' field,  when  selected several dates. // FixIn: 10.14.1.5.
+				if ( ('On' !== _wpbc.calendar__get_param_value( resource_id, 'booking_recurrent_time' )) &&
+					(-1 !== time_fields_obj.name.indexOf( 'endtime' )) &&
+					(selected_dates_arr.length > 1)
+				) {
+					is_time_in_past = wpbc_check_is_time_in_past( today_time__shift, selected_dates_arr[(selected_dates_arr.length - 1)], time_fields_obj );
+				}
 				if ( is_time_in_past ) {
 					// This time for selected date already  in the past.
 					time_fields_obj_arr[field_key].disabled = 1;
 					break;											// exist  from   Dates LOOP.
 				}
-
 				// FixIn: 9.9.0.31.
 				if (
 					   ( 'Off' === _wpbc.calendar__get_param_value( resource_id, 'booking_recurrent_time' ) )

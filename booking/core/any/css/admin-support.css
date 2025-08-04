@@ -541,6 +541,12 @@ table.wpbc_input_table tr.highlight td:first-child{
 .wpbc_icn_rotate_270::before {
   transform: rotate(270deg);
 }
+.wpbc_icn_flip_x::before {
+  transform: scaleX(-1);
+}
+.wpbc_icn_flip_y::before {
+  transform: scaleY(-1);
+}
 /*  Rotate Icons  for Loading   ***********************************************/
 .wpbc_animation_pause:before,
 .wpbc_animation_pause {

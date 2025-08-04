@@ -31,39 +31,39 @@ require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-settings-api.php';     // 
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-settings-page-parts.php';                                   // Settings Template - "Settins Parts", which used in the class-page-structure.php .
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-menu-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2025-02-09.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-page-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2024-12-23.
-if ( WPBC_NEW_LISTING ) {
-	// -----------------------------------------------------------------------------------------------------------------
-	// Booking Listing templates.
-	// -----------------------------------------------------------------------------------------------------------------
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_listing_row.php';
-	// Booking Actions.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/booking_note.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/booking_cost.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/payment_status.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/payment_request.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/change_resource.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/duplicate_booking.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/change_locale.php';
-	// Booking Listing - Filters - ...
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/bo_listing_toolbar.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/sort_by.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/expand_colapse_all.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/resource_choosen.php';
-	// Booking Listing - Actions - Bulk Actions.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/bulk_actions_dropdown.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_approve.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_pending.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_trash.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_restore.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_delete.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_read.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_unread.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/bulk_print.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/empty_trash.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/set_read_all.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/export_csv.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/import_google_calendar.php';
-}
+
+// -----------------------------------------------------------------------------------------------------------------
+// Booking Listing templates.
+// -----------------------------------------------------------------------------------------------------------------
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_listing_row.php';
+// Booking Actions.
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/booking_note.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/booking_cost.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/payment_status.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/payment_request.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/change_resource.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/duplicate_booking.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/change_locale.php';
+// Booking Listing - Filters - ...
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/bo_listing_toolbar.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/sort_by.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/expand_colapse_all.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/resource_choosen.php';
+// Booking Listing - Actions - Bulk Actions.
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/bulk_actions_dropdown.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_approve.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_pending.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_trash.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_restore.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_delete.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_read.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/selected_bookings_unread.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/bulk_print.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/empty_trash.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/set_read_all.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/export_csv.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_actions/import_google_calendar.php';
+
 
 require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-menu.php';                                                        // CLASS. Menus of plugin.
 require_once WPBC_PLUGIN_DIR . '/core/any/admin-bs-ui.php';                                                             // Functions. Toolbar BS UI Elements.
@@ -184,8 +184,15 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__class.
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__resource.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.php';
 
+if ( WPBC_NEW_FORM_BUILDER ) {
+	// Form Builder.
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/builder-form-request-class.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/builder-form-page.php';
+}
 // Scheduller.
 // require_once WPBC_PLUGIN_DIR . '/includes/page-schedule/schedule-page.php';
+
+
 // Elementor Addons:   https://developers.elementor.com/docs/getting-started/first-addon/.
  require_once WPBC_PLUGIN_DIR . '/includes/elementor-booking-form/wpbc-elementor.php';
 

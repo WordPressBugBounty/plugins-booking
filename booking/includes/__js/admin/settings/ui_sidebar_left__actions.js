@@ -56,6 +56,66 @@ function wpbc_admin_ui__sidebar_left__show_section( menu_to_show ) {
 	jQuery( '.wpbc_ui_el__vert_left_bar__section_' + menu_to_show ).removeClass( 'wpbc_ui__hide' );
 }
 
+// =====================================================================================================================
+// == Right Side Bar  -  expand / colapse functions   ==
+// =====================================================================================================================
+
+/**
+ * Expand Vertical Right Bar.
+ */
+function wpbc_admin_ui__sidebar_right__do_max() {
+	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min_right max_right compact_right none_right' );
+	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'max_right' );
+	jQuery( '.wpbc_ui__top_nav__btn_open_right_vertical_nav' ).addClass( 'wpbc_ui__hide' );
+	jQuery( '.wpbc_ui__top_nav__btn_hide_right_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
+}
+
+/**
+ * Hide Vertical Right Bar.
+ */
+function wpbc_admin_ui__sidebar_right__do_min() {
+	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min_right max_right compact_right none_right' );
+	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'min_right' );
+	jQuery( '.wpbc_ui__top_nav__btn_open_right_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
+	jQuery( '.wpbc_ui__top_nav__btn_hide_right_vertical_nav' ).addClass( 'wpbc_ui__hide' );
+}
+
+/**
+ * Colapse Vertical Right Bar.
+ */
+function wpbc_admin_ui__sidebar_right__do_compact() {
+	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min_right max_right compact_right none_right' );
+	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'compact_right' );
+	jQuery( '.wpbc_ui__top_nav__btn_open_right_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
+	jQuery( '.wpbc_ui__top_nav__btn_hide_right_vertical_nav' ).addClass( 'wpbc_ui__hide' );
+}
+
+/**
+ * Completely Hide Vertical Right Bar.
+ */
+function wpbc_admin_ui__sidebar_right__do_hide() {
+	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min_right max_right compact_right none_right' );
+	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'none_right' );
+	jQuery( '.wpbc_ui__top_nav__btn_open_right_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
+	jQuery( '.wpbc_ui__top_nav__btn_hide_right_vertical_nav' ).addClass( 'wpbc_ui__hide' );
+	// Hide top "Menu" button with divider.
+	jQuery( '.wpbc_ui__top_nav__btn_show_right_vertical_nav,.wpbc_ui__top_nav__btn_show_right_vertical_nav_divider' ).addClass( 'wpbc_ui__hide' );
+}
+
+/**
+ * Action on click "Go Back" - show root menu
+ * or some other section in right sidebar.
+ *
+ * @param string menu_to_show - menu slug.
+ */
+function wpbc_admin_ui__sidebar_right__show_section( menu_to_show ) {
+	jQuery( '.wpbc_ui_el__vert_right_bar__section' ).addClass( 'wpbc_ui__hide' )
+	jQuery( '.wpbc_ui_el__vert_right_bar__section_' + menu_to_show ).removeClass( 'wpbc_ui__hide' );
+}
+
+// =====================================================================================================================
+// == End Right Side Bar  section   ==
+// =====================================================================================================================
 
 /**
  * Get anchor(s) array  from  URL.

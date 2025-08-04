@@ -368,7 +368,6 @@ class wpdev_booking {
     }
 
 
-
 	/**
 	 * Show Availability Calendar (Only)
 	 *

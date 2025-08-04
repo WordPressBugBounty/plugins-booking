@@ -38,16 +38,21 @@ function wpbc_ui__top_nav( $args = array() ) {
 
 	wpbc_ui__top_nav__dropdown__wpbc();
 
-
 	// Load Top News Message and "Search by ID" fields.
 	echo '<style type="text/css"> .wpbc_message_wrapper  { margin-left: 0px !important; } </style>';
 	make_bk_action( 'wpbc_h1_header_content_end', $params['page_tag'], $params['active_page_tab'], $params['active_page_subtab'] );
 
+
+
 	wpbc_ui_el__divider_vertical( array( 'container_class' => 'wpbc_ui_el__flex_right' ) );
+
+	// Right sidebar toggle button.
+	wpbc_ui__vert_right_bar__do_toggle();
+	wpbc_ui_el__divider_vertical( array( 'class' => 'wpbc_ui_el__vertical_line wpbc_ui__top_nav__btn_show_right_vertical_nav_divider' ) );
+
 
 	// Full Screen Buttons.
 	wpbc_ui__top_nav__btn_full_screen();
-
 	wpbc_ui__top_nav__btn_normal_screen();
 
 	echo '</div>';

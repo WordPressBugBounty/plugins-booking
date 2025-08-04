@@ -14,72 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-//   T o o l b a r s
+// == T o o l b a r s ==
 // ---------------------------------------------------------------------------------------------------------------------
-
-// FixIn: 9.6.3.5.
-
-/** T o o l b a r   C o n t a i n e r   f o r   Timeline */
-function wpbc_timeline_toolbar() {
-
-    wpbc_clear_div();
-
-    //  Toolbar ////////////////////////////////////////////////////////////////
-
-    ?><div id="toolbar_booking_listing" class="wpbc_timeline_toolbar_container"><?php
-/*
-        wpbc_bs_toolbar_tabs_html_container_start();
-
-            // <editor-fold     defaultstate="collapsed"                        desc=" T O P    T A B s "  >
-
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-            if ( ! isset( $_REQUEST['tab_cvm'] ) )  $_REQUEST['tab_cvm'] = 'actions_cvm';
-            $selected_tab = sanitize_text_field( wp_unslash( $_REQUEST['tab_cvm'] ) );
-
-            wpbc_bs_display_tab(   array(
-                                                'title'         => __('View', 'booking')
-                                                // , 'hint' => array( 'title' => __('Manage bookings' ,'booking') , 'position' => 'top' )
-                                                , 'onclick'     =>  "jQuery('.visibility_container').hide();"
-                                                                    . "jQuery('#actions_toolbar_container').show();"
-                                                                    . "jQuery('#toolbar_booking_listing .nav-tab').removeClass('nav-tab-active');"					// FixIn: 9.8.15.2.
-                                                                    . "jQuery(this).addClass('nav-tab-active');"
-                                                                    . "jQuery('.nav-tab i.icon-white').removeClass('icon-white');"
-                                                                    . "jQuery('.nav-tab-active i').addClass('icon-white');"
-                                                , 'font_icon'   => 'wpbc-bi-calendar2-range-fill'
-                                                , 'default'     => ( $selected_tab == 'actions_cvm' ) ? true : false
-
-                                ) );
-
-
-            wpbc_bs_dropdown_menu_help();
-
-            // </editor-fold>
-
-        wpbc_bs_toolbar_tabs_html_container_end();
-*/
-        ////////////////////////////////////////////////////////////////////////
-
-        wpbc_bs_toolbar_sub_html_container_start();
-
-        // A c t i o n s   T o o l b a r   f o r     T i m e l i n e
-
-
-		?><div class="wpbc_timeline_toolbar_structure"><?php
-
-			make_bk_action( 'wpbc_br_selection_for_timeline' );
-
-			wpbc_toolbar_is_send_emails_btn( '');
-
-		?></div><?php
-
-		wpbc_bs_toolbar_sub_html_container_end();
-
-    ?></div><?php
-
-    wpbc_clear_div();
-
-}
-
 
 
 /** T o o l b a r   C o n t a i n e r   f o r   Add New Booking */

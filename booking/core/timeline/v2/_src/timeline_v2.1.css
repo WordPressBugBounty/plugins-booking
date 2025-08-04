@@ -1100,38 +1100,13 @@ hr.wpbc_tl_popover_booking_separator {
 	margin-bottom: 25px;
 }
 
-.wpbc_page_tab__vm_calendar #toolbar_booking_listing.wpbc_timeline_toolbar_container {
-	margin: -21px 0 0 !important;
-	position: relative;
-	box-shadow: 0 4px 8px #e4e4e4;
-}
-	.wpbc_timeline_toolbar_container .wpdvlp-sub-tabs{
-		border-radius: 0 0 2px 2px;
-	}
-	.wpbc_page_tab__vm_calendar #toolbar_booking_listing.wpbc_timeline_toolbar_container .wpdvlp-sub-tabs {
-		padding-bottom: 1px;
-	}
 
 .wpbc_calendar_overview__container .flex_tl_table {
 	border-radius: 0;
 	border-top: none;
 	font-size: 13px;
 }
-.wpbc_timeline_toolbar_structure{
-	display:flex;
-	flex-flow:row wrap;
-	justify-content: flex-start;
-	align-items: center;
-}
-	.wpbc_timeline_toolbar_structure > * {
-	  	margin-top: 0px;
-	  	margin-bottom: 10px;
-		margin-right:15px;
-	}
-	.wpbc_timeline_toolbar_structure > *:last-child{
-		margin-left:auto;
-		margin-right:0px;
-	}
+
 /* ==  2024-07-26 =================================================================================================== */
 .flex_tl__scrolling_sections {
 	display: flex;

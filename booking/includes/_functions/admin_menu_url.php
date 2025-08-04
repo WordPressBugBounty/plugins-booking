@@ -404,6 +404,23 @@ function wpbc_is_availability_page( $server_param = 'REQUEST_URI' ) {
 	return false;
 }
 
+/**
+ * Check if this Booking > Availability page
+ *
+ * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
+ * @return boolean true | false
+ */
+function wpbc_is_builder_booking_form_page( $server_param = 'REQUEST_URI' ) {
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) !== false ) && ( strpos( $_SERVER[ $server_param ], 'tab=builder_booking_form' ) !== false ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 
 /**
  * Check if this Booking > Setup page

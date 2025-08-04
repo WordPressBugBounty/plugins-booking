@@ -87,7 +87,7 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
                             , 'font_icon' => 'wpbc_icn_dashboard _customize dashboard rtt draw'         // CSS definition  of forn Icon
                             , 'default'   => false                               // Is this tab activated by default or not: true || false.
                             , 'subtabs'   => array()
-							, 'folder_style'     => 'order:10;',
+							, 'folder_style'     => 'order:15;',
                     );
 
 		$section_id              = 'wpbc_general_settings_booking_form_fields_metabox';

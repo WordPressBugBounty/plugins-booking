@@ -12,12 +12,13 @@
  * @modified 2017-06-24
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;  // Exit if accessed directly.
+}
 
-//FixIn: 8.0
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Add New Booking 
+// Add New Booking .
 // ---------------------------------------------------------------------------------------------------------------------
 /**
  * Add New Booking
@@ -291,7 +292,7 @@ function wpbc_api_is_dates_booked( $booking_dates, $resource_id = 1, $params = a
 // Get Bookings Array	-	[Listing]
 // ---------------------------------------------------------------------------------------------------------------------
 /**
-	 * Get bookings array from  Booking Calendar
+ * Deprecated: Get bookings array from  Booking Calendar
  * 
  * @param aray $params
  * @return array	
@@ -719,3 +720,74 @@ function wpbc_resource_created__add_other_params( $resource_id ) {
  *		}
  *		add_action( 'wpbc_deleted_booking_resources', 'my_func__on_resource_delete' );
  */
+
+
+/**
+ * Some exmaples of fucntions usage.
+ *
+ * @return void
+ */
+function wpbc_create_a_new_booking_exmaple(){
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Example #1.
+	// -----------------------------------------------------------------------------------------------------------------
+	$booking    = array(
+		'dates' => array( '2027-06-24', '2027-06-24', '2027-06-25', '2027-06-26' ),
+		'data'  => array(
+			'secondname' => array( 'value' => 'Smith', 'type' => 'text' ),
+			'name'       => 'Rika',
+			'email'      => array( 'value' => 'rika@cost.com', 'type' => 'email' ),
+		)
+	);
+	$booking_id = wpbc_api_booking_add_new( $booking['dates'], $booking['data'] );
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Example #2.  - Add bew booking, without checking if the dates/times are available in source booking resource.
+	// -----------------------------------------------------------------------------------------------------------------
+	$booking    = array(
+		'dates'       => array( '2027-08-24', '2027-08-25', '2027-08-26' ),
+		'data'        => array(
+			'rangetime'  => array( 'value' => '14:00 - 16:00', 'type' => 'selectbox-one' ),  // Define booked time-slot.
+			'name'       => 'John',                                                          // Simple configuration.
+			'secondname' => array( 'value' => 'Smith', 'type' => 'text' ),                   // Advanced configuration.
+			'email'      => array( 'value' => 'John@cost.com', 'type' => 'email' ),
+		),
+		'resource_id' => 3,
+		'options'     => array(
+			'save_booking_even_if_unavailable' => 1,  // [0 | 1]  if 1 - skip checking if the dates/times are available.
+		),
+	);
+	$booking_id = wpbc_api_booking_add_new( $booking['dates'], $booking['data'], $booking['resource_id'], $booking['options'] );
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Example #3.  - Check  if time slot on specific date available.
+	// -----------------------------------------------------------------------------------------------------------------
+	$booking         = array(
+		'dates'       => array( '2027-08-24 15:00:01', '2027-08-24 16:00:02' ),
+		'resource_id' => 3,
+		'params'      => array( 'is_use_booking_recurrent_time' => false ),
+	);
+	$is_dates_booked = wpbc_api_is_dates_booked( $booking['dates'], $booking['resource_id'], $booking['params'] );
+	if ( $is_dates_booked ) {
+		// Booked.
+	} else {
+		// Available.
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// Example #4.  - Check  if dates available.
+	// -----------------------------------------------------------------------------------------------------------------
+	$booking         = array(
+		'dates'       => array( '2027-08-24 00:00:00', '2027-08-25 00:00:00', '2027-08-26 00:00:00' ),
+		'resource_id' => 3,
+		'params'      => array( 'is_use_booking_recurrent_time' => false ),
+	);
+	$is_dates_booked = wpbc_api_is_dates_booked( $booking['dates'], $booking['resource_id'], $booking['params'] );
+	if ( $is_dates_booked ) {
+		// Booked.
+	} else {
+		// Available.
+	}
+
+}

@@ -257,7 +257,6 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	wpbc_start_element_scrollable__with_simplebar( '.wpbc_ui_el__vert_left_bar__content' );
 }
 
-
 /**
  * Set Scrolable Element with Simplebar js library.
  *
@@ -284,7 +283,7 @@ function wpbc_start_element_scrollable__with_simplebar( $jq_element, $options = 
 	<?php
 }
 
-/* == Elements in Left  menu ========================================================================================= */
+/* == Toggles in Left  menu ========================================================================================= */
 
 /**
  * Show element - "Open / Hide Left Vertical Navigation" panel
@@ -384,6 +383,8 @@ function wpbc_ui__vert_left_bar__do_min() {
 	);
 	wpbc_ui_el__a( $el_arr );
 }
+
+/* == Elements in Left  menu ========================================================================================= */
 
 /**
  * Show Section Header - e.g. ' SETTINGS '
@@ -786,4 +787,196 @@ function wpbc_ui__vert_left_bar__side_button__do_max() {
 		<?php echo wpbc_jq_ready_end();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</script>
 	<?php
+}
+
+
+/* == Right Sidebar ================================================================================================= */
+/**
+ * Show Right Vertical SideBar
+ *
+ * @param array $args - parameters.
+ *
+ * @return void
+ */
+function wpbc_ui__right_vertical_sidebar( $args =array() ) {
+
+	$defaults = array(
+		'attr' => array(),
+	);
+	$params   = wp_parse_args( $args, $defaults );
+
+	// Ability to click on panel, only if there 'min' class - panel minimized!
+	echo '<div class="wpbc_ui_el__vert_right_bar__wrapper wpbc_ui_el__vert_right_bar__wrapper" onclick0="javascript:if (( jQuery( this ).parent(\'.wpbc_settings_page_wrapper\').hasClass(\'min\') ) && ( ! wpbc_admin_ui__is_in_mobile_screen_size())) { wpbc_admin_ui__sidebar_right__do_max(); }" >';
+
+	// FixIn: 10.12.1.7.
+	wpbc_ui__vert_right_bar__side_button__do_compact();
+	wpbc_ui__vert_right_bar__side_button__do_max();
+
+	$active_page_arr = array(
+		'active_page'   => $args['active_page'],          // wpbc-settings.
+		'active_tab'    => $args ['active_tab'],          // calendar_appearance.
+		'active_subtab' => $args['active_subtab'],        // calendar_appearance_skin.
+	);
+
+	echo '  <div class="wpbc_ui_el__vert_right_bar__content">';
+
+	// wpbc_ui_el__divider_horizontal();
+	echo '<div class="wpbc_ui_el__row100 wpbc_ui_el__expand_colapse_btns">';
+	wpbc_ui__vert_right_bar__do_compact();
+	wpbc_ui__vert_right_bar__do_max();
+	echo '</div>';
+
+	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container">';
+
+	do_action( 'wpbc_ui__right_vertical_sidebar_content', $active_page_arr );
+
+
+	echo '   </div><!-- wpbc_ui_el__vert_right_bar__root_sections_container -->';
+	echo '   </div><!-- wpbc_ui_el__vert_right_bar__content -->';
+	echo '</div><!-- wpbc_ui_el__vert_right_bar__wrapper -->';
+
+	wpbc_start_element_scrollable__with_simplebar( '.wpbc_ui_el__vert_right_bar__wrapper .wpbc_ui_el__vert_right_bar__content' );
+}
+
+/**
+ * Show element - "Compact - Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__side_button__do_compact() {
+
+	?>
+	<button class="wpbc_ui__right_sidebar__side_button wpbc_ui__top_nav__btn_hide_right_vertical_nav"
+			onclick="javascript:wpbc_admin_ui__sidebar_right__do_min();" title="<?php esc_attr_e( 'Set side menu compact', 'booking' ); ?>">
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
+		</svg>
+	</button>
+	<?php
+}
+
+/**
+ * Show element - "Max - Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__side_button__do_max() {
+	?>
+	<button class="wpbc_ui__right_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_right_vertical_nav"
+			onclick="javascript:wpbc_admin_ui__sidebar_right__do_max();" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
+		</svg>
+	</button>
+	<script type="text/javascript">
+		<?php echo wpbc_jq_ready_start();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		if (wpbc_admin_ui__is_in_this_screen_size(789)){
+			jQuery( '.wpbc_ui__right_sidebar__side_button' ).toggleClass( 'wpbc_ui__hide' );
+		}
+		<?php echo wpbc_jq_ready_end();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</script>
+	<?php
+}
+
+/* == Toggles in Right  menu ========================================================================================= */
+
+/**
+ * Show element - "Open / Hide Left Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__do_toggle() {
+
+	$el_arr                    = array();
+	$el_arr['font_icon']       = 'wpbc-bi-layout-sidebar-inset-reverse';
+	$el_arr['container_style'] = 'padding:0 8px;';
+	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_show_right_vertical_nav';
+	$el_arr['onclick']         = "if ( jQuery( '.wpbc_ui_el__vert_right_bar__content' ).is( ':visible' ) ) {";
+	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_right__do_min(); ';
+	$el_arr['onclick']         .= " jQuery( '.wpbc_ui__top_nav__btn_show_right_vertical_nav i' ).removeClass( 'wpbc-bi-layout-sidebar-reverse wpbc-bi-layout-sidebar-inset-reverse' ).addClass( 'wpbc-bi-layout-sidebar-reverse' ); ";
+	$el_arr['onclick']         .= '} else {';
+	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_right__do_max(); ';
+	$el_arr['onclick']         .= " jQuery( '.wpbc_ui__top_nav__btn_show_right_vertical_nav i' ).removeClass( 'wpbc-bi-layout-sidebar-reverse wpbc-bi-layout-sidebar-inset-reverse' ).addClass( 'wpbc-bi-layout-sidebar-inset-reverse' ); ";
+	$el_arr['onclick']         .= '}';
+	$el_arr['hint']            = array(
+		'title'    => __( 'Toggle side menu', 'booking' ),
+		'position' => 'left',
+	);
+	wpbc_ui_el__a( $el_arr );
+}
+
+/**
+ * Show element - "Max - Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__do_max() {
+
+	$el_arr                    = array();
+	$el_arr['container_style'] = '';
+	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_open_right_vertical_nav wpbc_ui__hide hide_in_compact_mode0';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_right__do_max(); ';
+	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-left';
+	$el_arr['hint']            = array(
+		'title'    => __( 'Open side menu', 'booking' ),
+		'position' => 'top',
+	);
+	wpbc_ui_el__a( $el_arr );
+}
+
+/**
+ * Show element - "Compact - Vertical Navigation" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__do_compact() {
+
+	$el_arr                    = array();
+	$el_arr['container_style'] = '';
+	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_hide_right_vertical_nav';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_right__do_compact(); ';
+	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-right';
+	$el_arr['hint']            = array(
+		'title'    => __( 'Set side menu compact', 'booking' ),
+		'position' => 'top',
+	);
+	wpbc_ui_el__a( $el_arr );
+}
+
+/**
+ * Show element - "X - Close (none)" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__do_none() {
+
+	$el_arr                    = array();
+	$el_arr['container_style'] = '';
+	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_hide_right_vertical_nav';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_right__do_hide(); ';
+	$el_arr['font_icon']       = 'wpbc_icn_close';
+	$el_arr['hint']            = array(
+		'title'    => __( 'Close side menu', 'booking' ),
+		'position' => 'bottom',
+	);
+	wpbc_ui_el__a( $el_arr );
+}
+
+/**
+ * Show element - "_ - Min" panel
+ *
+ * @return void
+ */
+function wpbc_ui__vert_right_bar__do_min() {
+
+	$el_arr                    = array();
+	$el_arr['container_style'] = '';
+	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_hide_right_vertical_nav';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_right__do_min(); ';
+	$el_arr['font_icon']       = 'wpbc_icn_minimize';
+	$el_arr['hint']            = array(
+		'title'    => __( 'Minimize side menu', 'booking' ),
+		'position' => 'bottom',
+	);
+	wpbc_ui_el__a( $el_arr );
 }

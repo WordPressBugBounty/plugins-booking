@@ -39,7 +39,6 @@ class WPBC_Settings_Page_Parts {
 	private $active_tab;
 	private $active_subtab;
 
-
 	/**
 	 * Constructor.
 	 *
@@ -66,27 +65,13 @@ class WPBC_Settings_Page_Parts {
 	 */
 	public function template_header() {
 
-		// Top  wrapper  for admin  pages.
-		?><div class="wpbc_admin"><?php
-
 		$tabs_arr                = $this->page_structure_obj->get_nav_tabs();
 		$current_page_params_arr = $this->page_structure_obj->get_current_page_params();
 
-		wpbc_ui__top_nav(
-			array(
-				'page_tag'           => $this->active_page,
-				'active_page_tab'    => $this->active_tab,
-				'active_page_subtab' => $this->active_subtab,
-			)
-		);
-
-		// Fires Before showing settings Content page ( for example in setup  Wizard for show_top_right_wizard_button ).
-		do_action( 'wpbc_after_wpbc_page_top__header_tabs', $this->active_page, $this->active_tab, $this->active_subtab );
-
-		// By default it shoud be ''. Other options: '', 'min', 'compact', 'max'.
+		// -------------------------------------------------------------------------------------------------------------
+		// 'Left Sidebar'  - By default it shoud be ''. Other options: '', 'min', 'compact', 'max'.
+		// -------------------------------------------------------------------------------------------------------------
 		$left_navigation__default_view_mode = strval( $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'left_navigation__default_view_mode' ) );
-
-		?><div class="wpbc_settings_page_wrapper <?php echo esc_attr( $left_navigation__default_view_mode ); ?>"><?php
 
 		if ( ! empty( $left_navigation__default_view_mode ) ) {
 			if ( 'none' === $left_navigation__default_view_mode ) {
@@ -103,47 +88,91 @@ class WPBC_Settings_Page_Parts {
 			}
 		}
 
-			// Left  vertical  menu.
-			wpbc_ui__left_vertical_nav(
-				array(
-					'active_page'   => $this->active_page,         // wpbc-settings.
-					'active_tab'    => $this->active_tab,          // calendar_appearance.
-					'active_subtab' => $this->active_subtab,       // calendar_appearance_skin.
-					'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
-				)
-			);
+		// -------------------------------------------------------------------------------------------------------------
+		// 'Right Sidebar' - By default it shoud be ''. Other options: '', 'min', 'compact', 'max'.
+		// -------------------------------------------------------------------------------------------------------------
+		$right_vertical_sidebar__is_show           = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar__is_show' );
+		$right_vertical_sidebar__default_view_mode = strval( $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar__default_view_mode' ) );
+		$right_vertical_sidebar__default_view_mode = ( ! empty( $right_vertical_sidebar__default_view_mode ) ) ? $right_vertical_sidebar__default_view_mode . '_right' : $right_vertical_sidebar__default_view_mode;
 
-			?>
-			<div class="wpbc_settings_page_content">
-				<div id="<?php echo esc_attr( $this->active_page ); ?>-admin-page" class="wrap wpbc_page wpbc_page_tab__<?php echo esc_attr( $this->active_tab ); ?> wpbc_page_subtab__<?php echo esc_attr( $this->active_subtab ); ?>">
-					<div class="wpbc_admin_message"></div>
-					<div class="wpbc_admin_page">
-						<div id="ajax_working"></div>
-						<div class="clear wpbc_header_margin" style="height:0px;"></div>
-						<div id="ajax_respond" class="ajax_respond" style="display:none;"></div>
-						<div class="clear"></div>
+		if ( ! empty( $right_vertical_sidebar__default_view_mode ) ) {
+			if ( 'none_right' === $right_vertical_sidebar__default_view_mode ) {
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_hide(); } ); </script>';
+			}
+			if ( 'min_right' === $right_vertical_sidebar__default_view_mode ) {
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_min(); } ); </script>';
+			}
+			if ( 'compact_right' === $right_vertical_sidebar__default_view_mode ) {
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_compact(); } ); </script>';
+			}
+			if ( 'max_right' === $right_vertical_sidebar__default_view_mode ) {
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_max(); } ); </script>';
+			}
+		}
+		// -------------------------------------------------------------------------------------------------------------
 
-							<?php
 
-							$is_show_top_path = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_path' );
-							if ( $is_show_top_path ) {
-								wpbc_ui_settings__top_path();
-							}
+		// Top  wrapper  for admin  pages.
+		echo '<div class="wpbc_admin' .
+						( ( $right_vertical_sidebar__is_show ) ? ' right_vertical_sidebar_displayed ' : '' ) .
+					'">';
 
-							$is_show_top_navigation = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_navigation' );
-							if ( $is_show_top_navigation ) {
-								// Top horisonal menu.
-								wpbc_ui__top_horisontal_nav(
-									array(
-										'active_page'   => $this->active_page,         // wpbc-settings.
-										'active_tab'    => $this->active_tab,          // calendar_appearance.
-										'active_subtab' => $this->active_subtab,       // calendar_appearance_skin.
-										'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
-									)
-								);
-							}
+		wpbc_ui__top_nav(
+			array(
+				'page_tag'           => $this->active_page,
+				'active_page_tab'    => $this->active_tab,
+				'active_page_subtab' => $this->active_subtab,
+			)
+		);
 
-							$this->show_title_and_description();
+		// Fires Before showing settings Content page ( for example in setup  Wizard for show_top_right_wizard_button ).
+		do_action( 'wpbc_after_wpbc_page_top__header_tabs', $this->active_page, $this->active_tab, $this->active_subtab );
+
+		echo '<div class="wpbc_settings_page_wrapper ' .
+							esc_attr( $left_navigation__default_view_mode ) . ' ' .
+							esc_attr( $right_vertical_sidebar__default_view_mode ) .
+						'">';
+
+		// Left  vertical  menu.
+		wpbc_ui__left_vertical_nav(
+			array(
+				'active_page'   => $this->active_page,         // wpbc-settings.
+				'active_tab'    => $this->active_tab,          // calendar_appearance.
+				'active_subtab' => $this->active_subtab,       // calendar_appearance_skin.
+				'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
+			)
+		);
+
+		?>
+		<div class="wpbc_settings_page_content">
+			<div id="<?php echo esc_attr( $this->active_page ); ?>-admin-page" class="wrap wpbc_page wpbc_page_tab__<?php echo esc_attr( $this->active_tab ); ?> wpbc_page_subtab__<?php echo esc_attr( $this->active_subtab ); ?>">
+				<div class="wpbc_admin_message"></div>
+				<div class="wpbc_admin_page">
+					<div id="ajax_working"></div>
+					<div class="clear wpbc_header_margin" style="height:0px;"></div>
+					<div id="ajax_respond" class="ajax_respond" style="display:none;"></div>
+					<div class="clear"></div>
+					<?php
+
+					$is_show_top_path = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_path' );
+					if ( $is_show_top_path ) {
+						wpbc_ui_settings__top_path();
+					}
+
+					$is_show_top_navigation = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_navigation' );
+					if ( $is_show_top_navigation ) {
+						// Top horisonal menu.
+						wpbc_ui__top_horisontal_nav(
+							array(
+								'active_page'   => $this->active_page,         // wpbc-settings.
+								'active_tab'    => $this->active_tab,          // calendar_appearance.
+								'active_subtab' => $this->active_subtab,       // calendar_appearance_skin.
+								'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
+							)
+						);
+					}
+
+					$this->show_title_and_description();
 	}
 
 
@@ -154,14 +183,37 @@ class WPBC_Settings_Page_Parts {
 	 */
 	public function template_footer() {
 
-		// echo '</div><!-- wpbc_settings_flex_container_right -->';
-		// echo '</div><!-- wpbc_settings_flex_container -->';
 		echo '</div><!-- wpbc_admin_page -->';
 		echo '</div><!-- wpbc_page -->';
 		echo '</div><!-- .wpbc_settings_page_content -->';
+
+		// Right vertical sidebar.
+		$right_vertical_sidebar__is_show = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar__is_show' );
+		if ( $right_vertical_sidebar__is_show ) {
+
+			wpbc_ui__right_vertical_sidebar(
+				array(
+					'active_page'   => $this->active_page,         // wpbc-settings.
+					'active_tab'    => $this->active_tab,          // calendar_appearance.
+					'active_subtab' => $this->active_subtab,       // calendar_appearance_skin.
+					'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
+				)
+			);
+		}
+
 		echo '</div><!-- .wpbc_settings_page_wrapper -->';
 		echo '</div><!-- .wpbc_admin -->';
 
+
+		/**
+		 * == Full Screen Mode Checking ==  Defined in -> public function add_loading_classes( $classes ) .
+		 *
+		 * If defined full screen ( checked by exists .wpbc_admin_full_screen in body),
+		 * then this code, remove the 'wp-toolbar' class from html tag
+		 * and set  correct 'full screen'  or 'normal'  buttons in the rop  right side!
+		 */
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<script type="text/javascript">' . wpbc_jq_ready_start() . 'wpbc_check_full_screen_mode();' . wpbc_jq_ready_end() . '</script>';
 	}
 
 

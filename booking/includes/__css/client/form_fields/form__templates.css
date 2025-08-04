@@ -52,7 +52,7 @@
 .wpbc_times_selector div,
 .wpbc_wizard__border_container .wpbc_times_selector div {
 	flex: 1 1 auto;
-	max-width: Min(260px, 100%);
+	/*max-width: Min(260px, 100%);*/
 	min-width: Min(90px, 100%);
 	white-space: wrap;
 	word-break: normal;

@@ -103,12 +103,7 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
         wpbc_set_request_params_for_timeline();                                 // Set initial $_REQUEST['view_days_num'] depend from selected booking resources
 
 		//   T o o l b a r s   /////////////////////////////////////////////////
-		if ( WPBC_NEW_LISTING ) {
-			wpbc_ui__timeline__resource_selection();
-		} else {
-			wpbc_timeline_toolbar();
-			?><div class="clear" style="height:25px;"></div><?php
-		}
+		wpbc_ui__timeline__resource_selection();
 
 
             // Show    T i m e L i n e   ///////////////////////////////////////

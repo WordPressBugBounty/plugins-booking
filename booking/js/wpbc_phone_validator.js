@@ -45,7 +45,7 @@ function wpbc_set_phone_mask() {
 
 	var phone_mask_arr = wpbc_get_prepared_phones_mask();
 	var default_ISO    = wpbc_guess_country_by_locale();
-	var default_mask   = wpbc_get_mask_by_ISO( default_ISO );
+	var default_mask   = wpbc_get_phone_mask_by_country_ISO( default_ISO );
 
 	if ( !default_mask ) {
 		default_mask = {
@@ -386,13 +386,23 @@ function wpbc_get_all_phones_mask() {
 
 
 function wpbc_guess_country_by_locale() {
-	var locale = navigator.language || navigator.userLanguage || '';
-	var parts  = locale.split( '-' );
-	return parts.length > 1 ? parts[1].toUpperCase() : 'US';  // fallback to US
+
+	var locale          = navigator.language || navigator.userLanguage || '';
+	var parts           = locale.split( '-' );
+	var detected_locale = '';
+	if ( parts.length > 1 ) {
+		detected_locale = parts[1].toUpperCase();
+	} else {
+		var mask_by_ISO = wpbc_get_phone_mask_by_country_ISO( parts[0].toUpperCase() );
+		if ( null !== mask_by_ISO ) {
+			detected_locale = mask_by_ISO.iso;
+		}
+	}
+	return detected_locale
 }
 
 
-function wpbc_get_mask_by_ISO( isoCode ) {
+function wpbc_get_phone_mask_by_country_ISO( isoCode ) {
     var maskList = wpbc_get_prepared_phones_mask();
     for (var i = 0; i < maskList.length; i++) {
         if (maskList[i].iso === isoCode) {

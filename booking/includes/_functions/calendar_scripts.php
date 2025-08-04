@@ -98,6 +98,23 @@ function wpbc_get_calendar_loader_animation( $resource_id = 1, $months_number = 
 			setTimeout(
 			function () {
 				(function() { var a = setInterval( function() {  if ( ( 'undefined' === typeof jQuery ) || ! window.jQuery ) { return; } clearInterval( a ); jQuery( document ).ready( function () {
+					if (
+						('undefined' === typeof _wpbc) ||
+						('undefined' === typeof jQuery.datepick)
+					) {
+						// FixIn: 10.14.1.1.
+						var error_loading_message = '';
+						if ( 'undefined' === typeof _wpbc ) {
+							error_loading_message = '<?php echo esc_js( sprintf( __( 'It appears that the %s library is not loading correctly.', 'booking' ), '"_wpbc"' ) ); ?>';
+							error_loading_message += '<br><br><?php echo esc_js( sprintf( __( 'Please enable the loading of JS/CSS files for this page on the %s page', 'booking' ), '"WP Booking Calendar" - "Settings General" - "Advanced"' ) ); ?>';
+						} else if ( 'undefined' === typeof jQuery.datepick ) {
+							error_loading_message = '<?php echo esc_js( sprintf( __( 'It appears that the %s library is not loading correctly.', 'booking' ), '"jQuery.datepick"' ) ); ?>';
+						}
+						jQuery( '.calendar_loader_frame<?php echo intval( $resource_id ); ?> .calendar_loader_text' ).html( '<div style="font-size: 13px;margin: 10px;">' + error_loading_message + '<br><br><?php
+							echo esc_js( __( 'For more information, please refer to this page: ', 'booking' ) ) . 'https://wpbookingcalendar.com/faq/';
+							?><br><br><?php echo esc_js( $message2 ); ?></div>' );
+						return;
+					}
 					jQuery( '.calendar_loader_frame<?php echo intval( $resource_id ); ?> .calendar_loader_text').html( '<div style="font-size: 13px;margin: 10px;"><?php echo esc_js( $message1 ); ?><br><br><?php echo esc_js( $message2 ); ?></div>' );
 					if ( jQuery( '.calendar_loader_frame<?php echo intval( $resource_id ); ?>').length ){
 						console.log( 'WPBC Error! Duplicate calendar detected. ' , jQuery( '.wpbc_calendar_id_<?php echo intval( $resource_id ); ?>') );
