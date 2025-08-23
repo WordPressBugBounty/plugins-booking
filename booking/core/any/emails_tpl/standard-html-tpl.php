@@ -18,12 +18,21 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  * @param array $fields_values
  */
 function wpbc_email_template_standard_html( $fields_values ) {
-    ob_start();
 
-    $base_color         = 'background-color:' . ( empty( $fields_values['base_color'] ) ? '#557da1' : $fields_values['base_color'] ) . ';'; 
+	ob_start();
+
+	// FixIn: 10.14.2.2.
+	$base_color = sanitize_hex_color( $fields_values['base_color'] );
+	$base_color = 'background-color:' . ( empty( $fields_values['base_color'] ) ? '#557da1' : $fields_values['base_color'] ) . ';';
+
+    $background_color   = sanitize_hex_color( $fields_values['background_color'] );
     $background_color   = 'background-color:' . ( empty( $fields_values['background_color'] ) ? '#FDFDFD' : $fields_values['background_color'] ) . ';';
-    $body_color         = 'background-color:' . ( empty( $fields_values['body_color'] ) ? '#F5F5F5' : $fields_values['body_color'] ) . ';';
-    $text_color         = 'color:'            . ( empty( $fields_values['text_color'] ) ? '#333333' : $fields_values['text_color'] ) . ';';
+
+	$body_color = sanitize_hex_color( $fields_values['body_color'] );
+	$body_color = 'background-color:' . ( empty( $fields_values['body_color'] ) ? '#F5F5F5' : $fields_values['body_color'] ) . ';';
+
+	$text_color = sanitize_hex_color( $fields_values['text_color'] );
+	$text_color = 'color:' . ( empty( $fields_values['text_color'] ) ? '#333333' : $fields_values['text_color'] ) . ';';
 
 ////////////////////////////////////////////////////////////////////////////////
 //  HTML Email Template

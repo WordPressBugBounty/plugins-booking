@@ -552,7 +552,7 @@ $mu_option4delete[] = 'booking_confirmation__personal_info__content';
 	$default_options['booking_confirmation__booking_details__header_enabled'] = 'On';
 	$default_options['booking_confirmation__booking_details__title']          = __( 'Booking details', 'booking' );
 	$default_options['booking_confirmation__booking_details__content'] =  ( class_exists( 'wpdev_bk_personal' ) )
-																				? "<h4>[resource_title]</h4>[readable_dates][readable_times]\n[add_to_google_cal_button]"
+																				? "<h4>[resource_title]</h4>[readable_dates][readable_times]\n[add_to_google_cal_button]\n" . '<a href="[visitorbookingediturl]">Edit Booking</a> | <a href="[visitorbookingcancelurl]">Cancel Booking</a>'
 																				: "[readable_dates][readable_times]\n[add_to_google_cal_button]";
 
 $mu_option4delete[] = 'booking_confirmation__booking_details__header_enabled';

@@ -73,6 +73,9 @@ abstract class WPBC_Menu_Structure {
 
 		// Right Vertical Sidebar.                                                                                      // FixIn: 10.14.1.3.
 		add_action( 'wpbc_ui__right_vertical_sidebar_content', array( $this, 'maybe_show_right_sidebar_content' ) );
+
+		// Right Vertical Sidebar - Compact.                                                                                      // FixIn: 10.14.1.3.
+		add_action( 'wpbc_ui__right_vertical_sidebar_compact_content', array( $this, 'maybe_show_right_sidebar_compact_content' ) );
 	}
 
 
@@ -225,6 +228,28 @@ abstract class WPBC_Menu_Structure {
 		}
 
 		$this->right_sidebar_content();
+	}
+
+	/**
+	 * Show content of right sidebar - Compact.  Overide it in child classes !
+	 *
+	 * @return void
+	 */
+	abstract public function right_sidebar_compact_content();
+
+
+	/**
+	 * Helper method to show 'right sidebar' - Compact only if it is enabled page!
+	 *
+	 * @return void
+	 */
+	public function maybe_show_right_sidebar_compact_content(){
+
+		if ( ! $this->is_page_activated() ) {
+			return false;
+		}
+
+		$this->right_sidebar_compact_content();
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

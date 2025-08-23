@@ -199,6 +199,18 @@ class WPBC_Settings_Page_Parts {
 					'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
 				)
 			);
+
+			$right_vertical_sidebar_compact__is_show = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar_compact__is_show' );
+			if ( $right_vertical_sidebar_compact__is_show ) {
+				wpbc_ui__right_vertical_sidebar_compact(
+					array(
+						'active_page'   => $this->active_page,         // wpbc-settings.
+						'active_tab'    => $this->active_tab,          // calendar_appearance.
+						'active_subtab' => $this->active_subtab,       // calendar_appearance_skin.
+						'page_nav_tabs' => $this->page_structure_obj->get_nav_tabs(),
+					)
+				);
+			}
 		}
 
 		echo '</div><!-- .wpbc_settings_page_wrapper -->';

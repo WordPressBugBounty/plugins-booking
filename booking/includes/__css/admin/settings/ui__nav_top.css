@@ -71,7 +71,7 @@ body.wpbc_admin_full_screen {
 
 	position: fixed;
 	top: var(--wpbc_ui_top_nav__wp_top_menu_height);
-	z-index: 1001;
+	z-index: 11001;
 	transition: margin .25s ease-out;
 }
 /* Fix for dropdown links to  have FULL height in top  navbar */

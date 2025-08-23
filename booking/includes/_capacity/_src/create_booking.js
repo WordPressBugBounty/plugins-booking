@@ -454,36 +454,7 @@ console.groupEnd();
 		 */
 		function wpbc_booking_form__animated__hide( resource_id ){
 
-			// jQuery( '#booking_form' + resource_id ).slideUp(  1000
-			// 												, function (){
-			//
-			// 														// if ( document.getElementById( 'gateway_payment_forms' + response_data[ 'resource_id' ] ) != null ){
-			// 														// 	wpbc_do_scroll( '#submiting' + resource_id );
-			// 														// } else
-			// 														if ( jQuery( '#booking_form' + resource_id ).parent().find( '.submiting_content' ).length > 0 ){
-			// 															//wpbc_do_scroll( '#booking_form' + resource_id + ' + .submiting_content' );
-			//
-			// 															 var hideTimeout = setTimeout(function () {
-			// 																				  wpbc_do_scroll( jQuery( '#booking_form' + resource_id ).parent().find( '.submiting_content' ).get( 0 ) );
-			// 																				}, 100);
-			//
-			// 														}
-			// 												  }
-			// 										);
-
 			jQuery( '#booking_form' + resource_id ).hide();
-
-			// var hideTimeout = setTimeout( function (){
-			//
-			// 	if ( jQuery( '#booking_form' + resource_id ).parent().find( '.submiting_content' ).length > 0 ){
-			// 		var random_id = Math.floor( (Math.random() * 10000) + 1 );
-			// 		jQuery( '#booking_form' + resource_id ).parent().before( '<div id="scroll_to' + random_id + '"></div>' );
-			// 		console.log( jQuery( '#scroll_to' + random_id ) );
-			//
-			// 		wpbc_do_scroll( '#scroll_to' + random_id );
-			// 		//wpbc_do_scroll( jQuery( '#booking_form' + resource_id ).parent().get( 0 ) );
-			// 	}
-			// }, 500 );
 		}
 	// </editor-fold>
 

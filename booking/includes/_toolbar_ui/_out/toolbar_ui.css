@@ -731,6 +731,7 @@
   justify-content: flex-start;
   -ms-flex-align: stretch;
   align-items: stretch;
+  gap: 20px;
   margin: 0;
   box-shadow: none;
   border: 1px solid #dadada;
@@ -793,9 +794,7 @@ div.wpbc_ajx_toolbar.wpbc_no_borders {
   -ms-flex-align: stretch;
   align-items: stretch;
   border: none;
-  margin: 0 20px 0 0
-}
-.wpbc_ajx_toolbar .ui_container .ui_group:last-child {
+  gap: 15px;
   margin: 0
 }
 .wpbc_not_toolbar_is_send_emails {
@@ -813,11 +812,7 @@ div.wpbc_ajx_toolbar.wpbc_no_borders {
   align-items: stretch;
   -ms-flex: 0 1 auto;
   flex: 0 1 auto;
-  position: relative;
-  margin: 0 15px 0 0
-}
-.wpbc_ajx_toolbar .ui_container .ui_group .ui_element:last-child {
-  margin-right: 0
+  position: relative
 }
 .wpbc_ajx_toolbar .ui_container .ui_group .ui_element > * {
   margin: 5px 0;

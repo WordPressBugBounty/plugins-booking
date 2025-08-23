@@ -34,8 +34,10 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 			'is_show_top_path'                          => true,                             // true | false.  By default value is: false.
 			'is_show_top_navigation'                    => false,                            // true | false.  By default value is: false.
 			'right_vertical_sidebar__is_show'           => true,                             // true | false.  By default value is: false.
-			'right_vertical_sidebar__default_view_mode' => '',                            // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'right_vertical_sidebar__default_view_mode' => '',                               // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'left_navigation__default_view_mode'        => 'max',                            // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'right_vertical_sidebar_compact__is_show'   => true,                             // true | false.  By default value is: false.
+
 			'title'                                     => __( 'Booking Form Builder', 'booking' ),                            // Title of TAB //FixIn: 9.8.15.2.2.
 			'hint'                                      => __( 'Define available and unavailable days for your calendar(s).', 'booking' ),                            // Hint.
 			'page_title'                                => __( 'Booking Form Builder', 'booking' ),                            // Title of Page.
@@ -215,6 +217,8 @@ $escaped_request_params_arr = array();
 
 		?></span><?php
 
+		$this->show_warning__no_mobile_mode();
+
 		?><div id="wpbc_log_screen" class="wpbc_log_screen"></div><?php
 
         // Content  ////////////////////////////////////////////////////////////
@@ -231,12 +235,15 @@ $escaped_request_params_arr = array();
 
 				wpbc_clear_div();
 
-				$this->builder_booking_form__creation_area();
+				$this->add_columns_controll();
 
-//				$this->builder_booking_form_container__show( $escaped_request_params_arr );
+				$this->builder_booking_form__creation_area();
 
 				wpbc_clear_div();
 
+				$this->load_calendar();
+
+				// $this->builder_booking_form_container__show( $escaped_request_params_arr );
 
 		  ?></form>
         </span>
@@ -246,6 +253,41 @@ $escaped_request_params_arr = array();
 
         do_action( 'wpbc_hook_settings_page_footer', 'wpbc-ajx_booking_builder_booking_form' );
     }
+
+		private function load_calendar(){
+			$resource_id = 4;
+			if (0){
+			?>
+			<style type="text/css"
+				   rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell {
+					max-height: 50px;
+				} </style>
+			<div class="wpbc_calendar_wraper wpbc_change_over_triangle">
+				<div class="bk_calendar_frame months_num_in_row_4 cal_month_num_4 wpbc_no_custom_width   " style="width:100%;max-width:100%;">
+					<div id="calendar_booking<?php echo esc_attr( $resource_id ); ?>"><?php esc_html_e( 'Calendar is loading...', 'booking' ); ?></div>
+				</div>
+			</div>
+			<textarea rows="3" cols="50" id="date_booking<?php echo esc_attr( $resource_id ); ?>" name="date_booking<?php echo esc_attr( $resource_id ); ?>" autocomplete="off" style="display:none;"></textarea>
+			<?php
+			}
+			?> <script type="text/javascript">
+				function wpbc_load_calendar_example(){ <?php echo wpbc__calendar__set_js_params__before_show( array( 'resource_id' => $resource_id, 'calendar_number_of_months' => 1 ) ); ?>
+					wpbc_calendar_show( '<?php echo $resource_id; ?>' );
+					_wpbc.set_secure_param( 'nonce', '<?php echo esc_attr( wp_create_nonce( 'wpbc_calendar_load_ajx' . '_wpbcnonce' ) ); ?>' );
+					_wpbc.set_secure_param( 'user_id', '<?php echo esc_attr( wpbc_get_current_user_id() ); ?>' );
+					_wpbc.set_secure_param( 'locale', '<?php echo esc_attr( get_user_locale() ); ?>' );
+					wpbc_calendar__load_data__ajx( {
+						"resource_id"              : 4,
+						"booking_hash"             : "",
+						"request_uri"              : "\/admin.php?page=wpbc-settings&tab=builder_booking_form",
+						"custom_form"              : "standard",
+						"aggregate_resource_id_str": "",
+						"aggregate_type"           : "all"
+					} );
+				}
+			</script> <?php
+		}
+
 
 		private function builder_booking_form_container__show( $escaped_request_params_arr ) {
 
@@ -284,14 +326,14 @@ $escaped_request_params_arr = array();
 			</script>
 			<?php
 // FixIn: 10.0.0.5.
-if ( 0 ) {
-			$resource_id = 220;
+if ( 1 ) {
+			$resource_id = 4;
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet  // FixIn: 10.12.4.2.
 			?><style type="text/css" rel="stylesheet"> .hasDatepick .datepick-inline .datepick-title-row th, .hasDatepick .datepick-inline .datepick-days-cell { max-height: 50px; } </style><?php
 
 			?>
 			<div class="wpbc_calendar_wraper wpbc_change_over_triangle">
-				<div class="bk_calendar_frame months_num_in_row_4 cal_month_num_4" style="width:100%;max-width:100%;">
+				<div class="bk_calendar_frame months_num_in_row_4 cal_month_num_4 wpbc_no_custom_width" style="width:100%;max-width:100%;">
 					<div id="calendar_booking<?php echo esc_attr( $resource_id ); ?>"><?php esc_html_e('Calendar is loading...', 'booking'); ?></div>
 				</div>
 			</div><?php
@@ -317,28 +359,28 @@ if ( 0 ) {
 				?>
 				<script type='text/javascript'> jQuery( document ).ready( function (){
 						_wpbc.balancer__set_max_threads( 1 );
-						_wpbc.calendar__set_param_value( 220, 'calendar_scroll_to', false );
-						_wpbc.calendar__set_param_value( 220, 'booking_max_monthes_in_calendar', '2y' );
-						_wpbc.calendar__set_param_value( 220, 'booking_start_day_weeek', '1' );
-						_wpbc.calendar__set_param_value( 220, 'calendar_number_of_months', '12' );
-						_wpbc.calendar__set_param_value( 220, 'days_select_mode', 'dynamic' );
-						_wpbc.calendar__set_param_value( 220, 'fixed__days_num', 7 );
-						_wpbc.calendar__set_param_value( 220, 'fixed__week_days__start', [-1] );
-						_wpbc.calendar__set_param_value( 220, 'dynamic__days_min', 1 );
-						_wpbc.calendar__set_param_value( 220, 'dynamic__days_max', 30 );
-						_wpbc.calendar__set_param_value( 220, 'dynamic__days_specific', [] );
-						_wpbc.calendar__set_param_value( 220, 'dynamic__week_days__start', [-1] );
-						_wpbc.calendar__set_param_value( 220, 'booking_date_format', 'j M Y' );
-						_wpbc.calendar__set_param_value( 220, 'booking_time_format', 'g:i A' );
+						_wpbc.calendar__set_param_value( 4, 'calendar_scroll_to', false );
+						_wpbc.calendar__set_param_value( 4, 'booking_max_monthes_in_calendar', '2y' );
+						_wpbc.calendar__set_param_value( 4, 'booking_start_day_weeek', '1' );
+						_wpbc.calendar__set_param_value( 4, 'calendar_number_of_months', '1' );
+						_wpbc.calendar__set_param_value( 4, 'days_select_mode', 'dynamic' );
+						_wpbc.calendar__set_param_value( 4, 'fixed__days_num', 7 );
+						_wpbc.calendar__set_param_value( 4, 'fixed__week_days__start', [-1] );
+						_wpbc.calendar__set_param_value( 4, 'dynamic__days_min', 1 );
+						_wpbc.calendar__set_param_value( 4, 'dynamic__days_max', 30 );
+						_wpbc.calendar__set_param_value( 4, 'dynamic__days_specific', [] );
+						_wpbc.calendar__set_param_value( 4, 'dynamic__week_days__start', [-1] );
+						_wpbc.calendar__set_param_value( 4, 'booking_date_format', 'j M Y' );
+						_wpbc.calendar__set_param_value( 4, 'booking_time_format', 'g:i A' );
 						_wpbc.set_message( 'message_dates_times_unavailable', 'These dates and times in this calendar are already booked or unavailable.' );
 						_wpbc.set_message( 'message_choose_alternative_dates', 'Please choose alternative date(s), times, or adjust the number of slots booked.' );
 						_wpbc.set_message( 'message_cannot_save_in_one_resource', 'It is not possible to store this sequence of the dates into the one same resource.' );
-						_wpbc.calendar__set_param_value( 220, 'is_parent_resource', 0 );
-						_wpbc.calendar__set_param_value( 220, 'booking_capacity_field', 'visitors' );
-						_wpbc.calendar__set_param_value( 220, 'booking_is_dissbale_booking_for_different_sub_resources', 'Off' );
-						_wpbc.calendar__set_param_value( 220, 'booking_recurrent_time', 'Off' );
-						if ( 'function' === typeof (wpbc__conditions__SAVE_INITIAL__days_selection_params__bm) ){  wpbc__conditions__SAVE_INITIAL__days_selection_params__bm( 220 );  }
-						_wpbc.calendar__set_param_value( 220, 'conditions', {
+						_wpbc.calendar__set_param_value( 4, 'is_parent_resource', 0 );
+						_wpbc.calendar__set_param_value( 4, 'booking_capacity_field', 'visitors' );
+						_wpbc.calendar__set_param_value( 4, 'booking_is_dissbale_booking_for_different_sub_resources', 'Off' );
+						_wpbc.calendar__set_param_value( 4, 'booking_recurrent_time', 'Off' );
+						if ( 'function' === typeof (wpbc__conditions__SAVE_INITIAL__days_selection_params__bm) ){  wpbc__conditions__SAVE_INITIAL__days_selection_params__bm( 4 );  }
+						_wpbc.calendar__set_param_value( 4, 'conditions', {
 							"select-day": {
 											"weekday": [{
 															"for"  : "0",
@@ -346,13 +388,13 @@ if ( 0 ) {
 														}]
 										}
 						} );
-						_wpbc.seasons__set( 220, [] );
-						wpbc_calendar_show( '220' );
+						_wpbc.seasons__set( 4, [] );
+						wpbc_calendar_show( '4' );
 						_wpbc.set_secure_param( 'nonce',  '<?php echo esc_attr( wp_create_nonce( 'wpbc_calendar_load_ajx' . '_wpbcnonce' ) ); ?>' );
 						_wpbc.set_secure_param( 'user_id','<?php echo esc_attr( wpbc_get_current_user_id() ); ?>' );
 						_wpbc.set_secure_param( 'locale', '<?php echo esc_attr( get_user_locale() ); ?>' );
 						wpbc_calendar__load_data__ajx( {
-							"resource_id"              : 220,
+							"resource_id"              : 4,
 							"booking_hash"             : "",
 							"request_uri"              : "\/2024-03-221132\/",
 							"custom_form"              : "standard",
@@ -368,51 +410,6 @@ if ( 0 ) {
 
 		}
 
-
-	public function right_sidebar_content() {
-		?>
-			<!-- RIGHT SIDE: Field Library -->
-			<div class="wpbc_bfb__panel--library">
-				<h3><?php esc_html_e( 'Available Fields', 'booking' ); ?></h3>
-				<label><input type="checkbox" id="wpbc_bfb__toggle_preview" checked/> <?php esc_html_e( 'Preview Mode', 'booking' ); ?></label>
-				<ul id="wpbc_bfb__panel_field_types__ul">
-					<li class="wpbc_bfb__field" data-id="calendar" data-type="calendar" data-usagenumber="1">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Calendar', 'booking' ); ?></span><span class="wpbc_bfb__field-type">calendar</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="rangetime" data-type="timeslots" data-usagenumber="1">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Time Slots', 'booking' ); ?></span><span class="wpbc_bfb__field-type">time-slots</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="input-text" data-type="text">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Text', 'booking' ); ?></span><span class="wpbc_bfb__field-type">text</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="selectbox" data-type="selectbox" data-label="Choose Item"
-						data-placeholder="Please select" data-options='["One", "Two", "Three"]' data-required="true">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Select', 'booking' ); ?></span><span
-							class="wpbc_bfb__field-type">selectbox</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="checkbox" data-type="checkbox" data-label="Choose Item"
-						data-placeholder="Please select" data-options='["1", "2", "3"]' data-required="true">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Select', 'booking' ); ?></span><span
-							class="wpbc_bfb__field-type">checkbox</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="input-email" data-type="email"  data-usagenumber="1">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Email', 'booking' ); ?></span><span class="wpbc_bfb__field-type">email</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="textarea" data-type="textarea">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Textarea', 'booking' ); ?></span><span class="wpbc_bfb__field-type">textarea</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="input-phone" data-type="tel">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Phone', 'booking' ); ?></span><span class="wpbc_bfb__field-type">tel</span>
-					</li>
-					<li class="wpbc_bfb__field" data-id="costhint" data-type="costhint">
-						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Total cost', 'booking' ); ?></span><span class="wpbc_bfb__field-type">costhint</span>
-					</li>
-				</ul>
-			</div>
-		<?php
-	}
-
-
 	function builder_booking_form__creation_area() {
 		?>
 		<div class="wpbc_bfb__container">
@@ -420,13 +417,234 @@ if ( 0 ) {
 			<div id="wpbc_bfb__pages_panel" class="wpbc_bfb__pages_panel">
 				<div id="wpbc_bfb__pages_container"></div>
 				<div style="margin-top:20px;">
-					<button class="button" id="wpbc_bfb__add_page_btn" onclick="wpbc_bfb__add_page(); return false;" aria-label="<?php esc_attr_e( 'Add Page', 'booking' ); ?>">+ <?php esc_html_e( 'Add Page', 'booking' ); ?></button>
+					<button class="button" id="wpbc_bfb__add_page_btn" aria-label="<?php esc_attr_e( 'Add Page', 'booking' ); ?>">+ <?php esc_html_e( 'Add Page', 'booking' ); ?></button>
 					<button class="button" id="wpbc_bfb__save_btn" aria-label="Save the form"><?php esc_html_e( 'Save Form', 'booking' ); ?></button>
 				</div>
 			</div>
 		</div>
 		<div style="width: 100%;height: 25vh;clear: both;"></div>
 		<?php
+	}
+
+
+	public function right_sidebar_content() {
+		?>
+			<!-- RIGHT SIDE: Field Library -->
+			<div class="wpbc_bfb__panel--library">
+				<div id="wpbc_bfb__inspector" class="wpbc_bfb__inspector"></div>
+				<h3><?php esc_html_e( 'Available Fields', 'booking' ); ?></h3>
+				<label><input type="checkbox" id="wpbc_bfb__toggle_preview" checked/> <?php esc_html_e( 'Preview Mode', 'booking' ); ?></label>
+				<ul class="wpbc_bfb__panel_field_types__ul">
+					<li class="wpbc_bfb__field"
+						data-usagenumber="1"
+						data-id="calendar"
+						data-type="calendar"
+						data-label="Calendar"
+						data-min_width="250px"
+					>
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Calendar', 'booking' ); ?></span><span class="wpbc_bfb__field-type">calendar</span>
+					</li>
+					<li class="wpbc_bfb__field" data-id="input-text" data-type="text" data-min_width="8em">
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Text', 'booking' ); ?></span><span class="wpbc_bfb__field-type">text</span>
+					</li>
+					<li class="wpbc_bfb__field" data-id="selectbox" data-type="selectbox" data-label="Select Item"
+						data-placeholder="Please select" data-options='["One", "Two", "Three"]' data-required="true">
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Select', 'booking' ); ?></span><span
+							class="wpbc_bfb__field-type">selectbox</span>
+					</li>
+					<li class="wpbc_bfb__field" data-id="checkbox" data-type="checkbox" data-label="Choose Item"
+						data-placeholder="Please choose" data-options='["1", "2", "3"]' data-required="true">
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Checkbox', 'booking' ); ?></span><span
+							class="wpbc_bfb__field-type">checkbox</span>
+					</li>
+					<li class="wpbc_bfb__field" data-id="textarea" data-type="textarea">
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Textarea', 'booking' ); ?></span><span class="wpbc_bfb__field-type">textarea</span>
+					</li>
+				</ul>
+				<ul class="wpbc_bfb__panel_field_types__ul">
+					<li class="wpbc_bfb__field" data-id="input-email" data-type="email"  data-usagenumber="1">
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Email', 'booking' ); ?></span><span class="wpbc_bfb__field-type">email</span>
+					</li>
+					<li class="wpbc_bfb__field" data-id="rangetime" data-type="timeslots" data-usagenumber="1">
+						<span class="wpbc_bfb__field-label"><?php esc_html_e( 'Time Slots', 'booking' ); ?></span><span class="wpbc_bfb__field-type">time-slots</span>
+					</li>
+				</ul>
+			</div>
+		<?php
+	}
+
+
+	public function right_sidebar_compact_content() {
+
+		// TEST:.
+		for( $i = 0; $i < 1 ; $i++) {
+		?>
+			<div class="wpbc_ui_el__level__folder" style="order:10;">
+				<div class="wpbc_ui_el__vert_nav_item wpbc_ui_el__vert_nav_item__builder_booking_form active">
+					<a href="javascript:void(0);" class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__single">
+						<i class="wpbc_ui_el__vert_nav_icon tooltip_right_offset  menu_icon icon-1x wpbc_icn_add_circle_outline" data-original-title="Booking Form Builder - Add New Fields."></i>
+					</a>
+				</div>
+			</div>
+			<div class="wpbc_ui_el__level__folder" style="order:10;">
+				<div class="wpbc_ui_el__vert_nav_item wpbc_ui_el__vert_nav_item__builder_booking_form">
+					<a href="javascript:void(0);" class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__single">
+						<i class="wpbc_ui_el__vert_nav_icon tooltip_right_offset  menu_icon icon-1x wpbc_icn_tune" data-original-title="Booking Form Builder - Preferences."></i>
+					</a>
+				</div>
+			</div>
+			<?php
+		}
+
+	}
+
+
+	public function show_warning__no_mobile_mode() {
+		?>
+		<div id="wpbc-builder-mobile-notice" class="wpbc-fullscreen-notice">
+			<div class="wpbc-fullscreen-big-logo">
+				<?php
+				echo wpbc_get_svg_logo_for_html(
+					array(
+						'svg_color'     => '#fff',
+						'svg_color_alt' => '#bbb',
+						'opacity'       => '0.35',
+						'style_default' => 'background-repeat: no-repeat; background-position: center; display: inline-block; vertical-align: middle;',
+						'style_adjust'  => 'background-size: 40px auto; width: 40px; height: 40px; margin-top: 0px;',  // This parameters, the adjust size of the logo and position.
+						'css_class'     => '',
+					)
+				);
+				?>
+				<span class="wpbc-fullscreen-big-logo-title"><span class="wpbc-fullscreen-big-logo-title-wp">WP</span>Booking Calendar</span>
+			</div>
+			<h3><?php esc_html_e('Our booking form builder is optimized for desktop computers.','booking'); ?></h3>
+			<p><?php esc_html_e('We recommend that you edit your forms on a bigger screen. If you\'d like to proceed, please understand that some functionality might not behave as expected.','booking'); ?></p>
+			<div class=" ">
+				<button type="button" class="button-secondary" onclick="javascript: jQuery( '.wpbc-fullscreen-notice').hide();"><?php esc_html_e('Continue','booking'); ?></button>
+				<button type="button" class="wpbc_bfb__button-close" onclick="javascript: jQuery( '.wpbc-fullscreen-notice').hide();" title="<?php esc_attr_e('Close','booking'); ?>" aria-label="<?php esc_attr_e('Close','booking'); ?>"><i class="menu_icon icon-1x wpbc_icn_close"></i></button>
+			</div>
+		</div>
+		<style type="text/css">
+			@media (min-width: 1024px) {
+				#wpbc-builder-mobile-notice {
+					display: none;
+				}
+				.wpbc_settings_page_wrapper.max .wpbc_settings_page_content .wpbc_page {
+					display: block;
+				}
+			}
+			.wpbc-fullscreen-notice {
+				background: #f5f6f7;
+				cursor: default;
+				height: 100%;
+				min-width: 0;
+				padding: 0 20px;
+				overflow: scroll;
+				position: fixed;
+				z-index: 100110;
+				text-align: center;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				background: #374655;
+				scrollbar-width: thin;
+			}
+			.wpbc-fullscreen-notice * {
+				color: #fff;
+			}
+				.wpbc-fullscreen-big-logo {
+					display: flex;
+					flex-flow: row nowrap;
+					align-items: center;
+					justify-content: flex-start;
+					gap: 10px;
+					position: absolute;
+					top: 20px;
+					left: 20px;
+				}
+				.wpbc-fullscreen-big-logo-title {
+					margin: -15px 0 0 0;
+					font-size: 25px;
+					padding: 0;
+					font-weight: 600;
+				}
+				.wpbc-fullscreen-big-logo-title-wp {
+					position: absolute;
+					font-size: 10px;
+					margin-top: 18px;
+					margin-left: 1px;
+					font-weight: 501;
+				}
+			.wpbc-fullscreen-notice h3{
+				line-height: 1.74em;
+  				font-size: 24px;
+			}
+			.wpbc-fullscreen-notice .wpbc_bfb__button-close {
+				position: absolute;
+				top: 20px;
+				right:20px;
+				margin: 0;
+				border: 0;
+				padding: 0;
+				vertical-align: middle;
+				background: 0 0;
+				height: auto;
+				box-sizing: border-box;
+				cursor: pointer;
+			}
+			.wpbc-fullscreen-notice .wpbc_bfb__button-close .wpbc_icn_close::before {
+				font-size: 22px;
+			}
+		</style>
+		<?php
+
+	}
+
+
+	public function add_columns_controll() {
+		?>
+		<div id="wpbc_bfb__add_columns_template" class="add_columns_controll_template" hidden >
+		<?php
+		$el_arr = array(
+			'font_icon'       => 'wpbc_icn_add_circle',
+			'title'           => '<span class="nav-tab-text hide_in_mobile">' . __( 'Add columns', 'booking' ) . ' </span><span class="selected_value"></span>',
+			'hint'            => array(
+				'title'    => __( 'Select to add columns', 'booking' ),
+				'position' => 'top',
+			),
+			'position'        => 'left',
+			'has_down_arrow'  => true,
+			'has_border'      => true,
+			'container_class' => 'ul_dropdown_menu__' . 'add_sections',
+			'items'           => array(
+				array( 'type' => 'header', 'title' => __( 'Add section with', 'booking' ) . '...', 'class' => 'hide_button_if_no_selection' ),
+				array( 'html' => $this->add_columns__get_option( 1 ) ),
+				array( 'html' => $this->add_columns__get_option( 2 ) ),
+				array( 'type' => 'divider' ),
+				array( 'html' => $this->add_columns__get_option( 3 ) ),
+				array( 'html' => $this->add_columns__get_option( 4 ) ),
+			),
+		);
+
+		wpbc_ui_el__dropdown_menu( $el_arr );
+		?></div><?php
+	}
+
+	public function add_columns__get_option( $column_number ){
+		$css_class  = 'ul_dropdown_menu_li_action ul_dropdown_menu_li_action_add_sections';
+		// Option Title.
+		$html = "<a href=\"javascript:void(0)\"  
+					class=\"" . esc_attr( $css_class ) . "\" 
+		 			data-cols=\"" . intval( $column_number ) . "\"
+					title=\"" . esc_attr( __( 'Add columns', 'booking' ) ) . "\"
+				 >" . esc_html($column_number) . ' ' . esc_js( ( $column_number < 2 ) ? __( 'Column', 'booking' ) : __( 'Columns', 'booking' ) ) . ' <i class="menu_icon icon-1x wpbc_icn_done_all"></i>' . '</a>';
+
+		return $html;
 	}
 
 }

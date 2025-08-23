@@ -136,8 +136,8 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
 
 	if (  empty( $booking_id ) ) {
 
-		return '<strong>' . esc_html__('Oops!' ,'booking') . '</strong> '
-		                  . __('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking');
+		return '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__('Oops!' ,'booking') . '</strong> '
+		                  . __('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking') . '</div></div></div>';
 	} else {
 
 

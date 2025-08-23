@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.14.1
+Stable tag: 10.14.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,40 +240,40 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- Danish                       98.11% [ 2550 / 2599 ], fuzzy 29, not translated 20
-- Dutch                        87.50% [ 2274 / 2599 ], fuzzy 306, not translated 19
-- Norwegian (Bokmål)           81.15% [ 2109 / 2599 ], fuzzy 91, not translated 399
-- German                       81.03% [ 2106 / 2599 ], fuzzy 419, not translated 74
-- French (France)              77.61% [ 2017 / 2599 ], fuzzy 454, not translated 128
-- Korean                       74.84% [ 1945 / 2599 ], fuzzy 502, not translated 152
-- Hungarian                    74.84% [ 1945 / 2599 ], fuzzy 507, not translated 147
-- Spanish (Spain)              68.87% [ 1790 / 2599 ], fuzzy 525, not translated 284
-- Portuguese (Brazil)          64.99% [ 1689 / 2599 ], fuzzy 634, not translated 276
-- Greek                        64.60% [ 1679 / 2599 ], fuzzy 645, not translated 275
-- Turkish                      63.76% [ 1657 / 2599 ], fuzzy 662, not translated 280
-- Italian                      62.10% [ 1614 / 2599 ], fuzzy 574, not translated 411
-- Spanish (Mexico)             59.68% [ 1551 / 2599 ], fuzzy 716, not translated 332
-- Finnish                      59.33% [ 1542 / 2599 ], fuzzy 721, not translated 336
-- Polish                       59.29% [ 1541 / 2599 ], fuzzy 713, not translated 345
-- Romanian                     58.79% [ 1528 / 2599 ], fuzzy 726, not translated 345
-- Swedish                      58.45% [ 1519 / 2599 ], fuzzy 735, not translated 345
-- Arabic                       57.91% [ 1505 / 2599 ], fuzzy 748, not translated 346
-- Russian                      57.83% [ 1503 / 2599 ], fuzzy 967, not translated 129
-- Bulgarian                    56.10% [ 1458 / 2599 ], fuzzy 763, not translated 378
-- Slovenian                    55.94% [ 1454 / 2599 ], fuzzy 773, not translated 372
-- Chinese (Taiwan)             54.44% [ 1415 / 2599 ], fuzzy 813, not translated 371
-- Portuguese (Portugal)        54.02% [ 1404 / 2599 ], fuzzy 797, not translated 398
-- Japanese                     53.21% [ 1383 / 2599 ], fuzzy 310, not translated 906
-- Chinese (China)              52.21% [ 1357 / 2599 ], fuzzy 799, not translated 443
-- Ukrainian                    51.87% [ 1348 / 2599 ], fuzzy 808, not translated 443
-- Catalan                      51.02% [ 1326 / 2599 ], fuzzy 731, not translated 542
-- Thai                         50.90% [ 1323 / 2599 ], fuzzy 848, not translated 428
-- Hebrew                       50.60% [ 1315 / 2599 ], fuzzy 836, not translated 448
-- Galician                     49.29% [ 1281 / 2599 ], fuzzy 888, not translated 430
-- Slovak                       45.83% [ 1191 / 2599 ], fuzzy 812, not translated 596
-- Croatian                     44.36% [ 1153 / 2599 ], fuzzy 831, not translated 615
-- Czech                        38.55% [ 1002 / 2599 ], fuzzy 887, not translated 710
-- Chinese (Hong Kong)          26.16% [ 680 / 2599 ], fuzzy 164, not translated 1755
+- Danish                       97.48% [ 2550 / 2616 ], fuzzy 41, not translated 25
+- Dutch                        86.93% [ 2274 / 2616 ], fuzzy 318, not translated 24
+- Norwegian (Bokmål)           80.62% [ 2109 / 2616 ], fuzzy 103, not translated 404
+- German                       80.50% [ 2106 / 2616 ], fuzzy 431, not translated 79
+- French (France)              77.10% [ 2017 / 2616 ], fuzzy 466, not translated 133
+- Korean                       74.35% [ 1945 / 2616 ], fuzzy 514, not translated 157
+- Hungarian                    74.35% [ 1945 / 2616 ], fuzzy 519, not translated 152
+- Spanish (Spain)              68.43% [ 1790 / 2616 ], fuzzy 537, not translated 289
+- Portuguese (Brazil)          64.56% [ 1689 / 2616 ], fuzzy 646, not translated 281
+- Greek                        64.18% [ 1679 / 2616 ], fuzzy 657, not translated 280
+- Turkish                      63.34% [ 1657 / 2616 ], fuzzy 674, not translated 285
+- Italian                      61.70% [ 1614 / 2616 ], fuzzy 586, not translated 416
+- Spanish (Mexico)             59.29% [ 1551 / 2616 ], fuzzy 728, not translated 337
+- Finnish                      58.94% [ 1542 / 2616 ], fuzzy 733, not translated 341
+- Polish                       58.91% [ 1541 / 2616 ], fuzzy 725, not translated 350
+- Romanian                     58.41% [ 1528 / 2616 ], fuzzy 738, not translated 350
+- Swedish                      58.07% [ 1519 / 2616 ], fuzzy 747, not translated 350
+- Arabic                       57.53% [ 1505 / 2616 ], fuzzy 760, not translated 351
+- Russian                      57.45% [ 1503 / 2616 ], fuzzy 979, not translated 134
+- Bulgarian                    55.73% [ 1458 / 2616 ], fuzzy 775, not translated 383
+- Slovenian                    55.58% [ 1454 / 2616 ], fuzzy 785, not translated 377
+- Chinese (Taiwan)             54.09% [ 1415 / 2616 ], fuzzy 825, not translated 376
+- Portuguese (Portugal)        53.67% [ 1404 / 2616 ], fuzzy 809, not translated 403
+- Japanese                     52.87% [ 1383 / 2616 ], fuzzy 322, not translated 911
+- Chinese (China)              51.87% [ 1357 / 2616 ], fuzzy 811, not translated 448
+- Ukrainian                    51.53% [ 1348 / 2616 ], fuzzy 820, not translated 448
+- Catalan                      50.69% [ 1326 / 2616 ], fuzzy 742, not translated 548
+- Thai                         50.57% [ 1323 / 2616 ], fuzzy 860, not translated 433
+- Hebrew                       50.27% [ 1315 / 2616 ], fuzzy 848, not translated 453
+- Galician                     48.97% [ 1281 / 2616 ], fuzzy 900, not translated 435
+- Slovak                       45.53% [ 1191 / 2616 ], fuzzy 823, not translated 602
+- Croatian                     44.07% [ 1153 / 2616 ], fuzzy 842, not translated 621
+- Czech                        38.30% [ 1002 / 2616 ], fuzzy 898, not translated 716
+- Chinese (Hong Kong)          25.99% [ 680 / 2616 ], fuzzy 175, not translated 1761
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -300,6 +300,25 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.2.1 =
+- Changes in **all** versions:
+ 	* **Fix**: Prevent opening blank windows on WordPress playground for pseudo links like this: <a href="javascript:void(0)"></a> and to stay in the same tab.
+
+= 10.14.2 =
+- Changes in **all** versions:
+ 	* **Fix**: CSS vulnerability related sanitizing colors. XSS in Emails CVE-2025-9346. (10.14.2.2.)
+ 	* **Fix**: Resolved issue of not updating from "Full page width" to fixed width size in some themes. (10.14.2.1.)
+ 	* **Fix**: css issue of calendar in full page widget, when showing calendar with 3 or more months. (10.14.2.3.)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **NEW** Updated Advanced Form editor. Shortcode engine accept modern, quoted attributes like class="...", placeholder="...", maxlength="..." (and more), while keeping every legacy behavior (e.g., class:foo, placeholder:Enter_name, 40/255 size syntax) fully backward-compatible and safe.  (11.0.2)
+	* **NEW** Quoted attributes anywhere in the shortcode:  [text firstname class="someCSSclass otherclass" placeholder="First name" maxlength="64" "John"]  (11.0.2)
+	* **NEW** Selects / radios / checkboxes accept quoted classes and other safe attributes: [selectbox country class:"wide" size="6" include_blank "Unated States@@US" "France@@FR"]
+	* **NEW** Booleans preserved: multiple still works (legacy token) and also via multiple="" or multiple="multiple".
+	* **NEW** Defaults remain last quoted values: by removing quoted attribute values from the “values” bucket, we guarantee back-compat with your “defaults come last” rule.
+	* **NEW** Legacy behavior untouched: id:foo, class:bar, placeholder:Enter_name, and 40/255 still work and take sensible precedence.
+	* **NEW** Safety: we allow a conservative set of attributes, block style, and escape all values with esc_attr. aria-* and data-* are permitted.
+ 	* **Improvement**: Added support for quoted placeholders in booking form shortcodes. You can now specify placeholders with spaces directly in quotes inside the form shortcode. For example: [text name placeholder:"Enter first name" "John"] This makes it easier to use multi-word placeholders without underscores. The old syntax (placeholder:Enter_first_name) still works for backward compatibility.
+
 = 10.14.1 =
 - Changes in **all** versions:
 	* **Improvement**:  Enhanced the warning message displayed during calendar loading if some JavaScript wasn't loaded correctly. (10.14.1.1).
@@ -508,14 +527,6 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
  	* **New** Introduced shortcodes [search_days_number] and [search_nights_number] for use in search results. Available on the WP Booking Calendar > Settings > Search page. (10.7.1.1)   *(Business Large, MultiUser)*
 
 = 10.7 =
-- Changes in **all** versions:
- 	* **New** **Easy Setup Wizard** for quick booking calendar configuration of essential booking settings.
- 	* **Enhanced** Step-by-step guide for booking types, calendar look, availability, and form settings.
- 	* **Enhanced** Updated 'Get started' dialog at Booking Listing and Timeline View pages.
- 	* **Added** Quick access to **Setup Wizard**, from Settings General page.
- 	* **Fix** Showing warning message at some servers: "WPBC Error. JavaScript library "datepick" was not defined.". (10.6.6.1)
- 	* **Fix** Resolved issue of generating payment request links at some servers. (10.6.6.3)
-
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==

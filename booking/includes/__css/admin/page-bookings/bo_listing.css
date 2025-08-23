@@ -498,6 +498,11 @@
 	.wpbc_a_row__booking {
 		flex-flow: row wrap;
 	}
+	/* all  other details. */
+	.wpbc_listing_col .booking_details_simple,
+	.wpbc_listing_col .booking_details_simple * {
+		font-size: 13px;
+	}
 	/* -- Dates  -- */
 	.wpbc_a_col__dates {
 		flex: 1 1 170px;
@@ -512,7 +517,7 @@
 			align-items: flex-start;
 		}
 		.wpbc_a_col__dates .wpbc_label.wpbc_label_booking_dates {
-			font-size: 18px;
+			font-size: 16px;
 		}
 		.wpbc_a_col__dates .wpbc_label.wpbc_label_booking_dates .field-booking-time{
 			font-size: 11px;

@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 'right_vertical_sidebar__is_show'           => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__default_view_mode' => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'left_navigation__default_view_mode'        => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
+'right_vertical_sidebar_compact__is_show'   => false,                                                                   // true | false.     Default: false.
 
 // TODO: recheck functionality  and ability to use:
 
@@ -87,6 +88,16 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	 * @return void
 	 */
 	public function right_sidebar_content(){}
+
+
+
+	/**
+	 * Child classes ovveride  --  show vertical "Right Sidebar Content - Compact".
+	 *  // FixIn: 10.14.1.3.
+	 *
+	 * @return void
+	 */
+	public function right_sidebar_compact_content(){}
 
 
 	// -----------------------------------------------------------------------------------------------------------------

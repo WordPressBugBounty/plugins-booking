@@ -66,11 +66,16 @@
 }
 
 
-@media (max-width: 782px) { 
-    .wpdevelop .modal-dialog{
-        margin: 60px 10px 10px;
-    }
-    
+@media (max-width: 782px) {
+	.wpdevelop .modal-dialog {
+		margin: 15px;
+	}
+    .wpdevelop .modal-header {
+		border-radius: 10px 10px 0 0;
+	}
+	.wpdevelop .modal {
+		overflow: auto;
+	}
     /* Import Google Events Dialog*/
     .wpbc_modal__import_google_calendar__section .modal-dialog.modal-lg {
         width: auto;
@@ -351,7 +356,7 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
 }
 @media (max-width: 782px) {
     .wpbc_popup_modal .modal-dialog.modal-lg {
-        width: 97%;
+        width: 98%;
     }
 }
 /* Show over top toolbar - dashboard*/

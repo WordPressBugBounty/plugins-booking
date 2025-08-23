@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.14.1
+Version: 10.14.2.1
 License: GPLv2 or later
 */
 
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '10.14.1' );
+	define( 'WP_BK_VERSION_NUM', '10.14.2.1' );
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
 	define( 'WP_BK_MINOR_UPDATE',  true );
@@ -79,6 +79,9 @@ if ( ! defined( 'WPBC_JS_IN_FOOTER' ) ) {
 if ( ! defined( 'WP_BK_RESPONSE' ) ) {
 	define( 'WP_BK_RESPONSE', false );
 }
+if ( ! defined( 'WPBC_IS_PLAYGROUND' ) ) {
+	define( 'WPBC_IS_PLAYGROUND', ( isset( $_SERVER['SERVER_SOFTWARE'] ) && ( 'PHP.wasm' === $_SERVER['SERVER_SOFTWARE'] ) ) );
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ==  DEBUG  CONSTANTS  ==
@@ -99,9 +102,6 @@ if ( ! defined( 'WPBC_NEW_FORM_BUILDER' ) ) {
 	define( 'WPBC_NEW_FORM_BUILDER', ! true );
 }
 
-if ( ! defined( 'WPBC_IS_PLAYGROUND' ) ) {
-	define( 'WPBC_IS_PLAYGROUND', ( isset( $_SERVER['SERVER_SOFTWARE'] ) && ( 'PHP.wasm' === $_SERVER['SERVER_SOFTWARE'] ) ) );
-}
 // ---------------------------------------------------------------------------------------------------------------------
 // ==  Go  ==
 // ---------------------------------------------------------------------------------------------------------------------

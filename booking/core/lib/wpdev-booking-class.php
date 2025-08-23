@@ -286,10 +286,10 @@ class wpdev_booking {
 				list( $my_edited_bk_id, $my_boook_type ) = $my_booking_id_type;
 
 				if ( $my_boook_type == '' ) {
-					$is_error = '<strong>' . esc_html__( 'Oops!', 'booking' ) . '</strong> ' . __( 'We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.', 'booking' );
+					$is_error = '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__( 'Oops!', 'booking' ) . '</strong> ' . __( 'We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.', 'booking' ) . '</div></div></div>';
 				}
 			} else {
-				$is_error = '<strong>' . esc_html__( 'Oops!', 'booking' ) . '</strong> ' . __( 'We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.', 'booking' );
+				$is_error = '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__( 'Oops!', 'booking' ) . '</strong> ' . __( 'We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.', 'booking' ) . '</div></div></div>';
 			}
 
 			if ( false !== $is_error ) {
@@ -416,7 +416,7 @@ class wpdev_booking {
 			$my_booking_id_type = wpbc_hash__get_booking_id__resource_id( $get_booking_hash );
 			if ( $my_booking_id_type != false ) {
 				if ( $my_booking_id_type[1] == '' ) {
-					$my_result = '<strong>' . esc_html__( 'Oops!', 'booking' ) . '</strong> ' . __( 'We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.', 'booking' );
+					$my_result = '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__( 'Oops!', 'booking' ) . '</strong> ' . __( 'We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.', 'booking' ) . '</div></div></div>';
 					if ( $params_arr['is_echo'] ) {
 						echo $my_result;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					} else {
@@ -776,7 +776,7 @@ $result = wpbc_api_is_dates_booked( $datesArray, $resource_id = 13 );
 				return $timeline_results ;
 
 			} else {
-				return '<strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking');
+				return '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking') . '</div></div></div>';
 			}
 
 		} else {
@@ -1063,9 +1063,9 @@ $result = wpbc_api_is_dates_booked( $datesArray, $resource_id = 13 );
             if ($my_booking_id_type !== false) {
 	            $my_edited_bk_id = $my_booking_id_type[0];
 	            $my_boook_type   = $my_booking_id_type[1];
-                if ($my_boook_type == '') return '<strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking');
+                if ($my_boook_type == '') return '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking') . '</div></div></div>';
             } else {
-                return '<strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking');
+                return '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking') . '</div></div></div>';
             }
 
         } else {

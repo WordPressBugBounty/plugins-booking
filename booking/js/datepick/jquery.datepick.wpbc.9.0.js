@@ -893,6 +893,9 @@ $.extend(Datepick.prototype, {
 	/* Generate the date picker content.
 	   @param  inst  (object) the instance settings for this datepicker */
 	_updateDatepick: function(inst) {
+		if ( null === inst ) {
+			return;
+		}
 		var borders = this._getBorders(inst.dpDiv);
 		var useTR = this._get(inst, 'useThemeRoller') ? 1 : 0;
 		inst.dpDiv.empty().append(this._generateHTML(inst)).

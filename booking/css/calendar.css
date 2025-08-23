@@ -503,66 +503,7 @@ td.timespartly.check_in_time.check_out_time.check_in_time_date_approved.check_ou
 td.timespartly.check_in_time.check_out_time.check_out_time_date_approved.check_in_time_date2approve div {   
     cursor: default;
 }
-
-/*******************************************************************************/
-/* Set correct FONT of unselectable elements, when the check in date is selected */
-/*******************************************************************************/
-.datepick-inline .datepick .datepick-unselectable.check_in_time.date_approved,  
-.datepick-inline .datepick .datepick-unselectable.check_out_time.date_approved, 
-.datepick-inline .datepick .datepick-unselectable.check_in_time.date2approve,
-.datepick-inline .datepick .datepick-unselectable.check_out_time.date2approve {
-/*    background-color: transparent;*/                                          /*FixIn: 7.0.1.19 */
-/*    font-weight: 400;*/                                                       /*FixIn: 9.5.0.2 */
-}
-
-/*******************************************************************************/
-/*     W I D G E T            **************************************************/
-/*******************************************************************************/
-/* Set HEIGHT of the CELLs in the Widget */
-.widget_wpdev_booking .hasDatepick .datepick-inline .datepick-title-row th,
-.widget_wpdev_booking .hasDatepick .datepick-inline .datepick-days-cell{
-    height: 48px;
-}
-/* Set calendar WIDTH and MARGIN in Widget */
-.widget_wpdev_booking .bk_calendar_frame{
-    margin: 0 2%;
-    width: 96% !important;
-    max-width: 96% !important;                                              /* //FixIn: 9.6.2.1  */
-    min-width: 96% !important;
-}
-.widget_wpdev_booking .wpbc__row .bk_calendar_frame,
-.widget_wpdev_booking .wpbc__field .bk_calendar_frame{
-    margin: 0;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-}
-/* LEGEND items show in 2 rows in Widget */
-.widget_wpdev_booking .wpdev_hint_with_text{
-    float: left;
-    margin: 0;
-    width: 50% !important;
-}
-/* Set the WIDTH and MARGIN of the form FIELDS in Widget */
-.widget_wpdev_booking input,
-.widget_wpdev_booking select,
-.widget_wpdev_booking textarea,
-.widget_wpdev_booking .wpdevelop input,
-.widget_wpdev_booking .wpdevelop select,
-.widget_wpdev_booking .wpdevelop textarea,
-div#datepick-div input,
-div#datepick-div select,
-div#datepick-div textarea {
-    width: 96%;
-    margin: auto;
-}
-/* SELECT BUTTON and CHECKBOX fields have the Auto Width in Widget */
-/*.widget_wpdev_booking select,*/
-.widget_wpdev_booking input[type=button],
-.widget_wpdev_booking input[type=checkbox]{
-    width:auto;
-}
-
+/* FixIn: 10.14.2.3. */
 /*******************************************************************************/
 /* Legend of days, which is shown under calendar *******************************/
 /*******************************************************************************/

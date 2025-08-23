@@ -1796,7 +1796,7 @@ body.wpbc_admin_full_screen div.wpbc_admin {
   width: calc(100% - var(--wpbc_ui_top_nav__wp_left_menu_width));
   position: fixed;
   top: var(--wpbc_ui_top_nav__wp_top_menu_height);
-  z-index: 1001;
+  z-index: 11001;
   transition: margin .25s ease-out
 }
 .wpbc_ui_el__top_nav > * {
@@ -1844,7 +1844,7 @@ body.wpbc_admin_full_screen div.wpbc_admin {
 /*! = Left Vertical Navigation Bar = */
 .wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper {
   --wpbc_ui_left_vert_nav__width_min: 0;
-  --wpbc_ui_left_vert_nav__width_compact: 148px;
+  --wpbc_ui_left_vert_nav__width_compact: 48px;
   --wpbc_ui_left_vert_nav__width_max: Min( 250px, 100% )
 }
 .wpbc_ui_el__vert_left_bar__wrapper,
@@ -2009,7 +2009,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
     -ms-flex: 1 1 100%;
     flex: 1 1 100%
   }
-  .wpbc_settings_page_wrapper.max .wpbc_settings_page_content * {
+  .wpbc_settings_page_wrapper.max .wpbc_settings_page_content .wpbc_page {
     display: none
   }
   .wpbc_settings_page_wrapper.max .wpbc_settings_page_content {
@@ -2062,13 +2062,12 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
 .wpbc_ui_el__vert_nav_item a {
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
-  margin: 2px 0 2px 8px;
-  padding: 7px 8px;
+  margin: 0 0 0 3px;
+  padding: 8px 5px 8px 12px;
   border: none;
   border-radius: var(--wpbc_ui__gen__border-radius) 0 0 var(--wpbc_ui__gen__border-radius);
   text-shadow: none;
   font-size: var(--wpbc_ui_left_vert_nav__font-size);
-  font-weight: 400;
   text-transform: capitalize;
   text-decoration: none;
   outline: 0;
@@ -2080,10 +2079,13 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   -ms-flex-pack: start;
   justify-content: flex-start;
   -ms-flex-align: center;
-  align-items: center
+  align-items: center;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .1px
 }
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item a {
-  margin: 2px -.2px 2px 20px;
+  margin: 0 -.2px 0 20px;
   padding: 7px 7px 7px 10px
 }
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item.sub_right a {
@@ -2113,7 +2115,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   margin: 0
 }
 .wpbc_settings_page_wrapper .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon {
-  margin: 0 13px 0 0
+  margin: 0 10px 0 0
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon {
   margin-right: 20px
@@ -2123,7 +2125,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   line-height: 20px
 }
 .wpbc_ui_el__vert_nav_item.wpbc_ui_el__vert_nav_item_sub a .wpbc_ui_el__vert_nav_icon::before {
-  font-size: 14px
+  font-size: 12px
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item:not(.wpbc_ui_el__vert_nav_item_sub) a {
   border-bottom: 1px solid #0000001c
@@ -2146,14 +2148,15 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   justify-content: flex-start;
   -ms-flex-align: stretch;
   align-items: stretch;
-  gap: 5px
+  gap: 0
 }
 .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__section {
   margin-block-end: 9px
 }
 .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__root_section_element {
-  padding-inline-start: 10px;
-  padding-block-start: 20px;
+  padding-inline-start: 8px;
+  padding-block-start: 8px;
+  padding-block-end: 8px;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-flow: column nowrap;
@@ -2184,7 +2187,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   flex-flow: row nowrap;
   -ms-flex-align: center;
   align-items: center;
-  gap: 12px
+  gap: 8px
 }
 .wpbc_ui_el__root_section_header_a .wpbc_ui_el__vert_menu_root_section_icon {
   margin: 0;
@@ -2264,7 +2267,8 @@ a > .wpbc_ui_el__section_header {
   -ms-flex-align: stretch;
   align-items: stretch;
   -ms-flex-pack: start;
-  justify-content: flex-start
+  justify-content: flex-start;
+  gap: 5px
 }
 .wpbc_ui_el__level__folder,
 .wpbc_ui_el__level__folder .wpbc_ui_el__vert_nav_item,
@@ -2280,7 +2284,8 @@ a > .wpbc_ui_el__section_header {
   -ms-flex-pack: start;
   justify-content: flex-start;
   -ms-flex-align: stretch;
-  align-items: stretch
+  align-items: stretch;
+  gap: 1px
 }
 .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_icon_collapsed,
 .wpbc_ui_el__level__folder:not(.expanded) .wpbc_ui_el__vert_nav_icon_expanded {
@@ -2344,9 +2349,15 @@ a > .wpbc_ui_el__section_header {
 .wpbc_ui_el__vert_nav_item__single .wpbc-bi-toggle2-on::before {
   font-size: 95%
 }
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_left_bar__root_sections_container {
+  margin-top: 8px
+}
 .wpbc_ui_el__expand_colapse_btns {
-  margin: 10px 0 -30px;
-  padding: 0
+  padding: 0;
+  margin: 16px 0 -38px
+}
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns {
+  margin-bottom: -22px
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__root_section_element:first-child > a:first-child {
   display: -ms-flexbox;
@@ -2359,15 +2370,27 @@ a > .wpbc_ui_el__section_header {
   box-shadow: none;
   outline: 0
 }
-.wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+.wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
   margin-left: auto;
   padding: 0 8px
 }
-.wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns {
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns {
   -ms-flex-pack: center;
   justify-content: center
 }
-.wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+  margin-left: 0;
+  padding: 0
+}
+.wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+  margin-left: auto;
+  padding: 0 8px
+}
+.wpbc_settings_page_wrapper.compact_right .wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns {
+  -ms-flex-pack: center;
+  justify-content: center
+}
+.wpbc_settings_page_wrapper.compact_right .wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
   margin-left: 0;
   padding: 0
 }
@@ -2462,6 +2485,25 @@ a > .wpbc_ui_el__section_header {
 .wpbc_admin:not(.right_vertical_sidebar_displayed) .wpbc_ui__top_nav__btn_show_right_vertical_nav,
 .wpbc_admin:not(.right_vertical_sidebar_displayed) .wpbc_ui__top_nav__btn_show_right_vertical_nav_divider {
   display: none
+}
+.wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper {
+  --wpbc_ui_left_vert_nav__width_min: 0;
+  --wpbc_ui_left_vert_nav__width_compact: 55px;
+  --wpbc_ui_left_vert_nav__width_max: Min( 55px, 100% );
+  border-radius: 0;
+  box-shadow: none;
+  border-left: 1px solid #00000017
+}
+.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item__a.wpbc_ui_el__vert_nav_item__single {
+  min-height: 35px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0
+}
+.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon::before {
+  font-size: 24px;
+  line-height: 26px
 }
 /*! = Left Horisontal Navigation Bar = */
 .wpbc_ui_el__horis_top_bar__wrapper {
@@ -3184,6 +3226,10 @@ div.wpbc_ajx_toolbar {
     -ms-flex-flow: row wrap;
     flex-flow: row wrap
   }
+  .wpbc_listing_col .booking_details_simple,
+  .wpbc_listing_col .booking_details_simple * {
+    font-size: 13px
+  }
   .wpbc_a_col__dates {
     -ms-flex: 1 1 170px;
     flex: 1 1 170px
@@ -3202,7 +3248,7 @@ div.wpbc_ajx_toolbar {
     align-items: flex-start
   }
   .wpbc_a_col__dates .wpbc_label.wpbc_label_booking_dates {
-    font-size: 18px
+    font-size: 16px
   }
   .wpbc_a_col__dates .wpbc_label.wpbc_label_booking_dates .field-booking-time {
     font-size: 11px;

@@ -792,6 +792,44 @@ function wpbc_ui__vert_left_bar__side_button__do_max() {
 
 /* == Right Sidebar ================================================================================================= */
 /**
+ * Show Compact Right Vertical SideBar
+ *
+ * @param array $args - parameters.
+ *
+ * @return void
+ */
+function wpbc_ui__right_vertical_sidebar_compact( $args =array() ) {
+
+	$defaults = array(
+		'attr' => array(),
+	);
+	$params   = wp_parse_args( $args, $defaults );
+
+	$active_page_arr = array(
+		'active_page'   => $args['active_page'],          // wpbc-settings.
+		'active_tab'    => $args ['active_tab'],          // calendar_appearance.
+		'active_subtab' => $args['active_subtab'],        // calendar_appearance_skin.
+	);
+
+	// Ability to click on panel, only if there 'min' class - panel minimized!
+	echo '<div class="wpbc_ui_el__vert_right_bar__wrapper wpbc_ui_el__vert_right_bar__wrapper wpbc_ui_el__vert_right_bar_compact__wrapper" >';
+
+	echo '  <div class="wpbc_ui_el__vert_right_bar__content">';
+
+	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container">';
+
+	do_action( 'wpbc_ui__right_vertical_sidebar_compact_content', $active_page_arr );
+
+	echo '   </div><!-- wpbc_ui_el__vert_right_bar__root_sections_container -->';
+	echo '   </div><!-- wpbc_ui_el__vert_right_bar__content -->';
+	echo '</div><!-- wpbc_ui_el__vert_right_bar_compact__wrapper -->';
+
+
+	wpbc_start_element_scrollable__with_simplebar( '.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_right_bar__content' );
+}
+
+
+/**
  * Show Right Vertical SideBar
  *
  * @param array $args - parameters.
@@ -829,7 +867,6 @@ function wpbc_ui__right_vertical_sidebar( $args =array() ) {
 	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container">';
 
 	do_action( 'wpbc_ui__right_vertical_sidebar_content', $active_page_arr );
-
 
 	echo '   </div><!-- wpbc_ui_el__vert_right_bar__root_sections_container -->';
 	echo '   </div><!-- wpbc_ui_el__vert_right_bar__content -->';

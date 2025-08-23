@@ -37,38 +37,74 @@ class WPBC_AJX__Builder_Booking_Form {
 		}
 
 
-		/** JS */
-		public function js_load_files( $where_to_load ) {
+	/** JS */
+	public function js_load_files( $where_to_load ) {
 
 			$in_footer = true;
 
-			if ( wpbc_is_builder_booking_form_page() )
-			if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
+		if ( ( wpbc_is_builder_booking_form_page() ) && ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ), true ) ) ) {
 
-				//wp_enqueue_script('wpbc-sortable', 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js', array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
-				wp_enqueue_script( 'wpbc-sortable',    wpbc_plugin_url( '/vendors/sortablejs/Sortable.min.js'),       array( 'wpbc_all' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
-				wp_enqueue_script('wpbc-ajx__builder_booking_form_page', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/builder-form.js', array( 'wpbc-sortable' ), WP_BK_VERSION_NUM, $in_footer );
+			// Vendor.
+			wp_enqueue_script( 'wpbc-sortable', wpbc_plugin_url( '/vendors/sortablejs/Sortable.min.js' ), array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
 
-				wp_enqueue_script( 'wpbc_all',         wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ),                 	array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );          // FixIn: 9.8.6.1.
-				wp_enqueue_script( 'wpbc-main-client', wpbc_plugin_url( '/js/client.js' ),     array( 'wpbc-datepick' ),    WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
-				wp_enqueue_script( 'wpbc-times',       wpbc_plugin_url( '/js/wpbc_times.js' ), array( 'wpbc-main-client' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+			// Old.
+			// wp_enqueue_script( 'wpbc-bfb_builder', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/builder-form.js', array( 'wpbc-sortable' ), WP_BK_VERSION_NUM, $in_footer ); //.
 
-				// CSS
-				wpbc_enqueue_styles__front_end();
-				wpbc_enqueue_styles__calendar();
+			/**
+			 * == Enqueue: Core > UI > Fields > Schemas > Builder > Inspector > (Extras).  ==
+			 *
+			 * Fields need only Core, and they must load before Builder so the initial render has types.
+			 * Schemas after fields (they often reference/assume known types).
+			 * Builder after UI Modules + Schemas (the UI bridge will attach when Inspector emits ready).
+			 * Inspector after both Schemas and Builder.
+			 */
 
+			// 1) Utilities (Sanitize ...).
+			wp_enqueue_script( 'wpbc-bfb_core_utils', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bfb-core_utils.iife.js', array( 'jquery' ), WP_BK_VERSION_NUM, $in_footer );
+			// --- Core then UI ---
+			wp_enqueue_script( 'wpbc-bfb_core',       trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bfb-core.iife.js',       array( 'jquery', 'wpbc-sortable', 'wpbc-bfb_core_utils' ), WP_BK_VERSION_NUM, $in_footer );
+			wp_enqueue_script( 'wpbc-bfb_ui_modules', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bfb-ui-modules.iife.js', array( 'wpbc-bfb_core' ), WP_BK_VERSION_NUM, $in_footer );
 
-				/**
-				 *
-				 * wp_localize_script( 'wpbc_all', 'wpbc_live_request_obj'
-				 * , array(
-				 * 'ajx_booking'  => '',
-				 * 'reminders' => ''
-				 * )
-				 * );
-				 */
+			// --- Field renderers (Core only) ---
+			$field_types_arr = array( 'text', 'textarea', 'select', 'checkbox', 'radio', 'calendar', 'timeslots', 'costhint' );
+			foreach ( $field_types_arr as $field_type ) {
+				wp_enqueue_script( 'wpbc-bfb_' . $field_type, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/field-' . $field_type . '.js', array( 'wpbc-bfb_core' ), WP_BK_VERSION_NUM, $in_footer );
 			}
+			$field_type_deps = array_map( function ( $type ) { return 'wpbc-bfb_' . $type; }, $field_types_arr );
+
+			// --- Schemas (after fields so types are known) ---
+			wp_enqueue_script( 'wpbc-bfb_fields_schemas', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/builder-fields_schemas.js', $field_type_deps, WP_BK_VERSION_NUM, $in_footer );
+
+			// --- Builder (after UI + fields) ---
+			wp_enqueue_script( 'wpbc-bfb_builder', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bfb-builder.iife.js', array( 'wpbc-bfb_ui_modules', 'wpbc-bfb_fields_schemas' ), WP_BK_VERSION_NUM, $in_footer );
+			// --- Inspector (needs schemas + builder to be safe) ---
+			wp_enqueue_script( 'wpbc-bfb_builder_inspector', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/builder_inspector.js', array( 'wpbc-bfb_builder' ), WP_BK_VERSION_NUM, $in_footer );
+
+			// --- Exporter / Templates (optional tools) ---
+			wp_enqueue_script( 'wpbc-bfb_exporter', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/builder-exporter.js', array( 'wpbc-bfb_builder' ), WP_BK_VERSION_NUM, $in_footer );
+			wp_enqueue_script( 'wpbc-bfb_form_templates', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/form_templates.js', array( 'wpbc-bfb_builder' ), WP_BK_VERSION_NUM, $in_footer );
+
+
+
+			// wp_enqueue_script( 'wpbc-bfb_shortcode_parser', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/shortcode_parser.js', array('wpbc-bfb_exporter'), WP_BK_VERSION_NUM, $in_footer );
+			wp_enqueue_script( 'wpbc_all',         wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ),                 	array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );          // FixIn: 9.8.6.1.
+			wp_enqueue_script( 'wpbc-main-client', wpbc_plugin_url( '/js/client.js' ),     array( 'wpbc-datepick' ),    WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+			wp_enqueue_script( 'wpbc-times',       wpbc_plugin_url( '/js/wpbc_times.js' ), array( 'wpbc-main-client' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+			// CSS.
+			wpbc_enqueue_styles__front_end();
+			wpbc_enqueue_styles__calendar();
+
+			/**
+			 *
+			 * wp_localize_script( 'wpbc_all', 'wpbc_live_request_obj'
+			 * , array(
+			 * 'ajx_booking'  => '',
+			 * 'reminders' => ''
+			 * )
+			 * );
+			 */
 		}
+	}
 
 
 		/** CSS */

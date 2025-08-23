@@ -1,4 +1,6 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
 /*! = Left Vertical Navigation Bar = */
+/* ------------------------------------------------------------------------------------------------------------------ */
 .wpbc_admin {
 	/* --wpbc_ui_left_vert_nav__width_min: 5px; */
 	--wpbc_ui_left_vert_nav__width_min: 0; /* // FixIn: 10.12.4.4. */
@@ -18,13 +20,24 @@
 	/* Height of footer in this Vertical Menu */
 	--wpbc_ui_vert_left_bar__footer_height: 55px;
 }
+/* ------------------------------------------------------------------------------------------------------------------ */
 /* Define Right Sidebar  "Custom Width"  in a such way */
+/* ------------------------------------------------------------------------------------------------------------------ */
 .wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper{
 	--wpbc_ui_left_vert_nav__width_min: 0;
-	--wpbc_ui_left_vert_nav__width_compact: 148px;
+	--wpbc_ui_left_vert_nav__width_compact: 48px;
 	--wpbc_ui_left_vert_nav__width_max: Min( 250px, 100% );
 	/*--wpbc_ui_left_vert_nav__width_max: Min( 750px, 100% );*/
 }
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Define Compact Right Sidebar  "Custom Width"  in a such way */
+/* ------------------------------------------------------------------------------------------------------------------ */
+.wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper{
+	--wpbc_ui_left_vert_nav__width_min: 0;
+	--wpbc_ui_left_vert_nav__width_compact: 55px;
+	--wpbc_ui_left_vert_nav__width_max: Min( 55px, 100% );
+}
+/* ------------------------------------------------------------------------------------------------------------------ */
 .wpbc_ui_el__vert_right_bar__wrapper,
 .wpbc_ui_el__vert_left_bar__wrapper {
 	display: flex;
@@ -223,7 +236,7 @@
 		flex: 1 1 100%;
 	}
 	/* Hide content,  if opened left menu in mobile mode */
-	.wpbc_settings_page_wrapper.max       .wpbc_settings_page_content * {
+	.wpbc_settings_page_wrapper.max       .wpbc_settings_page_content .wpbc_page {
 		display: none;
 	}
 	.wpbc_settings_page_wrapper.max       .wpbc_settings_page_content {
@@ -299,10 +312,17 @@
 	flex-flow: row;
 	justify-content: flex-start;
 	align-items: center;
+
+	/* 2025-08-08 */
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 0.1px;
+	margin: 0 0 0px 3px;
+  	padding: 8px 5px 8px 12px;
 }
 /* Sub item */
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item a{
-	margin: 2px -0.2px 2px 20px;
+	margin: 0 -0.2px 0 20px;
 	padding: 7px 7px 7px 10px;
 }
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item.sub_right a{
@@ -338,6 +358,8 @@
 }
 .wpbc_settings_page_wrapper .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon{
 	margin: 0 13px  0 0;
+	/* 2025-08-08 */
+	margin: 0 10px  0 0;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon{
 	margin-right: 20px;
@@ -349,6 +371,8 @@
 /* Icons in Sub elements */
 .wpbc_ui_el__vert_nav_item.wpbc_ui_el__vert_nav_item_sub a .wpbc_ui_el__vert_nav_icon::before {
   font-size: 14px;
+	/* 2025-08-08 */
+ font-size: 12px;
 }
 /* == Colapsed == */
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item:not(.wpbc_ui_el__vert_nav_item_sub) a {
@@ -378,7 +402,7 @@
 	flex-flow: column nowrap;
 	justify-content: flex-start;
 	align-items: stretch;
-	gap: 5px;
+	gap: 0px;
 }
 .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__section {
 	margin-block-end: 9px;
@@ -386,8 +410,9 @@
 .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__root_section_element {
 	/*padding-inline-start: 14px;*/
 	/*padding-block-end: 10px;*/
-	padding-inline-start: 10px;
-	padding-block-start: 20px;
+	padding-inline-start: 8px;
+	padding-block-start: 8px;
+	padding-block-end: 8px;
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: flex-start;
@@ -413,7 +438,7 @@
 .wpbc_ui_el__root_section_header_a {
 	flex-flow: row nowrap;
 	align-items: center;
-	gap: 12px;
+	gap: 8px;
 }
 .wpbc_ui_el__root_section_header_a .wpbc_ui_el__vert_menu_root_section_icon {
 	margin: 0;
@@ -438,6 +463,12 @@
 }
 /* Header text */
 .wpbc_ui_el__root_section_header_a .wpbc_ui_el__section_header {
+	/*text-transform: uppercase;*/
+	/*font-size: 11px;*/
+	/*font-weight: 600;*/
+	/*line-height: 2.2;*/
+	/*letter-spacing: 1px;*/
+	/*margin: 0;*/
 	text-transform: uppercase;
 	font-size: 11px;
 	font-weight: 600;
@@ -496,6 +527,7 @@ a > .wpbc_ui_el__section_header {
 	flex-flow: column nowrap;
 	align-items: stretch;
 	justify-content: flex-start;
+	gap:5px;
 }
 .wpbc_ui_el__vert_left_bar__section.wpbc_ui__hide {
 	/*transform: translateX(-100%);*/
@@ -514,6 +546,7 @@ a > .wpbc_ui_el__section_header {
 	flex-flow: column nowrap;
 	justify-content: flex-start;
 	align-items: stretch;
+	gap: 1px;
 }
 .wpbc_ui_el__level__folder.expanded{
 
@@ -606,14 +639,17 @@ a > .wpbc_ui_el__section_header {
 		}
 /* -- End Items  ---------------------------------------------------------------------------------------------------- */
 
-
-
 /* Row for header and buttons */
-.wpbc_ui_el__expand_colapse_btns{
-	margin: 10px 0 0;
-	padding:0;
+.wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_left_bar__root_sections_container {
+	margin-top: 8px;
+}
+.wpbc_ui_el__expand_colapse_btns {
+	padding: 0;
 	/* We shift  " > Bookings " menu  to  the same level  as this colapse button */
-	margin-bottom:-30px;
+	margin: 16px 0 -38px;
+}
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns {
+  margin-bottom: -22px;
 }
 /* I nstead of display:none in compact mode for 1st item  we set  visibility hidden  to  save height of this element for the .wpbc_ui_el__expand_colapse_btns */
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__root_section_element:first-child > a:first-child {
@@ -626,16 +662,27 @@ a > .wpbc_ui_el__section_header {
 	box-shadow: none;
 	outline: 0;
 }
-.wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a{
+.wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
 	margin-left: auto;
-	padding:0 8px;
+	padding: 0 8px;
 }
-.wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns {
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns {
 	justify-content: center;
 }
-.wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a{
-	margin-left:0;
-	padding:0;
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+	margin-left: 0;
+	padding: 0;
+}
+.wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+	margin-left: auto;
+	padding: 0 8px;
+}
+.wpbc_settings_page_wrapper.compact_right .wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns {
+	justify-content: center;
+}
+.wpbc_settings_page_wrapper.compact_right .wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
+	margin-left: 0;
+	padding: 0;
 }
 
 /* -- Side button - Colapse / Expand  -------------------------------------------------------------------------------   // FixIn: 10.12.1.7. */
@@ -760,4 +807,20 @@ a > .wpbc_ui_el__section_header {
 .wpbc_admin:not(.right_vertical_sidebar_displayed) .wpbc_ui__top_nav__btn_show_right_vertical_nav,
 .wpbc_admin:not(.right_vertical_sidebar_displayed) .wpbc_ui__top_nav__btn_show_right_vertical_nav_divider{
 	display:none;
+}
+/* == Compact Right Sidebar ================================================================================================= */
+.wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper {
+	border-radius: 0;
+	box-shadow: none;
+	border-left: 1px solid #00000017;
+}
+.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item__a.wpbc_ui_el__vert_nav_item__single {
+	min-height: 35px;
+	justify-content: center;
+	margin: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0;
+}
+.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon::before {
+	font-size: 24px;
+	line-height: 26px;
 }

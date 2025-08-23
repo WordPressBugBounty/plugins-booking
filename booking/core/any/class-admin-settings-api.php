@@ -1686,8 +1686,43 @@ abstract class WPBC_Settings_API {
     public function validate_text_post( $post_key ) {
         return self::validate_text_post_static( $post_key );
     }
-    
-    
+
+	// FixIn: 10.14.2.2
+    /**
+     * Validate Color: '#ff00ff' in POST request - escape data correctly.
+     *
+     * @param string $post_key - key for POST
+     * @return string | false,  if no such POST
+     */
+    public function validate_color_post( $post_key ) {
+        return self::validate_color_static( $post_key );
+    }
+
+
+	// FixIn: 10.14.2.2
+    /**
+     * Static Validate Color field in POST request - escape data correctly.
+     *
+     * @param string $post_key - key for POST
+     * @return string | false,  if no such POST
+     */
+    public static function validate_color_static( $post_key ) {
+
+        $value = '';
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+        if ( isset( $_POST[ $post_key ] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+            $value = sanitize_hex_color( trim( stripslashes( $_POST[ $post_key ] ) ) );
+			if ( null === $value ) {
+				$value = '';
+			}
+        }
+
+        return $value;
+    }
+
+
     /**
      * Static Validate Text in POST request - escape data correctly.     
      *
