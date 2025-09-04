@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.14.2.1
+Stable tag: 10.14.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -300,7 +300,7 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
-= 10.14.2.1 =
+= 10.14.3 =
 - Changes in **all** versions:
  	* **Fix**: Prevent opening blank windows on WordPress playground for pseudo links like this: <a href="javascript:void(0)"></a> and to stay in the same tab.
 
