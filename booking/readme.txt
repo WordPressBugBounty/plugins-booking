@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.14.3
+Stable tag: 10.14.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -300,6 +300,14 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.4 =
+- Changes in **all** versions:
+	* **New**: Compact menu mode with more informative labels and wider size.
+	* **Improvement**: Resolved calendar loading issues with popular caching/optimization plugins - WP Rocket 3.19.2.1, WP-Optimize 4.2.4, WP Super Cache 3.0.1, Jetpack Boost 4.3.1, WP Fastest Cache 1.3.9. (10.14.4.2)
+ 	* **Fix**: Backdrop z-index in modal windows so the top toolbar is properly hidden.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: **Cleaner multiline shortcodes** — You can now put each parameter on its own line in any form shortcode (selectbox, checkbox, radio, etc.). Named attributes like multiple="" or class="..." can also be split across lines. Nothing to change in your existing forms: all single-line shortcodes continue to work exactly as before.
+
 = 10.14.3 =
 - Changes in **all** versions:
  	* **Fix**: Prevent opening blank windows on WordPress playground for pseudo links like this: <a href="javascript:void(0)"></a> and to stay in the same tab.

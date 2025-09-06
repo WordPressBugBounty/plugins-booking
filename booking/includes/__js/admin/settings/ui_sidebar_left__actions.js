@@ -11,6 +11,9 @@ function wpbc_admin_ui__sidebar_left__do_max() {
 	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'max' );
 	jQuery( '.wpbc_ui__top_nav__btn_open_left_vertical_nav' ).addClass( 'wpbc_ui__hide' );
 	jQuery( '.wpbc_ui__top_nav__btn_hide_left_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
+
+	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
+	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_max' );
 }
 
 /**
@@ -21,6 +24,9 @@ function wpbc_admin_ui__sidebar_left__do_min() {
 	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'min' );
 	jQuery( '.wpbc_ui__top_nav__btn_open_left_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
 	jQuery( '.wpbc_ui__top_nav__btn_hide_left_vertical_nav' ).addClass( 'wpbc_ui__hide' );
+
+	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
+	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_min' );
 }
 
 /**
@@ -31,6 +37,9 @@ function wpbc_admin_ui__sidebar_left__do_compact() {
 	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'compact' );
 	jQuery( '.wpbc_ui__top_nav__btn_open_left_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
 	jQuery( '.wpbc_ui__top_nav__btn_hide_left_vertical_nav' ).addClass( 'wpbc_ui__hide' );
+
+	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
+	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_compact' );
 }
 
 /**
@@ -43,6 +52,9 @@ function wpbc_admin_ui__sidebar_left__do_hide() {
 	jQuery( '.wpbc_ui__top_nav__btn_hide_left_vertical_nav' ).addClass( 'wpbc_ui__hide' );
 	// Hide top "Menu" button with divider.
 	jQuery( '.wpbc_ui__top_nav__btn_show_left_vertical_nav,.wpbc_ui__top_nav__btn_show_left_vertical_nav_divider' ).addClass( 'wpbc_ui__hide' );
+
+	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
+	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_none' );
 }
 
 /**

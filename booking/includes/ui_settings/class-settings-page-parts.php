@@ -115,6 +115,8 @@ class WPBC_Settings_Page_Parts {
 		// Top  wrapper  for admin  pages.
 		echo '<div class="wpbc_admin' .
 						( ( $right_vertical_sidebar__is_show ) ? ' right_vertical_sidebar_displayed ' : '' ) .
+			           	' wpbc_admin_page__tab__' . esc_attr( $this->active_tab ) .
+			 			' wpbc_admin_page__subtab__' . esc_attr( $this->active_subtab ) .
 					'">';
 
 		wpbc_ui__top_nav(

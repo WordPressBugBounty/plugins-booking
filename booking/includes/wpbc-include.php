@@ -185,9 +185,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__resour
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.php';
 
 if ( WPBC_NEW_FORM_BUILDER ) {
-	// Form Builder.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/builder-form-request-class.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/builder-form-page.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.
 }
 // Scheduller.
 // require_once WPBC_PLUGIN_DIR . '/includes/page-schedule/schedule-page.php';

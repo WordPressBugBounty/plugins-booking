@@ -149,18 +149,12 @@ function wpbc_exclude_for_wp_optimize( $excluded_filter_arr ) {
 }
 add_filter( 'wp-optimize-minify-default-exclusions', 'wpbc_exclude_for_wp_optimize', 10, 1 );
 
-
-/**
- * Exclude JS scripts from Delay JS  in the WP Rocket plugin
- *
- * @param $exclusions
- *
- * @return mixed
- */
-function wpbc_exclude_from_delay_for_wp_rocket( $exclusions ) {
+// FixIn: 10.14.4.2. (loader made cache-proof)
+function wpbc_get_exclude_scripts_arr_for_wp_rocket() {
 
 	$plugin_path = wpbc_make_link_relative( WPBC_PLUGIN_URL );
 
+	$exclusions = array();
 	// Exclude jQuery
 	$exclusions[] = '/jquery(-migrate)?-?([0-9.]+)?(.min|.slim|.slim.min)?.js(\?(.*))?( |\'|"|>)';
 
@@ -189,10 +183,35 @@ function wpbc_exclude_from_delay_for_wp_rocket( $exclusions ) {
 
 
 	// Old way to  exclude all
-	//	$exclusions[] = '/wp-content/plugins/booking(.*)/(.*)';
-	//	$exclusions[] = '(.*)wpbc(.*)';
+	$exclusions[] = '/wp-content/plugins/booking(.*)/(.*)';
+	$exclusions[] = '(.*)wpbc(.*)';
 
 	return $exclusions;
+}
 
+/**
+ * Exclude JS scripts from Delay JS  in the WP Rocket plugin
+ *
+ * @param $exclusions
+ *
+ * @return mixed
+ */
+function wpbc_exclude_from_delay_for_wp_rocket( $other_exclusions ) {
+// return $exclusions;
+	$wpbc_exclusions = wpbc_get_exclude_scripts_arr_for_wp_rocket();
+
+	$exclusions = array_merge( $other_exclusions, $wpbc_exclusions );
+
+	return $exclusions;
 }
 add_filter( 'rocket_delay_js_exclusions',   'wpbc_exclude_from_delay_for_wp_rocket' );
+
+/**
+ * Don't defer our plugin scripts
+ */
+add_filter( 'rocket_defer_js_exclusions',   'wpbc_exclude_from_delay_for_wp_rocket' );
+
+/**
+ * If WP Rocket is deferring inline JS, exclude our initializer by a unique key
+ */
+add_filter( 'rocket_defer_inline_exclusions',   'wpbc_exclude_from_delay_for_wp_rocket' );

@@ -2,6 +2,23 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
+
+/**
+ * Convert a CSV of numeric date parts to an array of integers.
+ * Example: '2025,09,05,08,55' -> [2025, 9, 5, 8, 55]
+ *
+ * @param string $csv       E.g. '2025,09,05,08,55'.
+ * @param string $separator Defaults to ','.
+ *
+ * @return int[]            Numeric parts as integers.
+ */
+function wpbc_csv_numbers_to_int_array( $csv, $separator = ',' ) {
+
+	$parts = array_map( 'trim', explode( $separator, (string) $csv ) );
+
+	return array_map( 'intval', $parts );
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Localize dates
 // ---------------------------------------------------------------------------------------------------------------------

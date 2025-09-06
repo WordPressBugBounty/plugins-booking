@@ -10,8 +10,7 @@
  * @modified 19.10.2015
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
-
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly.
 
 /**
  * Set local today  date ( can depend  from  the parameters in shortcode:  [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31'] )
@@ -31,8 +30,17 @@ function wpbc_get_localized_js__time_local( $start_it = 'now' ) {
 		$gmt_time = gmdate( 'Y-m-d H:i:s', strtotime( '-' . intval( wpbc_get_max_visible_days_in_calendar() ) . ' days' ) );        // - 365 days or more
 	}
 
-	$script .= "_wpbc.set_other_param( 'time_gmt_arr', [" . wpbc_datetime_localized__no_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) . ']  ); ';
-	$script .= "_wpbc.set_other_param( 'time_local_arr', [" . wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) . ']  ); ';
+	$gmt_csv   = wpbc_datetime_localized__no_wp_timezone( $gmt_time, 'Y,m,d,H,i' );
+	$local_csv = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' );
+
+	$gmt_arr   = wpbc_csv_numbers_to_int_array( $gmt_csv );
+	$local_arr = wpbc_csv_numbers_to_int_array( $local_csv );
+
+	$script    .= "_wpbc.set_other_param('time_gmt_arr', " . wp_json_encode( $gmt_arr ) . " ); ";
+	$script    .= "_wpbc.set_other_param('time_local_arr', " . wp_json_encode( $local_arr ) . " ); ";
+
+//	$script .= "_wpbc.set_other_param( 'time_gmt_arr', [" . wpbc_set_csd_as_int( wpbc_datetime_localized__no_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) ) . ']  ); ';
+//	$script .= "_wpbc.set_other_param( 'time_local_arr', [" . wpbc_set_csd_as_int( wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' ) ) . ']  ); ';
 
 	$unavailable_time_from_today = get_bk_option( 'booking_unavailable_days_num_from_today' );
 
@@ -60,9 +68,10 @@ function wpbc_get_localized_js__time_local( $start_it = 'now' ) {
 		$unavailable_time_from_today = '0';
 	}
 
-	$today_local = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' );
+	$today_local_csv = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' );
+	$today_arr       = wpbc_csv_numbers_to_int_array( $today_local_csv );
 
-	$script .= "_wpbc.set_other_param( 'today_arr', [" . $today_local . "]  ); ";
+	$script .= "_wpbc.set_other_param( 'today_arr', " . wp_json_encode( $today_arr ) . " ); ";
 
 	// FixIn: 10.8.1.4.
 	$script .= "_wpbc.set_other_param( 'availability__unavailable_from_today', '" . esc_js( $unavailable_time_from_today ) . "' ); ";    //Default: 0 '           Old JS: block_some_dates_from_today'		_wpbc.get_other_param( 'availability__unavailable_from_today' )
@@ -171,38 +180,82 @@ function wpbc_get_localized_js_vars() {
 }
 
 
+// FixIn: 10.14.4.2. (loader made cache-proof)
 /**
- * Define General inline  JavaScript variables for the Booking Calendar
- * This function  run  after ENQUEUE of WPBC  JavaScript files
+ * Print inline JS for Booking Calendar that initializes safely even with cache plugins (delay/defer/on-interaction).
  *
- * @param string $where_to_load  - 'both'.
+ * @param string $where_to_load 'both' by default.
  *
  * @return void
  */
 function wpbc_localize_js_vars( $where_to_load = 'both' ) {
 
-	$script_before = 'var wpbc_url_ajax =' . wp_json_encode( admin_url( 'admin-ajax.php' ) ) . ';';
+	// Allow disabling, if needed.
+	if ( apply_filters( 'wpbc_disable_inline_bootstrap', false, $where_to_load ) ) {
+		return;
+	}
+
+	// 1) BEFORE: essentials used by inlines or deferred scripts.  - Define both a global var and window property for maximum compatibility.
+	$script_before = 'var wpbc_url_ajax = ' . wp_json_encode( admin_url( 'admin-ajax.php' ) ) . ';' . 'window.wpbc_url_ajax = wpbc_url_ajax;';
 	wp_add_inline_script( 'wpbc_all', $script_before, 'before' );
 
-	$script = wpbc_get_localized_js_vars();
+	// 2) Existing payload (calls to _wpbc.set_other_param, _wpbc.set_message, …).
+	$payload_js = wpbc_get_localized_js_vars();
 
-	// Load this _wpbc only  after  loading of all scripts                                                              // FixIn: 10.1.3.4.
-	$script  = ' function wpbc_init__head(){ ' . $script . ' } ';
-	$script .= "( function() { if ( document.readyState === 'loading' ){ document.addEventListener( 'DOMContentLoaded', wpbc_init__head ); } else { wpbc_init__head(); } }() );";
+	// 3) Robust bootstrap: runs payload only when _wpbc is ready.
+	$max_wait_ms      = (int) apply_filters( 'wpbc_js_bootstrap_max_wait_ms', 10000 );        // 10s cap
+	$poll_interval_ms = (int) apply_filters( 'wpbc_js_bootstrap_poll_interval_ms', 50 );      // 50ms
+	$custom_events    = (array) apply_filters( 'wpbc_js_bootstrap_ready_events', array( 'wpbc-ready', 'wpbc:ready', 'wpbc_ready', 'wpbcReady' ) );
+	$user_events      = (array) apply_filters( 'wpbc_js_bootstrap_user_events', array( 'click', 'mousemove', 'touchstart', 'keydown', 'scroll' ) );
 
-	wp_add_inline_script( 'wpbc_all', $script );
-
-	/**
-	 * Help info. Order of JS events:
-	 *
-	 *  window.addEventListener("load", (event) => {     log.textContent += "load\n";  });                              -> window.onload (which is implemented even in old browsers), which fires when the entire page loads (images, styles, etc.)
-	 *  document.addEventListener("readystatechange", (event) => { log.textContent += `readystate: ${document.readyState}\n`; });
-	 *  document.addEventListener("DOMContentLoaded", (event) => { log.textContent += "DOMContentLoaded\n"; });         -> newish event which fires when the document's DOM is loaded (which may be some time before the images, etc. are loaded);
-	 * ::
-	 *  DOMContentLoaded
-	 *  readystate: complete
-	 *  load
-	 */
+	$boot_js = '(function(){' . "\n" .
+				'"use strict";' . "\n" .
+				'function wpbc_init__head(){' . $payload_js . '}' . "\n" .
+				'(function(){' . "\n" .
+				'  if (window.__wpbc_boot_done__ === true) return;' . "\n" .
+				// global guard across duplicates.
+				'  var started = false;' . "\n" .
+				'  function run_once(){' . "\n" .
+				'    if (started || window.__wpbc_boot_done__ === true) return true;' . "\n" .
+				'    started = true;' . "\n" .
+				'    try { wpbc_init__head(); window.__wpbc_boot_done__ = true; }' . "\n" .
+				'    catch(e){ started = false; try{console.error("WPBC init failed:", e);}catch(_){} }' . "\n" .
+				'    return (window.__wpbc_boot_done__ === true);' . "\n" .
+				'  }' . "\n" .
+				// Fast path.
+				'  function is_ready(){ return !!(window._wpbc && typeof window._wpbc.set_other_param === "function"); }' . "\n" .
+				'  if ( is_ready() && run_once() ) return;' . "\n" .
+				// Polling fallback (covers delayed/deferred/on-interaction loaders).
+				'  var waited = 0, max_ms = ' . $max_wait_ms . ', step = ' . $poll_interval_ms . ';' . "\n" .
+				'  var timer = setInterval(function(){' . "\n" .
+				'    if ( is_ready() && run_once() ) { clearInterval(timer); return; }' . "\n" .
+				'    waited += step;' . "\n" .
+				'    if ( waited >= max_ms ) {' . "\n" .
+				'      clearInterval(timer);' . "\n" .
+				'      // Switch to slow polling (1s) so we still init even without user interaction later.' . "\n" .
+				'      var slow = setInterval(function(){ if ( is_ready() && run_once() ) clearInterval(slow); }, 1000);' . "\n" .
+				'      try{console.warn("WPBC: _wpbc not detected within " + max_ms + "ms; using slow polling.");}catch(_){}' . "\n" .
+				'    }' . "\n" .
+				'  }, step);' . "\n" .
+				// Listen for your custom ready events (emit from core once _wpbc is ready).
+				'  var evs = ' . wp_json_encode( array_values( $custom_events ) ) . ';' . "\n" .
+				'  evs.forEach(function(name){' . "\n" .
+				'    document.addEventListener(name, function onready(){ if (is_ready() && run_once()) document.removeEventListener(name, onready); });' . "\n" .
+				'  });' . "\n" .
+				// Standard lifecycle events (covers DOMContentLoaded + load).
+				'  if (document.readyState === "loading") {' . "\n" .
+				'    document.addEventListener("DOMContentLoaded", function(){ if (is_ready()) run_once(); }, { once:true });' . "\n" .
+				'  }' . "\n" .
+				'  window.addEventListener("load", function(){ if (is_ready()) run_once(); }, { once:true });' . "\n" .
+				'  window.addEventListener("pageshow", function(){ if (is_ready()) run_once(); }, { once:true });' . "\n" .
+				'  document.addEventListener("visibilitychange", function(){ if (!document.hidden && is_ready()) run_once(); });' . "\n" .
+				// User interaction hooks — some cache plugins load delayed JS only after interaction.
+				'  var ui = ' . wp_json_encode( array_values( $user_events ) ) . ';' . "\n" .
+				'  var ui_bailed = false;' . "\n" .
+				'  function on_ui(){ if (ui_bailed) return; if (is_ready() && run_once()){ ui_bailed = true; ui.forEach(function(t){ document.removeEventListener(t, on_ui, true); }); } }' . "\n" .
+				'  ui.forEach(function(t){ document.addEventListener(t, on_ui, true); });' . "\n" .
+				'})();' . "\n" .
+				'})();';
+	wp_add_inline_script( 'wpbc_all', $boot_js );
 }
-add_action( 'wpbc_enqueue_js_files', 'wpbc_localize_js_vars', 51 );     // Need to  set  here 51,  because some JS has 50 priority,  for example at  WP Booking Calendar > Availability > Days Availability page       -> This hook fired after ENQUEUE of WPBC JS     -   wp_enqueue_script
-
+add_action( 'wpbc_enqueue_js_files', 'wpbc_localize_js_vars', 51 );

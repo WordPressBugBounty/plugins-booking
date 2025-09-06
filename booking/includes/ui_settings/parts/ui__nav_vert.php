@@ -120,7 +120,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		wpbc_ui__vert_left_bar__do_max();
 		echo '</div>';
 
-		echo '  <div class="wpbc_ui_el__vert_left_bar__root_sections_container">';
+		echo '  <div class="wpbc_ui_el__vert_left_bar__root_sections_container" role="tablist">';
 	}
 
 	// Loop to  show all  main  sections in vertical  menu.
@@ -816,7 +816,7 @@ function wpbc_ui__right_vertical_sidebar_compact( $args =array() ) {
 
 	echo '  <div class="wpbc_ui_el__vert_right_bar__content">';
 
-	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container">';
+	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container" role="tablist">';
 
 	do_action( 'wpbc_ui__right_vertical_sidebar_compact_content', $active_page_arr );
 
@@ -864,7 +864,7 @@ function wpbc_ui__right_vertical_sidebar( $args =array() ) {
 	wpbc_ui__vert_right_bar__do_max();
 	echo '</div>';
 
-	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container">';
+	echo '  <div class="wpbc_ui_el__vert_right_bar__root_sections_container" role="tablist">';
 
 	do_action( 'wpbc_ui__right_vertical_sidebar_content', $active_page_arr );
 
