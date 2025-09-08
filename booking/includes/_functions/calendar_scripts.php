@@ -20,6 +20,138 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ==  Calendar  functions  ==
 // =====================================================================================================================
 
+
+/**
+ * Print the critical inline CSS exactly once per page.
+ * - Keeps the loader styled immediately, even before other styles load.
+ */
+function wpbc_print_loader_inline_css_once() {
+
+	static $printed = false;
+	if ( $printed ) {
+		return;
+	}
+	$printed = true;
+
+	?>
+	<style id="wpbc_calendar_loader_inline_css">
+		/* Critical loader styles (scoped by class names) */
+		.calendar_loader_frame {
+			width: calc(341px * var(--wpbc-loader-cols, 1));
+			max-width: 100%;
+			height: 307px;
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: center;
+			border-radius: 5px;
+			box-shadow: 0 0 2px #ccc;
+			gap: 15px;
+			/* Calendar variables (safe fallbacks) */
+			color: var(--wpbc_cal-available-text-color, #2c3e50);
+			background: rgb(from var(--wpbc_cal-available-day-color, #e6f2ff) r g b / var(--wpbc_cal-day-bg-color-opacity, 1));
+			border: var(--wpbc_cal-day-cell-border-width, 1px) solid var(--wpbc_cal-available-day-color, #aacbeb);
+		}
+		.calendar_loader_text {
+			font-size: 18px;
+			text-align: center;
+		}
+		.calendar_loader_frame__progress_line_container {
+			width: 50%;
+			height: 3px;
+			margin-top: 7px;
+			overflow: hidden;
+			background: #202020;
+			border-radius: 30px;
+		}
+		.calendar_loader_frame__progress_line {
+			width: 0%;
+			height: 3px;
+			background: #8ECE01;
+			border-radius: 30px;
+			animation: calendar_loader_bar_progress 3s infinite linear;
+		}
+		@keyframes calendar_loader_bar_progress {
+			to {
+				width: 100%;
+			}
+		}
+		@media (prefers-reduced-motion: reduce) {
+			.calendar_loader_frame__progress_line {
+				animation: none;
+				width: 50%;
+			}
+		}
+	</style>
+	<?php
+}
+
+
+/**
+ * Output a single calendar loader block (no inline <script>, includes inline CSS once).
+ *
+ * How it works:
+ * - The external JS (enqueued here) auto-detects this block and manages the loader lifecycle.
+ * - Multiple instances on the same page are supported, even with duplicate RIDs.
+ * - Critical CSS is printed inline once, so loaders render correctly immediately.
+ *
+ * @param int $resource_id   Booking resource ID for this calendar.
+ * @param int $months_number Number of months in calendar view (affects width).
+ * @param int $grace_ms      Grace time in ms before showing helpful messages (default 8000).
+ *
+ * @return string HTML markup for the loader.
+ */
+function wpbc_get_calendar_loader_animation( $resource_id = 1, $months_number = 1, $grace_ms = 8000 ) {
+
+	ob_start();
+
+	$rid   = (int) $resource_id;
+	$cols  = max( 1, (int) $months_number );
+	$grace = max( 1, (int) $grace_ms );
+
+	// Print the inline CSS once.
+	wpbc_print_loader_inline_css_once();
+	?>
+	<div class="calendar_loader_frame calendar_loader_frame<?php echo esc_attr( $rid ); ?>"
+		data-wpbc-rid="<?php echo esc_attr( $rid ); ?>"
+		data-wpbc-grace="<?php echo esc_attr( $grace ); ?>"
+		style="--wpbc-loader-cols: <?php echo esc_attr( $cols ); ?>;"
+	>
+		<div class="calendar_loader_text"><?php esc_html_e( 'Loading', 'booking' ); ?>...</div>
+		<div class="calendar_loader_frame__progress_line_container">
+			<div class="calendar_loader_frame__progress_line"></div>
+		</div>
+	</div>
+	<?php
+
+	return ob_get_clean();
+}
+
+/**
+ * Prevent Cloudflare Rocket Loader from delaying our bootstrap script.
+ * If you use Cloudflare and see late loader decisions, enable this filter.
+ *
+ * @param string $tag    The script tag.
+ * @param string $handle The script handle.
+ *
+ * @return string Script HTML string.
+ */
+function wpbc_disable_cloudflare_on_calendar_script( $tag, $handle ) {
+
+	if ( 'wpbc_all' === $handle ) {
+		$tag = str_replace( '<script ', '<script data-cfasync="false" ', $tag );
+	}
+
+	return $tag;
+}
+
+add_filter( 'script_loader_tag', 'wpbc_disable_cloudflare_on_calendar_script', 10, 2 );
+
+
+
+
+
+
 /**
  * Get calendar Loader animation (cache/minify/deferral safe).
  *
@@ -34,7 +166,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string
  */
-function wpbc_get_calendar_loader_animation( $resource_id = 1, $months_number = 1 ) {
+function OLD__wpbc_get_calendar_loader_animation( $resource_id = 1, $months_number = 1 ) {
 
 	// FixIn: 10.14.4.2. (loader cache-proof; duplicate shown only after 8s if not replaced; logging added).
 

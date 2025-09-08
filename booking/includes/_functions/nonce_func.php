@@ -197,7 +197,7 @@ function wpbc_get_exclude_scripts_arr_for_wp_rocket() {
  * @return mixed
  */
 function wpbc_exclude_from_delay_for_wp_rocket( $other_exclusions ) {
-// return $exclusions;
+ // return $exclusions;
 	$wpbc_exclusions = wpbc_get_exclude_scripts_arr_for_wp_rocket();
 
 	$exclusions = array_merge( $other_exclusions, $wpbc_exclusions );

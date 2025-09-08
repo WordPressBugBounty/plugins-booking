@@ -565,29 +565,32 @@ class wpdev_booking {
         $booking_form_format_type     = get_bk_option( 'booking_form_format_type');
 		$booking_form_theme           = get_bk_option( 'booking_form_theme');
 
-		$return_form = '<div id="' . $my_random_id . '" '
+		$return_form = '<div id="' . esc_attr($my_random_id) . '" '
 		                 . ' class="wpbc_container wpbc_form wpbc_container_booking_form '
 		                    . ( ( wpbc_is_this_demo() == 'On' ) ? 'wpbc_demo_site ' : '' )
 		                    . esc_attr( $booking_form_theme ) . ' '
 		                    . ( ( $booking_form_is_using_bs_css == 'On' ) ? 'wpdevelop ' : '' )
 		               . '" >' .
-                         '<form  id="booking_form' . $resource_id . '"   class="booking_form ' . $booking_form_format_type . '" method="post" action="">' .
-                       '<div id="ajax_respond_insert' . $resource_id . '" class="ajax_respond_insert" style="display:none;"></div>' .
+                         '<form  id="booking_form' . intval($resource_id) . '"   class="booking_form ' . esc_attr($booking_form_format_type) . '" method="post" action="">' .
+                       '<div id="ajax_respond_insert' . intval($resource_id) . '" class="ajax_respond_insert" style="display:none;"></div>' .
                        $res.
                          '</form></div>';
         
-        $return_form .= '<div id="booking_form_garbage' . $resource_id . '" class="booking_form_garbage"></div>';
+        $return_form .= '<div id="booking_form_garbage' . intval($resource_id) . '" class="booking_form_garbage"></div>';
         
         if ($my_selected_dates_without_calendar == '' ) {
             // Check according already shown Booking Calendar  and set do not visible of it
 
+			$warn = sprintf( 'Warning! The booking calendar for this resource with the ID = %d is already on the page. Find more details here: https://wpbookingcalendar.com/faq/why-the-booking-calendar-widget-not-show-on-page/', (int) $resource_id );
+
 	        $return_form .= '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 // FixIn: 10.1.3.7.
 			$return_form .=  ' jQuery(".widget_wpdev_booking .booking_form.form-horizontal").removeClass("form-horizontal");
-                                    var visible_calendars_count = _wpbc.get_other_param( "calendars__on_this_page" ).length;
+			                        var calendars__on_this_page_list = _wpbc.get_other_param( "calendars__on_this_page" ) || [];
+			                        var visible_calendars_count = calendars__on_this_page_list.length;
                                     if (visible_calendars_count !== null ) {
                                         for (var i=0;i< visible_calendars_count ;i++){
-                                          if ( _wpbc.get_other_param( "calendars__on_this_page" )[i] === ' . $resource_id . ' ) {
-                                          	console.log("%c Warning! The booking calendar for this resource with the ID = ' . $resource_id . ' is already on the page. Find more details here: https://wpbookingcalendar.com/faq/why-the-booking-calendar-widget-not-show-on-page/", "color: #e77; font-weight:bold");
+                                          if ( _wpbc.get_other_param( "calendars__on_this_page" )[i] === ' . intval($resource_id) . ' ) {
+                                          	console.log("%c%s", "color: #e77; font-weight:bold", ' . wp_json_encode( $warn ) . ');
                                           }
                                         }
                                         _wpbc.get_other_param( "calendars__on_this_page" )[ visible_calendars_count ]=' . intval( $resource_id ) . ';
@@ -596,8 +599,8 @@ class wpdev_booking {
         } else {
             //FixIn:6.1.1.16	// FixIn: 8.2.1.13.
 	        $return_form .= '<script type="text/javascript"> ' . wpbc_jq_ready_start();                                 // FixIn: 10.1.3.7.
-            $return_form .= ' if(typeof( wpbc_show_cost_hints_after_few_seconds ) == "function") {  wpbc_show_cost_hints_after_few_seconds(' . $resource_id . ');  } ';
-            $return_form .= ' else if (typeof( showCostHintInsideBkForm ) == "function") {  showCostHintInsideBkForm(' . $resource_id . ');  } ';	// Legacy function  support.
+            $return_form .= ' if(typeof( wpbc_show_cost_hints_after_few_seconds ) == "function") {  wpbc_show_cost_hints_after_few_seconds(' . intval($resource_id) . ');  } ';
+            $return_form .= ' else if (typeof( showCostHintInsideBkForm ) == "function") {  showCostHintInsideBkForm(' . intval($resource_id) . ');  } ';	// Legacy function  support.
 			$return_form .= wpbc_jq_ready_end() . '</script>';                                                          // FixIn: 10.1.3.7.
         }
 
@@ -614,7 +617,8 @@ class wpdev_booking {
 					$user_nick_name = ( empty( $user_nick_name ) ) ? '' : $user_nick_name[0];                           // FixIn: 8.7.1.5.
 
 					$return_form .= '<script type="text/javascript"> ' . wpbc_jq_ready_start();                         // FixIn: 10.1.3.7.
-                    $return_form .= 'var bk_af_submit_form = document.getElementById( "booking_form' . $resource_id . '" );
+                    $return_form .= 'var bk_af_submit_form = document.getElementById( "booking_form' . intval( $resource_id ) . '" );
+                    				if ( ! bk_af_submit_form ) { console.error( "WPBC: No booking form: booking_form. " ); return; }
                                     var bk_af_count = bk_af_submit_form.elements.length;
                                     var bk_af_element;
                                     var bk_af_reg;
@@ -622,47 +626,47 @@ class wpdev_booking {
                                         bk_af_element = bk_af_submit_form.elements[bk_af_i];
                                         // FixIn: 9.4.3.4.
                                         if  (  ( bk_af_element.type == "text" ) ||   ( bk_af_element.type == "email" ) ) 
-                                            if    ( bk_af_element.name !== ("date_booking' . $resource_id . '" ) )
+                                            if    ( bk_af_element.name !== ("date_booking' . intval($resource_id) . '" ) )
                                             {
                                                 // NickName	// FixIn: 8.6.1.2.
                                                 bk_af_reg = /^([A-Za-z0-9_\-\.])*(nickname){1}([A-Za-z0-9_\-\.])*$/;
                                                 if(bk_af_reg.test(bk_af_element.name) != false)
                                                     if (bk_af_element.value == "" )
-                                                        bk_af_element.value  = "' . str_replace( "'", '',  $user_nick_name ) . '";                                                        
+                                                        bk_af_element.value  = ' . wp_json_encode( (string) $user_nick_name ) . ';                                                        
                                                 // Second Name
                                                 bk_af_reg = /^([A-Za-z0-9_\-\.])*(last|second){1}([_\-\.])?name([A-Za-z0-9_\-\.])*$/;
                                                 if(bk_af_reg.test(bk_af_element.name) != false)
                                                     if (bk_af_element.value == "" )
-                                                        bk_af_element.value  = "'.str_replace("'",'',$curr_user->last_name).'";
+                                                        bk_af_element.value  = '.wp_json_encode( (string) $curr_user->last_name).';
                                                 // First Name
                                                 bk_af_reg = /^name([0-9_\-\.])*$/;
                                                 if(bk_af_reg.test(bk_af_element.name) != false)
                                                     if (bk_af_element.value == "" )
-                                                        bk_af_element.value  = "'.str_replace("'",'',$curr_user->first_name).'";
+                                                        bk_af_element.value  = '.wp_json_encode( (string) $curr_user->first_name).';
                                                 bk_af_reg = /^([A-Za-z0-9_\-\.])*(first|my){1}([_\-\.])?name([A-Za-z0-9_\-\.])*$/;
                                                 if(bk_af_reg.test(bk_af_element.name) != false)
                                                     if (bk_af_element.value == "" )
-                                                        bk_af_element.value  = "'.str_replace("'",'',$curr_user->first_name).'";
+                                                        bk_af_element.value  = '.wp_json_encode( (string) $curr_user->first_name).';
                                                 // Email
                                                 bk_af_reg = /^(e)?([_\-\.])?mail([0-9_\-\.])*$/;
                                                 if(bk_af_reg.test(bk_af_element.name) != false)
                                                     if (bk_af_element.value == "" )
-                                                        bk_af_element.value  = "'.str_replace("'",'',$curr_user->user_email).'";
+                                                        bk_af_element.value  = '.wp_json_encode( (string) $curr_user->user_email).';
 												// Phone
 					                            bk_af_reg = /^([A-Za-z0-9_\-\.])*(phone|fone){1}([A-Za-z0-9_\-\.])*$/;
 					                            if(bk_af_reg.test(bk_af_element.name) != false)
 					                                if (bk_af_element.value == "" )
-					                                    bk_af_element.value  = "'.str_replace("'",'',$curr_user->phone_number).'";
+					                                    bk_af_element.value  = '.wp_json_encode( (string) $curr_user->phone_number).';
 					                            // NB Enfants
 					                            bk_af_reg = /^(e)?([_\-\.])?nb_enfant([0-9_\-\.])*$/;
 					                            if(bk_af_reg.test(bk_af_element.name) != false)
 					                                if (bk_af_element.value == "" )
-					                                    bk_af_element.value  = "'.str_replace("'",'',$curr_user->nb_enfant).'";                                                                                            
+					                                    bk_af_element.value  = '.wp_json_encode( (string) $curr_user->nb_enfant).';                                                                                            
                                                 // URL
                                                 bk_af_reg = /^([A-Za-z0-9_\-\.])*(URL|site|web|WEB){1}([A-Za-z0-9_\-\.])*$/;
                                                 if(bk_af_reg.test(bk_af_element.name) != false)
                                                     if (bk_af_element.value == "" )
-                                                        bk_af_element.value  = "'.str_replace("'",'',$curr_user->user_url).'";
+                                                        bk_af_element.value  = '.wp_json_encode( (string) $curr_user->user_url).';
                                            }
                                     }';
 					$return_form .= wpbc_jq_ready_end() . '</script>';                                                          // FixIn: 10.1.3.7.
