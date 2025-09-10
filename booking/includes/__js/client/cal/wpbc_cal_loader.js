@@ -16,12 +16,11 @@
  *
  */
 /**
- * WPBC calendar loader bootstrap (snake_case, no i18n).
+ * WPBC calendar loader bootstrap.
  * - Auto-detects .calendar_loader_frame[data-wpbc-rid] blocks.
  * - Waits a "grace" period per element before showing a helpful message
  *   if the real calendar hasn't replaced the loader.
  * - Multiple calendars and duplicate RIDs are handled.
- * - No inline JS required in markup.
  */
 (function (w, d) {
 	'use strict';
@@ -150,16 +149,20 @@
 	 * @param {Element} el
 	 */
 	function start_for(el) {
-		if ( !el || is_processed( el ) ) {
+		if ( ! el || is_processed( el ) ) {
 			return;
 		}
 		mark_processed( el );
 
 		var rid = el.dataset.wpbcRid;
-		if ( !rid ) return;
+		if ( ! rid ) {
+			return;
+		}
 
 		var grace_ms = parseInt( el.dataset.wpbcGrace || '8000', 10 );
-		if ( !(grace_ms > 0) ) grace_ms = 8000;
+		if ( ! (grace_ms > 0) ) {
+			grace_ms = 8000;
+		}
 
 		var container_id = 'calendar_booking' + rid;
 		var container    = d.getElementById( container_id );
@@ -169,10 +172,12 @@
 			return is_replaced( el, rid, container );
 		}
 
-		// Already replaced → nothing to do.
-		if ( replaced_now() ) return;
+		// Already replaced -> nothing to do.
+		if ( replaced_now() ) {
+			return;
+		}
 
-		// 1) Cheap polling
+		// 1) Cheap polling.
 		var poll_id = w.setInterval( function () {
 			if ( replaced_now() ) {
 				safe_clear( poll_id );
@@ -185,7 +190,7 @@
 			}
 		}, 250 );
 
-		// 2) MutationObserver for faster reaction
+		// 2) MutationObserver for faster reaction.
 		var observer = null;
 		if ( container && 'MutationObserver' in w ) {
 			try {
@@ -203,7 +208,7 @@
 			}
 		}
 
-		// 3) Final decision after grace period
+		// 3) Final decision after grace period.
 		w.setTimeout( function finalize_after_grace() {
 			if ( replaced_now() ) {
 				safe_clear( poll_id );
@@ -218,18 +223,20 @@
 
 			var M = get_messages( rid );
 			var msg;
-			if ( !has_jq() ) {
+			if ( ! has_jq() ) {
 				msg = M.lib_jq;
-			} else if ( !has_wpbc() ) {
+			} else if ( ! has_wpbc() ) {
 				msg = M.lib_wpbc;
-			} else if ( !has_dp() ) {
+			} else if ( ! has_dp() ) {
 				msg = M.lib_dp;
 			} else {
 				msg = M.duplicate + '\n\n' + M.support;
 			}
 
 			try {
-				if ( text_el ) text_el.innerHTML = wrap_html( msg );
+				if ( text_el ) {
+					text_el.innerHTML = wrap_html( msg );
+				}
 			} catch ( e ) {
 			}
 
@@ -254,20 +261,26 @@
 	 * Observe the document for any new loader elements inserted later (AJAX, block render).
 	 */
 	function observe_new_loaders() {
-		if ( !('MutationObserver' in w) ) return;
+		if ( ! ('MutationObserver' in w) ) {
+			return;
+		}
 		try {
 			var doc_observer = new MutationObserver( function (mutations) {
 				for ( var i = 0; i < mutations.length; i++ ) {
 					var nodes = mutations[i].addedNodes || [];
 					for ( var j = 0; j < nodes.length; j++ ) {
 						var node = nodes[j];
-						if ( !node || node.nodeType !== 1 ) continue; // ELEMENT_NODE
+						if ( ! node || node.nodeType !== 1 ) {
+							continue;
+						}
 						if ( node.matches && node.matches( '.calendar_loader_frame[data-wpbc-rid]' ) ) {
 							start_for( node );
 						}
 						if ( node.querySelectorAll ) {
 							var inner = node.querySelectorAll( '.calendar_loader_frame[data-wpbc-rid]' );
-							if ( inner && inner.length ) inner.forEach( start_for );
+							if ( inner && inner.length ) {
+								inner.forEach( start_for );
+							}
 						}
 					}
 				}

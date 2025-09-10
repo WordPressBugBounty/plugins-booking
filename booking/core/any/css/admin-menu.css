@@ -181,19 +181,24 @@
     border-bottom: 1px dashed;
     padding:0 2px;
 }
-.wpbc_new_label{
-    text-transform: uppercase;
-    /*! color: #5b6b0d;*/
-    color: #e7760d;
-    vertical-align: super;
-    font-size: 8px;
-    font-weight: 600;
-    border: none;
-    /*! background: #afd10f; */
-    border-radius: 2px;
-    float: left;
-    padding: 0 3px;
-    line-height: 1.75em;
+.wpbc_new_label {
+	text-transform: uppercase;
+	color: #fff;
+	font-size: 9px;
+	font-weight: 600;
+	border: none;
+	background: #16a016;
+	border-radius: 2px;
+	padding: 1px 4px;
+	line-height: 1.75em;
+}
+.active .wpbc_new_label {
+	background: #25ac25;
+}
+.wpbc_settings_page_wrapper.compact .wpbc_new_label {
+	max-width: max-content;
+	margin: 10px auto 0;
+	display: block;
 }
 .wpbc_pro_label,
 .wpbc_settings_navigation_column .wpbc_settings_navigation_item a span.wpbc_pro_label{

@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 10.14.5
+Stable tag: 10.14.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -300,6 +300,10 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.6 =
+- Changes in **all** versions:
+	* **Fix**: **Cloudflare Rocket Loader**: Prevents the stuck "Calendar Loading..." message by excluding key calendar scripts from Rocket Loader deferral (10.14.6.1).
+
 = 10.14.5 =
 - Changes in **all** versions:
 	* **Fix**: Rare issue where some caching/minify/deferral/HTML-optimizer plugins corrupted the inline “Loading…” calendar snippet, causing calendars to fail to appear or show stray text. The loader now runs via a small external script and is compatible with performance plugins; if something’s missing, a clear on-screen message is shown.
