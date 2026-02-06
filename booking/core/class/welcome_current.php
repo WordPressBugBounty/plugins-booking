@@ -285,7 +285,7 @@ function wpbc_welcome_section_10_10( $obj ){
 				<h3><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'New: **Steps Timeline Progress Indicator**' ) ); ?></h3>
 				<ul>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; Easily show a progress indicator for multi-step booking forms.' ) ); ?></li>
-					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Shortcode:** <code>[steps_timline steps_count="3" active_step="1"]</code>' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Shortcode:** <code>[steps_timeline steps_count="3" active_step="1"]</code>' ) ); ?></li>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '**Parameters:**' ) ); ?></li>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **steps_count="3"** - Defines total number of steps' ) ); ?></li>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **active_step="1"** - Highlights the current step' ) ); ?></li>

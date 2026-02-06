@@ -44,10 +44,12 @@ function wpbc_bf__replace_custom_html_shortcodes( $html_original_content ){
 	$full_text_content = $html_original_content;
 
 	$replacement_shortcode_arr = array(
-										array( 'shortcode'  => 'r',     'replace_to' => array( 'tag' => 'div',   'attr' => array( 'class' => "wpbc__row" ) )    ),          // Row
-										array( 'shortcode'  => 'c',     'replace_to' => array( 'tag' => 'div',   'attr' => array( 'class' => "wpbc__field" ) )    ),        // Column
-										array( 'shortcode'  => 'f',     'replace_to' => array( 'tag' => 'span',  'attr' => array( 'class' => "fieldvalue" ) )    ),         // Field  for "Content of booking fields data" form
-										array( 'shortcode'  => 'l',     'replace_to' => array( 'tag' => 'label', 'attr' => array() )    )                                  // Label
+										array( 'shortcode'  => 'r',    'replace_to' => array( 'tag' => 'div',   'attr' => array( 'class' => "wpbc__row" ) )    ),          // Row.
+										array( 'shortcode'  => 'c',    'replace_to' => array( 'tag' => 'div',   'attr' => array( 'class' => "wpbc__field" ) )    ),        // Column.
+										array( 'shortcode'  => 'item', 'replace_to' => array( 'tag' => 'div',   'attr' => array( 'class' => "bfb_element" ) )    ),        // Field element for BFB.
+
+										array( 'shortcode'  => 'f',    'replace_to' => array( 'tag' => 'span',  'attr' => array( 'class' => "fieldvalue" ) )    ),         // Field  for "Content of booking fields data" form.
+										array( 'shortcode'  => 'l',    'replace_to' => array( 'tag' => 'label', 'attr' => array() )    )                                   // Label.
 
 //										array( 'r', '<div class="wpbc__row">'   , '</div>' ),            // Row
 //										array( 'c', '<div class="wpbc__field">' , '</div>' ),            // Column
@@ -163,6 +165,7 @@ function wpbc_bf__replace_custom_html_shortcodes( $html_original_content ){
 												'f' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
 												'c' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
 												'l' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
+												'item'   => array( 'style' => true, 'class' => true, 'id' => true ),
 												'spacer' => array(),
 												'style'  => array()
 							             ),

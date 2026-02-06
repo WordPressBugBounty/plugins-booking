@@ -141,6 +141,10 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 														} );
 					}
 
+					if ( 'function' === typeof (wpbc_update_capacity_hint) ) {
+						wpbc_update_capacity_hint( response_data['resource_id'] );
+					}
+
 					// Trigger event that calendar has been		 // FixIn: 10.0.0.44.
 					if ( jQuery( '#calendar_booking' + response_data[ 'resource_id' ] ).length > 0 ){
 						var target_elm = jQuery( 'body' ).trigger( "wpbc_calendar_ajx__loaded_data", [response_data[ 'resource_id' ]] );

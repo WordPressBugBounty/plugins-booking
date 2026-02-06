@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Show values of the arguments list
  */
 if ( ! function_exists( 'debuge' ) ) {
-	function debuge() {
+	function debuge() {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 		$numargs  = func_num_args();
 		$var      = func_get_args();
 		$makeexit = is_bool( $var[ count( $var ) - 1 ] ) ? $var[ count( $var ) - 1 ] : false;
@@ -55,7 +55,7 @@ if ( ! function_exists( 'debuge' ) ) {
  */
 if ( ! function_exists( 'show_debug' ) ) {
 	// FixIn: 8.8.3.18.
-	function show_debug() {
+	function show_debug() {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 		//TODO: 2023-09-19 13:42   Need to  remake it  relative to  new 'create_booking.php' functionality. We can  not simply echo here !!!!
 		if ( is_admin() && ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) {
 		} else {
@@ -95,7 +95,7 @@ if ( ! function_exists( 'show_debug' ) ) {
  * Show Speed of the execution and number of queries.
  */
 if ( ! function_exists( 'debuge_speed' ) ) {
-	function debuge_speed() {
+	function debuge_speed() {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 		echo '<div style="font-size:18px;float:right;">' . esc_html( get_num_queries() ) . '/' . esc_html( timer_stop( 0, 3 ) ) . 'qps</div>';
 	}
 }
@@ -104,13 +104,13 @@ if ( ! function_exists( 'debuge_speed' ) ) {
  * Show error info
  */
 if ( ! function_exists( 'debuge_error' ) ) {
-	function debuge_error( $msg, $file_name = '', $line_num = '' ) {
+	function debuge_error( $msg, $file_name = '', $line_num = '' ) {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo get_debuge_error( $msg, $file_name, $line_num );
 	}
 }
 if ( ! function_exists( 'get_debuge_error' ) ) {
-	function get_debuge_error( $msg, $file_name = '', $line_num = '' ) {
+	function get_debuge_error( $msg, $file_name = '', $line_num = '' ) {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 		return wpbc_get_debuge_error( $msg, $file_name, $line_num );
 	}

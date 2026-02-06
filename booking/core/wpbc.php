@@ -14,9 +14,9 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
-global $wp_version;                                                                                                         
-$min_wp_version = version_compare( WP_BK_MIN_WP_VERSION, $wp_version, '<=' );   // FixIn: 7.0.1.6.
-if ( ( ! class_exists( 'Booking_Calendar' ) ) && ( $min_wp_version ) ) :
+global $wp_version;
+$wpbc_min_wp_version = version_compare( WP_BK_MIN_WP_VERSION, $wp_version, '<=' );   // FixIn: 7.0.1.6.
+if ( ( ! class_exists( 'Booking_Calendar' ) ) && ( $wpbc_min_wp_version ) ) :
 
     
 // General Init Class    
@@ -59,7 +59,7 @@ public static function init() {
         make_bk_action('wpbc_booking_calendar_started');
 
         if ( $is_continue_at_frontend ) {                                                   							// Possible Load Admin or Front-End page
-            
+
             self::$instance->js     = new WPBC_JS;
             self::$instance->css    = new WPBC_CSS;
 
@@ -417,7 +417,7 @@ else:   // Its seems that  some instance of Booking Calendar still activted!!!
     
     // FixIn: 7.0.1.6.
     global $wp_version;                                                     
-    $min_wp_version = version_compare( WP_BK_MIN_WP_VERSION, $wp_version, '<=' );
+    $wpbc_min_wp_version = version_compare( WP_BK_MIN_WP_VERSION, $wp_version, '<=' );
 
     // FixIn: 7.0.1.6.
     function wpbc_show_min_wp_version_error() {
@@ -499,7 +499,7 @@ else:   // Its seems that  some instance of Booking Calendar still activted!!!
     }
 
 
-    if ( ! $min_wp_version )                                                    // FixIn: 7.0.1.6.
+    if ( ! $wpbc_min_wp_version )                                                    // FixIn: 7.0.1.6.
         add_action('admin_notices', 'wpbc_show_min_wp_version_error');
     else
         add_action('admin_notices', 'wpbc_show_activation_error');
@@ -527,8 +527,8 @@ WPBC();
 
 //if (  ! defined( 'SAVEQUERIES') ) define('SAVEQUERIES', true);
 
- //add_action( 'admin_footer', 'show_debug_info', 130 ); 
-function show_debug_info() {
+ //add_action( 'admin_footer', 'wpbc_show_debug_info', 130 );
+function wpbc_show_debug_info() {
 
 	$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
     $request_uri = $server_request_uri;                                 //FixIn:5.4.1

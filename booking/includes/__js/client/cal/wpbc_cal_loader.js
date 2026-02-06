@@ -88,17 +88,20 @@
 	function get_messages(rid) {
 		var rid_int = parseInt( rid, 10 );
 		return {
-			duplicate:
+			duplicate  :
 				'You have added the same calendar (ID = ' + rid_int + ') more than once on this page. ' +
 				'Please keep only one calendar with the same ID on a page to avoid conflicts.',
-			support  : 'Contact support@wpbookingcalendar.com if you have any questions.',
-			lib_jq   :
+			init_failed:
+				'The calendar could not be initialized on this page.' + '\n' +
+				'Please check your browser console for JavaScript errors and conflicts with other scripts/plugins.',
+			support    : 'Contact support@wpbookingcalendar.com if you have any questions.',
+			lib_jq     :
 				'It appears that the "jQuery" library is not loading correctly.' + '\n' +
 				'For more information, please refer to this page: https://wpbookingcalendar.com/faq/',
-			lib_dp   :
+			lib_dp     :
 				'It appears that the "jQuery.datepick" library is not loading correctly.' + '\n' +
 				'For more information, please refer to this page: https://wpbookingcalendar.com/faq/',
-			lib_wpbc :
+			lib_wpbc   :
 				'It appears that the "_wpbc" library is not loading correctly.' + '\n' +
 				'Please enable the loading of JS/CSS files for this page on the "WP Booking Calendar" - "Settings General" - "Advanced" page' + '\n' +
 				'For more information, please refer to this page: https://wpbookingcalendar.com/faq/'
@@ -125,6 +128,25 @@
 
 	function has_wpbc() {
 		return !!(w._wpbc && typeof w._wpbc.set_other_param === 'function');
+	}
+
+	function normalize_rid(rid) {
+		var n = parseInt( rid, 10 );
+		return (n > 0) ? String( n ) : '';
+	}
+
+	function get_rid_counts(rid) {
+		var r = normalize_rid( rid );
+		return {
+			rid       : r,
+			loaders   : r ? query_all( '.calendar_loader_frame[data-wpbc-rid="' + r + '"]' ).length : 0,
+			containers: r ? query_all( '#calendar_booking' + r ).length : 0
+		};
+	}
+
+	function is_duplicate_rid(rid) {
+		var c = get_rid_counts( rid );
+		return (c.loaders > 1) || (c.containers > 1);
 	}
 
 	/**
@@ -230,7 +252,12 @@
 			} else if ( ! has_dp() ) {
 				msg = M.lib_dp;
 			} else {
-				msg = M.duplicate + '\n\n' + M.support;
+				// Libraries are present, but loader wasn't replaced -> decide what is most likely.
+				if ( is_duplicate_rid( rid ) ) {
+					msg = M.duplicate + '\n\n' + M.support;
+				} else {
+					msg = M.init_failed + '\n\n' + M.support;
+				}
 			}
 
 			try {

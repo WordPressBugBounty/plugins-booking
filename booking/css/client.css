@@ -268,14 +268,18 @@ form.booking_form {
 	justify-content: flex-start;
 	align-items: flex-start;
 }
+.wpbc_container_booking_form .wpbc_bfb__field[data-type="captcha"] img.captcha_img,
 .wpbc_container_booking_form .booking_form_div img.captcha_img {
 	vertical-align: middle;
 	box-shadow: none;
 	margin-left: 1em;
 	align-self: center;
 }
+.wpbc_container_booking_form .wpbc_bfb__field[data-type="captcha"] .captachinput,
 .wpbc_container_booking_form .booking_form_div .captachinput {
 	width: 120px;
+	min-width: Min(120px, 100%);
+	max-width: 100%;
 	flex: 0 1 10em;
 	margin: 0;
 }
@@ -921,9 +925,15 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 /* Field help / description: flex with small margin */
 .booking_form .wpbc_field_description {
   flex: 1 1 100%;
-  margin-bottom: 10px;
+  margin-block-start: 10px;
 }
-
+.wpbc_bfb__help,
+.wpdev-form-control-wrap + .wpbc_field_description {
+	font-size:0.9em;
+}
+.wpdev-form-control-wrap.wpbc_wrap_checkbox + .wpbc_field_description{
+	margin-block-start:10px;
+}
 /* 3‑column general form — FixIn: 8.8.2.6 */
 .wpbc_form_columns_general .wpbc_form_row_general {
 	display: flex;
@@ -1041,6 +1051,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 .wpbc__field.wpbc__cal > * {
 	max-width: 100%;
 }
+.wpbc_bfb_form:has(:not(.wpbc__field)) .bk_calendar_frame,
 .wpbc__field .bk_calendar_frame {
 	margin-top: calc(0.25em + 8px);
 }
@@ -1049,8 +1060,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 }
 
 /* Field labels: inline-flex with small gap */
-.wpbc_container_booking_form .wpbc__field label,
-.wpbc_container_booking_form .wpbc__field label:hover {
+.wpbc_container_booking_form .wpbc__field label:not(.wpbc_static_text),
+.wpbc_container_booking_form .wpbc__field label:not(.wpbc_static_text):hover {
 	flex: 0 1 auto;
 	display: flex;
 	flex-flow: row wrap;
@@ -1543,10 +1554,17 @@ table.wpbc_ideal_payment_table {
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	margin: 0 0 15px;
+	margin: 0;
 	height: var(--wpbc_form-button-light-size-height);
 	box-sizing: border-box;
 	text-shadow: none;
+	/* word wraping */
+	text-overflow: ellipsis;
+	overflow: hidden;
+	overflow-wrap: normal;
+	height: auto;
+	white-space: normal;
+	hyphens: auto;
 }
 
 /* Hover/focus emphasis */
@@ -1789,12 +1807,15 @@ table.wpbc_ideal_payment_table {
 }
 
 /* Payment buttons in dark theme */
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light {
 	box-shadow: 0 1px 5px #424242;
 	border: 2px solid #525252;
 	background-color: #4d4d4d;
 	color: #fff;
 }
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:focus,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:hover,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:focus,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:hover {
 	box-shadow: 0 1px 5px #424242;
@@ -1802,10 +1823,14 @@ table.wpbc_ideal_payment_table {
 	background-color: #5c5c5c;
 	color: #fff;
 }
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:focus,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:hover,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:focus,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:hover {
 	box-shadow: 0 5px 10px #424242;
 }
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover {
 	background-color: #4d4d4d;
@@ -1817,6 +1842,9 @@ table.wpbc_ideal_payment_table {
 .wpbc_theme_dark_1 label {
 	color: #989898;
 }
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope select,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope textarea,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope input,
 .wpbc_theme_dark_1.wpbc_container select,
 .wpbc_theme_dark_1.wpbc_container textarea,
 .wpbc_theme_dark_1.wpbc_container input {

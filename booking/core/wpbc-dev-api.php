@@ -457,7 +457,7 @@ function wpbc_api_get_booking_by_id( $booking_id = '' ) {
 
 	$slct_sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}booking as b left join {$wpdb->prefix}bookingdates as bd on (b.booking_id = bd.booking_id) WHERE b.booking_id IN (%s) LIMIT 0,1", $booking_id );
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$slct_sql_results = $wpdb->get_results( $slct_sql, ARRAY_A );
 
 	$data = array();
@@ -548,7 +548,7 @@ function wpbc_resource_created__add_other_params( $resource_id ) {
 	//  $wp_queries[] = "INSERT INTO  {$wpdb->prefix}booking_types_meta ( type_id, meta_key, meta_value ) VALUES ( {$resource_id}, 'availability', '{$meta_str}' );";
 
 	foreach ( $wp_queries as $wp_q ) {
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$wpdb->query( $wp_q );
 	}
 

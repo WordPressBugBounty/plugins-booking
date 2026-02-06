@@ -239,7 +239,7 @@ function wpbc_file__read_header_info( $file, $default_headers, $context = '' ) {
 }
 
 
-function get_json_property_from_meta( $property_key ) {
+function wpbc_get_json_property_from_meta( $property_key ) {
 
 	if ( ! defined( 'WPBC_PRO_FILE' ) ) {
 		return null;
@@ -535,7 +535,7 @@ function wpbc_get_info__about_how_old() {
 	global $wpdb;
 
 	$sql = "SELECT modification_date FROM  {$wpdb->prefix}booking as bk ORDER by booking_id  LIMIT 0,1";
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$res = $wpdb->get_results( $sql );
 
 	if ( ! empty( $res ) ) {

@@ -20,12 +20,12 @@ if ( ! defined( 'ABSPATH' ) ) {        // Exit if accessed directly.
 // ---------------------------------------------------------------------------------------------------------------------
 // Internal plugin action hooks system
 // ---------------------------------------------------------------------------------------------------------------------
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+global $wpbc_bk_action, $wpbc_bk_filter;
 
-global $wpdev_bk_action, $wpdev_bk_filter;
 
-
-function add_bk_filter( $filter_type, $filter ) {
-	global $wpdev_bk_filter;
+function add_bk_filter( $filter_type, $filter ) {   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	global $wpbc_bk_filter;
 
 	$args = array();
 	if ( is_array( $filter ) && 1 == count( $filter ) && is_object( $filter[0] ) ) {
@@ -37,28 +37,28 @@ function add_bk_filter( $filter_type, $filter ) {
 		$args[] = func_get_arg( $a );
 	}
 
-	if ( is_array( $wpdev_bk_filter ) ) {
-		if ( isset( $wpdev_bk_filter[ $filter_type ] ) ) {
-			if ( is_array( $wpdev_bk_filter[ $filter_type ] ) ) {
-				$wpdev_bk_filter[ $filter_type ][] = $args;
+	if ( is_array( $wpbc_bk_filter ) ) {
+		if ( isset( $wpbc_bk_filter[ $filter_type ] ) ) {
+			if ( is_array( $wpbc_bk_filter[ $filter_type ] ) ) {
+				$wpbc_bk_filter[ $filter_type ][] = $args;
 			} else {
-				$wpdev_bk_filter[ $filter_type ] = array( $args );
+				$wpbc_bk_filter[ $filter_type ] = array( $args );
 			}
 		} else {
-			$wpdev_bk_filter[ $filter_type ] = array( $args );
+			$wpbc_bk_filter[ $filter_type ] = array( $args );
 		}
 	} else {
-		$wpdev_bk_filter = array( $filter_type => array( $args ) );
+		$wpbc_bk_filter = array( $filter_type => array( $args ) );
 	}
 }
 
-function remove_bk_filter( $filter_type, $filter ) {
-	global $wpdev_bk_filter;
+function remove_bk_filter( $filter_type, $filter ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	global $wpbc_bk_filter;
 
-	if ( isset( $wpdev_bk_filter[ $filter_type ] ) ) {
-		for ( $i = 0; $i < count( $wpdev_bk_filter[ $filter_type ] ); $i++ ) {
-			if ( $wpdev_bk_filter[ $filter_type ][ $i ][0] == $filter ) {
-				$wpdev_bk_filter[ $filter_type ][ $i ] = null;
+	if ( isset( $wpbc_bk_filter[ $filter_type ] ) ) {
+		for ( $i = 0; $i < count( $wpbc_bk_filter[ $filter_type ] ); $i++ ) {
+			if ( $wpbc_bk_filter[ $filter_type ][ $i ][0] == $filter ) {
+				$wpbc_bk_filter[ $filter_type ][ $i ] = null;
 
 				return;
 			}
@@ -66,8 +66,8 @@ function remove_bk_filter( $filter_type, $filter ) {
 	}
 }
 
-function apply_bk_filter( $filter_type ) {
-	global $wpdev_bk_filter;
+function apply_bk_filter( $filter_type ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	global $wpbc_bk_filter;
 
 
 	$args = array();
@@ -81,9 +81,9 @@ function apply_bk_filter( $filter_type ) {
 		$value = false;
 	}
 
-	if ( is_array( $wpdev_bk_filter ) ) {
-		if ( isset( $wpdev_bk_filter[ $filter_type ] ) ) {
-			foreach ( $wpdev_bk_filter[ $filter_type ] as $filter ) {
+	if ( is_array( $wpbc_bk_filter ) ) {
+		if ( isset( $wpbc_bk_filter[ $filter_type ] ) ) {
+			foreach ( $wpbc_bk_filter[ $filter_type ] as $filter ) {
 				$filter_func = array_shift( $filter );
 				$parameter   = $args;
 				$value       = call_user_func_array( $filter_func, $parameter );
@@ -95,17 +95,17 @@ function apply_bk_filter( $filter_type ) {
 }
 
 
-function make_bk_action( $action_type ) {
-	global $wpdev_bk_action;
+function make_bk_action( $action_type ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	global $wpbc_bk_action;
 
 	$args = array();
 	for ( $a = 1; $a < func_num_args(); $a++ ) {
 		$args[] = func_get_arg( $a );
 	}
 
-	if ( is_array( $wpdev_bk_action ) ) {
-		if ( isset( $wpdev_bk_action[ $action_type ] ) ) {
-			foreach ( $wpdev_bk_action[ $action_type ] as $action ) {
+	if ( is_array( $wpbc_bk_action ) ) {
+		if ( isset( $wpbc_bk_action[ $action_type ] ) ) {
+			foreach ( $wpbc_bk_action[ $action_type ] as $action ) {
 				$action_func = array_shift( $action );
 				$parameter   = $action;
 				call_user_func_array( $action_func, $args );
@@ -114,8 +114,8 @@ function make_bk_action( $action_type ) {
 	}
 }
 
-function add_bk_action( $action_type, $action ) {
-	global $wpdev_bk_action;
+function add_bk_action( $action_type, $action ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	global $wpbc_bk_action;
 
 	$args = array();
 	if ( is_array( $action ) && 1 == count( $action ) && is_object( $action[0] ) ) // array(&$this)
@@ -128,29 +128,29 @@ function add_bk_action( $action_type, $action ) {
 		$args[] = func_get_arg( $a );
 	}
 
-	if ( is_array( $wpdev_bk_action ) ) {
-		if ( isset( $wpdev_bk_action[ $action_type ] ) ) {
-			if ( is_array( $wpdev_bk_action[ $action_type ] ) ) {
-				$wpdev_bk_action[ $action_type ][] = $args;
+	if ( is_array( $wpbc_bk_action ) ) {
+		if ( isset( $wpbc_bk_action[ $action_type ] ) ) {
+			if ( is_array( $wpbc_bk_action[ $action_type ] ) ) {
+				$wpbc_bk_action[ $action_type ][] = $args;
 			} else {
-				$wpdev_bk_action[ $action_type ] = array( $args );
+				$wpbc_bk_action[ $action_type ] = array( $args );
 			}
 		} else {
-			$wpdev_bk_action[ $action_type ] = array( $args );
+			$wpbc_bk_action[ $action_type ] = array( $args );
 		}
 	} else {
-		$wpdev_bk_action = array( $action_type => array( $args ) );
+		$wpbc_bk_action = array( $action_type => array( $args ) );
 	}
 }
 
-function remove_bk_action( $action_type, $action ) {
-	global $wpdev_bk_action;
+function remove_bk_action( $action_type, $action ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	global $wpbc_bk_action;
 
-	$elements_count = count( $wpdev_bk_action[ $action_type ] );
-	if ( isset( $wpdev_bk_action[ $action_type ] ) ) {
+	$elements_count = count( $wpbc_bk_action[ $action_type ] );
+	if ( isset( $wpbc_bk_action[ $action_type ] ) ) {
 		for ( $i = 0; $i < $elements_count; $i++ ) {
-			if ( $wpdev_bk_action[ $action_type ][ $i ][0] == $action ) {
-				$wpdev_bk_action[ $action_type ][ $i ] = null;
+			if ( $wpbc_bk_action[ $action_type ][ $i ][0] == $action ) {
+				$wpbc_bk_action[ $action_type ][ $i ] = null;
 
 				return;
 			}
@@ -159,7 +159,7 @@ function remove_bk_action( $action_type, $action ) {
 }
 
 
-function get_bk_option( $option, $default = false ) {
+function get_bk_option( $option, $default = false ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 	$u_value = apply_bk_filter( 'wpdev_bk_get_option', 'no-values', $option, $default );
 	if ( 'no-values' !== $u_value ) {
@@ -168,7 +168,7 @@ function get_bk_option( $option, $default = false ) {
 	return get_option( $option, $default );
 }
 
-function update_bk_option( $option, $newvalue ) {
+function update_bk_option( $option, $newvalue ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 	$u_value = apply_bk_filter( 'wpdev_bk_update_option', 'no-values', $option, $newvalue );
 	if ( 'no-values' !== $u_value ) {
@@ -177,7 +177,7 @@ function update_bk_option( $option, $newvalue ) {
 	return update_option( $option, $newvalue );
 }
 
-function delete_bk_option( $option ) {
+function delete_bk_option( $option ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 	$u_value = apply_bk_filter( 'wpdev_bk_delete_option', 'no-values', $option );
 	if ( 'no-values' !== $u_value ) {
@@ -186,7 +186,7 @@ function delete_bk_option( $option ) {
 	return delete_option( $option );
 }
 
-function add_bk_option( $option, $value = '', $deprecated = '', $autoload = null ) {
+function add_bk_option( $option, $value = '', $deprecated = '', $autoload = null ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 	$u_value = apply_bk_filter( 'wpdev_bk_add_option', 'no-values', $option, $value, $deprecated, $autoload );
 	if ( 'no-values' !== $u_value ) {

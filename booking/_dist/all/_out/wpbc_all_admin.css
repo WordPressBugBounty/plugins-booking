@@ -618,6 +618,9 @@ a.wpbc_ui_settings__text_pro:hover {
   border-color: #fff;
   box-shadow: 0 0 0 2px #00b703
 }
+.wpbc_bfb__form_setting_save.is-hidden {
+  display: none!important
+}
 /*! = General Vars for Admin = */
 .wpbc_admin {
   --wpbc_ui__gen__screen_width_small: 960px;
@@ -814,6 +817,10 @@ a.wpbc_ui_settings__text_pro:hover {
   outline: 0;
   box-shadow: none;
   border-radius: var(--wpbc_ui_dropdown__active-a-border-radius)
+}
+.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a:focus *,
+.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a:hover * {
+  color: var(--wpbc_ui_dropdown__active-a-color)
 }
 .wpbc_ui_el__dropdown .ul_dropdown_menu > .disabled > a,
 .wpbc_ui_el__dropdown .ul_dropdown_menu > .disabled > a:focus,
@@ -1039,6 +1046,10 @@ a.wpbc_ui_settings__text_pro:hover {
   box-sizing: border-box;
   border-left: 1px solid #555;
   padding: 0
+}
+.wpbc_ui_el__make_space {
+  -ms-flex: 1;
+  flex: 1
 }
 .wpbc_admin .wpbc_page div.wpbc_inner_message {
   position: fixed;
@@ -1842,6 +1853,17 @@ body.wpbc_admin_full_screen div.wpbc_admin {
   padding: 0 15px;
   background: #fff
 }
+.wpbc_ui_el__top_nav .wpbc_ui_el__buttons_group {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px
+}
 /*! =   " == F U L L == " - Left Vertical Navigation Bar = */
 .wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper {
   --wpbc_ui_left_vert_nav__width_min: 0;
@@ -2093,7 +2115,9 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item a,
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item button {
   margin: 0 -.2px 0 20px;
-  padding: 7px 7px 7px 10px
+  padding: 7px 7px 7px 10px;
+  border-left: 1px solid #ccc;
+  border-radius: 0
 }
 .wpbc_ui_el__vert_nav_item_sub.wpbc_ui_el__vert_nav_item.sub_right a {
   margin-left: 50px
@@ -2210,19 +2234,22 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   display: flex
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__section_header.hide_in_compact_mode {
-  font-size: 10px;
-  font-weight: 600;
   letter-spacing: 0;
-  line-height: 1.6;
   padding: 0 10px 0 0;
   text-overflow: ellipsis;
   overflow: hidden;
   overflow-wrap: normal;
-  -webkit-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
   white-space: nowrap;
-  display: block
+  display: block;
+  text-transform: uppercase;
+  font-weight: 600;
+  line-height: 2.2;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns {
   margin: 10px 0 0
@@ -2231,9 +2258,19 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   border-left: 2px solid #465160;
   margin-left: 5px
 }
-.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder .wpbc_ui_el__vert_nav_item__folder .wpbc_ui_el__vert_nav_title {
-  font-weight: 700;
-  letter-spacing: 0
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder .wpbc_ui_el__vert_nav_item__folder {
+  position: relative
+}
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder .wpbc_ui_el__vert_nav_item__folder:after {
+  content: '+';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 16px;
+  font-weight: 700
+}
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item__folder:after {
+  content: '-'
 }
 .wpbc_settings_page_wrapper .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item_root a .wpbc_ui_el__vert_nav_icon.wpbc_ui_el__vert_nav_icon_arrow {
   margin: 0 0 0 auto
@@ -2313,11 +2350,16 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
 }
 .wpbc_ui_el__root_section_header_a .wpbc_ui_el__section_header {
   text-transform: uppercase;
-  font-size: 11px;
   font-weight: 600;
   line-height: 2.2;
   letter-spacing: 1px;
-  margin: 0
+  margin: 0;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .3px
+}
+.wpbc_ui_el__root_section_header_a:not(:hover) h2.wpbc_ui_el__section_header {
+  color: #707070
 }
 .wpbc_ui_el__section_header {
   font-size: 13px;
@@ -2717,10 +2759,14 @@ a > .wpbc_ui_el__section_header {
   box-shadow: none;
   outline: 0
 }
+.wpbc_ui_el__horis_nav_item a[aria-selected=true],
 .wpbc_ui_el__horis_nav_item.active a {
   border-bottom-color: var(--wpbc_ui_horis_top_nav__active_color);
   box-shadow: none;
   outline: 0
+}
+.wpbc_ui_el__horis_nav_item.align_right {
+  margin-left: auto
 }
 .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon {
   margin: 0
@@ -2933,8 +2979,8 @@ div.wpbc_ajx_toolbar {
   flex-flow: column nowrap;
   -ms-flex-pack: start;
   justify-content: flex-start;
-  -ms-flex-align: start;
-  align-items: flex-start;
+  -ms-flex-align: stretch;
+  align-items: stretch;
   gap: 20px
 }
 .wpbc_ui__collapsible_group .wpbc_ui__toggle {
@@ -2955,6 +3001,49 @@ div.wpbc_ajx_toolbar {
   vertical-align: text-top;
   margin-inline-end: .5em;
   margin-block-start: 2px
+}
+.wpbc_tab__panel[hidden] {
+  display: none!important
+}
+.inspector__row .wpbc_slider_range_group.wpbc_inline_inputs,
+.wpbc_slider_range_group.wpbc_inline_inputs {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 15px
+}
+.wpbc_slider_len_group {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  gap: 10px
+}
+.wpbc_slider_len_group .wpbc_inline_inputs {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 15px
+}
+.wpbc_slider_len_group .wpbc_inline_inputs,
+.wpbc_slider_len_group label {
+  margin: 5px 0
 }
 .wpbc__wrap__booking_listing {
   margin: 15px 0

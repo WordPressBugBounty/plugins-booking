@@ -1,4 +1,8 @@
 <?php
+/**
+ * includes/elementor-booking-form/wpbc-elementor.php
+ */
+
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +23,7 @@ function wpbc_elementor__register_widget__booking_form( $widgets_manager ) {
 
 	require_once WPBC_PLUGIN_DIR . '/includes/elementor-booking-form/elementor-widget-booking.php';
 
-	$widgets_manager->register( new \Elementor_WPBC_Booking_Form_1() );
+	$widgets_manager->register( new \WPBC_Elementor_WPBC_Booking_Form_1() );
 }
 add_action( 'elementor/widgets/register', 'wpbc_elementor__register_widget__booking_form' );
 
@@ -205,3 +209,121 @@ function wpbc_save_calendar_skin_callback() {
 	);
 }
 add_action('wp_ajax_wpbc_save_calendar_skin', 'wpbc_save_calendar_skin_callback');
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// == Warning ==
+// ---------------------------------------------------------------------------------------------------------------------
+function wpbc_elementor_warn_text_widget_shortcodes( $widget_content, $widget ) {
+
+	if ( ! is_object( $widget ) || ! method_exists( $widget, 'get_name' ) ) {
+		return $widget_content;
+	}
+
+	// Only Text Editor widget sanitizes with wp_kses_post().
+	if ( 'text-editor' !== $widget->get_name() ) {
+		return $widget_content;
+	}
+
+	$settings = array();
+	if ( method_exists( $widget, 'get_settings_for_display' ) ) {
+		$settings = $widget->get_settings_for_display();
+	}
+
+	$raw = ( isset( $settings['editor'] ) ) ? (string) $settings['editor'] : '';
+	if ( '' === $raw ) {
+		return $widget_content;
+	}
+
+	// Detect Booking Calendar shortcodes in the raw editor content.
+	if ( ! preg_match( '/\[(booking|bookingcalendar|bookingform|bookingselect|bookingtimeline)\b/i', $raw ) ) {
+		return $widget_content;
+	}
+
+	// Show warning to admins and in Elementor editor mode.
+	$show_warning = false;
+
+	if ( function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) {
+		$show_warning = true;
+	}
+
+	if ( class_exists( '\Elementor\Plugin' ) && isset( \Elementor\Plugin::$instance->editor ) ) {
+		if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+			$show_warning = true;
+		}
+	}
+
+	if ( ! $show_warning ) {
+		// For visitors, either return original (even if broken),
+		// or replace shortcode area with a softer public message.
+		return $widget_content;
+	}
+
+	// Prepend warning before the sanitized output.
+	$widget_content = wpbc_elementor_build_text_widget_warning() . $widget_content;
+
+	return $widget_content;
+}
+add_filter( 'elementor/widget/render_content', 'wpbc_elementor_warn_text_widget_shortcodes', 20, 2 );
+
+
+/**
+ * Build Elementor Text Editor widget warning for Booking Calendar shortcodes.
+ *
+ * @param string $faq_url
+ *
+ * @return string HTML
+ */
+function wpbc_elementor_build_text_widget_warning( $faq_url = '' ) {
+
+	$faq_url = ( '' !== $faq_url ) ? $faq_url : 'https://wpbookingcalendar.com/faq/elementor-3-33-5-booking-calendar/';
+
+	$warning  = '<div class="wpbc-elementor-warning" role="alert" style="border:1px solid #d63638;padding:12px;margin:10px 0;background:#fff;">';
+	$warning .= '<strong>' . esc_html__( 'Booking Calendar Notice', 'booking' ) . '</strong>';
+
+	$warning .= '<p style="margin:8px 0 0 0;">' .
+		esc_html( 'This Booking Calendar shortcode is placed inside an Elementor Text Editor widget.' ) .
+		'</p>';
+
+	$warning .= '<p style="margin:8px 0 0 0;">' .
+		esc_html( 'Since Elementor 3.33.5, the Elementor Text Editor widget can strip the booking form markup, which prevents the calendar and form from working correctly.' ) .
+		'</p>';
+
+	$warning .= '<p style="margin:8px 0 0 0;">' . esc_html__( 'Please use one of these instead:', 'booking' ) . '</p>';
+
+	$warning .= '<ul style="margin:8px 0 0 18px;">';
+	$warning .= '<li>' . esc_html( 'Elementor Shortcode widget' ) . '</li>';
+	$warning .= '<li>' . esc_html( 'The native Booking Calendar Elementor widget' ) . '</li>';
+	$warning .= '<li>' .
+		esc_html__( 'More details in the FAQ:', 'booking' ) . ' ' .
+		'<a href="' . esc_url( $faq_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $faq_url ) . '</a>' .
+		'</li>';
+	$warning .= '</ul>';
+
+	$warning .= '</div>';
+
+	return $warning;
+}
+
+
+add_action( 'elementor/frontend/after_register_scripts', function() {
+	wp_register_script( 'wpbc-elementor-frontend-bridge', wpbc_plugin_url( '/includes/elementor-booking-form/_out/wpbc-elementor-frontend-bridge.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, true );
+} );
+
+add_action( 'elementor/frontend/after_register_styles', function() {
+		wp_register_style( 'wpbc-elementor-frontend-bridge', wpbc_plugin_url( '/includes/elementor-booking-form/_out/wpbc-elementor-frontend-bridge.css' ), array(), WP_BK_VERSION_NUM );
+} );
+
+add_filter( 'wpbc_force_client_assets', function( $force ) {
+
+	if ( $force ) {
+		return true;
+	}
+
+	// If Elementor widget exists on the page, Elementor enqueues the bridge handle.
+	if ( wp_script_is( 'wpbc-elementor-frontend-bridge', 'enqueued' ) || wp_style_is( 'wpbc-elementor-frontend-bridge', 'enqueued' ) ) {
+		return true;
+	}
+
+	return false;
+} );

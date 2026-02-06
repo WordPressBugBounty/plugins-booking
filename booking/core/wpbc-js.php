@@ -5,7 +5,7 @@
  * @author wpdevelop
  *
  * @web-site https://wpbookingcalendar.com/
- * @email info@wpbookingcalendar.com 
+ * @email info@wpbookingcalendar.com
  * 
  * @modified 19.10.2015
  */
@@ -204,7 +204,7 @@ function wpbc_js_load_files( $where_to_load ) {
 		wp_enqueue_script( 'wpbc-datepick-localize', $calendar_localization_url,                            array( 'wpbc-datepick'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );                 //FixIn: 9.8.1
 	}
 
-    if (  ( $where_to_load == 'client' ) || ( wpbc_is_new_booking_page()  ) || ( wpbc_is_settings_form_page() || wpbc_is_settings_color_themes_page() || wpbc_is_setup_wizard_page()  )   ) {
+    if (  ( $where_to_load == 'client' ) || ( wpbc_is_new_booking_page()  ) || ( wpbc_is_settings_form_page() || wpbc_is_settings_color_themes_page() || wpbc_is_setup_wizard_page() || wpbc_is_builder_booking_form_page()  )   ) {
 
 	    wp_enqueue_script( 'wpbc-main-client',  wpbc_plugin_url( '/js/client.js' ),                                  array( 'wpbc-datepick'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );             // Client
 	    wp_enqueue_script( 'wpbc_capacity',     wpbc_plugin_url( '/includes/_capacity/_out/create_booking.js' ),     array( 'wpbc-main-client'  ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );          // Add new bookings   // FixIn: 9.8.0.3.

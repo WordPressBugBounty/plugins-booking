@@ -51,7 +51,7 @@
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: flex-start;
-	align-items: flex-start;
+	align-items: stretch;
 	gap: 20px;
 }
 
@@ -75,3 +75,6 @@
 	margin-inline-end: 0.5em;
 	margin-block-start: 2px;
 }
+
+/* Hide panels by default when [hidden] is present */
+.wpbc_tab__panel[hidden] { display: none !important; }

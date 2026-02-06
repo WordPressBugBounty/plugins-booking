@@ -55,7 +55,7 @@ function wpbc_silent_import_all_events() {
         
     } else {
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$types_list = $wpdb->get_results( "SELECT booking_type_id, import FROM {$wpdb->prefix}bookingtypes" );
 
         foreach ($types_list as $wpbc_booking_resource) {

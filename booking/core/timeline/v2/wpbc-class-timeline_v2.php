@@ -258,7 +258,38 @@ class WPBC_TimelineFlex {
 
 	    if ( ! defined( 'WPBC_TIMELINE_AJAX' ) ) { define( 'WPBC_TIMELINE_AJAX', true ); }        // FixIn: 8.4.7.13.
 
-        $this->is_frontend = (bool) $attr['is_frontend'];;
+		// FixIn: 10.14.14.2.
+		$is_frontend = (bool) $attr['is_frontend'];
+
+		// Not front-end (or possibly changed parameter by attacker to see the bookings).
+		if ( ! $is_frontend ) {
+
+			// If this is not front-end -- admin side, then allow do this only for logged in users, with minimum user role, defined in the settings.
+			// Get minimum  user  role to  access the Timeline in admin  panel (Booking Listing and Timeline Overview (Calendar Overview).
+			$curr_user_role = get_bk_option( 'booking_user_role_booking' );
+
+			// Get  current user.
+			$current_user = wpbc_get_current_user();
+			$user_role_map = array(
+				'administrator' => 10,
+				'editor'        => 7,
+				'author'        => 2,
+				'contributor'   => 1,
+				'subscriber'    => 0,
+			);
+
+			$level = 0;
+			if ( isset( $user_role_map[ $curr_user_role ] ) ) {
+				$level = $user_role_map[ $curr_user_role ];
+			}
+
+			if ( empty( $current_user ) || empty( $current_user->user_level ) || ( $current_user->user_level < $level ) ) {
+				// Security Fix: Enforce frontend mode for non-admins.
+				$attr['is_frontend'] = 1;
+			}
+		}
+
+        $this->is_frontend = (bool) $attr['is_frontend'];
 
         //Ovverride some parameters
 		//if ( isset( $attr['resource_id'] ) ) {  $attr['type'] = $attr['resource_id']; }
@@ -3323,20 +3354,30 @@ add_bk_action('wpbc_ajax_flex_timeline', 'wpbc_ajax_flex_timeline');
  *
  * @return bool
  */
-function wpbc_is_show_popover_in_flex_timeline( $is_frontend, $booking_hash ){
+function wpbc_is_show_popover_in_flex_timeline( $is_frontend, $booking_hash ) {
 
-	// Default for admin
+	// Default for admin.
 	$is_show_popover_in_timeline = true;
 
-	// For client Timeline
-	if ( $is_frontend )
-		$is_show_popover_in_timeline  =  ( get_bk_option( 'booking_is_show_popover_in_timeline_front_end' ) == 'On' ) ? true : false ;
+	// For client Timeline.
+	if ( $is_frontend ) {
 
-	// For customer booking listing with  ability to  edit
+		// FixIn: 10.14.11.1.
+		if ( WPBC_DISABLE_POPOVER_IN_TIMELINE ) {
+			$is_show_popover_in_timeline = false;
+		} else {
+			$is_show_popover_in_timeline = ( get_bk_option( 'booking_is_show_popover_in_timeline_front_end' ) == 'On' ) ? true : false;
+			if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+				$is_show_popover_in_timeline = false;    // FixIn: 10.14.9.2.
+			}
+		}
+	}
+
+	// For customer booking listing with  ability to  edit.
 	// FixIn: 8.1.3.5.
 	if ( ( $is_frontend ) && ( ! empty( $booking_hash ) ) ) {
 
-		//In case if we have valid valid hash  then  show booking details
+		// In case if we have valid valid hash  then  show booking details.
 		$my_booking_id_type = wpbc_hash__get_booking_id__resource_id( $booking_hash );
 
 		if ( ! empty( $my_booking_id_type ) ) {
@@ -3379,7 +3420,7 @@ function wpbc_is_show_popover_in_flex_timeline( $is_frontend, $booking_hash ){
 
 
  */
-function bookingflextimeline_shortcode($attr) {
+function bookingflextimeline_shortcode($attr) {    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 	if ( wpbc_is_on_edit_page() ) {
 		return wpbc_get_preview_for_shortcode( 'bookingflextimeline', $attr );      // FixIn: 9.9.0.39.

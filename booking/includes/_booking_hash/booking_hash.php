@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_hash__get_booking_id__resource_id( $booking_hash ) {
 
-	if ( '' == $booking_hash ) {
+	if ( '' === $booking_hash ) {
 		return false;
 	}
 	global $wpdb;
@@ -31,7 +31,7 @@ function wpbc_hash__get_booking_id__resource_id( $booking_hash ) {
 	if ( class_exists( 'wpdev_bk_personal' ) ) {
 
 		$sql = $wpdb->prepare( "SELECT booking_id as id, booking_type as type FROM {$wpdb->prefix}booking as bk  WHERE  bk.hash = %s", $booking_hash );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql );
 
 		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->id ) ) && ( isset( $res[0]->type ) ) ) {          // FixIn: 8.1.2.13.
@@ -40,7 +40,7 @@ function wpbc_hash__get_booking_id__resource_id( $booking_hash ) {
 	} else {
 
 		$sql = $wpdb->prepare( "SELECT booking_id as id FROM {$wpdb->prefix}booking as bk  WHERE  bk.hash = %s", $booking_hash );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql );
 
 		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->id ) ) ) {                                        // FixIn: 8.1.2.13.
@@ -70,7 +70,7 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 	if ( class_exists( 'wpdev_bk_personal' ) ) {
 
 		$sql = $wpdb->prepare( "SELECT hash, booking_type as type FROM {$wpdb->prefix}booking as bk  WHERE  bk.booking_id = %d", $booking_id );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql );
 
 		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->hash ) ) && ( isset( $res[0]->type ) ) ) {
@@ -79,7 +79,7 @@ function wpbc_hash__get_booking_hash__resource_id( $booking_id ) {
 	} else {
 
 		$sql = $wpdb->prepare( "SELECT hash FROM {$wpdb->prefix}booking as bk  WHERE  bk.booking_id = %d", $booking_id );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql );
 
 		if ( ( ! empty( $res ) ) && ( is_array( $res ) ) && ( isset( $res[0]->hash ) ) ) {
@@ -107,7 +107,7 @@ function wpbc_hash__update_booking_hash( $booking_id, $resource_id = '1' ) {
 		, time() . '_' . wp_rand( 1000, 1000000 )
 		, $booking_id
 	);
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	if ( false === $wpdb->query( $update_sql ) ) {
 		?>
 		<script type="text/javascript"> document.getElementById('submiting<?php echo esc_attr( $resource_id ); ?>').innerHTML = '<div style=&quot;height:20px;width:100%;text-align:center;margin:15px auto;&quot;><?php debuge_error( 'Error during updating hash in BD', __FILE__, __LINE__ ); ?></div>'; </script> <?php

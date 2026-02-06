@@ -44,8 +44,10 @@
 	margin: auto;
 	max-width: 100%;
 	width: 100%;
-
 	max-width: Min(900px, 100%);
+}
+.wpbc_wizard__border_container,
+.wpbc_wizard__border_container p {
 	font-size: 16px;
 	font-weight: 400;
 }
@@ -64,9 +66,10 @@
 	color: #bbb;
 	box-shadow: 0 0px 3px #3b3b3b;
 }
-.wpbc_theme_dark_1 .wpbc_wizard__border_container span,
+/* Exclude calendar elements. */
+.wpbc_theme_dark_1 .wpbc_wizard__border_container div:not(.datepick-inline *),
+.wpbc_theme_dark_1 .wpbc_wizard__border_container span:not(.datepick-inline *),
 .wpbc_theme_dark_1 .wpbc_wizard__border_container p,
-.wpbc_theme_dark_1 .wpbc_wizard__border_container div,
 .wpbc_theme_dark_1 .wpbc_wizard__border_container label {
 	color: #fff;
 }

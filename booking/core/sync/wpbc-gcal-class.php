@@ -704,7 +704,7 @@ class WPBC_Google_Calendar {
 		$booking_condition_import_only_new = get_bk_option( 'booking_condition_import_only_new' );                                                        // FixIn: 9.8.15.8.
 		if ( ( ! empty( $sql_sync_gid ) ) && ( 'On' === $booking_condition_import_only_new ) ) {
 			global $wpdb;
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$exist_bookings = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}booking WHERE sync_gid IN ('{$sql_sync_gid}') AND trash != 1" );          // FixIn: 9.8.15.8.
 			foreach ( $exist_bookings as $bk ) {
 				$exist_bookings_guid[] = $bk->sync_gid;

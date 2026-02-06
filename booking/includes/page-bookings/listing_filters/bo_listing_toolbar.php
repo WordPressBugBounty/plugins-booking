@@ -111,8 +111,8 @@ function wpbc_ui__toolbar__bo_listing( $escaped_search_request_params ){
 	// 1st Row.
 	echo '  <div class="wpbc_ui_group   wpbc_ui__height_lg   wpbc_ui__bg_transparent wpbc_ui__width_100  wpbc_ui_group_filter_row_1" >';
 
-	temp_wpbc_ui__filter__booking_dates();
-	temp_wpbc_ui__filter__booking_status();
+	wpbc_temp_wpbc_ui__filter__booking_dates();
+	wpbc_temp_wpbc_ui__filter__booking_status();
 
 	wpbc_ui_el__space_horizontal();
 
@@ -120,29 +120,29 @@ function wpbc_ui__toolbar__bo_listing( $escaped_search_request_params ){
 
 	wpbc_ui_el__space_horizontal();
 
-	temp_wpbc_ui__filter__booking_keyword();
-	temp_wpbc_ui__filter__reload_listing();
-	temp_wpbc_ui__filter__other_filters();
+	wpbc_temp_wpbc_ui__filter__booking_keyword();
+	wpbc_temp_wpbc_ui__filter__reload_listing();
+	wpbc_temp_wpbc_ui__filter__other_filters();
 
 	echo '  </div>';
 
 	// 2nd Row.
 	echo '  <div class="wpbc_ui_group wpbc_ui__height_small  wpbc_ui__bg_white  wpbc_ui__hidden wpbc_ui__width_100  wpbc_ui_group_filter_row_2" >';
 
-	temp_wpbc_ui__filter__booking_status();
-	temp_wpbc_ui__filter__booking_status();
+	wpbc_temp_wpbc_ui__filter__booking_status();
+	wpbc_temp_wpbc_ui__filter__booking_status();
 
 	wpbc_ui_el__space_horizontal();
 
-	temp_wpbc_ui__filter__booking_status();
-	temp_wpbc_ui__filter__booking_status();
+	wpbc_temp_wpbc_ui__filter__booking_status();
+	wpbc_temp_wpbc_ui__filter__booking_status();
 
 	echo '  </div>';
 	echo '</div>';
 
 }
 
-function temp_wpbc_ui__filter__booking_keyword() {
+function wpbc_temp_wpbc_ui__filter__booking_keyword() {
 	?>
 	<div class="wpbc_ui_el " style="flex:1 1 auto;">
 		<input style="flex:1 1 auto;" type="text" id="wpbc_search_field"
@@ -153,7 +153,7 @@ function temp_wpbc_ui__filter__booking_keyword() {
 	</div><?php
 }
 
-function temp_wpbc_ui__filter__booking_status() {
+function wpbc_temp_wpbc_ui__filter__booking_status() {
 
 	$el_arr = array(
 		// Icon: 'font_icon' => 'wpbc_icn_swap_vert', //.
@@ -190,7 +190,7 @@ function temp_wpbc_ui__filter__booking_status() {
 	wpbc_ui_el__dropdown_menu( $el_arr );
 }
 
-function temp_wpbc_ui__filter__booking_dates() {
+function wpbc_temp_wpbc_ui__filter__booking_dates() {
 
 	$el_arr = array(
 		// Icon: 'font_icon' => 'wpbc_icn_swap_vert', //.
@@ -227,7 +227,7 @@ function temp_wpbc_ui__filter__booking_dates() {
 	wpbc_ui_el__dropdown_menu( $el_arr );
 }
 
-function temp_wpbc_ui__filter__reload_listing() {
+function wpbc_temp_wpbc_ui__filter__reload_listing() {
 
 	$el_arr = array();
 
@@ -244,7 +244,7 @@ function temp_wpbc_ui__filter__reload_listing() {
 	wpbc_ui_el__a( $el_arr );
 }
 
-function temp_wpbc_ui__filter__other_filters() {
+function wpbc_temp_wpbc_ui__filter__other_filters() {
 
 	$el_arr = array();
 

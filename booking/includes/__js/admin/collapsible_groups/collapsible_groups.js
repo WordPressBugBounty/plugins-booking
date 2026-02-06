@@ -102,7 +102,7 @@
 			this.opts = Object.assign( {
 				group_selector : '.wpbc_ui__collapsible_group',
 				header_selector: '.group__header',
-				fields_selector: '.group__fields',
+				fields_selector: '.group__fields,.group__content',
 				open_class     : 'is-open',
 				exclusive      : false
 			}, opts );
@@ -402,30 +402,29 @@
 		_sync_group_aria(group) {
 			const is_open = this.is_open( group );
 			const header  = group.querySelector( this.opts.header_selector );
-			const panel   = group.querySelector( this.opts.fields_selector );
+			// Only direct children that match.
+			const panels = Array.prototype.filter.call( group.children, (el) => el.matches( this.opts.fields_selector ) );
 
+			// Header ARIA.
 			if ( header ) {
-				// Header is a real <button>, role is harmless here.
 				header.setAttribute( 'role', 'button' );
 				header.setAttribute( 'aria-expanded', is_open ? 'true' : 'false' );
 
-				// Link header to panel by id if available.
-				if ( panel ) {
-					if ( !panel.id ) {
-						panel.id = this._generate_id( 'wpbc_collapsible_panel' );
-					}
-					if ( !header.hasAttribute( 'aria-controls' ) ) {
-						header.setAttribute( 'aria-controls', panel.id );
-					}
+				if ( panels.length ) {
+					// Ensure each panel has an id; then wire aria-controls with space-separated ids.
+					const ids = panels.map( (p) => {
+						if ( !p.id ) p.id = this._generate_id( 'wpbc_collapsible_panel' );
+						return p.id;
+					} );
+					header.setAttribute( 'aria-controls', ids.join( ' ' ) );
 				}
 			}
-			if ( panel ) {
-				panel.hidden = !is_open;
-				panel.setAttribute( 'aria-hidden', is_open ? 'false' : 'true' );
-				// Optional landmark:
-				// panel.setAttribute('role', 'region');
-				// panel.setAttribute('aria-labelledby', header.id || (header.id = this._generate_id('wpbc_collapsible_header')));
-			}
+
+			// (3) Panels ARIA + visibility.
+			panels.forEach( (p) => {
+				p.hidden = !is_open;                            // actual visibility.
+				p.setAttribute( 'aria-hidden', is_open ? 'false' : 'true' ); // ARIA.
+			} );
 		}
 
 		/**

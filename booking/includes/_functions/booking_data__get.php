@@ -137,7 +137,7 @@ function wpbc_db_get_booking_details( $booking_id ) {                           
 	global $wpdb;
 
 	$slct_sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}booking WHERE booking_id = %d LIMIT 0,1", $booking_id );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$sql_results = $wpdb->get_row( $slct_sql );
 
 	if ( ! empty( $sql_results ) ) {
@@ -166,7 +166,7 @@ function wpbc_db_get_booking_dates( $booking_id ) {
 	} else {
 		$sql .= " ORDER BY booking_id, booking_date ";
 	}
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$sql_results = $wpdb->get_results( $sql );
 
 	if ( ! empty( $sql_results ) ) {
@@ -186,7 +186,7 @@ function wpbc_db_get_booking_dates( $booking_id ) {
 function wpbc_db_get_booking_modification_date( $booking_id ) {
 	// FixIn: 8.0.1.7.
 	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$modification_date = ' ' . $wpdb->get_var( $wpdb->prepare( "SELECT modification_date FROM {$wpdb->prefix}booking  WHERE booking_id = %d ", $booking_id ) );
 
 	return $modification_date;

@@ -84,7 +84,7 @@ function wpbc_ajax_UPDATE_APPROVE() {
 		$approved_id_str = join( ',', $approved_id );
 		$approved_id_str = wpbc_clean_digit_or_csd( $approved_id_str );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( false === $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}bookingdates SET approved = %s WHERE booking_id IN ( {$approved_id_str} )", $is_approve_or_pending ) ) ) {
 			?>
 			<script type="text/javascript">
@@ -189,7 +189,7 @@ function wpbc_ajax_TRASH_RESTORE() {
 			}
 		}
 		// FixIn: 10.12.1.5.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking SET trash = {$is_trash} WHERE booking_id IN ({$approved_id_str})" ) ) {
 			?>
 			<script type="text/javascript">
@@ -275,7 +275,7 @@ function wpbc_ajax_DELETE_APPROVE() {
 			wpbc_send_email_deleted( $approved_id_str, $is_send_emeils, $denyreason );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( false === $wpdb->query( "DELETE FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$approved_id_str})" ) ) {
 			?>
 			<script type="text/javascript">
@@ -286,7 +286,7 @@ function wpbc_ajax_DELETE_APPROVE() {
 			die();
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( false === $wpdb->query( "DELETE FROM {$wpdb->prefix}booking WHERE booking_id IN ({$approved_id_str})" ) ) {
 			?>
 			<script type="text/javascript">
@@ -415,21 +415,21 @@ function wpbc_ajax_BOOKING_SEARCH() {
 function wpbc_ajax_CHECK_BK_NEWS() {
         
     if ( ! wpbc_check_nonce_in_admin_panel() ) return false;  // FixIn: 7.2.1.10.
-    wpdev_ajax_check_bk_news();
+    wpbc_old_ajax_check_bk_news();
 }
 
 
 function wpbc_ajax_CHECK_BK_FEATURES() {
         
     if ( ! wpbc_check_nonce_in_admin_panel() ) return false;  // FixIn: 7.2.1.10.
-    wpdev_ajax_check_bk_news('info/features/');
+    wpbc_old_ajax_check_bk_news('info/features/');
 }
 
 
 function wpbc_ajax_CHECK_BK_VERSION() {
     
     if ( ! wpbc_check_nonce_in_admin_panel() ) return false;  // FixIn: 7.2.1.10.
-    wpdev_ajax_check_bk_version();
+    wpbc_old_ajax_check_bk_version();
 }
 
 
@@ -443,8 +443,8 @@ if (  is_admin() && ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX )  ) {
 
 	// FixIn: 8.9.4.5.
 
-    // Hooks list 
-    $actions_list = array(
+    // Hooks list.
+	$wpbc_booking_actions_list = array(
 							 'WPBC_FLEXTIMELINE_NAV'                => 'both'		//FixIn: Flex TimeLine 1.0
                             ,'CALCULATE_THE_COST'                   => 'both'
 
@@ -465,18 +465,18 @@ if (  is_admin() && ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX )  ) {
 							, 'WPBC_IMPORT_ICS_URL'			=> 'admin'			//FixIn: 7.3
                          );
           
-    $actions_list = apply_filters( 'wpbc_ajax_action_list', $actions_list );
+    $wpbc_booking_actions_list = apply_filters( 'wpbc_ajax_action_list', $wpbc_booking_actions_list );
 
-    foreach ($actions_list as $action_name => $action_where) {
+    foreach ( $wpbc_booking_actions_list as $wpbc_action_name => $wpbc_action_where) {
         
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-        if ( ( isset($_POST['action']) ) && ( $_POST['action'] == $action_name ) ){
+        if ( ( isset($_POST['action']) ) && ( $_POST['action'] == $wpbc_action_name ) ){
             
-            if ( ( $action_where == 'admin' ) || ( $action_where == 'both' ) ) 
-                add_action( 'wp_ajax_'        . $action_name, 'wpbc_ajax_' . $action_name);      // Admin & Client (logged in usres)
+            if ( ( $wpbc_action_where == 'admin' ) || ( $wpbc_action_where == 'both' ) )
+                add_action( 'wp_ajax_'        . $wpbc_action_name, 'wpbc_ajax_' . $wpbc_action_name);      // Admin & Client (logged in usres)
             
-            if ( ( $action_where == 'both' ) || ( $action_where == 'client' ) ) 
-                add_action( 'wp_ajax_nopriv_' . $action_name, 'wpbc_ajax_' . $action_name);      // Client         (not logged in)        
+            if ( ( $wpbc_action_where == 'both' ) || ( $wpbc_action_where == 'client' ) )
+                add_action( 'wp_ajax_nopriv_' . $wpbc_action_name, 'wpbc_ajax_' . $wpbc_action_name);      // Client         (not logged in)
         }
     }  
 } 

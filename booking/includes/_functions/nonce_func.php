@@ -96,23 +96,23 @@ function wpbc_check_nonce_in_admin_panel( $action_check = 'wpbc_ajax_admin_nonce
 function wpbc_do_not_cache() {
 
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
-		define( 'DONOTCACHEPAGE', true );
+		define( 'DONOTCACHEPAGE', true );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
 	if ( ! defined( 'DONOTCACHEDB' ) ) {
-		define( 'DONOTCACHEDB', true );
+		define( 'DONOTCACHEDB', true );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
 	if ( ! defined( 'DONOTMINIFY' ) ) {
-		define( 'DONOTMINIFY', true );
+		define( 'DONOTMINIFY', true );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
 	if ( ! defined( 'DONOTCDN' ) ) {
-		define( 'DONOTCDN', true );
+		define( 'DONOTCDN', true );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
 	if ( ! defined( 'DONOTCACHEOBJECT' ) ) {
-		define( 'DONOTCACHEOBJECT', true );
+		define( 'DONOTCACHEOBJECT', true );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	}
 
 	// Set the headers to prevent caching for the different browsers.

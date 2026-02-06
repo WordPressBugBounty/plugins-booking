@@ -76,23 +76,29 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
            
         ?><div class="add_booking_page_content" style="width:100%;margin-bottom:100px;"><?php
         
-            // Previously we defined booking resources to  $_GET
-		$bk_type = isset( $_GET['booking_type'] ) ? intval( $_GET['booking_type'] ) : 1;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// Previously we defined booking resources to  $_GET.
+		$resource_id = isset( $_GET['booking_type'] ) ? intval( $_GET['booking_type'] ) : 1;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-            // do_action( 'wpdev_bk_add_form', $bk_type, get_bk_option( 'booking_client_cal_count' ) );
-            
-            $saved_user_calendar_params = $this->get_saved_user_calendar_options();
+		$saved_user_calendar_params = $this->get_saved_user_calendar_options();
 
-            make_bk_action( 'wpdevbk_add_form'
-                            , $bk_type                                              // $bk_type =1
-                            , $saved_user_calendar_params['months_number']          // get_bk_option( 'booking_client_cal_count' )           // $cal_count = 1
-                            , 1                                                     // $is_echo = 1
-                            , 'standard'                                            // $my_booking_form = 'standard'
-                            , ''                                                    // $my_selected_dates_without_calendar = ''
-                            , false                                                 // $start_month_calendar = false
-                            , '{calendar' . $saved_user_calendar_params['options_param'] . '}'          // $bk_otions=array() 
-                          );                                                        // FixIn: 6.0.1.6.
-        
+		// ---------------------------------------------------------------------
+		// Normalize 'custom booking form'  from  GET.  Flow: Shortcode_Attr -> $_GET -> Default.
+		// ---------------------------------------------------------------------
+		// If non empty,  then  use sanitized $_GET,  otherwise use 'custom_booking_form' attr.
+		$custom_booking_form = WPBC_GET_Request::has_non_empty_get( 'booking_form' ) ? WPBC_GET_Request::get_sanitized( 'booking_form' ) : 'standard';
+
+		WPBC_FE_Render::render_booking_form(
+			array(
+				'resource_id'                     => $resource_id,
+				'cal_count'                       => intval( $saved_user_calendar_params['months_number'] ),
+				'is_echo'                         => 1,
+				'custom_booking_form'             => $custom_booking_form,
+				'selected_dates_without_calendar' => '',
+				'start_month_calendar'            => false,
+				'bk_otions'                       => '{calendar' . $saved_user_calendar_params['options_param'] . '}',
+			)
+		);
+
         ?></div><?php
         
         

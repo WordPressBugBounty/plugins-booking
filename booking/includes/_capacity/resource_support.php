@@ -141,7 +141,7 @@ class WPBC_RESOURCE_SUPPORT {
 			/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 			$sql_prepared = $wpdb->prepare( $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit']     , $sql_args );
 		}
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$bookings_sql_obj = $wpdb->get_results( $sql_prepared );
 
 		// CACHE - SAVE ::  ------------------------------------------------------------------------------------------------

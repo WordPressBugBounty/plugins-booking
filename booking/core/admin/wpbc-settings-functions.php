@@ -219,7 +219,7 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ( false === $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%booking_win_%'" ) ) {    		// Delete all users booking windows states.
 			debuge_error( 'Error during deleting user meta at DB', __FILE__, __LINE__ );
 			die();
@@ -250,7 +250,7 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 
 			$all_plugins    = get_plugins();
 			$active_plugins = get_option( 'active_plugins' );
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$mysql_info = $wpdb->get_results( "SHOW VARIABLES LIKE 'sql_mode'" );
 
 			if ( is_array( $mysql_info ) )  $sql_mode = $mysql_info[0]->Value;
@@ -284,7 +284,7 @@ function wpbc_settings__system_info__restore_dismissed_windows(){
 			$ver_small_name = wpbc_get_plugin_version_type();
 			if ( class_exists( 'wpdev_bk_multiuser' ) ) $ver_small_name = 'multiuser';
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$mysql_version = $wpdb->get_var( 'SELECT VERSION() AS version' );
 
 			$system_info['system_info'] = array(

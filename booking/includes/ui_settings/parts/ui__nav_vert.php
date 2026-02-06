@@ -134,7 +134,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		$is_expanded = ( $main_page_slug === $active_page_arr['active_page'] );
 
 		if ( $is_show_all_menus ) {
-			echo '  <div class="wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . $main_page_slug . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
+			echo '  <div class="wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . esc_attr( $main_page_slug ) . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
 
 			wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title );
 		}
@@ -562,10 +562,10 @@ function wpbc_ui__vert_menu__item_main( $menu_slug, $menu_item_arr ) {
 	?><div class="<?php echo esc_attr( $menu_css_str ); ?>" style="<?php echo esc_attr( $menu_style_str ); ?>">
 		<?php
 		if ( ! empty( $menu_item_arr['subtabs'] ) ) {
-			// Folder Item - expand / colapse.
+			// Folder Item - expand / colapse.  Previously: here was : wpbc_admin_ui__sidebar_left__do_max();
 			?>
 			<a href="javascript:void(0)"
-				onclick="javascript: wpbc_admin_ui__sidebar_left__do_max(); if( ! jQuery( this ).parents('.wpbc_ui_el__level__folder').hasClass('expanded') ) { jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');jQuery( this ).parents('.wpbc_ui_el__level__folder').addClass('expanded'); } else {jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');} "
+				onclick="javascript:  if( ! jQuery( this ).parents('.wpbc_ui_el__level__folder').hasClass('expanded') ) { jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');jQuery( this ).parents('.wpbc_ui_el__level__folder').addClass('expanded'); } else {jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');} "
 				class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__folder">
 				<?php if ( ! empty( $menu_item_arr['font_icon'] ) ) { ?>
 					<?php // Show icon in max mode, without right tooltip, thanks to '.hide_in_compact_mode'. // FixIn: 10.11.5.8. ?>

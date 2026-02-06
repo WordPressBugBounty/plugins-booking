@@ -987,7 +987,7 @@ function wpbc_send_email_approved( $approved_id_str, $is_send_emeils, $denyreaso
 
 	global $wpdb;
 	$sql = "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id IN ({$approved_id_str})";
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$result = $wpdb->get_results( $sql );
 
 	foreach ( $result as $res ) {

@@ -66,7 +66,7 @@ if ( ! class_exists( 'WPBC_Admin_Deactivation_Feedback', false ) ) :
 		 * @return void
 		 */
 		public function feedback_html() {
-			$deactivate_reasons = array(
+			$wpbc_deactivate_reasons = array(
 				'feature_unavailable'    => array(
 					'title'             => esc_html__( 'Missing important features', 'booking' ),
 				),

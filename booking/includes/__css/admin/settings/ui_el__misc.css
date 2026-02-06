@@ -74,6 +74,9 @@
   border-left: 1px solid #555;
   padding: 0;
 }
+.wpbc_ui_el__make_space {
+	flex: 1;
+}
 /* Top  messages */
 .wpbc_admin .wpbc_page div.wpbc_inner_message {
 	position: fixed;

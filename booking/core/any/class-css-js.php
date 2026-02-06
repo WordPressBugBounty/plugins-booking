@@ -5,8 +5,8 @@
  * @author wpdevelop
  *
  * @web-site https://wpbookingcalendar.com/
- * @email info@wpbookingcalendar.com 
- * 
+ * @email info@wpbookingcalendar.com
+ *
  * @modified 2015-10-28
  */
 
@@ -112,8 +112,10 @@ abstract class WPBC_JS_CSS {
         $is_load_scripts = true;
         
         $is_load_scripts = apply_filters( 'wpbc_is_load_script_on_this_page', $is_load_scripts );
-        
-        if ( ! $is_load_scripts ) return;                                       // Exist,  if on some page we do not need to  load scripts
+
+		$force = apply_filters( 'wpbc_force_client_assets', false );
+
+        if (  ! $force && ! $is_load_scripts ) return;                                       // Exist,  if on some page we do not need to  load scripts
         
         
         foreach( $this->objects as $num => $script ) {

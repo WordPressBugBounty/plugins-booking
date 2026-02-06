@@ -41,7 +41,7 @@ function wpbc_activation__dates_availability() {
                      prop_value text,
                      PRIMARY KEY  (booking_dates_prop_id)
                     ) {$charset_collate}";
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$wpdb->query( $simple_sql );
 	}
 }

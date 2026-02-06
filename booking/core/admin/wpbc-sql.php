@@ -765,10 +765,10 @@ function wpbc_get_bookings_objects( $args ){
 //debuge( $sql_start_select . $sql . $sql_where . $sql_order . $sql_limit );
     
 	// -----------------------------------------------------------------------------------------------------------------
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$bookings_res = $wpdb->get_results( $sql_start_select . $sql . $sql_where . $sql_order . $sql_limit );              // Get Bookings.
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$bookings_count = $wpdb->get_results( $sql_start_count . $sql . $sql_where );                                       // Get Number of bookings.
 
     $bookings_count = ( ( count( $bookings_count ) > 0 ) ? $bookings_count[0]->count : 0 );
@@ -830,7 +830,7 @@ function wpbc_get_bookings_objects( $args ){
 			$sql .= ' ORDER BY booking_id, booking_date ';
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$booking_dates = $wpdb->get_results( $sql );
 
 	} else {
@@ -1365,4 +1365,37 @@ function wpbc__convert_mysql_interval_to_sqlite_modifiers( $expr ) {
 	}
 
 	return '';
+}
+
+// FixIn: 10.14.9.1.
+/**
+ * Sanitize and validate "dates_to_check" parameter.
+ *
+ * Accepts scalar or array, normalizes to array of 'Y-m-d' strings
+ * that match /^\d{4}-\d{2}-\d{2}$/.
+ *
+ * @param mixed $dates_to_check Raw dates_to_check parameter.
+ *
+ * @return array Sanitized, validated dates.
+ */
+function wpbc_sanitize_dates_to_check( $dates_to_check ) {
+
+	if ( ! is_array( $dates_to_check ) ) {
+		$dates_to_check = array( $dates_to_check );
+	}
+
+	$sanitized_dates = array();
+
+	foreach ( $dates_to_check as $maybe_date ) {
+
+		// Basic text cleanup.
+		$maybe_date = sanitize_text_field( $maybe_date );
+
+		// Strict format: YYYY-MM-DD only.
+		if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $maybe_date ) ) {
+			$sanitized_dates[] = $maybe_date;
+		}
+	}
+
+	return $sanitized_dates;
 }

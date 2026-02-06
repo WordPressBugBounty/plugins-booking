@@ -332,115 +332,168 @@
 }
 /* 3.3.5 Toggle elements,  instead of checkboxes   ------------------------------------------------------------------ */
 .wpbc_ui__toggle {
-  align-items:flex-start;
-  display:flex;
-  gap:10px;
+	align-items: flex-start;
+	display: flex;
+	gap: 10px;
 }
 .wpbc_ui__toggle input[type=checkbox] {
-   display:none;
-   height:0;
-   width:0;
+	display: none;
+	height: 0;
+	width: 0;
 }
-.wpbc_ui__toggle input[type=checkbox]:checked+label.wpbc_ui__toggle_icon {
-  background-color:#036aab;
+.wpbc_ui__toggle input[type=checkbox]:checked + label.wpbc_ui__toggle_icon {
+	background-color: #036aab;
 }
-.wpbc_ui__toggle input[type=checkbox]:checked+label.wpbc_ui__toggle_icon:after {
-  left:calc( 100% - 13px - 2px);
+.wpbc_ui__toggle input[type=checkbox]:checked + label.wpbc_ui__toggle_icon:after {
+	left: calc(100% - 13px - 2px);
 }
 .wpbc_ui__toggle span,
 .wpbc_ui__toggle label {
-  align-items:flex-start;
-  display:flex;
-  gap:10px;
-  margin:0;
-  vertical-align:unset;
+	align-items: flex-start;
+	display: flex;
+	gap: 10px;
+	margin: 0;
+	vertical-align: unset;
 }
 .wpbc_ui__toggle .wpbc_ui__toggle_label:hover {
-  cursor:pointer;
+	cursor: pointer;
 }
 .wpbc_ui__toggle .wpbc_ui__toggle_status {
-  color:#86919e;
-  font-size:12px;
-  line-height:14px;
-  margin:2px 5px;
+	color: #86919e;
+	font-size: 12px;
+	line-height: 14px;
+	margin: 2px 5px;
 }
 .wpbc_ui__toggle .wpbc_ui__toggle_icon {
-  background-color:#bbbbbb;
-  border-radius:8.5px;
-  cursor:pointer;
-  display:inline-block;
-  height:17px;
-  margin:0 1px;
-  position:relative;
-  text-indent:-9999px;
-  width:27px;
-  flex:0 0 auto;
+	background-color: #bbbbbb;
+	border-radius: 8.5px;
+	cursor: pointer;
+	display: inline-block;
+	height: 17px;
+	margin: 0 1px;
+	position: relative;
+	text-indent: -9999px;
+	width: 27px;
+	flex: 0 0 auto;
 }
 .wpbc_ui__toggle .wpbc_ui__toggle_icon:after {
-  background:#ffffff;
-  border-radius:50%;
-  content:"";
-  height:13px;
-  left:2px;
-  position:absolute;
-  top:2px;
-  width:13px;
-  transition-property:all;
-  transition-duration:0.25s;
-  transition-timing-function:ease-out;
+	background: #ffffff;
+	border-radius: 50%;
+	content: "";
+	height: 13px;
+	left: 2px;
+	position: absolute;
+	top: 2px;
+	width: 13px;
+	transition-property: all;
+	transition-duration: 0.25s;
+	transition-timing-function: ease-out;
 }
 .wpbc_ui__toggle .wpbc-help-tooltip {
-  margin:0 !important;
+	margin: 0 !important;
 }
-.wpbc_ui__toggle:hover input:checked+label.wpbc_ui__toggle_icon {
-  background-color:#215d8f;
+.wpbc_ui__toggle:hover input:checked + label.wpbc_ui__toggle_icon {
+	background-color: #215d8f;
 }
 .wpbc_ui__toggle:hover .wpbc_ui__toggle_icon {
-  background-color:#777777;
+	background-color: #777777;
 }
 /* Fix compatibility for toggle */
-	.wpbc_ui__toggle:hover input:disabled+label.wpbc_ui__toggle_icon,
-	.wpbc_ui__toggle input[type=checkbox]:disabled+label.wpbc_ui__toggle_icon {
-	  background-color:#ddd;
-	  cursor:not-allowed;
-	}
-	.wpbc_ui__toggle input[type=checkbox]:checked:disabled+label.wpbc_ui__toggle_icon{
-		background-color:#c9dbe6
-	}
-	.ui_element .wpbc_ui__toggle {
-		align-items: center;
-	}
-	.wpbc_ajx_toolbar .ui_container.ui_container_small .ui_group .ui_element .wpbc_ui__toggle > *{
-	  margin:0;
-	}
+.wpbc_ui__toggle:hover input:disabled + label.wpbc_ui__toggle_icon,
+.wpbc_ui__toggle input[type=checkbox]:disabled + label.wpbc_ui__toggle_icon {
+	background-color: #ddd;
+	cursor: not-allowed;
+}
+.wpbc_ui__toggle input[type=checkbox]:checked:disabled + label.wpbc_ui__toggle_icon {
+	background-color: #c9dbe6
+}
+.ui_element .wpbc_ui__toggle {
+	align-items: center;
+}
+.wpbc_ajx_toolbar .ui_container.ui_container_small .ui_group .ui_element .wpbc_ui__toggle > * {
+	margin: 0;
+}
 /* Fix compatibility for toggle - Settings Tables */
-	.form-table td fieldset .wpbc_ui__toggle{
-		margin: 5px 0;
-		display: inline-flex;
-	}
-	.form-table td fieldset .wpbc_ui__toggle input[type=checkbox]+label.wpbc_ui__toggle_icon {
-		margin:3px 0 0.5em !important
-	}
-	.form-table td fieldset .wpbc_ui__toggle label *,
-	.form-table td fieldset .wpbc_ui__toggle label {
-		line-height:1.6;
-		/*display:flex;*/
-		/*justify-content:center;*/
-		/*align-items:center;*/
-		margin:0 1px !important;
-	}
-	.wpbc_ui__toggle input[type=checkbox].wpbc_visible_but_out_screen {
-		display:block;
-  		visibility: hidden;
-		position: absolute;
-	}
-	/* Red toggle */
-	.wpbc_toggle_danger.wpbc_ui__toggle input[type=checkbox]:checked+label.wpbc_ui__toggle_icon {
-		background-color:#d63638;
-	}
-	.wpbc_toggle_danger.wpbc_ui__toggle:hover input:checked+label.wpbc_ui__toggle_icon {
-		background-color:#d63638;
-	}
+.form-table td fieldset .wpbc_ui__toggle {
+	margin: 5px 0;
+	display: inline-flex;
+}
+.form-table td fieldset .wpbc_ui__toggle input[type=checkbox] + label.wpbc_ui__toggle_icon {
+	margin: 3px 0 0.5em !important
+}
+.form-table td fieldset .wpbc_ui__toggle label *,
+.form-table td fieldset .wpbc_ui__toggle label {
+	line-height: 1.6;
+	margin: 0 1px !important;
+}
+.wpbc_ui__toggle input[type=checkbox].wpbc_visible_but_out_screen {
+	display: block;
+	visibility: hidden;
+	position: absolute;
+}
+/* Red toggle */
+.wpbc_toggle_danger.wpbc_ui__toggle input[type=checkbox]:checked + label.wpbc_ui__toggle_icon {
+	background-color: #d63638;
+}
+.wpbc_toggle_danger.wpbc_ui__toggle:hover input:checked + label.wpbc_ui__toggle_icon {
+	background-color: #d63638;
+}
+/* 3.3.6 Toggle Icon Radio / Icon Checkbox,  instead of real checkboxes   ------------------------------------------- */
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox:hover,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio:hover{
+	cursor: pointer;
+}
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio::before,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before {
+	font-family: 'wpbc-material-icons';
+	display: inline-block;
+	font-variant: normal;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	vertical-align: -.20125em;
+	font-feature-settings: 'liga';
+	-moz-font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+	/* My Fix */
+	font-size: 20px;
+	vertical-align: -.25125em;
+}
+/* Checkbox Icon */
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before {
+	content: "\e835";
+}
+.wpbc_ui__toggle input:checked ~ label.wpbc_ui__toggle_icon_checkbox::before {
+	content: "\e834";
+}
+/* Radio Icon */
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio::before {
+	content: "\e836";
+}
+.wpbc_ui__toggle input:checked ~ label.wpbc_ui__toggle_icon_radio::before {
+	content: "\e837";
+}
+/* 3.3.7 Toggle Icon Checkbox,  instead of real checkboxes  based on BS  ------------------------------------------- */
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before {
+	font-family: wpbc-bootstrap-icons !important;
+	font-size: 17px;
+}
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before {
+	content: "\f584";
+}
+.wpbc_ui__toggle input:checked ~ label.wpbc_ui__toggle_icon_checkbox::before {
+	content: "\f26d";
+}
 /* 3.4. Addon  ------------------------------------------------------------------------------------------------------ */
 .ui_element .wpbc_ui_addon {
 	flex: 0 1 auto;

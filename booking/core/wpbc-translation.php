@@ -161,6 +161,7 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
 		     */
 
 		    $plugin_rel_path = WPBC_PLUGIN_DIRNAME . '/languages';
+			// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound
 			$is_mo_loaded = load_plugin_textdomain( $domain, false, $plugin_rel_path );
 	    }
 
@@ -407,7 +408,7 @@ function wpbc_lang( $content_orig ) {
  * Usage:
  * $text = wpbc_lang(  $text );
  */
-function wpdev_check_for_active_language( $content_orig ) {
+function wpdev_check_for_active_language( $content_orig ) {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
     $content = $content_orig;
 
@@ -519,6 +520,7 @@ function wpbc_check_wpml_tags( $text, $locale='' ) {                            
 
                     // Help info:  do_action( 'wpml_register_single_string', string $context, string $name, string $value )
                     // https://wpml.org/wpml-hook/wpml_register_string_for_translation/
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
                     do_action( 'wpml_register_single_string', 'Booking Calendar', 'wpbc-' . tag_escape( $translation_to_check ) , $translation_to_check );
 
 
@@ -526,6 +528,7 @@ function wpbc_check_wpml_tags( $text, $locale='' ) {                            
                     // https://wpml.org/wpml-hook/wpml_translate_single_string/
                     //$translation_to_check = apply_filters( 'wpml_translate_single_string', $translation_to_check, 'Booking Calendar',  'wpbc-' . tag_escape( $translation_to_check ) );
                     $language_code = $locale;
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
                     $translation_to_check = apply_filters( 'wpml_translate_single_string', $translation_to_check, 'Booking Calendar',  'wpbc-' . tag_escape( $translation_to_check ), $language_code );
 
                 }

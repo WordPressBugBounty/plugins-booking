@@ -701,6 +701,6 @@ if(0){
  * Just for loading CSS and  JavaScript files
  */
 if ( true ) {
-	$setup_wizard_page_loading = new WPBC_AJX__Setup_Wizard__Ajax_Request;
-	$setup_wizard_page_loading->define_ajax_hook();
+	$wpbc_setup_wizard_page_loading = new WPBC_AJX__Setup_Wizard__Ajax_Request;
+	$wpbc_setup_wizard_page_loading->define_ajax_hook();
 }

@@ -18,11 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return array|false|mixed|null
  */
-function wpbc_simple_form__db__get_visual_form_structure() {
+function wpbc_simple_form__db__get_visual_form_structure( $custom_booking_form = 'standard' ) {
 
 	// == Custom Forms ==  Start			// Get  Custom  booking form
 	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 	    $form_name = wpbc_get_sanitized_custom_booking_form_name_from_url();
+		if ( empty( $form_name ) )   {
+			$form_name = $custom_booking_form;
+		}
 		if ( ( ! empty( $form_name ) ) && ( 'standard' !== $form_name ) ) {
 		    $custom_booking_form = wpbc_get_custom_booking_form__for_simple_form_mode( $form_name );
 			if ( ! empty( $custom_booking_form ) ) {
@@ -160,7 +163,7 @@ function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structu
 		if ( 'wizard_services_a' === $booking_form_structure ) {
 			$html_form .= '    <r>' . "\n";
 			$html_form .= '        <c class="wpbc_aling_center"> ' . "\n";
-			$html_form .= '            [steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '            [steps_timeline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
 			$html_form .= '        </c>' . "\n";
 			$html_form .= '    </r>' . "\n";
 		}
@@ -199,7 +202,7 @@ function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structu
 			// Timeline Step #2.
 			if ( 'wizard_services_a' === $booking_form_structure ) {
 				$html_form .= '			<c class="wpbc_aling_center"> ' . "\n";
-				$html_form .= '			[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+				$html_form .= '			[steps_timeline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
 				$html_form .= '		</c>' . "\n";
 				$html_form .= '    </r>' . "\n";
 				$html_form .= '    <r>' . "\n";
@@ -269,7 +272,7 @@ function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structu
 		if ( 'wizard_services_a' === $booking_form_structure ) {
 			$html_form .= '    <r>' . "\n";
 			$html_form .= '		<c class="wpbc_aling_center"> ' . "\n";
-			$html_form .= '				[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '				[steps_timeline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
 			$html_form .= '		</c>' . "\n";
 			$html_form .= '    </r>' . "\n";
 		}
@@ -581,7 +584,7 @@ function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structu
  *
  * @return array|mixed|string|string[]
  */
-function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
+function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1, $custom_booking_form = 'standard', $custom_params = array() ) {
 
 	$booking_data__parsed_fields = array();
 	$booking_data__dates         = array();
@@ -602,7 +605,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 		}
 	}
 
-	$visual_form_structure = wpbc_simple_form__db__get_visual_form_structure();
+	$visual_form_structure = wpbc_simple_form__db__get_visual_form_structure( $custom_booking_form );
 
 	$booking_form_structure = get_bk_option( 'booking_form_structure_type' );
 	if ( empty( $booking_form_structure ) ) {
@@ -637,7 +640,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 		if ( 'wizard_services_a' === $booking_form_structure ) {
 			$html_form .= '    <r>' . "\n";
 			$html_form .= '        <c class="wpbc_aling_center"> ' . "\n";
-			$html_form .= '            [steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '            [steps_timeline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
 			$html_form .= '        </c>' . "\n";
 			$html_form .= '    </r>' . "\n";
 		}
@@ -677,7 +680,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 			// Timeline Step #2.
 			if ( 'wizard_services_a' === $booking_form_structure ) {
 				$html_form .= '		<c class="wpbc_aling_center"> ' . "\n";
-				$html_form .= '				[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+				$html_form .= '				[steps_timeline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
 				$html_form .= '		</c>' . "\n";
 				$html_form .= '    </r>' . "\n";
 				$html_form .= '    <r>' . "\n";
@@ -750,7 +753,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 		if ( 'wizard_services_a' === $booking_form_structure ) {
 			$html_form .= '    <r>' . "\n";
 			$html_form .= '		<c class="wpbc_aling_center"> ' . "\n";
-			$html_form .= '				[steps_timline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
+			$html_form .= '				[steps_timeline steps_count="' . esc_attr( $wizard_steps_count ) . '" active_step="' . esc_attr( $wizard_step_number ) . '"]  ' . "\n";
 			$html_form .= '		</c>' . "\n";
 			$html_form .= '    </r>' . "\n";
 		}
@@ -804,7 +807,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 
 		$html_form .= '   	<r>' . "\n";
 		$html_form .= '   		<c> <p>';
-		$html_form .= '<button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' . $submit_button_title . '</button>';
+		$html_form .= '<button class="wpbc_button_light" type="button" onclick="wpbc_booking_form_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' . $submit_button_title . '</button>';
 		$html_form .= '</p> </c>' . "\n";
 		$html_form .= '   	</r>' . "\n";
 	}
@@ -833,7 +836,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 		$submit_button_title = str_replace( '"', '', html_entity_decode( esc_js( wpbc_lang( $submit_button_title ) ), ENT_QUOTES ) );
 		$submit_button_title = wp_kses_post( $submit_button_title );
 
-		$html_form .= '         <button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' . $submit_button_title . '</button>';
+		$html_form .= '         <button class="wpbc_button_light" type="button" onclick="wpbc_booking_form_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' . $submit_button_title . '</button>';
 		$html_form .= '		</c>' . "\n";
 		$html_form .= '    </r>' . "\n";
 		$html_form .= '  </div>' . "\n";
@@ -1175,7 +1178,7 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1 ) {
 
 				$submit_button_title = wp_kses_post( $submit_button_title );                                                // FixIn: 10.6.5.2.
 
-				$my_form .= '<button class="wpbc_button_light" type="button" onclick="mybooking_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' .
+				$my_form .= '<button class="wpbc_button_light" type="button" onclick="wpbc_booking_form_submit(this.form,' . $resource_id . ',\'' . wpbc_get_maybe_reloaded_booking_locale() . '\');" >' .
 				                $submit_button_title .
 				            '</button>' . "\n";
 			}

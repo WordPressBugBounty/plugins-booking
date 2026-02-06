@@ -454,8 +454,8 @@ class WPBC_Pagination {
  * Just for loading CSS and  JavaScript files for all  Settings pages
  */
  if ( true ) {
-	$js_css_loading = new WPBC_Pagination;
-	$js_css_loading->init_load_css_js();
+	$wpbc_js_css_loading = new WPBC_Pagination;
+	$wpbc_js_css_loading->init_load_css_js();
  }
 
 

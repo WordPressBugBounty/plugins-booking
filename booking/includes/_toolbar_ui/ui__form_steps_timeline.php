@@ -99,7 +99,7 @@ function wpbc_ui__steps_timeline__get_icons() {
 
 
 /**
- * Update [steps_timline] shortcode
+ * Update [steps_timeline] shortcode
  *
  * @param string $form_content             - Form Content.
  * @param int    $resource_id              - Resource ID.
@@ -110,7 +110,7 @@ function wpbc_ui__steps_timeline__get_icons() {
 function wpbc_update_bookingform_content__steps_timeline( $form_content, $resource_id, $custom_booking_form_name = '' ) {
 
 	//	$hint_html = wpbc_ui__steps_timeline__get_html( 3, 2 );
-	//	$form_content = str_replace( '[steps_timline]', $hint_html, $form_content );
+	//	$form_content = str_replace( '[steps_timeline]', $hint_html, $form_content );
 
 	/**
 	 * Example: array(
@@ -125,7 +125,8 @@ function wpbc_update_bookingform_content__steps_timeline( $form_content, $resour
 	 *                )
 	 */
 
-	$shortcodes_arr = wpbc_get_shortcodes_in_text__as_unique_replace( $form_content, array( 'steps_timline' ) );
+	$form_content   = str_replace( 'steps_timline', 'steps_timeline', $form_content );
+	$shortcodes_arr = wpbc_get_shortcodes_in_text__as_unique_replace( $form_content, array( 'steps_timeline' ) );
 	$string         = $shortcodes_arr['content'];
 
 

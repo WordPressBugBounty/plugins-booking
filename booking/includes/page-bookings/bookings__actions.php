@@ -574,7 +574,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				$prepared_sql  = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET  trash = %s, is_trash = NULL WHERE booking_id IN ({$booking_is_csd})", $is_trash_or_restore );  // FixIn: 10.12.1.5.
 			}
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during updating to DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -709,7 +709,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$prepared_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}bookingdates SET approved = %s WHERE booking_id IN ({$booking_id_csd})", $is_approve_or_pending );
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during updating to DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -820,7 +820,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 			// Dates
 			$prepared_sql = "DELETE FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_is_csd})";
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during deleting dates in DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -829,7 +829,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 			}
 			// Bookings
 			$prepared_sql = "DELETE FROM {$wpdb->prefix}booking WHERE booking_id IN ({$booking_is_csd})";
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during deleting bookings in DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -916,7 +916,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$prepared_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET is_new = %s WHERE booking_id IN ({$booking_id_csd})", $is_new );  // FixIn: 10.12.1.5.
 			}
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during updating to DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -977,7 +977,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 		$max_bookings_to_erase = 1000;
 		$sql .= " LIMIT 0, " . $max_bookings_to_erase;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$bookings_in_trash = $wpdb->get_results( $sql );
 
 		$bookings_id_in_trash_arr = array();
@@ -1023,7 +1023,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 			// Dates
 			$prepared_sql = "DELETE FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_is_csd})";
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during deleting dates in DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -1032,7 +1032,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 			}
 			// Bookings
 			$prepared_sql = "DELETE FROM {$wpdb->prefix}booking WHERE booking_id IN ({$booking_is_csd})";
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during deleting bookings in DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -1090,7 +1090,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 			global $wpdb;
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$prepared_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET remark = %s WHERE booking_id IN ({$booking_id_csd})", $remark_text );
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$after_action_result = $wpdb->query( $prepared_sql );
 			if ( false === $after_action_result ) {
 				$after_action_message = 'Error during updating to DB. File:' . __FILE__ . ' on line: ' . __LINE__;
@@ -1225,7 +1225,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				// 1.1.Get booking data of SOURCE booking
 				$sql              = $wpdb->prepare( "SELECT * FROM  {$wpdb->prefix}booking as bk WHERE booking_id = %d ", $booking_id );
 
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$res = $wpdb->get_row( $sql );
 
 				$db_form_data_old = $res->form;
@@ -1233,7 +1233,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 				// 1.2. Get dates of SOURCE booking
 				$sql                      = $wpdb->prepare( "SELECT * FROM  {$wpdb->prefix}bookingdates as dt WHERE booking_id = %d ORDER BY booking_date ASC ", $booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$old_resource_dates_array = $wpdb->get_results( $sql );
 			}
 
@@ -1277,7 +1277,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				// Update // FixIn: 10.12.1.5.
 				$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET form=%s, booking_type=%d WHERE booking_id=%d;"
 													, $db_form_data_new, $resource_id, $booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				if ( false === $wpdb->query( $update_sql ) ) {
 					$after_action_result  = false;
 					$after_action_message = get_debuge_error( 'Error during updating booking reource type in BD', __FILE__, __LINE__ );
@@ -1288,7 +1288,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 				if ( class_exists( 'wpdev_bk_biz_l' ) ) {
 					$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}bookingdates SET type_id=NULL WHERE booking_id=%d ", $booking_id );
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 					if ( false === $wpdb->query( $update_sql ) ) {
 						$after_action_result  = false;
 						$after_action_message = get_debuge_error( 'Error during updating dates type in BD', __FILE__, __LINE__ );
@@ -1391,7 +1391,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				}
 				$sql .= "   ORDER BY bk.booking_id DESC, dt.booking_date ASC ";
 
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$exist_dates_results = $wpdb->get_results( $sql );
 
 				// We have found only  intersected dates. Now we need to get all  dates from such  bookings,  for having correct  "Start  and end time times for the booking"
@@ -1410,7 +1410,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 											  WHERE  bk.booking_id IN (" . implode( ',', $my_booking_id_arr ) . ") AND bk.trash != 1 AND bk.booking_type = %d", $resource_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 					$sql .= "   ORDER BY bk.booking_id DESC, dt.booking_date ASC ";
 
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 					$exist_dates_results = $wpdb->get_results( $sql );
 				}
 
@@ -1552,14 +1552,14 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 			if ( 1 ) {
 				// 1.1.Get booking data of SOURCE booking
 				$sql              = $wpdb->prepare( "SELECT * FROM  {$wpdb->prefix}booking as bk WHERE booking_id = %d ", $booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$res = $wpdb->get_row( $sql );
 				$db_form_data_old = $res->form;
 				$resource_id_old  = $res->booking_type;
 
 				// 1.2. Get dates of SOURCE booking
 				$sql                      = $wpdb->prepare( "SELECT * FROM  {$wpdb->prefix}bookingdates as dt WHERE booking_id = %d ORDER BY booking_date ASC ", $booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$old_resource_dates_array = $wpdb->get_results( $sql );
 			}
 
@@ -1683,7 +1683,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 				//    SQL    ---------------------------------------------------------------------------------------------------
 				$sql       = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id= %d ", $selected_booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$result_bk = $wpdb->get_results( $sql );
 
 				$old_pay_status = '';
@@ -1700,7 +1700,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				}
 				// FixIn: 10.12.1.5.
 				$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET pay_status= %s WHERE booking_id= %d ", $selected_payment_status, $selected_booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				if ( false === $wpdb->query( $update_sql ) ) {
 					// Error
 					$after_action_result = false;
@@ -1814,7 +1814,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 				//    SQL    ---------------------------------------------------------------------------------------------------
 				$sql       = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id= %d ", $selected_booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$result_bk = $wpdb->get_results( $sql );
 
 				$old_booking_cost = '';
@@ -1831,7 +1831,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				}
 
 				$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET cost = %f WHERE booking_id = %d ", $booking_cost, $selected_booking_id );  // FixIn: 10.12.1.5.
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				if ( false === $wpdb->query( $update_sql ) ) {
 					// Error
 					$after_action_result = false;
@@ -1920,7 +1920,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 				//    SQL    ---------------------------------------------------------------------------------------------------
 				$sql       = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id= %d ", $selected_booking_id );
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$result_bk = $wpdb->get_results( $sql );
 
 				$old_booking_cost = '';
@@ -1950,7 +1950,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 								$pay_request_numer = $res->pay_request + 1;
 								// FixIn: 10.12.1.5.
 								$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET pay_request= %d WHERE booking_id= %d ", $pay_request_numer, $res->booking_id );
-								// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+								// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 								if ( false === $wpdb->query( $update_sql ) ) {
 									// Error
 									$after_action_result = false;
@@ -2062,7 +2062,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				}
 
 				$my_sql = "SELECT booking_type_id, import FROM {$wpdb->prefix}bookingtypes {$where}";
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$types_list = $wpdb->get_results( $my_sql );
 
 				foreach ($types_list as $wpbc_booking_resource) {

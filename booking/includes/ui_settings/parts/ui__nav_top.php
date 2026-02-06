@@ -38,13 +38,22 @@ function wpbc_ui__top_nav( $args = array() ) {
 
 	wpbc_ui__top_nav__dropdown__wpbc();
 
+	do_action( 'wpbc_ui_el__top_nav__content_start', $params['page_tag'], $params['active_page_tab'], $params['active_page_subtab'] );
+
+
+	?><div class="wpbc_ui_el__make_space"></div><?php  	// Spacer.
+
+	do_action( 'wpbc_ui_el__top_nav__content_center', $params['page_tag'], $params['active_page_tab'], $params['active_page_subtab'] );
+
 	// Load Top News Message and "Search by ID" fields.
 	echo '<style type="text/css"> .wpbc_message_wrapper  { margin-left: 0px !important; } </style>';
 	make_bk_action( 'wpbc_h1_header_content_end', $params['page_tag'], $params['active_page_tab'], $params['active_page_subtab'] );
 
+	?><div class="wpbc_ui_el__make_space"></div><?php	// Spacer.
 
+	do_action( 'wpbc_ui_el__top_nav__content_end', $params['page_tag'], $params['active_page_tab'], $params['active_page_subtab'] );
 
-	wpbc_ui_el__divider_vertical( array( 'container_class' => 'wpbc_ui_el__flex_right' ) );
+	wpbc_ui_el__divider_vertical();
 
 	// Right sidebar toggle button.
 	wpbc_ui__vert_right_bar__do_toggle();
@@ -68,17 +77,17 @@ function wpbc_ui__top_nav( $args = array() ) {
 function wpbc_ui__top_nav__dropdown__wpbc() {
 
 	$svg_size       = '22px';
-	$svg_icon_style = '';// 'margin:0 5px 0 0;';//'background-position: 0 0;background-size: ' . $svg_size . ' ' . $svg_size . ';width: ' . $svg_size . ';height: ' . $svg_size . ';';
+	$svg_icon_style =  'margin:5px 5px 0 0;';//'background-position: 0 0;background-size: ' . $svg_size . ' ' . $svg_size . ';width: ' . $svg_size . ';height: ' . $svg_size . ';';
 	$svg_icon       = wpbc_get_svg_logo_for_background( '#555', '#e5e5e5', '1.0' );
 
 	$el_arr = array(
 		// 'title'        => 'Booking Calendar',
 		// 'font_icon'    => 'wpbc-bi-calendar2-range',
-		'title_html'	 => '<span class="nav-tab-text" style="margin: -11px 0 0 5px;font-size: 16px;padding: 0;"><span style="position: absolute;font-size: 7px;margin-top: 13px;margin-left: 1px;">WP</span>Booking Calendar</span>',
+		'title_html'	 => '<span class="nav-tab-text" style="margin: -3px 0 0 5px;font-size: 16px;padding: 0;"><span style="position: absolute;font-size: 7px;margin-top: 13px;margin-left: 1px;">WP</span>Booking Calendar</span>',
 				'svg_icon'       => $svg_icon,
 				'svg_icon_style' => $svg_icon_style,
-				'style' 		 => 'display: flex;flex-flow:row nowrap;align-items: center;justify-content: flex-start;',
-				'container_style' => 'padding: 0 5px 0 10px;',
+				'style' 		 => 'display: flex;flex-flow:row nowrap;align-items: center;justify-content: flex-start;' . ' ',
+				'container_style' => 'padding: 0 15px 0 10px;',
 		'position'       => 'left',
 		'has_down_arrow' => true,
 		'items'          => array(

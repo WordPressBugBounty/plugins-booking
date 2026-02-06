@@ -168,7 +168,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$sql__dates_obj__arr = $wpdb->get_results( $my_sql );
 
 
@@ -203,30 +203,58 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 					return   ' AND (  dt.booking_date >= ' . wpbc_sql_date_math_expr_explicit('', 'curdate') . '  ) ' ;
 
-				} else if ( is_array( $params['dates_to_check'] ) ) {                                                   // Specific Date(s)     ->   [ '2023-07-15' , '2023-07-21' ]
+				} else if ( is_array( $params['dates_to_check'] ) ) {                           // Specific Date(s).
 
-					// FixIn: 10.13.1.4. -situation,  where in shortcode defined - [booking calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' ...]
-					if ( 2 === count( $params['dates_to_check'] ) ) {
+					// FixIn: 10.14.9.1.
 
-						$dates_sql_str = " ( (  dt.booking_date >= '{$params['dates_to_check'][0]} 00:00:00'  ) AND (  dt.booking_date <= '{$params['dates_to_check'][1]} 23:59:59'  ) )";
+					// Sanitize and validate all incoming dates first.
+					$dates_to_check = wpbc_sanitize_dates_to_check( $params['dates_to_check'] );
 
-					} else if ( 1 === count( $params['dates_to_check'] ) ) {
-
-						$dates_sql_str = " (  dt.booking_date >= '{$params['dates_to_check'][0]} 00:00:00'  )  ";
-
-					} else {
-						// Check booking dates inside of the each specific dates. I do not sure that this situation possible ??????
-						$dates_sql_array = array();
-
-						for( $i = 0; $i <  count( $params['dates_to_check'] ); $i++) {
-
-							$dates_sql_array[] =  "( (  dt.booking_date >= '{$params['dates_to_check'][$i]} 00:00:00'  ) AND (  dt.booking_date <= '{$params['dates_to_check'][$i]} 23:59:59'  ) )";
-						}
-
-						$dates_sql_str = implode( ' OR ', $dates_sql_array );
+					// If nothing valid left – do not add any date filter (or return empty string).
+					if ( empty( $dates_to_check ) ) {
+						return '';
 					}
 
-					return   " AND (  {$dates_sql_str}  ) " ;
+					global $wpdb;
+
+					$count_dates = count( $dates_to_check );
+
+					// Case 1: date range (2 items: start / end).
+					if ( 2 === $count_dates ) {
+						$start = $dates_to_check[0] . ' 00:00:00';
+						$end   = $dates_to_check[1] . ' 23:59:59';
+
+						// %s will be properly escaped and quoted by $wpdb->prepare().
+						$dates_sql_str = $wpdb->prepare( ' ( ( dt.booking_date >= %s ) AND ( dt.booking_date <= %s ) ) ', $start, $end );
+
+					// Case 2: one date – from that day forward.
+					} else if ( 1 === $count_dates ) {
+
+						$start = $dates_to_check[0] . ' 00:00:00';
+
+						$dates_sql_str = $wpdb->prepare( ' ( dt.booking_date >= %s ) ', $start );
+
+					// Case 3: list of specific separate dates – OR between each day.
+					} else {
+
+						$conditions = array();
+						$values     = array();
+
+						foreach ( $dates_to_check as $date ) {
+
+							$conditions[] = '( ( dt.booking_date >= %s ) AND ( dt.booking_date <= %s ) )';
+
+							$values[] = $date . ' 00:00:00';
+							$values[] = $date . ' 23:59:59';
+						}
+
+						$conditions_sql = implode( ' OR ', $conditions );
+
+						// $values is an array; $wpdb->prepare() will expand it safely.
+						$dates_sql_str = $wpdb->prepare( $conditions_sql, $values );   // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+					}
+
+					return ' AND ( ' . $dates_sql_str . ' ) ';
 				}
 
 				// Default CURDATE
@@ -1892,7 +1920,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 // PHP actions:
 //   from: 	make_bk_action('wpdev_booking_post_inserted', $booking_id, $bktype, $str_dates__dd_mm_yyyy,  array($start_time, $end_time ) , $formdata );
 //   removed!
-// .
+// .		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 //   from:	apply_filters('wpdev_booking_form_content', $form , $resource_id);
 //   to:     	apply_filters( 'wpbc_booking_form_html__update__append_change_over_times', $form, $resource_id );
 // .

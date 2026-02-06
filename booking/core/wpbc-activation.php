@@ -115,7 +115,7 @@ function wpbc_reindex_booking_db(){ global $wpdb;
 
     if  (wpbc_is_field_in_table_exists('booking','sort_date') == 0) {
         $simple_sql  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN sort_date datetime"; // FixIn: 10.12.1.5.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$wpdb->query( $simple_sql );
     }
 
@@ -127,7 +127,7 @@ function wpbc_reindex_booking_db(){ global $wpdb;
 			// 1. Select  all bookings ID, where sort_date is NULL in wp_booking.
 			$sql = " SELECT booking_id as id FROM {$wpdb->prefix}booking as bk WHERE sort_date IS NULL";
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$bookings_res = $wpdb->get_results( $sql );
 
 		if ( $is_show_messages ) {
@@ -146,7 +146,7 @@ function wpbc_reindex_booking_db(){ global $wpdb;
             $sql .= " FROM {$wpdb->prefix}bookingdates as bdt" ;
             $sql .= " WHERE booking_id IN ( ". $id_string ." ) GROUP BY bdt.booking_id ORDER BY bdt.booking_date " ;
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$sort_date_array = $wpdb->get_results( $sql );
 
 			if ( $is_show_messages ) {
@@ -159,7 +159,7 @@ function wpbc_reindex_booking_db(){ global $wpdb;
             foreach ($sort_date_array as $value) { $ii++;
                 $sql  = "UPDATE {$wpdb->prefix}booking  ";
                 $sql .= " SET sort_date = '".$value->date. "' WHERE booking_id  = ". $value->id . " ";
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$wpdb->query( $sql );
 
 				if ( $is_show_messages ) {
@@ -183,11 +183,13 @@ function wpbc_reindex_booking_db(){ global $wpdb;
 ////////////////////////////////////////////////////////////////////////////////
 
 /** Activation */
-function wpbc_booking_activate() {        
-    
+function wpbc_booking_activate() {
+
+	wpbc_load_translation();
+
     make_bk_action( 'wpbc_before_activation' );
     
-    wpbc_load_translation();
+
     
     $version = wpbc_get_plugin_version_type();
     $is_demo = wpbc_is_this_demo();
@@ -236,7 +238,7 @@ function wpbc_booking_activate() {
                      booking_type bigint(10) NOT NULL default 1,
                      PRIMARY KEY  (booking_id)
                     ) {$charset_collate};";
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$wpdb->query( $simple_sql );
         } elseif  (wpbc_is_field_in_table_exists('booking','form') == 0) {
             $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN form TEXT";   // FixIn: 10.12.1.5.
@@ -304,7 +306,7 @@ function wpbc_booking_activate() {
                      PRIMARY KEY  (booking_dates_id)
                     ) {$charset_collate}";
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$wpdb->query( $simple_sql );
 
 			if ( ! class_exists( 'wpdev_bk_personal' ) ) {
@@ -316,14 +318,14 @@ function wpbc_booking_activate() {
 			// If we remove this index,  so  then its can  significant impact  to the speed of page loading at the Booking Listing and Timelines.
 			// Index for SPEED opening Booking Listing and Timeline with  thousands of Bookings,  otherwise,  without this index, speed will be TOO SLOW...
 			$simple_sql = "CREATE UNIQUE INDEX booking_id_dates ON {$wpdb->prefix}bookingdates ( booking_id, booking_date);";
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$wpdb->query( $simple_sql );
 		}
 
 
 		if ( count( $wp_queries ) > 0 ) {
 			foreach ( $wp_queries as $wp_q ) {
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$wpdb->query( $wp_q );
 			}
 
@@ -332,27 +334,27 @@ function wpbc_booking_activate() {
 				$is_appr    = 1;
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
                      'text^name1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 				$temp_id        = $wpdb->insert_id;
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
                         ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 2 DAY", 'curdate' ) . " ," . $is_appr . "  ),
                         ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 3 DAY", 'curdate' ) . " ," . $is_appr . "  ),
                         ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 4 DAY", 'curdate' ) . " ," . $is_appr . "  );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 				// -- Test Booking #2 --
 				$is_appr    = 0;
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
                      'text^name1^Emma~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^999-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 				$temp_id        = $wpdb->insert_id;
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
                         ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 28 DAY", 'curdate' ) . " ," . $is_appr . "  ),
                         ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 29 DAY", 'curdate' ) . " ," . $is_appr . "  ),
                         ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 30 DAY", 'curdate' ) . " ," . $is_appr . "  );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 
 				// -- Test Booking #3 --
@@ -361,7 +363,7 @@ function wpbc_booking_activate() {
 				$end_time   = '10:30';
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date, is_new ) VALUES (
                      'selectbox^rangetime1^".$start_time." - ".$end_time."~text^name1^Sophia~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing a one day time slot booking.', " . wpbc_sql_date_math_expr_explicit('', 'now') . ", 0 );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 				$temp_id = $wpdb->insert_id;
 
@@ -370,7 +372,7 @@ function wpbc_booking_activate() {
 				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved ) VALUES
 									( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '" . ( ( 8 * 24 ) + intval( $start_time_arr[0] ) ) . ':' . $start_time_arr[1] . ":01' HOUR_SECOND", 'curdate' ) . " ," . $is_appr . " ),
 									( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '" . ( ( 8 * 24 ) + intval( $end_time_arr[0]   ) ) . ':' . $end_time_arr[1]   . ":02' HOUR_SECOND", 'curdate' ) . " ," . $is_appr . "  );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 
 			}
@@ -380,17 +382,17 @@ function wpbc_booking_activate() {
 		if ( wpbc_is_field_in_table_exists( 'booking', 'hash' ) == 0 ) {  //HASH_EDIT
 
 			$simple_sql = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN hash TEXT";   // FixIn: 10.12.1.5.
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$wpdb->query( $simple_sql );
 
 			// Update hash  value only in last 100 bookings
 			$sql_check_table = "SELECT booking_id as id FROM {$wpdb->prefix}booking  ORDER BY booking_id DESC LIMIT 0, 100";
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$res = $wpdb->get_results( $sql_check_table );
 
 			foreach ( $res as $l ) {
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$wpdb->query( "UPDATE {$wpdb->prefix}booking SET hash = MD5('" . time() . '_' . wp_rand( 1000, 1000000 ) . "') WHERE booking_id = " . $l->id );
 			}
 		}
@@ -440,13 +442,13 @@ function wpbc_booking_deactivate() {
     // DB Tables
 	// -----------------------------------------------------------------------------------------------------------------
     global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}booking" );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}bookingdates" );
 
     // Delete all users booking windows states.
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared,
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter,
 	if ( false === $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%booking_%'" ) ) {
         debuge_error('Error during deleting user meta at DB',__FILE__,__LINE__);
         die();
@@ -454,7 +456,7 @@ function wpbc_booking_deactivate() {
 	
 	// Delete or Drafts and Pending from demo sites
 	if ( wpbc_is_this_demo() ) {  // Delete all temp posts at the demo sites: (post_status = pending || draft) && ( post_type = post ) && (post_author != 1)
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared,
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter,
 		$postss = $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE ( post_status = 'pending' OR  post_status = 'draft' OR  post_status = 'auto-draft' OR  post_status = 'trash' OR  post_status = 'inherit' ) AND ( post_type='post' OR  post_type='revision') AND post_author != 1" );
 		foreach ( $postss as $pp ) {
 			wp_delete_post( $pp->ID, true );
@@ -526,6 +528,11 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
  $mu_option4delete[]='booking_thank_you_page_URL';
     $default_options['booking_is_use_autofill_4_logged_user'] = ($is_demo) ? 'On' : 'Off';
  $mu_option4delete[]='booking_is_use_autofill_4_logged_user';
+
+if ( defined( 'WPBC_NEW_FORM_BUILDER' ) && WPBC_NEW_FORM_BUILDER ) {
+	$default_options['booking_use_bfb_form'] = 'Off';
+$mu_option4delete[]                      = 'booking_use_bfb_form';
+}
  	// FixIn: 10.13.1.5.
     $default_options['booking_is_use_phone_validation'] = 'Off';
  $mu_option4delete[]='booking_is_use_phone_validation';
@@ -656,19 +663,21 @@ $mu_option4delete[]= 'booking_timeslot_picker_skin';
  $mu_option4delete[]='booking_menu_position';  
     $default_options['booking_translation_load_from'] = 'wp.org';
  $mu_option4delete[]='booking_translation_load_from';
-    $default_options['booking_user_role_booking'] = 'subscriber';
+
+	// FixIn: 10.14.12.1.
+    $default_options['booking_user_role_booking'] = 'editor';
  $mu_option4delete[]='booking_user_role_booking';  
-    $default_options['booking_user_role_availability'] = 'subscriber';
+    $default_options['booking_user_role_availability'] = 'editor';
  $mu_option4delete[]='booking_user_role_availability';
-    $default_options['booking_user_role_addbooking'] = 'subscriber';
+    $default_options['booking_user_role_addbooking'] = 'editor';
  $mu_option4delete[]='booking_user_role_addbooking';
-    $default_options['booking_user_role_resources'] = 'subscriber';
+    $default_options['booking_user_role_resources'] = 'editor';
  $mu_option4delete[]='booking_user_role_resources';  
-    $default_options['booking_user_role_settings'] = 'subscriber';
+    $default_options['booking_user_role_settings'] = 'editor';
  $mu_option4delete[]='booking_user_role_settings';  
 //FixIn: 9.8.15.2.6
 if ( class_exists( 'wpdev_bk_biz_m' ) ) {
-		$default_options['booking_user_role_prices'] = 'subscriber';
+		$default_options['booking_user_role_prices'] = 'editor';
 	 $mu_option4delete[]='booking_user_role_prices';
 }
 
@@ -851,7 +860,8 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
         $default_options['booking_default_title_in_day_for_timeline_front_end'] = '[name] [secondname]';
      $mu_option4delete[]='booking_default_title_in_day_for_timeline_front_end';
-        $default_options['booking_is_show_popover_in_timeline_front_end'] = ($is_demo) ? 'On' : 'Off';
+	 // FixIn: 10.14.10.1.
+        $default_options['booking_is_show_popover_in_timeline_front_end'] = 'Off';
      $mu_option4delete[]='booking_is_show_popover_in_timeline_front_end';
 	 // FixIn: 9.6.3.5.
 

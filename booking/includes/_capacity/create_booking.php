@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * @return void
  */
-function ajax_WPBC_AJX_BOOKING__CREATE() {
+function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
 	/**
 	 * Tip   / translation /
@@ -228,7 +228,7 @@ if (  is_admin() && ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX )  ) {
  */
 function wpbc_booking_save( $request_params ){
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_START( 'total', array() );
+	$php_performance = wpbc_php_performance_START( 'total', array() );
 																														// </editor-fold>
 	$ajx_data_arr           = array();
 	$ajx_data_arr['status'] = 'ok';
@@ -356,7 +356,7 @@ function wpbc_booking_save( $request_params ){
 
 	} else {
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-		$php_performance = php_performance_START( 'wpbc__where_to_save_booking' , $php_performance );
+		$php_performance = wpbc_php_performance_START( 'wpbc__where_to_save_booking' , $php_performance );
 																														// </editor-fold>
 
 		/**
@@ -395,7 +395,7 @@ function wpbc_booking_save( $request_params ){
 		// </editor-fold>
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-		$php_performance = php_performance_END( 'wpbc__where_to_save_booking' , $php_performance );
+		$php_performance = wpbc_php_performance_END( 'wpbc__where_to_save_booking' , $php_performance );
 																														// </editor-fold>
 	}
 
@@ -421,7 +421,7 @@ function wpbc_booking_save( $request_params ){
 	make_bk_action( 'check_multiuser_params_for_client_side', $create_params['resource_id'] );                                 // Activate working with specific user in WP MU
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_START( 'wpbc_db__booking_save' , $php_performance );
+	$php_performance = wpbc_php_performance_START( 'wpbc_db__booking_save' , $php_performance );
 																														// </editor-fold>
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -466,7 +466,7 @@ function wpbc_booking_save( $request_params ){
 			make_bk_action( 'wpdev_make_update_of_remark',  $booking_new_arr['booking_id'], $booking_note, true );
 	}
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_END( 'wpbc_db__booking_save' , $php_performance );
+	$php_performance = wpbc_php_performance_END( 'wpbc_db__booking_save' , $php_performance );
 																														// </editor-fold>
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -499,7 +499,7 @@ function wpbc_booking_save( $request_params ){
 		// $payment_params['is_show_payment_form'] = 0;                     // FixIn: 9.9.0.21.
 	}
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_START( 'wpbc_maybe_get_payment_form' , $php_performance );
+	$php_performance = wpbc_php_performance_START( 'wpbc_maybe_get_payment_form' , $php_performance );
 																														// </editor-fold>
 
 	// GET PAYMENT FORMS ===============================================================================================
@@ -538,9 +538,9 @@ function wpbc_booking_save( $request_params ){
 
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_END( 'wpbc_maybe_get_payment_form' , $php_performance );
+	$php_performance = wpbc_php_performance_END( 'wpbc_maybe_get_payment_form' , $php_performance );
 
-	$php_performance = php_performance_START( 'emails_sending' , $php_performance );
+	$php_performance = wpbc_php_performance_START( 'emails_sending' , $php_performance );
 																														// </editor-fold>
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -608,7 +608,7 @@ function wpbc_booking_save( $request_params ){
 	}
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_END(   'emails_sending' , $php_performance );
+	$php_performance = wpbc_php_performance_END(   'emails_sending' , $php_performance );
 																														// </editor-fold>
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -682,7 +682,7 @@ function wpbc_booking_save( $request_params ){
 
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_START( 'confirmation' , $php_performance );
+	$php_performance = wpbc_php_performance_START( 'confirmation' , $php_performance );
 																														// </editor-fold>
 
 	// <editor-fold     defaultstate="collapsed"                        desc="  == Confirmation data ==  "  >
@@ -729,7 +729,7 @@ function wpbc_booking_save( $request_params ){
 	// </editor-fold>
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_END(   'confirmation' , $php_performance );
+	$php_performance = wpbc_php_performance_END(   'confirmation' , $php_performance );
 																														// </editor-fold>
 
 
@@ -737,7 +737,7 @@ function wpbc_booking_save( $request_params ){
 
 
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = php_performance_END(   'total' , $php_performance );
+	$php_performance = wpbc_php_performance_END(   'total' , $php_performance );
 	$php_performance['other_code'] = - 1 * array_reduce( $php_performance,
 																			function ( $sum, $item ) {
 																										$sum += $item;
@@ -980,7 +980,7 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 		$sql_prepare_arr['type'] = implode( ', ', $sql_prepare_arr['type'] );
 		/* phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 		$sql = $wpdb->prepare( "INSERT INTO {$wpdb->prefix}booking " . "			  ( {$sql_prepare_arr['name']} )" . "	  VALUES  ( {$sql_prepare_arr['type']} )", $sql_prepare_arr['value'] );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ( false === $wpdb->query( $sql ) ) {
 			return array( 'status' => 'error', 'message' => 'Error. INSERT New Data in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $sql );
 		}
@@ -999,7 +999,7 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 		$sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET  {$sql_prepare_arr['set']}  WHERE booking_id={$booking_id};", $sql_prepare_arr['value'] );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ( false === $wpdb->query( $sql ) ) {
 			return array( 'status'  => 'error',
 						  'message' => 'Error. UPDATE Exist Data in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $sql,
@@ -1008,13 +1008,13 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 
 		// Check if dates previously was approved.
 		$slct_sql = "SELECT approved FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id}) LIMIT 0,1";
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$slct_sql_results  = $wpdb->get_results( $slct_sql );
 		$is_approved_dates = ( count( $slct_sql_results ) > 0 ) ? $slct_sql_results[0]->approved : $is_approved_dates;
 
 
         $delete_sql = "DELETE FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id})";
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ( false === $wpdb->query( $delete_sql ) ) {
 			return array( 'status' => 'error', 'message' => 'Error. DELETE Old Dates in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $delete_sql );
 		}
@@ -1105,7 +1105,7 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 	}
 
 	$dates_sql .= implode( ', ', $insert_dates_arr );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	if ( false === $wpdb->query( $dates_sql ) ) {
 		return array( 'status' => 'error', 'message' => 'Error. INSERT "D A T E S" in DB.' . '  FILE:' . __FILE__ . ' LINE:' . __LINE__ . ' SQL:' . $dates_sql );
 	}
@@ -1314,6 +1314,10 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 
 				if ( false !== strpos( $time_fields_obj['name'], 'durationtime' ) ) {
                     $time_as_seconds_arr[ 1 ] = $time_as_seconds_arr[ 0 ] + $time_fields_obj['times_as_seconds'][ 0 ];
+					// FixIn: 10.14.7.1.
+					while ( $time_as_seconds_arr[1] > ( 24 * 60 * 60 ) ) {
+						$time_as_seconds_arr[1] = $time_as_seconds_arr[1] - ( 24 * 60 * 60 );
+					}
                     break;
                 }
             }

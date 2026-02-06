@@ -221,12 +221,122 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Check if the selected date/time is already in the past compared to "today_arr".
+ *
+ * Behavior notes:
+ * - If "is_enabled_change_over" is enabled, always returns false (no restriction).
+ * - `sort_date_array[0]` is expected to be the earliest selected date (sorted ascending).
+ * - `today_arr` is expected to be: [YYYY, MM, DD, HH, mm] (strings or numbers).
+ * - `myTime` is expected to be "HH:MM" (24h).
+ *
+ * @param {string} myTime Time string in "HH:MM" format.
+ * @param {Array<Array<string|number>>} sort_date_array Array of date arrays; first element is used as date to check.
+ * @returns {boolean} True if selected date/time is in the past, otherwise false.
+ */
+function wpbc_is_time_in_the_past_for_today(myTime, sort_date_array) {
+
+	// FixIn: 10.14.10.2.
+	if ( true === _wpbc.get_other_param( 'is_enabled_change_over' ) ) {
+		return false;
+	}
+	var date_to_check = sort_date_array[0];
+	if ( parseInt( date_to_check[0] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[0] ) ) {
+		return true;
+	}
+	if (
+		(parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
+		(parseInt( date_to_check[1] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[1] ))
+	) {
+		return true;
+	}
+	if (
+		(parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
+		(parseInt( date_to_check[1] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[1] )) &&
+		(parseInt( date_to_check[2] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[2] ))
+	) {
+		return true;
+	}
+	if (
+		(parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
+		(parseInt( date_to_check[1] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[1] )) &&
+		(parseInt( date_to_check[2] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[2] ))
+	) {
+		var mytime_value = myTime.split( ":" );
+		mytime_value     = parseInt( mytime_value[0] ) * 60 + parseInt( mytime_value[1] );
+
+		var current_time_value = parseInt( _wpbc.get_other_param( 'today_arr' )[3] ) * 60 + parseInt( _wpbc.get_other_param( 'today_arr' )[4] );
+
+		if ( current_time_value > mytime_value ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Validate a time string.
+ *
+ * Supported formats:
+ *  - 24-hour time: "H:MM" or "HH:MM"
+ *      Examples: "0:00", "09:30", "23:59", "24:00"
+ *      Notes: "24:00" is allowed, but "24:01" is not.
+ *
+ *  - 12-hour time: "H:MM AM/PM" (AM/PM is case-insensitive; spaces are optional)
+ *      Examples: "9:30 AM", "09:30pm", "12:05 PM"
+ *
+ * @param {string} time_str Raw time string entered by the user.
+ * @returns {boolean} True if the string matches a valid supported time format.
+ */
+function wpbc_is_valid_time_string(time_str) {
+
+	if ( typeof time_str !== 'string' ) {
+		return false;
+	}
+
+	const str = time_str.trim();
+	if ( str === '' ) {
+		return false;
+	}
+
+	// 1-2 digit hours, 2 digit minutes, optional AM/PM (case-insensitive).
+	const match = str.match( /^(\d{1,2}):(\d{2})(?:\s*([AaPp][Mm]))?$/ );
+	if ( ! match ) {
+		return false;
+	}
+
+	const hour   = Number( match[1] );
+	const minute = Number( match[2] );
+	const ampm   = match[3] ? match[3].toUpperCase() : null;
+
+	if ( ! Number.isInteger( hour ) || ! Number.isInteger( minute ) ) {
+		return false;
+	}
+
+	if ( minute < 0 || minute > 59 ) {
+		return false;
+	}
+
+	// 12-hour mode (AM/PM provided): hour must be 1..12.
+	if ( ampm ) {
+		return hour >= 1 && hour <= 12;
+	}
+
+	// 24-hour mode (no AM/PM): hour must be 0..24, but 24 only allowed with :00.
+	if ( hour < 0 || hour > 24 ) {
+		return false;
+	}
+	if ( hour === 24 && minute !== 0 ) {
+		return false;
+	}
+
+	return true;
+}
+
+
 //TODO: Continue Refactoring here 2018-04-21
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-	//PS: This function  from ../booking/inc/js/personal.js
+	//PS: This function  from personal.js
 	function wpbc_is_this_time_selection_not_available( resource_id, form_elements ){
 
 		// Skip this checking if we are in the Admin  panel at Add booking page
@@ -319,8 +429,8 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 			var valid_time = true;
 			if ( (start_time == '') || (end_time == '') ) valid_time = false;
 
-			if ( !isValidTimeTextField( start_time ) ) valid_time = false;
-			if ( !isValidTimeTextField( end_time ) ) valid_time = false;
+			if ( !wpbc_is_valid_time_string( start_time ) ) valid_time = false;
+			if ( !wpbc_is_valid_time_string( end_time ) ) valid_time = false;
 
 			if ( valid_time === true )
 				if (
@@ -363,43 +473,6 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 
 	}
 
-
-function isTimeTodayGone( myTime, sort_date_array ){
-	var date_to_check = sort_date_array[ 0 ];
-	if ( parseInt( date_to_check[0] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[0] ) ) {
-		return true;
-	}
-	if (
-		 (parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
-		 (parseInt( date_to_check[1] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[1] ))
-	){
-		return true;
-	}
-	if (
-		 (parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
-		 (parseInt( date_to_check[1] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[1] )) &&
-		 (parseInt( date_to_check[2] ) < parseInt( _wpbc.get_other_param( 'today_arr' )[2] ))
-	) {
-		return true;
-	}
-	if (
-		(parseInt( date_to_check[0] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[0] )) &&
-		(parseInt( date_to_check[1] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[1] )) &&
-		(parseInt( date_to_check[2] ) == parseInt( _wpbc.get_other_param( 'today_arr' )[2] ))
-	) {
-		var mytime_value = myTime.split( ":" );
-		mytime_value     = parseInt( mytime_value[0] ) * 60 + parseInt( mytime_value[1] );
-
-		var current_time_value = parseInt( _wpbc.get_other_param( 'today_arr' )[3] ) * 60 + parseInt( _wpbc.get_other_param( 'today_arr' )[4] );
-
-		if ( current_time_value > mytime_value ) {
-			return true;
-		}
-	}
-	return false;
-}
-
-
 	function checkTimeInside( mytime, is_start_time, bk_type ){
 
 		var my_dates_str = document.getElementById( 'date_booking' + bk_type ).value;                 // GET DATES From TEXTAREA
@@ -411,7 +484,6 @@ function isTimeTodayGone( myTime, sort_date_array ){
 
 		return checkTimeInsideProcess( mytime, is_start_time, bk_type, my_dates_str );
 	}
-
 
 	function checkRecurentTimeInside( my_rangetime, bk_type ){
 
@@ -436,12 +508,14 @@ function isTimeTodayGone( myTime, sort_date_array ){
 		return valid_time;
 	}
 
-
-// Function check start and end time at selected days
+	// Function check start and end time at selected days.
 	function checkTimeInsideProcess( mytime, is_start_time, bk_type, my_dates_str ){
 		var i, h, s, m;	// FixIn: 9.1.5.1.
 
-		var date_array = my_dates_str.split( ", " );
+		var date_array = my_dates_str.split( ',' );
+		date_array = date_array.map( function (s) {
+			return s.trim();
+		} );
 		if ( date_array.length == 2 ){ // This recheck is need for editing booking, with single day
 			if ( date_array[ 0 ] == date_array[ 1 ] ){
 				date_array = [ date_array[ 0 ] ];
@@ -465,7 +539,7 @@ function isTimeTodayGone( myTime, sort_date_array ){
 		}
 
 		if ( is_start_time ) {
-			if ( isTimeTodayGone( mytime, sort_date_array ) ) {
+			if ( wpbc_is_time_in_the_past_for_today( mytime, sort_date_array ) ) {
 				return false;
 			}
 		}
@@ -592,38 +666,6 @@ function isTimeTodayGone( myTime, sort_date_array ){
 			if ( start_time_checking_index != undefined )
 				if ( start_time_checking_index[ 2 ] != undefined )
 					if ( (sort_date_array.length == 1) && (start_time_checking_index[ 2 ] >= mytime_value) ) return false;  // we are select only one day and end time is earlythe starttime its wrong
-		}
-		return true;
-	}
-
-
-	//PS: This function  from ../booking/inc/js/personal.js
-	function isValidTimeTextField( timeStr ){
-		// Checks if time is in HH:MM AM/PM format.
-		// The seconds and AM/PM are optional.
-
-		var timePat = /^(\d{1,2}):(\d{2})(\s?(AM|am|PM|pm))?$/;
-
-		var matchArray = timeStr.match( timePat );
-		if ( matchArray == null ){
-			return false; //("<?php esc_html_e('Time is not in a valid format. Use this format HH:MM or HH:MM AM/PM'); ?>");
-		}
-		var hour = matchArray[ 1 ];
-		var minute = matchArray[ 2 ];
-		var ampm = matchArray[ 4 ];
-
-		if ( ampm == "" ){
-			ampm = null
-		}
-
-		if ( hour < 0 || hour > 24 ){		// FixIn: 8.3.1.1.
-			return false; //("<?php esc_html_e('Hour must be between 1 and 12. (or 0 and 23 for military time)'); ?>");
-		}
-		if ( hour > 12 && ampm != null ){
-			return false; //("<?php esc_html_e('You can not specify AM or PM for military time.'); ?>");
-		}
-		if ( minute < 0 || minute > 59 ){
-			return false; //("<?php esc_html_e('Minute must be between 0 and 59.'); ?>");
 		}
 		return true;
 	}

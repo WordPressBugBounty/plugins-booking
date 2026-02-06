@@ -1,3 +1,158 @@
+.booking_form_div .wpbc_bfb_form {
+  max-width: var(--wpbc-bfb-form-max-width,100%)
+}
+div .wpbc_bfb_form .wpbc__row .wpbc__field,
+div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: var(--wpbc-bfb-col-dir,column);
+  flex-direction: var(--wpbc-bfb-col-dir,column);
+  -ms-flex-wrap: var(--wpbc-bfb-col-wrap,nowrap);
+  flex-wrap: var(--wpbc-bfb-col-wrap,nowrap);
+  -ms-flex-pack: var(--wpbc-bfb-col-jc,flex-start);
+  justify-content: var(--wpbc-bfb-col-jc,flex-start);
+  -ms-flex-align: var(--wpbc-bfb-col-ai,stretch);
+  align-items: var(--wpbc-bfb-col-ai,stretch);
+  gap: var(--wpbc-bfb-col-gap,0);
+  -ms-flex-item-align: var(--wpbc-bfb-col-aself,flex-start);
+  align-self: var(--wpbc-bfb-col-aself,flex-start)
+}
+div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(:input),
+div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field {
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%
+}
+div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-line-pack: normal;
+  align-content: normal;
+  padding: 0;
+  margin: 0;
+  gap: 0
+}
+div .wpbc_bfb_form .wpbc__row .wpbc__field[data-colstyles-active="1"] .bfb_element:not(:has(.wpbc_calendar_wraper)),
+div .wpbc_bfb_form [data-colstyles-active="1"] .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field:not(:has(.wpbc_calendar_wraper)) {
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto
+}
+div .wpbc_bfb_form .wpbc__row .wpbc__field[data-colstyles-active="1"] .bfb_element:has(.wpbc_text_captcha_container),
+div .wpbc_bfb_form [data-colstyles-active="1"] .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field:has(.wpbc_text_captcha_container) {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto
+}
+.wpbc_bfb_form .bfb_element input[type=date],
+.wpbc_bfb_form .bfb_element input[type=datetime-local],
+.wpbc_bfb_form .bfb_element input[type=datetime],
+.wpbc_bfb_form .bfb_element input[type=email],
+.wpbc_bfb_form .bfb_element input[type=month],
+.wpbc_bfb_form .bfb_element input[type=number],
+.wpbc_bfb_form .bfb_element input[type=password],
+.wpbc_bfb_form .bfb_element input[type=range],
+.wpbc_bfb_form .bfb_element input[type=search],
+.wpbc_bfb_form .bfb_element input[type=tel],
+.wpbc_bfb_form .bfb_element input[type=text],
+.wpbc_bfb_form .bfb_element input[type=time],
+.wpbc_bfb_form .bfb_element input[type=url],
+.wpbc_bfb_form .bfb_element input[type=week],
+.wpbc_bfb_form .bfb_element select,
+.wpbc_bfb_form .bfb_element textarea,
+.wpbc_bfb_form .wpbc_bfb__field input[type=date],
+.wpbc_bfb_form .wpbc_bfb__field input[type=datetime-local],
+.wpbc_bfb_form .wpbc_bfb__field input[type=datetime],
+.wpbc_bfb_form .wpbc_bfb__field input[type=email],
+.wpbc_bfb_form .wpbc_bfb__field input[type=month],
+.wpbc_bfb_form .wpbc_bfb__field input[type=number],
+.wpbc_bfb_form .wpbc_bfb__field input[type=password],
+.wpbc_bfb_form .wpbc_bfb__field input[type=range],
+.wpbc_bfb_form .wpbc_bfb__field input[type=search],
+.wpbc_bfb_form .wpbc_bfb__field input[type=tel],
+.wpbc_bfb_form .wpbc_bfb__field input[type=text],
+.wpbc_bfb_form .wpbc_bfb__field input[type=time],
+.wpbc_bfb_form .wpbc_bfb__field input[type=url],
+.wpbc_bfb_form .wpbc_bfb__field input[type=week],
+.wpbc_bfb_form .wpbc_bfb__field select,
+.wpbc_bfb_form .wpbc_bfb__field textarea {
+  width: 100%;
+  max-width: 100%
+}
+.wpbc_bfb_form .wpbc_static_text {
+  width: 100%
+}
+.wpbc_bfb__preview-rendered .wpbc_static_text {
+  display: block
+}
+.wpbc_bfb_divider_wrap[data-orientation=vertical] .wpbc_bfb_divider--v {
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%)
+}
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=horizontal] {
+  width: 100%;
+  margin: 0;
+  min-width: 50px
+}
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical],
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical] .wpbc_bfb__noaction,
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical] .wpbc_bfb__noaction * {
+  height: 100%;
+  min-height: 50px;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap
+}
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical] .wpbc_bfb__field-preview {
+  position: relative
+}
+div .wpbc_container .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has([data-orientation=vertical]) {
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto
+}
+div div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divider_wrap[data-orientation=horizontal]) {
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+  width: 100%
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divider_wrap[data-orientation=vertical]) {
+  height: 100%
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap[data-orientation=horizontal] {
+  width: 100%
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider--h {
+  display: block;
+  box-sizing: border-box
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap[data-orientation=vertical] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-item-align: stretch;
+  align-self: stretch;
+  position: relative
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider--v {
+  width: 0;
+  box-sizing: content-box;
+  height: 100%
+}
+.wpbc_bfb_form [data-colstyles-active="1"] .bfb_element .wpbc_bfb_divider_wrap[data-orientation=vertical] {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap hr {
+  background: 0 0
+}
 /*!
  * Booking Form Fields  
  *   
@@ -658,6 +813,60 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   border: none;
   box-shadow: none
 }
+.wpdev-form-control-wrap .wpdev-checkbox.group_inline,
+.wpdev-form-control-wrap .wpdev-radio.group_inline,
+.wpdev-form-control-wrap.group_inline [role=checkboxgroup],
+.wpdev-form-control-wrap.group_inline [role=radiogroup] {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  gap: 2em;
+  row-gap: .5em
+}
+.wpdev-form-control-wrap .wpdev-checkbox,
+.wpdev-form-control-wrap .wpdev-radio,
+.wpdev-form-control-wrap [role=checkboxgroup],
+.wpdev-form-control-wrap [role=radiogroup] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: column wrap;
+  flex-flow: column wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  gap: .5em
+}
+.wpbc_container_booking_form .wpdev-form-control-wrap [role=checkboxgroup] > label,
+.wpbc_container_booking_form .wpdev-form-control-wrap [role=radiogroup] > label,
+.wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item,
+.wpdev-form-control-wrap .wpdev-radio > .wpdev-list-item {
+  display: inline;
+  line-height: 1.74;
+  font-weight: 400
+}
+div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item,
+div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-radio > .wpdev-list-item {
+  margin-right: 0
+}
+.wpbc_container_booking_form .wpdev-form-control-wrap [role=checkboxgroup] > label input[type=checkbox],
+.wpbc_container_booking_form .wpdev-form-control-wrap [role=radiogroup] > label input[type=radio],
+.wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item input[type=checkbox],
+.wpdev-form-control-wrap .wpdev-radio > .wpdev-list-item input[type=radio] {
+  vertical-align: middle;
+  margin-block-start: -.25em;
+  margin-inline-end: .3em
+}
+.wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item label,
+.wpdev-form-control-wrap .wpdev-radio > .wpdev-list-item label {
+  line-height: 1.74;
+  font-weight: 400
+}
 /*! ----------------------------------------------------------------------------------------------------------------- */
 /*! Timeline Steps: */
 /*! ----------------------------------------------------------------------------------------------------------------- */
@@ -690,6 +899,9 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   --wpbc_steps_for_timeline_active_color: #64aa45;
   --wpbc_steps_for_timeline_failed_color: #e76a39;
   --wpbc_steps_for_timeline_checkbox_color: #fff
+}
+.booking_form_div .wpbc_steps_for_timeline_container {
+  --wpbc_steps_for_timeline_active_color: var(--wpbc_timepicker-selected-bg-color, #6b96ce)
 }
 .wpbc_steps_for_timeline {
   margin: 0;
@@ -743,9 +955,13 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   top: 2px
 }
 /*! Timeline Steps: Front-End align */
-.booking_form_div .wpbc_steps_for_timeline_container {
-  --wpbc_steps_for_timeline_active_color: var(--wpbc_timepicker-selected-bg-color, #6b96ce);
+.booking_form_div .wpbc_steps_for_timeline_container,
+.wpbc_bfb__container .wpbc_steps_for_timeline_container {
   margin: 20px auto 25px
+}
+.bfb_element [class^=wpbc_steps_for_timeline__steps_timeline] {
+  -ms-flex: 1;
+  flex: 1
 }
 /*!   ==  Align Form Elements  ======================================================================================  */
 /*!   ==  Right  ==  */
@@ -798,7 +1014,10 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   margin: auto;
   max-width: 100%;
   width: 100%;
-  max-width: Min(900px,100%);
+  max-width: Min(900px,100%)
+}
+.wpbc_wizard__border_container,
+.wpbc_wizard__border_container p {
   font-size: 16px;
   font-weight: 400
 }
@@ -816,9 +1035,9 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
   color: #bbb;
   box-shadow: 0 0 3px #3b3b3b
 }
-.wpbc_theme_dark_1 .wpbc_wizard__border_container div,
+.wpbc_theme_dark_1 .wpbc_wizard__border_container div:not(.datepick-inline*),
 .wpbc_theme_dark_1 .wpbc_wizard__border_container label,
 .wpbc_theme_dark_1 .wpbc_wizard__border_container p,
-.wpbc_theme_dark_1 .wpbc_wizard__border_container span {
+.wpbc_theme_dark_1 .wpbc_wizard__border_container span:not(.datepick-inline*) {
   color: #fff
 }

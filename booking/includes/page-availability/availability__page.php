@@ -283,6 +283,7 @@ if ( 	( false !== $escaped_request_params_arr )
 			</script>
 			<?php
 // FixIn: 10.0.0.5.
+/*
 if ( 0 ) {
 			$resource_id = 220;
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet  // FixIn: 10.12.4.2.
@@ -363,7 +364,7 @@ if ( 0 ) {
 				<?php
 	}
 }
-
+*/
 
 		}
 

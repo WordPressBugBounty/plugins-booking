@@ -7,12 +7,12 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.14.6
+Version: 10.14.14
 License: GPLv2 or later
 */
 
 /*
-	Copyright 2009 - 2025  www.wpbookingcalendar.com  (email: info@wpbookingcalendar.com),
+	Copyright 2009 - 2026  www.wpbookingcalendar.com  (email: info@wpbookingcalendar.com),
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '10.14.6' );
+	define( 'WP_BK_VERSION_NUM', '10.14.14' );
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
 	define( 'WP_BK_MINOR_UPDATE',  true );
@@ -83,6 +83,11 @@ if ( ! defined( 'WPBC_IS_PLAYGROUND' ) ) {
 	define( 'WPBC_IS_PLAYGROUND', ( isset( $_SERVER['SERVER_SOFTWARE'] ) && ( 'PHP.wasm' === $_SERVER['SERVER_SOFTWARE'] ) ) );
 }
 
+// Intentionally completely disable showing booking deatils in Timeline view on Front-End side.							// FixIn: 10.14.11.1.
+if ( ! defined( 'WPBC_DISABLE_POPOVER_IN_TIMELINE' ) ) {
+	define( 'WPBC_DISABLE_POPOVER_IN_TIMELINE', true );
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // ==  DEBUG  CONSTANTS  ==
 // ---------------------------------------------------------------------------------------------------------------------
@@ -93,13 +98,14 @@ if ( true ) {
 	}                                                                                                                   // Set 0 for no filling or 2 for 241 bookings or more for more.
 } else {
 	// :: DEBUG
-	define( 'WP_BK_BETA_DATA_FILL', 1 );
+	define( 'WP_BK_BETA_DATA_FILL', 1 );                                                                                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	define( 'WP_BK_BETA_DATA_FILL_AS', 'BL' );                                                                          // BL - Dates   ,   MU - Times.
 }
 
 
 if ( ! defined( 'WPBC_NEW_FORM_BUILDER' ) ) {
-	define( 'WPBC_NEW_FORM_BUILDER',  ! true );
+	define( 'WPBC_NEW_FORM_BUILDER', ! true );
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

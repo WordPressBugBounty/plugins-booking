@@ -878,7 +878,7 @@ function wpbc_toolbar_btn__add_new_booking() {
 	?><a
 	class="button-primary button wpbc_submit_button"
 	href="javascript:void(0)"
-	onclick="mybooking_submit(
+	onclick="wpbc_booking_form_submit(
 		document.getElementById('booking_form<?php echo intval( $bk_type ); ?>' )
 		, <?php echo intval( $bk_type ); ?>
 		, '<?php echo esc_js( wpbc_get_maybe_reloaded_booking_locale() ); ?>'

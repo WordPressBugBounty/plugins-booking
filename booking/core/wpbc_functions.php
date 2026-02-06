@@ -798,7 +798,7 @@ function wpbc_db_get_number_new_bookings() {
 
 	$sql_req = apply_bk_filter( 'get_sql_for_checking_new_bookings', $sql_req );
 	$sql_req = apply_bk_filter( 'get_sql_for_checking_new_bookings_multiuser', $sql_req );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$bookings       = $wpdb->get_results( $sql_req );
 	$bookings_count = count( $bookings );
 
@@ -835,7 +835,7 @@ function wpbc_db_update_number_new_bookings( $id_of_new_bookings, $is_new = '0',
 			$update_sql = "UPDATE {$wpdb->prefix}booking SET is_new = {$is_new} WHERE booking_id IN  ( {$id_of_new_bookings} ) ";
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		if ( false === $wpdb->query( $update_sql ) ) {
 			debuge_error( 'Error during updating status of bookings at DB', __FILE__, __LINE__ );
 			die();
@@ -1320,7 +1320,7 @@ function wpbc_is_booking_approved( $booking_id ) {
 	global $wpdb;
 
 	$sql = $wpdb->prepare( "SELECT DISTINCT approved FROM {$wpdb->prefix}bookingdates WHERE booking_id = %d ORDER BY booking_date", $booking_id );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$dates_result = $wpdb->get_results( $sql );
 
 	foreach ( $dates_result as $my_date ) {
@@ -1349,7 +1349,7 @@ function wpbc_db__booking_approve( $booking_id ) {
 
 	$update_sql = "UPDATE {$wpdb->prefix}bookingdates SET approved = '1' WHERE booking_id IN ({$booking_id});";
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	if ( false === $wpdb->query( $update_sql ) ) {
 		return false;
 	}
@@ -1357,7 +1357,7 @@ function wpbc_db__booking_approve( $booking_id ) {
 	// In case if the booking was in Trash,  then  restore it.
 	// FixIn: 10.8.1.1.
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking SET trash = 0 WHERE booking_id IN ({$booking_id})" ) ) {
 		return false;
 	}
@@ -1428,7 +1428,7 @@ function wpbc_auto_pending_booking( $booking_id, $denyreason = '' ) {
 	}
 
 	$update_sql = "UPDATE {$wpdb->prefix}bookingdates SET approved = '0' WHERE booking_id IN ({$booking_id});";
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	if ( false === $wpdb->query( $update_sql ) ) {
 
 		wpbc_redirect( site_url() );
@@ -1460,7 +1460,7 @@ function wpbc_auto_cancel_booking( $booking_id, $email_reason = '' ) {
 	// Send decline emails.
 	wpbc_send_email_trash( $booking_id, 1, $email_reason );
 	// FixIn: 10.12.1.5.
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	if ( false === $wpdb->query( "UPDATE {$wpdb->prefix}booking SET trash = 1 WHERE booking_id IN ({$booking_id})" ) ) {
 
 		wpbc_redirect( site_url() );
@@ -1681,16 +1681,16 @@ function wpbc_auto_cancel_booking( $booking_id, $email_reason = '' ) {
 		 *
 		 *  Example:
 		 *
-		 *  	$php_performance = php_performance_START( 'emails_sending' , $php_performance );
+		 *  	$php_performance = wpbc_php_performance_START( 'emails_sending' , $php_performance );
 		 *
 		 *      ... some code here ...
 		 *
-		 *  	$php_performance = php_performance_END(   'emails_sending' , $php_performance );
+		 *  	$php_performance = wpbc_php_performance_END(   'emails_sending' , $php_performance );
 		 *
 		 *      echo 'Time of execution: ' . $php_performancep['emails_sending']
 		 *
 		 */
-		function php_performance_START( $name, $php_performance ) {
+		function wpbc_php_performance_START( $name, $php_performance ) {
 
 			if ( empty( $php_performance ) ) {
 				$php_performance = array();
@@ -1711,16 +1711,16 @@ function wpbc_auto_cancel_booking( $booking_id, $email_reason = '' ) {
 		 *
 		 *  Example:
 		 *
-		 *  	$php_performance = php_performance_START( 'emails_sending' , $php_performance );
+		 *  	$php_performance = wpbc_php_performance_START( 'emails_sending' , $php_performance );
 		 *
 		 *      ... some code here ...
 		 *
-		 *  	$php_performance = php_performance_END(   'emails_sending' , $php_performance );
+		 *  	$php_performance = wpbc_php_performance_END(   'emails_sending' , $php_performance );
 		 *
 		 *      echo 'Time of execution: ' . $php_performancep['emails_sending']
 		 *
 		 */
-		function php_performance_END( $name, $php_performance ) {
+		function wpbc_php_performance_END( $name, $php_performance ) {
 
 			if ( empty( $php_performance ) ) {
 				$php_performance = array();

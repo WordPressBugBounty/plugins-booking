@@ -56,8 +56,26 @@ function wpbc_calendar_show( resource_id ){
 	// If no calendar HTML tag,  then  exit
 	if ( 0 === jQuery( '#calendar_booking' + resource_id ).length ){ return false; }
 
-	// If the calendar with the same Booking resource is activated already, then exit.
-	if ( true === jQuery( '#calendar_booking' + resource_id ).hasClass( 'hasDatepick' ) ){ return false; }
+	// If the calendar with the same Booking resource is activated already, then exit. But in Elementor the class can be stale, so verify instance.
+	if ( jQuery( '#calendar_booking' + resource_id ).hasClass( 'hasDatepick' ) ) {
+
+		var existing_inst = null;
+
+		try {
+			existing_inst = jQuery.datepick._getInst( jQuery( '#calendar_booking' + resource_id ).get( 0 ) );
+		} catch ( e ) {
+			existing_inst = null;
+		}
+
+		if ( existing_inst ) {
+			return false;
+		}
+
+		// Stale marker: remove and continue with init.
+		jQuery( '#calendar_booking' + resource_id ).removeClass( 'hasDatepick' );
+	}
+
+
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Days selection
@@ -1073,22 +1091,30 @@ function wpbc_calendar_show( resource_id ){
 // --------------------------------------------------------------------------------------------------------------------- */
 
 	/**
-	 * Get Calendar datepick  Instance
-	 * @param resource_id  of booking resource
+	 * Get Calendar datepick Instance.
+	 *
+	 * @param {int|string} resource_id
 	 * @returns {*|null}
 	 */
-	function wpbc_calendar__get_inst( resource_id ){
+	function wpbc_calendar__get_inst(resource_id) {
 
-		if ( 'undefined' === typeof (resource_id) ){
+		if ( 'undefined' === typeof (resource_id) ) {
 			resource_id = '1';
 		}
 
-		if ( jQuery( '#calendar_booking' + resource_id ).length > 0 ){
-			return jQuery.datepick._getInst( jQuery( '#calendar_booking' + resource_id ).get( 0 ) );
+		if ( jQuery( '#calendar_booking' + resource_id ).length > 0 ) {
+
+			try {
+				var inst = jQuery.datepick._getInst( jQuery( '#calendar_booking' + resource_id ).get( 0 ) );
+				return inst ? inst : null;
+			} catch ( e ) {
+				return null;
+			}
 		}
 
 		return null;
 	}
+
 
 	/**
 	 * Unselect  all dates in calendar and visually update this calendar
@@ -1348,16 +1374,47 @@ function wpbc_calendar_show( resource_id ){
 	// ................................................................................................................. */
 
 	/**
-	 * Update Look  of calendar
+	 * Update look of calendar (safe).
 	 *
-	 * @param resource_id
+	 * In Elementor preview the DOM can be re-rendered, so the calendar element may exist
+	 * while the Datepick instance is missing. In that case try to (re)initialize.
+	 *
+	 * @param {int|string} resource_id
+	 * @return {boolean} true if updated, false if not possible
 	 */
-	function wpbc_calendar__update_look( resource_id ){
+	function wpbc_calendar__update_look(resource_id) {
 
 		var inst = wpbc_calendar__get_inst( resource_id );
 
+		// If instance missing, try to re-init calendar once.
+		if ( null === inst ) {
+
+			var jq_cal = jQuery( '#calendar_booking' + resource_id );
+
+			if ( jq_cal.length && ('function' === typeof wpbc_calendar_show) ) {
+
+				// Elementor sometimes leaves stale class without real instance.
+				if ( jq_cal.hasClass( 'hasDatepick' ) ) {
+					jq_cal.removeClass( 'hasDatepick' );
+				}
+
+				// Try to init datepick markup now.
+				wpbc_calendar_show( resource_id );
+
+				// Try again.
+				inst = wpbc_calendar__get_inst( resource_id );
+			}
+		}
+
+		// Still no instance -> do not crash the whole ajax flow.
+		if ( null === inst ) {
+			return false;
+		}
+
 		jQuery.datepick._updateDatepick( inst );
+		return true;
 	}
+
 
 
 	/**

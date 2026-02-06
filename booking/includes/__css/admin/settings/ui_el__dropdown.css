@@ -135,6 +135,10 @@
 	box-shadow: none;
 	border-radius: var(--wpbc_ui_dropdown__active-a-border-radius);
 }
+.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a:focus *,
+.wpbc_ui_el__dropdown .ul_dropdown_menu > li > a:hover * {
+	color: var(--wpbc_ui_dropdown__active-a-color);
+}
 .wpbc_ui_el__dropdown .ul_dropdown_menu > .disabled > a,
 .wpbc_ui_el__dropdown .ul_dropdown_menu > .disabled > a:focus,
 .wpbc_ui_el__dropdown .ul_dropdown_menu > .disabled > a:hover {

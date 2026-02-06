@@ -124,3 +124,11 @@ body.wpbc_admin_full_screen {
   padding: 0 15px;
   background: #fff;
 }
+/* Button Group,  like "Save Changes" | "Open" ---------------------------------------------------------------------- */
+.wpbc_ui_el__top_nav .wpbc_ui_el__buttons_group {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+}

@@ -715,7 +715,7 @@ class WPBC_AJX__Availability {
  * Just for loading CSS and  JavaScript files
  */
 if ( true ) {
-	$ajx_availability_loading = new WPBC_AJX__Availability;
-	$ajx_availability_loading->init_load_css_js_tpl();
-	$ajx_availability_loading->define_ajax_hook();
+	$wpbc_ajx_availability_loading = new WPBC_AJX__Availability;
+	$wpbc_ajx_availability_loading->init_load_css_js_tpl();
+	$wpbc_ajx_availability_loading->define_ajax_hook();
 }

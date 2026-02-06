@@ -977,7 +977,7 @@ function wpbc_send_email_deny( $deny_id_str, $is_send_emeils, $denyreason = '' )
     
     global $wpdb;
     $sql = "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id IN ({$deny_id_str})";
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$result = $wpdb->get_results( $sql  );
 
     foreach ( $result as $res ) {

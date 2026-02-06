@@ -1519,7 +1519,8 @@ if(1){
                                 , 'is_demo_safe' => wpbc_is_this_demo()
                         );
 
-	    if ( ! class_exists( 'wpdev_bk_personal' ) )
+	    //if ( ! class_exists( 'wpdev_bk_personal' ) )
+		if ( ! wpbc_is_this_demo() )
 		    $this->fields['booking_menu_go_pro'] = array(
                                 'type'          => 'select'
                                 , 'default'     => $default_options_values['booking_menu_go_pro']         //'administrator'
@@ -1583,6 +1584,26 @@ if(1){
 		              . '&wh_booking_type=lost">'
 		            . 'Find Lost Bookings'
 	            . '</a>';  // FixIn: 8.5.2.19.
+
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized	
+			if ( ( ! empty( $_REQUEST['booking_version_num'] ) ) && ( 'reset' == $_REQUEST['booking_version_num'] ) ) {          // FixIn: 8.5.2.19.
+				delete_bk_option('booking_version_num');
+				?>
+				<div class="wpdvlp-sub-tabs wpbc_redirection_message"
+					 style="margin: 20px 0;padding: 1em;font-size: 14px;">
+					<a href="<?php
+					echo esc_url( wpbc_get_setup_wizard_page_url() ); ?>">Redirect</a> after <span
+						class="wpbc_countdown">1</span> second...
+				</div>
+				<?php
+
+				wpbc_redirect( wpbc_get_settings_url() );
+			}
+
+			$my_system_buttons .= ' <a class="button button" href="' . wpbc_get_settings_url() . '&booking_version_num=reset">' . 'Try to Reinstall' . '</a>';  // FixIn: 8.5.2.19.
+
+
 
 	        // FixIn: 9.5.3.1.
 			$my_system_buttons .= ' <a class="button button" href="'

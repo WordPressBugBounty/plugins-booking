@@ -765,6 +765,7 @@ function wpbc_ajax_WPBC_IMPORT_ICS_URL() {
 		//////////////////////////////////////////////////////////////////////
 		// Import events from .ics feed to specific booking resource
 		//////////////////////////////////////////////////////////////////////
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 	do_action( 'wpbm_ics_import_start', array(
 			'url'               => esc_url_raw( $_POST['params']['wpbc_import_url'] ),			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			'resource_id'       => intval( $_POST['params']['wpbc_import_br_selection'] ),		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated

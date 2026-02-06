@@ -474,10 +474,11 @@ function wpbc_clean_parameter( $value, $is_escape_sql = true ) {
  * or
  *					wpbc_clean_digit_or_csd( array( '12,a,45,9', '10a' ) )  => array ( '12,0,45,9',  '10' )
  */
-function wpbc_clean_digit_or_csd( $value ) {                                // FixIn: 6.2.1.4.
+function wpbc_clean_digit_or_csd( $value ) {
 
-	if ( $value === '' ) return $value;
-
+	if ( '' === $value ) {
+		return $value;
+	}
 
 	if ( is_array( $value ) ) {
 		foreach ( $value as $key => $check_value ) {
@@ -488,14 +489,14 @@ function wpbc_clean_digit_or_csd( $value ) {                                // F
 
 	$value = str_replace( ';', ',', $value );
 
-	$array_of_nums = explode(',', $value);
+	$array_of_nums = explode( ',', $value );
 
 	$result = array();
-	foreach ($array_of_nums as $check_element) {
-
-		$result[] = intval( $check_element );						// FixIn: 8.0.2.10.
+	foreach ( $array_of_nums as $check_element ) {
+		$result[] = intval( $check_element );                        // FixIn: 8.0.2.10.
 	}
-	$result = implode(',', $result );
+	$result = implode( ',', $result );
+
 	return $result;
 }
 

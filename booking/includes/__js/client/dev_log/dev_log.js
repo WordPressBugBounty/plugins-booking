@@ -26,6 +26,8 @@ _wpbc = (function (obj, $) {
 		}
 
 		return {
+			log  : (code, msg, extra) => out('log',   code, msg, extra),
+			debug: (code, msg, extra) => out('debug', code, msg, extra),
 			warn : (code, msg, extra) => out( 'warn', code, msg, extra ),
 			error: (code, errOrMsg, extra) =>
 				out( 'error', code,
@@ -48,12 +50,15 @@ _wpbc = (function (obj, $) {
 		};
 	})();
 
-
 	// Optional: global traps in dev.
 	if ( window.__WPBC_DEV ) {
-		window.addEventListener( 'error', (e) => Core.dev.error( 'GLOBAL-ERROR', e.error || e.message, e ) );
-		window.addEventListener( 'unhandledrejection', (e) => Core.dev.error( 'GLOBAL-REJECTION', e.reason ) );
+		window.addEventListener( 'error', (e) => {
+			try { _wpbc?.dev?.error( 'GLOBAL-ERROR', e?.error || e?.message, e ); } catch ( _ ) {}
+		} );
+		window.addEventListener( 'unhandledrejection', (e) => {
+			try { _wpbc?.dev?.error( 'GLOBAL-REJECTION', e?.reason ); } catch ( _ ) {}
+		} );
 	}
 
 	return obj;
-}( _wpbc || {}, jQuery ));
+	}( _wpbc || {}, jQuery ));

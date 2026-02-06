@@ -39,7 +39,7 @@ function wpbc_is_table_exists( $tablename ) {
 
 	if ( 0 ) {
 		$sql_check_table = $wpdb->prepare( "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE (TABLE_SCHEMA = '{$wpdb->dbname}') AND (TABLE_NAME = %s);", $tablename );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql_check_table );
 
 		return count( $res );
@@ -47,7 +47,7 @@ function wpbc_is_table_exists( $tablename ) {
 	} else {
 
 		$sql_check_table = $wpdb->prepare( "SHOW TABLES LIKE %s", $tablename );                                    //FixIn: 5.4.3
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql_check_table );
 
 		return count( $res );
@@ -81,7 +81,7 @@ function wpbc_is_field_in_table_exists( $tablename, $fieldname ) {
 	if ( 0 ) {
 
 		$sql_check_table = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='{$tablename}' AND TABLE_SCHEMA='{$wpdb->dbname}' ";
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql_check_table );
 
 		foreach ( $res as $fld ) {
@@ -93,7 +93,7 @@ function wpbc_is_field_in_table_exists( $tablename, $fieldname ) {
 	} else {
 
 		$sql_check_table = "SHOW COLUMNS FROM {$tablename}";
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$res = $wpdb->get_results( $sql_check_table );
 
 		foreach ( $res as $fld ) {
@@ -123,7 +123,7 @@ function wpbc_is_index_in_table_exists( $tablename, $fieldindex ) {
 	}
 	/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
 	$sql_check_table = $wpdb->prepare( "SHOW INDEX FROM {$tablename} WHERE Key_name = %s", $fieldindex );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$res = $wpdb->get_results( $sql_check_table );
 	if ( count( $res ) > 0 ) {
 		return 1;

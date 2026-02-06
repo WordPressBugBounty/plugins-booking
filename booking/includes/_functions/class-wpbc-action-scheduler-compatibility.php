@@ -64,7 +64,7 @@ class WPBC_Action_Scheduler_Compatibility {
 
 		$wp_max_limit       = WP_MAX_MEMORY_LIMIT;
 		$wp_max_limit_int   = self::convert_hr_to_bytes( $wp_max_limit );
-		$filtered_limit     = apply_filters( 'admin_memory_limit', $wp_max_limit );
+		$filtered_limit     = apply_filters( 'admin_memory_limit', $wp_max_limit );   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		$filtered_limit_int = self::convert_hr_to_bytes( $filtered_limit );
 
 		if ( -1 === $filtered_limit_int || ( $filtered_limit_int > $wp_max_limit_int && $filtered_limit_int > $current_limit_int ) ) {

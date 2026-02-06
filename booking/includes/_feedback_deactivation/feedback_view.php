@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $status, $page, $s;
 
 if ( is_plugin_active( 'booking-calendar-com/booking-calendar-com.php' ) ) {
-	$deactivate_url = wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . WPBC_PRO_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PRO_PLUGIN_FILENAME . '&amp;plugin_status=' . $status . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . WPBC_PRO_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PRO_PLUGIN_FILENAME  );
+	$wpbc_deactivate_url = wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . WPBC_PRO_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PRO_PLUGIN_FILENAME . '&amp;plugin_status=' . $status . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . WPBC_PRO_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PRO_PLUGIN_FILENAME  );
 } else {
-	$deactivate_url = wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . WPBC_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PLUGIN_FILENAME . '&amp;plugin_status=' . $status . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . WPBC_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PLUGIN_FILENAME  );
+	$wpbc_deactivate_url = wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . WPBC_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PLUGIN_FILENAME . '&amp;plugin_status=' . $status . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . WPBC_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PLUGIN_FILENAME  );
 }
 
 ?>
@@ -57,20 +57,20 @@ if ( is_plugin_active( 'booking-calendar-com/booking-calendar-com.php' ) ) {
 			</div>
 			<div class="wpbc_deactivate-feedback-popup-form-body">
 				<div class="wpbc_deactivate-feedback-popup-form-questions">
-				<?php foreach ( $deactivate_reasons as $reason_slug => $reason ) : ?>
+				<?php foreach ( $wpbc_deactivate_reasons as $wpbc_reason_slug => $wpbc_reason ) : ?>
 					<div class="wpbc_deactivate-feedback-popup-input-wrapper">
-						<input id="wpbc_deactivate-feedback-<?php echo esc_attr( $reason_slug ); ?>"
+						<input id="wpbc_deactivate-feedback-<?php echo esc_attr( $wpbc_reason_slug ); ?>"
 							class="wpbc_deactivate-feedback-input" type="checkbox" name="reason_slug"
-							value="<?php echo esc_attr( $reason_slug ); ?>"/>
-						<label for="wpbc_deactivate-feedback-<?php echo esc_attr( $reason_slug ); ?>"
-							class="wpbc_deactivate-feedback-label"><?php echo wp_kses_post( $reason['title'] ); ?></label>
+							value="<?php echo esc_attr( $wpbc_reason_slug ); ?>"/>
+						<label for="wpbc_deactivate-feedback-<?php echo esc_attr( $wpbc_reason_slug ); ?>"
+							class="wpbc_deactivate-feedback-label"><?php echo wp_kses_post( $wpbc_reason['title'] ); ?></label>
 					</div>
 				<?php endforeach; ?>
 				</div>
 				<span class="consent">* <?php esc_html_e( 'By submitting this form, you will also be sending us your email address & website URL.', 'booking' ); ?></span>
 			</div>
 			<div class="wpbc_deactivate-feedback-popup-form-footer">
-				<a href="<?php echo esc_url( $deactivate_url ); ?>" class="skip"><?php esc_html_e( 'Skip &amp; Deactivate', 'booking' ); ?></a>
+				<a href="<?php echo esc_url( $wpbc_deactivate_url ); ?>" class="skip"><?php esc_html_e( 'Skip &amp; Deactivate', 'booking' ); ?></a>
 				<div class="wpbc_deactivate-feedback-popup-form-more-details">
 					<label for="wpbc_deactivate-feedback-more-details"
 						class="wpbc_deactivate-feedback-label"><?php echo wp_kses_post( __( 'Could you share more details? We\'d love to fix them!', 'booking' ) ); ?></label>

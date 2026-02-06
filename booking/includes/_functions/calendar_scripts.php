@@ -10,6 +10,7 @@
  * @email info@wpbookingcalendar.com
  *
  * @modified 2025-07-19
+ * @file: ../includes/_functions/calendar_scripts.php
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,11 +20,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 // =====================================================================================================================
 // ==  Calendar  functions  ==
 // =====================================================================================================================
-
-
 /**
  * Print the critical inline CSS exactly once per page.
- * - Keeps the loader styled immediately, even before other styles load.
+ * - In Elementor-safe mode, collect CSS into WPBC_FE_Assets (head if possible, else footer).
+ * - Legacy fallback: echo <style> in place.
  */
 function wpbc_print_loader_inline_css_once() {
 
@@ -33,58 +33,68 @@ function wpbc_print_loader_inline_css_once() {
 	}
 	$printed = true;
 
-	?>
-	<style id="wpbc_calendar_loader_inline_css">
-		/* Critical loader styles (scoped by class names) */
-		.calendar_loader_frame {
-			width: calc(341px * var(--wpbc-loader-cols, 1));
-			max-width: 100%;
-			height: 307px;
-			display: flex;
-			flex-flow: column nowrap;
-			align-items: center;
-			justify-content: center;
-			border-radius: 5px;
-			box-shadow: 0 0 2px #ccc;
-			gap: 15px;
-			/* Calendar variables (safe fallbacks) */
-			color: var(--wpbc_cal-available-text-color, #2c3e50);
-			background: rgb(from var(--wpbc_cal-available-day-color, #e6f2ff) r g b / var(--wpbc_cal-day-bg-color-opacity, 1));
-			border: var(--wpbc_cal-day-cell-border-width, 1px) solid var(--wpbc_cal-available-day-color, #aacbeb);
+	$css = "
+	/* Critical loader styles (scoped by class names) */
+	.calendar_loader_frame {
+		width: calc(341px * var(--wpbc-loader-cols, 1));
+		max-width: 100%;
+		height: 307px;
+		display: flex;
+		flex-flow: column nowrap;
+		align-items: center;
+		justify-content: center;
+		border-radius: 5px;
+		box-shadow: 0 0 2px #ccc;
+		gap: 15px;
+		/* Calendar variables (safe fallbacks) */
+		color: var(--wpbc_cal-available-text-color, #2c3e50);
+		background: rgb(from var(--wpbc_cal-available-day-color, #e6f2ff) r g b / var(--wpbc_cal-day-bg-color-opacity, 1));
+		border: var(--wpbc_cal-day-cell-border-width, 1px) solid var(--wpbc_cal-available-day-color, #aacbeb);
+	}
+	.calendar_loader_text {
+		font-size: 18px;
+		text-align: center;
+	}
+	.calendar_loader_frame__progress_line_container {
+		width: 50%;
+		height: 3px;
+		margin-top: 7px;
+		overflow: hidden;
+		background: #202020;
+		border-radius: 30px;
+	}
+	.calendar_loader_frame__progress_line {
+		width: 0%;
+		height: 3px;
+		background: #8ECE01;
+		border-radius: 30px;
+		animation: calendar_loader_bar_progress 3s infinite linear;
+	}
+	@keyframes calendar_loader_bar_progress { to { width: 100%; } }
+	@media (prefers-reduced-motion: reduce) {
+		.calendar_loader_frame__progress_line { animation: none; width: 50%; }
+	}
+	";
+
+	// Elementor-safe path: attach CSS to an enqueued WPBC stylesheet.
+	if ( class_exists( 'WPBC_FE_Assets' ) ) {
+
+		// Ensure the target style is enqueued (safe-check anyway).
+		if ( function_exists( 'wp_enqueue_style' ) ) {
+			wp_enqueue_style( 'wpbc-ui-both', wpbc_plugin_url( '/css/wpbc_ui_both.css' ), array(), WP_BK_VERSION_NUM );                                                            // FixIn: 10.0.0.25.
 		}
-		.calendar_loader_text {
-			font-size: 18px;
-			text-align: center;
+		// FixIn: 10.14.14.1.
+		$added = WPBC_FE_Assets::add_inline_css_to_wp_style( 'wpbc-ui-both', $css, 'wpbc:calendar-loader-css' );
+
+		if ( $added ) {
+			return; // Do NOT print <style> inside content.
 		}
-		.calendar_loader_frame__progress_line_container {
-			width: 50%;
-			height: 3px;
-			margin-top: 7px;
-			overflow: hidden;
-			background: #202020;
-			border-radius: 30px;
-		}
-		.calendar_loader_frame__progress_line {
-			width: 0%;
-			height: 3px;
-			background: #8ECE01;
-			border-radius: 30px;
-			animation: calendar_loader_bar_progress 3s infinite linear;
-		}
-		@keyframes calendar_loader_bar_progress {
-			to {
-				width: 100%;
-			}
-		}
-		@media (prefers-reduced-motion: reduce) {
-			.calendar_loader_frame__progress_line {
-				animation: none;
-				width: 50%;
-			}
-		}
-	</style>
-	<?php
+	}
+
+	// Legacy fallback (only when WP inline style cannot be attached).
+	echo "\n" . '<style id="wpbc_calendar_loader_inline_css">' . "\n" . $css . "\n" . '</style>' . "\n";                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
+
 
 
 /**
@@ -280,3 +290,6 @@ function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $bk_otion
 
 	return $calendar;
 }
+
+// >=BM - Get script for calendar activation required only  in the BM  version  for extra calendars.!
+add_bk_filter( 'pre_get_calendar_html', 'wpbc_pre_get_calendar_html' );

@@ -4,8 +4,8 @@ Donate link: https://wpbookingcalendar.com/buy/
 Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
-Tested up to: 6.8
-Stable tag: 10.14.6
+Tested up to: 6.9
+Stable tag: 10.14.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,40 +240,40 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- Danish                       97.48% [ 2550 / 2616 ], fuzzy 41, not translated 25
-- Dutch                        86.93% [ 2274 / 2616 ], fuzzy 318, not translated 24
-- Norwegian (Bokmål)           80.62% [ 2109 / 2616 ], fuzzy 103, not translated 404
-- German                       80.50% [ 2106 / 2616 ], fuzzy 431, not translated 79
-- French (France)              77.10% [ 2017 / 2616 ], fuzzy 466, not translated 133
-- Korean                       74.35% [ 1945 / 2616 ], fuzzy 514, not translated 157
-- Hungarian                    74.35% [ 1945 / 2616 ], fuzzy 519, not translated 152
-- Spanish (Spain)              68.43% [ 1790 / 2616 ], fuzzy 537, not translated 289
-- Portuguese (Brazil)          64.56% [ 1689 / 2616 ], fuzzy 646, not translated 281
-- Greek                        64.18% [ 1679 / 2616 ], fuzzy 657, not translated 280
-- Turkish                      63.34% [ 1657 / 2616 ], fuzzy 674, not translated 285
-- Italian                      61.70% [ 1614 / 2616 ], fuzzy 586, not translated 416
-- Spanish (Mexico)             59.29% [ 1551 / 2616 ], fuzzy 728, not translated 337
-- Finnish                      58.94% [ 1542 / 2616 ], fuzzy 733, not translated 341
-- Polish                       58.91% [ 1541 / 2616 ], fuzzy 725, not translated 350
-- Romanian                     58.41% [ 1528 / 2616 ], fuzzy 738, not translated 350
-- Swedish                      58.07% [ 1519 / 2616 ], fuzzy 747, not translated 350
-- Arabic                       57.53% [ 1505 / 2616 ], fuzzy 760, not translated 351
-- Russian                      57.45% [ 1503 / 2616 ], fuzzy 979, not translated 134
-- Bulgarian                    55.73% [ 1458 / 2616 ], fuzzy 775, not translated 383
-- Slovenian                    55.58% [ 1454 / 2616 ], fuzzy 785, not translated 377
-- Chinese (Taiwan)             54.09% [ 1415 / 2616 ], fuzzy 825, not translated 376
-- Portuguese (Portugal)        53.67% [ 1404 / 2616 ], fuzzy 809, not translated 403
-- Japanese                     52.87% [ 1383 / 2616 ], fuzzy 322, not translated 911
-- Chinese (China)              51.87% [ 1357 / 2616 ], fuzzy 811, not translated 448
-- Ukrainian                    51.53% [ 1348 / 2616 ], fuzzy 820, not translated 448
-- Catalan                      50.69% [ 1326 / 2616 ], fuzzy 742, not translated 548
-- Thai                         50.57% [ 1323 / 2616 ], fuzzy 860, not translated 433
-- Hebrew                       50.27% [ 1315 / 2616 ], fuzzy 848, not translated 453
-- Galician                     48.97% [ 1281 / 2616 ], fuzzy 900, not translated 435
-- Slovak                       45.53% [ 1191 / 2616 ], fuzzy 823, not translated 602
-- Croatian                     44.07% [ 1153 / 2616 ], fuzzy 842, not translated 621
-- Czech                        38.30% [ 1002 / 2616 ], fuzzy 898, not translated 716
-- Chinese (Hong Kong)          25.99% [ 680 / 2616 ], fuzzy 175, not translated 1761
+- French (France)              98.37% [ 2830 / 2877 ], fuzzy 30, not translated 17
+- Danish                       88.63% [ 2550 / 2877 ], fuzzy 181, not translated 146
+- Dutch                        79.04% [ 2274 / 2877 ], fuzzy 458, not translated 145
+- Norwegian (Bokmål)           73.31% [ 2109 / 2877 ], fuzzy 230, not translated 538
+- German                       73.20% [ 2106 / 2877 ], fuzzy 568, not translated 203
+- Korean                       67.61% [ 1945 / 2877 ], fuzzy 649, not translated 283
+- Hungarian                    67.61% [ 1945 / 2877 ], fuzzy 654, not translated 278
+- Spanish (Spain)              62.22% [ 1790 / 2877 ], fuzzy 669, not translated 418
+- Portuguese (Brazil)          58.71% [ 1689 / 2877 ], fuzzy 778, not translated 410
+- Greek                        58.36% [ 1679 / 2877 ], fuzzy 786, not translated 412
+- Turkish                      57.59% [ 1657 / 2877 ], fuzzy 802, not translated 418
+- Italian                      56.10% [ 1614 / 2877 ], fuzzy 714, not translated 549
+- Spanish (Mexico)             53.91% [ 1551 / 2877 ], fuzzy 856, not translated 470
+- Finnish                      53.60% [ 1542 / 2877 ], fuzzy 865, not translated 470
+- Polish                       53.56% [ 1541 / 2877 ], fuzzy 854, not translated 482
+- Romanian                     53.11% [ 1528 / 2877 ], fuzzy 866, not translated 483
+- Swedish                      52.80% [ 1519 / 2877 ], fuzzy 875, not translated 483
+- Arabic                       52.31% [ 1505 / 2877 ], fuzzy 891, not translated 481
+- Russian                      52.24% [ 1503 / 2877 ], fuzzy 1114, not translated 260
+- Bulgarian                    50.68% [ 1458 / 2877 ], fuzzy 907, not translated 512
+- Slovenian                    50.54% [ 1454 / 2877 ], fuzzy 913, not translated 510
+- Chinese (Taiwan)             49.18% [ 1415 / 2877 ], fuzzy 952, not translated 510
+- Portuguese (Portugal)        48.80% [ 1404 / 2877 ], fuzzy 938, not translated 535
+- Japanese                     48.07% [ 1383 / 2877 ], fuzzy 448, not translated 1046
+- Chinese (China)              47.17% [ 1357 / 2877 ], fuzzy 939, not translated 581
+- Ukrainian                    46.85% [ 1348 / 2877 ], fuzzy 949, not translated 580
+- Catalan                      46.09% [ 1326 / 2877 ], fuzzy 876, not translated 675
+- Thai                         45.99% [ 1323 / 2877 ], fuzzy 987, not translated 567
+- Hebrew                       45.71% [ 1315 / 2877 ], fuzzy 976, not translated 586
+- Galician                     44.53% [ 1281 / 2877 ], fuzzy 1028, not translated 568
+- Slovak                       41.40% [ 1191 / 2877 ], fuzzy 949, not translated 737
+- Croatian                     40.08% [ 1153 / 2877 ], fuzzy 968, not translated 756
+- Czech                        39.94% [ 1149 / 2877 ], fuzzy 919, not translated 809
+- Chinese (Hong Kong)          23.64% [ 680 / 2877 ], fuzzy 274, not translated 1923
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -300,6 +300,53 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.14 =
+- Changes in **all** versions:
+	* **Fix**: Loads inline CSS via wp_add_inline_style in header of the page. Safe for elementor. (10.14.14.1)
+	* **Fix**: Resolve Missing Authorization to Unauthenticated Booking Details Exposure in Timelines. (10.14.14.2)
+
+= 10.14.13 =
+- Changes in **all** versions:
+	* **Fix**: Resolve issue of not showing calendar and showing the warning "The calendar could not be initialized on this page." in some  systems. (10.14.13.2)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Correctly shows number of selected days / nights in search results,  if used shortcodes [search_nights_number] or [search_days_number]. (10.14.13.1)
+
+= 10.14.12 =
+- Changes in **all** versions:
+	* **Fix**: Set minimum user role to as 'editor' to access the Boking Calendar menus, after initial activation of plugin. You can change this user role on the bspgs > Admin Panel > Plugin Menu / Permissions page. (10.14.12.1.)
+
+= 10.14.11 =
+- Changes in **all** versions:
+	* **Fix**: Intentionally completely disable showing booking deatils in Timeline view on Front-End side. (10.14.11.1.)
+
+= 10.14.10 =
+- Changes in **all** versions:
+	* **Improvement**: Improved calendar loading in Elementor Preview (iframe mode) to ensure calendars initialize correctly and AJAX refresh works without errors — preventing false “duplicate calendar” messages like: "You have added the same calendar more than once on this page."
+	* **Improvement**: Show warning if Booking Calendar shortcode is placed inside an Elementor Text Editor widget. Since Elementor 3.33.5,  you need to use Elementor Shortcode widget or the native Booking Calendar Elementor widget.
+	* **Improvement**: Code refactoring for front-end side form loading.
+	* **Improvement**: Refactoring implementation of text captcha, for ability to use addons of replacing this captcha. Find more info in /includes/_capacity/captcha_simple_text.php
+	* **Fix**: Added stricter conditions for showing booking details in the Timeline view (front end): details are now displayed only to logged-in users who meet the minimum user level set in Settings > Manage Bookings > Timeline (front end). (10.14.10.1.)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Resolved issue of not updated the [capacity_hint] with  avvailable slots in "booking form without calendar" shortcode, after loading of the page. *(Business Large, MultiUser)*
+	* **Improvement**:  Prevent the warning "Start Time is invalid. The date or time may be booked, or already in the past! Please choose another date or time." from appearing when the change-over feature is active, today's date is selected as the check-in date, and the fixed check-in time is already in the past. (10.14.10.2.) *(Business Small/Medium/Large, MultiUser)*
+
+= 10.14.9 =
+- Changes in **all** versions:
+	* **Improvement**: Updated French trasanltion by Jean-Gabriel NOZE.
+	* **Fix**: Explicitly disable the variable that controls the display of "Booking details in popover", in the free  version to prevent any potential hacks. (10.14.9.2.)
+	* **Fix**: Fixed vulnerability. Added strict sanitastion of dates for the calendar. (10.14.9.1.)
+	* **Fix**: Some other small fixes of styles and mistakes in timeline shortcode.
+
+= 10.14.8 =
+- Changes in **all** versions:
+	* **Fix**: Resolved vulnerability issue of correctly  escaping months parameter in he availability calendar shortcode.
+
+= 10.14.7 =
+- Changes in **all** versions:
+	* **Improvement**: Enhanced showing icons in left vertical  menu  in Compact  mode.
+	* **Fix**: Resolved vulnerability issue of correctly  escaping aggregate parameter in shortcodes.
+	* **Fix**: Resolved issue of bookings for 2 dates,  hile using start time and duration  of time, and based on duration  of time the end time in this second selected date. Example: check  in time: 22:00, duration: 5 hours.
+
 = 10.14.6 =
 - Changes in **all** versions:
 	* **Fix**: **Cloudflare Rocket Loader**: Prevents the stuck "Calendar Loading..." message by excluding key calendar scripts from Rocket Loader deferral (10.14.6.1).

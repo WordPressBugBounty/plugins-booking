@@ -50,7 +50,7 @@ function wpbc_db_dashboard_get_bookings_count_arr(){
 		if ($my_resources!='') $sql_req .=     " AND  bk.booking_type IN ({$my_resources}) ";
 
 		$sql_req .=     "ORDER BY dt.booking_date" ;
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$sql_results = $wpdb->get_results( $sql_req );
 
     // </editor-fold>
@@ -511,9 +511,9 @@ function wpbc_dashboard_section_news() {
 
 	function wpbc_dashboard_info_get_version_type_sites() {
 
-		$json_version = get_json_property_from_meta( 'max usage' );
+		$json_version = wpbc_get_json_property_from_meta( 'max usage' );
 		if ( ! empty( $json_version ) ) {
-			// $json_edition = get_json_property_from_meta( 'edition' ); if ( ! empty( $json_edition ) ) { $json_version = $json_version . ' | ' . $json_edition; }
+			// $json_edition = wpbc_get_json_property_from_meta( 'edition' ); if ( ! empty( $json_edition ) ) { $json_version = $json_version . ' | ' . $json_edition; }
 			return $json_version;
 		}
 

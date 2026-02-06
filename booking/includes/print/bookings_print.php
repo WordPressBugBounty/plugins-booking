@@ -129,6 +129,6 @@ class WPBC_Print {
  * Just for loading CSS and  JavaScript files
  */
 if ( true ) {
-	$ajx_booking_print = new WPBC_Print;
-	$ajx_booking_print->init_load_css_js_tpl();
+	$wpbc_ajx_booking_print = new WPBC_Print;
+	$wpbc_ajx_booking_print->init_load_css_js_tpl();
 }

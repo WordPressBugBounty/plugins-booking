@@ -66,16 +66,16 @@ function wpbc_ui__top_horisontal_nav( $args =array() ) {
 		}
 		$page_item_arr = $args['page_nav_tabs'][ $main_page_slug ];
 
-		do_action( 'hook__wpbc_ui__top_horisontal_nav__start', $active_page_arr['active_page'], $active_page_arr['active_tab'] );
+		do_action( 'hook__wpbc_ui__top_horisontal_nav__start', $active_page_arr['active_page'], $active_page_arr['active_tab'] );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		foreach ( $page_item_arr as $main_menu_slug => $menu_item_arr ) {
-			do_action( 'hook__wpbc_ui__top_horisontal_nav__item_start', $active_page_arr['active_page'], $active_page_arr['active_tab'], $main_menu_slug );
+			do_action( 'hook__wpbc_ui__top_horisontal_nav__item_start', $active_page_arr['active_page'], $active_page_arr['active_tab'], $main_menu_slug );   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 			wpbc_ui__horis_menu__item_main( $main_menu_slug, $menu_item_arr );
 
-			do_action( 'hook__wpbc_ui__top_horisontal_nav__item_end', $active_page_arr['active_page'], $active_page_arr['active_tab'], $main_menu_slug );
+			do_action( 'hook__wpbc_ui__top_horisontal_nav__item_end', $active_page_arr['active_page'], $active_page_arr['active_tab'], $main_menu_slug );   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		}
-		do_action( 'hook__wpbc_ui__top_horisontal_nav__end', $active_page_arr['active_page'], $active_page_arr['active_tab'] );
+		do_action( 'hook__wpbc_ui__top_horisontal_nav__end', $active_page_arr['active_page'], $active_page_arr['active_tab'] );   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		// wpbc_ui_el__divider_vertical();
 	}                                                                                                                   // Loop to  show all  main  sections in horisontal menu.

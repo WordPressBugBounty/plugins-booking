@@ -1,4 +1,7 @@
 <?php
+/**
+ * includes/elementor-booking-form/elementor-widget-booking.php
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -11,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
+class WPBC_Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 
 	/**
 	 * Get widget name.
@@ -375,4 +378,13 @@ class Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 
 		echo do_shortcode( '[' . $shortcode_type . ' ' . $shortcode_params_str . ']' );
 	}
+
+	public function get_script_depends(): array {
+		return array( 'wpbc-elementor-frontend-bridge' );
+	}
+
+	public function get_style_depends(): array {
+		return array( 'wpbc-elementor-frontend-bridge' );
+	}
+
 }

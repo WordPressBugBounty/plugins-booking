@@ -374,6 +374,53 @@
 .wpbc_toggle_danger.wpbc_ui__toggle:hover input:checked+label.wpbc_ui__toggle_icon {
   background-color: #d63638
 }
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox:hover,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio:hover {
+  cursor: pointer
+}
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before,
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio::before {
+  font-family: wpbc-material-icons;
+  display: inline-block;
+  font-variant: normal;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -moz-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 20px;
+  vertical-align: -.25125em
+}
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before {
+  content: "\e835"
+}
+.wpbc_ui__toggle input:checked ~ label.wpbc_ui__toggle_icon_checkbox::before {
+  content: "\e834"
+}
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_radio::before {
+  content: "\e836"
+}
+.wpbc_ui__toggle input:checked ~ label.wpbc_ui__toggle_icon_radio::before {
+  content: "\e837"
+}
+.wpbc_ui__toggle .wpbc_ui__toggle_icon_checkbox::before {
+  font-family: wpbc-bootstrap-icons!important;
+  font-size: 17px;
+  content: "\f584"
+}
+.wpbc_ui__toggle input:checked ~ label.wpbc_ui__toggle_icon_checkbox::before {
+  content: "\f26d"
+}
 .ui_element .wpbc_ui_addon {
   -ms-flex: 0 1 auto;
   flex: 0 1 auto;

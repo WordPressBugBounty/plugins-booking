@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 define ('OBC_CHECK_URL', 'https://wpbookingcalendar.com/');
 
 
-function wpdev_ajax_check_bk_news( $sub_url = '' ){
+function wpbc_old_ajax_check_bk_news( $sub_url = '' ){
 
 	$v=array();
 	if (class_exists('wpdev_bk_personal'))          $v[] = 'wpdev_bk_personal';
@@ -101,7 +101,7 @@ function wpbc_is_show_up_news(){
 }
 
 
-function wpdev_ajax_check_bk_version(){
+function wpbc_old_ajax_check_bk_version(){
 	$v=array();
 	if (class_exists('wpdev_bk_personal'))            $v[] = 'wpdev_bk_personal';
 	if (class_exists('wpdev_bk_biz_s'))        $v[] = 'wpdev_bk_biz_s';

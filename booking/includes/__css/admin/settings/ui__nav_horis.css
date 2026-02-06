@@ -90,10 +90,15 @@
 	outline:0;
 }
 /* Active */
+.wpbc_ui_el__horis_nav_item a[aria-selected="true"],
 .wpbc_ui_el__horis_nav_item.active a{
 	border-bottom-color: var(--wpbc_ui_horis_top_nav__active_color);
 	box-shadow: none;
 	outline:0;
+}
+/* Right side */
+.wpbc_ui_el__horis_nav_item.align_right {
+	margin-left: auto;
 }
 /* Icons */
 .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon{

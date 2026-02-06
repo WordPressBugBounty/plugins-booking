@@ -971,7 +971,7 @@ function wpbc_send_email_trash( $trash_id_str, $is_send_emeils, $trashreason = '
     
     global $wpdb;
     $sql = "SELECT * FROM {$wpdb->prefix}booking as bk WHERE bk.booking_id IN ({$trash_id_str})";
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$result = $wpdb->get_results( $sql  );
 
 

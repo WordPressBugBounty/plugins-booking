@@ -56,6 +56,19 @@ class WPBC_API_Settings_Form_Options extends WPBC_Settings_API {
 
 		$this->fields = array();
 
+		if ( defined( 'WPBC_NEW_FORM_BUILDER' ) && WPBC_NEW_FORM_BUILDER ) {
+			$this->fields['booking_use_bfb_form'] = array(
+									'type'          => 'checkbox'
+									, 'default'     => $default_options_values['booking_use_bfb_form']         // 'Off'
+									, 'title'       => __('New Booking Form Builder' ,'booking') . ' (Beta)'
+									, 'label'       => __('Enable the new drag & drop booking form builder.' ,'booking')
+									, 'description' => '<div style="font-size: 12px;margin: -25px 0;">' . '<strong>' . __( 'Beta feature.', 'booking' ) . '</strong> ' .
+													   __( 'Enables the new drag & drop form builder. Disable this option to use the classic booking form.', 'booking' )
+									. '</div>'
+									, 'group'       => 'form'
+				);
+		}
+
 		// FixIn: 8.7.11.10.
 	    $this->fields['booking_timeslot_picker'] = array(
 	                            'type'          => 'checkbox'
@@ -99,7 +112,8 @@ class WPBC_API_Settings_Form_Options extends WPBC_Settings_API {
                                 'type'          => 'checkbox'
                                 , 'default'     => $default_options_values['booking_is_use_phone_validation']         // 'Off'
                                 , 'title'       => __('Smart Phone Validation' ,'booking')
-                                , 'label'       => sprintf( __('Enable option to ensure phone number fields are validated according to the user\'s country format %1s' ,'booking'), '+1 000 000 0000' )  /* translators: 1: Phone number format. */
+								 /* translators: 1: Phone number format. */
+                                , 'label'       => sprintf( __('Enable option to ensure phone number fields are validated according to the user\'s country format %1s' ,'booking'), '+1 000 000 0000' )
                                 , 'description' => ''
                                 , 'group'       => 'form'
             );

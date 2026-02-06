@@ -60,7 +60,7 @@ abstract class WPBC_Install {
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 4 );
 
 		// TODO: 2025-06-06 - required to  be commented,  if we use the Pro version  as separate plugin.
-		//$this->check_if_need_to_update();                                                                  // Check upgrade, if was no activation process
+		$this->check_if_need_to_update();                                                                  // Check upgrade, if was no activation process
 	}
 
     
@@ -228,13 +228,15 @@ abstract class WPBC_Install {
 			} else {
 
 				// Check if we was update from free to paid or from lower to higher versions, and do not make normal activation. In this case we need to make update.
-				$is_make_activation = $this->is_update_from_lower_to_high_version();
+				// TODO: 2025-11-23 - Commented,  if we use the Pro version  as separate plugin.
+				// $is_make_activation = $this->is_update_from_lower_to_high_version();
 
 			}
 
 			// Add hook  for initial activation.
 			if ( $is_make_activation ) {
-				add_action( 'plugins_loaded', array( $this, 'wpbc_activate_initial' ), 1030 );
+				// add_action( 'plugins_loaded', array( $this, 'wpbc_activate_initial' ), 1030 );
+				add_action( 'init', array( $this, 'wpbc_activate_initial' ), 1030 );
 			}
 		}
 	}

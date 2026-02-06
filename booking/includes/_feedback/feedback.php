@@ -630,10 +630,10 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
  if (
 	   ( ! wpbc_is_this_demo() )
  ) {
-	$js_css_loading = new WPBC_Feedback_01;
-	$js_css_loading->define_ajax_hook();
+	$wpbc_js_css_loading = new WPBC_Feedback_01;
+	$wpbc_js_css_loading->define_ajax_hook();
 
 	if ( ! empty( get_option( 'booking_feedback_03' ) ) ){
-		$js_css_loading->init_load_css_js();
+		$wpbc_js_css_loading->init_load_css_js();
 	}
  }

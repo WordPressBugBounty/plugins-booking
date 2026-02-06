@@ -90,7 +90,8 @@ require_once WPBC_PLUGIN_DIR . '/includes/_functions/versions.php';             
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/sanitizing.php';                // Sanitizing.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/request.php';                   // Class for sanitizing $_REQUEST parameters and saving or getting it from  DB         // FixIn: 9.3.1.2.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/city_list.php';                 // City list.
-require_once WPBC_PLUGIN_DIR . '/includes/_functions/user-custom-data-saver.php';    // Saving custom user data.
+require_once WPBC_PLUGIN_DIR . '/includes/save-user-meta/save-user-meta.php';        // Saving custom user data.
+require_once WPBC_PLUGIN_DIR . '/includes/save-load-option/save-load-option.php';    // Ajax Options Saver / Loader.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/calendar_scripts.php';    		 // Calendar Scripts.
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions.php';                               // Functions.
@@ -186,9 +187,11 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.p
 
 if ( WPBC_NEW_FORM_BUILDER ) {
 	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.
+	// New Shortcode Parsers and Form Render. 11.0.1.
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/class-wpbc-form-shortcode-engine.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/class-wpbc-form-shortcode-engine-adapter.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/bfb-form-render.php';
 }
-// Scheduller.
-// require_once WPBC_PLUGIN_DIR . '/includes/page-schedule/schedule-page.php';
 
 
 // Elementor Addons:   https://developers.elementor.com/docs/getting-started/first-addon/.
@@ -253,6 +256,15 @@ require_once WPBC_PLUGIN_DIR . '/js/captcha/captcha.php';                       
 
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-calendar-legend.php';            // Calendar Legend                      // FixIn: 9.4.3.6.
 
+if ( 1 ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/class-fe-shortcode-params.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/class-fe-inline-css-js.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/class-fe-render.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/class-fe-shortcodes.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/class-fe-form-source-resolver.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/hooks/class-fe-bfb-settings-hooks.php';   // Apply BFB settings to rendered booking form HTML.
+	require_once WPBC_PLUGIN_DIR . '/includes/fontend/class-fe-render-form-body.php';
+}
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpdev-booking-class.php';             // C L A S S    B o o k i n g.
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-booking-new.php';                // N e w.
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-cron.php';                       // CRON  @since: 5.2.0.

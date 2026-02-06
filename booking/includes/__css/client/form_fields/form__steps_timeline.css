@@ -101,6 +101,10 @@
     top: 2px
 }
 /*! Timeline Steps: Front-End align */
+.wpbc_bfb__container .wpbc_steps_for_timeline_container,
 .booking_form_div .wpbc_steps_for_timeline_container {
     margin: 20px auto 25px;
+}
+.bfb_element [class^="wpbc_steps_for_timeline__steps_timeline"] {
+	flex: 1;
 }

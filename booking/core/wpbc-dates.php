@@ -319,7 +319,7 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 
 	    global $wpdb;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$dates_result = $wpdb->get_results( "SELECT DISTINCT booking_date FROM {$wpdb->prefix}bookingdates WHERE booking_id IN ({$booking_id_str}) ORDER BY booking_date" );
 
 	    $dates_str = array();
@@ -822,7 +822,7 @@ function wpbc__sql__get_booked_dates( $params ){
 	            ...
 	 */
 
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	$result_arr = $wpdb->get_results( $sql . $sql_where . $sql_order );
 
 	// P A R S E

@@ -466,6 +466,6 @@ class WPBC_AJX__Setup_Wizard__Templates {
  * Just for loading CSS and  JavaScript files
  */
 if ( true ) {
-	$setup_wizard_page_loading = new WPBC_AJX__Setup_Wizard__Templates;
-	$setup_wizard_page_loading->init_load_css_js_tpl();
+	$wpbc_setup_wizard_page_loading = new WPBC_AJX__Setup_Wizard__Templates;
+	$wpbc_setup_wizard_page_loading->init_load_css_js_tpl();
 }

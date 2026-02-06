@@ -199,6 +199,6 @@ if (
 	( wpbc_setup_wizard_page__is_need_start() ) &&
 	( wpbc_is_user_can_access_wizard_page() )
 ) {
-	$js_css_loading = new WPBC_Tour_01;
-	$js_css_loading->init_load_css_js();
+	$wpbc_js_css_loading = new WPBC_Tour_01;
+	$wpbc_js_css_loading->init_load_css_js();
 }

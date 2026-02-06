@@ -250,7 +250,7 @@ function wpbc_availability__get_dates_status__sql( $params ){
 	 */
 	/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 	$sql_prepared = $wpdb->prepare( $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit'], $sql_args );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$bookings_sql_obj = $wpdb->get_results( $sql_prepared );
 
 	// CACHE - SAVE ::  ------------------------------------------------------------------------------------------------
@@ -347,7 +347,7 @@ function wpbc_availability__update_dates_status__sql( $params ){
 		}
 		/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 		$sql_prepared = $wpdb->prepare( $sql, $sql_args );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$row_number = $wpdb->query( $sql_prepared );
 
 
@@ -375,7 +375,7 @@ function wpbc_availability__update_dates_status__sql( $params ){
 		$sql     .= $sub_sql;
 		/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 		$sql_prepared = $wpdb->prepare( $sql, $sql_args );
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		$row_number = $wpdb->query( $sql_prepared );
 	}
 
@@ -473,7 +473,7 @@ function wpbc_availability__delete_dates_status__sql( $params ){
 	}
 	/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 	$sql_prepared = $wpdb->prepare( $sql, $sql_args );
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$row_number = $wpdb->query( $sql_prepared );
 
 	return $row_number;

@@ -590,7 +590,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 											. $sql['order'];
 							//				, $sql['sql_args']
 							//			);
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$resources = $wpdb->get_results( $sql_prepared );
 
 			$resources_arr = array();
@@ -978,7 +978,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 			$sql_prepared = $wpdb->prepare( $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit'], $sql_args );
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$bookings_sql_obj = $wpdb->get_results( $sql_prepared );
 
 
@@ -997,7 +997,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				/* phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare */
 				$sql_prepared = $wpdb->prepare( $sql_for_listing_count, $sql_args_count );
 			}
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			$bookings_count = $wpdb->get_results( $sql_prepared );
 		    $bookings_count = ( ( count( $bookings_count ) > 0 ) ? $bookings_count[0]->count : 0 );
 
@@ -1413,7 +1413,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				} else {
 					$sql .= " ORDER BY booking_id, booking_date ";
 				}
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$booking_dates_sql_obj = $wpdb->get_results( $sql );
 			} else {
 				$booking_dates_sql_obj = array();

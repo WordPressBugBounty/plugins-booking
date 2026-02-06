@@ -220,9 +220,9 @@ class WPBC_AJX_Bookings {
  * Just for loading CSS and  JavaScript files
  */
 if ( true ) {
-	$ajx_booking_loading = new WPBC_AJX_Bookings();
-	$ajx_booking_loading->init_load_css_js_tpl();
-	$ajx_booking_loading->define_ajax_hook();
+	$wpbc_ajx_booking_loading = new WPBC_AJX_Bookings();
+	$wpbc_ajx_booking_loading->init_load_css_js_tpl();
+	$wpbc_ajx_booking_loading->define_ajax_hook();
 }
 
 

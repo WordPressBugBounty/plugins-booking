@@ -20,33 +20,23 @@ class BookingWidget extends WP_Widget {
 	}
 
     /** @see WP_Widget::widget */
-    function widget($args, $instance) {
+	function widget( $args, $instance ) {
 
-        extract( $args );
+		extract( $args );
 
-	    // FixIn: 6.1.1.11.
-	    $booking_widget_title = ( isset( $instance['booking_widget_title'] ) )
-									? apply_filters( 'widget_title', $instance['booking_widget_title'] )
-									: __( 'Booking Calendar', 'booking' );
-	    if ( function_exists( 'icl_translate' ) ) {
-		    $booking_widget_title = icl_translate( 'wpml_custom', 'wpbc_custom_widget_booking_title1', $booking_widget_title );
-	    }
+		// FixIn: 6.1.1.11.
+		$booking_widget_title = ( isset( $instance['booking_widget_title'] ) ) ? apply_filters( 'widget_title', $instance['booking_widget_title'] ) : __( 'Booking Calendar', 'booking' );
+		if ( function_exists( 'icl_translate' ) ) {
+			$booking_widget_title = icl_translate( 'wpml_custom', 'wpbc_custom_widget_booking_title1', $booking_widget_title );
+		}
 
-	    $booking_widget_show = ( isset( $instance['booking_widget_show'] ) )
-									? $instance['booking_widget_show']
-									: 'booking_form';
+		$booking_widget_show = ( isset( $instance['booking_widget_show'] ) ) ? $instance['booking_widget_show'] : 'booking_form';
 
-	    $resource_id = ( isset( $instance['booking_widget_type'] ) )
-									? intval( $instance['booking_widget_type'] )
-									: 1;
-	    $resource_id = ( empty( $resource_id ) ) ? 1 : $resource_id;
+		$resource_id = ( isset( $instance['booking_widget_type'] ) ) ? intval( $instance['booking_widget_type'] ) : 1;
+		$resource_id = ( empty( $resource_id ) ) ? 1 : $resource_id;
 
-	    $booking_widget_calendar_count = ( isset( $instance['booking_widget_calendar_count'] ) )
-											? intval( $instance['booking_widget_calendar_count'] )
-											: 1;
-	    $booking_widget_last_field = ( isset( $instance['booking_widget_last_field'] ) )
-											? $instance['booking_widget_last_field']
-											: '';
+		$booking_widget_calendar_count = ( isset( $instance['booking_widget_calendar_count'] ) ) ? intval( $instance['booking_widget_calendar_count'] ) : 1;
+		$booking_widget_last_field     = ( isset( $instance['booking_widget_last_field'] ) ) ? $instance['booking_widget_last_field'] : '';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo $before_widget ;
 
@@ -65,16 +55,34 @@ class BookingWidget extends WP_Widget {
 
         echo "<div class='widget_wpdev_booking wpdevelop months_num_in_row_1'>";                                        // FixIn: 8.4.2.3.
 
-	    if ( $booking_widget_show == 'booking_form' ) {
-		    $my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
-		    make_bk_action( 'wpdevbk_add_form', $resource_id, $booking_widget_calendar_count, true, $my_booking_form_name );
+		if ( 'booking_form' === $booking_widget_show ) {
 
-	    } else {
-		    echo "<div class='wpbc_only_calendar wpbc_container'>";                                                     // FixIn: 8.0.1.2.
-		    echo "<div id='calendar_booking_unselectable" . esc_attr( $resource_id ) . "'></div>";                    				// FixIn: 6.1.1.13.
-		    do_action( 'wpdev_bk_add_calendar', $resource_id, $booking_widget_calendar_count );
-		    echo '</div>';
-	    }
+			$my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
+
+			// Parse, sanitize and normilize shortcode paramaters.
+			$shortcode_params = array(
+				'is_echo'             => 1,
+				'resource_id'         => $resource_id,
+				'cal_count'           => $booking_widget_calendar_count,
+				'custom_booking_form' => $my_booking_form_name,
+			);
+
+			$shortcode_result = WPBC_FE_Render::render_booking_form( $shortcode_params );
+
+		} else {
+			echo "<div class='wpbc_only_calendar wpbc_container'>";                                                       // FixIn: 8.0.1.2.
+			echo "<div id='calendar_booking_unselectable" . esc_attr( $resource_id ) . "'></div>";                        // FixIn: 6.1.1.13.
+
+			WPBC_FE_Render::render_calendar_only(
+				array(
+					'resource_id' => $resource_id,
+					'cal_count'   => $booking_widget_calendar_count,
+					'is_echo'     => 1,
+				)
+			);
+
+			echo '</div>';
+		}
 
 	    if ( $booking_widget_last_field !== '' ) {
 		    echo '<br/>' . esc_js( $booking_widget_last_field );
@@ -210,8 +218,9 @@ class BookingWidget extends WP_Widget {
 }
 
 
-function register_wpbc_widget() {
+function wpbc_register_wpbc_widget() {
 	// FixIn: 8.1.3.18.
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 	register_widget( "BookingWidget" );
 }
-add_action( 'widgets_init', 'register_wpbc_widget' );
+add_action( 'widgets_init', 'wpbc_register_wpbc_widget' );

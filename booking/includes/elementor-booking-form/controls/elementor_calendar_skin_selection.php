@@ -101,11 +101,11 @@ class WPBC_Elementor_Calendar_Skin_Selection_Control extends \Elementor\Base_Dat
 		<div class="elementor-control-field elementor-control-type-select">
 
 			<# if ( data.label ) {#>
-			<label for="<?php echo $control_uid; ?>" class="elementor-control-title">{{{ data.label }}}</label>
+			<label for="<?php echo esc_attr($control_uid); ?>" class="elementor-control-title">{{{ data.label }}}</label>
 			<# } #>
 
 			<div class="elementor-control-input-wrapper">
-				<select id="<?php echo $control_uid; ?>" data-setting0="{{ data.name }}"  onchange="javascript:document.getElementById('elementor-preview-iframe').contentWindow.wpbc__calendar__change_skin( jQuery( this ).val() );" >
+				<select id="<?php echo esc_attr($control_uid); ?>" data-setting0="{{ data.name }}"  onchange="javascript:document.getElementById('elementor-preview-iframe').contentWindow.wpbc__calendar__change_skin( jQuery( this ).val() );" >
 					<#
 					_.each( data.booking_calendar_skins, function( calendar_skin_arr, calendar_skin_index ) {
 						if ( calendar_skin_arr['optgroup'] ) {                                   // OPTGROUP
@@ -127,7 +127,7 @@ class WPBC_Elementor_Calendar_Skin_Selection_Control extends \Elementor\Base_Dat
 
 		<div class="elementor-control-field elementor-control-type-save-button">
 			<div class="elementor-button-wrapper">
-				<button class="elementor-button elementor-save-skin" type="button" id="elementor-save-skin-<?php echo wp_rand( 10, 1000000 ); ?>" processing_title="<?php esc_html_e('Processing', 'booking'); ?>">
+				<button class="elementor-button elementor-save-skin" type="button" id="elementor-save-skin-<?php echo esc_attr(wp_rand( 10, 1000000 )); ?>" processing_title="<?php esc_attr_e('Processing', 'booking'); ?>">
 					<!--i class="eicon-check" aria-hidden="true"></i-->
 					<?php esc_html_e( 'Save Calendar Skin', 'booking' ); ?>
 				</button>
