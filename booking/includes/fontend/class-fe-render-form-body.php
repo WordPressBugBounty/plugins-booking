@@ -213,137 +213,32 @@ class WPBC_FE_Form_Source {
 		$form_status         = (string) $form_status;
 		$custom_params       = ( is_array( $custom_params ) ) ? $custom_params : array();
 
-		// Determine context (kept for backward compat; resolver also uses it).
-		$context = 'frontend';
-		if ( ( ! empty( $custom_params['context'] ) ) && ( 'preview' === sanitize_key( (string) $custom_params['context'] ) ) ) {
-			$context = 'preview';
-		}
-
 		$req = array(
 			'resource_id'     => $resource_id,
 			'form_slug'       => $custom_booking_form,
 			'form_status'     => $form_status,
-			'context'         => $context,
 			'custom_params'   => $custom_params,
 			'legacy_instance' => $legacy_instance,
 		);
 
-		$resolved = ( class_exists( 'WPBC_FE_Form_Source_Resolver' ) )
-			? WPBC_FE_Form_Source_Resolver::resolve( $req )
-			: array(
-				'engine'                  => 'legacy',
-				'apply_after_load_filter' => false,
-				'bfb_loader_args'         => array(),
-				'fallback_chain'          => array(),
-			);
+		/**
+		 * $resolved = array(   'engine'                  : 'bfb_db'|'legacy'|'simple'
+		 *                      'apply_after_load_filter' : bool
+		 *                      'bfb_loader_args'         : array()
+		 *                      'fallback_chain'          : array()
+		 */
+		$resolved = WPBC_FE_Form_Source_Resolver::resolve( $req );
 
 		// -----------------------------------------------------------------
 		// BFB DB engine (only if resolver decided it).
 		// -----------------------------------------------------------------
-		if ( ( isset( $resolved['engine'] ) ) && ( 'bfb_db' === $resolved['engine'] ) && function_exists( 'wpbc_bfb_get_booking_form_source' ) ) {
+		if ( ( isset( $resolved['engine'] ) ) && ( 'bfb_db' === $resolved['engine'] ) && function_exists( 'wpbc_bfb_get_booking_form_pair' ) ) {
 
-			$bfb_loader_args = ( isset( $resolved['bfb_loader_args'] ) && is_array( $resolved['bfb_loader_args'] ) )
-				? $resolved['bfb_loader_args'] : array();
+			$booking_form_html__arr = self::wpbc_bfb__get_booking_form_html__arr( $req, $resolved );
 
-			// Keep old behavior: allow explicit form_id/status overrides from options only if present.
-			// (Resolver is the authority; but this keeps compatibility with existing shortcodes using options params.)
-			if ( ! empty( $custom_params['bfb_form_id'] ) && empty( $bfb_loader_args['form_id'] ) ) {
-				$bfb_loader_args['form_id'] = (int) $custom_params['bfb_form_id'];
+			if ( null !== $booking_form_html__arr ) {
+				return $booking_form_html__arr;
 			}
-
-			$bfb_settings  = array();
-			$bfb_source    = trim( '' );
-			$settings_json = trim( '' );
-
-			if ( function_exists( 'wpbc_bfb_get_booking_form_pair' ) ) {
-
-				$bfb_pair = wpbc_bfb_get_booking_form_pair( $bfb_loader_args );
-
-				if ( is_array( $bfb_pair ) ) {
-					$bfb_source    = isset( $bfb_pair['form'] ) ? (string) $bfb_pair['form'] : '';
-					$settings_json = isset( $bfb_pair['settings_json'] ) ? (string) $bfb_pair['settings_json'] : '';
-				}
-
-			} else {
-
-				// Fallback (old behavior).
-				$bfb_source = wpbc_bfb_get_booking_form_source( $bfb_loader_args );
-			}
-
-			if ( '' !== $settings_json ) {
-				$decoded = json_decode( $settings_json, true );
-				if ( is_array( $decoded ) ) {
-					$bfb_settings = $decoded;
-				}
-			}
-
-			// Allow loader to return either string OR array with settings.
-			if ( is_array( $bfb_source ) ) {
-
-				// Common possible keys (support multiple formats, future-proof).
-				if ( ! empty( $bfb_source['settings'] ) && is_array( $bfb_source['settings'] ) ) {
-					$bfb_settings = $bfb_source['settings'];
-				} elseif ( ! empty( $bfb_source['settings_json'] ) && is_string( $bfb_source['settings_json'] ) ) {
-					$decoded = json_decode( $bfb_source['settings_json'], true );
-					if ( is_array( $decoded ) ) {
-						$bfb_settings = $decoded;
-					}
-				}
-
-				// Source itself.
-				if ( isset( $bfb_source['advanced_form'] ) ) {
-					$bfb_source = (string) $bfb_source['advanced_form'];
-				} elseif ( isset( $bfb_source['source'] ) ) {
-					$bfb_source = (string) $bfb_source['source'];
-				} else {
-					$bfb_source = '';
-				}
-			}
-
-			// Optional fallback hook if you keep loader returning string for now.
-			if ( empty( $bfb_settings ) ) {
-				$bfb_settings = apply_filters( 'wpbc_bfb_form_settings_for_render', array(), $bfb_loader_args, $resource_id, $custom_booking_form, $custom_params );
-			}
-
-
-			if ( '' !== trim( (string) $bfb_source ) ) {
-
-				// Give addons a chance to fully handle rendering.
-				$bfb_form_html = apply_filters( 'wpbc_bfb_render_booking_form_source', '', $bfb_source, $resource_id, $custom_booking_form, $custom_params );
-
-				if ( '' === $bfb_form_html ) {
-
-					$render_args = array_merge( $custom_params, array(
-							'booking_type' => (int) $resource_id,
-						) );
-
-					if ( ( ! empty( $legacy_instance ) ) && ( ! empty( $legacy_instance->wpdev_bk_personal ) ) ) {
-						$render_args['owner'] = $legacy_instance->wpdev_bk_personal;
-					}
-
-					$bfb_source = wpbc_lang( $bfb_source );
-
-					// Replace custom params in the source (legacy behavior).
-					if ( ! empty( $custom_params ) ) {
-						foreach ( $custom_params as $custom_params_key => $custom_params_value ) {
-							$bfb_source = str_replace( $custom_params_key, $custom_params_value, $bfb_source );
-						}
-					}
-
-					$bfb_source    = wpbc_bf__replace_custom_html_shortcodes( $bfb_source );
-					$bfb_form_html = wpbc_render_booking_form_shortcodes( $bfb_source, $render_args );
-				}
-
-				if ( '' !== $bfb_form_html ) {
-					return array(
-						'body_html'               => $bfb_form_html,
-						'apply_after_load_filter' => ! empty( $resolved['apply_after_load_filter'] ),
-						'bfb_settings'            => $bfb_settings,
-					);
-				}
-			}
-
-			// If BFB resolution succeeded but returned empty output, fall through to legacy.
 		}
 
 		// -----------------------------------------------------------------
@@ -370,6 +265,116 @@ class WPBC_FE_Form_Source {
 		);
 	}
 
+
+	/**
+	 * Get BFB booking form  content array. Helper function.
+	 *
+	 * @param array $req       - array.
+	 * @param array $resolved  - array.
+	 *
+	 * @return array|null
+	 */
+	public static function wpbc_bfb__get_booking_form_html__arr( $req, $resolved ) {
+
+		$custom_params       = $req ['custom_params'];
+		$form_status         = $req ['form_status'];
+		$custom_booking_form = $req['form_slug'];
+		$resource_id         = $req ['resource_id'];
+		$legacy_instance     = $req ['legacy_instance'];
+
+		$bfb_loader_args = ( isset( $resolved['bfb_loader_args'] ) && is_array( $resolved['bfb_loader_args'] ) ) ? $resolved['bfb_loader_args'] : array();
+
+
+		// Keep old behavior: allow explicit form_id/status overrides from options only if present.
+		if ( ! empty( $custom_params['bfb_form_id'] ) && empty( $bfb_loader_args['form_id'] ) ) {
+			$bfb_loader_args['form_id'] = (int) $custom_params['bfb_form_id'];
+		}
+
+		$bfb_settings  = array();
+		$bfb_source    = trim( '' );
+		$settings_json = trim( '' );
+
+		$bfb_pair = wpbc_bfb_get_booking_form_pair( $bfb_loader_args );
+
+		if ( is_array( $bfb_pair ) ) {
+			$bfb_source    = isset( $bfb_pair['form'] ) ? (string) $bfb_pair['form'] : '';
+			$settings_json = isset( $bfb_pair['settings_json'] ) ? (string) $bfb_pair['settings_json'] : '';
+		}
+
+		if ( '' !== $settings_json ) {
+			$decoded = json_decode( $settings_json, true );
+			if ( is_array( $decoded ) ) {
+				$bfb_settings = $decoded;
+			}
+		}
+
+		// Allow loader to return either string OR array with settings.
+		if ( is_array( $bfb_source ) ) {
+
+			// Common possible keys (support multiple formats, future-proof).
+			if ( ! empty( $bfb_source['settings'] ) && is_array( $bfb_source['settings'] ) ) {
+				$bfb_settings = $bfb_source['settings'];
+			} elseif ( ! empty( $bfb_source['settings_json'] ) && is_string( $bfb_source['settings_json'] ) ) {
+				$decoded = json_decode( $bfb_source['settings_json'], true );
+				if ( is_array( $decoded ) ) {
+					$bfb_settings = $decoded;
+				}
+			}
+
+			// Source itself.
+			if ( isset( $bfb_source['advanced_form'] ) ) {
+				$bfb_source = (string) $bfb_source['advanced_form'];
+			} elseif ( isset( $bfb_source['source'] ) ) {
+				$bfb_source = (string) $bfb_source['source'];
+			} else {
+				$bfb_source = '';
+			}
+		}
+
+		// Optional fallback hook if you keep loader returning string for now.
+		if ( empty( $bfb_settings ) ) {
+			$bfb_settings = apply_filters( 'wpbc_bfb_form_settings_for_render', array(), $bfb_loader_args, $resource_id, $custom_booking_form, $custom_params );
+		}
+
+
+		if ( '' !== trim( (string) $bfb_source ) ) {
+
+			// Give addons a chance to fully handle rendering.
+			$bfb_form_html = apply_filters( 'wpbc_bfb_render_booking_form_source', '', $bfb_source, $resource_id, $custom_booking_form, $custom_params );
+
+			if ( '' === $bfb_form_html ) {
+
+				$render_args = array_merge( $custom_params, array( 'booking_type' => (int) $resource_id ) );
+
+				if ( ( ! empty( $legacy_instance ) ) && ( ! empty( $legacy_instance->wpdev_bk_personal ) ) ) {
+					$render_args['owner'] = $legacy_instance->wpdev_bk_personal;
+				}
+
+				$bfb_source = wpbc_lang( $bfb_source );
+
+				// Replace custom params in the source (legacy behavior).
+				if ( ! empty( $custom_params ) ) {
+					foreach ( $custom_params as $custom_params_key => $custom_params_value ) {
+						$bfb_source = str_replace( $custom_params_key, $custom_params_value, $bfb_source );
+					}
+				}
+
+				$bfb_source    = wpbc_bf__replace_custom_html_shortcodes( $bfb_source );
+				$bfb_form_html = wpbc_render_booking_form_shortcodes( $bfb_source, $render_args );
+			}
+
+			if ( '' !== $bfb_form_html ) {
+				return array(
+					'body_html'               => $bfb_form_html,
+					'apply_after_load_filter' => ! empty( $resolved['apply_after_load_filter'] ),
+					'bfb_settings'            => $bfb_settings,
+				);
+			}
+		}
+
+		// If BFB resolution succeeded but returned empty output, fall through to legacy.
+		return null;
+	}
 }
 
 /**
@@ -657,9 +662,10 @@ class WPBC_FE_Form_Style_Injector {
 			return $html;
 		}
 
+		// Match FIRST <div ... class="... wpbc_bfb_form ..."> tag.
 		$pattern = '/<div\b[^>]*\bclass\s*=\s*(["\'])(?:(?!\1).)*\bwpbc_bfb_form\b(?:(?!\1).)*\1[^>]*>/i';
 
-		return preg_replace_callback(
+		$result = preg_replace_callback(
 			$pattern,
 			function( $m ) use ( $style_append ) {
 
@@ -670,6 +676,9 @@ class WPBC_FE_Form_Style_Injector {
 
 					$quote    = $sm[1];
 					$existing = (string) $sm[2];
+
+					// Avoid double-escaping if the tag already contains entities.
+					$existing = html_entity_decode( $existing, ENT_QUOTES, 'UTF-8' );
 
 					$merged = trim( $existing );
 					if ( ( '' !== $merged ) && ( ';' !== substr( $merged, -1 ) ) ) {
@@ -695,6 +704,9 @@ class WPBC_FE_Form_Style_Injector {
 			$html,
 			1
 		);
+
+		// preg_replace_callback can return null on regex error.
+		return ( null === $result ) ? $html : $result;
 	}
 
 	/**
@@ -713,6 +725,7 @@ class WPBC_FE_Form_Style_Injector {
 			$name  = self::sanitize_css_var_name( $name );
 			$value = self::sanitize_css_var_value( $value );
 
+			// Allow "0" but skip empty.
 			if ( '' === $name || '' === $value ) {
 				continue;
 			}
@@ -726,13 +739,18 @@ class WPBC_FE_Form_Style_Injector {
 	private static function sanitize_css_var_name( $name ) {
 
 		$name = is_scalar( $name ) ? trim( (string) $name ) : '';
+		if ( '' === $name ) {
+			return '';
+		}
 
-		// Keep it strict: only CSS custom properties, preferably your namespace.
+		// Keep it strict: only CSS custom properties.
 		if ( ! preg_match( '/^--[a-z0-9\-_]+$/i', $name ) ) {
 			return '';
 		}
-		// Optional: enforce prefix to avoid abusing other vars.
-		if ( 0 !== strpos( $name, '--wpbc-' ) && 0 !== strpos( $name, '--wpbc_bfb-' ) ) {
+
+		// Optional: enforce prefix to avoid abusing other vars (case-insensitive).
+		$lower = strtolower( $name );
+		if ( 0 !== strpos( $lower, '--wpbc-' ) && 0 !== strpos( $lower, '--wpbc_bfb-' ) ) {
 			return '';
 		}
 
@@ -746,9 +764,19 @@ class WPBC_FE_Form_Style_Injector {
 			return '';
 		}
 
-		// Remove dangerous characters for inline style attribute.
-		$value = str_replace( array( '"', "'", '<', '>', "\n", "\r" ), '', $value );
+		/**
+		 * IMPORTANT:
+		 * Disallow characters that can break out of "--var:value;" into extra declarations:
+		 * - ';' would start a new declaration
+		 * - '{' '}' can start blocks
+		 * Also strip quotes/newlines/< > to keep inline style safe.
+		 */
+		$value = str_replace(
+			array( ';', '{', '}', '"', "'", '<', '>', "\n", "\r", "\0" ),
+			'',
+			$value
+		);
 
-		return $value;
+		return trim( $value );
 	}
 }

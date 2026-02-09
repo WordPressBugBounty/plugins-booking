@@ -56,31 +56,32 @@ class WPBC_BookingInstall extends WPBC_Install {
 		return $links;
         
     }
-    
-    /** Check if was updated from lower to  high version */
-    public function is_update_from_lower_to_high_version() {
-        
-        $is_make_activation = false;
 
-	    // Check  conditions for different version about Upgrade
-	    if ( ( class_exists( 'wpdev_bk_personal' ) ) && ( ! wpbc_is_table_exists( 'bookingtypes' ) ) ) {
-		    $is_make_activation = true;
-	    }
-	    if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_s' ) ) && ( wpbc_is_field_in_table_exists( 'booking', 'pay_request' ) == 0 ) ) {
-		    $is_make_activation = true;
-	    }
-	    																									// FixIn: 9.9.0.13.
-	    if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_m' ) ) && ( ! wpbc_is_table_exists( 'booking_seasons' ) ) ) {
-		    $is_make_activation = true;
-	    }
-	    if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_l' ) ) && ( ! wpbc_is_table_exists( 'booking_coupons' ) ) ) {
-		    $is_make_activation = true;
-	    }
-	    if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_multiuser' ) ) && ( wpbc_is_field_in_table_exists( 'booking_coupons', 'users' ) == 0 ) ) {
-		    $is_make_activation = true;
-	    }
-        return $is_make_activation;
-    }
+	/** Check if was updated from lower to  high version */
+	public function is_update_from_lower_to_high_version() {
+
+		$is_make_activation = false;
+
+		// Check  conditions for different version about Upgrade
+		if ( ( class_exists( 'wpdev_bk_personal' ) ) && ( ! wpbc_is_table_exists( 'bookingtypes' ) ) ) {
+			$is_make_activation = true;
+		}
+		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_s' ) ) && ( wpbc_is_field_in_table_exists( 'booking', 'pay_request' ) == 0 ) ) {
+			$is_make_activation = true;
+		}
+		// FixIn: 9.9.0.13.
+		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_m' ) ) && ( ! wpbc_is_table_exists( 'booking_seasons' ) ) ) {
+			$is_make_activation = true;
+		}
+		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_l' ) ) && ( ! wpbc_is_table_exists( 'booking_coupons' ) ) ) {
+			$is_make_activation = true;
+		}
+		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_multiuser' ) ) && ( wpbc_is_field_in_table_exists( 'booking_coupons', 'users' ) == 0 ) ) {
+			$is_make_activation = true;
+		}
+
+		return $is_make_activation;
+	}
 
 }
 
@@ -198,7 +199,7 @@ function wpbc_booking_activate() {
     // Options
 	// -----------------------------------------------------------------------------------------------------------------
     $default_options_to_add = wpbc_get_default_options();
-
+	// TODO: for Import / Export options,  we can  use this function to get all option_names and then just  get  the real  values from  the wp_options table.
     make_bk_action( 'wpbc_before_activation__add_options', $default_options_to_add );           // FixIn: 9.6.2.11.
 
     foreach ( $default_options_to_add as $default_option_name => $default_option_value ) {
@@ -210,92 +211,139 @@ function wpbc_booking_activate() {
     // DB Tables
 	// -----------------------------------------------------------------------------------------------------------------
     if ( true ){
-        global $wpdb;
-        $charset_collate = '';
-        //if ( $wpdb->has_cap( 'collation' ) ) {
-            if ( ! empty($wpdb->charset) ) $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-            if ( ! empty($wpdb->collate) ) $charset_collate .= " COLLATE $wpdb->collate";
-        //}
 
-        $wp_queries = array();
-        if ( ! wpbc_is_table_exists('booking') ) { // Check if tables not exist yet
-// FixIn: 10.0.0.1.
-            $simple_sql = "CREATE TABLE {$wpdb->prefix}booking (
-                     booking_id bigint(20) unsigned NOT NULL auto_increment, " .
-					 /*
-				   " booking_options TEXT,
-					 trash bigint(10) NOT NULL default 0,
-					 is_new bigint(10) NOT NULL default 1,
-					 sort_date datetime,
-					 modification_date datetime,
-					 creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-					 status varchar(200) NOT NULL default '',
-					 sync_gid varchar(200) NOT NULL default '',
-					 is_trash datetime,
-					 hash TEXT, " .  /**/
+		global $wpdb;
 
-				   " form text ,
-                     booking_type bigint(10) NOT NULL default 1,
-                     PRIMARY KEY  (booking_id)
-                    ) {$charset_collate};";
+		// ----------------------------------------------------------------------------
+		// Charset / Collation
+		// ----------------------------------------------------------------------------
+		$charset_collate = '';
+		if ( ! empty( $wpdb->charset ) ) {
+			$charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
+		}
+		if ( ! empty( $wpdb->collate ) ) {
+			$charset_collate .= " COLLATE {$wpdb->collate}";
+		}
+
+		// ----------------------------------------------------------------------------
+		// Table name
+		// ----------------------------------------------------------------------------
+		$table_name = $wpdb->prefix . 'booking';
+
+		// ----------------------------------------------------------------------------
+		// Queries queue for upgrades only
+		// ----------------------------------------------------------------------------
+		$wp_queries = array();
+
+		// ----------------------------------------------------------------------------
+		// 1) First install: CREATE booking TABLE.
+		// ----------------------------------------------------------------------------
+		if ( ! wpbc_is_table_exists( 'booking' ) ) {
+
+			$create_sql = "CREATE TABLE {$table_name} (
+							booking_id bigint(20) unsigned NOT NULL auto_increment,
+							booking_type bigint(10) NOT NULL default 1,
+
+							form TEXT,
+							hash TEXT,
+							booking_options TEXT,
+							status varchar(200) NOT NULL default '',
+					
+							is_new bigint(10) NOT NULL default 1,
+							sync_gid varchar(200) NOT NULL default '',
+							trash bigint(10) NOT NULL default 0,
+							is_trash datetime,
+				
+							sort_date datetime,
+							modification_date datetime,				
+							creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				
+							PRIMARY KEY  (booking_id)
+						) {$charset_collate};";
+
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$wpdb->query( $simple_sql );
-        } elseif  (wpbc_is_field_in_table_exists('booking','form') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN form TEXT";   // FixIn: 10.12.1.5.
-        }
+			$wpdb->query( $create_sql );
 
-        if  (wpbc_is_field_in_table_exists('booking','modification_date') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN modification_date datetime"; // FixIn: 10.12.1.5.
-        }
+			// ----------------------------------------------------------------------------
+			// 2) Upgrade path: only add missing columns (your current logic)
+			// ----------------------------------------------------------------------------
+		} else {
 
-		// FixIn: 9.2.3.3.
-	    if ( wpbc_is_field_in_table_exists( 'booking', 'creation_date' ) == 0 ) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP";   // FixIn: 10.12.1.5.
-			/**
-			 *
-			// Can be only  one 'TIMESTAMP' field at  some servers.
-			//													   ADD COLUMN re_create_date TIMESTAMP NOT NULL DEFAULT 0
-			//$wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
-			 */
-        }
+			if ( wpbc_is_field_in_table_exists( 'booking', 'form' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN form TEXT";
+			}
 
-        if  (wpbc_is_field_in_table_exists('booking','sort_date') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN sort_date datetime";  // FixIn: 10.12.1.5.
-        }
+			if ( wpbc_is_field_in_table_exists( 'booking', 'modification_date' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN modification_date datetime";
+			}
 
-        if  (wpbc_is_field_in_table_exists('booking','status') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN status varchar(200) NOT NULL default ''";  // FixIn: 10.12.1.5.
-        }
+			// FixIn: 9.2.3.3.
+			if ( wpbc_is_field_in_table_exists( 'booking', 'creation_date' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP";
+			}
 
-        if  (wpbc_is_field_in_table_exists('booking','is_new') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN is_new bigint(10) NOT NULL default 1";   // FixIn: 10.12.1.5.
-        }
+			if ( wpbc_is_field_in_table_exists( 'booking', 'sort_date' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN sort_date datetime";
+			}
 
-        // Version: 5.2 - Google ID of the booking for Sync functionality
-        if  (wpbc_is_field_in_table_exists('booking','sync_gid') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN sync_gid varchar(200) NOT NULL default ''";  // FixIn: 10.12.1.5.
-        }
+			if ( wpbc_is_field_in_table_exists( 'booking', 'status' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN status varchar(200) NOT NULL default ''";
+			}
 
-	    // FixIn: 9.2.3.5.
-        if  (wpbc_is_field_in_table_exists('booking','is_trash') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN is_trash datetime";  // FixIn: 10.12.1.5.
-        }
+			if ( wpbc_is_field_in_table_exists( 'booking', 'is_new' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN is_new bigint(10) NOT NULL default 1";
+			}
 
-        // FixIn: 6.1.1.10.
-        if  (wpbc_is_field_in_table_exists('booking','trash') == 0) {
-            $wp_queries[]  = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN trash bigint(10) NOT NULL default 0";  // FixIn: 10.12.1.5.
-        }
+			// Version: 5.2 - Google ID for Sync
+			if ( wpbc_is_field_in_table_exists( 'booking', 'sync_gid' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN sync_gid varchar(200) NOT NULL default ''";
+			}
 
+			// FixIn: 9.2.3.5.
+			if ( wpbc_is_field_in_table_exists( 'booking', 'is_trash' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN is_trash datetime";
+			}
 
+			// FixIn: 6.1.1.10.
+			if ( wpbc_is_field_in_table_exists( 'booking', 'trash' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN trash bigint(10) NOT NULL default 0";
+			}
 
-	    // FixIn: 9.1.2.12.
-	    if ( wpbc_is_field_in_table_exists( 'booking', 'booking_options' ) == 0 ) {
-		    $wp_queries[] = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN booking_options TEXT";  // FixIn: 10.12.1.5.
-	    }
+			// FixIn: 9.1.2.12.
+			if ( wpbc_is_field_in_table_exists( 'booking', 'booking_options' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN booking_options TEXT";
+			}
+
+			if ( wpbc_is_field_in_table_exists( 'booking', 'hash' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN hash TEXT";
+
+				// Update hash  value only in last 100 bookings.
+				$sql_check_table = "SELECT booking_id as id FROM {$wpdb->prefix}booking  ORDER BY booking_id DESC LIMIT 0, 100";
+
+				$res = $wpdb->get_results( $sql_check_table );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+				foreach ( $res as $l ) {
+					$wp_queries[] = "UPDATE {$wpdb->prefix}booking SET hash = MD5('" . time() . '_' . wp_rand( 1000, 1000000 ) . "') WHERE booking_id = " . $l->id;  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+				}
+			}
+		}
+
+		// ----------------------------------------------------------------------------
+		// Execute queued upgrade queries (only runs on upgrades, not new install)
+		// ----------------------------------------------------------------------------
+		if ( ! empty( $wp_queries ) ) {
+			foreach ( $wp_queries as $sql ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+				$wpdb->query( $sql );
+			}
+		}
+
 
 		$is_insert_test_bookings = false;
 
-		// FixIn: 8.7.9.1.
+		// ----------------------------------------------------------------------------
+		// 2. Install: CREATE bookingdate TABLE.
+		// ----------------------------------------------------------------------------
+
 		if ( ! wpbc_is_table_exists( 'bookingdates' ) ) {
 			// Check if tables not exist yet.
 			$simple_sql = "CREATE TABLE {$wpdb->prefix}bookingdates (
@@ -322,101 +370,73 @@ function wpbc_booking_activate() {
 			$wpdb->query( $simple_sql );
 		}
 
+		// ----------------------------------------------------------------------------
+		// 3. Insert test bookings.
+		// ----------------------------------------------------------------------------
 
-		if ( count( $wp_queries ) > 0 ) {
-			foreach ( $wp_queries as $wp_q ) {
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-				$wpdb->query( $wp_q );
-			}
+		if ( $is_insert_test_bookings ) {
+			// -- Test Booking #1 --
+			$is_appr    = 1;
+			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
+				 'text^name1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
+			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
-			if ( $is_insert_test_bookings ) {
-				// -- Test Booking #1 --
-				$is_appr    = 1;
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
-                     'text^name1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			$temp_id        = $wpdb->insert_id;
+			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
+					( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 2 DAY", 'curdate' ) . " ," . $is_appr . "  ),
+					( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 3 DAY", 'curdate' ) . " ," . $is_appr . "  ),
+					( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 4 DAY", 'curdate' ) . " ," . $is_appr . "  );";
+			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
-				$temp_id        = $wpdb->insert_id;
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
-                        ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 2 DAY", 'curdate' ) . " ," . $is_appr . "  ),
-                        ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 3 DAY", 'curdate' ) . " ," . $is_appr . "  ),
-                        ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 4 DAY", 'curdate' ) . " ," . $is_appr . "  );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// -- Test Booking #2 --
+			$is_appr    = 0;
+			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
+				 'text^name1^Emma~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^999-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
+			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
-				// -- Test Booking #2 --
-				$is_appr    = 0;
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
-                     'text^name1^Emma~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^999-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-
-				$temp_id        = $wpdb->insert_id;
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
-                        ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 28 DAY", 'curdate' ) . " ," . $is_appr . "  ),
-                        ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 29 DAY", 'curdate' ) . " ," . $is_appr . "  ),
-                        ( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 30 DAY", 'curdate' ) . " ," . $is_appr . "  );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			$temp_id        = $wpdb->insert_id;
+			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved  ) VALUES
+					( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 28 DAY", 'curdate' ) . " ," . $is_appr . "  ),
+					( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 29 DAY", 'curdate' ) . " ," . $is_appr . "  ),
+					( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL 30 DAY", 'curdate' ) . " ," . $is_appr . "  );";
+			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 
-				// -- Test Booking #3 --
-				$is_appr    = 1;
-				$start_time = '10:00';
-				$end_time   = '10:30';
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date, is_new ) VALUES (
-                     'selectbox^rangetime1^".$start_time." - ".$end_time."~text^name1^Sophia~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing a one day time slot booking.', " . wpbc_sql_date_math_expr_explicit('', 'now') . ", 0 );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// -- Test Booking #3 --
+			$is_appr    = 1;
+			$start_time = '10:00';
+			$end_time   = '10:30';
+			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date, is_new ) VALUES (
+				 'selectbox^rangetime1^".$start_time." - ".$end_time."~text^name1^Sophia~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing a one day time slot booking.', " . wpbc_sql_date_math_expr_explicit('', 'now') . ", 0 );";
+			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
-				$temp_id = $wpdb->insert_id;
+			$temp_id = $wpdb->insert_id;
 
-				$start_time_arr = explode( ':', $start_time );
-				$end_time_arr   = explode( ':', $end_time );
-				$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved ) VALUES
-									( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '" . ( ( 8 * 24 ) + intval( $start_time_arr[0] ) ) . ':' . $start_time_arr[1] . ":01' HOUR_SECOND", 'curdate' ) . " ," . $is_appr . " ),
-									( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '" . ( ( 8 * 24 ) + intval( $end_time_arr[0]   ) ) . ':' . $end_time_arr[1]   . ":02' HOUR_SECOND", 'curdate' ) . " ," . $is_appr . "  );";
-				$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-
-
-			}
-		}
-
-	    // FixIn: 9.2.3.3.
-		if ( wpbc_is_field_in_table_exists( 'booking', 'hash' ) == 0 ) {  //HASH_EDIT
-
-			$simple_sql = "ALTER TABLE {$wpdb->prefix}booking ADD COLUMN hash TEXT";   // FixIn: 10.12.1.5.
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$wpdb->query( $simple_sql );
-
-			// Update hash  value only in last 100 bookings
-			$sql_check_table = "SELECT booking_id as id FROM {$wpdb->prefix}booking  ORDER BY booking_id DESC LIMIT 0, 100";
-
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$res = $wpdb->get_results( $sql_check_table );
-
-			foreach ( $res as $l ) {
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-				$wpdb->query( "UPDATE {$wpdb->prefix}booking SET hash = MD5('" . time() . '_' . wp_rand( 1000, 1000000 ) . "') WHERE booking_id = " . $l->id );
-			}
+			$start_time_arr = explode( ':', $start_time );
+			$end_time_arr   = explode( ':', $end_time );
+			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}bookingdates ( booking_id, booking_date, approved ) VALUES
+								( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '" . ( ( 8 * 24 ) + intval( $start_time_arr[0] ) ) . ':' . $start_time_arr[1] . ":01' HOUR_SECOND", 'curdate' ) . " ," . $is_appr . " ),
+								( " . $temp_id . ", " . wpbc_sql_date_math_expr_explicit( "+ INTERVAL '" . ( ( 8 * 24 ) + intval( $end_time_arr[0]   ) ) . ':' . $end_time_arr[1]   . ":02' HOUR_SECOND", 'curdate' ) . " ," . $is_appr . "  );";
+			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		}
     }
-    make_bk_action( 'wpbc_free_version_activation' );            													// FixIn: 9.3.1.2.
+
+	make_bk_action( 'wpbc_free_version_activation' );
 
 	// -----------------------------------------------------------------------------------------------------------------
-    // Other versions Activation
+	// Other versions Activation
 	// -----------------------------------------------------------------------------------------------------------------
-    make_bk_action( 'wpbc_other_versions_activation' );
+	make_bk_action( 'wpbc_other_versions_activation' );
 
-    
-    //wpbc_pro_set_default_initial_values();
+	wpbc_reindex_booking_db();
 
-	// -----------------------------------------------------------------------------------------------------------------
-    wpbc_reindex_booking_db();    
-
-    make_bk_action( 'wpbc_after_activation' );
+	make_bk_action( 'wpbc_after_activation' );
 }
 add_bk_action( 'wpbc_activation',  'wpbc_booking_activate' );
 
 
 
-// Deactivate
+// Deactivate.
 function wpbc_booking_deactivate() {
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -530,7 +550,7 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
  $mu_option4delete[]='booking_is_use_autofill_4_logged_user';
 
 if ( defined( 'WPBC_NEW_FORM_BUILDER' ) && WPBC_NEW_FORM_BUILDER ) {
-	$default_options['booking_use_bfb_form'] = 'Off';
+	$default_options['booking_use_bfb_form'] = 'On';
 $mu_option4delete[]                      = 'booking_use_bfb_form';
 }
  	// FixIn: 10.13.1.5.

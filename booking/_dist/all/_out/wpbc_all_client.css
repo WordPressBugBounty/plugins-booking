@@ -1,5 +1,16 @@
-.booking_form_div .wpbc_bfb_form {
-  max-width: var(--wpbc-bfb-form-max-width,100%)
+.wpbc_bfb__inspector_form_settings .wpbc_bfb__form_setting {
+  background: #f9f9f9;
+  padding: 0 10px 10px;
+  box-sizing: border-box;
+  border-radius: 5px
+}
+.booking_form_div .wpbc_bfb_form,
+.wpbc_bfb__panel--preview .wpbc_bfb__form_preview_section_container {
+  width: var(--wpbc-bfb-booking_form_layout_width,100%);
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box
 }
 div .wpbc_bfb_form .wpbc__row .wpbc__field,
 div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {

@@ -100,7 +100,10 @@ class WPBC_User_Custom_Data_Saver {
 		if ( empty( $user_id ) || empty( $data_name ) || empty( $data_raw ) ) {
 			wp_send_json_error( array( 'message' => 'Missing required parameters.' ) );
 		}
-
+		// FixIn: 10.14.15.2.
+		if ( wpbc_get_current_user_id() !== $user_id ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized: You can only modify your own settings.' ) );
+		}
 		parse_str( $data_raw, $parsed_data );
 
 		$sanitized_data = array();

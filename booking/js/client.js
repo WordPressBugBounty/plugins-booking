@@ -32,7 +32,8 @@ jQuery( document ).ready(
 // FixIn: 8.4.0.2.
 /**
  * Check errors in booking form  fields, and show warnings if some errors exist.
- * Check  errors,  like not selected dates or not filled requred form  fields, or not correct entering email or phone fields,  etc...
+ * Check  errors,  like not selected dates or not filled requred form  fields, or not correct entering email or phone
+ * fields,  etc...
  *
  * @param bk_type  int (ID of booking resource)
  */
@@ -314,7 +315,8 @@ jQuery( document ).ready( function (){
 // FixIn: 8.6.1.15.
 /**
  * Check if at least  one element from  array  of  elements names in booking form  visible  or not.
- * Usage Example:   if ( wpbc_is_some_elements_visible( br_id, ['rangetime', 'durationtime', 'starttime', 'endtime'] ) ){ ... }
+ * Usage Example:   if ( wpbc_is_some_elements_visible( br_id, ['rangetime', 'durationtime', 'starttime', 'endtime'] )
+ * ){ ... }
  *
  * @param bk_type
  * @param elements_names
@@ -457,8 +459,8 @@ function wpbc_get_arr_of_selected_additional_calendars( bk_type ){              
 // Elementor Ready Widget Update.
 // ---------------------------------------------------------------------------------------------------------------------
 jQuery( function ($) {
-
-	if ( window.elementorFrontend ) {
+	// FixIn: 10.14.15.1.
+	if ( (window.elementorFrontend) && ('undefined' !== typeof (elementorFrontend.hooks)) ) {
 
 		elementorFrontend.hooks.addAction( 'frontend/element_ready/wpbc_widget_booking_form_1.default', function ($scope) {
 			// Simulate DOM ready,  after  updating Elementor Widget.

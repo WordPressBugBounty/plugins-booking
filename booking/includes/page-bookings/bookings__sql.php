@@ -8,6 +8,7 @@
  * @email info@oplugins.com
  *
  * @modified 2022-04-07
+ * @file  ../includes/page-bookings/bookings__sql.php
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
@@ -2272,60 +2273,149 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 			/**
 			 * Get pure "Content of booking fields data" with shortcodes inside.
-			 * it can depend on specific booking resource in Business Medium version or User in MultiUser version
+			 * Can depend on booking resource (BM) or resource owner (MU).
+			 * Now also supports BFB DB resolver (published/preview-aware).
 			 *
-			 * @param int $resource_id
-			 * @param sting $custom_booking_form_name   -   use this custom  booking form,  if possible
+			 * @param int    $resource_id
+			 * @param string $custom_booking_form_name Optional. Force this custom form if possible.
 			 *
 			 * @return string
 			 */
-			function wpbc_get_content_booking_form_show( $resource_id , $custom_booking_form_name = '' ){               // FixIn: 9.4.3.12.
+			function wpbc_get_content_booking_form_show( $resource_id, $custom_booking_form_name = '' ) {               // FixIn: 9.4.3.12.
 
-		        if ( $resource_id == -1 ) {
-		            if ( function_exists('get__default_type') )
-		                $resource_id = get__default_type();
-		            else
-		                $resource_id = 1;
-		        }
+				static $wpbc__form_show_cache = array();
 
-	            if ( ! class_exists('wpdev_bk_personal') ) {
+				$resource_id              = (int) $resource_id;
+				$custom_booking_form_name = (string) $custom_booking_form_name;
 
-	                $booking_form_show  = wpbc_simple_form__get_form_show__as_shortcodes();
+				if ( - 1 === $resource_id ) {
+					if ( function_exists( 'get__default_type' ) ) {
+						$resource_id = (int) get__default_type();
+					} else {
+						$resource_id = 1;
+					}
+				}
+
+				// ------------------------------------------------------------
+				// Determine a stable form slug early (avoid undefined var).
+				// This is used for cache key and for resolver path.
+				// ------------------------------------------------------------
+				$my_booking_form_name = ( '' !== $custom_booking_form_name ) ? $custom_booking_form_name : 'standard';
+
+				// Preview-aware context (optional; usually "published" in Booking Listing).
+				$ctx = array();
+				if ( function_exists( 'wpbc_get_request_form_context' ) ) {
+					$ctx = wpbc_get_request_form_context();
+				}
+				$form_status = ( isset( $ctx['form_status'] ) ) ? sanitize_key( $ctx['form_status'] ) : 'published';
+				if ( in_array( $form_status, array( 'publish', 'published' ), true ) ) {
+					$form_status = 'published';
+				}
+				if ( 'preview' !== $form_status ) {
+					$form_status = 'published';
+				}
+
+				// Cache key (important: this function is called per booking row).
+				$cache_key = get_locale() . '|' . $form_status . '|' . $resource_id . '|' . $my_booking_form_name;
+				if ( isset( $wpbc__form_show_cache[ $cache_key ] ) ) {
+					return $wpbc__form_show_cache[ $cache_key ];
+				}
+
+				// ------------------------------------------------------------
+				// Legacy resolution (keep exactly as before).
+				// ------------------------------------------------------------
+				if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+
+					$booking_form_show = wpbc_simple_form__get_form_show__as_shortcodes();
 					$booking_form_show = wpbc_bf__replace_custom_html_shortcodes( $booking_form_show );
 
-	            } else {
+				} else {
 
-	                $booking_form_show  = get_bk_option( 'booking_form_show' );
+					$booking_form_show = get_bk_option( 'booking_form_show' );
 					$booking_form_show = wpbc_bf__replace_custom_html_shortcodes( $booking_form_show );
 
-	                if ( class_exists('wpdev_bk_biz_m') ) {
+					// BM / MU legacy forms logic.
+					if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 
-		                if ( ! empty( $custom_booking_form_name ) ) {       // FixIn: 9.4.3.12.
-
-							$booking_form_show = apply_bk_filter( 'wpdev_get_booking_form_content', $booking_form_show, $custom_booking_form_name );
+						if ( '' !== $custom_booking_form_name ) {       // FixIn: 9.4.3.12.
+							$booking_form_show    = apply_bk_filter( 'wpdev_get_booking_form_content', $booking_form_show, $custom_booking_form_name );
 							$my_booking_form_name = $custom_booking_form_name;
-		                } else {
-			                // BM :: Get default Custom Form  of Resource
-			                $my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
-			                if ( ( $my_booking_form_name != 'standard' ) && ( ! empty( $my_booking_form_name ) ) ) {
-				                $booking_form_show = apply_bk_filter( 'wpdev_get_booking_form_content', $booking_form_show, $my_booking_form_name );
-			                }
-		                }
-						//MU :: if resource of "Regular User" - then  GET STANDARD user form ( if ( get_bk_option( 'booking_is_custom_forms_for_regular_users' ) !== 'On' ) )
-						$booking_form_show = apply_bk_filter( 'wpbc_multiuser_get_booking_form_show_of_regular_user', $booking_form_show, $resource_id, $my_booking_form_name );    // FixIn: 8.1.3.19.
+						} else {
+							// BM :: Get default Custom Form of Resource
+							$my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
+							if ( ( 'standard' !== $my_booking_form_name ) && ( '' !== $my_booking_form_name ) ) {
+								$booking_form_show = apply_bk_filter( 'wpdev_get_booking_form_content', $booking_form_show, $my_booking_form_name );
+							}
+						}
 
-	                }
-	            }
+						// MU :: if resource belongs to Regular User -> load THAT owner's form (not logged-in user).
+						$booking_form_show = apply_bk_filter( 'wpbc_multiuser_get_booking_form_show_of_regular_user', $booking_form_show, $resource_id, $my_booking_form_name ); // FixIn: 8.1.3.19.
+					}
+				}
 
-	            // Language
-	            $booking_form_show =  wpbc_lang( $booking_form_show );
+				// ------------------------------------------------------------
+				// NEW: BFB resolver override (must be AFTER BM/MU legacy resolution).
+				// This ensures BFB "content_form" wins and legacy doesn't clobber it.
+				// ------------------------------------------------------------
+				if ( class_exists( 'WPBC_FE_Form_Source_Resolver' ) && class_exists( 'WPBC_BFB_Form_Loader' ) ) {
 
-				$search  = array( "'(<br[ ]?[/]?>)+'si", "'(<[/]?p[ ]?>)+'si" );
-		        $replace = array( "&nbsp;&nbsp;", " &nbsp; ", " &nbsp; " );
-		        $booking_form_show = preg_replace( $search, $replace, $booking_form_show );
+					$req = array(
+						'resource_id'     => (int) $resource_id,
+						'form_slug'       => (string) $my_booking_form_name,
+						'form_status'     => $form_status,
+						'custom_params'   => array(),
+						'legacy_instance' => null,
+						'ctx'             => ( is_array( $ctx ) ? $ctx : array() ),
+					);
+
+					$resolved = WPBC_FE_Form_Source_Resolver::resolve( $req );
+
+					// If preview requested but not found, try published as fallback.
+					if ( ( empty( $resolved['engine'] ) || ( 'bfb_db' !== $resolved['engine'] ) ) && ( 'preview' === $form_status ) ) {
+						$req['form_status'] = 'published';
+						$resolved           = WPBC_FE_Form_Source_Resolver::resolve( $req );
+					}
+
+					if ( ! empty( $resolved['engine'] ) && ( 'bfb_db' === $resolved['engine'] ) ) {
+
+						$bfb_loader_args = array();
+						if ( ! empty( $resolved['bfb_loader_args'] ) && is_array( $resolved['bfb_loader_args'] ) ) {
+							$bfb_loader_args = $resolved['bfb_loader_args'];
+						}
+
+						// We need "content_form" template for booking fields output.
+						$bfb_loader_args['return'] = 'content_form';
+
+						$bfb_pair = wpbc_bfb_get_booking_form_pair( $bfb_loader_args );
+
+						$content_form = '';
+						if ( is_array( $bfb_pair ) && isset( $bfb_pair['content'] ) ) {
+							$content_form = (string) $bfb_pair['content'];
+						}
+
+						if ( '' !== trim( $content_form ) ) {
+							// Keep legacy behavior: custom html shortcodes.
+							$booking_form_show = wpbc_bf__replace_custom_html_shortcodes( $content_form );
+						}
+					}
+				}
+
+				// ------------------------------------------------------------
+				// Language + cleanup (keep old behavior).
+				// ------------------------------------------------------------
+				$booking_form_show = wpbc_lang( $booking_form_show );
+
+				$search            = array( "'(<br[ ]?[/]?>)+'si", "'(<[/]?p[ ]?>)+'si" );
+				$replace           = array( "&nbsp;&nbsp;", " &nbsp; ", " &nbsp; " );
+				$booking_form_show = preg_replace( $search, $replace, $booking_form_show );
+
+				// Store cache by final slug (slug may have changed in BM branch).
+				$final_cache_key                           = get_locale() . '|' . $form_status . '|' . $resource_id . '|' . $my_booking_form_name;
+				$wpbc__form_show_cache[ $final_cache_key ] = $booking_form_show;
 
 				return $booking_form_show;
 			}
+
 
 
 			/**

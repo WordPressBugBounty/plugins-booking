@@ -567,7 +567,7 @@ class WPBC_FE_Options_Parser {
 	 *              [text some_field_name "my_param"] and [text other_field_name "other_param"]
 	 *
 	 * Returns sanitized associative array:
-	 *  array( 'context' => 'preview', 'bfb_form_id' => '12', ... )
+	 *  array( 'param_name' => 'param_val', 'bfb_form_id' => '12', ... )
 	 *
 	 * @param mixed $option_param_value - shortcode options parameter value, e.g.: '{parameter name="my_param" value="value"},{parameter name="other_param" value="other value"}'.
 	 *
@@ -722,10 +722,6 @@ class WPBC_Frontend_Settings {
 	public static function is_bfb_enabled( $ctx = null ) {
 
 		if ( ! self::is_bfb_feature_available() ) {
-			return false;
-		}
-
-		if ( ! function_exists( 'get_bk_option' ) ) {
 			return false;
 		}
 

@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.9
-Stable tag: 10.14.14
+Stable tag: 10.14.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,40 +240,40 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- French (France)              98.37% [ 2830 / 2877 ], fuzzy 30, not translated 17
-- Danish                       88.63% [ 2550 / 2877 ], fuzzy 181, not translated 146
-- Dutch                        79.04% [ 2274 / 2877 ], fuzzy 458, not translated 145
-- Norwegian (Bokmål)           73.31% [ 2109 / 2877 ], fuzzy 230, not translated 538
-- German                       73.20% [ 2106 / 2877 ], fuzzy 568, not translated 203
-- Korean                       67.61% [ 1945 / 2877 ], fuzzy 649, not translated 283
-- Hungarian                    67.61% [ 1945 / 2877 ], fuzzy 654, not translated 278
-- Spanish (Spain)              62.22% [ 1790 / 2877 ], fuzzy 669, not translated 418
-- Portuguese (Brazil)          58.71% [ 1689 / 2877 ], fuzzy 778, not translated 410
-- Greek                        58.36% [ 1679 / 2877 ], fuzzy 786, not translated 412
-- Turkish                      57.59% [ 1657 / 2877 ], fuzzy 802, not translated 418
-- Italian                      56.10% [ 1614 / 2877 ], fuzzy 714, not translated 549
-- Spanish (Mexico)             53.91% [ 1551 / 2877 ], fuzzy 856, not translated 470
-- Finnish                      53.60% [ 1542 / 2877 ], fuzzy 865, not translated 470
-- Polish                       53.56% [ 1541 / 2877 ], fuzzy 854, not translated 482
-- Romanian                     53.11% [ 1528 / 2877 ], fuzzy 866, not translated 483
-- Swedish                      52.80% [ 1519 / 2877 ], fuzzy 875, not translated 483
-- Arabic                       52.31% [ 1505 / 2877 ], fuzzy 891, not translated 481
-- Russian                      52.24% [ 1503 / 2877 ], fuzzy 1114, not translated 260
-- Bulgarian                    50.68% [ 1458 / 2877 ], fuzzy 907, not translated 512
-- Slovenian                    50.54% [ 1454 / 2877 ], fuzzy 913, not translated 510
-- Chinese (Taiwan)             49.18% [ 1415 / 2877 ], fuzzy 952, not translated 510
-- Portuguese (Portugal)        48.80% [ 1404 / 2877 ], fuzzy 938, not translated 535
-- Japanese                     48.07% [ 1383 / 2877 ], fuzzy 448, not translated 1046
-- Chinese (China)              47.17% [ 1357 / 2877 ], fuzzy 939, not translated 581
-- Ukrainian                    46.85% [ 1348 / 2877 ], fuzzy 949, not translated 580
-- Catalan                      46.09% [ 1326 / 2877 ], fuzzy 876, not translated 675
-- Thai                         45.99% [ 1323 / 2877 ], fuzzy 987, not translated 567
-- Hebrew                       45.71% [ 1315 / 2877 ], fuzzy 976, not translated 586
-- Galician                     44.53% [ 1281 / 2877 ], fuzzy 1028, not translated 568
-- Slovak                       41.40% [ 1191 / 2877 ], fuzzy 949, not translated 737
-- Croatian                     40.08% [ 1153 / 2877 ], fuzzy 968, not translated 756
-- Czech                        39.94% [ 1149 / 2877 ], fuzzy 919, not translated 809
-- Chinese (Hong Kong)          23.64% [ 680 / 2877 ], fuzzy 274, not translated 1923
+- French (France)              97.69% [ 2828 / 2895 ], fuzzy 46, not translated 21
+- Danish                       88.08% [ 2550 / 2895 ], fuzzy 193, not translated 152
+- Dutch                        78.55% [ 2274 / 2895 ], fuzzy 470, not translated 151
+- Norwegian (Bokmål)           72.85% [ 2109 / 2895 ], fuzzy 243, not translated 543
+- German                       72.75% [ 2106 / 2895 ], fuzzy 580, not translated 209
+- Korean                       67.18% [ 1945 / 2895 ], fuzzy 661, not translated 289
+- Hungarian                    67.18% [ 1945 / 2895 ], fuzzy 666, not translated 284
+- Spanish (Spain)              61.83% [ 1790 / 2895 ], fuzzy 681, not translated 424
+- Portuguese (Brazil)          58.34% [ 1689 / 2895 ], fuzzy 790, not translated 416
+- Greek                        58.00% [ 1679 / 2895 ], fuzzy 798, not translated 418
+- Turkish                      57.24% [ 1657 / 2895 ], fuzzy 814, not translated 424
+- Italian                      55.75% [ 1614 / 2895 ], fuzzy 726, not translated 555
+- Spanish (Mexico)             53.58% [ 1551 / 2895 ], fuzzy 868, not translated 476
+- Finnish                      53.26% [ 1542 / 2895 ], fuzzy 877, not translated 476
+- Polish                       53.23% [ 1541 / 2895 ], fuzzy 866, not translated 488
+- Romanian                     52.78% [ 1528 / 2895 ], fuzzy 878, not translated 489
+- Swedish                      52.47% [ 1519 / 2895 ], fuzzy 887, not translated 489
+- Arabic                       51.99% [ 1505 / 2895 ], fuzzy 903, not translated 487
+- Russian                      51.92% [ 1503 / 2895 ], fuzzy 1126, not translated 266
+- Bulgarian                    50.36% [ 1458 / 2895 ], fuzzy 919, not translated 518
+- Slovenian                    50.22% [ 1454 / 2895 ], fuzzy 925, not translated 516
+- Chinese (Taiwan)             48.88% [ 1415 / 2895 ], fuzzy 964, not translated 516
+- Portuguese (Portugal)        48.50% [ 1404 / 2895 ], fuzzy 950, not translated 541
+- Japanese                     47.77% [ 1383 / 2895 ], fuzzy 461, not translated 1051
+- Chinese (China)              46.87% [ 1357 / 2895 ], fuzzy 951, not translated 587
+- Ukrainian                    46.56% [ 1348 / 2895 ], fuzzy 961, not translated 586
+- Catalan                      45.80% [ 1326 / 2895 ], fuzzy 888, not translated 681
+- Thai                         45.70% [ 1323 / 2895 ], fuzzy 999, not translated 573
+- Hebrew                       45.42% [ 1315 / 2895 ], fuzzy 988, not translated 592
+- Galician                     44.25% [ 1281 / 2895 ], fuzzy 1040, not translated 574
+- Slovak                       41.14% [ 1191 / 2895 ], fuzzy 961, not translated 743
+- Croatian                     39.83% [ 1153 / 2895 ], fuzzy 980, not translated 762
+- Czech                        39.69% [ 1149 / 2895 ], fuzzy 930, not translated 816
+- Chinese (Hong Kong)          23.49% [ 680 / 2895 ], fuzzy 286, not translated 1929
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -300,6 +300,11 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.15 =
+- Changes in **all** versions:
+	* **Fix**:  Resolved issue "Uncaught TypeError: can't access property "addAction", elementorFrontend.hooks is undefined" in some systems. (10.14.15.1)
+	* **Fix**:  Resolved issue of Authenticated User Settings Modification. (10.14.15.2)
+
 = 10.14.14 =
 - Changes in **all** versions:
 	* **Fix**: Loads inline CSS via wp_add_inline_style in header of the page. Safe for elementor. (10.14.14.1)

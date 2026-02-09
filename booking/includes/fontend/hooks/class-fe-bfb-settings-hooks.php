@@ -17,8 +17,7 @@
  * Notes:
  * - `$bfb_settings` is expected to be an array like:
  *   [
- *     'options'       => [ 'booking_form_theme' => 'wpbc_theme_dark_1', ... ],
- *     'css_vars' => [ '--wpbc-bfb-form-max-width' => '430px', ... ]
+ *     'options'       => [ 'booking_form_theme' => 'wpbc_theme_dark_1', ... ]
  *   ]
  *
  * @package Booking Calendar
@@ -31,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Inject per-form CSS variables into the BFB form root wrapper.   On Step 1.
+ * ['options']['booking_form_layout_width'] - > Inject per-form CSS variables:  into the BFB form root wrapper.   On Step 1.
  *
  * Purpose:
  * - If the form body contains the BFB root element (class `wpbc_bfb_form`),
@@ -50,29 +49,52 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string Filtered body HTML.
  */
-function wpbc_booking_form__body_html__before_postprocess__apply_css_vars( $form_html, $bfb_settings, $resource_id, $custom_booking_form_name ) {
+function wpbc_booking_form__body_html__before_postprocess__apply_bfb_vars( $form_html, $bfb_settings, $resource_id, $custom_booking_form_name ) {
 
 	$form_html    = (string) $form_html;
 	$bfb_settings = is_array( $bfb_settings ) ? $bfb_settings : array();
 
-	// Nothing to apply.
-	if ( empty( $bfb_settings['css_vars'] ) || ! is_array( $bfb_settings['css_vars'] ) ) {
+	// If body has no BFB root, do nothing (fast path).
+	if ( false === strpos( $form_html, 'wpbc_bfb_form' ) ) {
 		return $form_html;
 	}
 
-	// Injector not available.
-	if ( ! class_exists( 'WPBC_FE_Form_Style_Injector' ) ) {
+	// Local helper (no global function redeclare risk).
+	$sanitize_css_length = function( $v ) {
+		$v = trim( (string) $v );
+		if ( '' === $v ) {
+			return '';
+		}
+		// Allow only: number + unit.
+		return preg_match( '/^-?\d+(?:\.\d+)?(?:%|px|rem|em|vw|vh)$/', $v ) ? $v : '';
+	};
+
+	$width = '';
+	if ( ! empty( $bfb_settings['options'] ) && is_array( $bfb_settings['options'] ) ) {
+		$width = isset( $bfb_settings['options']['booking_form_layout_width'] )
+			? $sanitize_css_length( $bfb_settings['options']['booking_form_layout_width'] )
+			: '';
+	}
+
+	// If no valid width -> do nothing (keeps HTML unchanged).
+	if ( '' === $width ) {
 		return $form_html;
 	}
 
-	// Inject only if a BFB root exists inside the body.
-	return WPBC_FE_Form_Style_Injector::inject_css_vars_into_bfb_root( $form_html, $bfb_settings['css_vars'] );
+	$css_vars = ( ! empty( $bfb_settings['css_vars'] ) && is_array( $bfb_settings['css_vars'] ) )
+		? $bfb_settings['css_vars']
+		: array();
+
+	// Use a dedicated CSS var name.
+	$css_vars['--wpbc-bfb-booking_form_layout_width'] = $width;
+
+	return WPBC_FE_Form_Style_Injector::inject_css_vars_into_bfb_root( $form_html, $css_vars );
 }
-add_filter( 'wpbc_booking_form__body_html__before_postprocess', 'wpbc_booking_form__body_html__before_postprocess__apply_css_vars', 10, 4 );
+add_filter( 'wpbc_booking_form__body_html__before_postprocess', 'wpbc_booking_form__body_html__before_postprocess__apply_bfb_vars', 10, 4 );
 
 
 /**
- * Apply a "theme" CSS class to the main booking form wrapper container.   On Step 3.
+ * ['options'][booking_form_theme] -> Apply a "theme" CSS class to the main booking form wrapper container.   On Step 3.
  *
  * Purpose:
  * - Add `$bfb_settings['options']['booking_form_theme']` as an extra class to the FIRST wrapper container:
@@ -157,3 +179,75 @@ function wpbc_booking_form__wrapped_html__before_inline_scripts__apply_theme_cla
 
 }
 add_filter( 'wpbc_booking_form__wrapped_html__before_inline_scripts', 'wpbc_booking_form__wrapped_html__before_inline_scripts__apply_theme_class', 10, 4 );
+
+
+/**
+ * ['options']['booking_type_of_day_selections'] -> Set per-form day selection mode for calendar init.
+ *
+ * Uses legacy JS global: bk_days_selection_mode = 'single'|'multiple'
+ *
+ * @param string $wrapped_html
+ * @param array  $bfb_settings
+ * @param int    $resource_id
+ * @param string $custom_booking_form_name
+ *
+ * @return string
+ */
+function wpbc_booking_form__wrapped_html__before_inline_scripts__apply_day_selection_mode( $wrapped_html, $bfb_settings, $resource_id, $custom_booking_form_name ) {
+
+	$wrapped_html = (string) $wrapped_html;
+	$bfb_settings = is_array( $bfb_settings ) ? $bfb_settings : array();
+
+	$mode = '';
+	if ( ! empty( $bfb_settings['options'] ) && is_array( $bfb_settings['options'] ) ) {
+		if ( isset( $bfb_settings['options']['booking_type_of_day_selections'] ) ) {
+			$mode = (string) $bfb_settings['options']['booking_type_of_day_selections'];
+		}
+	}
+
+	if ( ( 'single' !== $mode ) && ( 'multiple' !== $mode ) ) {
+		return $wrapped_html;
+	}
+
+	$rid = (int) $resource_id;
+	$fn  = ( 'single' === $mode ) ? 'wpbc_cal_ready_days_select__single' : 'wpbc_cal_ready_days_select__multiple';
+
+	$js_body  = '(function(){';
+	$js_body .= 'var rid=' . $rid . ';';
+	$js_body .= 'var tries=0;';
+	$js_body .= 'function run(){';
+	$js_body .= '  if (typeof window.' . $fn . ' === "function") { window.' . $fn . '(rid); return; }';
+	$js_body .= '  if (tries++ < 40) { setTimeout(run,50); }';
+	$js_body .= '}';
+	$js_body .= 'run();';
+	$js_body .= '}());';
+
+	$can_use_wp_inline = ( ! wp_doing_ajax() );
+
+	// Elementor safe adding inline scripts after loaded of 'wpbc_all' script.
+	if ( $can_use_wp_inline && class_exists( 'WPBC_FE_Assets' ) && function_exists( 'wp_script_is' ) ) {
+
+		// 1) Ensure the handle exists in WP_Scripts *now* (register if needed).
+		if ( ! wp_script_is( 'wpbc_all', 'registered' ) && function_exists( 'wp_register_script' ) ) {
+			wp_enqueue_script( 'wpbc_all', wpbc_plugin_url( '/_dist/all/_out/wpbc_all.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+		}
+
+		// 2) Enqueue it (safe even if it will be enqueued later anyway).
+		if ( function_exists( 'wp_enqueue_script' ) ) {
+			wp_enqueue_script( 'wpbc_all' );
+		}
+
+		$assets_key = 'wpbc:day-select:' . $rid . ':' . md5( (string) $custom_booking_form_name . ':' . $mode );
+
+		$added = WPBC_FE_Assets::add_jq_ready_js_to_wp_script( 'wpbc_all', $js_body, $assets_key );
+
+		if ( $added ) {
+			return $wrapped_html; // no <script> printed in content.
+		}
+	}
+
+	// Fallback only if WP inline could not be attached.
+	$wrapped_html .= "\n" . '<script type="text/javascript">' . "\n" . $js_body . "\n" . '</script>' . "\n";
+	return $wrapped_html;
+}
+add_filter( 'wpbc_booking_form__wrapped_html__before_inline_scripts', 'wpbc_booking_form__wrapped_html__before_inline_scripts__apply_day_selection_mode', 9, 4 );

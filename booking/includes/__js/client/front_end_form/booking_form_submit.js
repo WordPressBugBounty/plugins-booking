@@ -542,27 +542,40 @@ function wpbc_form_submit_send( resource_id, formdata, captcha_chalange, user_ca
  *
  * @return {undefined} Legacy behavior.
  */
-function wpbc_send_ajax_submit( resource_id, formdata, captcha_chalange, user_captcha, is_send_emeils, my_booking_hash, my_booking_form, wpdev_active_locale ) {
+function wpbc_send_ajax_submit(resource_id, formdata, captcha_chalange, user_captcha, is_send_emeils, my_booking_hash, my_booking_form, wpdev_active_locale) {
 
 	resource_id = parseInt( resource_id, 10 );
 
 	// Disable Submit | Show spin loader.
 	wpbc_booking_form__on_submit__ui_elements_disable( resource_id );
 
-	var is_exit = wpbc_ajx_booking__create( {
-		'resource_id': resource_id,
-		'dates_ddmmyy_csv': document.getElementById( 'date_booking' + resource_id ).value,
-		'formdata': formdata,
-		'booking_hash': my_booking_hash,
-		'custom_form': my_booking_form,
-		'aggregate_resource_id_arr': ( ( null !== _wpbc.booking__get_param_value( resource_id, 'aggregate_resource_id_arr' ) )
-			? _wpbc.booking__get_param_value( resource_id, 'aggregate_resource_id_arr' ).join( ',' )
-			: '' ),
-		'captcha_chalange': captcha_chalange,
-		'captcha_user_input': user_captcha,
-		'is_emails_send': is_send_emeils,
-		'active_locale': wpdev_active_locale
-	} );
+	// FixIn: 2026-02-05 - pass preview context to booking create Ajax.
+	var form_status  = wpbc__get_form_status_for_submit( resource_id );
+	var preview_args = (form_status === 'preview') ? wpbc__get_bfb_preview_args_from_location() : null;
+
+	var request_params = {
+		'resource_id'              : resource_id,
+		'dates_ddmmyy_csv'         : document.getElementById( 'date_booking' + resource_id ).value,
+		'formdata'                 : formdata,
+		'booking_hash'             : my_booking_hash,
+		'custom_form'              : my_booking_form,
+		'aggregate_resource_id_arr': ( ( null !== _wpbc.booking__get_param_value( resource_id, 'aggregate_resource_id_arr' ) ) ? _wpbc.booking__get_param_value( resource_id, 'aggregate_resource_id_arr' ).join( ',' ) : '' ),
+		'captcha_chalange'         : captcha_chalange,
+		'captcha_user_input'       : user_captcha,
+		'is_emails_send'           : is_send_emeils,
+		'active_locale'            : wpdev_active_locale,
+		'form_status'              : form_status
+	};
+
+	// If preview, pass session identifiers so PHP can load transient snapshot.
+	if ( preview_args && preview_args.token && preview_args.form_id ) {
+		request_params['wpbc_bfb_preview']         = 1;
+		request_params['wpbc_bfb_preview_token']   = preview_args.token;
+		request_params['wpbc_bfb_preview_form_id'] = preview_args.form_id;
+		request_params['wpbc_bfb_preview_nonce']   = preview_args.nonce; // note: URL param is `nonce`.
+	}
+
+	var is_exit = wpbc_ajx_booking__create( request_params );
 
 	if ( true === is_exit ) {
 		return;
@@ -570,9 +583,99 @@ function wpbc_send_ajax_submit( resource_id, formdata, captcha_chalange, user_ca
 }
 
 
-// =====================================================================================================================
-// Backward-compatible wrappers (keep old global names working 100% as before).
-// =====================================================================================================================
+
+// == Helper Functions =================================================================================================
+
+/**
+ * Parse query string into {key:value} (old-browser safe).
+ *
+ * @param {string} qs
+ * @return {Object}
+ */
+function wpbc__parse_query_string(qs) {
+	var out = {};
+	qs      = (qs || '');
+	qs      = qs.replace( /^\?/, '' );
+	if ( ! qs ) {
+		return out;
+	}
+
+	var parts = qs.split( '&' );
+	for ( var i = 0; i < parts.length; i++ ) {
+		var kv = parts[i].split( '=' );
+		var k  = decodeURIComponent( kv[0] || '' );
+		if ( ! k ) {
+			continue;
+		}
+		var v  = decodeURIComponent( kv.slice( 1 ).join( '=' ) || '' );
+		out[k] = v;
+	}
+	return out;
+}
+
+/**
+ * Detect preview args from current URL (iframe URL).
+ *
+ * @return {Object|null} { token, form_id, nonce } or null
+ */
+function wpbc__get_bfb_preview_args_from_location() {
+	try {
+		var p = wpbc__parse_query_string( (window.location && window.location.search) ? window.location.search : '' );
+
+		if ( ! p.wpbc_bfb_preview || (p.wpbc_bfb_preview === '0') ) {
+			return null;
+		}
+
+		if ( ! p.wpbc_bfb_preview_token || ! p.wpbc_bfb_preview_form_id ) {
+			return null;
+		}
+
+		return {
+			token  : String( p.wpbc_bfb_preview_token ),
+			form_id: parseInt( p.wpbc_bfb_preview_form_id, 10 ) || 0,
+			nonce  : (p.nonce) ? String( p.nonce ) : ''
+		};
+	} catch ( e ) {
+		return null;
+	}
+}
+
+/**
+ * Resolve form status for submit.
+ *
+ * Priority:
+ * 1) shortcode param exposed via _wpbc.booking__get_param_value(..., 'form_status')
+ * 2) detect preview URL args
+ * 3) fallback: published
+ *
+ * @param {number} resource_id
+ * @return {string} 'preview'|'published'
+ */
+function wpbc__get_form_status_for_submit(resource_id) {
+
+	var status = '';
+
+	try {
+		if ( (typeof _wpbc !== 'undefined') && _wpbc.booking__get_param_value ) {
+			status = _wpbc.booking__get_param_value( resource_id, 'form_status' );
+		}
+	} catch ( e ) {}
+
+	status = (status == null) ? '' : String( status );
+	status = status.toLowerCase();
+
+	// URL-based detection for preview iframe.
+	var preview_args = wpbc__get_bfb_preview_args_from_location();
+	if ( preview_args ) {
+		return 'preview';
+	}
+
+	return (status === 'preview') ? 'preview' : 'published';
+}
+
+
+
+// == Backward-compatible wrappers (keep old global names working 100% as before). =====================================
 function mybooking_submit( submit_form, resource_id, wpdev_active_locale ) {
 	return wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale );
 }

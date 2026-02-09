@@ -41,20 +41,21 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 													'db_option_name'          => 'booking__wpbc_booking_create__request_params',    // Not necessary,  because we not save request, only sanitize it
 													'user_id'                 => $local_params['user_id'],                          // Not necessary,  because we not save request, only sanitize it
 													'request_rules_structure' => array(
-																					'resource_id' => array( 'validate' => 'd', 'default' => 1 ),                     // 'digit_or_csd'
-
-																					'aggregate_resource_id_arr' => array( 'validate' => 'digit_or_csd', 'default' => '' ),
-
-																					'dates_ddmmyy_csv' => array( 'validate' => 'csv_dates', 'default' => '' ),     // FixIn: 9.9.1.1.
-																					'formdata'         => array( 'validate' => 'strong', 'default' => '' ),
-																					'booking_hash'     => array( 'validate' => 'strong', 'default' => '' ),
-																					'custom_form'      => array( 'validate' => 'strong', 'default' => '' ),
-
-																					'captcha_chalange'   => array( 'validate' => 'strong', 'default' => '' ),
-																					'captcha_user_input' => array( 'validate' => 'strong', 'default' => '' ),
-
-																					'is_emails_send' => array( 'validate' => 'd', 'default' => 1 ),
-																					'active_locale'  => array( 'validate' => 'strong', 'default' => '' )
+																					'resource_id'               => array( 'validate' => 'd', 'default' => 1 ),    // 'digit_or_csd'.
+																					'aggregate_resource_id_arr' => array( 'validate' => 'digit_or_csd', 'default'  => '' ),
+																					'dates_ddmmyy_csv'          => array( 'validate' => 'csv_dates', 'default'  => '' ), // FixIn: 9.9.1.1.
+																					'formdata'                  => array( 'validate' => 'strong', 'default'  => '' ),
+																					'booking_hash'              => array( 'validate' => 'strong', 'default'  => '' ),
+																					'custom_form'               => array( 'validate' => 'strong', 'default'  => '' ),
+																					'captcha_chalange'          => array( 'validate' => 'strong', 'default'  => '' ),
+																					'captcha_user_input'        => array( 'validate' => 'strong', 'default'  => '' ),
+																					'is_emails_send'            => array( 'validate' => 'd', 'default' => 1 ),
+																					'active_locale'             => array( 'validate' => 'strong', 'default'  => '' ),
+																					'form_status'               => array( 'validate' => 'strong', 'default'  => 'published' ),
+																					'wpbc_bfb_preview'          => array( 'validate' => 'd', 'default'  => 0 ),
+																					'wpbc_bfb_preview_token'    => array( 'validate' => 'strong', 'default'  => '' ),
+																					'wpbc_bfb_preview_form_id'  => array( 'validate' => 'd', 'default'  => 0 ),
+																					'wpbc_bfb_preview_nonce'    => array( 'validate' => 'strong', 'default'  => '' ),
 																				)
 												));
 
@@ -90,20 +91,24 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 	// </editor-fold>
 
 	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
+
 	$request_save_params = array(
-									'resource_id'               => $request_params['resource_id'],
-									'dates_ddmmyy_csv'          => $request_params['dates_ddmmyy_csv'],
-									'form_data'                 => $request_params['formdata'],
-									'aggregate_resource_id_arr' => $request_params['aggregate_resource_id_arr'],        // Optional  can  be ''
-
-									'booking_hash'        => $request_params['booking_hash'],
-									'custom_form'         => $request_params['custom_form'],
-
-									'is_emails_send'       => $request_params['is_emails_send'],
-									'is_show_payment_form' => 1,
-									'user_id'              => $local_params['user_id'],
-									'request_uri'          => $server_http_referer_uri
-							);
+		'resource_id'               => $request_params['resource_id'],
+		'dates_ddmmyy_csv'          => $request_params['dates_ddmmyy_csv'],
+		'form_data'                 => $request_params['formdata'],
+		'aggregate_resource_id_arr' => $request_params['aggregate_resource_id_arr'],        // Optional  can  be ''.
+		'booking_hash'              => $request_params['booking_hash'],
+		'custom_form'               => $request_params['custom_form'],
+		'is_emails_send'            => $request_params['is_emails_send'],
+		'is_show_payment_form'      => 1,
+		'user_id'                   => $local_params['user_id'],
+		'request_uri'               => $server_http_referer_uri,
+		'form_status'               => $request_params['form_status'],
+		'wpbc_bfb_preview'          => $request_params['wpbc_bfb_preview'],
+		'wpbc_bfb_preview_token'    => $request_params['wpbc_bfb_preview_token'],
+		'wpbc_bfb_preview_form_id'  => $request_params['wpbc_bfb_preview_form_id'],
+		'wpbc_bfb_preview_nonce'    => $request_params['wpbc_bfb_preview_nonce'],
+	);
 	$booking_save_arr = wpbc_booking_save( $request_save_params );
 
 	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  BOOKING "  >
@@ -255,12 +260,33 @@ function wpbc_booking_save( $request_params ){
 								'is_approve_booking'                => array( 'validate' => 'd',      'default' => 0 ),       // 0 | 1
 								'save_booking_even_if_unavailable'  => array( 'validate' => 'd',      'default' => 0 ),       // 0 | 1
 								'sync_gid'                          => array( 'validate' => 'strong', 'default' => '' ),
-								'is_use_booking_recurrent_time'     => array( 'validate' => 'd',      'default' => intval( ( 'On' === get_bk_option( 'booking_recurrent_time' ) ) ) )
+								'is_use_booking_recurrent_time'     => array( 'validate' => 'd',      'default' => intval( ( 'On' === get_bk_option( 'booking_recurrent_time' ) ) ) ),
+
+								'form_status' => array( 'validate' => 'strong', 'default' => 'published' ),
+								'wpbc_bfb_preview'         => array( 'validate' => 'd',      'default' => 0 ),
+								'wpbc_bfb_preview_token'   => array( 'validate' => 'strong', 'default' => '' ),
+								'wpbc_bfb_preview_form_id' => array( 'validate' => 'd',      'default' => 0 ),
+								'wpbc_bfb_preview_nonce'   => array( 'validate' => 'strong', 'default' => '' ),
 						);
 	$re_cleaned_params = wpbc_sanitize_params_in_arr( $request_params, $validate_arr_rules );
 
 	$admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );         // wp-admin/admin.php?
 
+	$re_cleaned_params['form_status'] = sanitize_key( $re_cleaned_params['form_status'] );
+	if ( 'preview' !== $re_cleaned_params['form_status'] ) {
+		$re_cleaned_params['form_status'] = 'published';
+	}
+	// FixIn: 2026-02-05 - make preview/published available to form parsing/templates during this request.
+	wpbc_set_request_form_context(
+		array(
+			'form_status'              => $re_cleaned_params['form_status'],
+			'user_id'                  => $re_cleaned_params['user_id'],
+			'wpbc_bfb_preview'         => absint( $re_cleaned_params['wpbc_bfb_preview'] ),
+			'wpbc_bfb_preview_token'   => sanitize_key( $re_cleaned_params['wpbc_bfb_preview_token'] ),
+			'wpbc_bfb_preview_form_id' => absint( $re_cleaned_params['wpbc_bfb_preview_form_id'] ),
+			'wpbc_bfb_preview_nonce'   => (string) $re_cleaned_params['wpbc_bfb_preview_nonce'],
+		)
+	);
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Local parameters
@@ -746,6 +772,7 @@ function wpbc_booking_save( $request_params ){
 														, - 2 * $php_performance['total'] );                            // PERFORMANCE OTHER - after TOTAL
 																														// </editor-fold>
 
+	wpbc_clear_request_form_context();
 
 	return array(	'ajx_data'        => $ajx_data_arr,                         // [ 'status' => "ok", 'wpbc_payment_output' => "<p>Dear John<br..." ]
 					'booking_id'      => $booking_new_arr['booking_id'],        // 254
@@ -1151,6 +1178,21 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 			return $insert_dates_arr;
 		}
 
+// == Help  functions ==
+function wpbc_set_request_form_context( $ctx ) {
+	$GLOBALS['wpbc_request_form_context'] = ( is_array( $ctx ) ) ? $ctx : array();
+}
+
+function wpbc_get_request_form_context() {
+	return ( isset( $GLOBALS['wpbc_request_form_context'] ) && is_array( $GLOBALS['wpbc_request_form_context'] ) )
+		? $GLOBALS['wpbc_request_form_context'] : array();
+}
+
+function wpbc_clear_request_form_context() {
+	if ( isset( $GLOBALS['wpbc_request_form_context'] ) ) {
+		unset( $GLOBALS['wpbc_request_form_context'] );
+	}
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Support

@@ -621,6 +621,9 @@ a.wpbc_ui_settings__text_pro:hover {
 .wpbc_bfb__form_setting_save.is-hidden {
   display: none!important
 }
+.inspector__row label:has(input[type=radio]) {
+  cursor: pointer
+}
 /*! = General Vars for Admin = */
 .wpbc_admin {
   --wpbc_ui__gen__screen_width_small: 960px;

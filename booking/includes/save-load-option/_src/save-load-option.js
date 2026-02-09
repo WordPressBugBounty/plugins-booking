@@ -167,7 +167,8 @@
 	 *     data-wpbc-u-save-action     — nonce action (required)
 	 *     data-wpbc-u-save-value      — RAW scalar to save (optional)  (dynamic: read via attr first)
 	 *     data-wpbc-u-save-value-json — JSON string to save (optional) (dynamic: read via attr first)
-	 *     data-wpbc-u-save-fields     — CSV selectors; values serialized with jQuery.param (optional)
+	 *     data-wpbc-u-save-fields     — CSV selectors; values serialized with jQuery.param (optional). Optional allowlist of keys for split mode (CSV).
+	 *     data-wpbc-u-save-mode       - Optional.: 'split' | ''  --  Optional: split JSON object into separate options server-side.
 	 *     data-wpbc-u-save-value-from — OPTIONAL selector to read scalar from (checkbox => On/Off)
 	 *     data-wpbc-u-busy-text       — custom text during AJAX (optional)
 	 *     data-wpbc-u-save-callback   — window function name to call on success (optional)

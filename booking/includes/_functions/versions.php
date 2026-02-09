@@ -444,7 +444,8 @@ function wpbc_get_upgrade_widget( $params ) {
 						'upgrade_link' 		 => array( 'title' => 'Upgrade to Pro', 'relative_url' => 'features/#bk_news_section' ),
 						'versions'     		 => 'Business Large, MultiUser versions',
 						'css'          		 => 'transform: translate(0) translateY(120px);',
-						'dismiss_css_class'  => ''																//'.wpbc_random_' . round( microtime( true ) * 1000 ), //'.'.$id . '_' . 'weekdays_conditions'
+						'dismiss_css_class'  => '',																//'.wpbc_random_' . round( microtime( true ) * 1000 ), //'.'.$id . '_' . 'weekdays_conditions'
+						'no_dismiss'         => false
 				);
 	$params = wp_parse_args( $params, $defaults );
 	$up_id = $params['id'];
@@ -457,18 +458,23 @@ function wpbc_get_upgrade_widget( $params ) {
 
 	if ( $is_blured ) {
 
-		// ---------------------------------------------------------------------------------------------------------
-		// Is dismissed ?
-		// ---------------------------------------------------------------------------------------------------------
-		ob_start();
-		$is_upgrade_panel_visible = wpbc_is_dismissed( $up_id , array(
-																	'title' => '<span aria-hidden="true" style="font-size: 28px;">&times;</span>',
-																	'hint'  => __( 'Dismiss', 'booking' ),
-																	'class' => 'wpbc_panel_get_started_dismiss',
-																	'css'   => '',
-																	'dismiss_css_class' => $params['dismiss_css_class']
-															) );
-		$html_dismiss_btn = ob_get_clean();
+		if ( $params['no_dismiss'] ) {
+			$is_upgrade_panel_visible = true;
+			$html_dismiss_btn         = '';
+		} else {
+			// ---------------------------------------------------------------------------------------------------------
+			// Is dismissed ?
+			// ---------------------------------------------------------------------------------------------------------
+			ob_start();
+			$is_upgrade_panel_visible = wpbc_is_dismissed( $up_id , array(
+																		'title' => '<span aria-hidden="true" style="font-size: 28px;">&times;</span>',
+																		'hint'  => __( 'Dismiss', 'booking' ),
+																		'class' => 'wpbc_panel_get_started_dismiss',
+																		'css'   => '',
+																		'dismiss_css_class' => $params['dismiss_css_class']
+																) );
+			$html_dismiss_btn = ob_get_clean();
+		}
 
 		// ---------------------------------------------------------------------------------------------------------
 		// Upgrade Widget
