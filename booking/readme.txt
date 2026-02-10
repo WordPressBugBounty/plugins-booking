@@ -5,7 +5,7 @@ Tags: booking calendar, bookings, booking, appointments, events
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.9
-Stable tag: 10.14.15
+Stable tag: 10.14.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -300,6 +300,10 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.14.16 =
+- Changes in **all** versions:
+	* **Fix**:  Resoved Improper Neutralization of Special Elements used in an SQL. (10.14.16.1.)
+
 = 10.14.15 =
 - Changes in **all** versions:
 	* **Fix**:  Resolved issue "Uncaught TypeError: can't access property "addAction", elementorFrontend.hooks is undefined" in some systems. (10.14.15.1)

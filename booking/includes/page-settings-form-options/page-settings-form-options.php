@@ -60,11 +60,11 @@ class WPBC_API_Settings_Form_Options extends WPBC_Settings_API {
 			$this->fields['booking_use_bfb_form'] = array(
 									'type'          => 'checkbox'
 									, 'default'     => $default_options_values['booking_use_bfb_form']         // 'Off'
-									, 'title'       => __('New Booking Form Builder' ,'booking') . ' (Beta)'
+									, 'title'       =>  __('Drag & Drop Booking Form Builder' ,'booking') .
+														'<span class="wpbc_new_label" style="padding: 3px 4px;margin: 0 10px;">' . esc_html__( 'New', 'booking' ) . '</span>' .
+									 					'<span class="wpbc_new_label" style="padding: 3px 4px;background: #e18900;text-transform: none;">Beta</span> '
 									, 'label'       => __('Enable the new drag & drop booking form builder.' ,'booking')
-									, 'description' => '<div style="font-size: 12px;margin: -25px 0;">' . '<strong>' . __( 'Beta feature.', 'booking' ) . '</strong> ' .
-													   __( 'Enables the new drag & drop form builder. Disable this option to use the classic booking form.', 'booking' )
-									. '</div>'
+									, 'description' => __( 'Enables the new drag & drop form builder. Disable this option to use the classic booking form.', 'booking' )
 									, 'group'       => 'form'
 				);
 		}
@@ -252,6 +252,10 @@ class WPBC_Page_Settings_Form_Options extends WPBC_Page_Structure {
 	}
 
 	public function in_page() {
+
+		if ( WPBC_Frontend_Settings::is_bfb_enabled( null ) ) {
+			return 'test' . (string) wp_rand( 100000, 1000000 );
+		}
 
 		if ( ! wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) {            // If this User not "super admin",  then  do  not load this page at all.
 			return (string) wp_rand( 100000, 1000000 );

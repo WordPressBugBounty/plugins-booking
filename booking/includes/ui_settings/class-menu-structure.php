@@ -602,6 +602,8 @@ abstract class WPBC_Menu_Structure {
 
 			}
 		}
+
+		self::$nav_tabs = apply_filters( 'wpbc_plugin_menu_structure_arr', self::$nav_tabs, $this_page );
 	}
 
 

@@ -369,6 +369,25 @@ function wpbc_is_settings_form_page( $server_param = 'REQUEST_URI' ) {
 
 
 /**
+ * Check if this WP Booking Calendar > Settings > Booking Form Builder (BFB) page.
+ *
+ * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
+ * @return boolean true | false
+ */
+function wpbc_is_settings_bfb_page( $server_param = 'REQUEST_URI' ) {
+	// Regular  user overwrite settings.
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) !== false ) && ( ( strpos( $_SERVER[ $server_param ], '&tab=builder_booking_form' ) !== false ) || ( ( class_exists( 'wpdev_bk_multiuser' ) ) && ( ! empty( $_REQUEST['tab'] ) ) && ( 'builder_booking_form' === $_REQUEST['tab'] ) ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+
+/**
  * Check if this WP Booking Calendar > Settings > Booking Form page
  *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
