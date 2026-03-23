@@ -1,0 +1,22 @@
+/* File: ../includes/page-form-builder/__css/bfb_form_effects.css */
+/* Form Setting Option - Right Side Pallete */
+.wpbc_bfb__inspector_form_settings .wpbc_bfb__form_setting {
+	background: #f9f9f9;
+	padding: 0 10px 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+}
+/*.wpbc_bfb__inspector_form_settings .wpbc_bfb__form_setting:not(:last-child) {*/
+/*  border-bottom:1px solid #bfbfbf;*/
+/*  padding: 0 0 25px;*/
+/*}*/
+/* -- Line #1: FONT-END  |  Line #2: BACK-END / Canvas -- ----------------------------------------------------------- */
+.booking_form_div .wpbc_bfb_form,
+.wpbc_bfb__panel--preview .wpbc_bfb__form_preview_section_container
+{
+	width: var(--wpbc-bfb-booking_form_layout_width, 100%);
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	box-sizing: border-box;
+}

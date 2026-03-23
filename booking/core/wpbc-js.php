@@ -349,7 +349,7 @@ function wpbc_load_js__required_for_modals() {
 	wp_enqueue_style( 'wpbc-admin-support', wpbc_plugin_url( '/core/any/css/admin-support.css' ), array(), WP_BK_VERSION_NUM );
 	wp_enqueue_style( 'wpbc-admin-menu', wpbc_plugin_url( '/core/any/css/admin-menu.css' ), array(), WP_BK_VERSION_NUM );
 	// wp_enqueue_style( 'wpbc-admin-toolbar', wpbc_plugin_url( '/core/any/css/admin-toolbar.css' ),     array(), WP_BK_VERSION_NUM );  // .
-	wp_enqueue_style( 'wpbc-flex-toolbar', wpbc_plugin_url( '/includes/_toolbar_ui/_src/toolbar_ui.css' ), array(), WP_BK_VERSION_NUM );
+	wp_enqueue_style( 'wpbc-flex-toolbar', wpbc_plugin_url( '/includes/_toolbar_ui/_out/toolbar_ui.css' ), array(), WP_BK_VERSION_NUM );
 	wp_enqueue_style( 'wpbc-admin-modal-popups', wpbc_plugin_url( '/css/modal.css' ), array(), WP_BK_VERSION_NUM );
 	wp_enqueue_style( 'wpbc-admin-pages', wpbc_plugin_url( '/css/admin.css' ), array(), WP_BK_VERSION_NUM );
 	wp_enqueue_style( 'wpbc-admin-skin', wpbc_plugin_url( '/css/admin-skin.css' ), array( 'wpbc-admin-pages' ), WP_BK_VERSION_NUM );                        // FixIn: 8.0.2.4.

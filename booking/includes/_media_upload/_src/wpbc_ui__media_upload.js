@@ -1,4 +1,6 @@
 /**
+ * @file: ../includes/_media_upload/_src/wpbc_ui__media_upload.js
+ *
  * == How to Use ?  ==
  *
  * 1. Load JS:
@@ -29,7 +31,9 @@
  * <script type="text/javascript">
  *  jQuery(document).ready(function(){
  *    jQuery( '#MY_URL_FIELD').on( 'wpbc_media_upload_url_set', function(){
- *        jQuery( '#MY_URL_FIELD').parents( '.wpbc_extra__excerpt_img' ).find( '.ui_group__thumbnail .wpbc_media_upload_button' ).html( '<img src="' + jQuery( '#MY_URL_FIELD').val() + '" class="search_thumbnail_img" />' );
+ *        jQuery( '#MY_URL_FIELD').parents( '.wpbc_extra__excerpt_img' ).find( '.ui_group__thumbnail
+ * .wpbc_media_upload_button' ).html( '<img src="' + jQuery( '#MY_URL_FIELD').val() + '" class="search_thumbnail_img"
+ * />' );
  *    });
  *  });
  * </script>
@@ -38,12 +42,17 @@
 
 var wpbc_media_file_frame;
 
-jQuery( document ).ready( function (){
-	//'use strict';
+jQuery( function ( $ ) {
 
-	jQuery( '.wpbc_media_upload_button' ).on( 'click', function( event ) {
+	// Delegated binding (works for dynamically rendered BFB controls).
+	$( document ).on( 'click', '.wpbc_media_upload_button', function ( event ) {
+		wpbc_media_upload_button_clicked( this, event );
+	} );
+} );
 
-		var j_btn = jQuery( this );
+function wpbc_media_upload_button_clicked( _this, event ){
+
+		var j_btn = jQuery( _this );
 		var is_multi_selection = false;
 		// var insert_field_separator = ',';
 
@@ -112,9 +121,12 @@ jQuery( document ).ready( function (){
 
 				var attachment = wpbc_media_file_frame.state().get( 'selection' ).first().toJSON();
 
-				// Put URL of file to text field
-				jQuery( '#' + j_btn.data( 'url_field' ) ).val( attachment.url );
-				jQuery( '#' + j_btn.data( 'url_field' ) ).trigger( "wpbc_media_upload_url_set" );
+				// Put URL of file to text field.
+				var $f = jQuery( '#' + j_btn.data( 'url_field' ) );
+				$f.val( attachment.url );
+				$f.trigger( 'input' );
+				$f.trigger( 'change' );
+				$f.trigger( 'wpbc_media_upload_url_set' );
 
 				//j_btn.parents( '.wpbc_extra__excerpt_img' ).find( '.ui_group__thumbnail .wpbc_media_upload_button' ).html( '<img src="' + attachment.url + '" class="search_thumbnail_img" />' );
 
@@ -145,8 +157,11 @@ jQuery( document ).ready( function (){
 					 file_paths = file_paths ? file_paths + "\n" + attachment.url : attachment.url;
 				});
 
-				jQuery( '#' + j_btn.data( 'url_field' ) ).val( file_paths );
-				jQuery( '#' + j_btn.data( 'url_field' ) ).trigger( "wpbc_media_upload_url_set" );
+				var $f = jQuery( '#' + j_btn.data( 'url_field' ) );
+				$f.val( file_paths );
+				$f.trigger( 'input' );
+				$f.trigger( 'change' );
+				$f.trigger( 'wpbc_media_upload_url_set' );
 			}
 
 		} );
@@ -227,5 +242,5 @@ jQuery( document ).ready( function (){
 
 		// Open the modal.
 		wpbc_media_file_frame.open();
-	});
-});
+
+}

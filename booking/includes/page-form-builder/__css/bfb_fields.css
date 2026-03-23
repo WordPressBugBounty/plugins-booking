@@ -1,0 +1,91 @@
+/* File: ../includes/__css/client/form_fields/bfb_front-end.css */
+/* -- Line #1: FONT-END  |  Line #2: BACK-END -- -------------------------------------------------------------------- */
+div .wpbc_bfb_form .wpbc__row .wpbc__field,
+div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
+	display:         flex;
+	flex-direction:  var(--wpbc-bfb-col-dir,   column);      /* row */
+	flex-wrap:       var(--wpbc-bfb-col-wrap,  nowrap);      /* wrap */
+	justify-content: var(--wpbc-bfb-col-jc,    flex-start);  /* flex-start */
+	align-items:     var(--wpbc-bfb-col-ai,    stretch);     /* flex-start */
+	gap:             var(--wpbc-bfb-col-gap,   0px);         /* 0px */
+	align-self:      var(--wpbc-bfb-col-aself, flex-start);  /* flex-start */
+}
+/* -- Line #1: FONT-END  |  Line #2: BACK-END -- -------------------------------------------------------------------- */
+div .wpbc_bfb_form                        .wpbc__row .wpbc__field .bfb_element:has(:input),
+div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field{
+	flex: 1 1 100%;
+}
+/* -- FONT-END -- --------------------------------------------------------------------------------------------------- */
+div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element {
+	display:         flex;
+	flex-flow:       row wrap;
+	justify-content: flex-start;
+	align-items:     flex-start;
+	align-content:   normal;
+	padding: 0;
+	margin:  0;
+	gap:     0;
+}
+/* == Calendar == -- Line #1: FONT-END  |  Line #2: BACK-END -- ----------------------------------------------------- */
+div .wpbc_bfb_form     .wpbc__row      .wpbc__field     .bfb_element:has(.wpbc_no_custom_width.cal_month_num_1 ),
+div .wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field:has(.wpbc_no_custom_width.cal_month_num_1 ) {
+	/*width: 345px;*/
+	/*flex: 0 1 345px;*/
+}
+/* -- Line #1: FONT-END  |  Line #2: BACK-END -- -------------------------------------------------------------------- */
+div .wpbc_bfb_form .wpbc__row .wpbc__field[data-colstyles-active="1"] .bfb_element:not(:has(.wpbc_calendar_wraper )),
+div .wpbc_bfb_form [data-colstyles-active="1"] .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field:not(:has(.wpbc_calendar_wraper )) {
+	flex: 0 1 auto;
+}
+/* Exception  for the CAPTCHA */
+div .wpbc_bfb_form .wpbc__row .wpbc__field[data-colstyles-active="1"] .bfb_element:has(.wpbc_text_captcha_container),
+div .wpbc_bfb_form [data-colstyles-active="1"] .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field:has(.wpbc_text_captcha_container) {
+	flex: 1 1 auto;
+}
+/* -- FONT-END -- Booking form  main  CSS classes: class="wpbc_container wpbc_form wpbc_container_booking_form .... "  ---------- */
+/* -- Line #1: FONT-END  |  Line #2: BACK-END -- -------------------------------------------------------------------- */
+.wpbc_bfb_form .bfb_element select,
+.wpbc_bfb_form .bfb_element textarea,
+.wpbc_bfb_form .bfb_element input[type=text],
+.wpbc_bfb_form .bfb_element input[type=email],
+.wpbc_bfb_form .bfb_element input[type=date],
+.wpbc_bfb_form .bfb_element input[type=datetime],
+.wpbc_bfb_form .bfb_element input[type=datetime-local],
+.wpbc_bfb_form .bfb_element input[type=month],
+.wpbc_bfb_form .bfb_element input[type=number],
+.wpbc_bfb_form .bfb_element input[type=password],
+.wpbc_bfb_form .bfb_element input[type=range],
+.wpbc_bfb_form .bfb_element input[type=search],
+.wpbc_bfb_form .bfb_element input[type=tel],
+.wpbc_bfb_form .bfb_element input[type=time],
+.wpbc_bfb_form .bfb_element input[type=url],
+.wpbc_bfb_form .bfb_element input[type=week],
+.wpbc_bfb_form .wpbc_bfb__field select,
+.wpbc_bfb_form .wpbc_bfb__field textarea,
+.wpbc_bfb_form .wpbc_bfb__field input[type=text],
+.wpbc_bfb_form .wpbc_bfb__field input[type=email],
+.wpbc_bfb_form .wpbc_bfb__field input[type=date],
+.wpbc_bfb_form .wpbc_bfb__field input[type=datetime],
+.wpbc_bfb_form .wpbc_bfb__field input[type=datetime-local],
+.wpbc_bfb_form .wpbc_bfb__field input[type=month],
+.wpbc_bfb_form .wpbc_bfb__field input[type=number],
+.wpbc_bfb_form .wpbc_bfb__field input[type=password],
+.wpbc_bfb_form .wpbc_bfb__field input[type=range],
+.wpbc_bfb_form .wpbc_bfb__field input[type=search],
+.wpbc_bfb_form .wpbc_bfb__field input[type=tel],
+.wpbc_bfb_form .wpbc_bfb__field input[type=time],
+.wpbc_bfb_form .wpbc_bfb__field input[type=url],
+.wpbc_bfb_form .wpbc_bfb__field input[type=week]{
+	width: 100%;
+	max-width: 100%;
+}
+/* Static text */
+.wpbc_bfb_form .wpbc_static_text {
+	width: 100%;
+}
+.wpbc_bfb__preview-rendered .wpbc_static_text {
+	display:block;
+}
+.wpbc_bfb_divider_wrap[data-orientation="vertical"] .wpbc_bfb_divider--v {
+	transform: translate(-50%, -50%);
+}

@@ -453,6 +453,8 @@ function wpbc_template__booking_listing__el__btn_action(){
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_trash_restore() );
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_delete() );
 
+	$el_arr = apply_filters( 'wpbc_template__booking_listing__el__btn_action' , $el_arr );
+
 	wpbc_ui_el__dropdown_menu( $el_arr );
 }
 

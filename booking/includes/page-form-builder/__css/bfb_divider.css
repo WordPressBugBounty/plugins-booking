@@ -1,0 +1,70 @@
+
+
+/* ================================================================================================================== */
+/* === Divider  ===================================================================================================== */
+/* ================================================================================================================== */
+/* Exception for Vertical Dividers: -- ------------------------------------------------------------------------------ */
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type="divider"][data-orientation="horizontal"]{
+	width:100%;
+	margin: 0;
+	min-width: 50px;
+}
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type="divider"][data-orientation="vertical"],
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical] .wpbc_bfb__noaction,
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical] .wpbc_bfb__noaction  * {
+	height: 100%;
+	min-height: 50px;
+	margin: 0;
+	box-sizing: border-box;
+	padding: 0;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column nowrap;
+}
+.wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=vertical] .wpbc_bfb__field-preview{
+	position:relative;
+}
+/* === Exported Divider (Advanced Form) === ------------------------------------------------------------------------- */
+div .wpbc_container .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has([data-orientation="vertical"]) {
+	flex: 0 1 auto;
+}
+div div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divider_wrap[data-orientation="horizontal"]) {
+  flex: 0 1 auto;
+  width:100%;
+}
+
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divider_wrap[data-orientation="vertical"]){
+	height:100%;
+}
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap[data-orientation="horizontal"] {
+	width: 100%;
+}
+/* :AI: ------------------------------------------------------------------------- */
+/* Horizontal divider inside a field block */
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider--h {
+	display: block;             /* ensures margins, width work predictably */
+	box-sizing: border-box;
+}
+
+/* Vertical divider wrapper: stretch within column rows; height resolves for child 100% */
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap[data-orientation="vertical"] {
+	display: flex;              /* supports height:100% on the inner line */
+	align-self: stretch;        /* fill cross-size of the column row */
+	position: relative;
+}
+
+/* The vertical line itself draws via border-left; width comes from border */
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider--v {
+	width: 0;                   /* border-left is the visible width */
+	box-sizing: content-box;
+	height: 100%;               /* spans wrapper's height (see wrapper rule above) */
+}
+
+/* Optional: when a row uses custom column styles, keep divider flexible */
+.wpbc_bfb_form [data-colstyles-active="1"] .bfb_element .wpbc_bfb_divider_wrap[data-orientation="vertical"] {
+	flex: 0 0 auto;
+}
+/* ================================================================================================================== */
+.wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap hr {
+	background: transparent;
+}

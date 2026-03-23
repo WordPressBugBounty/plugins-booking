@@ -1063,6 +1063,10 @@ a.wpbc_ui_settings__text_pro:hover {
   max-width: 50%;
   z-index: 90001
 }
+.wpbc_admin_full_screen .wpbc_admin .wpbc_page div.wpbc_inner_message {
+  top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + 55px);
+  right: 5px
+}
 .wpbc_svg_icon_class {
   display: inline-block;
   background-position: 0 1px;
@@ -1823,7 +1827,7 @@ body.wpbc_admin_full_screen div.wpbc_admin {
 .wpbc_ui_el__top_nav > div:has(a) {
   border-top: var(--wpbc_ui_top_nav__a_hover_border_width) solid transparent;
   border-bottom: var(--wpbc_ui_top_nav__a_hover_border_width) solid transparent;
-  padding: 0 15px
+  padding: 0 10px
 }
 .wpbc_ui_el__top_nav > a:hover,
 .wpbc_ui_el__top_nav > div.wpbc_ui_el_container:has(a:hover) {
@@ -2770,6 +2774,10 @@ a > .wpbc_ui_el__section_header {
 }
 .wpbc_ui_el__horis_nav_item.align_right {
   margin-left: auto
+}
+.wpbc_ui_el__horis_nav_item.small_debug_tab a.wpbc_ui_el__horis_nav_item__a {
+  font-size: 10px;
+  line-height: 19px
 }
 .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon {
   margin: 0

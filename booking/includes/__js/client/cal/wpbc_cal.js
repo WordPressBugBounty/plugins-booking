@@ -5,7 +5,8 @@
  */
 
 /**
- * Order or child booking resources saved here:  	_wpbc.booking__get_param_value( resource_id, 'resources_id_arr__in_dates' )		[2,10,12,11]
+ * Order or child booking resources saved here:  	_wpbc.booking__get_param_value( resource_id,
+ * 'resources_id_arr__in_dates' )		[2,10,12,11]
  */
 
 /**
@@ -34,8 +35,9 @@
  * 					wpbc_calendar__unselect_all_dates( resource_id );
  *
  *					var resource_id = 1;
- * 	Example 1:		var num_selected_days = wpbc_auto_select_dates_in_calendar( resource_id, '2024-05-15', '2024-05-25' );
- * 	Example 2:		var num_selected_days = wpbc_auto_select_dates_in_calendar( resource_id, ['2024-05-09','2024-05-19','2024-05-25'] );
+ * 	Example 1:		var num_selected_days = wpbc_auto_select_dates_in_calendar( resource_id, '2024-05-15',
+ * '2024-05-25' ); Example 2:		var num_selected_days = wpbc_auto_select_dates_in_calendar( resource_id,
+ * ['2024-05-09','2024-05-19','2024-05-25'] );
  *
  */
 
@@ -139,8 +141,13 @@ function wpbc_calendar_show( resource_id ){
 									return wpbc__calendar__apply_css_to_days( js_date, {'resource_id': resource_id}, this );
 							  },
 				onSelect: function ( string_dates, js_dates_arr ){  /**
-																	 *	string_dates   =   '23.08.2023 - 26.08.2023'    |    '23.08.2023 - 23.08.2023'    |    '19.09.2023, 24.08.2023, 30.09.2023'
-																	 *  js_dates_arr   =   range: [ Date (Aug 23 2023), Date (Aug 25 2023)]     |     multiple: [ Date(Oct 24 2023), Date(Oct 20 2023), Date(Oct 16 2023) ]
+																	 *	string_dates   =   '23.08.2023 - 26.08.2023'
+																	 *   |    '23.08.2023 - 23.08.2023'    |
+																	 * '19.09.2023, 24.08.2023, 30.09.2023'
+																	 * js_dates_arr   =   range: [ Date (Aug 23 2023),
+																	 * Date (Aug 25 2023)]     |     multiple: [
+																	 * Date(Oct 24 2023), Date(Oct 20 2023), Date(Oct
+																	 * 16 2023) ]
 																	 */
 									return wpbc__calendar__on_select_days( string_dates, {'resource_id': resource_id}, this );
 							  },
@@ -194,12 +201,14 @@ function wpbc_calendar_show( resource_id ){
 	/**
 	 * Apply CSS to calendar date cells
 	 *
-	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00 GMT+0200 (Eastern European Standard Time)
+	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00
+	 *     GMT+0200 (Eastern European Standard Time)
 	 * @param calendar_params_arr						-  Calendar Settings Object:  	{
 	 *																  						"resource_id": 4
 	 *																					}
 	 * @param datepick_this								- this of datepick Obj
-	 * @returns {(*|string)[]|(boolean|string)[]}		- [ {true -available | false - unavailable}, 'CSS classes for calendar day cell' ]
+	 * @returns {(*|string)[]|(boolean|string)[]}		- [ {true -available | false - unavailable}, 'CSS classes for
+	 *     calendar day cell' ]
 	 */
 	function wpbc__calendar__apply_css_to_days( date, calendar_params_arr, datepick_this ){
 
@@ -415,7 +424,8 @@ function wpbc_calendar_show( resource_id ){
 	 * Mouseover calendar date cells
 	 *
 	 * @param string_date
-	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00 GMT+0200 (Eastern European Standard Time)
+	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00
+	 *     GMT+0200 (Eastern European Standard Time)
 	 * @param calendar_params_arr						-  Calendar Settings Object:  	{
 	 *																  						"resource_id": 4
 	 *																					}
@@ -464,7 +474,8 @@ function wpbc_calendar_show( resource_id ){
 		if ( ( is_unselectable_calendar ) && ( ! is_booking_form_exist ) ){
 
 			/**
-			 *  Un Hover all dates in calendar (without the booking form), if only Availability Calendar here and we do not insert Booking form by mistake.
+			 *  Un Hover all dates in calendar (without the booking form), if only Availability Calendar here and we do
+			 * not insert Booking form by mistake.
 			 */
 
 			wpbc_calendars__clear_days_highlighting( resource_id ); 							// Clear days highlighting
@@ -500,7 +511,8 @@ function wpbc_calendar_show( resource_id ){
 	/**
 	 * Select calendar date cells
 	 *
-	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00 GMT+0200 (Eastern European Standard Time)
+	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00
+	 *     GMT+0200 (Eastern European Standard Time)
 	 * @param calendar_params_arr						-  Calendar Settings Object:  	{
 	 *																  						"resource_id": 4
 	 *																					}
@@ -641,6 +653,9 @@ function wpbc_calendar_show( resource_id ){
 				var how_many_resources_intersected = 0;
 				// Loop all resources ID
 					// for ( var res_key in child_resources_arr ){	 						// FixIn: 10.3.0.2.
+				if ( null === child_resources_arr ) {
+					child_resources_arr = [];
+				}
 				for ( let res_key = 0; res_key < child_resources_arr.length; res_key++ ){
 
 					child_resource_id = child_resources_arr[ res_key ];
@@ -863,7 +878,8 @@ function wpbc_calendar_show( resource_id ){
 			/**
 			 * Disable HTML options and add booked CSS class
 			 *
-			 * @param time_fields_obj_arr      - this value is from  the func:  	wpbc_get__time_fields__in_booking_form__as_arr( resource_id )
+			 * @param time_fields_obj_arr      - this value is from  the func:
+			 *     	wpbc_get__time_fields__in_booking_form__as_arr( resource_id )
 			 * 					[
 			 * 					 	   {	jquery_option:      jQuery_Object {}
 			 * 								name:               'rangetime2[]'
@@ -936,7 +952,8 @@ function wpbc_calendar_show( resource_id ){
 	 *  Get all selected dates in SQL format like this [ "2023-08-23", "2023-08-24" , ... ]
 	 *
 	 * @param resource_id
-	 * @returns {[]}			[ "2023-08-23", "2023-08-24", "2023-08-25", "2023-08-26", "2023-08-27", "2023-08-28", "2023-08-29" ]
+	 * @returns {[]}			[ "2023-08-23", "2023-08-24", "2023-08-25", "2023-08-26", "2023-08-27", "2023-08-28",
+	 *     "2023-08-29" ]
 	 */
 	function wpbc_get__selected_dates_sql__as_arr( resource_id ){
 
@@ -1483,7 +1500,8 @@ function wpbc_calendar_show( resource_id ){
 // --------------------------------------------------------------------------------------------------------------------- */
 
 		/**
-		 * Merge several  intersected intervals or return not intersected:                        [[1,3],[2,6],[8,10],[15,18]]  ->   [[1,6],[8,10],[15,18]]
+		 * Merge several  intersected intervals or return not intersected:
+		 * [[1,3],[2,6],[8,10],[15,18]]  ->   [[1,6],[8,10],[15,18]]
 		 *
 		 * @param [] intervals			 [ [1,3],[2,4],[6,8],[9,10],[3,7] ]
 		 * @returns []					 [ [1,8],[9,10] ]
@@ -1522,7 +1540,8 @@ function wpbc_calendar_show( resource_id ){
 		/**
 		 * Is 2 intervals intersected:       [36011, 86392]    <=>    [1, 43192]  =>  true      ( intersected )
 		 *
-		 * Good explanation  here https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-if-two-ranges-overlap
+		 * Good explanation  here
+		 * https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-if-two-ranges-overlap
 		 *
 		 * @param  interval_A   - [ 36011, 86392 ]
 		 * @param  interval_B   - [     1, 43192 ]
@@ -1733,8 +1752,9 @@ function wpbc_dates__is_consecutive_dates_arr_range( sql_dates_arr ){											
  *
  * @returns {number}		number of selected dates
  *
- * 	Example 1:				var num_selected_days = wpbc_auto_select_dates_in_calendar( 1, '2024-05-15', '2024-05-25' );
- * 	Example 2:				var num_selected_days = wpbc_auto_select_dates_in_calendar( 1, ['2024-05-09','2024-05-19','2024-05-20'] );
+ * 	Example 1:				var num_selected_days = wpbc_auto_select_dates_in_calendar( 1, '2024-05-15',
+ *     '2024-05-25' ); Example 2:				var num_selected_days = wpbc_auto_select_dates_in_calendar( 1,
+ *     ['2024-05-09','2024-05-19','2024-05-20'] );
  */
 function wpbc_auto_select_dates_in_calendar( resource_id, check_in_ymd, check_out_ymd = '' ){								// FixIn: 10.0.0.47.
 

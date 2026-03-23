@@ -1,8 +1,13 @@
 /* ================================================================================================== */
-/* Booking Form Builder (BFB) – Page UI  == File: builder-form-page.css - Time point: 2025-08-21 17:39 */
+/* Booking Form Builder (BFB) – Page UI                                                               */
 /* Help: High-level page layout wrappers, container scaffolding, basic spacing                        */
 /* ================================================================================================== */
-
+/* --------------------------------------------------------------------------------------------------------------------- */
+/* == File  _out/builder-form-page.css == Time point:  2025-08-28 19:11  */
+/* --------------------------------------------------------------------------------------------------------------------- */
+:root {
+	--wpbc-bfb-accent-color: #327ab4;
+}
 /* Admin page margins in WP */
 body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
 	margin: 2px 40px;
@@ -19,7 +24,8 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 }
 
 /* Pages panel takes remaining width */
-.wpbc_bfb__pages_panel {
+.wpbc_bfb__pages_panel,
+.wpbc_bfb__theme_scope {
 	flex: 1 1 100%;
 }
 
@@ -29,7 +35,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 	flex-flow: column nowrap;
 	align-items: stretch;
 	justify-content: flex-start;
-	gap: 60px;
+	gap: 30px;
 }
 
 /* ================================================================================================== */
@@ -39,7 +45,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 
 .wpbc_bfb__pages_panel .wpbc_bfb__panel {
 	border: 0;
-	padding: 20px;
+	padding: 0 20px;
 	background: repeating-linear-gradient(-45deg, #f3f4f5 0 7px, #fff 7px 9px);
 	/* box-shadow set by admin theme; no extra shadow here */
 	margin: 0;
@@ -49,7 +55,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 }
 
 /* Page header chip (right top) */
-.wpbc_bfb__panel--preview h3 {
+.wpbc_bfb__panel--preview h3.wpbc_bfb__page_number {
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: space-between;
@@ -69,7 +75,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 	cursor: pointer;
 }
 /* Section container within a page (holds sections/columns) */
-.wpbc_bfb__form_preview_section_container {
+.wpbc_bfb__form_preview_section_container:empty {
 	min-height: 100px;
 }
 .wpbc_bfb__form_preview_section_container:empty {
@@ -83,7 +89,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 	text-align: center;
 	content: "\f132";
 	font-size: 32px;
-	color: #7f8ab7;
+	color: var( --wpbc-bfb-accent-color, #327ab4 );
 	font-family: dashicons;
 	margin: auto;
 }
@@ -92,7 +98,16 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 #wpbc_bfb__add_columns_template[hidden] {
 	display: none;
 }
-
+/* ================================================================================================== */
+/* Define - minimum height - for empty  Page / Section / Column                                       */
+/* ================================================================================================== */
+/* This style will only apply to the parent container where all child containers are empty. */
+.wpbc_bfb__row:not(:has(.wpbc_bfb__column:not(:empty)))
+/* .wpbc_bfb__form_preview_section_container:not(:has(div.wpbc_bfb__field,div.wpbc_bfb__section)), */
+/*.wpbc_bfb__column:not(:has(div.wpbc_bfb__field,div.wpbc_bfb__section))*/
+{
+	min-height: 150px;
+}
 /* ================================================================================================== */
 /* Palette                                                                                            */
 /* Help: Left palette column & list of field types                                                    */
@@ -101,7 +116,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 .wpbc_bfb__panel--library {
 	flex: 0 1 25%;
 	box-sizing: border-box;
-	padding: 5px 20px;
+	padding: 0;
 }
 
 .wpbc_bfb__panel--library .wpbc_bfb__panel_field_types__ul {
@@ -110,6 +125,10 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 	justify-content: stretch;
 	align-items: stretch;
 	gap: 15px;
+
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: stretch;
 }
 
 .wpbc_bfb__panel--library .wpbc_bfb__field,
@@ -129,7 +148,7 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 
 .wpbc_bfb__controls {
 	padding: 0;
-	margin: 0 0 30px;
+	margin: 25px 0;
 	border-radius: 2px;
 	border: 0;
 	display: flex;
@@ -139,7 +158,6 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 	gap: 1em;
 	width: 100%;
 	min-height: 35px;
-	z-index: 10000;
 	position: relative;
 }
 
@@ -175,13 +193,13 @@ body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page 
 	--wpbc-col-gap: calc(1.5% - 1px);
 }
 div.wpbc_bfb__row,
-div.wpbc_container_booking_form .wpbc__row {
+div.wpbc_bfb_form .wpbc__row {
 	gap: var(--wpbc-col-gap);
+	padding: 10px 0; /* Required for ability to mouse over - dragable overlay,  when section  resized. */
 }
 
 .wpbc_bfb__column {
 	position: relative;
-	min-height: 80px;
 	border: 0;
 	padding: 0;
 	flex: 1 1 100%;
@@ -190,6 +208,10 @@ div.wpbc_container_booking_form .wpbc__row {
 	box-sizing: border-box;
 	gap: 20px;
 }
+.wpbc_bfb__column:empty{
+	min-height: 80px;
+	overflow: hidden;
+}
 /* Prevent flex from squeezing below the per-column min width */
 .wpbc_bfb__column,
 .wpbc_bfb__row > .wpbc_bfb__column {
@@ -197,7 +219,7 @@ div.wpbc_container_booking_form .wpbc__row {
 	min-width: var(--wpbc-col-min, 0);
 }
 /* Override client.css similar  styles for columns. */
-.wpbc_container_booking_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
+.wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
 	align-self: stretch;
 	align-self: flex-start;
 
@@ -226,8 +248,8 @@ div.wpbc_container_booking_form .wpbc__row {
 }
 /* // ---------- Anti-jitter tuning. It's set stretch,  so it's not jumping ---------- */
 .wpbc_bfb__column:empty,
-html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column,
-.wpbc_container_booking_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column:empty {
+html.wpbc_bfb__dnd-active .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column,
+.wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column:empty {
 	align-self: stretch;
 }
 .wpbc_bfb__column:empty::before {
@@ -235,7 +257,7 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	padding: 0;
 	content: "\f132";
 	font-size: 32px;
-	color: #7f8ab7;
+	color: var( --wpbc-bfb-accent-color, #327ab4 );
 	font-family: dashicons;
 	margin: auto;
 	/* // ---------- Anti-jitter tuning. height: 100%; - prevents jumping ---------- */
@@ -245,12 +267,13 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	justify-content: center;
 	flex: 1 1 100%;
 	height: 100%;
+	overflow: hidden;
 }
 /* Stable landing pad so Sortable placeholder doesn’t collapse */
 .wpbc_bfb__column:empty::after {
 	content: "";
 	display: block;
-	min-height: 36px;
+	/*min-height: 36px;*/
 }
 
 /* ================================================================================================== */
@@ -293,6 +316,8 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	left: -2px;
 	transform: translate(0, 0);
 	background: #003a854f;
+	background: #a3aad2;
+	background: var(--wpbc-bfb-accent-color, #327ab4);
 	padding: 0;
 	border-radius: 4px;
 	white-space: nowrap;
@@ -310,7 +335,7 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	pointer-events: none;
 	content: "";
 	font-size: 34px;
-	color: #7f8ab7;
+	color: var( --wpbc-bfb-accent-color, #327ab4 );
 	font-family: dashicons;
 	border: 0;
 	transform: translate(-17px, -25px);
@@ -339,7 +364,7 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	display: flex;
 	justify-content: flex-start;
 	gap: 10px;
-	align-items: center;
+	align-items: flex-start;
 	flex-flow: row wrap;
 	background: #fff;
 	border: 1px solid #ccc;
@@ -348,20 +373,22 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 
 /* Normalize padding/margins for raw container vs preview-rendered */
 .wpbc_bfb__field,
-.wpbc_bfb__panel--preview.wpbc_container_booking_form .wpbc__field:not(.wpbc_bfb__preview-rendered) {
+.wpbc_bfb__panel--preview.wpbc_bfb_form .wpbc__field:not(.wpbc_bfb__preview-rendered) {
 	padding: 0;
 	margin: 0;
 }
-.wpbc_bfb__panel--preview.wpbc_container_booking_form .wpbc_bfb__field:not(.wpbc_bfb__preview-rendered) {
+.wpbc_bfb__panel--preview.wpbc_bfb_form .wpbc_bfb__field:not(.wpbc_bfb__preview-rendered) {
 	margin: 10px 0;
 }
-/* Normalize padding/margins to  respect front-end side client.css file */
-.wpbc_bfb__panel--preview.wpbc_container_booking_form .wpbc_bfb__column .wpbc_bfb__field.wpbc_bfb__preview-rendered {
-	margin: 0.7em 0;
+/* Normalize padding/margins to  respect front-end side client.css file, e.g.: .wpbc_bfb_form .wpbc__field:not(.wpbc__cal)  */
+.wpbc_bfb__panel--preview.wpbc_bfb_form .wpbc_bfb__column .wpbc_bfb__field.wpbc_bfb__preview-rendered {
+	/*margin: 0.7em 0;*/
 }
 .wpbc_bfb__field:not(.wpbc_bfb__preview-rendered) {
 	padding: 10px;
 	flex: 1 1 100%;
+
+	flex: 1 1 30%;
 }
 /* Preview mode: field expands and loses card visuals. */
 .wpbc_bfb__field.wpbc_bfb__preview-rendered,
@@ -373,7 +400,7 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	align-items: flex-start;
 	align-content: normal;
 	padding: 0;
-	margin: 0.7em 0;
+	margin: 0;
 	gap: 10px;
 }
 .wpbc_bfb__field.wpbc_bfb__preview-rendered > *,
@@ -389,7 +416,8 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 
 /* Label + type chips used by fallback preview. */
 .wpbc_bfb__field .wpbc_bfb__field-label {
-	font-weight: bold;
+	font-weight: 700;
+	flex: 1 1 50%;
 }
 .wpbc_bfb__field .wpbc_bfb__field-type {
 	font-size: 0.9em;
@@ -397,6 +425,8 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	flex: 1 1 auto;
 	text-shadow: none;
 	text-align: right;
+
+
 }
 
 /* Simple neutral preview controls (fallback renderers). */
@@ -433,7 +463,7 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	opacity: 1 !important;
 }
 .wpbc_bfb__highlight {
-	border: #9af 2px dashed !important;
+	border: var( --wpbc-bfb-accent-color, #327ab4 ) 2px dashed !important;
 }
 
 /* Keep sizes stable so lists don’t jump */
@@ -441,6 +471,7 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 	opacity: .9 !important;
 	min-height: 20px;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 /* Sortable placeholders (cross-browser stability) */
@@ -463,34 +494,34 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 /* Help: Make embedded client form respect builder widths & max-widths                                */
 /* ================================================================================================== */
 
-.wpbc_container_booking_form {
+.wpbc_bfb_form {
 	width: 100%;
 	margin-top: 0;
 	box-sizing: border-box;
 	max-width: 100%;
 	margin: 0;
 }
-.wpbc_bfb__panel--preview .wpbc_container_booking_form {
+.wpbc_bfb__panel--preview .wpbc_bfb_form {
 	width: 100%;
 	padding: 10px;
 	box-sizing: border-box;
 }
 
 /* Ensure inputs inside sections don’t overflow columns */
-.wpbc_container_booking_form .wpbc_bfb__section select,
-.wpbc_container_booking_form .wpbc_bfb__section input[type="text"],
-.wpbc_container_booking_form .wpbc_bfb__section input[type="email"],
-.wpbc_container_booking_form .wpbc_bfb__section textarea {
+.wpbc_bfb_form .wpbc_bfb__section select,
+.wpbc_bfb_form .wpbc_bfb__section input[type="text"],
+.wpbc_bfb_form .wpbc_bfb__section input[type="email"],
+.wpbc_bfb_form .wpbc_bfb__section textarea {
 	max-width: Min(30em, 100%);
 	width: 100%;
 	min-width: 100%;
 }
 
 /* WP core UI overrides when form is nested inside admin */
-.wp-core-ui .wpbc_bfb__panel--preview .wpbc_form.wpbc_container_booking_form select,
-.wp-core-ui .wpbc_bfb__panel--preview .wpbc_form.wpbc_container_booking_form input[type="text"],
-.wp-core-ui .wpbc_bfb__panel--preview .wpbc_form.wpbc_container_booking_form input[type="email"],
-.wp-core-ui .wpbc_bfb__panel--preview .wpbc_form.wpbc_container_booking_form textarea {
+.wp-core-ui .wpbc_bfb__panel--preview .wpbc_bfb_form select,
+.wp-core-ui .wpbc_bfb__panel--preview .wpbc_bfb_form input[type="text"],
+.wp-core-ui .wpbc_bfb__panel--preview .wpbc_bfb_form input[type="email"],
+.wp-core-ui .wpbc_bfb__panel--preview .wpbc_bfb_form textarea {
 	max-width: Min(30em, 100%);
 	width: auto;
 	min-width: auto;
@@ -530,7 +561,11 @@ html.wpbc_bfb__dnd-active .wpbc_container_booking_form .wpbc_bfb__section .wpbc_
 html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__field:hover .wpbc_bfb__overlay-controls {
 	display: flex;
 }
-
+/* Section overlay toolbar  background */
+.wpbc_bfb__section > .wpbc_bfb__overlay-controls {
+	background: repeating-linear-gradient(-45deg, #ebebff 4px 5px, #fff 6px 7px);
+	background: repeating-linear-gradient(-45deg, #dde7fb 2px 2px,#fff 3px 5px);
+}
 /* Show toolbar on hover (sections) – right side */
 .wpbc_bfb__section:hover > .wpbc_bfb__overlay-controls {
 	display: flex;
@@ -542,7 +577,7 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__field:hover .wpbc_bfb__overlay-contro
 	left: 50%;
 	transform: translate( -50% ,calc( -100% + 5px ));
 	opacity: 0.95;
-	border: 1px solid #7f8ab7;
+	border: 1px solid var( --wpbc-bfb-accent-color, #327ab4 );
 }
 
 /* Buttons inside the overlay */
@@ -636,8 +671,8 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__field:hover .wpbc_bfb__overlay-contro
 	flex: 1 1 100%;
 }
 .wpbc_bfb__layout_chip-vis span {
-	background: #223f66;
-	opacity: .6;
+	background: #718299;
+	opacity: 1;
 	border-radius: 2px;
 	align-self: stretch;
 }
@@ -649,15 +684,45 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__field:hover .wpbc_bfb__overlay-contro
 /* Selection State                                                                                    */
 /* Help: When a field is selected in the builder                                                      */
 /* ================================================================================================== */
-
-html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview [data-uid].is-selected,
-html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview .wpbc_bfb__field.is-selected,
-html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview .wpbc_bfb__section.is-selected{
-	outline: 2px dashed #94a2b5;
+/*html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview [data-uid].is-selected,*/
+html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview .wpbc_bfb__field.is-selected
+/*html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview .wpbc_bfb__section.is-selected*/
+{
+	outline: 2px dashed var( --wpbc-bfb-accent-color, #327ab4 );
 	outline-offset: 3px;
 	border-radius: 1px;
 }
-
+/* Selection with highlighted border of elements ! */
+html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__section.is-selected .wpbc_bfb__column {
+	background-color: rgba(32, 77, 255, 0.04);
+	background: repeating-linear-gradient(-45deg,#3c7ffe0f 1px 2px,#fff 3px 4px);
+	background: repeating-linear-gradient(-45deg,#3c5afe0f 1px 2px,#fff 3px 4px);
+	background: repeating-linear-gradient(-45deg,#a0b2c129 1px 2px,#fff 3px 4px);
+	background: repeating-linear-gradient(-45deg,#3d62a812 1px 2px,#fff 3px 4px);
+}
+/* Selection  of the Columns: */
+html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__section.is-selected .wpbc_bfb__column.is-selected-column {
+	background: repeating-linear-gradient(-45deg,#3874e921 1px 2px,#fff 3px 5px);
+}
+	/* Mini preview (template “ghost” columns) */
+	.wpbc_bfb__section[data-selected-col] .wpbc_bfb__section__cols > .wpbc_bfb__section__col.is-selected-column {
+		outline: 2px solid var(--wpbc-bfb-accent-color,#327ab4);
+		outline-offset: -2px;
+	}
+	/* Real columns on the canvas */
+	.wpbc_bfb_form .wpbc_bfb__section[data-selected-col] > .wpbc_bfb__row > .wpbc_bfb__column.is-selected-column {
+		outline: 2px solid var(--wpbc-bfb-accent-color,#327ab4);
+		outline-offset: -2px;
+		padding: 1px;
+	}
+/* Field Selection */
+html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__section.is-selected .wpbc_bfb__column > .wpbc_bfb__field {
+	/*border: 1px solid #292ce66e;*/
+	border: 1px solid #327ab4;
+	/*outline: 2px dashed #327ab4;*/
+	border-radius: 0;
+	/*outline-offset: 3px;*/
+}
 
 /* ================================================================================================== */
 /* Drag  and Drop Fields                                                                              */
@@ -703,16 +768,17 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__panel--preview .wpbc_bfb__section.is-
 	height: auto !important;
 }
 
-/* Only when dragging from the Palette */
+/* Only when dragging from the Palette. - Under cursor, dragging element from palette. */
 html.wpbc_bfb__dnd-active .wpbc_bfb__drag-active {
 	max-width: max-content;
 	min-width: min-content !important;
+	width: 200px !important;
 }
 html.wpbc_bfb__drag-from-palette [data-drag-role="palette"],
 html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	/* Example: smaller, badge-like; tweak */
 	border: 1px dashed rgba(0, 0, 0, .25);
-	background: var(--wp-admin-theme-color, #f7f7f7);
+	background: #f7f7f7;
 	border-radius: 8px;
 	padding: 6px 10px;
 	max-width: 320px;          /* Optional: fixed dimensions for consistency */
@@ -734,21 +800,36 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 .wpbc_bfb__inspector {
 }
 .wpbc_bfb__inspector__head {
-	flex-flow: row wrap;
+	margin: 0;
+	padding-bottom: 10px;
+	/*border-bottom: 1px solid #c0c0c0;*/
+	/*box-shadow: -2px 1px 1px #0000000a;*/
+}
+.wpbc_bfb__inspector__head .header_container {
+	padding: 0 5px 0 10px;
 	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
 	align-items: flex-start;
-	justify-content: space-between;
-	margin-bottom: 8px;
 	gap: 10px;
 }
+.wpbc_bfb__inspector__head .header_container .header_title_content {
+}
 .wpbc_bfb__inspector__head .title {
-	font-weight: 600;
+	margin: 0;
+	line-height: 1.74;
+	font-weight: 700;
 	font-size: 14px;
+	color: #626870;
+	color: #23274a;
+	text-transform: uppercase;
+	letter-spacing: 0.2px;
 }
 .wpbc_bfb__inspector__head .desc {
 	color: #667085;
 	font-size: 12px;
-	margin-top: 2px;
+	margin: 5px 0 0;
+	line-height: 1.75;
 }
 
 /* Actions toolbar in Inspector Properties. */
@@ -766,7 +847,7 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 }
 /* Ovveride buttons view in inspector. */
 .wpbc_bfb__inspector__head .ui_element:has( .button-link-delete ) {
-	margin-left:auto;
+	align-self: flex-end;
 }
 .wpbc_bfb__inspector__head .button[aria-label] i {
 	pointer-events: none;
@@ -775,34 +856,27 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 .wpbc_bfb__inspector__body {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 0;
 }
 .wpbc_bfb__inspector__group {
 	overflow: auto;
 }
-.wpbc_bfb__inspector__group .group__header {
-	width: 100%;
-	text-align: left;
-	background: #d2d7de;
-	padding: 8px 10px;
-	border: 0;
-	font-weight: 600;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	cursor: pointer;
-	border-radius: 4px;
+/* Different elements in inspector */
+.wpbc_bfb__inspector h2{
+	padding: 0 10px;
+	margin: 0;
+	color: var(--wpbc_ui_horis_top_nav__a_color);
+	font-size: 15px;
+	/*font-weight: 700;*/
+	/*line-height: 2.1;*/
+	/*text-transform: uppercase;*/
 }
-.wpbc_bfb__inspector__group .group__fields {
-	display: none;
-	padding: 8px;
+.wpbc_bfb__inspector .inspector__row h2{
+	padding:0;
 }
-.wpbc_bfb__inspector__group.is-open .group__fields {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: flex-start;
-	align-items: flex-start;
-	gap: 10px;
+/* Tabs selector */
+.wpbc_bfb__inspector .wpbc_ui_el__horis_top_bar__wrapper {
+	/*margin: 0;*/
 }
 
 .inspector__row {
@@ -811,26 +885,169 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	justify-content: flex-start;
 	align-items: flex-start;
 	gap: 10px;
+	flex: 1 1 100%;
+	width: 100%;
 }
-.inspector__label {
-	font-size: 12px;
-	color: #374151;
+.inspector__row *{
+	font-size: 14px;
+}
+.inspector__row.row__bordered {
+	border: 1px solid #ccc;
+	padding: 10px;
+	border-radius: 5px;
+	box-sizing: border-box;
+}
+.inspector__label,
+.inspector__control {
+	flex: 1 1 100%;
+	line-height: 2.5;
 }
 .inspector__label .req {
 	color: #cc0000;
 }
+.inspector__control input:not([type="submit"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+.inspector__control select,
+.inspector__control textarea,
 .inspector__input,
 .inspector__textarea,
 .inspector__select {
+	line-height: 2.4;
 	width: 100%;
 }
-
-.wpbc_bfb__inspector__empty {
-	color: #98a2b3;
-	font-size: 13px;
-	padding: 6px;
+.inspector__input--readonly {
+  background: #f6f7f7;
+  color: #6c7781;
+  cursor: not-allowed;
 }
+.wpbc_bfb__inspector__empty {
+	color: #a67345;
+	font-size: 17px;
+	padding: 6px;
+	display: flex;
+	flex-flow: column;
+	justify-content: center;
+	align-items: center;
+	align-self: stretch;
+	min-height: 50px;
+	font-weight: 600;
+}
+/* Sizes*/
+.inspector__row .inspector__w_10 { flex-basis: 10%; }
+.inspector__row .inspector__w_20 { flex-basis: 20%; }
+.inspector__row .inspector__w_30 { flex-basis: 30%; }
+.inspector__row .inspector__w_40 { flex-basis: 40%; }
+.inspector__row .inspector__w_50 { flex-basis: 50%; }
+.inspector__row .inspector__w_60 { flex-basis: 60%; }
+.inspector__row .inspector__w_70 { flex-basis: 70%; }
+.inspector__row .inspector__w_80 { flex-basis: 80%; }
+.inspector__row .inspector__w_90 { flex-basis: 90%; }
+.inspector__row .inspector__w_100 { flex-basis: 100%; }
+.inspector__row .inspector__w_05 { flex-basis: 5%; }
+.inspector__row .inspector__w_15 { flex-basis: 15%; }
+.inspector__row .inspector__w_25 { flex-basis: 25%; }
+.inspector__row .inspector__w_35 { flex-basis: 35%; }
+.inspector__row .inspector__w_45 { flex-basis: 45%; }
+.inspector__row .inspector__w_55 { flex-basis: 55%; }
+.inspector__row .inspector__w_65 { flex-basis: 65%; }
+.inspector__row .inspector__w_75 { flex-basis: 75%; }
+.inspector__row .inspector__w_85 { flex-basis: 85%; }
+.inspector__row .inspector__w_95 { flex-basis: 95%; }
 
+.inspector__row .wpbc_inline_inputs {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 5px;
+	width:100%;
+}
+.inspector__row .wpbc_inline_inputs,
+.inspector__row label{
+	margin:5px 0;
+}
+.inspector__row .inspector__control__generator_times .wpbc_inline_inputs,
+.inspector__row .inspector__control__generator_timeslots .wpbc_inline_inputs,
+.inspector__row .inspector__control__generator_times label,
+.inspector__row .inspector__control__generator_timeslots label {
+	margin:0;
+}
+.wpbc_len_group {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 10px;
+}
+.wpbc_len_group.wpbc_inline_inputs {
+	align-items: center;
+	gap: 15px;
+}
+/* ================================================================================================== */
+/* Time Slots (rangetime) Genertor */
+/* ================================================================================================== */
+.inspector__group__fields__times .inspector__control__generator_times,
+.inspector__group__fields__times .inspector__control__generator_timeslots {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
+	justify-content: flex-start;
+	gap:10px;
+	padding: 5px 15px;
+	background-color: #f8f8f9;
+	border-radius: 5px;
+}
+.inspector__group__fields__times .wpbc_bfb__options_list {
+	flex: 1 1 100%;
+}
+.inspector__group__fields__times .wpbc_bfb__opt-label {
+	flex: 1 1 auto;
+}
+.inspector__group__fields__times .wpbc_bfb__opt-time {
+  flex: 0 1 180px;
+  max-width: 120px;
+}
+.inspector__group__fields__times .wpbc_bfb__opt-start,
+.inspector__group__fields__times .wpbc_bfb__opt-end{
+	flex: 0 1 95px;
+  	min-width: 95px;
+}
+.inspector__group__fields__times .wpbc_bfb__options_list__header {
+	flex: 1 1 100%;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+
+	background-color: #f8f8f9;
+	border-radius: 4px;
+	height: 36px;
+}
+.inspector__group__fields__times .wpbc_bfb__options_list__header * {
+	font-size: 13px;
+	font-weight: 600;
+	text-align: center;
+}
+.wpbc_bfb__options_list__header .wpbc_bfb__header_col__drag-handle{
+	flex: 0 1 16px;
+}
+.wpbc_bfb__options_list__header .wpbc_bfb__header_col__label{
+	flex: 1 1 auto;
+}
+.wpbc_bfb__options_list__header .wpbc_bfb__header_col__value{
+	flex: 0 1 120px;
+}
+.wpbc_bfb__options_list__header .wpbc_bfb__header_col__action{
+	flex: 0 1 50px;
+}
+.inspector__group__fields__times  .wpbc_bfb__options_toolbar{
+	flex: 1;
+}
+.inspector__row small.desc {
+	font-size: 12px;
+	text-align: center;
+	width: 100%;
+}
 /* ================================================================================================== */
 /* Brief outline pulse when jumping to selection                                                      */
 @keyframes wpbc-bfb-pulse {
@@ -841,8 +1058,748 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 		box-shadow: 0 0 0 8px rgba(34, 63, 102, 0);
 	}
 }
+.wpbc_bfb__scroll-pulse,
 .wpbc_bfb__panel--preview [data-uid].wpbc_bfb__scroll-pulse {
 	animation: wpbc-bfb-pulse 0.7s ease-out 1;
-	outline: 2px dashed #94a2b5;
+	outline: 2px dashed var( --wpbc-bfb-accent-color, #327ab4 );
 	outline-offset: 3px;
+}
+/* ================================================================================================== */
+/* Highlight Generator button,  or other elements                                                     */
+.wpbc_bfb__highlight-pulse {
+	--wpbc-bfb-pulse-color: #2d7bf0; /* tweak if needed */
+	--wpbc-bfb-pulse-outline-w: 3px;
+	--wpbc-bfb-pulse-offset: 10px;
+	--wpbc-bfb-pulse-shadow-w: 6px;
+}
+@keyframes wpbc-bfb-highlight-pulse {
+	0% {
+		box-shadow: 0 0 0 var(--wpbc-bfb-pulse-shadow-w) rgba(45, 123, 240, .35);
+		/*outline: var(--wpbc-bfb-pulse-outline-w) dashed var(--wpbc-bfb-pulse-color);*/
+		outline-offset: var(--wpbc-bfb-pulse-offset);
+	}
+	60% {
+		box-shadow: 0 0 0 2px var(--wpbc-bfb-pulse-color);
+		outline-offset: calc(var(--wpbc-bfb-pulse-offset) + 2px);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(45, 123, 240, 0);
+		outline: 0;
+	}
+}
+@keyframes wpbc-bfb-ping {
+	0% {
+		opacity: .65;
+		transform: scale(.98)
+	}
+	100% {
+		opacity: 0;
+		transform: scale(1.08)
+	}
+}
+.wpbc_bfb__highlight-pulse {
+	position: relative;
+	animation: .48s ease-out both wpbc-bfb-highlight-pulse
+}
+.wpbc_bfb__highlight-pulse::after {
+	content: "";
+	position: absolute;
+	inset: -7px;
+	border: 2px dotted var(--wpbc-bfb-pulse-color);
+	border-radius: 7px;
+	pointer-events: none;
+	opacity: 0;
+	animation: .48s ease-out both wpbc-bfb-ping
+}
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_bfb__highlight-pulse {
+		animation: none;
+		outline: 3px solid var(--wpbc-bfb-pulse-color);
+		outline-offset: 8px
+	}
+	.wpbc_bfb__highlight-pulse::after {
+		animation: none;
+		opacity: .5
+	}
+}
+@keyframes wpbc-bfb-highlight-once {
+	0% {
+		box-shadow: 0 0 0 5px rgba(45, 123, 240, .35);
+		/*     outline: 2px dashed var(--wpbc-bfb-pulse-color); */
+		outline-offset: 8px
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(45, 123, 240, 0);
+		outline: 0
+	}
+}
+.wpbc_bfb__scroll-pulse {
+	animation: .45s ease-out wpbc-bfb-highlight-once
+}
+
+/* ================================================================================================== */
+/* Hide colapse to  compact  mode button  in Right sidebar.                                           */
+.wpbc_admin_page__tab__builder_booking_form .wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns {
+	display: none;
+}
+/* ================================================================================================== */
+/*  Position of News Purchase message in Free version and Top  right wizard button  on  BFB page !    */
+/* ================================================================================================== */
+.wpbc_admin_page__tab__builder_booking_form .wpbc_ui_el__top_nav .wpbc_message_wrapper .wpbc_header_news {
+	position: absolute;
+	top: calc(var(--wpbc_ui_top_nav__height) + 10px);
+	left: 50%;
+	margin-left: -25%;
+}
+.wpbc_admin_page__tab__builder_booking_form .wpbc_page_top__wizard_button {
+	top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + var(--wpbc_ui_top_nav__height) + 10px) !important;
+}
+/* ================================================================================================== */
+/*  Pallete Refactoding */
+/* ================================================================================================== */
+.wpbc_admin_page__tab__builder_booking_form [hidden] {
+	display: none !important;
+}
+/* hide inspector rows via [hidden] cleanly */
+.wpbc_bfb__inspector .inspector__row[hidden] {
+	display: none !important;
+}
+/* Hide the entire "Layout" row when the selected section has 1 column */
+.wpbc_bfb__inspector[data-bfb-section-cols="1"] .inspector__row--layout-chips {
+	display: none !important;
+}
+/* If the row was created without the row marker class, hide the host as a fallback */
+.wpbc_bfb__inspector[data-bfb-section-cols="1"] [data-bfb-slot="layout_chips"] {
+	display: none !important;
+}
+/* Palette item is at limit */
+.wpbc_bfb__palette .is-disabled {
+	opacity: .5;
+	pointer-events: none; /* if you want to block drag */
+}
+
+/* Pallete input elements */
+.wpbc_admin input[type=date]::placeholder,
+.wpbc_admin input[type=datetime]::placeholder,
+.wpbc_admin input[type=datetime-local]::placeholder,
+.wpbc_admin input[type=email]::placeholder,
+.wpbc_admin input[type=month]::placeholder,
+.wpbc_admin input[type=number]::placeholder,
+.wpbc_admin input[type=password]::placeholder,
+.wpbc_admin input[type=range]::placeholder,
+.wpbc_admin input[type=search]::placeholder,
+.wpbc_admin input[type=tel]::placeholder,
+.wpbc_admin input[type=text]::placeholder,
+.wpbc_admin input[type=time]::placeholder,
+.wpbc_admin input[type=url]::placeholder,
+.wpbc_admin input[type=week]::placeholder,
+.wpbc_admin select::placeholder,
+.wpbc_admin textarea::placeholder {
+	color: var(--wpbc_form-field-text-color);
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* -- Inspector -- Dropdown list ------------------------------------------------------------------------------------ */
+/* Ooptions DnD Row in Pallete */
+.wpbc_bfb__options_list {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 15px;
+	flex: 1 1 auto;
+}
+.wpbc_bfb__options_row {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+}
+.wpbc_bfb__drag-handle {
+	flex: 0 1 16px;
+}
+.wpbc_bfb__opt-label,
+.wpbc_bfb__opt-value {
+	flex: 1 1 4em;
+	min-width: 4em;
+}
+.wpbc_bfb__opt-selected {
+	flex: 0 1 auto;
+}
+/* Set  Check Icon  color*/
+.wpbc_bfb__opt-selected .wpbc_ui__toggle label {
+	color: #2271b1;
+}
+/* Set  Default lables invisible */
+.wpbc_bfb__opt-selected .wpbc_ui__toggle .wpbc_ui__toggle_label {
+	display:none;
+}
+.wp-core-ui .wpbc_bfb__options_row .button,
+.wp-core-ui .wpbc_bfb__options_row .button:hover,
+.wp-core-ui .wpbc_bfb__options_row .button:focus {
+	border-color: transparent;
+	background: transparent;
+	flex: 0 0 auto;
+	padding: 2px;
+}
+.wpbc_bfb__options_toolbar {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	margin: 25px 0 0;
+}
+
+/* Elementor-like "choose" chips. */
+/* Accessibly hide the native radios but keep them focusable and screen-reader visible */
+.wpbc_sr_only {
+	position: absolute !important;
+	clip: rect(1px, 1px, 1px, 1px);
+	padding: 0 !important;
+	border: 0 !important;
+	height: 1px !important;
+	width: 1px !important;
+	overflow: hidden;
+	white-space: nowrap;
+}
+/* Chip group */
+.wpbc_bfb__choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
+}
+/* Chip label */
+.wpbc_bfb__chip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 24px;
+	min-height: 24px;
+	padding: 5px 5px;
+	border-radius: 4px;
+	border: 0px solid #dcdcde;
+	background: #fff;
+	cursor: pointer;
+	line-height: 1;
+	user-select: none;
+}
+/* Focus ring when the hidden radio is focused */
+.wpbc_sr_only:focus + .wpbc_bfb__chip {
+	outline: 1px solid #2271b1;
+	outline-offset: 0px;
+}
+/* Selected state (via sibling selector) */
+.wpbc_sr_only:checked + .wpbc_bfb__chip {
+	border-color: #2271b1;
+	box-shadow: inset 0 0 0 1px #2271b1;
+}
+/* Screen-reader only helper */
+.wpbc_bfb__chip .sr-only {
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	white-space: nowrap;
+}
+
+/* Base state: define transition + starting transform */
+.wpbc_bfb__chip i {
+	display: inline-block;              /* ensure it can transform */
+	transform-origin: 50% 50%;
+	transform: rotate(0deg);
+	transition: transform .4s ease-in-out;
+}
+
+/* When you add the class to the chip, rotate the icon */
+.wpbc_bfb__chip.wpbc_do_rotate_90 i {
+	transform: rotate(90deg);
+}
+/* Rotation  Exception */
+.wpbc_bfb__chip.wpbc_do_rotate_90 i.wpbc-bi-align-top,
+.wpbc_bfb__chip.wpbc_do_rotate_90 i.wpbc-bi-align-bottom {
+	transform: rotate(270deg);
+}
+
+/* == Stauses: Live: Builder (auto-sync ON)  |   Live: Advanced (manual) ============================================ */
+/* Base */
+.wpbc_bfb__live_status {
+	display: none;
+	font-size: 10px;
+	font-weight: 400;
+	margin-inline-start: 1em;
+	align-items: center;
+}
+.wpbc_bfb__live_status__builder { color: #619d40; }
+.wpbc_bfb__live_status__advanced { color: #b97131; }
+/* == Top Toolbar - Form  Name|Title.  ============================================================================== */
+.wpbc_bfb__hint__form_name {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 8px;
+}
+.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__label {
+	color: #999;
+	padding-top: .5em;
+	font-size: 9px;
+}
+.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__title {
+	font-size: 17px;
+	text-transform: capitalize;
+	color: #467b2f;
+	font-weight: 550;
+	line-height: 1.5;
+	max-width: 200px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+/* Display rules driven by attributes (put attributes on <html> or <body>) */
+html[data-wpbc-bfb-live-source="builder"]  .wpbc_bfb__live_status__builder  { display: flex; }
+html[data-wpbc-bfb-live-source="advanced"] .wpbc_bfb__live_status__advanced { display: flex; }
+
+/* == Modal Dialogs | For WP Templates ============================================================================== */
+/* Show correctly  modals Together with WP Media Modal window */
+html[data-wpbc-bfb-live-source="builder"] .wpdevelop .modal.wpbc_popup_modal,
+html[data-wpbc-bfb-live-source="advanced"] .wpdevelop .modal.wpbc_popup_modal {
+  z-index: 150000;
+}
+html[data-wpbc-bfb-live-source="builder"] .wp-admin .modal-backdrop,
+html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
+  z-index: 149900;
+}
+/* == Modal internal  =============================================================================================== */
+.wpbc_bfb_popup_modal__rows_container {
+	flex: 1 1 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 10px;
+}
+.wpbc_bfb_popup_modal__row {
+	flex: 0 1 auto;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 20px;
+}
+.wpbc_bfb_popup_modal__col {
+	flex: 1 1 20%;
+	display: flex;
+	flex-flow: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+.wpbc_modal_in_bfb input[type="text"],
+.wpbc_modal_in_bfb select,
+.wpbc_modal_in_bfb textarea {
+	flex: 0 1 auto;
+	width: 100%;
+	max-width: 100%;
+	font-size: 15px;
+	line-height: 2.5;
+}
+.wpbc_modal_in_bfb label {
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 2.1;
+}
+.wpbc_modal_in_bfb .help-block,
+.wpbc_modal_in_bfb label.help-block {
+	font-size: 13px;
+  	line-height: 1.8;
+	font-weight: 400;
+	margin: 5px 0;
+}
+/* Not checked yet:*/
+	.wpbc_modal_in_bfb .wpbc_modal__2_fields {
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: flex-start;
+		align-items: center;
+		width: 100%;;
+	}
+	.wpbc_modal_in_bfb .wpbc_modal__2_fields .wpbc_modal__2_fields_button {
+		flex: 0 1 1%;
+		align-self: stretch;
+		min-height: 35px;
+		margin-left: 10px;
+		display: flex;
+		align-items: center;
+		align-self: center;
+		font-weight: 600
+	}
+	.wpbc_modal_in_bfb .modal-footer .button {
+		margin: 0 5px
+	}
+	.wpbc_modal_in_bfb #wpbc_modal__send_payment_request__url {
+		font-size: 13px
+	}
+	.wpbc_modal_in_bfb #wpbc_modal__send_payment_request__value {
+		margin-top: 15px;
+		line-height: 2;
+		height: 70px;
+		font-size: 14px
+	}
+	.wpbc_modal_in_bfb .wpbc_modal__send_payment_request__cost {
+		font-size: 16px;
+		font-weight: 600;
+		padding: 0 10px
+	}
+
+/* == Modal | Open > Load Booking Form ============================================================================== */
+.wpbc_bfb_modal__add_new_form .modal-body.wpbc_bfb_popup_modal__rows_container{
+	/*max-height: 500px;*/
+	/*overflow: auto;*/
+}
+/* == Modal Dialog  -- 100%  Height -- ============================================================================== */
+/* -- For example it can be: Forms > Open -- */
+.wpbc_bfb_modal__full_screen .modal-dialog {
+	position: fixed;
+	width: auto;
+	margin: 0;
+	left: 30px;
+	right: 30px;
+	bottom: 30px;
+	top: 30px;
+}
+.wpbc_bfb_modal__full_screen .modal-dialog .modal-content {
+	overflow: auto;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	height: 100%;
+	max-height: 100%;
+	border-radius: 0;
+	/* Define Header and Footer height */
+	padding: 50px 0 60px;
+}
+.wpbc_bfb_modal__full_screen .modal-dialog .modal-content .modal-header,
+.wpbc_bfb_modal__full_screen .modal-dialog .modal-content .modal-footer {
+	flex: 0 0 auto;
+	position: fixed;
+	left: 2px;
+	right: 2px;
+	top: 0px;
+	height: 50px;
+	z-index: 1;
+	background: #fff;
+}
+.wpbc_bfb_modal__full_screen .modal-dialog .modal-content .modal-footer {
+	top: auto;
+	bottom: 0;
+	height: 60px;
+}
+.wpbc_bfb_modal__full_screen .modal-dialog .modal-content .modal-body {
+	flex: 1 1 100%;
+}
+/* Open / Load -- Existed Forms | Templates */
+.wpbc_bfb_popup_modal__container_forms_listing {
+	padding: 25px;
+	background: #fff;
+	border-radius: 10px;
+	margin: 15px 0;
+}
+.wpbc_bfb_modal__include_section_load .wpbc_bfb_popup_modal__rows_container {
+	padding-bottom:0;
+}
+.wpbc_bfb_modal__include_section_load .wpbc_bfb_popup_modal__col__search_key_label {
+	flex: 0 1 auto;
+	align-self: center;
+}
+.wpbc_bfb_modal__include_section_load .wpbc_bfb_popup_modal__col__search_key_label label {
+	margin:0;
+}
+.wpbc_bfb_modal__include_section_load .wpbc_bfb_popup_modal__col__search_key_input {
+	align-self: flex-start;
+}
+.wpbc_bfb_modal__include_section_load .wpbc_bfb_popup_modal__forms_loading_section {
+	border: 1px solid #ccd0d4;
+	background: #fefefe;
+	height: 400px;
+	max-height: 400px;
+	overflow: auto;
+	border-radius: 2px;
+	align-self: stretch;
+	flex: 1 1 100%;
+}
+.wpbc_bfb_modal__include_section_load .wpbc_bfb_popup_modal__forms_loading_spin_container {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: center;
+	margin:0 auto;
+	align-self: center;
+}
+.wpbc_bfb_popup_modal__forms_loading_section {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 15px;
+	padding: 10px;
+}
+.wpbc_bfb_popup_modal__forms_loading_section .wpbc_bfb__load_form_item{
+	flex: 0 1 190px;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 8px;
+	border: 1px solid #ccc;
+	cursor: pointer;
+	max-height: 225px;
+	min-height: 180px;
+	/*overflow: hidden;*/
+	position: relative;
+}
+.wpbc_bfb_popup_modal__forms_loading_section .wpbc_bfb__load_form_item.wpbc_bfb__load_form_item_selected {
+	background: #fcfdff;
+	border: 2px solid #5088b3;
+}
+/* Predefined keywords for templates */
+.wpbc_bfb_popup_modal__tpl_search_presets {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+}
+.wpbc_bfb_popup_modal__tpl_search_presets .wpbc_bfb_popup_modal__tpl_search_preset {
+	text-decoration: underline;
+	text-decoration-style: dashed;
+	text-underline-offset: 4px;
+	outline: 0;
+	padding: 2px 4px;
+}
+.wpbc_bfb_popup_modal__tpl_search_presets .wpbc_bfb_popup_modal__tpl_search_preset.is-active,
+.wpbc_bfb_popup_modal__tpl_search_presets .wpbc_bfb_popup_modal__tpl_search_preset[aria-pressed=true] {
+  font-weight: 600;
+  text-decoration-style: solid;
+}
+		.wpbc_bfb__load_form_item_thumb {
+			align-self: stretch;
+			flex: 0 1 auto;
+		}
+		.wpbc_bfb__load_form_item_thumb_blank_img {
+			display: inline-flex;
+			width: 90%;
+			height: 50px;
+			align-items: center;
+			justify-content: center;
+			border-radius: 2px;
+			border: 1px solid #ccd0d4;
+			background: #fff;
+			color: #444;
+			font-size: 11px;
+			margin: 0 5% auto;
+		}
+		.wpbc_bfb__load_form_item_thumb img {
+			width: 100%;
+			height: 50px;
+			object-fit: cover;
+			border-radius: 3px;
+			border: 0;
+			background: #fff
+		}
+		.wpbc_bfb__load_form_item_text {
+			flex: 1 1 auto;
+			min-width: 0;
+			gap: 4px;
+			display: flex;
+			flex-flow: row wrap;
+			align-items: flex-start;
+			justify-content: flex-start;
+			overflow: hidden;
+			align-content: flex-start;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_title {
+			font-weight: 600;
+			font-size: 14px;
+			line-height: 1.5;
+			flex: 0 1 100%;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_slug {
+			color: #50575e;
+			font-size: 11px;
+			font-weight: 550;
+			background: #eff2f4;
+			max-width: 170px;
+			padding: 0 8px 3px;
+			word-break: normal;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			line-height: 2;
+			flex: 0 1 100%;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_desc {
+			font-size: 11px;
+			line-height: 1.75;
+			flex: 1 1 1%;
+			align-self: stretch;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_desc {
+			display: flex;
+			align-items: flex-end;
+			gap: 8px;
+			line-height: 1.5;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_desc .form_item_text_desc__text {
+			min-width: 0;
+			flex: 1 1 1px;
+			max-width: calc(100% - 28px);
+			text-align: justify;
+			text-overflow: ellipsis;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_desc .button-link-delete {
+			flex: 0 0 auto;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 20px;
+			height: 20px;
+			color: #b32d2e;
+			text-decoration: none;
+			line-height: 1;
+			position: absolute;
+			bottom: 8px;
+			right: 6px;
+		}
+		.wpbc_bfb__load_form_item_text .form_item_text_desc .button-link-delete:hover {
+			color: #8f2424;
+		}
+/* == Spinner Loading text  ============================================================= */
+.wpbc_bfb__form_preview_section_container .wpbc_bfb_spins_loading_container span,
+.wpbc_bfb__preview_loader                 .wpbc_bfb_spins_loading_container span {
+	font-size: 20px;
+	font-weight: 600;
+	padding: 2px 0 0 2px;
+}
+/* == Form Details section | Right Widget  in Inspecrot ============================================================= */
+.wpbc_bfb__form_details_media__preview {
+	padding: 4px;
+	border: 1px solid #ccc;
+	height: 163px;
+	width: 163px;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	margin: 10px 0;
+	background: #fcfcfc;
+	border-radius: 2px;
+}
+.wpbc_bfb__form_details_media__img {
+	max-width: 100%;
+	height: auto;
+}
+.wpbc_bfb__form_details_media__preview .wpbc-bi-image-fill::before {
+	font-size: 50px;
+	color: #507593;
+}
+/* == Top Toolbar > Form Title, Slug and Tumb ======================================================================= */
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 20px;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__form_details_media__preview {
+	height: 40px;
+	width: 40px;
+	padding: 0px;
+	border-radius: 0;
+	margin: 0;
+	border: 0px solid #d5d5d5;
+	background: #fcfcfc;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__form_details_media__preview img {
+	max-width: 100%;
+	height: auto;
+	padding: 0;
+	border-radius: 4px;
+	display: none;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__form_details_media__preview .wpbc_bfb__form_details_media__placeholder {
+	display: block;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__form_details_media__preview .wpbc_bfb__form_details_media__placeholder::before {
+	font-size: 20px;
+	color: #54636f;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__title a {
+	font-size: 16px;
+	text-transform: capitalize;
+	color: #467b2f;
+	font-weight: 550;
+	line-height: 1.2;
+	max-width: 200px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	outline: 0;
+	margin: 0 2px;
+	text-align: center;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__title i {
+	font-size: 11px;
+	padding: 0px 0 0 5px;
+	line-height: 1.75;
+	color: #2271b1;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__label {
+	display: none;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: first baseline;
+	gap: 5px;
+	padding: 0;
+}
+.wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__slug {
+	font-size: 13px;
+	line-height: 1.5;
+	font-weight: 550;
+	color: #243f18;
+}
+/* -- Debug section  UI --------------------------------------------------------------------------------------------- */
+#wpbc_bfb__debug_mode_panels .wpbc_bfb__tab_section {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 30px;
+}
+#wpbc_bfb__debug_mode_panels .wpbc_bfb__tab_section .wpbc_bfb__debug_block {
+	flex: 1 1 25%;
+}
+#wpbc_bfb__debug_mode_panels .wpbc_bfb__tab_section .wpbc_bfb__debug_block:first-child {
+	flex: 1 1 50%;
+}
+#wpbc_bfb__debug_mode_panels .wpbc_bfb__debug_separate_button {
+	flex: 0 1 auto;
+	margin: 5px auto;
+}
+#wpbc_bfb__debug_mode_panels .wpbc_bfb__tab_section h4 {
+  margin: 0 0 10px 0;
+  font-size:13px;
+  color:#875;
+  font-weight: 600;
+}
+#wpbc_bfb__debug_mode_panels .wpbc_bfb__tab_section textarea {
+	width: 100%;
+	min-height: 350px;
+	font-family: monospace;
+	font-size: 12px;
 }

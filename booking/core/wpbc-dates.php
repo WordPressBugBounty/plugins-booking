@@ -668,6 +668,28 @@ function wpbc_is_date_in_past( $some_day ) {
 }
 
 
+/**
+ * Check  if the booking was made without calendar ( no booking date submited.)
+ *
+ * @param $is_no_date
+ * @param $date
+ *
+ * @return mixed|true
+ */
+function wpbc_maybe_no_booking_date( $is_no_date, $date_ymd ) {
+
+	if ( ( ! empty( $date_ymd ) ) && ( is_array( $date_ymd ) ) ) {
+		$date_ymd = $date_ymd[0];
+	}
+	// FixIn: 2981-01-13    13 Jan 2981.
+	if ( '2981-01-13' === gmdate( 'Y-m-d', mysql2date( 'U', $date_ymd ) ) ) {
+		$is_no_date = true;
+	}
+
+	return $is_no_date;
+}
+add_filter( 'wpbc_maybe_no_booking_date', 'wpbc_maybe_no_booking_date', 10, 2 );
+
 
 //TODO: refactor it,  by  replacig date_i18n to wp_loc_date... (check depndencies of this function in other usage functions...)
 /**
@@ -679,6 +701,11 @@ function wpbc_is_date_in_past( $some_day ) {
  * @return array( 'DATE in custom Format', 'TIME in custom Format' )
  */
 function wpbc_get_date_in_correct_format( $dt, $date_format = false, $time_format = false ) {
+
+	$is_no_date = apply_filters( 'wpbc_maybe_no_booking_date', false, $dt );
+	if ( $is_no_date ) {
+		return array( '---', '' );
+	}
 
     if ( $date_format === false )   $date_format = get_bk_option( 'booking_date_format');
     if ( empty( $date_format ) )    $date_format = "m / d / Y, D";

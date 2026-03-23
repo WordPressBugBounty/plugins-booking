@@ -66,6 +66,7 @@ class WPBC_API_Settings_Form_Options extends WPBC_Settings_API {
 									, 'label'       => __('Enable the new drag & drop booking form builder.' ,'booking')
 									, 'description' => __( 'Enables the new drag & drop form builder. Disable this option to use the classic booking form.', 'booking' )
 									, 'group'       => 'form'
+									, 'tr_class'    => 'wpbc_tr_class_booking_use_bfb_form'
 				);
 		}
 
@@ -457,7 +458,24 @@ class WPBC_Page_Settings_Form_Options extends WPBC_Page_Structure {
 					</span>
 			</div>
 		</div>
+		<script type="text/javascript">
+			jQuery( document ).ready( function () {
+				// wpbc_field_highlight( 'tr.wpbc_tr_class_booking_use_bfb_form' );
+				var object_name = 'tr.wpbc_tr_class_booking_use_bfb_form';
+				if ( jQuery( object_name ).length > 0 ) {
+					wpbc_animate_border(
+						jQuery( object_name )                           // Element
+						, 200                                           // Time in ms
+						, [ 'd63637', '', 'd63637', '', 'd63637', '', 'd63637', '', 'd63637', '', 'd63637', '', 'd63637', '' ]      // Colors Array
+						, 0
+					);
+				}
+			} );
+		</script>
 		<?php
+		if ( WPBC_Frontend_Settings::is_bfb_enabled( null ) ) {
+			wpbc_redirect( admin_url( "admin.php?page=wpbc-settings&tab=builder_booking_form" ) );
+		}
         do_action( 'wpbc_hook_settings_page_footer', 'form_options_settings' );
     }
 

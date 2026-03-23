@@ -241,14 +241,10 @@ function wpbc__calendar__load( $params = array() ) {
 		}
 	}
 
-
 	// ---------------------------------------------------------------------
-	// Legacy fallback: return inline <script>...</script>
-	// (works in rare contexts without wp_footer / without assets manager).
+	// Legacy fallback: return inline <script>...</script>   (Works in rare contexts without wp_footer / without assets manager).
 	// ---------------------------------------------------------------------
-	$start_script_code  = '<script type="text/javascript"> ' . wpbc_jq_ready_start();
-	$start_script_code .= $js_body;
-	$start_script_code .= wpbc_jq_ready_end() . '</script>';
+	$start_script_code = '<script type="text/javascript"> ' . wpbc_jq_ready_start() . $js_body . wpbc_jq_ready_end() . '</script>';
 
 	return $start_script_code;
 }

@@ -95,7 +95,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 				'custom_booking_form'             => $custom_booking_form,
 				'selected_dates_without_calendar' => '',
 				'start_month_calendar'            => false,
-				'bk_otions'                       => '{calendar' . $saved_user_calendar_params['options_param'] . '}',
+				'shortcode_param__options'                       => '{calendar' . $saved_user_calendar_params['options_param'] . '}',
 			)
 		);
 

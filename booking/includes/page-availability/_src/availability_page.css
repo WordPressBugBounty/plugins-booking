@@ -1,6 +1,6 @@
 /** TOOLBAR ***********************************************************************************************************/
 
-/* Override default settings of main  toolbar: ../includes/_toolbar_ui/_src/toolbar_ui.css */
+/* Override default settings of main  toolbar: ../includes/_toolbar_ui/_out/toolbar_ui.css */
 #toolbar_booking_availability.wpbc_ajx_toolbar {
 	margin: 0;		/* margin: 0 0 10px 50px; */
 }

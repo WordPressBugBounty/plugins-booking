@@ -12,7 +12,7 @@
  * @modified 2014.04.23
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly.
 
 
 // TODO:  re-update this function: wpbc_check_dates_intersections. we need to  call the where_to_save function

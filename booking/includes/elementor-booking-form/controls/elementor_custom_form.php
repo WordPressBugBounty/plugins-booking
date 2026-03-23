@@ -34,7 +34,12 @@ class WPBC_Elementor_Custom_Form_Selection_Control extends \Elementor\Base_Data_
 	 */
 	public static function get_booking_custom_forms(): array {
 
-		$custom_forms_arr_sorted = wpbc_toolbar__get_custom_forms__options_for_selection();
+		$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
+		if ( $is_bfb_enabled ) {
+			$custom_forms_arr_sorted = WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html__for_elementor();
+		} else {
+			$custom_forms_arr_sorted = wpbc_toolbar__get_custom_forms__options_for_selection();
+		}
 
 		$sorted_options_list = array();
 

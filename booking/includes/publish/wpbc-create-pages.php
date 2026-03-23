@@ -10,6 +10,7 @@
  * @email info@wpbookingcalendar.com
  *
  * @modified 2023-05-10
+ * @file ../includes/publish/wpbc-create-pages.php
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
@@ -93,6 +94,9 @@ function wpbc_create_page( $page_params = array() ){                            
  * and block (FSE) themes.
  *
  * - For classic themes, it searches `get_page_templates()` for a template name containing both "full" and "width".
+ * - Exception: if the matching classic template is Elementor "Elementor Full Width"
+ *   (`elementor_header_footer`), then the page keeps Elementor default template ("Theme")
+ *   instead of assigning Elementor Full Width.
  * - For block themes, it searches registered `wp_template` entries for the active theme,
  *   and sets the post's `template` property if a matching template is found.
  *
@@ -106,6 +110,7 @@ function wpbc_try_assign_full_width_template( $post_id ) {
 	}
 
 	$found = false;
+	$is_elementor_full_width_found = false;
 
 	// CLASSIC THEMES: Check PHP-based templates. // FixIn: 10.12.2.1.
 	if ( function_exists( 'get_page_templates' ) ) {
@@ -113,8 +118,20 @@ function wpbc_try_assign_full_width_template( $post_id ) {
 	} else {
 		$classic_templates = array(); // Fallback.
 	}
+
 	foreach ( $classic_templates as $template_name => $template_file ) {
 		if ( ( false !== stripos( $template_name, 'full' ) ) && ( false !== stripos( $template_name, 'width' ) ) ) {
+
+			// Exception for Elementor "Elementor Full Width":
+			// do not assign elementor_header_footer, keep Elementor default page template ("Theme").
+			if ( 'elementor_header_footer' === $template_file ) {
+
+				$is_elementor_full_width_found = true;
+
+				// Keep looking for a real theme "Full Width" template, if any.
+				continue;
+			}
+
 			update_post_meta( $post_id, '_wp_page_template', $template_file );
 			$found = true;
 			break;
@@ -140,7 +157,46 @@ function wpbc_try_assign_full_width_template( $post_id ) {
 		}
 	}
 
+	/*
+	 * If the only "Full Width" match was Elementor's template,
+	 * then force Elementor page settings to use its default template ("Theme").
+	 */
+	if ( ( ! $found ) && ( $is_elementor_full_width_found ) ) {
+		wpbc_set_elementor_default_page_template( $post_id );
+	}
+
 	return $found;
+}
+
+/**
+ * Set Elementor page layout to the default "Theme" template.
+ *
+ * This is used as an exception when Booking Calendar detects
+ * Elementor "Elementor Full Width" template and should avoid assigning it.
+ *
+ * @param int $post_id The ID of the page.
+ * @return bool
+ */
+function wpbc_set_elementor_default_page_template( $post_id ) {
+
+	if ( ( ! $post_id ) || ( is_wp_error( $post_id ) ) ) {
+		return false;
+	}
+
+	// Ensure no explicit classic page template is assigned.
+	delete_post_meta( $post_id, '_wp_page_template' );
+
+	$elementor_page_settings = get_post_meta( $post_id, '_elementor_page_settings', true );
+
+	if ( ! is_array( $elementor_page_settings ) ) {
+		$elementor_page_settings = array();
+	}
+
+	$elementor_page_settings['default_page_template'] = 'default';
+
+	update_post_meta( $post_id, '_elementor_page_settings', $elementor_page_settings );
+
+	return true;
 }
 
 

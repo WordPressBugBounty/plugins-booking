@@ -84,8 +84,14 @@ function wpbc_add_new_booking_toolbar() {
 				wpbc_toolbar_btn__resource_selection();
 			}
 
-            if (  function_exists( 'wpbc_toolbar_btn__form_selection' ) )
-                wpbc_toolbar_btn__form_selection();
+			$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
+			if ( $is_bfb_enabled ) {
+				WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html();
+			} else {
+				if ( function_exists( 'wpbc_toolbar_btn__form_selection' ) ) {
+					wpbc_toolbar_btn__form_selection();
+				}
+			}
 
             ////////////////////////////////////////////////////////////////////
             ?><div class="clear-for-mobile"></div><?php

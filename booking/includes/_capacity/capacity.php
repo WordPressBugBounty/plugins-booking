@@ -1340,26 +1340,30 @@ function wpbc_get_availability_per_days_arr( $params ) {
 										? ''
 										: '<div class="wpbc_tooltip_title">' . $tooltip_title_word . '</div>' . ' ';
 
-				$id_of_first_resource = $resource_id_arr[0];
-				$tooltip_content_header = '';
+				if ( isset( $resource_id_arr[0] ) ) {
 
-				if ( ! empty( $availability_per_this_day[ $id_of_first_resource ]->date_cost_rate ) ) {
+					$id_of_first_resource = $resource_id_arr[0];
+					$tooltip_content_header = '';
 
-					 $cur_sym  = get_bk_option( 'booking_cost_in_date_cell_currency' );       // in Booking > Settings General page in "Calendar" section
-					//$cur_sym = wpbc_get_currency_symbol();                                  // in Booking > Settings > Payment page
+					if ( ! empty( $availability_per_this_day[ $id_of_first_resource ]->date_cost_rate ) ) {
 
-					$cost_text = wpbc_formate_cost_hint__no_html( $availability_per_this_day[ $id_of_first_resource ]->date_cost_rate, $cur_sym );
-					$cost_text = html_entity_decode( $cost_text );
+						 $cur_sym  = get_bk_option( 'booking_cost_in_date_cell_currency' );       // in Booking > Settings General page in "Calendar" section
+						//$cur_sym = wpbc_get_currency_symbol();                                  // in Booking > Settings > Payment page
 
-					$tooltip = '<div class="wpbc_tooltip_section tooltip__day_cost">'
-				                    . $tooltip_title_word
-									. '<div class="wpbc_tooltip_resource_container">'
-										. $tooltip_content_header
-										. '<div class="wpbc_tooltip_item">'
-												. $cost_text
+						$cost_text = wpbc_formate_cost_hint__no_html( $availability_per_this_day[ $id_of_first_resource ]->date_cost_rate, $cur_sym );
+						$cost_text = html_entity_decode( $cost_text );
+
+						$tooltip = '<div class="wpbc_tooltip_section tooltip__day_cost">'
+										. $tooltip_title_word
+										. '<div class="wpbc_tooltip_resource_container">'
+											. $tooltip_content_header
+											. '<div class="wpbc_tooltip_item">'
+													. $cost_text
+											. '</div>'
 										. '</div>'
-									. '</div>'
-					           . '</div>';
+								   . '</div>';
+					}
+
 				}
 			}
 			return $tooltip;

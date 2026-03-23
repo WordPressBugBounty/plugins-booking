@@ -56,7 +56,8 @@ if (typeof jQuery === 'undefined') {
   Modal.DEFAULTS = {
     backdrop: true,
     keyboard: true,
-    show: true
+    show: true,
+    enforceFocus: true
   }
 
   Modal.prototype.toggle = function (_relatedTarget) {
@@ -107,7 +108,9 @@ if (typeof jQuery === 'undefined') {
 
       that.$element.addClass('in')
 
-      that.enforceFocus()
+		if ( that.options.enforceFocus !== false ) {
+			that.enforceFocus();
+		}
 
       var e = $.Event('shown.wpbc.modal', { relatedTarget: _relatedTarget })
 
@@ -135,7 +138,10 @@ if (typeof jQuery === 'undefined') {
     this.escape()
     this.resize()
 
-    $(document).off('focusin.wpbc.modal')
+	  if ( this.options.enforceFocus !== false ) {
+		  $( document ).off( 'focusin.wpbc.modal' );
+	  }
+
 
     this.$element
       .removeClass('in')

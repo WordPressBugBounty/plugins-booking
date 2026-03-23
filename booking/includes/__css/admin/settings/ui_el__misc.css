@@ -87,6 +87,11 @@
 	max-width: 50%;
 	z-index: 90001;
 }
+/* Shift down meessages in full  screen  on WP Booking Calendar > Settings > Booking Form > Booking Form Fields page */
+.wpbc_admin_full_screen .wpbc_admin .wpbc_page div.wpbc_inner_message {
+	top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + 55px);
+	right: 5px;
+}
 .wpbc_svg_icon_class {
 	display: inline-block;
 	background-position: 0 1px;

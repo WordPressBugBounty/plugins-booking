@@ -119,7 +119,20 @@
     -webkit-animation: wpbc_spin_r 1.1s linear infinite;    /* Chrome, Opera 15+, Safari 5+ */
     animation: wpbc_spin_r 1.1s linear infinite;            /* Chrome, Firefox 16+, IE 10+, Opera */
 }
-
+.wpbc_one_spin_loader_mini2 {
+	display: block;
+	position: relative;
+	left: 50%;
+	top: 50%;
+	width: 20px;
+	height: 20px;
+	margin: -10px 0 0 -5px;
+	border-radius: 50%;
+	border: 2px solid #345a95;
+	border-top-color: transparent !important;
+	-webkit-animation: wpbc_spin_r 0.9s linear infinite;  /* Chrome, Opera 15+, Safari 5+ */
+	animation: wpbc_spin_r 0.9s linear infinite;	      /* Chrome, Firefox 16+, IE 10+, Opera */
+}
 .wpbc_one_spin_loader_micro {
     display: block;
     position: relative;

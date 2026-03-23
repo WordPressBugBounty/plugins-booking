@@ -77,56 +77,72 @@ function wpbc_ui__top_nav( $args = array() ) {
 function wpbc_ui__top_nav__dropdown__wpbc() {
 
 	$svg_size       = '22px';
-	$svg_icon_style =  'margin:5px 5px 0 0;';//'background-position: 0 0;background-size: ' . $svg_size . ' ' . $svg_size . ';width: ' . $svg_size . ';height: ' . $svg_size . ';';
+	$svg_icon_style =  'margin:5px 5px 0 0;'; // 'background-position: 0 0;background-size: ' . $svg_size . ' ' . $svg_size . ';width: ' . $svg_size . ';height: ' . $svg_size . ';'; //.
 	$svg_icon       = wpbc_get_svg_logo_for_background( '#555', '#e5e5e5', '1.0' );
 
+	if ( function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' ) ) {
+		$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
+	} else {
+		$wp_post_booking_absolute = false;
+	}
 	$el_arr = array(
 		// 'title'        => 'Booking Calendar',
 		// 'font_icon'    => 'wpbc-bi-calendar2-range',
-		'title_html'	 => '<span class="nav-tab-text" style="margin: -3px 0 0 5px;font-size: 16px;padding: 0;"><span style="position: absolute;font-size: 7px;margin-top: 13px;margin-left: 1px;">WP</span>Booking Calendar</span>',
-				'svg_icon'       => $svg_icon,
-				'svg_icon_style' => $svg_icon_style,
-				'style' 		 => 'display: flex;flex-flow:row nowrap;align-items: center;justify-content: flex-start;' . ' ',
-				'container_style' => 'padding: 0 15px 0 10px;',
-		'position'       => 'left',
-		'has_down_arrow' => true,
-		'items'          => array(
-			array(
-				'type'  => 'header',
-				'title' => __( 'Help', 'booking' ),
-			),
-			array(
-				'type'  => 'link',
-				'title' => __( 'FAQ', 'booking' ),
-				'url'   => 'https://wpbookingcalendar.com/faq/',
-			),
-			array(
-				'type'  => 'header',
-				'title' => __( 'Support', 'booking' ),
-			),
-			array(
-				'type'  => 'link',
-				'title' => __( 'Support Forum', 'booking' ),
-				'url'   => 'https://wpbookingcalendar.com/support/',
-			),
-			array(
-				'type'  => 'link',
-				'title' => __( 'Contact Support', 'booking' ),
-				'url'   => 'mailto:support@wpbookingcalendar.com',
-				'attr'  => array( 'style' => 'font-weight: 600;' ),
-			),
-			array( 'type' => 'divider' ),
-			array(
-				'type'  => 'link',
-				'title' => __( 'What\'s New', 'booking' ),
-				'url'   => 'https://wpbookingcalendar.com/wn/',
-			),
-			array(
-				'type'  => 'link',
-				'title' => __( 'About', 'booking' ),
-				'url'   => 'https://wpbookingcalendar.com/',
-			),
-		),
+		'title_html'      => '<span class="nav-tab-text" style="margin: -3px 0 0 5px;font-size: 16px;padding: 0;"><span style="position: absolute;font-size: 7px;margin-top: 13px;margin-left: 1px;">WP</span>Booking Calendar</span>',
+		'svg_icon'        => $svg_icon,
+		'svg_icon_style'  => $svg_icon_style,
+		'style'           => 'display: flex;flex-flow:row nowrap;align-items: center;justify-content: flex-start; ',
+		'container_style' => 'padding: 0 15px 0 10px;',
+		'position'        => 'left',
+		'has_down_arrow'  => true,
+		'items'           => array(),
+	);
+
+	if ( ! empty( $wp_post_booking_absolute ) ) {
+		$el_arr['items'][] = array(
+			'type'  => 'header',
+			'title' => __( 'Visit Booking Form', 'booking' ),
+		);
+		$el_arr['items'][] = array(
+			'type'  => 'link',
+			'title' => __( 'Go to page with booking form', 'booking' ),
+			'url'   => esc_url( $wp_post_booking_absolute ),
+		);
+	}
+	$el_arr['items'][] = array(
+		'type'  => 'header',
+		'title' => __( 'Help', 'booking' ),
+	);
+	$el_arr['items'][] = array(
+		'type'  => 'link',
+		'title' => __( 'FAQ', 'booking' ),
+		'url'   => 'https://wpbookingcalendar.com/faq/',
+	);
+	$el_arr['items'][] = array(
+		'type'  => 'header',
+		'title' => __( 'Support', 'booking' ),
+	);
+	$el_arr['items'][] = array(
+		'type'  => 'link',
+		'title' => __( 'Support Forum', 'booking' ),
+		'url'   => 'https://wpbookingcalendar.com/support/',
+	);
+	$el_arr['items'][] = array(
+		'type'  => 'link',
+		'title' => __( 'Contact Support', 'booking' ),
+		'url'   => 'mailto:support@wpbookingcalendar.com',
+		'attr'  => array( 'style' => 'font-weight: 600;' ),
+	);
+	$el_arr['items'][] = array( 'type' => 'divider' );
+	$el_arr['items'][] = array(
+		'type'  => 'link',
+		'title' => __( 'What\'s New', 'booking' ),
+		'url'   => 'https://wpbookingcalendar.com/wn/',
+	);
+	$el_arr['items'][] = array(
+		'type'  => 'link',
+		'title' => __( 'About', 'booking' ),
+		'url'   => 'https://wpbookingcalendar.com/',
 	);
 
 	wpbc_ui_el__dropdown_menu( $el_arr );
@@ -150,6 +166,7 @@ function wpbc_ui__top_nav__btn_full_screen() {
 		'title'    => __( 'Full Screen', 'booking' ),
 		'position' => 'top',
 	);
+
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_full_screen';
 
 	if ( ! wpbc_is_setup_wizard_page() ) {

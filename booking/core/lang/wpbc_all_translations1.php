@@ -1,4 +1,11 @@
-<?php  function wpbc_all_translations2() { $wpbc_all_translations = array(); 
+<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+
+function wpbc_all_translations2() { $wpbc_all_translations = array();
  $wpbc_all_translations[] = __('or', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Enter percentage as additional sum, which is based only on original cost and not full sum', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Please check more info about configuration of this cost settings on this %1$spage%2$s.', 'booking'); /* translators: 1: ... */ 

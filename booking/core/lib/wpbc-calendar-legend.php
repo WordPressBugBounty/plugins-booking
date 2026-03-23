@@ -1,5 +1,8 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 // FixIn: 9.4.3.6.
 
@@ -68,7 +71,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$legend_arr[ $key ] .= '<div class="wpbc-cell-box">';
 		$legend_arr[ $key ] .= '	<div class="date-cell-content">';
 		$legend_arr[ $key ] .= '		<div class="date-content-top"></div>';
-		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . $params['text_for_day_cell'] . '</' . $day_cell_tag . '>';
+		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . esc_html( $params['text_for_day_cell'] ) . '</' . $day_cell_tag . '>';
 		$legend_arr[ $key ] .= '		<div class="date-content-bottom"></div>';
 		$legend_arr[ $key ] .= '	</div>';
 		$legend_arr[ $key ] .= '</div>';
@@ -87,7 +90,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$legend_arr[ $key ] .= '<div class="wpbc-cell-box">';
 		$legend_arr[ $key ] .= '	<div class="date-cell-content">';
 		$legend_arr[ $key ] .= '		<div class="date-content-top"></div>';
-		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . $params['text_for_day_cell'] . '</' . $day_cell_tag . '>';
+		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . esc_html( $params['text_for_day_cell'] ) . '</' . $day_cell_tag . '>';
 		$legend_arr[ $key ] .= '		<div class="date-content-bottom"></div>';
 		$legend_arr[ $key ] .= '	</div>';
 		$legend_arr[ $key ] .= '</div>';
@@ -106,7 +109,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$legend_arr[ $key ] .= '<div class="wpbc-cell-box">';
 		$legend_arr[ $key ] .= '	<div class="date-cell-content">';
 		$legend_arr[ $key ] .= '		<div class="date-content-top"></div>';
-		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . $params['text_for_day_cell'] . '</' . $day_cell_tag . '>';
+		$legend_arr[ $key ] .= '		<' . $day_cell_tag . '>' . esc_html( $params['text_for_day_cell'] ) . '</' . $day_cell_tag . '>';
 		$legend_arr[ $key ] .= '		<div class="date-content-bottom"></div>';
 		$legend_arr[ $key ] .= '	</div>';
 		$legend_arr[ $key ] .= '</div>';
@@ -138,7 +141,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_partially .= '	</div>';
 		$my_partially .= '	<div class="date-cell-content">';
 		$my_partially .= '		<div class="date-content-top"><div class="wpbc_time_dots">·</div></div>';
-		$my_partially .= '		<a>' . $params['text_for_day_cell'] . '</a>';
+		$my_partially .= '		<a>' . esc_html( $params['text_for_day_cell'] ) . '</a>';
 		$my_partially .= '		<div class="date-content-bottom"></div>';
 		$my_partially .= '	</div>';
 		$my_partially .= '</div>';
@@ -155,7 +158,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_unavailable .= '<div class="wpbc-cell-box">';
 		$my_unavailable .= '	<div class="date-cell-content">';
 		$my_unavailable .= '		<div class="date-content-top"></div>';
-		$my_unavailable .= '		<' . $params['unavailable_day_cell_tag'] . '>' . $params['text_for_day_cell'] . '</' . $params['unavailable_day_cell_tag'] . '>';
+		$my_unavailable .= '		<' . $params['unavailable_day_cell_tag'] . '>' . esc_html(  $params['text_for_day_cell'] ) . '</' . $params['unavailable_day_cell_tag'] . '>';
 		$my_unavailable .= '		<div class="date-content-bottom"></div>';
 		$my_unavailable .= '	</div>';
 		$my_unavailable .= '</div>';
@@ -171,7 +174,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_resource_unavailable .= '<div class="wpbc-cell-box">';
 		$my_resource_unavailable .= '	<div class="date-cell-content">';
 		$my_resource_unavailable .= '		<div class="date-content-top"></div>';
-		$my_resource_unavailable .= '		<' . $params['unavailable_day_cell_tag'] . '>' . $params['text_for_day_cell'] . '</' . $params['unavailable_day_cell_tag'] . '>';
+		$my_resource_unavailable .= '		<' . $params['unavailable_day_cell_tag'] . '>' . esc_html( $params['text_for_day_cell'] ) . '</' . $params['unavailable_day_cell_tag'] . '>';
 		$my_resource_unavailable .= '		<div class="date-content-bottom"></div>';
 		$my_resource_unavailable .= '	</div>';
 		$my_resource_unavailable .= '</div>';
@@ -233,7 +236,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 				$calendar_legend_html .= '<div class="wpdev_hint_with_text">'
 						                    . '<div class="' . $items_arr[ $item_name ]['css_class'] . '">'  . $items_arr[ $item_name ]['text_for_day_cell']  . '</div>'
 				                            . '<div class="block_text">'                                     . '- '              . '</div>'
-						                    . '<div class="block_text">'                                     . $items_arr[ $item_name ]['title']              . '</div>'
+						                    . '<div class="block_text">'                                     . esc_html( $items_arr[ $item_name ]['title'] )  . '</div>'
 					                   . '</div>';
 			}
 		}

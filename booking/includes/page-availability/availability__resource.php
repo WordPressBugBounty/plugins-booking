@@ -69,7 +69,18 @@ function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $searc
 		foreach ( $search_dates as $date_ymd ) {
 			$search_dates_arr[] = $date_ymd . ' 00:00:00';
 		}
-		$search_dates_formated = implode( ',', $search_dates_arr );
+
+		/**
+		 * // FixIn: 10.14.17.1.
+		 * If we have only  one date param,eter,  it is means that  we defined only  one parameter in  shortcode: calendar_dates_start  or calendar_dates_end
+		 * and in this case we need to  search >=  or <= (but because in this function,  we do not know what  exactly  it was parameter,  start or end),  we will  search  for all  dates.
+		 */
+		if ( count( $search_dates_arr ) === 1 ) {
+			$search_dates_formated = 'ALL';
+		} else {
+			$search_dates_formated = implode( ',', $search_dates_arr );
+		}
+
 
 	} else {                                                    // Probably 'CURDATE' | 'ALL'
 
@@ -207,8 +218,20 @@ function wpbc_availability__get_dates_status__sql( $params ){
 					$in_search_arr[] = '%s';
 					$sql_args[]      = $date_ymd;
 				}
-				$in_search_dates_csv = implode( ',', $in_search_arr );
-				$sql['where']        .= " AND calendar_date IN ( {$in_search_dates_csv} ) ";
+				// FixIn: 10.14.17.1.
+				$sql_args = wpbc_sanitize_date_ymdhis_to_check( $sql_args );
+				/**
+				 * If we have onbly  2 dates,  then  we understand such  dates as from - to.
+				 * usually  such  situation  in shortcodes with  these parameters calendar_dates_start / calendar_dates_end.
+				 * E.g.: [bookingcalendar resource_id=2 nummonths=2 calendar_dates_start='2026-02-01' calendar_dates_end='2026-03-31']
+				 */
+				if ( 2 === count( $sql_args ) ) {
+					$sql['where'] .= " AND calendar_date >=  %s ";
+					$sql['where'] .= " AND calendar_date <= %s ";
+				} else {
+					$in_search_dates_csv = implode( ',', $in_search_arr );
+					$sql['where']        .= " AND calendar_date IN ( {$in_search_dates_csv} ) ";
+				}
 			}
 		}
 	}

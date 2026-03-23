@@ -122,7 +122,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 			'link'             => '',                                                                                   // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link.
 			'css_classes'      => '',                                                                                   // CSS.
 			'default'          => false,                                                                                // Is this tab activated by default or not: true / false.
-			'folder_style'     => 'order:10;',
+			'folder_style'     => 'order:11;',
 		);
 
 		$section_id          = 'wpbc_general_settings_calendar_metabox';

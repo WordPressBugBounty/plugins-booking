@@ -217,19 +217,7 @@ function wpbc_load_plugin_translation_file__mo( $locale = '' ) {
  */
 function wpbc_load_country_list_file_php( $locale ){                                                                             // FixIn: 8.8.2.5.
 
-	if ( ! empty( $locale ) ) {
-		$locale_lang    = strtolower( substr( $locale, 0, 2 ) );
-		$locale_country = strtolower( substr( $locale, 3 ) );
-
-		// FixIn: 8.9.4.12.
-		if ( ( $locale_lang !== 'en' ) && ( wpbc_is_file_exist( '/core/lang/wpdev-country-list-' . $locale . '.php' ) ) ) {
-			require_once WPBC_PLUGIN_DIR . '/core/lang/wpdev-country-list-' . $locale . '.php';
-		} else {
-			require_once WPBC_PLUGIN_DIR . '/core/lang/wpdev-country-list.php';
-		}
-	} else {
-		require_once WPBC_PLUGIN_DIR . '/core/lang/wpdev-country-list.php';
-	}
+	require_once WPBC_PLUGIN_DIR . '/core/lang/wpdev-country-list.php';
 
 	do_action( 'wpbc_country_list_loaded' );                                                                            // FixIn: 8.9.4.9.
 }

@@ -1399,3 +1399,37 @@ function wpbc_sanitize_dates_to_check( $dates_to_check ) {
 
 	return $sanitized_dates;
 }
+
+
+// FixIn: 10.14.17.1.
+/**
+ * Sanitize and validate dates and times parameter.
+ *
+ * Accepts scalar or array, normalizes to array of 'Y-m-d H:i:s' strings
+ * that match /^\d{4}-\d{2}-\d{2}$/.
+ *
+ * @param mixed $dates_to_check Raw dates_to_check parameter.
+ *
+ * @return array Sanitized, validated dates.
+ */
+function wpbc_sanitize_date_ymdhis_to_check( $dates_to_check ) {
+
+	if ( ! is_array( $dates_to_check ) ) {
+		$dates_to_check = array( $dates_to_check );
+	}
+
+	$sanitized_dates = array();
+
+	foreach ( $dates_to_check as $maybe_date ) {
+
+		// Basic text cleanup.
+		$maybe_date = sanitize_text_field( $maybe_date );
+
+		// Strict format: YYYY-MM-DD only.
+		if ( preg_match( '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $maybe_date ) ) {
+			$sanitized_dates[] = $maybe_date;
+		}
+	}
+
+	return $sanitized_dates;
+}

@@ -298,7 +298,41 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
 					$cleaned_data = wpbc_template__bookings_types__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+					// Legacy  update booking form  and dates selection, as some other options (recurrent time)....
 					wpbc_setup__update__bookings_types( $cleaned_data );
+
+					$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
+					if ( $is_bfb_enabled ) {
+						$or_sep_url = ( defined( 'WPBC_BFB_TEMPLATE_SEARCH_OR_SEPARATOR_URL' ) ) ? (string) WPBC_BFB_TEMPLATE_SEARCH_OR_SEPARATOR_URL : '^';
+						if ( '' === $or_sep_url ) {
+							$or_sep_url = '^';
+						}
+						$template_search_key = '';
+						if ( 'full_days_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
+							$template_search_key = 'full-days' . $or_sep_url . 'dates_form';
+						}
+						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
+							if ( 'rangetime' !== $cleaned_data['wpbc_swp_booking_appointments_type'] ) {
+								$template_search_key = 'appointments';// . $or_sep_url . 'duration';
+							} else {
+								$template_search_key = 'time+slots' . $or_sep_url . 'times';
+							}
+						}
+						if ( 'changeover_multi_dates_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
+							$template_search_key = 'changeover' . $or_sep_url . 'triangles';
+						}
+						//  JavaScript redirect: wpbc_redirect( 'url' ); // PHP: redirect:.
+						// wp_redirect( admin_url( 'admin.php?page=wpbc-settings&tab=builder_booking_form&auto_open_template=' . $cleaned_data ) );
+
+						$cleaned_request_params['do_action'] = 'auto_open_template';
+						$data_arr['redirect_url'] = admin_url( 'admin.php?page=wpbc-settings&tab=builder_booking_form&auto_open_template=' . $template_search_key );
+						$data_arr['current_step'] = 'cal_availability';
+						// Mark  as completed, Type of bookings and Form structure!
+						$setup_steps->db__set_step_as_completed( 'bookings_types' );
+						$setup_steps->db__set_step_as_completed( 'form_structure' );
+						break;
+					}
 
 					// FixIn: 10.7.1.3.
 					$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__send_email' );

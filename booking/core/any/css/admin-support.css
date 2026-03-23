@@ -276,6 +276,14 @@
     padding: 5px 20px 10px;
 }
 
+/* BFB Beta option */
+tr.wpbc_tr_class_booking_use_bfb_form {
+	/*border-bottom: 4px solid #ebebeb;*/
+	border-bottom: 4px solid #87ad7c;
+}
+tr.wpbc_tr_class_booking_use_bfb_form th label {
+	font-size: 16px;
+}
 
 /* Modal Content for popup windows ********************************************/
 .wpbc_popup_modal {

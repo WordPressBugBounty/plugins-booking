@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 10.14.16
+Version: 10.15
 License: GPLv2 or later
 */
 
@@ -34,10 +34,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '10.14.16' );
+	define( 'WP_BK_VERSION_NUM', '10.15' );
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
-	define( 'WP_BK_MINOR_UPDATE', true );
+	define( 'WP_BK_MINOR_UPDATE', ! true );
 }
 
 
@@ -105,7 +105,7 @@ if ( true ) {
 
 
 if ( ! defined( 'WPBC_NEW_FORM_BUILDER' ) ) {
-	define( 'WPBC_NEW_FORM_BUILDER', ! true );
+	define( 'WPBC_NEW_FORM_BUILDER', true );
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

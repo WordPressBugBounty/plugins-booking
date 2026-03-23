@@ -10,6 +10,10 @@
  * @modified 2013.10.16
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 class WPBC_CSS extends WPBC_JS_CSS {
 
 	public function define() {

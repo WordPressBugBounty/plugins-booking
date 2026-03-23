@@ -65,7 +65,9 @@
     vertical-align: initial;
 }
 
-
+.wpdevelop .modal-dialog .modal-content {
+	overflow: auto;
+}
 @media (max-width: 782px) {
 	.wpdevelop .modal-dialog {
 		margin: 15px;

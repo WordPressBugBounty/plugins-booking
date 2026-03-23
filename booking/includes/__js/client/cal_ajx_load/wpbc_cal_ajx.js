@@ -145,8 +145,8 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 						wpbc_update_capacity_hint( response_data['resource_id'] );
 					}
 
-					// Trigger event that calendar has been		 // FixIn: 10.0.0.44.
-					if ( jQuery( '#calendar_booking' + response_data[ 'resource_id' ] ).length > 0 ){
+					// Trigger event that calendar has been		 // FixIn: 10.0.0.44.  // FixIn: 10.14.17.2.
+					if ( (jQuery( '#calendar_booking' + response_data['resource_id'] ).length > 0) || (jQuery( '#date_booking' + response_data['resource_id'] ).length > 0) ) {
 						var target_elm = jQuery( 'body' ).trigger( "wpbc_calendar_ajx__loaded_data", [response_data[ 'resource_id' ]] );
 						 //jQuery( 'body' ).on( 'wpbc_calendar_ajx__loaded_data', function( event, resource_id ) { ... } );
 					}
@@ -230,7 +230,8 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 
 
 	/**
-	 * Get resource ID from ajx post data url   usually  from  this.data  = 'action=WPBC_AJX_CALENDAR_LOAD...&calendar_request_params%5Bresource_id%5D=2&calendar_request_params%5Bbooking_hash%5D=&calendar_request_params'
+	 * Get resource ID from ajx post data url   usually  from  this.data  =
+	 * 'action=WPBC_AJX_CALENDAR_LOAD...&calendar_request_params%5Bresource_id%5D=2&calendar_request_params%5Bbooking_hash%5D=&calendar_request_params'
 	 *
 	 * @param ajx_post_data_url_params		 'action=WPBC_AJX_CALENDAR_LOAD...&calendar_request_params%5Bresource_id%5D=2&calendar_request_params%5Bbooking_hash%5D=&calendar_request_params'
 	 * @returns {int}						 1 | 0  (if errror then  0)
@@ -252,7 +253,8 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 
 
 	/**
-	 * Get parameter from URL  -  parse URL parameters,  like this: action=WPBC_AJX_CALENDAR_LOAD...&calendar_request_params%5Bresource_id%5D=2&calendar_request_params%5Bbooking_hash%5D=&calendar_request_params
+	 * Get parameter from URL  -  parse URL parameters,  like this:
+	 * action=WPBC_AJX_CALENDAR_LOAD...&calendar_request_params%5Bresource_id%5D=2&calendar_request_params%5Bbooking_hash%5D=&calendar_request_params
 	 * @param name  parameter  name,  like 'calendar_request_params[resource_id]'
 	 * @param url	'parameter  string URL'
 	 * @returns {string|null}   parameter value

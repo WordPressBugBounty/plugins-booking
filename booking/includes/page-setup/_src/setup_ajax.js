@@ -66,6 +66,16 @@ console.log( ' == Response WPBC_AJX_SETUP_WIZARD_PAGE == ', response_data ); con
 					}
 				}
 
+				// -------------------------------------------------------------------------------------------------
+				// Auto  redirect  to  new BFB builder - templates section.
+				// -------------------------------------------------------------------------------------------------
+				if (  ( undefined != response_data[ 'ajx_cleaned_params' ] ) && ( 'auto_open_template' === response_data[ 'ajx_cleaned_params' ][ 'do_action' ] )  ){
+					if (undefined != response_data[ 'ajx_data' ][ 'redirect_url' ]){
+						window.location.href = response_data[ 'ajx_data' ][ 'redirect_url' ];
+						return;
+					}
+				}
+
 
 				// -> Progress line at  "Left Main Menu"
 				wpbc_setup_wizard_page__update_plugin_menu_progress( response_data[ 'ajx_data' ]['plugin_menu__setup_progress'] );

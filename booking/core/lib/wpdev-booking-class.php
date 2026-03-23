@@ -192,7 +192,7 @@ class wpdev_booking {
         $my_boook_count = get_bk_option( 'booking_client_cal_count' );
         $my_boook_type = 1;
         $my_booking_form = 'standard';
-        $bk_otions = array();
+        $shortcode_param__options = array();
         if ( isset( $attr['nummonths'] ) )   { $my_boook_count = intval( $attr['nummonths'] );  }
 		if ( isset( $attr['resource_id'] ) ) {  $attr['type'] = intval( $attr['resource_id']); }
         if ( isset( $attr['type'] ) )        { $my_boook_type = intval( $attr['type']);        }
@@ -206,7 +206,7 @@ class wpdev_booking {
 		// Escape any XSS in aggregate parameter.
 		$my_boook_type = str_replace( ',', ';', wpbc_clean_digit_or_csd( $my_boook_type ) );
 
-		if ( isset( $attr['options'] ) ) { $bk_otions = $attr['options']; }
+		if ( isset( $attr['options'] ) ) { $shortcode_param__options = $attr['options']; }
 
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
@@ -231,7 +231,7 @@ class wpdev_booking {
         }
 
 
-        $res = wpbc_get_rendered_booking_form_html($my_boook_type,$my_boook_count, 0 , $my_booking_form, '', false, $bk_otions );
+        $res = wpbc_get_rendered_booking_form_html($my_boook_type,$my_boook_count, 0 , $my_booking_form, '', false, $shortcode_param__options );
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
         if (isset($_GET['booking_pay'])) {

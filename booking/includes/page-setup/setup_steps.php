@@ -80,7 +80,13 @@ class WPBC_SETUP_WIZARD_STEPS {
 		$steps_arr[ $step_name ] = $step_default_params;
 		$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__bookings_types';
 		$steps_arr[ $step_name ]['prior']  = 'date_time_formats';
-		$steps_arr[ $step_name ]['next']   = 'form_structure';
+		$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
+		if ( $is_bfb_enabled ) {
+			$steps_arr[ $step_name ]['next'] = 'cal_availability';
+		} else {
+			$steps_arr[ $step_name ]['next'] = 'form_structure';
+		}
+
 
 		// Step #5
 		$step_name = 'form_structure';
@@ -94,7 +100,11 @@ class WPBC_SETUP_WIZARD_STEPS {
 		$step_name = 'cal_availability';
 		$steps_arr[ $step_name ] = $step_default_params;
 		$steps_arr[ $step_name ]['do_action'] = 'save_and_continue__cal_availability';
-		$steps_arr[ $step_name ]['prior']  = 'form_structure';
+		if ( $is_bfb_enabled ) {
+			$steps_arr[ $step_name ]['prior']  = 'bookings_types';
+		} else {
+			$steps_arr[ $step_name ]['prior']  = 'form_structure';
+		}
 		$steps_arr[ $step_name ]['next']   = 'color_theme';
 		$steps_arr[ $step_name ]['next_title'] = __( 'Continue', 'booking' );
 

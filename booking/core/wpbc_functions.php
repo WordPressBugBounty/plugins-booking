@@ -78,37 +78,37 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		return $svg_icon_integarted;
 	}
 
-/**
- * Get Logo as HTML element.
- *
- * @param array $params - logo parameters.
- *
- * @return string
- */
-function wpbc_get_svg_logo_for_html( $params = array() ) {
+	/**
+	 * Get Logo as HTML element.
+	 *
+	 * @param array $params - logo parameters.
+	 *
+	 * @return string
+	 */
+	function wpbc_get_svg_logo_for_html( $params = array() ) {
 
-	// FixIn: 10.12.1.6.
-	$defaults = array(
-		'svg_color'     => '#ccc',
-		'svg_color_alt' => '#aaa',
-		'opacity'       => '0.4',
-		'style_default' => 'background-repeat: no-repeat; background-position: center; display: inline-block; vertical-align: top;',
-		'style_adjust'  => 'background-size: 18px auto; width: 20px; height: 20px; margin-top: 6px;',                   // This parameters, the adjust size of the logo and position.
-		'css_class'     => '',
-	);
+		// FixIn: 10.12.1.6.
+		$defaults = array(
+			'svg_color'     => '#ccc',
+			'svg_color_alt' => '#aaa',
+			'opacity'       => '0.4',
+			'style_default' => 'background-repeat: no-repeat; background-position: center; display: inline-block; vertical-align: top;',
+			'style_adjust'  => 'background-size: 18px auto; width: 20px; height: 20px; margin-top: 6px;',                   // This parameters, the adjust size of the logo and position.
+			'css_class'     => '',
+		);
 
-	$params = wp_parse_args( $params, $defaults );
+		$params = wp_parse_args( $params, $defaults );
 
-	$svg_logo_for_background = wpbc_get_svg_logo_for_background( $params['svg_color'], $params['svg_color_alt'], $params['opacity'] );
+		$svg_logo_for_background = wpbc_get_svg_logo_for_background( $params['svg_color'], $params['svg_color_alt'], $params['opacity'] );
 
-	$svg_icon_integarted  = '<i';
-	$svg_icon_integarted .= ' class="wpbc_svg_logo ' . esc_attr( $params['css_class'] ) . '"';
-	$svg_icon_integarted .= ' style="' . esc_attr( $params['style_default'] ) . esc_attr( $params['style_adjust'] );
-	$svg_icon_integarted .= 'background-image: url(\'' . esc_attr( $svg_logo_for_background ) . '\') !important;"';
-	$svg_icon_integarted .= '></i>';
+		$svg_icon_integarted  = '<i';
+		$svg_icon_integarted .= ' class="wpbc_svg_logo ' . esc_attr( $params['css_class'] ) . '"';
+		$svg_icon_integarted .= ' style="' . esc_attr( $params['style_default'] ) . esc_attr( $params['style_adjust'] );
+		$svg_icon_integarted .= 'background-image: url(\'' . esc_attr( $svg_logo_for_background ) . '\') !important;"';
+		$svg_icon_integarted .= '></i>';
 
-	return $svg_icon_integarted;
-}
+		return $svg_icon_integarted;
+	}
 
 	// <editor-fold     defaultstate="collapsed"                        desc="  ==  Get html  preview of shortcode for Edit pages  ==  "  >
 
@@ -568,6 +568,7 @@ function wpbc_get_svg_logo_for_html( $params = array() ) {
 						&& ( ! wpbc_can_i_load_on__searchable_resources_page() )
 					)
 				|| wpbc_is_setup_wizard_page()
+				|| wpbc_is_builder_booking_form_page()
 				// || wpbc_is_bookings_page()		// FixIn: 10.6.6.2.
 			){
 				return true;

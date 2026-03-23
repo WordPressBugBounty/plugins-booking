@@ -1,38 +1,71 @@
 ﻿=== Booking Calendar ===
 Contributors: wpdevelop, oplugins
 Donate link: https://wpbookingcalendar.com/buy/
-Tags: booking calendar, bookings, booking, appointments, events
+Tags: booking calendar, appointment booking, booking form, reservations, contact form
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 6.9
-Stable tag: 10.14.16
+Stable tag: 10.15
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Original "Booking Calendar" plugin. Easily manage full-day bookings, time-slot appointments, or events in our all-in-one, outstanding booking system.
+Original Booking Calendar for appointments, reservations, rentals, and events. Accept full-day bookings, time-slot appointments, and inquiry requests.
 
 == Description ==
 
-= The #1 must have Booking Plugin for WordPress =
+= Booking Calendar - WordPress Booking Plugin for Appointments, Reservations, Rentals, and Events =
+**WP Booking Calendar** is a flexible **WordPress booking plugin** for **appointments**, **reservations**, **rentals**, and **events**. Add a responsive **availability calendar** and **booking form** to your website, accept **online bookings**, and manage them from a modern admin panel.
 
-**WP Booking Calendar** is the original **WordPress booking plugin**, powering thousands of websites since 2009. Add a beautiful, responsive booking calendar to your site to accept **online reservations**, manage **appointments**, and schedule **events** — all from an intuitive admin panel. It's a complete solution for rental bookings, service appointments, event scheduling, and more.
+Use Booking Calendar for **full-day bookings**, **time-slot appointments**, service scheduling, event registration, **inquiry forms**, **request forms**, or even as a simple multi-steps **contact form** with built-in request listing and email notifications.
 
-Plugin provides an **easy-to-use** booking system for displaying **calendar availability**, receive bookings from your website visitors, and manage bookings through a **modern and clean booking admin panel**.
+[Features](https://wpbookingcalendar.com/features/ "Features Overview of Booking Calendar") | [See Demos](https://wpbookingcalendar.com/demo/ "Live demos of premium versions") | [FAQ](https://wpbookingcalendar.com/faq/ "Booking Calendar FAQ") | [Get Support](https://wpbookingcalendar.com/support/ "Get support for Booking Calendar plugin")
 
-Moreover, with the ability to **sync bookings** with other services Booking Calendar offers you be up-to-date to avoid duplicate bookings.
+= Key Features =
 
-[Features](https://wpbookingcalendar.com/features/ "Features Overview of Booking Calendar") | [See Demos](https://wpbookingcalendar.com/demo/ "Live demos of premium versions") | [FAQ](https://wpbookingcalendar.com/FAQ/ "Booking Calendar - FAQ") | [Video Guides](https://wpbookingcalendar.com/help/ "Youtube Video Tutorials") | [Get Support](https://wpbookingcalendar.com/support/ "Get support for Booking Calendar plugin" )
+- Accept **full-day** and **time-slot** bookings
+- Show **calendar availability** on your website
+- Create booking, contact, and inquiry forms
+- Use the new **Drag & Drop Booking Form Builder**
+- Build **multi-step forms** with rows and columns
+- Customize form fields and email notifications
+- Prevent double bookings
+- Manage bookings in a clear admin panel
+- Sync bookings with external services using **.ics feeds**
+- Import Google Calendar events
+- Works for properties, services, rentals, and events
 
-= New Setup Wizard! =
+= New Drag & Drop Booking Form Builder =
+
+Create booking forms visually without manually editing complex shortcodes or form code. Simply drag fields from the sidebar, drop them into the canvas, organize them into rows and columns, edit settings in the sidebar, and preview changes instantly.
+
+https://www.youtube.com/watch?v=_LRr15mcECE
+
+The new builder also makes it easy to create **contact** and **inquiry forms** where the calendar is optional.
+
+With the new interface, you can:
+
+- drag and drop fields into the form layout,
+- organize fields into sections and columns,
+- create multi-step form pages,
+- resize columns for better layout control,
+- edit field settings in the right sidebar,
+- instantly preview the form while building.
+
+This new functionality brings a more modern, user-friendly, and flexible way to create forms in Booking Calendar, making form setup faster, clearer, and much more convenient for website owners.
+
+> <strong>Full Day Bookings - Drag and Drop Booking Form Builder</strong><br />
+> Easily configure Booking Calendar for full-day bookings with the new Drag and Drop Booking Form Builder. The new Booking Calendar Form Builder makes it much easier to create flexible booking forms without manually editing form code. It is a simple and visual way to build booking forms for different use cases directly inside WordPress.
+
+https://www.youtube.com/watch?v=n_svjKULkc0
+
+> <strong>Create a Time Slots Booking Form in minutes with the new Booking Calendar Form Builder.</strong><br />
+https://www.youtube.com/watch?v=6hV11Cfc61Q
+
+= Setup Wizard! =
 > <strong>Easy Time Appointments Configuration for your Bookings</strong><br />
 > Set up **appointment booking system** in less than 2.5 minutes. Designed with a user-friendly flow, the wizard takes you step-by-step through key settings, including booking type selection, calendar appearance, availability preferences, and more. This step-by-step setup helps you get your booking system ready for your business quickly and easily.
 
 https://www.youtube.com/watch?v=GYJWZJBFwXw
-
-> <strong>Full Day Bookings - Setup Wizard</strong><br />
-> Easily configure Booking Calendar for full-day bookings with the new step-by-step Setup Wizard. Get your booking system ready for full day bookings in just a few minutes.
-
-https://www.youtube.com/watch?v=NJ88lGD5iJ0
 
 > <strong>Changeover Multi-Day Bookings - Setup Wizard (Pro)</strong><br />
 > Configure multi-day bookings with specific check-in and check-out days, clearly marked with diagonal or vertical lines. Perfect for bookings that require split days. <br>**Available Pro versions**.
@@ -240,40 +273,41 @@ Administrators can manage all reservations from the modern and easy-to-use admin
 = Support Languages (local) =
 
 - English
-- French (France)              97.69% [ 2828 / 2895 ], fuzzy 46, not translated 21
-- Danish                       88.08% [ 2550 / 2895 ], fuzzy 193, not translated 152
-- Dutch                        78.55% [ 2274 / 2895 ], fuzzy 470, not translated 151
-- Norwegian (Bokmål)           72.85% [ 2109 / 2895 ], fuzzy 243, not translated 543
-- German                       72.75% [ 2106 / 2895 ], fuzzy 580, not translated 209
-- Korean                       67.18% [ 1945 / 2895 ], fuzzy 661, not translated 289
-- Hungarian                    67.18% [ 1945 / 2895 ], fuzzy 666, not translated 284
-- Spanish (Spain)              61.83% [ 1790 / 2895 ], fuzzy 681, not translated 424
-- Portuguese (Brazil)          58.34% [ 1689 / 2895 ], fuzzy 790, not translated 416
-- Greek                        58.00% [ 1679 / 2895 ], fuzzy 798, not translated 418
-- Turkish                      57.24% [ 1657 / 2895 ], fuzzy 814, not translated 424
-- Italian                      55.75% [ 1614 / 2895 ], fuzzy 726, not translated 555
-- Spanish (Mexico)             53.58% [ 1551 / 2895 ], fuzzy 868, not translated 476
-- Finnish                      53.26% [ 1542 / 2895 ], fuzzy 877, not translated 476
-- Polish                       53.23% [ 1541 / 2895 ], fuzzy 866, not translated 488
-- Romanian                     52.78% [ 1528 / 2895 ], fuzzy 878, not translated 489
-- Swedish                      52.47% [ 1519 / 2895 ], fuzzy 887, not translated 489
-- Arabic                       51.99% [ 1505 / 2895 ], fuzzy 903, not translated 487
-- Russian                      51.92% [ 1503 / 2895 ], fuzzy 1126, not translated 266
-- Bulgarian                    50.36% [ 1458 / 2895 ], fuzzy 919, not translated 518
-- Slovenian                    50.22% [ 1454 / 2895 ], fuzzy 925, not translated 516
-- Chinese (Taiwan)             48.88% [ 1415 / 2895 ], fuzzy 964, not translated 516
-- Portuguese (Portugal)        48.50% [ 1404 / 2895 ], fuzzy 950, not translated 541
-- Japanese                     47.77% [ 1383 / 2895 ], fuzzy 461, not translated 1051
-- Chinese (China)              46.87% [ 1357 / 2895 ], fuzzy 951, not translated 587
-- Ukrainian                    46.56% [ 1348 / 2895 ], fuzzy 961, not translated 586
-- Catalan                      45.80% [ 1326 / 2895 ], fuzzy 888, not translated 681
-- Thai                         45.70% [ 1323 / 2895 ], fuzzy 999, not translated 573
-- Hebrew                       45.42% [ 1315 / 2895 ], fuzzy 988, not translated 592
-- Galician                     44.25% [ 1281 / 2895 ], fuzzy 1040, not translated 574
-- Slovak                       41.14% [ 1191 / 2895 ], fuzzy 961, not translated 743
-- Croatian                     39.83% [ 1153 / 2895 ], fuzzy 980, not translated 762
-- Czech                        39.69% [ 1149 / 2895 ], fuzzy 930, not translated 816
-- Chinese (Hong Kong)          23.49% [ 680 / 2895 ], fuzzy 286, not translated 1929
+- French (France)              100.00% [ 3353 / 3353 ], fuzzy 0, not translated 0
+- Danish                       76.08% [ 2551 / 3353 ], fuzzy 299, not translated 503
+- Dutch                        67.85% [ 2275 / 3353 ], fuzzy 576, not translated 502
+- Norwegian (Bokmål)           62.90% [ 2109 / 3353 ], fuzzy 346, not translated 898
+- German                       62.87% [ 2108 / 3353 ], fuzzy 683, not translated 562
+- Hungarian                    58.07% [ 1947 / 3353 ], fuzzy 769, not translated 637
+- Korean                       58.04% [ 1946 / 3353 ], fuzzy 765, not translated 642
+- Spanish (Spain)              53.41% [ 1791 / 3353 ], fuzzy 784, not translated 778
+- Portuguese (Brazil)          50.40% [ 1690 / 3353 ], fuzzy 892, not translated 771
+- Greek                        50.07% [ 1679 / 3353 ], fuzzy 900, not translated 774
+- Turkish                      49.42% [ 1657 / 3353 ], fuzzy 916, not translated 780
+- Italian                      48.17% [ 1615 / 3353 ], fuzzy 825, not translated 913
+- Spanish (Mexico)             46.29% [ 1552 / 3353 ], fuzzy 970, not translated 831
+- Finnish                      46.02% [ 1543 / 3353 ], fuzzy 979, not translated 831
+- Polish                       45.96% [ 1541 / 3353 ], fuzzy 968, not translated 844
+- Romanian                     45.57% [ 1528 / 3353 ], fuzzy 980, not translated 845
+- Swedish                      45.33% [ 1520 / 3353 ], fuzzy 989, not translated 844
+- Arabic                       44.89% [ 1505 / 3353 ], fuzzy 1006, not translated 842
+- Russian                      44.83% [ 1503 / 3353 ], fuzzy 1231, not translated 619
+- Bulgarian                    43.48% [ 1458 / 3353 ], fuzzy 1022, not translated 873
+- Slovenian                    43.36% [ 1454 / 3353 ], fuzzy 1027, not translated 872
+- Chinese (Taiwan)             42.20% [ 1415 / 3353 ], fuzzy 1067, not translated 871
+- Portuguese (Portugal)        41.87% [ 1404 / 3353 ], fuzzy 1051, not translated 898
+- Japanese                     41.28% [ 1384 / 3353 ], fuzzy 558, not translated 1411
+- Chinese (China)              40.50% [ 1358 / 3353 ], fuzzy 1050, not translated 945
+- Ukrainian                    40.20% [ 1348 / 3353 ], fuzzy 1062, not translated 943
+- Catalan                      39.55% [ 1326 / 3353 ], fuzzy 990, not translated 1037
+- Thai                         39.46% [ 1323 / 3353 ], fuzzy 1099, not translated 931
+- Hebrew                       39.22% [ 1315 / 3353 ], fuzzy 1087, not translated 951
+- Galician                     38.20% [ 1281 / 3353 ], fuzzy 1139, not translated 933
+- Slovak                       35.52% [ 1191 / 3353 ], fuzzy 1058, not translated 1104
+- Croatian                     34.39% [ 1153 / 3353 ], fuzzy 1074, not translated 1126
+- Czech                        34.27% [ 1149 / 3353 ], fuzzy 1021, not translated 1183
+- Chinese (Hong Kong)          20.28% [ 680 / 3353 ], fuzzy 374, not translated 2299
+
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -300,343 +334,62 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
-= 10.14.16 =
-- Changes in **all** versions:
-	* **Fix**:  Resoved Improper Neutralization of Special Elements used in an SQL. (10.14.16.1.)
+= 10.15 =
+- **NEW / BETA** Introduced the new **Drag & Drop Booking Form Builder** for visually creating booking forms without manually editing form code.
+	* Build forms by dragging fields directly into the canvas.
+	* Edit layouts visually with instant live preview.
+	* Create modern booking forms faster and more easily.
+- **NEW** Added support for **Contact Forms / Inquiry Forms / Request Forms** — the calendar is now optional.
+	* Create forms without booking dates when you only need contact, inquiry, or request submissions.
+	* Use Booking Calendar as a flexible alternative to traditional contact form plugins.
+	* Keep all submissions managed inside Booking Calendar with a powerful request listing and admin workflow.
+- **NEW** Booking Calendar now supports **multiple custom booking form configurations** in all versions, including the Free version.
+	* Create and use different forms for different pages, services, or booking scenarios.
+	* Manage multiple form layouts from one place more easily.
+- **NEW** Added **ready-to-use form templates** for faster form creation.
+	* Start with predefined templates for booking, contact, and inquiry forms.
+	* Or begin with a blank canvas for full flexibility.
+- **NEW** Added support for **importing existing legacy booking forms** into the new Form Builder.
+	* Helps you move existing form setups into the new visual editing workflow more easily.
+- **NEW** Added **preview page / live front-end preview** for testing forms before publishing.
+	* Check how the form looks and works on the front end before using it on your website.
+- **NEW** Booking Form Builder supports both **Builder mode** and **Advanced Form mode (Pro)**.
+	* Work visually in the Builder, or use manual form configuration when needed.
+	* Gives more flexibility for different workflows and advanced customizations.
+- **NEW** The **Drag & Drop Booking Form Builder** includes powerful layout and editing tools:
+	* **Drag & drop fields from the Fields palette** directly into the form canvas.
+	* **Live visual preview** while building and editing the form.
+	* **Multi-page forms** for creating **step-by-step wizard-style** booking forms.
+	* **Rows and columns layout** for clean and structured form designs.
+	* **Nested sections** (up to 5 levels) for advanced multi-row and multi-column layouts.
+	* **Ready section layouts** with 1, 2, 3, or 4 columns.
+	* **Column resizing with visual resizers** for precise control of field and layout widths.
+	* **Drag & drop sorting of sections** to quickly reorder the form layout.
+	* **Move Up / Move Down controls** for easier section management.
+	* **Field usage limits** that automatically prevent adding one-time fields, such as the Calendar field, more than once.
+	* **Right sidebar inspector** for easy editing of field and section settings.
+	* **Responsive-friendly column width control** with layout protection for better form structure.
+	* Improved **visual editing controls** for easier field, section, and layout management directly inside the canvas.
+- **NEW** Added flexible **form configuration management** tools.
+	* Save and restore complete form layouts, including pages, sections, columns, and fields.
+	* Load previously saved form structures with full layout restoration.
+	* Duplicate existing form configurations to create similar forms faster.
+	* Use **Save As** to create a new form based on an existing layout and settings.
+	* Organize and preview custom form setups more easily.
+- **NEW** Added support for **form details management**.
+	* Set a custom form title, slug, description, and image.
+	* Use **media library integration** to select a custom image for each form configuration.
+- **NEW** Added support for **blank form creation in Builder mode**.
+	* New forms can now start immediately in the visual Builder workflow.
+- **NEW** Added **section presets** for faster layout building.
+	* Quickly insert commonly used layout structures into the form.
+- **NEW** Added support for a modern **visual form editing workflow** instead of manual shortcode-based configuration.
+- **IMPROVED** Easier creation of complex booking forms with a more user-friendly and modern builder interface.
+- **IMPROVED** Faster form setup and editing thanks to visual drag & drop controls and instant preview updates.
+- **NOTE** This **beta feature** can still be disabled at any time in this update. You can return to the previous legacy booking form configuration via **Form Builder > Settings** in the right sidebar by disabling the **“Drag & Drop Form Builder”** option.
 
-= 10.14.15 =
-- Changes in **all** versions:
-	* **Fix**:  Resolved issue "Uncaught TypeError: can't access property "addAction", elementorFrontend.hooks is undefined" in some systems. (10.14.15.1)
-	* **Fix**:  Resolved issue of Authenticated User Settings Modification. (10.14.15.2)
-
-= 10.14.14 =
-- Changes in **all** versions:
-	* **Fix**: Loads inline CSS via wp_add_inline_style in header of the page. Safe for elementor. (10.14.14.1)
-	* **Fix**: Resolve Missing Authorization to Unauthenticated Booking Details Exposure in Timelines. (10.14.14.2)
-
-= 10.14.13 =
-- Changes in **all** versions:
-	* **Fix**: Resolve issue of not showing calendar and showing the warning "The calendar could not be initialized on this page." in some  systems. (10.14.13.2)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Correctly shows number of selected days / nights in search results,  if used shortcodes [search_nights_number] or [search_days_number]. (10.14.13.1)
-
-= 10.14.12 =
-- Changes in **all** versions:
-	* **Fix**: Set minimum user role to as 'editor' to access the Boking Calendar menus, after initial activation of plugin. You can change this user role on the bspgs > Admin Panel > Plugin Menu / Permissions page. (10.14.12.1.)
-
-= 10.14.11 =
-- Changes in **all** versions:
-	* **Fix**: Intentionally completely disable showing booking deatils in Timeline view on Front-End side. (10.14.11.1.)
-
-= 10.14.10 =
-- Changes in **all** versions:
-	* **Improvement**: Improved calendar loading in Elementor Preview (iframe mode) to ensure calendars initialize correctly and AJAX refresh works without errors — preventing false “duplicate calendar” messages like: "You have added the same calendar more than once on this page."
-	* **Improvement**: Show warning if Booking Calendar shortcode is placed inside an Elementor Text Editor widget. Since Elementor 3.33.5,  you need to use Elementor Shortcode widget or the native Booking Calendar Elementor widget.
-	* **Improvement**: Code refactoring for front-end side form loading.
-	* **Improvement**: Refactoring implementation of text captcha, for ability to use addons of replacing this captcha. Find more info in /includes/_capacity/captcha_simple_text.php
-	* **Fix**: Added stricter conditions for showing booking details in the Timeline view (front end): details are now displayed only to logged-in users who meet the minimum user level set in Settings > Manage Bookings > Timeline (front end). (10.14.10.1.)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Resolved issue of not updated the [capacity_hint] with  avvailable slots in "booking form without calendar" shortcode, after loading of the page. *(Business Large, MultiUser)*
-	* **Improvement**:  Prevent the warning "Start Time is invalid. The date or time may be booked, or already in the past! Please choose another date or time." from appearing when the change-over feature is active, today's date is selected as the check-in date, and the fixed check-in time is already in the past. (10.14.10.2.) *(Business Small/Medium/Large, MultiUser)*
-
-= 10.14.9 =
-- Changes in **all** versions:
-	* **Improvement**: Updated French trasanltion by Jean-Gabriel NOZE.
-	* **Fix**: Explicitly disable the variable that controls the display of "Booking details in popover", in the free  version to prevent any potential hacks. (10.14.9.2.)
-	* **Fix**: Fixed vulnerability. Added strict sanitastion of dates for the calendar. (10.14.9.1.)
-	* **Fix**: Some other small fixes of styles and mistakes in timeline shortcode.
-
-= 10.14.8 =
-- Changes in **all** versions:
-	* **Fix**: Resolved vulnerability issue of correctly  escaping months parameter in he availability calendar shortcode.
-
-= 10.14.7 =
-- Changes in **all** versions:
-	* **Improvement**: Enhanced showing icons in left vertical  menu  in Compact  mode.
-	* **Fix**: Resolved vulnerability issue of correctly  escaping aggregate parameter in shortcodes.
-	* **Fix**: Resolved issue of bookings for 2 dates,  hile using start time and duration  of time, and based on duration  of time the end time in this second selected date. Example: check  in time: 22:00, duration: 5 hours.
-
-= 10.14.6 =
-- Changes in **all** versions:
-	* **Fix**: **Cloudflare Rocket Loader**: Prevents the stuck "Calendar Loading..." message by excluding key calendar scripts from Rocket Loader deferral (10.14.6.1).
-
-= 10.14.5 =
-- Changes in **all** versions:
-	* **Fix**: Rare issue where some caching/minify/deferral/HTML-optimizer plugins corrupted the inline “Loading…” calendar snippet, causing calendars to fail to appear or show stray text. The loader now runs via a small external script and is compatible with performance plugins; if something’s missing, a clear on-screen message is shown.
-
-= 10.14.4 =
-- Changes in **all** versions:
-	* **New**: Compact menu mode with more informative labels and wider size.
-	* **Improvement**: Resolved calendar loading issues with popular caching/optimization plugins - WP Rocket 3.19.2.1, WP-Optimize 4.2.4, WP Super Cache 3.0.1, Jetpack Boost 4.3.1, WP Fastest Cache 1.3.9. (10.14.4.2)
- 	* **Fix**: Backdrop z-index in modal windows so the top toolbar is properly hidden.
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Improvement**: **Cleaner multiline shortcodes** — You can now put each parameter on its own line in any form shortcode (selectbox, checkbox, radio, etc.). Named attributes like multiple="" or class="..." can also be split across lines. Nothing to change in your existing forms: all single-line shortcodes continue to work exactly as before.
-
-= 10.14.3 =
-- Changes in **all** versions:
- 	* **Fix**: Prevent opening blank windows on WordPress playground for pseudo links like this: <a href="javascript:void(0)"></a> and to stay in the same tab.
-
-= 10.14.2 =
-- Changes in **all** versions:
- 	* **Fix**: CSS vulnerability related sanitizing colors. XSS in Emails CVE-2025-9346. (10.14.2.2.)
- 	* **Fix**: Resolved issue of not updating from "Full page width" to fixed width size in some themes. (10.14.2.1.)
- 	* **Fix**: css issue of calendar in full page widget, when showing calendar with 3 or more months. (10.14.2.3.)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **NEW** Updated Advanced Form editor. Shortcode engine accept modern, quoted attributes like class="...", placeholder="...", maxlength="..." (and more), while keeping every legacy behavior (e.g., class:foo, placeholder:Enter_name, 40/255 size syntax) fully backward-compatible and safe.  (11.0.2)
-	* **NEW** Quoted attributes anywhere in the shortcode:  [text firstname class="someCSSclass otherclass" placeholder="First name" maxlength="64" "John"]  (11.0.2)
-	* **NEW** Selects / radios / checkboxes accept quoted classes and other safe attributes: [selectbox country class:"wide" size="6" include_blank "Unated States@@US" "France@@FR"]
-	* **NEW** Booleans preserved: multiple still works (legacy token) and also via multiple="" or multiple="multiple".
-	* **NEW** Defaults remain last quoted values: by removing quoted attribute values from the “values” bucket, we guarantee back-compat with your “defaults come last” rule.
-	* **NEW** Legacy behavior untouched: id:foo, class:bar, placeholder:Enter_name, and 40/255 still work and take sensible precedence.
-	* **NEW** Safety: we allow a conservative set of attributes, block style, and escape all values with esc_attr. aria-* and data-* are permitted.
- 	* **Improvement**: Added support for quoted placeholders in booking form shortcodes. You can now specify placeholders with spaces directly in quotes inside the form shortcode. For example: [text name placeholder:"Enter first name" "John"] This makes it easier to use multi-word placeholders without underscores. The old syntax (placeholder:Enter_first_name) still works for backward compatibility.
-
-= 10.14.1 =
-- Changes in **all** versions:
-	* **Improvement**:  Enhanced the warning message displayed during calendar loading if some JavaScript wasn't loaded correctly. (10.14.1.1).
-	* **Improvement**:  Refactoring functinality  of using 'Full  Screen' mode with parameter 'is_default_full_screen' => true  in ->tabs(...) method. (10.14.1.2).
-	* **Improvement**:  Prepare functionslity  for showing content in right sidebar in future updates.  (10.14.1.3).
- 	* **Improvement**:  Add limitation of scrolling back to the past dates (if editing booking with  dates in the past,  or if enabled option "Allow booking in the past" on the Add Booking page) to the number of months defined in the "Number of months to scroll" option on the WP Booking Calendar > Settings > Calendar > Calendar Settings page. It's prevent of showing scroll dates until 1900 year. (10.14.1.4)
- 	* **Fix**: Add the exception of not blocking the 'End Time' field options, if selected several dates started from  "today" date and option "Use selected times for each booking date" is disabled. Previosly  such  edn time options was blocked because system wrongly detected them  as times in the past. (10.14.1.5.)
-
-= 10.14 =
-- Changes in **all** versions:
-	* **New**:  Ability to **set the start and end dates for the calendar** using shortcode parameters. Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' startmonth='2025-3']  (10.13.1.4.)
-	* **New**:  New: If startmonth is omitted, the calendar will now automatically use the month from calendar_dates_start as the initial display month.  Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31'] (10.13.1.4)
-	* **New**:  New: New: You can now **allow users to submit bookings for past dates**, as long as those dates are within the visible range set by calendar_dates_start and calendar_dates_end in the shortcode. Useful for administrative or backdated bookings. Shortcode Example: [booking resource_id=1 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31']
-	* **New**:  New: Elementor native supports of these parameters   calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' in Advanced section.
-	* **Improvement**: When calendar_dates_start and calendar_dates_end are defined in the shortcode, the system skips checking availability from today, and instead starts from the defined calendar_dates_start. (10.13.1.4)
-	* **Improvement**: To **enable the new Smart Phone Validation** feature introduced in the previous update, go to: WP Booking Calendar > Settings > Booking Form > Form Options and enable the "Smart Phone Validation" option. It is disabled by default. (10.13.1.5)
-	* **Fix**:  Improved form phone validation by checking up to 20 times every 0.5 seconds if the phone field and iMask are available before initializing the validation. (10.13.1.1)
-	* **Fix**:  Enhanced phone mask detection to better match the most specific country code, improving accuracy. (10.13.1.2)
-	* **Fix**:  Enhanced phone mask detection to better match the most specific country code, improving accuracy. Previously, numbers starting with longer prefixes like +1340 or +1284 could incorrectly match the generic +1 (USA). Now the system selects the longest matching prefix for correct formatting. If no match is found, a default mask is used. (10.13.1.2)
-	* **Fix**:  Added support for the cell_height parameter in the Booking Calendar shortcode. Example: [booking nummonths=1 options='{calendar months_num_in_row=1 width=100% cell_height=40px}'] Previously, calendar cells used a 1:1 aspect ratio (height equal to width). If you want to keep that behavior, simply remove the cell_height parameter. (10.13.1.3)
-
-= 10.13 =
-- Changes in **all** versions:
-	* **New**: **Full Elementor support**! Add and configure Booking Calendar directly in the Elementor editor with real-time preview and skin selection. (10.12.4.0)
-	* **New**: **Calendar Preloader** with loading bar to prevent layout shift on slow connections. (10.12.4.3)
-	* **New**: **Unified sidebar menu—collapsible** structure with all menus shown on a single page for quicker access. (10.12.4.5)
-	* **New**: Auto **phone number validation**. Detects phone fields by name ("phone", "fone", "tel", "mobile", "telefono", "telefone", "telefon".)etc., and intelligently applies phone number masks based on the country code the user begins to enter. Example: Entering +1 results in +1 000 000 0000 (USA), +34 results in +34 000 000 0000 (Spain). Only digits are accepted—any unsupported characters are automatically blocked. Additionally, a placeholder with the correct format is shown based on the user’s browser locale (no API required). (10.12.4.4)
-	* **New**: **Auto-detects country** via user browser locale (no API needed) and shows a helpful phone format placeholder.
-	* **Improvement**: Displays a warning if trying to load a duplicate calendar or a non-existent resource. (10.12.4.6)
-	* **Improvement**: Removed horizontal lines in the left sidebar for a cleaner UI. (10.12.4.7)
-	* **Fix**: Improved calendar element CSS rendering for better consistency across themes. (10.12.4.2)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New**: Added “Service Selection Wizard” booking form template, with vertical service selection and a modern step-by-step layout. (10.12.4.8)
-	* **New**: Added “Wizard (No Times)” booking form template with a background panel design. (10.12.4.8)
- 	* **Improvement**: Booking ID is now included in Redsys payment transaction details for better tracking. (10.12.4.1)
-
-= 10.12.3 =
-- Changes in **all** versions:
-	* **Improvement**: Added feedback  form  during plugin  deactivation. (10.12.3.4.)
-	* **Fix**: Correct showing "front-end" side page with  booking form  in What's  New section  for Playground. (10.12.3.1.)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **Fix**: When accessing the .ics calendar feed for a parent booking resource (with specific capacity) in Booking Calendar Business Large, only bookings from the parent resource are now exported. Previously, bookings from all associated child resources were incorrectly included. (Version 10.12.3.2)
- 	* **Fix**: Warning: Undefined property: stdClass::$id in ..\wp-admin\includes\update.php on line 473  (10.12.3.3)
-
-= 10.12.2 =
-- Changes in **all** versions:
-	* **Improvement**: Added links to Booking admin panel and booking form in "What's New" section.
-	* **Improvement**: Added simplebar for scrolable elements. (10.12.2.3.)
-	* **Fix**: Added prevention of errors in WP CLI plugin testing (10.12.2.1.)
-	* **Fix**: Added left sidebar menu to scroll along with the page on mobile devices to improve accessibility. (10.12.2.2.)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **Fix**: Fix not showing booking resources on the Resources page and not ability to  create a new booking resources. Previosly  to  resolve this issue it require to  go  to **WP Booking Calendar > Settings > Admin Panel > Booking Admin Panel** and set the value for the "Resources number per page" option, then clicked "Save changes." (10.12.2.4.)
- 	* **Fix**: Critical fault on the website after paying with iDeal, PayPal (legacy), Authorise.net! Error appears in update 10.12.0 and 10.12.1 during redirect to the Wordpress page will end in this fault. (10.12.2.5.)
-
-= 10.12.1 =
-- Changes in **all** versions:
-	* **Improvement**: **Improved Sidebar Navigation**: The left sidebar is now sticky and scrollable for easier access. (10.12.1.2).
-	* **Improvement**: **Better Tooltips**: Tooltips now show when hovering over collapsed menu items in compact mode. (10.11.5.8.2.)
-	* **Improvement**: **Color Scheme Support**: The plugin buttons now matches the WordPress admin color scheme you’ve selected in your profile. (10.12.1.3.)
-	* **Improvement**: **Fullscreen Mode Memory**: Booking Calendar remembers whether you used fullscreen or normal mode and reopens in the same way next time.
-	* **Improvement**: **WP Playground Support**: Now compatible with the WordPress Playground environment. (10.12.1.3.)
-	* **Improvement**: **Top Bar Logo**: A Booking Calendar logo has been added to the top WordPress admin bar. (10.12.1.6.)
-	* **Improvement**: **Expand / colapse Left Sidebar buttons**: Added additional expand/colapse left sidebar buttons at bottom of the screen. (10.12.1.7.)
-	* **Improvement**: During auto-creation of pages with booking form try to set "Full width" theme template, if available.
-	**Fix**: Top news messages are now displaying correctly. (10.12.1.1).
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **Fix**: Correct showing PayPal button titles on bWP Booking Calendar > Settings > Payment Setup > PayPal page.
- 	* **Fix**: Fatal error during activation of paid version of Booking Calendar, if by some reason, the Booking Calendar Free version  was not activated,  yet. Uncaught Error: Class "WPBC_Action_Scheduler_Compatibility" not found in ../wp-content/plugins/booking-calendar-com/includes/activation/activation-pro.php:337
-
-= 10.12.0 =
-- Changes in **all** versions:
-	* **New**: Added a new green calendar skin.
- 	* **Fix**: Resolved an issue where time slots were not being blocked on the front-end for booking resources with specific capacity, if some child booking resources were set as unavailable in the Availability menu. (10.11.5.1)
- 	* **Fix**: Do not apply options "Limit available days from today" and "Unavailable time from current time" in the admin panel. These options apply only on the front-end side. It gives more flexibility for admin users.
-	* **Improvement**: Showing tooltips, when mouse over menu icons in left sidebar, when it set to compact mode. (10.11.5.8)
-	* **Improvement**: Open  Availability > Days Availability page by  default in compact mode. (10.11.5.8)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New**: Updated the plugin structure for paid versions. All paid versions now require the Booking Calendar Free version and must be installed into a standard folder named `booking-calendar-com`. This structure enables automatic updates of the Booking Calendar Free version, ensuring you receive all critical functionality and security fixes in base Booking Calendar version. Updates for paid versions can still be managed via the plugin website. Pro users will continue receiving automatic updates for the Free version while being able to request paid add-ons, depending on their purchased license type and active subscription.
-	* **Improvement**: Improved Stripe payment system integration to avoid creating duplicate customer entries. Now, payments from returning users will be associated with the same customer in the Stripe dashboard. (10.11.5.3)
-	* **Improvement**: Added links to test card numbers for making test payments in Stripe, PayPal, and Redsys. Available at WP Booking Calendar > Settings > Payment Setup > Payment Gateways.
- 	* **Fix**: Made the "Payment description at gateway website" option required for the Stripe payment system. (10.11.5.2)
-	* **Fix**: Corrected the issue where dates and costs were displayed incorrectly on the "Payment" page when the "Set check-out date as available" option was enabled. (10.11.5.4) *(Business Small/Medium/Large, MultiUser)*
-	* **Fix**: Set original cost hint calculation (days cost) do not based on discount coupon codes  (10.11.5.7) *(Business Large, MultiUser)*
-	* **Fix**: Resolved PHP Fatal error: Uncaught Error: Object of class stdClass could not be converted to string in ../lib_p.php:192 while was used incorrect shortcode on the Settings > Admin Panel > Timeline View (Back-End) page (10.11.5.9)
-
-= 10.11.4 =
-- Changes in **all** versions:
-	* **New**: Added button in Booking Listing  header to Expand / Collapse all booking rows. (10.11.4.6)
-	* **Improvement**: Auto open "check out" calendar, if selected date in check in calendar in "Dates Filter" option in Booking Listing page.(10.11.4.2)
-	* **Improvement**: Improvement of consistent menu  items in Bulk Actions menu and in the booking "Action menu". Pending / Trash / Restore / Delete options has the same color and same opening popup dialog. (10.11.4.1)
-	* **Improvement**: Refactoring code of access menu pages. 10.11.3.5.1.
-	* **Improvement**: Update default calendar  skins for initial  setup. (10.11.4.2.)
-	* **Improvement**: Update default form  type for initial  setup. (10.11.4.3.)
-	* **Fix**: Fatal error: Can't inherit abstract function WPBC_Menu_Structure::in_page() (previously declared abstract in WPBC_Page_Structure) in ../wp-content/plugins/booking/includes/ui_settings/class-page-structure.php on line 0 (10.11.4.4.)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Improvement**: Update number of usage discount coupons, only if it's not editing of the bookings. (10.11.3.6)
-
-= 10.11.3 =
-- Changes in **all** versions:
-	* **New**: Added options "Allow booking in the past" at the WP Booking Calendar > Add Booking page for ability to  submit the bookings in the past.
-	* **Improvement**: Remove link from expanded booking details in Booking Listing page for ability to "copy" the booking details. Previosly it was as a link to colapse the view of expanded booking details. (10.11.3.2)
-	* **Improvement**: Remove underline of dates in calendar in different themes conflicts. (10.11.3.1)
-	* **Improvement**: Fix showing change-over days colors in new calendar skins: 25_5_***
-	* **Improvement**: Updated Booking Calendar icon for "blocks" and Tiny  toolbar at  posts and pages. (10.11.3.3)
-	* **Translation**: Local Danish translation updated by Finn Sommer.
-	* **Fix**: Overflow width size on the WP Booking Calendar > Settings > Booking Form page (10.11.3.4)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Resolved showing Availability > Season Availability page. It showed blank page in updatess 10.11 - 10.11.2. (10.11.3.5)
-
-= 10.11.2 =
-- Changes in **all** versions:
-	* **New**: Added 4 new calendar skins.
-	* **Fix**: Resolved vulnerability of SCSS related to the parameters of [wpbc ...] shortcode. (10.11.2)
-
-= 10.11.1 =
-- Changes in **all** versions:
-	* **New**: Added 5 new calendar skins.
-	* **Fix**: Fixed position of the actions button on mobile devices.
-
-= 10.11 =
-- Changes in **all** versions:
-	* **New**: **New Logo**: Booking Calendar now features a refreshed logo using the initials “b” and “c” for a cleaner, more modern visual identity.
-	* **New**: Major update to the **booking admin interface** for a cleaner and more modern experience focused on essential elements.
-	* **New**: Added **Full-Screen Mode** on all admin pages. Click the full-screen icon in the top right to focus only on the booking panel.
-	* **New**: Introduced a **Universal Left Sidebar Menu** to access all settings. Supports wide, compact, or minimized view. Improved for mobile usability.
-	* **New**: **Top Horizontal Bar** stays visible during scrolling, with quick access to save settings, full-screen mode, etc.
-	* **New**: Fully redesigned **Booking Listing Page** with a cleaner UI focused on booking dates, status, and labels.
-	* **New**: Booking dates now appear on the left in the format best suited to the booking type (e.g. multi-day vs. single time-slot).
-	* **New**: Option to expand booking dates or full details with hover/click on arrow icon.
-	* **New**: All booking actions are grouped in a dropdown at the right side of each booking.
-	* **New**: Many actions now open pop-up windows for additional info (e.g. action reason input).
-	* **New**: Bulk actions menu relocated to top-left; auto-expands with additonal actions when bookings are selected.
-	* **New**: Improved pagination showing total bookings, current page range, “Back/Next” buttons, and dropdown page navigation at the footer.
-	* **New**: UI elements redesigned for clarity and accessibility; visual focus cues improved.
-	* **New**: Refreshed **Timeline View** layout; booking resource selection improved in paid versions.
-	* **New**: Reorganized **Settings Pages** Structure in the left sidebar for faster access to specific settings.
-	* **Improvement**: Improved accessibility support for calendar day highlighting during keyboard selection (EAA compliant).
-	* **Improvement**: Enhanced time picker accessibility for keyboard users (EAA compliant).
-	* **Improvement**: Allowed editing of past bookings by appending &allow_past to the booking URL. For example: https://server.com/wp-admin/admin.php?page=wpbc-new&booking_type=2&booking_hash=c5cbdef7abfa3423bb9ae8e8dd36157d&parent_res=1&booking_form&is_show_payment_form=Off&allow_past (10.10.3.2)
-	* **Improvement**: If no bookings found in Booking Listing, a “Reset Filter” link appears to show all bookings.
-	* **Under Hood**: Updated URL slugs for Booking Listing (&tab=vm_booking_listing) and Timeline (&tab=vm_calendar) pages.
-	* **Fix**: Prevented loading of Booking Calendar News images when the news section is closed. (10.10.3.1)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Improvement**: Updated Redsys payment system to log more detailed info if a payment fails. (2025-03-06)
-	* **Improvement**: If the “Redirect to Thank You Page” option is enabled in Settings > General > Booking Confirmation, the system now redirects even when payment forms are active. Previously, it would show the confirmation on the same page. (10.10.3.3)
-	* **Under Hood**: Removed support for Opayo (SagePay) as protocol 3.0 is no longer supported by the provider.
-	* **Under Hood**: Removed support for the legacy PayPal Standard gateway. Only PayPal Standard Checkout is now supported.
-	* ...and hundreds of other small improvements and refinements!
-
-= 10.10.2 =
-- Changes in **all** versions:
-	* **Improvement**: Changed the option "Choose how to display appointment availability" in the Wizard setup  to radio  buttons selection.
-
-= 10.10.1 =
-- Changes in **all** versions:
-	* **New**: Added a new form layout, "**Wizard (Steps Timeline)**", on the Settings > Booking Form page. This layout displays a wizard with a "Steps" timeline at the top of the form. It also features improved borders for a cleaner look.
-	* **New**: Added ability to set **Service selection with specific duration** and start time for appointment bookings. In the Setup Wizard, you can select "Wizard (Steps Timeline) - Service Duration." This feature is ideal for appointment types based on service duration, such as salon or doctor appointments, consultations, product demos, table bookings, and more.
-	* **Tip and Trick**: **Add a time duration field** in the Settings > Booking Form page with the reserved name "**durationtime**" and options like: "**Service A (15 min)@@00:15**" or "**Service D (1 hour)@@01:00**". The option format is "Title@@Time Duration," where "Title" is usually the service name and "Time Duration" is defined in the format HH:MM (HH = hours from 00 to 23, MM = minutes from 00 to 59). (10.10.1.4)
-	* **Tip and Trick**: **Add a start time field** in the Settings > Booking Form page with the reserved name "**starttime**" and options like: "**8:15 AM@@08:15**" or "4:20 PM@@16:20." The option format is "Title@@Time," where "Title" is any text (typically the time in AM/PM format) and "Time" is defined in the 24-hour format (HH:MM), where HH = hours (00 to 23) and MM = minutes (00 to 59).
-	* **Improvement**: Updated the timepicker color scheme to a more modern style.
-	* **Fix**: Changed the booking hash by default after approval, pending, trash, or restore actions. This helps prevent unauthorized visitors from editing bookings by using outdated booking hashes. (10.10.1.1)
-	* **Fix**: In the simple booking form, only show the title and value for the time slot field. Hide them for other select boxes or checkboxes to avoid duplicating data, such as "Data A / Data A." (10.10.1.3)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Improvement**: Removed the legacy option: "Disable changing booking resource while editing a booking." (10.10.1.2) *(Business Large, MultiUser)*
-	* **Fix**: Resolved an issue with using translation shortcodes in the "Warning for Missing Dates" message in the Search Form.  *(Business Large, MultiUser)*
-
-= 10.10 =
-- Changes in **all** versions:
-	* **Improvement**: Automatically hide/disable past times when selecting today's date.(10.9.6.4).
-	* **Improvement**: "Unavailable time from current time" now follows the local WordPress timezone. Added help tooltips in WP Booking Calendar > Settings > General > Availability.  (10.9.6.3)
-	* **Improvement**: Removed default colons (:) from field labels. You can manually add them when editing forms in Simple Mode at WP Booking Calendar > Settings > Booking Form. (10.9.6.2)
-	* **Under the hood**: Introduced a new JavaScript event: 'wpbc_before_booking_create', triggered before a booking is created. Developers can bind actions using: jQuery('body').on('wpbc_before_booking_create', function(event, resource_id, params) { ... });  (10.9.6.1)
-	* **Fix**: Resolved CSS conflicts affecting calendar day cell width in certain WordPress themes.
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New**: Added "**Appointments Based on Service Duration**" **form template** for quick service-based bookings. (10.9.6.5)
-	* **New**: Added support for **Saving "Option Titles"** in select boxes, checkboxes, and radio buttons using the format "Title@@Value". Example: [selectbox durationtime "Service A (20 min)@@00:20" "Service B (30 min)@@00:30"]. Display the title using [durationtime_val] (use configuration with  field name + "_val" sufix) or the value using [durationtime]. This feature enables better customization for service durations and other selected options with Titles and Option Value configuration.
-	* **New**: Introduced a **Steps Timeline Shortcode**: [steps_timeline steps_count="3" active_step="2" color="#cd7b32"],  where steps_count="N" - defines total number of steps; active_step="X" - highlights the current step; color="#RGB" - optional parameter to customize step color. (10.9.6.5)
-	* **Improvement**: "Limit available days from today" now follows the local timezone from midnight instead of UTC. Help tooltips added in WP Booking Calendar > Settings > General > Availability. (10.9.6.3)
-	* **Improvement**: If "Change hash after booking approval" is enabled, the hash now also updates when moving bookings to Pending or Trash.(10.9.6.1)
-
-= 10.9.1 - 10.9.5 =
-- Find more at [this page](https://wpbookingcalendar.com/changelog/)
-
-= 10.9 =
-- Changes in **all** versions:
-	* **New**: Added the ability to define unavailable intervals for specific hours and minutes starting from the current time, in addition to defining unavailable dates starting from today. (10.8.1.4)
-	* **New**: Added the ability to select the "Number of months in a row" value in the Options toolbar on the WP Booking Calendar > Availability > Days Availability page. This feature enhances the display of calendar days for some calendar skins, with the default set to 3 months. (10.8.1.5)
-	* **Improvement**: Added a warning message with a troubleshooting link during the 4th and 5th steps of the Setup Wizard for users with the Wordfence plugin installed. This helps address potential conflicts during setup.
-	* **Improvement**: Automatically restore bookings from the Trash when they are approved. (10.8.1.1)
- 	* **Improvement**: Set the input type of HTML tags for email fields to email for improved validation. (10.8.1.2)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **New**: Added support for the Redsys payment gateway via the Redsys Redirection method. This integration allows Spanish users to accept payments for bookings.
- 	* **Fix** Resolved an issue with the "real-time" cost display, which sometimes showed incorrect values due to delays caused by multiple requests to the server. (10.8.1.3)
- 	* **Fix** Resolved a warning issue on the WP Booking Calendar > Availability > Season Availability page. (10.8.1.6)
-
-= 10.8 =
-- Changes in **all** versions:
- 	* **New** Added the ability to configure the booking form structure as a multi-step wizard in the Booking Calendar Free version. This feature enables users to complete the booking process in several steps for improved usability. (10.7.1.7)
- 	* **New** Added the ability to define the number of columns in the booking form in the Booking Calendar Free version. Configure the column layout at WP Booking Calendar > Settings > Booking Form page under the "Form Layout" section. (10.7.1.6)
- 	* **New** Added a 20-minute time-slot interval template for faster configuration of time slots. Access this feature on the WP Booking Calendar > Settings > Booking Form page.
-	* **Under hood** Enabled the use of 'allow_past' URL parameter to show past bookings and scroll through past months on the Booking > Add Booking page in the admin panel. (10.7.1.2)
-	* **Enhanced** Added new  skins: "Black-2", "Green-01", "Light-01", and "Traditional-times" to the legacy calendar skin group. (10.7.1.5)
-	* **Enhanced** Disabled auto-selection of legacy calendar skins. (10.7.1.5.1)
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
- 	* **New** Added a new **"Time-Based Appointments" form template** in a multi-step wizard style. Please reset your booking form by selecting this template from the dropdown list in the toolbar at Settings > Booking Form page. (10.7.1.4)
- 	* **New** Introduced shortcodes [search_days_number] and [search_nights_number] for use in search results. Available on the WP Booking Calendar > Settings > Search page. (10.7.1.1)   *(Business Large, MultiUser)*
-
-= 10.7 =
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
-= 10.14 =
-Control start and end dates for booking and availability. Elementor Integration, Smart Phone Validation, Improved Sidebar Menu!
-
-= 10.13 =
-Now with Elementor Integration and Smart Phone Validation and Improved Sidebar Menu!
-
-= 10.12 =
-Pro versions now require the Free version for updates. New Skin and many small improvements.
-
-= 10.11 =
-Major admin panel redesign with a modern UI, new full-screen mode, smarter booking list, improved settings navigation, and enhanced accessibility across all Booking Calendar pages.
-
-= 10.10 =
-Better time slot availability, timezone-based settings, improved form customization, new appointment templates, booking hash security, and UI fixes!
-
-= 10.9 =
-New unavailable time intervals from the current time, Redsys payment integration, improved calendar functionality, and usability fixes.
-
-= 10.8 =
-Configure the booking form structure as a multi-step wizard to guide users through the booking process step-by-step and define the number of columns in the booking form (in free version).
-
-= 10.7 =
-Easy Setup Wizard for quick booking calendar configuration of essential booking settings.
-
-= 10.6 =
-Implemented a structured settings dashboard with brief descriptions for each feature. This update enhances user navigation, making it easier to locate and configure the desired settings.
-
-= 10.5 =
-New calendar skin with rounded day cells. Updated UI of booking form fields setup. Ability to create and use multiple custom booking forms while setup in "Simple Form" mode in Pro versions.
-
-= 10.4 =
-Discover a modern calendar skin, added new color schemes, and improved the UI in Timeline View and Booking Listing for a more seamless booking experience.
-
-= 10.3 =
-Enhanced Calendar Overview and Timeline Views, and more...
-
-= 10.2 =
-Explore Advanced Configurable Booking Confirmation, Enhanced Booking Form Typography, and more...
+= 10.15 =
+New **Drag & Drop Booking Form Builder** for visually creating booking, contact, and inquiry forms. Build forms faster with live preview, templates, multi-page layouts, and flexible visual editing — without manually editing form code.

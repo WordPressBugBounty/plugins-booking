@@ -1,4 +1,11 @@
-<?php  function wpbc_all_translations3() { $wpbc_all_translations = array();
+<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+
+function wpbc_all_translations3() { $wpbc_all_translations = array();
  /* translators: 1: ... */
  $wpbc_all_translations[] = __('Change this date status at %1$sBooking Calendar %2$s Availability %3$s Season Availability page.', 'booking'); // translators: 1: ...
  $wpbc_all_translations[] = __('Unavailable week day', 'booking'); /* translators: 1: ... */ 

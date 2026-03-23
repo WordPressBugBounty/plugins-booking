@@ -1463,7 +1463,7 @@ function wpbc_ajx_toolbar_enqueue_css_files( $where_to_load ) {
 
 	if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
 
-		wp_enqueue_style( 'wpbc-flex-toolbar', wpbc_plugin_url( '/includes/_toolbar_ui/_src/toolbar_ui.css' ), array(), WP_BK_VERSION_NUM );
+		wp_enqueue_style( 'wpbc-flex-toolbar', wpbc_plugin_url( '/includes/_toolbar_ui/_out/toolbar_ui.css' ), array(), WP_BK_VERSION_NUM );
 	}
 }
 add_action( 'wpbc_enqueue_css_files', 'wpbc_ajx_toolbar_enqueue_css_files', 50 );

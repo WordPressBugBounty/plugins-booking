@@ -100,6 +100,11 @@
 .wpbc_ui_el__horis_nav_item.align_right {
 	margin-left: auto;
 }
+/* Debug tab */
+.wpbc_ui_el__horis_nav_item.small_debug_tab a.wpbc_ui_el__horis_nav_item__a {
+	font-size: 10px;
+	line-height: 19px;
+}
 /* Icons */
 .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon{
 	margin:0;

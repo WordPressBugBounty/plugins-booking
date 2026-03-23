@@ -1368,7 +1368,10 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 
 	// FixIn: 10.12.4.9.
 	if ( in_array( $form_type, array( 'wizard_no_times_a' ) ) ) {
-		$form_content = '<style type="text/css">.wpbc_container_booking_form .wpbc__field .wpbc_calendar_wraper:has(.cal_month_num_1){width:auto;} .wpbc_hints{float: right;margin: 10px;}</style>';
+		$form_content  = '';
+		if ( ! wpbc_is_this_demo() ) {
+			$form_content .= '<style type="text/css">.wpbc_container_booking_form .wpbc__field .wpbc_calendar_wraper:has(.cal_month_num_1){width:auto;} .wpbc_hints{float: right;margin: 10px;}</style>';
+		}
         $form_content .='<!--  Simple HTML shortcodes in the form (check more at "Generate Tag" section): \n';
         $form_content .='      Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></spacer> --> \n';
 		$form_content .='<div class="wpbc_wizard__border_container"> \n';

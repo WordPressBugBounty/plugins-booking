@@ -150,13 +150,13 @@ class WPBC_TimelineFlex {
         // FixIn: 7.0.1.50.
         if ( isset( $attr['options'] ) ) {
 
-            $bk_otions = $attr['options'];
-	        $bk_otions = html_entity_decode( $bk_otions );                                // FixIn: 9.8.15.6.
+            $shortcode_param__options = $attr['options'];
+	        $shortcode_param__options = html_entity_decode( $shortcode_param__options );                                // FixIn: 9.8.15.6.
             $custom_params = array();
-            if (! empty($bk_otions)) {
+            if (! empty($shortcode_param__options)) {
                 $param ='\s*([^\s]+)=[\'"]{1}([^\'"]+)[\'"]{1}\s*';      // Find all possible options
                 $pattern_to_search='%\s*{([^\s]+)' . $param .'}\s*[,]?\s*%';
-                preg_match_all($pattern_to_search, $bk_otions, $matches, PREG_SET_ORDER);
+                preg_match_all($pattern_to_search, $shortcode_param__options, $matches, PREG_SET_ORDER);
                 //debuge($matches);
                 /**
 	 * [bookingtimeline  ... options='{resource_link 3="http://beta/resource-apartment3-id3/"},{resource_link 4="http://beta/resource-3-id4/"}' ... ]

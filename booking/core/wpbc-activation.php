@@ -423,14 +423,20 @@ function wpbc_booking_activate() {
 
 	make_bk_action( 'wpbc_free_version_activation' );
 
+	do_action( 'wpbc_free_version_activation' );
+
 	// -----------------------------------------------------------------------------------------------------------------
 	// Other versions Activation
 	// -----------------------------------------------------------------------------------------------------------------
 	make_bk_action( 'wpbc_other_versions_activation' );
 
+	do_action( 'wpbc_pro_versions_activation' );
+
 	wpbc_reindex_booking_db();
 
 	make_bk_action( 'wpbc_after_activation' );
+
+	do_action( 'wpbc_after_activation' );
 }
 add_bk_action( 'wpbc_activation',  'wpbc_booking_activate' );
 
@@ -456,7 +462,6 @@ function wpbc_booking_deactivate() {
     delete_bk_option( 'widget_bookingsearchwidget' );
     delete_bk_option( 'widget_bookingselectwidget' );
     delete_bk_option( 'booking_activation_redirect_for_version' );
-    
     
 	// -----------------------------------------------------------------------------------------------------------------
     // DB Tables

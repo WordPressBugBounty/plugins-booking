@@ -1,4 +1,11 @@
-<?php  function wpbc_all_translations1() { $wpbc_all_translations = array(); 
+<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+
+function wpbc_all_translations1() { $wpbc_all_translations = array();
  $wpbc_all_translations[] = __('month(s)', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('year(s)', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Number of months to scroll', 'booking'); /* translators: 1: ... */ 

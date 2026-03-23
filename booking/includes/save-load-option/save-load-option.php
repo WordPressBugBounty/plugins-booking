@@ -114,7 +114,7 @@ class wpbc_option_saver_loader {
 	 */
 	public static function handle_ajax_save() {
 
-		$capability = apply_filters( 'wpbc_option_saver_loader_cap_save', 'manage_options' );
+		$capability = apply_filters( 'wpbc_option_saver_loader_cap_save', ( function_exists( 'wpbc_bfb_get_manage_cap' ) ) ? wpbc_bfb_get_manage_cap() : 'manage_options' );
 		if ( ! current_user_can( $capability ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to save settings.', 'booking' ) ) );
 		}
@@ -220,7 +220,7 @@ class wpbc_option_saver_loader {
 	 */
 	public static function handle_ajax_load() {
 
-		$capability = apply_filters( 'wpbc_option_saver_loader_cap_load', 'manage_options' );
+		$capability = apply_filters( 'wpbc_option_saver_loader_cap_load', ( function_exists( 'wpbc_bfb_get_manage_cap' ) ) ? wpbc_bfb_get_manage_cap() : 'manage_options' );
 		if ( ! current_user_can( $capability ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to load settings.', 'booking' ) ) );
 		}

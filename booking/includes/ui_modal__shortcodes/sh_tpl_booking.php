@@ -310,15 +310,27 @@ function wpbc_shortcode_config__content__booking() {
 	 */
 	function wpbc_shortcode_config_fields__select_custom_form( $id , $group_key ){
 
-		if ( class_exists( 'wpdev_bk_biz_m' ) ){
-			wpbc_in_settings__form_selection( array(
-													  'name'        => $id
-													, 'title'       => __('Booking Form', 'booking')
-													, 'description' => __('Select custom booking form' ,'booking')
-													, 'group'       => $group_key
-												)
-										);
-		}
+			$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
+			if ( $is_bfb_enabled ) {
+				WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html__sh_modal(
+					array(
+						'name'        => $id,
+						'title'       => __( 'Booking Form', 'booking' ),
+						'description' => __( 'Select custom booking form', 'booking' ),
+						'group'       => $group_key,
+					)
+				);
+			} else {
+				if ( class_exists( 'wpdev_bk_biz_m' ) ){
+					wpbc_in_settings__form_selection( array(
+															  'name'        => $id
+															, 'title'       => __('Booking Form', 'booking')
+															, 'description' => __('Select custom booking form' ,'booking')
+															, 'group'       => $group_key
+														)
+												);
+				}
+			}
 	}
 
 	/**

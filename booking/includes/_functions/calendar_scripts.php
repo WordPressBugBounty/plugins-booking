@@ -200,11 +200,11 @@ add_filter( 'script_loader_tag', 'wpbc_disable_cloudflare_on_calendar_script', 1
  *
  * @param integer $resource_id  - ID of booking resource.
  * @param integer $cal_count    - Number of months.
- * @param array   $bk_otions    - Options.
+ * @param array   $shortcode_param__options    - Options.
  *
  * @return string
  */
-function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $bk_otions = array() ) {
+function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $shortcode_param__options = array() ) {
 
 	/**
 	 * SHORTCODE: [booking type=56 form_type='standard' nummonths=4 options='{calendar months_num_in_row=2 width=682px cell_height=48px}'] .
@@ -214,30 +214,30 @@ function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $bk_otion
 	 * [strong_width] => 341px     define: width:341px;
 	 * [cell_height] => 48px
 	 */
-	$bk_otions = wpbc_parse_calendar_options( $bk_otions );
+	$shortcode_param__options = wpbc_parse_calendar_options( $shortcode_param__options );
 
 	$width             = '';
 	$months_num_in_row = '';
 	$cell_height       = '';
 
-	if ( ! empty( $bk_otions ) ) {
+	if ( ! empty( $shortcode_param__options ) ) {
 
-		if ( isset( $bk_otions['months_num_in_row'] ) ) {
-			$months_num_in_row = $bk_otions['months_num_in_row'];
-		}
-
-		if ( isset( $bk_otions['width'] ) ) {
-			$width = 'width:100%;max-width:' . $bk_otions['width'] . ';';                                           // FixIn: 9.3.1.5.
-		}
-		if ( isset( $bk_otions['strong_width'] ) ) {
-			$width .= 'width:' . $bk_otions['strong_width'] . ';';                                                  // FixIn: 9.3.1.6.
+		if ( isset( $shortcode_param__options['months_num_in_row'] ) ) {
+			$months_num_in_row = $shortcode_param__options['months_num_in_row'];
 		}
 
-		if ( isset( $bk_otions['cell_height'] ) ) {
-			$cell_height = $bk_otions['cell_height'];
+		if ( isset( $shortcode_param__options['width'] ) ) {
+			$width = 'width:100%;max-width:' . $shortcode_param__options['width'] . ';';                                           // FixIn: 9.3.1.5.
 		}
-		if ( isset( $bk_otions['strong_cell_height'] ) ) {                                                          // FixIn: 9.7.3.3.
-			$cell_height = $bk_otions['strong_cell_height'] . '!important;';
+		if ( isset( $shortcode_param__options['strong_width'] ) ) {
+			$width .= 'width:' . $shortcode_param__options['strong_width'] . ';';                                                  // FixIn: 9.3.1.6.
+		}
+
+		if ( isset( $shortcode_param__options['cell_height'] ) ) {
+			$cell_height = $shortcode_param__options['cell_height'];
+		}
+		if ( isset( $shortcode_param__options['strong_cell_height'] ) ) {                                                          // FixIn: 9.7.3.3.
+			$cell_height = $shortcode_param__options['strong_cell_height'] . '!important;';
 		}
 	}
 	/* FixIn: 9.7.3.4 */

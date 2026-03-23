@@ -94,7 +94,7 @@
 			init_failed:
 				'The calendar could not be initialized on this page.' + '\n' +
 				'Please check your browser console for JavaScript errors and conflicts with other scripts/plugins.',
-			support    : 'Contact support@wpbookingcalendar.com if you have any questions.',
+			support    : '', /* 'Contact support@wpbookingcalendar.com if you have any questions.', */
 			lib_jq     :
 				'It appears that the "jQuery" library is not loading correctly.' + '\n' +
 				'For more information, please refer to this page: https://wpbookingcalendar.com/faq/',

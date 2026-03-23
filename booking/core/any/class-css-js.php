@@ -10,6 +10,10 @@
  * @modified 2015-10-28
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 abstract class WPBC_JS_CSS {
 
     public $objects = array();

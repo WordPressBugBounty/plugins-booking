@@ -378,7 +378,11 @@ function wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structu
 	$form_layout_width       = get_bk_option( 'booking_form_layout_width' );
 	$form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
 	// FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar .
-	$html_form = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar, .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
+	$html_form_style = '';
+	if ( ! wpbc_is_this_demo() ) {
+		$html_form_style = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar, .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n";
+	}
+	$html_form = $html_form_style . $html_form;
 
 	return $html_form;
 }
@@ -861,8 +865,11 @@ function wpbc_simple_form__get_booking_form__as_html( $resource_id = 1, $custom_
 	$form_layout_width       = get_bk_option( 'booking_form_layout_width' );
 	$form_layout_width_px_pr = get_bk_option( 'booking_form_layout_width_px_pr' );
 	// FixIn: 10.7.1.6       .wpbc__field.wpbc_r_calendar   to .wpbc__row.wpbc_r_calendar .
-	$html_form = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar,  .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n" . $html_form;
-
+	$html_form_style = '';
+	if ( ! wpbc_is_this_demo() ) {
+		$html_form_style = '<style type="text/css">.wpbc_container_booking_form .block_hints, .wpbc_booking_form_simple.wpbc_form_center .wpbc__form__div .wpbc__row.wpbc_r_calendar,  .wpbc_booking_form_simple .wpbc__form__div .wpbc__row:not(.wpbc_r_calendar){max-width:' . $form_layout_width . $form_layout_width_px_pr . ';} </style>' . "\n";
+	}
+	$html_form = $html_form_style . $html_form;
 
 	if ( ! empty( $booking_data__dates ) ) {
 		$html_form .= wpbc_get_dates_selection_js_code( $booking_data__dates, $resource_id );                           // FixIn: 9.2.3.4.

@@ -455,20 +455,6 @@ function wpbc_bfb_preview__maybe_get_payload_from_context( $ctx ) {
  *
  * @return string
  */
-/**
- * Get configuration  of 'BOOKING FORM DATA'  from  -  Booking > Settings > Form page
- *
- *        - 1.    <= BS : 'Booking form show' configuration    from standard form in versions up to  Business Small version ,
- *        - 2     >= BM : If form data has field of custom form, then from custom form configuration,
- *        - 3     >= BM : Otherwise if resource has default custom  booking form,  then  from  this default custom  booking form
- *        - 4      = MU :  specific form of specific WP User
- *        - 5   finally : simple standard form
- *
- * @param int    $resource_id
- * @param string $form_data  Form data here, required in >= BM.
- *
- * @return string
- */
 function wpbc_get__booking_form_data_configuration( $resource_id = 1, $form_data = '', $params = array() ) {
 
 	// FixIn: 2026-02-05 - allow preview booking submissions to use preview "content_form".
@@ -489,6 +475,20 @@ function wpbc_get__booking_form_data_configuration( $resource_id = 1, $form_data
 	$resource_id          = (int) $resource_id;
 	$form_data            = (string) $form_data;
 	$my_booking_form_name = 'standard';
+
+	// Maybe get name of custom  booking form,  that was saved in the booking data.
+	if ( false !== strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) ) { // FixIn: 9.4.3.12.
+
+		$custom_booking_form_name = substr( $form_data, strpos( $form_data, 'wpbc_custom_booking_form' . $resource_id . '^' ) + strlen( 'wpbc_custom_booking_form' . $resource_id . '^' ) );
+
+		if ( false !== strpos( $custom_booking_form_name, '~' ) ) {
+			$custom_booking_form_name = substr( $custom_booking_form_name, 0, strpos( $custom_booking_form_name, '~' ) );
+		}
+		if ( ! empty( $custom_booking_form_name ) ) {
+			$my_booking_form_name = $custom_booking_form_name;
+		}
+	}
+
 
 	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
 
@@ -946,4 +946,59 @@ function wpbc_is_custom_forms_enabled() {
 	$custom_forms_allowed = ( 'On' === get_bk_option( 'booking_is_custom_forms_for_regular_users' ) );
 
 	return $is_super_admin || $custom_forms_allowed;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// == Shortcode Replacers ==
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * Replace folowing shortcodes in the booking form at Booking > Settings > Fields page:
+ * [bookingresource show='id'] - to booking resource ID
+ * [bookingresource show='title'] - to booking resource Title
+ * [bookingresource show='cost'] - to  booking resource Cost
+ * [bookingresource show='capacity'] - to booking resource Capacity
+ *
+ * @param string $return_form
+ * @param int    $resource_id
+ *
+ * @return string
+ */
+function wpbc_replace_bookingresource_info_in_form( $return_form, $resource_id ) {   // FixIn: 5.4.5.4.
+
+	$patterns = array();
+
+	$parameters = array( 'id', 'title', 'cost', 'capacity' );
+	foreach ( $parameters as $parameter ) {
+		$patterns[] = '/\[bookingresource\s*show=\'' . $parameter . '\'\\s*]/';
+	}
+
+	$replaced_form = $return_form;
+
+	$replacements = array( $resource_id );
+
+	if ( function_exists( 'get_booking_resource_attr' ) ) {
+		$booking_resource_attr = get_booking_resource_attr( $resource_id );
+
+		if ( ! empty( $booking_resource_attr ) ) {
+
+			if ( isset( $booking_resource_attr->title ) ) {
+				$bk_res_title   = wpbc_lang( $booking_resource_attr->title );
+				$replacements[] = $bk_res_title;
+			} else {
+				$replacements[] = '';
+			}
+
+			if ( ( class_exists( 'wpdev_bk_biz_s' ) ) && ( isset ( $booking_resource_attr->cost ) ) ) {
+
+				$replacements[] = wpbc_get_cost_with_currency_for_user( $booking_resource_attr->cost, $resource_id );
+
+			} else {
+				$replacements[] = '';
+			}
+		}
+		$replaced_form = preg_replace( $patterns, $replacements, $return_form );
+	}
+
+
+	return $replaced_form;
 }

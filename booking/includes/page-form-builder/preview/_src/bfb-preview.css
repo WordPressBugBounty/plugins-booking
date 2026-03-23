@@ -1,0 +1,97 @@
+/* == Top toolbar: builder vs preview buttons == */
+
+/* Default (builder mode): preview-only elements hidden */
+.wpbc_bfb_ui__elements_show_in_preview,
+.wp-core-ui .wpbc_bfb_ui__elements_show_in_preview {
+	display: none;
+}
+
+/* In preview mode: hide builder-only controls, show preview-only controls */
+.wpbc_bfb__mode_preview h1.wpbc_settings_page_header_title:not(.wpbc_bfb_ui__elements_show_in_preview),
+.wpbc_bfb__mode_preview .wpbc_bfb_ui__elements_hide_in_preview {
+	display: none !important;
+}
+
+.wpbc_bfb__mode_preview .wpbc_bfb_ui__elements_show_in_preview {
+	display: inline-block; /* or inline-flex, depending on your toolbar layout */
+}
+
+/* == Preview panel visibility == */
+
+/* Default: builder visible, preview hidden */
+.wpbc_bfb__preview_panel {
+	display: none;
+}
+
+/* Preview mode: show preview, hide builder + right panel */
+.wpbc_bfb__mode_preview .wpbc_bfb__container,
+.wpbc_bfb__mode_preview .wpbc_ui_el__vert_right_bar__wrapper {
+	display: none;
+}
+
+.wpbc_bfb__mode_preview .wpbc_bfb__preview_panel {
+	display: block;
+}
+
+/* Existing preview panel styling can stay as you had it */
+.wpbc_bfb__preview_panel__toolbar {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0px 0 25px;
+}
+
+.wpbc_bfb__preview_panel__toolbar h1.wpbc_settings_page_header_title {
+	/*line-height: 2;*/
+	margin: 0 0 5px;
+}
+
+.wpbc_bfb__preview_panel__toolbar span.description {
+	flex: 1 1 100%;
+}
+
+.wpbc_bfb__preview_panel__frame_wrapper {
+	border: 2px dashed #969696;
+}
+
+.wpbc_bfb__preview_panel__frame_wrapper iframe {
+	width: 100%;
+	min-height: 600px;
+	max-height: calc(100vh - 180px);
+}
+
+
+/* Preview frame wrapper */
+.wpbc_bfb__preview_panel__frame_wrapper {
+	border: 2px dashed #969696;
+	position: relative; /* NEW: so loader can overlay the iframe */
+}
+
+/* Preview iframe */
+.wpbc_bfb__preview_panel__frame_wrapper iframe {
+	width: 100%;
+	min-height: 600px;
+	max-height: calc(100vh - 180px);
+}
+
+/* NEW: overlay loader */
+.wpbc_bfb__preview_loader {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	background: rgba(255, 255, 255, 0.8);
+	z-index: 10;
+
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.wpbc_bfb__preview_loader.is-visible {
+	opacity: 1;
+	pointer-events: auto;
+}

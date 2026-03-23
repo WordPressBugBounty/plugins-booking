@@ -96,6 +96,7 @@ function wpbc_booking_confirmation( $params_arr ){
 
 	$replace_arr = wpbc__get_replace_shortcodes__email_new_visitor( $params_arr['booking_id'], $params_arr['resource_id'], $params_arr['form_data'] );
 
+
 	$replace_arr['readable_dates'] = '<div class="wpbc_ty__section_text_dates">'. wpbc_get_redable_dates( $params_arr['dates_ymd_arr']  ) . '</div>';
 	$replace_arr['readable_times'] = '';
 	if (
@@ -104,6 +105,12 @@ function wpbc_booking_confirmation( $params_arr ){
 	) {
 		// -- Times text --
 		$replace_arr['readable_times'] = '<div class="wpbc_ty__section_text_times">' . wpbc_get_redable_times( $params_arr['dates_ymd_arr'], $params_arr['times_his_arr'] ) . '</div>';
+	}
+
+	$is_no_date = apply_filters( 'wpbc_maybe_no_booking_date', false, $params_arr['dates_ymd_arr'] );
+	if ( $is_no_date ) {
+		$replace_arr['readable_dates'] = '<div class="wpbc_ty__section_text_dates">---</div>';
+		$replace_arr['readable_times'] = '';
 	}
 
 	//  Top - Thank you

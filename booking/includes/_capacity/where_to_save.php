@@ -7,6 +7,31 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
+ * Check if these dates contain marker '2981-01-13',  which  is means that  this booking was submited without dates - as Contact Form.
+ *
+ * @param array|string $dates_sql_arr - array  of SQL dates.
+ *
+ * @return bool
+ */
+function wpbc_is_these_dates__for__no_dates( $dates_sql_arr ){
+
+	// FixIn: 2981-01-13    13 Jan 2981.
+
+	if ( is_array( $dates_sql_arr ) ) {
+		foreach ( $dates_sql_arr as $date_ymd ) {
+			if ( '2981-01-13' === gmdate( 'Y-m-d', mysql2date( 'U', $date_ymd ) ) ) {
+				return true;
+			}
+		}
+	} elseif ( '2981-01-13' === gmdate( 'Y-m-d', mysql2date( 'U', $dates_sql_arr ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+
+/**
  * Get booking resources for each  selected date, where we can save the booking,  or false if we can not save it
  *
  * @param array $params = [
@@ -48,7 +73,11 @@ function wpbc__where_to_save_booking( $local_params ){
 												wpbc_transform__seconds__in__24_hours_his( $time_as_seconds_arr[0] ),
 												wpbc_transform__seconds__in__24_hours_his( $time_as_seconds_arr[1] )
 										);
-
+	// FixIn: 2981-01-13    13 Jan 2981
+	$availability_per_days_arr__params = array();
+	if ( ( ! empty( $local_params['dates_only_sql_arr'] ) ) && ( is_array( $local_params['dates_only_sql_arr'] ) ) && ( '2981-01-13' === $local_params['dates_only_sql_arr'][0] ) ) {
+		$availability_per_days_arr__params['is_days_always_available'] = true;
+	}
 	// If we are using the unavailable before/after booking dates,  then we need to extend "$local_params['dates_only_sql_arr']" to such  dates.
 	if ( function_exists( 'wpbc__extend_checking_dates_range__if_used__extra_seconds__before_after' ) ) {
 		$maybe_extended__dates_to_check_arr = wpbc__extend_checking_dates_range__if_used__extra_seconds__before_after( $local_params['dates_only_sql_arr'] );
@@ -56,7 +85,8 @@ function wpbc__where_to_save_booking( $local_params ){
 		$maybe_extended__dates_to_check_arr = $local_params['dates_only_sql_arr'];
 	}
 	// [ "dates": [ "2023-11-05": [ "day_availability":4, ... "2": [ "is_day_unavailable":false, ...]], '2023-11-06':[...] ] ,"resources_id_arr__in_dates":[2,12,10,11]}
-	$availability_per_days = wpbc_get_availability_per_days_arr( array(
+
+	$availability_per_days = wpbc_get_availability_per_days_arr( wp_parse_args( array(
 		'resource_id'         => $local_params['resource_id'],
 		'skip_booking_id'     => $local_params['skip_booking_id'],
 		'dates_to_check'      => $maybe_extended__dates_to_check_arr,
@@ -65,10 +95,16 @@ function wpbc__where_to_save_booking( $local_params ){
 		'additional_bk_types' => $local_params['aggregate_resource_id_arr'],
 		'aggregate_type'      => empty( $local_params['aggregate_type'] ) ? 'bookings_only' : $local_params['aggregate_type'],  //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.
 		'custom_form'         => $local_params['custom_form'],                                                                  // FixIn: 10.0.0.10.
-	) );
+	) , $availability_per_days_arr__params ) );
 
 	// Get value of how many  booking resources to  book
 	$how_many_items_to_book = $local_params['how_many_items_to_book'];
+
+	// FixIn: 2981-01-13    13 Jan 2981.
+	if ( ( ! empty( $local_params['dates_only_sql_arr'] ) ) && ( wpbc_is_these_dates__for__no_dates( $local_params['dates_only_sql_arr'] ) ) ) {
+		$how_many_items_to_book = 0;
+	}
+
 	// -------------------------------------------------------------------------------------------------------------
 	// [ 2023-10-18: [ 0:[ resource_id: 2, is_available: true, booked__seconds: [], booked__readable: [], time_to_book__seconds: [ 36030, 39570 ], time_to_book__readable: "10:00:00", "11:00:00" ] ], 1: [...], 2: [...], 3: [...] ], 2023-10-25: [...], 2023-11-25: [...] ]
 	$available_slots = wpbc__get_available_slots__for_selected_dates_times__bl( array(

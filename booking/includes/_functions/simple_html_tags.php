@@ -159,22 +159,34 @@ function wpbc_bf__replace_custom_html_shortcodes( $html_original_content ){
 						);
 
 		$value = wp_kses(
-							trim( stripslashes( $content ) ),
-							array_merge( array(
-												'r' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
-												'f' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
-												'c' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
-												'l' => array( 'style'=>true , 'class'=>true , 'id'=>true ),
-												'item'   => array( 'style' => true, 'class' => true, 'id' => true ),
-												'spacer' => array(),
-												'style'  => array()
-							             ),
-										 wp_kses_allowed_html( 'post' )
-									)
-						);
+			trim( stripslashes( $content ) ),
+			array_merge(
+				wp_kses_allowed_html( 'post' ),
+				wpbc_get_allowed_simple_html_tags__for_wp_kses()
+			)
+		);
 		return $value;
 	}
 
+
+	function wpbc_get_allowed_simple_html_tags__for_wp_kses() {
+
+		$allowed_simple_html_tags = array(
+			'r'      => array( 'style' => true, 'class' => true, 'id' => true ),
+			'f'      => array( 'style' => true, 'class' => true, 'id' => true ),
+			'c'      => array( 'style' => true, 'class' => true, 'id' => true ),
+			'l'      => array( 'style' => true, 'class' => true, 'id' => true ),
+			'item'   => array( 'style' => true, 'class' => true, 'id' => true ),
+			'spacer' => array(),
+		);
+
+		// In the live demo  do  not allow 'styles'.
+		if ( ! wpbc_is_this_demo() ) {
+			$allowed_simple_html_tags['style'] = array( 'type' => true );
+		}
+
+		return $allowed_simple_html_tags;
+	}
 
 	/**
 	 * Replace SPACER shortcode:   <spacer></spacer>   ->   <div style="width:100%;clear:both;"></div>       |       <spacer>height:10px;</spacer>   ->  <div style="width:100%;clear:both;height:10px"></div>

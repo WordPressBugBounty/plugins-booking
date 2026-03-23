@@ -9,6 +9,10 @@ Text Domain: really-simple-captcha
 Version: 1.9
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /*  Copyright 2007-2016 Takayuki Miyoshi (email: takayukister at gmail.com)
 
     This program is free software; you can redistribute it and/or modify

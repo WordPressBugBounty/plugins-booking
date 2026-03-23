@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_is_this_demo() {
 
-	 // return false;  //.
+//	return true;  //.
 
 	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
 		return false;        // If this is Booking Calendar Free version,  then it's not the demo.

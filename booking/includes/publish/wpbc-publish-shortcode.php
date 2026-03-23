@@ -10,6 +10,7 @@
  * @email info@wpbookingcalendar.com
  *
  * @modified 2023-12-27
+ * @file: ../includes/publish/wpbc-publish-shortcode.php
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly            // FixIn: 9.8.15.5.
@@ -213,7 +214,8 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 
 	if (
 		 ( 'resources' !== $page_name ) &&
-		 ( 'wpbc-ajx_booking_setup_wizard' !== $page_name )
+		 ( 'wpbc-ajx_booking_setup_wizard' !== $page_name ) &&
+		 ( ! wpbc_is_builder_booking_form_page() )
 		 // && ( 'wpbc-ajx_booking' !== $page_name )        // FixIn: 10.6.6.2.
 	){
 		return false;

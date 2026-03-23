@@ -209,6 +209,11 @@ function wpbc_time_localized( $time_str_his, $format = '', $is_add_timezone_offs
 
 	    $dates_array_in_sql_format = explode( ',', $dates_str_in_sql_format );
 
+		$is_no_date = apply_filters( 'wpbc_maybe_no_booking_date', false, $dates_array_in_sql_format );
+		if ( $is_no_date ) {
+			return  '---';
+		}
+
 	    $result_dates_arr = array();
 
 	    foreach ( $dates_array_in_sql_format as $date_sql ) {

@@ -319,6 +319,7 @@ if (
 	( in_array( basename( $_SERVER['PHP_SELF'] ), wpbc_get_pages_where_insert_tiny_mce_buttons() ) )      // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	|| ( ( isset( $_REQUEST['page'] ) && ( 'wpbc-resources' === $_REQUEST['page'] ) ) )                   // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	|| wpbc_is_setup_wizard_page() // || wpbc_is_bookings_page()  // FixIn: 10.6.6.2.
+	|| wpbc_is_builder_booking_form_page()
 ) {
 	// FixIn: 10.6.5.1.
 	new WPBC_TinyMCE_Buttons( array(

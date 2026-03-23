@@ -43,7 +43,9 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-checkbox > .wpdev-l
 	margin-inline-end: .3em;
 }
 .wpdev-form-control-wrap .wpdev-radio > .wpdev-list-item label,
-.wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item label {
+.wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item label,
+.wpdev-form-control-wrap .wpdev-radio > .wpdev-list-item label:hover,
+.wpdev-form-control-wrap .wpdev-checkbox > .wpdev-list-item label:hover {
 	line-height: 1.74;
 	font-weight: 400;
 }

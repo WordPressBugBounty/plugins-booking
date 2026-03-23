@@ -84,7 +84,7 @@ body.wpbc_admin_full_screen {
 .wpbc_ui_el__top_nav > div:has(a) {
 	border-top: var(--wpbc_ui_top_nav__a_hover_border_width) solid transparent;
 	border-bottom: var(--wpbc_ui_top_nav__a_hover_border_width) solid transparent;
-	padding: 0 15px;
+	padding: 0 10px;
 }
 .wpbc_ui_el__top_nav > a:hover,
 .wpbc_ui_el__top_nav > div.wpbc_ui_el_container:has(a:hover) {
