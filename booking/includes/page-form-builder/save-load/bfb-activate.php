@@ -542,8 +542,108 @@ function wpbc_bfb__import_old_booking_forms() {
 }
 
 
+/**
+ * Remove BFB Preview page from rendered nav menus.
+ *
+ * @param array    $sorted_menu_items Menu item objects.
+ * @param stdClass $args              Menu args.
+ *
+ * @return array
+ */
+function wpbc_bfb_preview__exclude_from_nav_menus( $sorted_menu_items, $args ) {
+
+	$page_id = absint( get_option( wpbc_bfb_activation__get_preview_page_option_key() ) );
+
+	if ( $page_id <= 0 ) {
+		return $sorted_menu_items;
+	}
+
+	$filtered_items = array();
+
+	foreach ( $sorted_menu_items as $menu_item ) {
+
+		$object_id = isset( $menu_item->object_id ) ? absint( $menu_item->object_id ) : 0;
+		$object    = isset( $menu_item->object ) ? (string) $menu_item->object : '';
+
+		if ( ( 'page' === $object ) && ( $page_id === $object_id ) ) {
+			continue;
+		}
+
+		$filtered_items[] = $menu_item;
+	}
+
+	return $filtered_items;
+}
+add_filter( 'wp_nav_menu_objects', 'wpbc_bfb_preview__exclude_from_nav_menus', 10, 2 );
 
 
+/**
+ * Exclude BFB Preview page from wp_list_pages() outputs.
+ *
+ * @param array $exclude_array Excluded page IDs.
+ *
+ * @return array
+ */
+function wpbc_bfb_preview__exclude_from_page_lists( $exclude_array ) {
+
+	$page_id = absint( get_option( wpbc_bfb_activation__get_preview_page_option_key() ) );
+
+	if ( $page_id > 0 ) {
+		$exclude_array[] = $page_id;
+	}
+
+	return array_unique( array_map( 'absint', $exclude_array ) );
+}
+// add_filter( 'wp_list_pages_excludes', 'wpbc_bfb_preview__exclude_from_page_lists' );
+
+// FixIn: 10.15.3.1.
+/**
+ * Check whether current request is the BFB Preview page request.
+ *
+ * @return bool
+ */
+function wpbc_bfb_is_preview_request() {
+
+	if ( empty( $_GET['wpbc_bfb_preview'] ) ) {                              // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return false;
+	}
+
+	return ( '1' === sanitize_text_field( wp_unslash( $_GET['wpbc_bfb_preview'] ) ) );   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+}
+
+/**
+ * Add noindex / noarchive robots directives for BFB Preview.
+ *
+ * @param array $robots Robots directives.
+ *
+ * @return array
+ */
+function wpbc_bfb_preview__wp_robots( $robots ) {
+
+	if ( ! wpbc_bfb_is_preview_request() ) {
+		return $robots;
+	}
+
+	return wp_robots_sensitive_page( $robots );
+}
+add_filter( 'wp_robots', 'wpbc_bfb_preview__wp_robots' );
+
+/**
+ * Send no-cache headers for BFB Preview responses.
+ *
+ * @return void
+ */
+function wpbc_bfb_preview__nocache_headers() {
+
+	if ( ! wpbc_bfb_is_preview_request() ) {
+		return;
+	}
+
+	if ( ! headers_sent() ) {
+		nocache_headers();
+	}
+}
+add_action( 'template_redirect', 'wpbc_bfb_preview__nocache_headers', 1 );
 
 /**
  * Import booking forms on activation  of Pro versions of Booking Calendar.
