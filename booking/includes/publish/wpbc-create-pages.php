@@ -62,7 +62,7 @@ function wpbc_create_page( $page_params = array() ){                            
 	$my_post   = wp_parse_args( $page_params, $defaults );
 
 
-	$post_id = wp_insert_post( $my_post );                         // Insert the post into the database
+	$post_id = wp_insert_post( $my_post, true );                         // Insert the post into the database
 
 	if ( ( ! is_wp_error( $post_id ) ) && ( ! empty( $post_id ) ) ) {
 
@@ -70,15 +70,14 @@ function wpbc_create_page( $page_params = array() ){                            
 
 		// $post = get_post( $post_id );
 		// $post_url = get_permalink( $post_id );
-		wpbc_try_assign_full_width_template( $post_id );
+		wpbc_try_assign_full_width_template( $post_id,
+			array(
+				'excluded_title_parts'             => array( 'wide image' ),
+				'excluded_classic_template_files'  => array( 'elementor_header_footer' ),
+				'force_elementor_default_template' => true,
+			) );
 
 	} else {
-		if ( is_wp_error( $post_id ) ) {
-			// Error	    //  __( 'Sorry, the post could not be created.' )
-		}
-		if ( ! $post_id ) {
-			// Error	    // __( 'Sorry, the post could not be created.' )
-		}
 		$post_id = false;
 	}
 
@@ -87,104 +86,185 @@ function wpbc_create_page( $page_params = array() ){                            
 
 
 /**
- * Attempt to assign a "Full Width" template to a newly created page.
+ * Check whether a template label looks like a usable "Full Width" template.
  *
- * This function checks if a "Full Width" page template is available in the current theme,
- * and assigns it to the given post if found. It supports both classic (PHP template files)
- * and block (FSE) themes.
+ * Excludes labels that contain unwanted fragments such as "wide image".
  *
- * - For classic themes, it searches `get_page_templates()` for a template name containing both "full" and "width".
- * - Exception: if the matching classic template is Elementor "Elementor Full Width"
- *   (`elementor_header_footer`), then the page keeps Elementor default template ("Theme")
- *   instead of assigning Elementor Full Width.
- * - For block themes, it searches registered `wp_template` entries for the active theme,
- *   and sets the post's `template` property if a matching template is found.
+ * @param string $template_label     Human-readable template label.
+ * @param array  $excluded_fragments Lowercase fragments to exclude.
  *
- * @param int $post_id The ID of the post to assign the template to.
- * @return bool True if a "Full Width" template was found and assigned; false otherwise.
+ * @return bool
  */
-function wpbc_try_assign_full_width_template( $post_id ) {
+function wpbc_is_full_width_template_candidate( $template_label, $excluded_fragments = array() ) {
 
-	if ( ( ! $post_id ) || ( is_wp_error( $post_id ) ) ) {
-		return;
+	$template_label = strtolower( wp_strip_all_tags( (string) $template_label ) );
+
+	if (
+		( false === strpos( $template_label, 'full' ) ) ||
+		( false === strpos( $template_label, 'width' ) )
+	) {
+		return false;
 	}
 
-	$found = false;
-	$is_elementor_full_width_found = false;
+	foreach ( $excluded_fragments as $excluded_fragment ) {
+		$excluded_fragment = strtolower( (string) $excluded_fragment );
 
-	// CLASSIC THEMES: Check PHP-based templates. // FixIn: 10.12.2.1.
+		if ( '' === $excluded_fragment ) {
+			continue;
+		}
+
+		if ( false !== strpos( $template_label, $excluded_fragment ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+/**
+ * Attempt to assign a "Full Width" template to a page.
+ *
+ * Supports both classic page templates and block theme templates.
+ * Can skip specific templates, such as Elementor "Elementor Full Width"
+ * or templates containing "Wide Image".
+ *
+ * @param int   $post_id Page ID.
+ * @param array $args    Optional arguments:
+ *                       - excluded_title_parts             array  Fragments excluded from template labels.
+ *                       - excluded_classic_template_files  array  Classic template file names to skip.
+ *                       - force_elementor_default_template bool   Whether to force Elementor "Theme/Default".
+ *
+ * @return bool True if a template was assigned, or Elementor default was forced as fallback.
+ */
+function wpbc_try_assign_full_width_template( $post_id, $args = array() ) {
+
+	if ( empty( $post_id ) || is_wp_error( $post_id ) ) {
+		return false;
+	}
+
+	$post = get_post( $post_id );
+
+	if ( ( ! $post ) || ( 'page' !== $post->post_type ) ) {
+		return false;
+	}
+
+	$defaults = array(
+		'excluded_title_parts'            => array( 'wide image' ),
+		'excluded_classic_template_files' => array( 'elementor_header_footer' ),
+		'force_elementor_default_template' => false,
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+
+	$excluded_title_parts            = array_map( 'strtolower', (array) $args['excluded_title_parts'] );
+	$excluded_classic_template_files = array_map( 'strtolower', (array) $args['excluded_classic_template_files'] );
+
+	$is_elementor_full_width_skipped = false;
+
+	// -------------------------------------------------------------------------
+	// Classic themes: scan page templates.
+	// get_page_templates() returns template file names keyed by template header.
+	// -------------------------------------------------------------------------
 	if ( function_exists( 'get_page_templates' ) ) {
-		$classic_templates = get_page_templates( get_post( $post_id ) );
-	} else {
-		$classic_templates = array(); // Fallback.
-	}
 
-	foreach ( $classic_templates as $template_name => $template_file ) {
-		if ( ( false !== stripos( $template_name, 'full' ) ) && ( false !== stripos( $template_name, 'width' ) ) ) {
+		$classic_templates = get_page_templates( $post, 'page' );
 
-			// Exception for Elementor "Elementor Full Width":
-			// do not assign elementor_header_footer, keep Elementor default page template ("Theme").
-			if ( 'elementor_header_footer' === $template_file ) {
+		foreach ( $classic_templates as $template_name => $template_file ) {
 
-				$is_elementor_full_width_found = true;
+			if ( ! wpbc_is_full_width_template_candidate( $template_name, $excluded_title_parts ) ) {
+				continue;
+			}
 
-				// Keep looking for a real theme "Full Width" template, if any.
+			$template_file_lc = strtolower( (string) $template_file );
+
+			if ( in_array( $template_file_lc, $excluded_classic_template_files, true ) ) {
+
+				if ( 'elementor_header_footer' === $template_file_lc ) {
+					$is_elementor_full_width_skipped = true;
+				}
+
 				continue;
 			}
 
 			update_post_meta( $post_id, '_wp_page_template', $template_file );
-			$found = true;
-			break;
+
+			return true;
 		}
 	}
 
-	// BLOCK THEMES (FSE): Check for full width template.
-	if ( ! $found && function_exists( 'wp_theme_has_theme_json' ) && wp_theme_has_theme_json() ) {
+	// -------------------------------------------------------------------------
+	// Block themes: scan block templates for pages.
+	// -------------------------------------------------------------------------
+	if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() && function_exists( 'get_block_templates' ) ) {
+
 		$theme_slug = get_stylesheet();
-		$templates  = get_block_templates( array(), 'wp_template' );
+		$templates  = get_block_templates(
+			array(
+				'post_type' => 'page',
+			),
+			'wp_template'
+		);
 
 		foreach ( $templates as $template ) {
-			if ( ( $template->theme === $theme_slug ) && ( false !== stripos( $template->title, 'full' ) ) && ( false !== stripos( $template->title, 'width' ) ) ) {
-				wp_update_post(
-					array(
-						'ID'       => $post_id,
-						'template' => $template->slug,
-					)
-				);
-				$found = true;
-				break;
+
+			if ( empty( $template->title ) || empty( $template->slug ) ) {
+				continue;
 			}
+
+			if ( $theme_slug !== $template->theme ) {
+				continue;
+			}
+
+			if ( ! wpbc_is_full_width_template_candidate( $template->title, $excluded_title_parts ) ) {
+				continue;
+			}
+
+			wp_update_post(
+				array(
+					'ID'            => $post_id,
+					'page_template' => $template->slug,
+				)
+			);
+
+			return true;
 		}
 	}
 
 	/*
-	 * If the only "Full Width" match was Elementor's template,
-	 * then force Elementor page settings to use its default template ("Theme").
+	 * If the only match we found was Elementor Full Width, optionally force
+	 * Elementor's default page template instead.
 	 */
-	if ( ( ! $found ) && ( $is_elementor_full_width_found ) ) {
-		wpbc_set_elementor_default_page_template( $post_id );
+	if ( $args['force_elementor_default_template'] && $is_elementor_full_width_skipped ) {
+		return wpbc_set_elementor_default_page_template( $post_id );
 	}
 
-	return $found;
+	return false;
 }
 
+
 /**
- * Set Elementor page layout to the default "Theme" template.
+ * Set Elementor page layout to its default "Theme" template.
  *
- * This is used as an exception when Booking Calendar detects
- * Elementor "Elementor Full Width" template and should avoid assigning it.
+ * This should be treated as a fallback for Elementor-managed pages.
  *
- * @param int $post_id The ID of the page.
+ * @param int $post_id Page ID.
+ *
  * @return bool
  */
 function wpbc_set_elementor_default_page_template( $post_id ) {
 
-	if ( ( ! $post_id ) || ( is_wp_error( $post_id ) ) ) {
+	if ( empty( $post_id ) || is_wp_error( $post_id ) ) {
 		return false;
 	}
 
-	// Ensure no explicit classic page template is assigned.
+	// Make sure WordPress itself does not have a forced classic template.
 	delete_post_meta( $post_id, '_wp_page_template' );
+
+	// If Elementor is not active, nothing else to do.
+	if ( ( ! defined( 'ELEMENTOR_VERSION' ) ) && ( ! did_action( 'elementor/loaded' ) ) ) {
+		return true;
+	}
 
 	$elementor_page_settings = get_post_meta( $post_id, '_elementor_page_settings', true );
 

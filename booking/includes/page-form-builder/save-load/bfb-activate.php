@@ -183,6 +183,84 @@ function wpbc_bfb_activation__find_preview_page_by_slug() {
 	return 0;
 }
 
+
+/**
+ * Force a safe template for the BFB Preview page.
+ *
+ * Why:
+ * - The Preview page is a technical/service page.
+ * - It should not inherit decorative page templates like "Page with wide Image".
+ * - For block themes, prefer a clean template like "page-no-title" or "page".
+ * - For classic themes, use the default page template.  // FixIn: 10.15.2.1
+ *
+ * @param int $page_id Page ID.
+ *
+ * @return bool
+ */
+function wpbc_bfb_preview__force_safe_template( $page_id ) {
+
+	$page_id = absint( $page_id );
+
+	if ( $page_id <= 0 ) {
+		return false;
+	}
+
+	/*
+	 * Always clear any previously assigned template first.
+	 * This is important when an existing Preview page was previously using
+	 * an unwanted template, for example "Page with wide Image".
+	 */
+	delete_post_meta( $page_id, '_wp_page_template' );
+
+	// Block themes: prefer a cleaner built-in page template, if available.
+	if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() && function_exists( 'get_block_templates' ) ) {
+
+		$theme_slug        = get_stylesheet();
+		$templates         = get_block_templates(
+			array(
+				'post_type' => 'page',
+			),
+			'wp_template'
+		);
+		$safe_template_slug = '';
+
+		foreach ( $templates as $template ) {
+
+			if ( empty( $template->slug ) || empty( $template->theme ) ) {
+				continue;
+			}
+
+			if ( $theme_slug !== $template->theme ) {
+				continue;
+			}
+
+			if ( 'page-no-title' === $template->slug ) {
+				$safe_template_slug = 'page-no-title';
+				break;
+			}
+
+			if ( ( '' === $safe_template_slug ) && ( 'page' === $template->slug ) ) {
+				$safe_template_slug = 'page';
+			}
+		}
+
+		if ( '' !== $safe_template_slug ) {
+			$result = wp_update_post(
+				array(
+					'ID'            => $page_id,
+					'page_template' => $safe_template_slug,
+				),
+				true
+			);
+
+			return ( ! is_wp_error( $result ) );
+		}
+	}
+
+	return true;
+}
+
+
 /**
  * The preview page has status 'publish', because the secure the output by your nonce + cap
  *
@@ -210,8 +288,17 @@ function wpbc_bfb_activation__create_preview_page_raw() {
 
 	$page_id = wp_insert_post( $page_data, true );
 
-	if ( is_wp_error( $page_id ) ) {
-		return false;
+	if ( ( ! is_wp_error( $page_id ) ) && ( ! empty( $page_id ) ) ) {
+		// Success.
+		wpbc_bfb_preview__force_safe_template( $page_id );
+	} else {
+		if ( is_wp_error( $page_id ) ) {
+			return false;
+		}
+		if ( ! $page_id ) {
+			return false;
+		}
+		$page_id = false;
 	}
 
 	return (int) $page_id;
@@ -219,7 +306,7 @@ function wpbc_bfb_activation__create_preview_page_raw() {
 
 
 /**
- * Create the private "Booking Form Preview" page and store option.
+ * Create the "Booking Form Preview" page and store option.
  *
  * @return int|false Page ID on success, false on failure.
  */
@@ -232,7 +319,7 @@ function wpbc_bfb_activation__create_preview_page() {
 	// Restore user context.
 	wpbc_bfb_activation__restore_user( $prev_user_id );
 
-	if ( is_wp_error( $page_id ) ) {
+	if ( empty( $page_id ) || is_wp_error( $page_id ) ) {
 		return false;
 	}
 
@@ -275,6 +362,7 @@ function wpbc_bfb_activation__ensure_preview_page_exists() {
 		}
 
 		// Ensure meta marker exists.
+		wpbc_bfb_preview__force_safe_template( (int) $page_id );
 		add_post_meta( (int) $page_id, wpbc_bfb_activation__get_preview_page_meta_key(), '1', true );
 
 		return (int) $page_id;
@@ -283,6 +371,14 @@ function wpbc_bfb_activation__ensure_preview_page_exists() {
 	// 2) Try recovery by meta marker.
 	$found_id = wpbc_bfb_activation__find_preview_page_by_meta();
 	if ( $found_id > 0 && wpbc_bfb_activation__is_valid_page_id( $found_id ) ) {
+		$found_page = get_post( $found_id );
+		if ( $found_page instanceof WP_Post && 'publish' !== $found_page->post_status ) {
+			wp_update_post( array(
+				'ID'          => (int) $found_id,
+				'post_status' => 'publish',
+			) );
+		}
+		wpbc_bfb_preview__force_safe_template( (int) $found_id );
 		update_option( $option_key, (int) $found_id );
 		return (int) $found_id;
 	}
@@ -290,6 +386,14 @@ function wpbc_bfb_activation__ensure_preview_page_exists() {
 	// 3) Try recovery by slug.
 	$found_id = wpbc_bfb_activation__find_preview_page_by_slug();
 	if ( $found_id > 0 && wpbc_bfb_activation__is_valid_page_id( $found_id ) ) {
+		$found_page = get_post( $found_id );
+		if ( $found_page instanceof WP_Post && 'publish' !== $found_page->post_status ) {
+			wp_update_post( array(
+				'ID'          => (int) $found_id,
+				'post_status' => 'publish',
+			) );
+		}
+		wpbc_bfb_preview__force_safe_template( (int) $found_id );
 		// Mark it as ours (so next time meta lookup works).
 		add_post_meta( (int) $found_id, wpbc_bfb_activation__get_preview_page_meta_key(), '1', true );
 		update_option( $option_key, (int) $found_id );

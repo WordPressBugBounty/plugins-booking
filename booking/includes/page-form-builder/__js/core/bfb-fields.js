@@ -740,19 +740,60 @@
 
 
 		static ensure_sortable(panel) {
+
 			const list = this.get_list( panel );
-			if ( !list || list.dataset.sortable_init === '1' ) return;
-			if ( window.Sortable?.create ) {
-				try {
-					window.Sortable.create( list, {
-						handle   : this.ui.drag_handle,
-						animation: 120,
-						onSort   : () => this.commit_options( panel )
-					} );
-					list.dataset.sortable_init = '1';
-				} catch ( e ) {
-					window._wpbc?.dev?.error?.( 'Select_Base.ensure_sortable', e );
+			if ( ! list ) {
+				return;
+			}
+
+			try {
+				const existing = window.Sortable?.get?.( list );
+				if ( existing ) {
+					return;
 				}
+
+				const builder = window.wpbc_bfb_api?.get_builder?.() || window.wpbc_bfb || null;
+
+				// Prefer the shared Sortable manager so the sidebar list uses
+				// the dedicated "simple_list" config instead of the canvas config.
+				if ( builder && builder.sortable && typeof builder.sortable.ensure === 'function' ) {
+
+					builder.sortable.ensure(
+						list,
+						'canvas',
+						{
+							sortable_kind     : 'simple_list',
+							handle_selector   : this.ui.drag_handle,
+							draggable_selector: this.ui.row,
+							onUpdate          : () => {
+								this.commit_options( panel );
+							}
+						}
+					);
+
+				} else if ( window.Sortable?.create ) {
+					// Fallback if builder is not ready for some reason.
+					window.Sortable.create(
+						list,
+						{
+							handle           : this.ui.drag_handle,
+							draggable        : this.ui.row,
+							animation        : 120,
+							forceFallback    : true,
+							fallbackOnBody   : false,
+							fallbackTolerance: 8,
+							removeCloneOnHide: true,
+							onUpdate         : () => {
+								this.commit_options( panel );
+							}
+						}
+					);
+				}
+
+				list.dataset.sortable_init = '1';
+
+			} catch ( e ) {
+				window._wpbc?.dev?.error?.( 'Select_Base.ensure_sortable', e );
 			}
 		}
 

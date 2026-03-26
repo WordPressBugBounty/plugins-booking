@@ -13,8 +13,8 @@
 	--wpbc_ui_listing__approved_color: #64AA45;
 	--wpbc_ui_listing__trash_color: #d94a48;
 	--wpbc_ui_listing__restore_color: #1e9220;
-	--wpbc_ui_listing__resource_color: #6b96ce;
-	--wpbc_ui_listing__selected_row_color: #08a;
+	--wpbc_ui_listing__resource_color: var(--wpbc_admin-theme-color, #6b96ce);  /* FixIn: 10.15.1.7. */
+	--wpbc_ui_listing__selected_row_color: var(--wpbc_admin-theme-color, #08a );
 
 	--wpbc_ui_listing__colapsed_height: 80px;
 }
@@ -664,7 +664,8 @@
 	padding: 5px 10px;
 	margin: 5px 15px 5px 0;
 
-	background: #6b96ce;
+	/*background: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / 100);*/
+	background: var(--wpbc_admin-default_label-color, #6b96ce);
 	color: #fff;
 
 	border-radius: 4px;
@@ -697,6 +698,7 @@
 	position: absolute;
 	margin: 0 0 0 -28px;
 	display:flex;   /* It Fix rotating icon, on clicking */
+	opacity: 0.8; /* FixIn: 10.15.1.7. */
 }
 .wpbc_label.wpbc_label_booking_id {
 	box-shadow: none;
@@ -706,6 +708,7 @@
 }
 .wpbc_label.wpbc_label_resource {
 	background-color: #6b96ce;
+	background-color: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%));
 }
 .wpbc_label.wpbc_label_deleted_resource {
 	background-color: #ee6f48;
@@ -755,7 +758,7 @@
 	align-items: center;
 	justify-content: center;
 	flex: 0 0 110px;
-	align-self: stretch;
+	align-self: center;
 	font-weight: 600;
 	cursor: pointer;
 	text-decoration: none;

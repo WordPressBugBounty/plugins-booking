@@ -95,7 +95,7 @@
 	border-left-color: #dc3232;
 }
 .wpbc_page .notice-info {
-	border-left-color: #00a0d2;
+	border-left-color: var( --wpbc_admin-theme-color, #00a0d2 );
 }
 /* Messages that show at top  of admin panel pages */
 .wpbc_page div.wpbc_inner_message {
@@ -256,7 +256,7 @@
     background-color: #fbeaea;
 }
 .wpbc-settings-notice.notice-info {
-    border-left-color: #00a0d2;
+    border-left-color: var( --wpbc_admin-theme-color, #00a0d2 );
 }
 .wpbc-settings-notice.notice-info.notice-alt {
     background-color: #e5f5fa;
@@ -516,7 +516,7 @@ table.wpbc_input_table tr.highlight {
   background: inherit;
 }
 table.wpbc_input_table tr.highlight td:first-child{
-  border-left:4px solid #08a;
+  border-left:4px solid var(--wpbc_admin-theme-color, #08a );
 }
 /* Hack  to fix checkbox height in  Firefox,  otherwise sometimes, there exist weird artefact */
 @-moz-document url-prefix() {

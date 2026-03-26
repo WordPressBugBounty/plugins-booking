@@ -179,7 +179,7 @@
 	border-left: 4px solid transparent;
 }
 .wpbc_ui_settings__card_text_small:hover {
-	border-left: 4px solid #1e7bc7;
+	border-left: 4px solid var(--wpbc_admin-theme-color, #1e7bc7);
 }
 .wpbc_ui_settings__card_text_small h1{
 	font-size:18px;
@@ -281,7 +281,7 @@ a.wpbc_ui_settings__text_pro:hover {
 /* ================================================================================================================== */
 .wp-core-ui .wpbc_page .wpbc_settings_flex_container_right {
     --wpbc_form-button-light-size-height: 43px;
-	--wpbc_form-button-background-color: #066aab;
+	--wpbc_form-button-background-color:  var(--wpbc_admin-theme-color, #066aab );
 }
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container input.wpbc_button_light,
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container input.wpbc_button_light:focus,

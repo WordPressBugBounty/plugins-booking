@@ -4,12 +4,12 @@ Donate link: https://wpbookingcalendar.com/buy/
 Tags: booking calendar, appointment booking, booking form, reservations, contact form
 Requires at least: 5.3
 Requires PHP: 5.6
-Tested up to: 6.9
-Stable tag: 10.15
+Tested up to: 7.0
+Stable tag: 10.15.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Original Booking Calendar for appointments, reservations, rentals, and events. Accept full-day bookings, time-slot appointments, and inquiry requests.
+WP Booking Calendar plugin for full-day bookings, time-slot appointments, rentals & events. Accept bookings and inquiries with flexible contact forms
 
 == Description ==
 
@@ -59,6 +59,7 @@ This new functionality brings a more modern, user-friendly, and flexible way to 
 https://www.youtube.com/watch?v=n_svjKULkc0
 
 > <strong>Create a Time Slots Booking Form in minutes with the new Booking Calendar Form Builder.</strong><br />
+
 https://www.youtube.com/watch?v=6hV11Cfc61Q
 
 = Setup Wizard! =
@@ -334,6 +335,16 @@ Please see [Video Guides](https://wpbookingcalendar.com/help/).
 12. **Customize Calendar Look**: Choose  a style of your booking calendar to match your website's theme design.
 
 == Changelog ==
+= 10.15.2 =
+- Changes in **all** versions:
+	* **New**: Force a safe template for the BFB Preview page. (10.15.2.1)
+
+= 10.15.1 =
+- Changes in **all** versions:
+	* **New**: 3 new shortcodes for email  templates on the WP Booking Calendar > Settings > Emails page:  [days_count], [nights_count], [days_count_plus1day] for showing number of booked dates/nights. (10.15.1.3.)
+	* **Fix**: Responsive columns for rows section in booking form for mobile devices. (10.15.1.1.)
+	* **Support**: Improved CSS for compatibility with  latest  WordPress 7.0 release. (10.15.1.7.)
+
 = 10.15 =
 - **NEW / BETA** Introduced the new **Drag & Drop Booking Form Builder** for visually creating booking forms without manually editing form code.
 	* Build forms by dragging fields directly into the canvas.

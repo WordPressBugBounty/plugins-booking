@@ -1,5 +1,10 @@
 /*! = General Vars for Admin = */
 .wpbc_admin {
+	/* FixIn: 10.15.1.7. */
+	--wpbc_admin-theme-color: var(--wp-admin-theme-color, #6b96ce);
+	--wpbc_admin-default_label-color: #486892;
+	--wpbc_admin-a-color: var(--wpbc_admin-theme-color);
+	--wpbc_admin-theme-opacity: 80%;
 	/* -- Responsive Sizes: < 600px (less top icons), < 782px (no wp left bar), < 960px (wp left bar colapse) ----------- */
 	--wpbc_ui__gen__screen_width_small: 960px;
 	--wpbc_ui__gen__screen_width_mini: 782px;
@@ -19,4 +24,12 @@
 	--wpbc_ui__gen__font-size: 13px;
 	/** Common border radiuses */
 	--wpbc_ui__gen__border-radius: 4px;
+}
+/* Old versions of WordPress 6.x.x with "Default / Frech" Admin Theme */
+.wpbc_admin.admin-color-fresh[class*=" branch-6-"],
+.wpbc_admin.admin-color-fresh[class^="branch-6-"],
+.wpbc_admin.admin-color-fresh[class*=" branch-6-"] .wpbc_admin,
+.wpbc_admin.admin-color-fresh[class^="branch-6-"] .wpbc_admin
+{
+	--wpbc_admin-theme-color: #2271b1;
 }

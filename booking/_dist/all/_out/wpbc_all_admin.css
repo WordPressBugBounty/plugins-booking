@@ -6,7 +6,7 @@
   --wpbc_settings__nav_menu_left__border_color: #ccc;
   --wpbc_settings__nav_menu_left__hover_border_width: 4px;
   --wpbc_settings__nav_menu_left__hover_border_color: #d54e21;
-  --wpbc_settings__nav_menu_left__active_border_color: #1e7bc7;
+  --wpbc_settings__nav_menu_left__active_border_color: var(--wpbc_admin-theme-color, #1e7bc7);
   display: -ms-flexbox;
   display: flex;
   -ms-flex-flow: column wrap;
@@ -18,7 +18,7 @@
   padding: 0;
   background: var(--wpbc_settings__nav_menu_left__background_color);
   border: 1px solid var(--wpbc_settings__nav_menu_left__border_color);
-  min-width: Max(190px,100%)
+  min-width: max(190px,100%)
 }
 /*! ------------------------------------------------------------------------------------------------------------------ !*/
 /*!  ==  Left Navigation Items  ==  !*/
@@ -185,7 +185,7 @@
   justify-content: flex-start;
   padding: 0;
   border: 0 solid #e0e0e0;
-  box-shadow: 0 0 1px 1px #cccccc78;
+  box-shadow: 0 0 1px 1px rgba(204,204,204,.4705882353);
   border-radius: 2px;
   width: 100%;
   cursor: pointer;
@@ -341,7 +341,7 @@ div.wpbc_ui_radio_footer p.wpbc_ui_radio_choice_description {
 }
 .wpbc_ui_settings__col .wpbc_ui_settings__card_divider_right {
   border-right: 0;
-  border-bottom: 2px solid #dcdDE178;
+  border-bottom: 2px solid rgba(220,221,225,.4705882353);
   padding: 20px 0;
   margin: 0
 }
@@ -362,7 +362,7 @@ div.wpbc_ui_radio_footer p.wpbc_ui_radio_choice_description {
   align-items: flex-start
 }
 .wpbc_ui_settings__card_divider_right {
-  border-right: 2px solid #dcdDE178
+  border-right: 2px solid rgba(220,221,225,.4705882353)
 }
 .wpbc_ui_settings__card_divider_right:last-child {
   border-right: 0;
@@ -424,7 +424,7 @@ div.wpbc_ui_radio_footer p.wpbc_ui_radio_choice_description {
   border-left: 4px solid transparent
 }
 .wpbc_ui_settings__card_text_small:hover {
-  border-left: 4px solid #1e7bc7
+  border-left: 4px solid var(--wpbc_admin-theme-color,#1e7bc7)
 }
 .wpbc_ui_settings__card_text_small h1 {
   font-size: 18px
@@ -529,7 +529,7 @@ a.wpbc_ui_settings__text_pro:hover {
 }
 .wp-core-ui .wpbc_page .wpbc_settings_flex_container_right {
   --wpbc_form-button-light-size-height: 43px;
-  --wpbc_form-button-background-color: #066aab
+  --wpbc_form-button-background-color: var(--wpbc_admin-theme-color, #066aab )
 }
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light,
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:focus,
@@ -539,10 +539,10 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container input.wpbc_button_light:hover {
   font-size: 1.18em;
   font-weight: 600;
-  border: 2px solid #eeeeeeb5;
-  box-shadow: 0 2px 10px 2px #ffffff54;
+  border: 2px solid rgba(238,238,238,.7098039216);
+  box-shadow: 0 2px 10px 2px rgba(255,255,255,.3294117647);
   background: #fdfdfd;
-  color: #444444e0;
+  color: rgba(68,68,68,.8784313725);
   border-radius: .375em;
   padding: 0 2.2em;
   line-height: 1;
@@ -585,7 +585,7 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:disabled:focus,
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:disabled:hover {
   color: #ccc;
-  border: 2px solid #eeeeeeb5;
+  border: 2px solid rgba(238,238,238,.7098039216);
   cursor: not-allowed
 }
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light.wpbc_button_danger {
@@ -604,10 +604,10 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light.wpbc_button_green,
 .wpbc_button_light.wpbc_button_green {
   background: #27b400;
-  border-color: #ffffff17;
+  border-color: rgba(255,255,255,.0901960784);
   color: #fff;
   text-shadow: none;
-  box-shadow: 0 0 0 2px #039f0630
+  box-shadow: 0 0 0 2px rgba(3,159,6,.1882352941)
 }
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light.wpbc_button_green:focus,
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light.wpbc_button_green:hover,
@@ -626,6 +626,10 @@ a.wpbc_ui_settings__text_pro:hover {
 }
 /*! = General Vars for Admin = */
 .wpbc_admin {
+  --wpbc_admin-theme-color: var(--wp-admin-theme-color, #6b96ce);
+  --wpbc_admin-default_label-color: #486892;
+  --wpbc_admin-a-color: var(--wpbc_admin-theme-color);
+  --wpbc_admin-theme-opacity: 80%;
   --wpbc_ui__gen__screen_width_small: 960px;
   --wpbc_ui__gen__screen_width_mini: 782px;
   --wpbc_ui__gen__screen_width_micro: 600px;
@@ -692,9 +696,15 @@ a.wpbc_ui_settings__text_pro:hover {
   --wpbc_ui_listing__approved_color: #64AA45;
   --wpbc_ui_listing__trash_color: #d94a48;
   --wpbc_ui_listing__restore_color: #1e9220;
-  --wpbc_ui_listing__resource_color: #6b96ce;
-  --wpbc_ui_listing__selected_row_color: #08a;
+  --wpbc_ui_listing__resource_color: var(--wpbc_admin-theme-color, #6b96ce);
+  --wpbc_ui_listing__selected_row_color: var(--wpbc_admin-theme-color, #08a );
   --wpbc_ui_listing__colapsed_height: 80px
+}
+.wpbc_admin.admin-color-fresh[class*=" branch-6-"],
+.wpbc_admin.admin-color-fresh[class*=" branch-6-"] .wpbc_admin,
+.wpbc_admin.admin-color-fresh[class^=branch-6-],
+.wpbc_admin.admin-color-fresh[class^=branch-6-] .wpbc_admin {
+  --wpbc_admin-theme-color: #2271b1
 }
 /*! = Drop Down Menu = */
 .wpbc_ui_el__dropdown {
@@ -738,14 +748,14 @@ a.wpbc_ui_settings__text_pro:hover {
 .wpbc_ui_el_container.wpbc_ui_el__dropdown .ul_dropdown_menu_toggle.has_down_arrow:focus,
 .wpbc_ui_el_container.wpbc_ui_el__dropdown .ul_dropdown_menu_toggle.has_down_arrow:hover {
   background: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E") right 5px top 53% no-repeat;
-  padding-right: Min(2.2em,30px);
-  background-size: Min(1em,16px) Min(1em,16px)
+  padding-right: min(2.2em,30px);
+  background-size: min(1em,16px) min(1em,16px)
 }
 .wpbc_ui_el_container.wpbc_ui_el__dropdown.open .ul_dropdown_menu_toggle:focus {
   box-shadow: none
 }
 .wpbc_ui_el_container.wpbc_ui_el__dropdown .ul_dropdown_menu_toggle.has_border {
-  border: 1px solid #00000030;
+  border: 1px solid rgba(0,0,0,.1882352941);
   border-radius: 3px;
   padding-left: .7em;
   display: -ms-flexbox;
@@ -1002,7 +1012,7 @@ a.wpbc_ui_settings__text_pro:hover {
 .wpbc_ui_el__divider .wpbc_ui_el__vertical_line {
   border: none;
   width: 1px;
-  background: #0000001a;
+  background: rgba(0,0,0,.1019607843);
   margin: 0 5px
 }
 .wpbc_ui_el__divider .wpbc_ui_el__horisontal_line {
@@ -1012,7 +1022,7 @@ a.wpbc_ui_settings__text_pro:hover {
   margin: 5px 0;
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
-  border-bottom: 1px solid #0000001c
+  border-bottom: 1px solid rgba(0,0,0,.1098039216)
 }
 .wpbc_ui_el__divider:has(.wpbc_ui_el__horisontal_line) {
   clear: both;
@@ -1120,7 +1130,7 @@ a.wpbc_ui_settings__text_pro:hover {
 }
 .wpbc_page {
   --wpbc_form-field-border-size: 1px;
-  --wpbc_form-button-background-color: #066aab;
+  --wpbc_form-button-background-color: var(--wpbc_admin-theme-color, #066aab );
   --wpbc_form-field-text-color: rgba(0, 0, 0, 0.7)
 }
 .wp-core-ui .wpbc_page input[type=checkbox]:focus,
@@ -1155,7 +1165,7 @@ a.wpbc_ui_settings__text_pro:hover {
   top: 100%;
   z-index: 1010;
   width: 100%;
-  border: 1px solid #00000030;
+  border: 1px solid rgba(0,0,0,.1882352941);
   box-shadow: 0 4px 8px rgba(0,0,0,.09);
   margin-top: 1px;
   border-top: 0;
@@ -1391,8 +1401,8 @@ a.wpbc_ui_settings__text_pro:hover {
   word-wrap: normal;
   direction: ltr;
   vertical-align: -.20125em;
-  font-feature-settings: 'liga';
-  -moz-font-feature-settings: 'liga';
+  font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
@@ -1526,7 +1536,7 @@ only screen and (min-resolution:1.5dppx) {
   }
 }
 .wpbc_ui_el__choosen {
-  --wpbc_form-button-background-color: #066aab;
+  --wpbc_form-button-background-color: var(--wpbc_admin-theme-color, #066aab );
   display: -ms-flexbox;
   display: flex;
   -ms-flex-flow: row nowrap;
@@ -1542,7 +1552,7 @@ only screen and (min-resolution:1.5dppx) {
   -ms-user-select: none;
   user-select: none;
   box-shadow: none;
-  border: 1px solid #00000030;
+  border: 1px solid rgba(0,0,0,.1882352941);
   box-sizing: border-box;
   display: -ms-flexbox;
   display: flex;
@@ -1593,6 +1603,7 @@ only screen and (min-resolution:1.5dppx) {
   width: auto;
   box-sizing: content-box;
   background: #6b96ce!important;
+  background: rgb(from var(--wpbc_admin-theme-color,#6b96ce) r g b/var(--wpbc_admin-theme-opacity,80%))!important;
   color: #fff!important
 }
 .wpbc_ui_el__choosen .chzn-container-multi .chzn-choices .search-field {
@@ -1651,7 +1662,7 @@ only screen and (min-resolution:1.5dppx) {
 .wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_icn_close::before,
 .wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_icn_refresh::before {
   font-size: 18px;
-  color: #036aab
+  color: var(--wpbc_admin-theme-color,#036aab)
 }
 .wpbc_page_tab__vm_booking_listing .wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons {
   margin: 0 0 0 -38px
@@ -1700,7 +1711,7 @@ only screen and (min-resolution:1.5dppx) {
   align-self: stretch
 }
 .wpbc_ui_el__choosen .chzn-container .chzn-results .highlighted {
-  background: #6b96ce;
+  background: rgb(from var(--wpbc_admin-theme-color,#6b96ce) r g b/var(--wpbc_admin-theme-opacity,80%));
   color: #fff
 }
 @media (max-width:782px) {
@@ -2081,7 +2092,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   transition: .3s;
   box-shadow: 0 5px 10px #dfdfdf;
   cursor: pointer;
-  border: 2px solid #eeeeeeb5;
+  border: 2px solid rgba(238,238,238,.7098039216);
   line-height: 1;
   text-decoration: none;
   outline: 0
@@ -2210,7 +2221,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   font-size: 12px
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item:not(.wpbc_ui_el__vert_nav_item_sub) a {
-  border-bottom: 1px solid #0000001c
+  border-bottom: 1px solid rgba(0,0,0,.1098039216)
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item_sub {
   margin-left: 5px
@@ -2269,7 +2280,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   position: relative
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder .wpbc_ui_el__vert_nav_item__folder:after {
-  content: '+';
+  content: "+";
   position: absolute;
   top: 4px;
   right: 4px;
@@ -2277,7 +2288,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   font-weight: 700
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item__folder:after {
-  content: '-'
+  content: "-"
 }
 .wpbc_settings_page_wrapper .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item_root a .wpbc_ui_el__vert_nav_icon.wpbc_ui_el__vert_nav_icon_arrow {
   margin: 0 0 0 auto
@@ -2376,7 +2387,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   margin: 0 0 0 15px
 }
 a > .wpbc_ui_el__section_header {
-  color: #2271b1;
+  color: var(--wpbc_admin-theme-color,#2271b1);
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 0;
@@ -2549,18 +2560,18 @@ a > .wpbc_ui_el__section_header {
 .wpbc_ui_el__vert_right_bar__wrapper .wpbc_ui__right_sidebar__side_button {
   width: 22px;
   height: 41px;
-  background: #ffffffa6;
+  background: rgba(255,255,255,.6509803922);
   position: sticky;
   border-style: solid;
   border-width: 1px 1px 1px 0;
-  border-color: #00000014;
+  border-color: rgba(0,0,0,.0784313725);
   border-radius: 0 3px 3px 0;
   z-index: 1;
   cursor: pointer;
   transition: .3s ease-in-out;
   -ms-flex-item-align: end;
   align-self: flex-end;
-  box-shadow: 0 0 2px #0000000d;
+  box-shadow: 0 0 2px rgba(0,0,0,.0509803922);
   margin-top: auto;
   margin-bottom: 15px;
   -ms-flex-order: 1;
@@ -2604,7 +2615,7 @@ a > .wpbc_ui_el__section_header {
 }
 .wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button,
 .wpbc_settings_page_wrapper.min_right .wpbc_ui_el__vert_right_bar__wrapper .wpbc_ui__right_sidebar__side_button {
-  background: #1d232775
+  background: rgba(29,35,39,.4588235294)
 }
 .wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button svg path,
 .wpbc_settings_page_wrapper.min_right .wpbc_ui_el__vert_right_bar__wrapper .wpbc_ui__right_sidebar__side_button svg path {
@@ -2615,7 +2626,7 @@ a > .wpbc_ui_el__section_header {
   right: 10px
 }
 .wpbc_ui_el__vert_right_bar__wrapper {
-  margin-top: calc(22px + 5px + 25px * 1.8 + 13px * 1.5 + 20px);
+  margin-top: 111.5px;
   border-radius: 6px 0 0 6px;
   padding: 6px 0
 }
@@ -2647,7 +2658,7 @@ a > .wpbc_ui_el__section_header {
   --wpbc_ui_left_vert_nav__width_max: Min( 70px, 100% );
   border-radius: 0;
   box-shadow: none;
-  border-left: 1px solid #00000017
+  border-left: 1px solid rgba(0,0,0,.0901960784)
 }
 .wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item__a.wpbc_ui_el__vert_nav_item__single {
   display: -ms-flexbox;
@@ -2901,7 +2912,7 @@ a > .wpbc_ui_el__section_header {
 .wpbc_ui_group .wpbc_ui_el input {
   -ms-flex-item-align: stretch;
   align-self: stretch;
-  border: 1px solid #00000030;
+  border: 1px solid rgba(0,0,0,.1882352941);
   margin: 0
 }
 .ul_dropdown_menu__other_filters i::before,
@@ -2953,9 +2964,9 @@ div.wpbc_ajx_toolbar {
 }
 .wpbc_ui__collapsible_group.is-open .group__header {
   border-left-color: #1e7bc7;
-  background: #1e7bc70a;
+  background: rgba(30,123,199,.0392156863);
   border-radius: 0 5px 5px 0;
-  border-bottom-color: #1e7bc71f
+  border-bottom-color: rgba(30,123,199,.1215686275)
 }
 .wpbc_ui__collapsible_group:not(.is-open) .group__header:hover {
   border-left-color: #707980
@@ -3695,7 +3706,7 @@ div.wpbc_ajx_toolbar {
   vertical-align: baseline;
   padding: 5px 10px;
   margin: 5px 15px 5px 0;
-  background: #6b96ce;
+  background: var(--wpbc_admin-default_label-color,#6b96ce);
   color: #fff;
   border-radius: 4px;
   border: 0;
@@ -3730,16 +3741,18 @@ div.wpbc_ajx_toolbar {
   position: absolute;
   margin: 0 0 0 -28px;
   display: -ms-flexbox;
-  display: flex
+  display: flex;
+  opacity: .8
 }
 .wpbc_label.wpbc_label_booking_id {
   box-shadow: none;
   background-color: #fff;
-  border: 1px solid #0000001c;
+  border: 1px solid rgba(0,0,0,.1098039216);
   color: #717171
 }
 .wpbc_label.wpbc_label_resource {
-  background-color: #6b96ce
+  background-color: #6b96ce;
+  background-color: rgb(from var(--wpbc_admin-theme-color,#6b96ce) r g b/var(--wpbc_admin-theme-opacity,80%))
 }
 .wpbc_label.wpbc_label_deleted_resource {
   background-color: #ee6f48
@@ -3791,8 +3804,8 @@ div.wpbc_ajx_toolbar {
   justify-content: center;
   -ms-flex: 0 0 110px;
   flex: 0 0 110px;
-  -ms-flex-item-align: stretch;
-  align-self: stretch;
+  -ms-flex-item-align: center;
+  align-self: center;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none
@@ -3817,7 +3830,7 @@ div.wpbc_ajx_toolbar {
 .wpbc_listing_col.wpbc_col_action a.ul_dropdown_menu_toggle,
 .wpbc_listing_col.wpbc_col_action a.ul_dropdown_menu_toggle:focus,
 .wpbc_listing_col.wpbc_col_action a.ul_dropdown_menu_toggle:hover {
-  background: #00000012;
+  background: rgba(0,0,0,.0705882353);
   border-radius: 50%;
   width: 33px;
   -ms-flex-flow: column;

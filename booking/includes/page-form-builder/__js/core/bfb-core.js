@@ -273,7 +273,8 @@
 	}
 
 	/**
-	 * WPBC ID / Name service. Generates, sanitizes, and ensures uniqueness for field ids/names/html_ids within the canvas.
+	 * WPBC ID / Name service. Generates, sanitizes, and ensures uniqueness for field ids/names/html_ids within the
+	 * canvas.
 	 */
 	Core.WPBC_BFB_IdService = class  {
 
@@ -337,7 +338,8 @@
 		}
 
 		/**
-		 * Set field's INTERNAL id (data-id) on an element. Ensures uniqueness and optionally asks caller to refresh preview.
+		 * Set field's INTERNAL id (data-id) on an element. Ensures uniqueness and optionally asks caller to refresh
+		 * preview.
 		 *
 		 * @param {HTMLElement} field_el - Field element in the canvas.
 		 * @param {string} newIdRaw - Desired id (un/sanitized).
@@ -778,7 +780,8 @@
 		}
 
 		/**
-		 * Backward-compatible alias used elsewhere in the codebase.  - Check whether another instance with the given usage key can be added.
+		 * Backward-compatible alias used elsewhere in the codebase.  - Check whether another instance with the given
+		 * usage key can be added.
 		 *
 		 * @param {string} key - Usage key of a palette item.
 		 * @returns {boolean} Whether adding one more is allowed.
@@ -856,7 +859,8 @@
 
 		/**
 		 * @param {WPBC_Form_Builder} builder - The active builder instance.
-		 * @param {{ groupName?: string, animation?: number, ghostClass?: string, chosenClass?: string, dragClass?: string }} [opts={}] - Visual/behavior options.
+		 * @param {{ groupName?: string, animation?: number, ghostClass?: string, chosenClass?: string, dragClass?:
+		 *     string }} [opts={}] - Visual/behavior options.
 		 */
 		constructor( builder, opts = {} ) {
 			this.builder = builder;
@@ -872,11 +876,78 @@
 			};
 			/** @type {Set<HTMLElement>} */
 			this._containers = new Set();
+
+			/**
+			 * Guard against lost mouseup / pointerup events.
+			 *
+			 * @type {boolean}
+			 */
+			this._drag_fail_safe_bound = false;
+
+			this._bind_drag_fail_safe();
+		}
+
+		/**
+		 * Cleanup drag UI state.
+		 *
+		 * This is a defensive cleanup for cases when Chrome or a browser extension
+		 * loses the final mouseup / pointerup event during fallback dragging.
+		 *
+		 * @returns {void}
+		 */
+		_cleanup_drag_ui() {
+			this._dragState = null;
+			this._toggle_dnd_root_flags( false );
+			this.builder?._remove_dragging_class?.();
+
+			// Remove only fallback mirrors. Do not touch real dragged elements.
+			document.querySelectorAll( '.sortable-fallback[data-drag-role], .wpbc_bfb__simple_list_fallback' )
+					.forEach( (el) => {
+						if ( el.parentNode ) {
+							el.parentNode.removeChild( el );
+						}
+					} );
+		}
+
+		/**
+		 * Bind global fail-safe listeners for drag cleanup.
+		 *
+		 * @returns {void}
+		 */
+		_bind_drag_fail_safe() {
+			if ( this._drag_fail_safe_bound ) {
+				return;
+			}
+
+			this._drag_fail_safe_bound = true;
+
+			const finish_drag = () => {
+				window.requestAnimationFrame( () => {
+					this._cleanup_drag_ui();
+				} );
+			};
+
+			[ 'mouseup', 'pointerup', 'touchend', 'dragend' ].forEach( (evt_name) => {
+				document.addEventListener( evt_name, finish_drag, true );
+			} );
+
+			window.addEventListener( 'blur', finish_drag, true );
+
+			document.addEventListener(
+				'visibilitychange',
+				() => {
+					if ( document.hidden ) {
+						finish_drag();
+					}
+				},
+				true
+			);
 		}
 
 		/**
 		 * Tag the drag mirror (element under cursor) with role: 'palette' | 'canvas'.
-		 * Works with Sortable's fallback mirror (.sortable-fallback / .sortable-drag) and with your dragClass (.wpbc_bfb__drag-active).
+		 * Works with Sortable's fallback mirror (.sortable-fallback / .sortable-drag) and with your dragClass
+		 * (.wpbc_bfb__drag-active).
 		 */
 		_tag_drag_mirror( evt ) {
 			const fromPalette = this.builder?.palette_uls?.includes?.( evt.from );
@@ -906,13 +977,101 @@
 
 
 		/**
+		 * Ensure a simple vertical sortable list.
+		 *
+		 * This configuration is intended for inspector/sidebar lists such as:
+		 * - dropdown choices
+		 * - radio options
+		 * - checkbox options
+		 *
+		 * It is intentionally much simpler than the canvas DnD config and does not
+		 * use the column edge-fence / sticky-target logic.
+		 *
+		 * @param {HTMLElement} container - Sortable list container.
+		 * @param {{ handle_selector?: string, draggable_selector?: string, onUpdate?: Function }} [handlers={}] -
+		 *     Optional handlers/selectors.
+		 * @returns {void}
+		 */
+		ensure_simple_list( container, handlers = {} ) {
+			if ( ! container || typeof Sortable === 'undefined' ) {
+				return;
+			}
+			if ( Sortable.get?.( container ) ) {
+				return;
+			}
+
+			const common = {
+				animation        : this.opts.animation,
+				ghostClass       : this.opts.ghostClass,
+				chosenClass      : this.opts.chosenClass,
+				dragClass        : this.opts.dragClass,
+				forceFallback    : true,
+				// For a single scrollable sidebar list this is usually more stable.
+				fallbackOnBody   : false,
+				fallbackTolerance: 8,
+				removeCloneOnHide: true,
+				onStart          : () => {
+					this.builder?._add_dragging_class?.();
+					this._toggle_dnd_root_flags( true, false );
+				},
+				onEnd            : () => {
+					setTimeout( () => {
+						this.builder?._remove_dragging_class?.();
+					}, 50 );
+					this._toggle_dnd_root_flags( false );
+					this._dragState = null;
+					this._cleanup_drag_ui();
+				}
+			};
+
+			Sortable.create(
+				container,
+				{
+					...common,
+					group                  : { name: this.opts.groupName, pull: false, put: false },
+					sort                   : true,
+					direction              : 'vertical',
+					handle                 : handlers.handle_selector || '.wpbc_bfb__drag-handle',
+					draggable              : handlers.draggable_selector || '.wpbc_bfb__sortable-row',
+					fallbackClass          : 'wpbc_bfb__simple_list_fallback',
+					filter                 : [
+						'input',
+						'textarea',
+						'select',
+						'button',
+						'a',
+						'.wpbc_bfb__no-drag-zone',
+						'.wpbc_bfb__no-drag-zone *'
+					].join( ',' ),
+					preventOnFilter        : false,
+					invertSwap             : false,
+					swapThreshold          : 0.30,
+					invertedSwapThreshold  : 0.60,
+					emptyInsertThreshold   : 8,
+					dragoverBubble         : false,
+					scroll                 : true,
+					scrollSensitivity      : 60,
+					scrollSpeed            : 14,
+					onUpdate               : handlers.onUpdate || function () {}
+				}
+			);
+
+			this._containers.add( container );
+		}
+
+
+		/**
 		 * Ensure Sortable is attached to a container with role 'palette' or 'canvas'.
 		 *
-		 *  -- Handle selectors: handle:  '.section-drag-handle, .wpbc_bfb__drag-handle, .wpbc_bfb__drag-anywhere, [data-draggable="true"]'
+		 *  -- Handle selectors: handle:  '.section-drag-handle, .wpbc_bfb__drag-handle, .wpbc_bfb__drag-anywhere,
+		 * [data-draggable="true"]'
 		 *  -- Draggable gate: draggable: '.wpbc_bfb__field:not([data-draggable="false"]), .wpbc_bfb__section'
-		 *  -- Filter (overlay-safe):     ignore everything in overlay except the handle -  '.wpbc_bfb__overlay-controls *:not(.wpbc_bfb__drag-handle):not(.section-drag-handle):not(.wpbc_icn_drag_indicator)'
+		 *  -- Filter (overlay-safe):     ignore everything in overlay except the handle -
+		 * '.wpbc_bfb__overlay-controls
+		 * *:not(.wpbc_bfb__drag-handle):not(.section-drag-handle):not(.wpbc_icn_drag_indicator)'
 		 *  -- No-drag wrapper:           use .wpbc_bfb__no-drag-zone inside renderers for inputs/widgets.
-		 *  -- Focus guard (optional):    flip [data-draggable] on focusin/focusout to prevent accidental drags while typing.
+		 *  -- Focus guard (optional):    flip [data-draggable] on focusin/focusout to prevent accidental drags while
+		 * typing.
 		 *
 		 * @param {HTMLElement} container - The element to enhance with Sortable.
 		 * @param {'palette'|'canvas'} role - Behavior profile to apply.
@@ -927,6 +1086,13 @@
 				return;
 			}
 
+			const sortable_kind = handlers.sortable_kind || '';
+
+			if ( sortable_kind === 'simple_list' ) {
+				this.ensure_simple_list( container, handlers );
+				return;
+			}
+
 			const common = {
 				animation  : this.opts.animation,
 				ghostClass : this.opts.ghostClass,
@@ -935,7 +1101,8 @@
 				// == Element under the cursor  == Ensure we drag a real DOM mirror you can style via CSS (cross-browser).
 				forceFallback    : true,
 				fallbackOnBody   : true,
-				fallbackTolerance: 6,
+				fallbackTolerance: 8,
+				removeCloneOnHide: true,
 				// Add body/html flags so you can style differently when dragging from palette.
 				onStart: (evt) => {
 					this.builder?._add_dragging_class?.();
@@ -991,17 +1158,24 @@
 				invertedSwapThreshold: 0.85,                 // require deeper overlap when inverted.
 				emptyInsertThreshold : 24,                   // don’t jump into empty containers too early.
 				dragoverBubble       : false,                // keep dragover local.
-				fallbackOnBody       : true,                 // more stable positioning.
-				fallbackTolerance    : 6,                    // Reduce micro-moves when the mouse shakes a bit (esp. on touchpads).
 				scroll               : true,
 				scrollSensitivity    : 40,
 				scrollSpeed          : 10,
 				/**
-				 * Enter/leave hysteresis for cross-column moves.    Only allow dropping into `to` when the pointer is well inside it.
+				 * Enter/leave hysteresis for cross-column moves.    Only allow dropping into `to` when the pointer is
+				 * well inside it.
 				 */
 				onMove: (evt, originalEvent) => {
+
 					const { to, from } = evt;
-					if ( !to || !from ) return true;
+					if ( ! to || ! from ) {
+						return true;
+					}
+
+					const in_preview_canvas = !! to.closest( '.wpbc_bfb__panel--preview' );
+					if ( ! in_preview_canvas ) {
+						return true;
+					}
 
 					// Only gate columns (not page containers), and only for cross-column moves in the same row
 					const isColumn = to.classList?.contains( 'wpbc_bfb__column' );
@@ -1175,9 +1349,9 @@
 	 * Small DOM contract and renderer helper
 	 *
 	 * @type {Readonly<{
-	 *                  SELECTORS: {pagePanel: string, field: string, validField: string, section: string, column: string, row: string, overlay: string},
-	 *                  CLASSES: {selected: string},
-	 *        	        ATTR: {id: string, name: string, htmlId: string, usageKey: string, uid: string}}
+	 *                  SELECTORS: {pagePanel: string, field: string, validField: string, section: string, column:
+	 *     string, row: string, overlay: string}, CLASSES: {selected: string}, ATTR: {id: string, name: string, htmlId:
+	 *     string, usageKey: string, uid: string}}
 	 *        >}
 	 */
 	Core.WPBC_BFB_DOM = Object.freeze( {

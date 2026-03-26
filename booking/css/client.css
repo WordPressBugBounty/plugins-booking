@@ -552,7 +552,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 
 /* Standard message accent colors (left border & icons) */
 .wpbc_front_end__message.wpbc_fe_message_info {
-	border-left-color: #00a0d2;
+	border-left-color: var( --wpbc_admin-theme-color, #00a0d2 );
 }
 .wpbc_front_end__message.wpbc_fe_message_success {
 	border-left-color: #46b450;
@@ -579,9 +579,9 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 
 /* “Alt” framed message style */
 .wpbc_fe_message_alt.wpbc_front_end__message.wpbc_fe_message_info {
-	border: 2px solid #00a0d2;
+	border: 2px solid var( --wpbc_admin-theme-color, #00a0d2 );
 	background: #fff;
-	border-left: 4px solid #00a0d2;
+	border-left: 4px solid var( --wpbc_admin-theme-color, #00a0d2 );
 	box-shadow: 0 0 4px #cfcfcf;
 }
 .wpbc_fe_message_alt.wpbc_front_end__message.wpbc_fe_message_success {
@@ -1031,10 +1031,10 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 	width: 100%;
 }
 
-/* Stack fields on narrow screens */
+/* Stack fields on narrow screens. 10.15.1.2. */
 @media (max-width: 782px) {
 	.wpbc_container_booking_form .wpbc__field:not(.wpbc__cal) {
-		flex: 1 1 100%;
+		flex: 1 1 100% !important;
 		padding: 0;
 	}
 }

@@ -5,8 +5,8 @@
 /* --------------------------------------------------------------------------------------------------------------------- */
 /* == File  _out/builder-form-page.css == Time point:  2025-08-28 19:11  */
 /* --------------------------------------------------------------------------------------------------------------------- */
-:root {
-	--wpbc-bfb-accent-color: #327ab4;
+.wpbc_admin {
+	--wpbc-bfb-accent-color: var(--wpbc_admin-theme-color, #327ab4 );
 }
 /* Admin page margins in WP */
 body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
@@ -488,7 +488,9 @@ html.wpbc_bfb__dnd-active .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc
 	min-height: 36px !important;
 	pointer-events: none;
 }
-
+.wpbc_bfb__simple_list_fallback {
+	opacity: 0.85;
+}
 /* ================================================================================================== */
 /* Booking Form (Client) Overrides                                                                    */
 /* Help: Make embedded client form respect builder widths & max-widths                                */
@@ -1008,8 +1010,8 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 }
 .inspector__group__fields__times .wpbc_bfb__opt-start,
 .inspector__group__fields__times .wpbc_bfb__opt-end{
-	flex: 0 1 95px;
-  	min-width: 95px;
+	flex: 0 1 100px;
+  	min-width: 100px;
 }
 .inspector__group__fields__times .wpbc_bfb__options_list__header {
 	flex: 1 1 100%;
@@ -1230,7 +1232,7 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 }
 /* Set  Check Icon  color*/
 .wpbc_bfb__opt-selected .wpbc_ui__toggle label {
-	color: #2271b1;
+	color: var(--wpbc_admin-theme-color, #2271b1);
 }
 /* Set  Default lables invisible */
 .wpbc_bfb__opt-selected .wpbc_ui__toggle .wpbc_ui__toggle_label {
@@ -1288,13 +1290,13 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 }
 /* Focus ring when the hidden radio is focused */
 .wpbc_sr_only:focus + .wpbc_bfb__chip {
-	outline: 1px solid #2271b1;
+	outline: 1px solid var(--wpbc_admin-theme-color, #2271b1);
 	outline-offset: 0px;
 }
 /* Selected state (via sibling selector) */
 .wpbc_sr_only:checked + .wpbc_bfb__chip {
-	border-color: #2271b1;
-	box-shadow: inset 0 0 0 1px #2271b1;
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	box-shadow: inset 0 0 0 1px var(--wpbc_admin-theme-color, #2271b1);
 }
 /* Screen-reader only helper */
 .wpbc_bfb__chip .sr-only {
@@ -1566,7 +1568,7 @@ html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
 }
 .wpbc_bfb_popup_modal__forms_loading_section .wpbc_bfb__load_form_item.wpbc_bfb__load_form_item_selected {
 	background: #fcfdff;
-	border: 2px solid #5088b3;
+	border: 2px solid var( --wpbc_admin-theme-color, #5088b3 );
 }
 /* Predefined keywords for templates */
 .wpbc_bfb_popup_modal__tpl_search_presets {
@@ -1757,7 +1759,7 @@ html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
 	font-size: 11px;
 	padding: 0px 0 0 5px;
 	line-height: 1.75;
-	color: #2271b1;
+	color: var(--wpbc_admin-theme-color, #2271b1);
 }
 .wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__hint__form_name__label {
 	display: none;

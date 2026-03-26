@@ -396,7 +396,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 		?><div class="setup_wizard_page_container" style="display: flex;flex-flow: row wrap;justify-content: flex-start;align-items: center;color: #fff;margin: 0 -5px 0 0;overflow: visible;">
 			<div class="name_item" style="margin-top: 0;white-space: nowrap;padding: 0 0 0 0;"><?php esc_html_e( 'Setup', 'booking' ); ?></div>
-			<div style="margin:3px 0px 0 0;margin-left: auto;font-size: 9px;background: #2271b1;height: 15px;" class="wpbc_badge_count name_item update-plugins">
+			<div style="margin:3px 0px 0 0;margin-left: auto;font-size: 9px;background: var(--wpbc_admin-theme-color, #2271b1);height: 15px;" class="wpbc_badge_count name_item update-plugins">
 				<span class="update-count" style="white-space: nowrap;word-wrap: normal;"><?php
 					echo esc_html( $this->get_active_step_num() . ' / ' . $this->get_total_steps_count() );
 				?></span>

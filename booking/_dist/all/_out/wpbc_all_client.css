@@ -646,8 +646,8 @@ div.wpbc_container.wpbc_form input[type=radio] {
   position: relative;
   display: inline-block;
   background: 0 0;
-  height: calc(var(--wpbc_form-field-size-checkbox-size) - 2px + calc(var(--wpbc_form-field-border-size,1px) * 2));
-  width: calc(var(--wpbc_form-field-size-checkbox-size) - 2px + calc(var(--wpbc_form-field-border-size,1px) * 2));
+  height: calc(var(--wpbc_form-field-size-checkbox-size) - 2px + var(--wpbc_form-field-border-size,1px) * 2);
+  width: calc(var(--wpbc_form-field-size-checkbox-size) - 2px + var(--wpbc_form-field-border-size,1px) * 2);
   margin: 0 0 0 2px;
   border: none;
   box-shadow: none;
@@ -659,7 +659,7 @@ div.wpbc_container.wpbc_form input[type=checkbox]:after,
 div.wpbc_container.wpbc_form input[type=checkbox]:before,
 div.wpbc_container.wpbc_form input[type=radio]:after,
 div.wpbc_container.wpbc_form input[type=radio]:before {
-  content: '';
+  content: "";
   position: absolute;
   left: -2px;
   top: 0;
@@ -904,7 +904,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-radio > .wpdev-list
   display: none
 }
 .wpbc_steps_for_timeline_container {
-  max-width: Min(400px,100%);
+  max-width: min(400px,100%);
   min-width: 200px;
   margin: 3px 0 0;
   width: 100%;
@@ -1027,7 +1027,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-radio > .wpdev-list
   margin: auto;
   max-width: 100%;
   width: 100%;
-  max-width: Min(900px,100%)
+  max-width: min(900px,100%)
 }
 .wpbc_wizard__border_container,
 .wpbc_wizard__border_container p {
@@ -1038,7 +1038,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-radio > .wpdev-list
 .wpbc_wizard__border_container .wpbc_times_selector div {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-  min-width: Min(90px,100%);
+  min-width: min(90px,100%);
   white-space: wrap;
   word-break: normal
 }

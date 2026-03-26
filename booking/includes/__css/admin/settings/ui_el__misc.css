@@ -144,7 +144,7 @@
 /* == Forms Input Focus ============================================================================================= */
 .wpbc_page {
 	--wpbc_form-field-border-size: 1px;
-	--wpbc_form-button-background-color: #066aab;
+	--wpbc_form-button-background-color: var(--wpbc_admin-theme-color, #066aab );
 	--wpbc_form-field-text-color: rgba(0, 0, 0, 0.7);
 }
 .wp-core-ui .wpbc_page input[type=date]:focus,

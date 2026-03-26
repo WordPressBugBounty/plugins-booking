@@ -374,7 +374,7 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
 .wpbc_popup_modal .put-in {
     cursor: text;
     font-weight: 600;
-  /*background: #1E7BC7;*/
+  /*background: var( --wp-admin-theme-color, #1E7BC7 );*/
   /*background: #4A8CC2;*/
   /*border: 1px solid #3C86A7;*/
     background: #75A249;

@@ -302,6 +302,20 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 					// Legacy  update booking form  and dates selection, as some other options (recurrent time)....
 					wpbc_setup__update__bookings_types( $cleaned_data );
 
+					// FixIn: 10.7.1.3. // FixIn: 10.15.1.1.
+					$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__send_email' );
+					if (! empty($cleaned_data_booking_feedback_arr)){
+						if ( 'On' === $cleaned_data_booking_feedback_arr['wpbc_swp_accept_send'] ) {
+							$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr , array( 'type' => 'Type: ' . $cleaned_data ['wpbc_swp_booking_types'] ) );
+							if ( 'time_slots_appointments' === $cleaned_data ['wpbc_swp_booking_types'] ) {
+								$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr, array( 'appointments_type' => 'Appointment: ' . $cleaned_data ['wpbc_swp_booking_appointments_type'] ) );
+							}
+							wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
+							update_bk_option( 'booking_feedback__after_send', $cleaned_data_booking_feedback_arr );
+							delete_bk_option( 'booking_feedback__send_email' );
+						}
+					}
+
 					$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
 					if ( $is_bfb_enabled ) {
 						$or_sep_url = ( defined( 'WPBC_BFB_TEMPLATE_SEARCH_OR_SEPARATOR_URL' ) ) ? (string) WPBC_BFB_TEMPLATE_SEARCH_OR_SEPARATOR_URL : '^';
@@ -334,19 +348,6 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 						break;
 					}
 
-					// FixIn: 10.7.1.3.
-					$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__send_email' );
-					if (! empty($cleaned_data_booking_feedback_arr)){
-						if ( 'On' === $cleaned_data_booking_feedback_arr['wpbc_swp_accept_send'] ) {
-							$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr , array( 'type' => 'Type: ' . $cleaned_data ['wpbc_swp_booking_types'] ) );
-							if ( 'time_slots_appointments' === $cleaned_data ['wpbc_swp_booking_types'] ) {
-								$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr, array( 'appointments_type' => 'Appointment: ' . $cleaned_data ['wpbc_swp_booking_appointments_type'] ) );
-							}
-							wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
-							update_bk_option( 'booking_feedback__after_send', $cleaned_data_booking_feedback_arr );
-							delete_bk_option( 'booking_feedback__send_email' );
-						}
-					}
 
 					// -------------------------------------------------------------------------------------------------
 					// Save selected option  at the next  step  for paid versions

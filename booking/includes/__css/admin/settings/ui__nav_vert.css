@@ -610,7 +610,7 @@
 	margin: 0 0 0 15px;
 }
 a > .wpbc_ui_el__section_header {
-	color: #2271b1;
+	color: var(--wpbc_admin-theme-color, #2271b1);
 	font-weight: 400;
 	font-size: 12px;
 	font-weight: 400;

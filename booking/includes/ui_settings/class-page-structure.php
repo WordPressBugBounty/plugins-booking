@@ -66,7 +66,28 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 
 		// This Hook fire in the class WPBC_Admin_Menus for showing page content of specific menu.
 		add_action( 'wpbc_page_structure_show', array( $this, 'content_structure' ) );
+
+		add_filter( 'admin_body_class', array( $this, 'wpbc_add_admin_body_class' ) );
 	}
+
+
+	/**
+	 * Set the  wpbc_admin  class  to  body.
+	 *
+	 * @param bool $classes Body classes.
+	 *
+	 * @return array
+	 */
+	public function wpbc_add_admin_body_class( $classes ) {
+
+
+		if ( $this->is_page_activated() ) {
+			$classes .= ' wpbc_admin';
+		}
+
+		return $classes;
+	}
+
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Abstract Methods

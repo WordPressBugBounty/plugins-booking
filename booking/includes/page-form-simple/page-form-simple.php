@@ -666,7 +666,7 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 
 			?><div style="display: flex;flex-flow: row wrap;justify-content: flex-end;align-items: center;font-size: 10px;">
 				<div style="margin-right: 1em;font-weight: 600;"><?php esc_html_e('Global Settings','booking'); ?>: </div>
-				<i style="margin-right: 5px;<?php echo ( get_bk_option( 'booking_is_use_captcha' ) === 'On' ) ? 'color: #036aab' : ''; ?>"
+				<i style="margin-right: 5px;<?php echo ( get_bk_option( 'booking_is_use_captcha' ) === 'On' ) ? 'color: var( --wpbc_admin-theme-color, #036aab )' : ''; ?>"
 				   class="wpbc_set_nav__right_icon menu_icon icon-1x <?php echo ( get_bk_option( 'booking_is_use_captcha' ) === 'On' ) ? 'wpbc-bi-toggle2-on wpbc_set_nav__icon_on' : 'wpbc-bi-toggle2-off'; ?>"
 				></i><a href="<?php echo esc_url( wpbc_get_settings_url() ) . '&tab=form&subtab=form_options#do_expand__wpbc_general_settings_form_metabox#do_other_actions__blink_captcha'; ?>">
 					<span ><?php

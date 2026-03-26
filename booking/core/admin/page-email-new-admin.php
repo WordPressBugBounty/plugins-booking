@@ -880,7 +880,12 @@ function wpbc__get_replace_shortcodes__email_new_admin( $booking_id, $bktype, $f
     $replace[ 'check_in_only_date' ] 	= $my_check_in_onlydate;
     $replace[ 'check_out_only_date' ]   = $my_check_out_onlydate;
     $replace[ 'check_out_plus1day'] = $my_check_out_plus1day;                   // FixIn: 6.0.1.11.
-    $replace[ 'dates_count' ]   = count( $my_dates4emeil_check_in_out );
+
+	$replace['dates_count']         = count( $my_dates4emeil_check_in_out );
+	$replace['days_count']          = intval( $replace['dates_count'] );        // FixIn: 10.15.1.3.
+	$replace['nights_count']        = ( $replace['days_count'] > 1 ) ? intval( $replace['days_count'] - 1 ) : 1;
+	$replace['days_count_plus1day'] = intval( $replace['days_count'] + 1 );
+
 	$replace['cost'] = $booking_cost;
 	$replace['cost_digits_only'] = $booking_cost_digits_only;
     $replace[ 'siteurl' ]       = htmlspecialchars_decode( '<a href="' . esc_url( home_url() ) . '">' . home_url() . '</a>' );

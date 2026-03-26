@@ -16,7 +16,7 @@
   box-sizing: border-box
 }
 .wpbc_timeline_client_border .flex_tl_table {
-  box-shadow: 0 2px 5px #00000014;
+  box-shadow: 0 2px 5px rgba(0,0,0,.0784313725);
   border: 1px solid #e7e7e7
 }
 .flex_tl_table .flex_tl_table_header,
@@ -425,7 +425,7 @@ hr.wpbc_tl_popover_booking_separator {
   -webkit-appearance: none;
   color: #555;
   border-radius: 3px;
-  border: 1px solid #aaa0;
+  border: 1px solid rgba(170,170,170,0);
   box-shadow: none;
   outline: 0;
   background: 0 0!important
@@ -950,7 +950,7 @@ hr.wpbc_tl_popover_booking_separator {
   width: 220px;
   overflow-x: auto;
   scrollbar-width: thin;
-  box-shadow: 0 0 10px 1px #00000025;
+  box-shadow: 0 0 10px 1px rgba(0,0,0,.1450980392);
   z-index: 1;
   padding: 0
 }
@@ -1039,28 +1039,28 @@ hr.wpbc_tl_popover_booking_separator {
   margin: 2px -1px 0
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.booking_check_in {
-  background: linear-gradient(to bottom right,#fff0 0,#fff0 50%,var(--wpbc_timeline-booking-pending-border-color) 50%,var(--wpbc_timeline-booking-pending-border-color) 52%,var(--wpbc_timeline-booking-pending-color) 52%,var(--wpbc_timeline-booking-pending-color) 100%)
+  background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-border-color) 50%,var(--wpbc_timeline-booking-pending-border-color) 52%,var(--wpbc_timeline-booking-pending-color) 52%,var(--wpbc_timeline-booking-pending-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.booking_check_out {
-  background: linear-gradient(to top left,#fff0 0,#fff0 50%,var(--wpbc_timeline-booking-pending-color) 50%,var(--wpbc_timeline-booking-pending-color) 100%)
+  background: linear-gradient(to top left,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-color) 50%,var(--wpbc_timeline-booking-pending-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking.booking_check_in {
-  background: linear-gradient(to bottom right,#fff0 0,#fff0 50%,var(--wpbc_timeline-booking-approved-border-color) 50%,var(--wpbc_timeline-booking-approved-border-color) 52%,var(--wpbc_timeline-booking-approved-color) 52%,var(--wpbc_timeline-booking-approved-color) 100%)
+  background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-approved-border-color) 50%,var(--wpbc_timeline-booking-approved-border-color) 52%,var(--wpbc_timeline-booking-approved-color) 52%,var(--wpbc_timeline-booking-approved-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking.booking_check_out {
-  background: linear-gradient(to top left,#fff0 0,#fff0 50%,var(--wpbc_timeline-booking-approved-color) 50%,var(--wpbc_timeline-booking-approved-color) 100%)
+  background: linear-gradient(to top left,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-approved-color) 50%,var(--wpbc_timeline-booking-approved-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.booking_check_in.past_date {
-  background: linear-gradient(to bottom right,#fff0 0,#fff0 50%,var(--wpbc_timeline-booking-pending-border-color) 50%,var(--wpbc_timeline-booking-pending-border-color) 52%,var(--wpbc_timeline-past-booking-pending-color) 52%,var(--wpbc_timeline-past-booking-pending-color) 100%)
+  background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-border-color) 50%,var(--wpbc_timeline-booking-pending-border-color) 52%,var(--wpbc_timeline-past-booking-pending-color) 52%,var(--wpbc_timeline-past-booking-pending-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.booking_check_out.past_date {
-  background: linear-gradient(to top left,#fff0 0,#fff0 50%,var(--wpbc_timeline-past-booking-pending-color) 50%,var(--wpbc_timeline-past-booking-pending-color) 100%)
+  background: linear-gradient(to top left,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-past-booking-pending-color) 50%,var(--wpbc_timeline-past-booking-pending-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking.booking_check_in.past_date {
-  background: linear-gradient(to bottom right,#fff0 0,#fff0 50%,var(--wpbc_timeline-booking-approved-border-color) 50%,var(--wpbc_timeline-booking-approved-border-color) 52%,var(--wpbc_timeline-past-booking-approved-color) 52%,var(--wpbc_timeline-past-booking-approved-color) 100%)
+  background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-approved-border-color) 50%,var(--wpbc_timeline-booking-approved-border-color) 52%,var(--wpbc_timeline-past-booking-approved-color) 52%,var(--wpbc_timeline-past-booking-approved-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking.booking_check_out.past_date {
-  background: linear-gradient(to top left,#fff0 0,#fff0 50%,var(--wpbc_timeline-past-booking-approved-color) 50%,var(--wpbc_timeline-past-booking-approved-color) 100%)
+  background: linear-gradient(to top left,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-past-booking-approved-color) 50%,var(--wpbc_timeline-past-booking-approved-color) 100%)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_booking_titles .in_cell_date_booking_title:active,
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_booking_titles .in_cell_date_booking_title:focus,

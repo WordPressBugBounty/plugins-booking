@@ -141,7 +141,7 @@
 	border-left: 4px solid #fff;
 }
 .wpbc_flextable .wpbc_flextable_row.wpbc_flextable_row_selected{
-	border-left-color: #08a;
+	border-left-color: var(--wpbc_admin-theme-color, #08a );
 }
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* TEXT | LINKS 																									  */
@@ -414,7 +414,7 @@
 .wpbc_flextable_labels .wpbc_label_resource_single:active,
 .wpbc_flextable_labels .wpbc_label_resource_single:hover{
 	font-weight:600;
-	background-color: #79b;
+	background-color: var( --wpbc_admin-default_label-color , #4c74a9);
 	color:#fff;
 }
 .wpbc_flextable_labels .wpbc_label_resource_parent,

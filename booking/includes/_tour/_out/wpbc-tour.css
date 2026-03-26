@@ -371,7 +371,7 @@ label[for=updraft_servicecheckbox_updraftvault].emphasize {
   color: #b7b7b7
 }
 .shepherd-element.wpbc_tour_theme202408 .shepherd-content footer .shepherd-buttons li .shepherd-button.udp-tour-back::before {
-  content: ' ';
+  content: " ";
   width: 6px;
   height: 6px;
   display: block;

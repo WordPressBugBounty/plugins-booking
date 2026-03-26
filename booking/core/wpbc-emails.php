@@ -234,6 +234,10 @@ function wpbc_get_email_help_shortcodes( $skip_shortcodes = array() , $email_exa
     if ( ! in_array( 'dates_count', $skip_shortcodes ) ) {
 		/* translators: 1: ... */
 		$fields[] = sprintf( $icn, '<code>[dates_count]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( '%s - inserting the number of booking dates ', 'booking' ), '[dates_count]' ) ) );
+
+		$fields[] = sprintf( $icn, '<code>[days_count]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( 'Number of selected days.', 'booking' ), '[days_count]' ) ) );
+		$fields[] = sprintf( $icn, '<code>[nights_count]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( 'Number of selected nights.', 'booking' ), '[nights_count]' ) ) );
+		$fields[] = sprintf( $icn, '<code>[days_count_plus1day]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( 'Number of selected days.', 'booking' ), '[days_count_plus1day]' ) . '  (+ 1 ' . __('day', 'booking') . ')' ) );
 	}
 
     $fields[] = '<hr/>';

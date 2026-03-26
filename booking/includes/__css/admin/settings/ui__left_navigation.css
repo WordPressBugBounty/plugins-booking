@@ -7,7 +7,7 @@
 
 --wpbc_settings__nav_menu_left__hover_border_width: 4px;
 --wpbc_settings__nav_menu_left__hover_border_color: #d54e21;
---wpbc_settings__nav_menu_left__active_border_color: #1e7bc7;
+--wpbc_settings__nav_menu_left__active_border_color: var(--wpbc_admin-theme-color, #1e7bc7);
 }
 /*! ------------------------------------------------------------------------------------------------------------------ !*/
 /*!  ==  Left Navigation Items  ==  !*/

@@ -421,7 +421,7 @@
 
 /* == CHOOSEN ======================================================================================================= */
 .wpbc_ui_el__choosen {
-	--wpbc_form-button-background-color: #066aab;
+	--wpbc_form-button-background-color:  var(--wpbc_admin-theme-color, #066aab );
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: flex-start;
@@ -468,6 +468,7 @@
 	width: auto;
 	box-sizing: content-box;
 	background: #6b96ce !important;
+	background: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%)) !important;  /* FixIn: 10.15.1.7. */
 	color: #fff !important;
 }
 .wpbc_ui_el__choosen .chzn-container-multi .chzn-choices .search-field {
@@ -522,7 +523,7 @@
 .wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_icn_close::before,
 .wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_icn_refresh::before {
 	font-size: 18px;
-	color: #036aab;
+	color: var( --wpbc_admin-theme-color, #036aab );
 }
 /* Booking Listing only */
 .wpbc_page_tab__vm_booking_listing .wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons {
@@ -573,7 +574,7 @@
 	align-self: stretch;
 }
 .wpbc_ui_el__choosen .chzn-container .chzn-results .highlighted {
-	background: #6b96ce;
+	background:  rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%)) ;
 	color: #fff ;
 }
 @media (max-width: 782px) {

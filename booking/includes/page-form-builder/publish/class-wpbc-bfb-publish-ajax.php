@@ -418,7 +418,8 @@ class WPBC_BFB_Publish_Ajax {
 	 *
 	 * Notes:
 	 * - Reuses existing helper wpbc_try_assign_full_width_template() when available.
-	 * - Does not override an already valid custom template.
+	 * - Does not override an already valid custom template,
+	 *   except excluded ones like Elementor Full Width.
 	 *
 	 * @param int $post_id Page ID.
 	 *
@@ -438,11 +439,23 @@ class WPBC_BFB_Publish_Ajax {
 
 		$current_template = (string) get_post_meta( $post_id, '_wp_page_template', true );
 
-		if ( self::is_page_template_value_valid( $current_template ) ) {
+		/*
+		 * Keep existing valid template,
+		 * except Elementor Full Width which we want to avoid.
+		 */
+		if (
+			self::is_page_template_value_valid( $current_template ) &&
+			( 'elementor_header_footer' !== $current_template )
+		) {
 			return false;
 		}
 
-		return (bool) wpbc_try_assign_full_width_template( $post_id );
+		return (bool) wpbc_try_assign_full_width_template( $post_id ,
+			array(
+				'excluded_title_parts'             => array( 'wide image' ),
+				'excluded_classic_template_files'  => array( 'elementor_header_footer' ),
+				'force_elementor_default_template' => true,
+			) );
 	}
 
 	/**

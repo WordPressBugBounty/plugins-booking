@@ -696,7 +696,7 @@ function wpbc_ui__vert_menu__item_sub( $menu_slug, $menu_item_arr ) {
 					( ( ! empty( $is_checked_data ) ) && ( isset( $is_checked_data['enabled'] ) ) && ( 'On' === $is_checked_data['enabled'] ) ) ||
 					( ( ! empty( $is_checked_data ) ) && ( 'On' === $is_checked_data ) )
 				) {
-					echo '<i class="wpbc_ui_el__vert_nav_icon_right menu_icon icon-1x wpbc-bi-toggle2-on"  style="margin-left: auto;margin-top: 3px;color: #036aab;"></i>';
+					echo '<i class="wpbc_ui_el__vert_nav_icon_right menu_icon icon-1x wpbc-bi-toggle2-on"  style="margin-left: auto;margin-top: 3px;color: var( --wpbc_admin-theme-color, #036aab );"></i>';
 				} else {
 					echo '<i class="wpbc_ui_el__vert_nav_icon_right menu_icon icon-1x wpbc-bi-toggle2-off" style="margin-left: auto;margin-top: 3px;"></i>';
 				}

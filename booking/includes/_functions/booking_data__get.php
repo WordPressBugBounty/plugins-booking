@@ -410,9 +410,11 @@ function wpbc_get_booking_different_params_arr( $booking_id, $formdata, $booking
 	$replace[ 'check_in_date' ]     = $my_check_in_date;                        // July 28, 2016 16:00
 	$replace[ 'check_out_date' ]    = $my_check_out_date;                       // July 28, 2016 18:00
 	$replace[ 'check_out_plus1day'] = $my_check_out_plus1day;                   // July 29, 2016 18:00
-	$replace[ 'dates_count' ]       = count( $sql_days_only_array );            // 1
-	$replace[ 'days_count' ]        = count( $sql_days_only_array );            // 1
-	$replace[ 'nights_count' ]      = ( $replace[ 'days_count' ] > 1 ) ? ( $replace[ 'days_count' ] - 1 ) : $replace[ 'days_count' ];       // 1
+
+	$replace['dates_count']         = count( $sql_days_only_array );              // 1
+	$replace['days_count']          = intval( $replace['dates_count'] );          // FixIn: 10.15.1.3.
+	$replace['nights_count']        = ( $replace['days_count'] > 1 ) ? intval( $replace['days_count'] - 1 ) : 1;
+	$replace['days_count_plus1day'] = intval( $replace['days_count'] + 1 );
 
 	// FixIn: 9.7.3.16.
 	$replace[ 'cancel_date_hint' ]      = $cancel_date_hint;                      // 11/11/2013

@@ -58,7 +58,7 @@ html {
 			color: #23282d;
 			/*box-shadow: 0 0 0 1px #4f94d4, 0 0 2px 1px rgba(79, 148, 212, 0.8);		This is Default: WordPress */
 			box-shadow: 0 0 0 0px #4f94d4, 0 0 1px 1px rgba(79, 148, 212, 0.8);
-			box-shadow: 0 0 0 1px #fff,0 0 0 3px #2271b1;
+			box-shadow: 0 0 0 1px #fff,0 0 0 3px var(--wpbc_admin-theme-color, #2271b1);
 			z-index: 1;
 			text-decoration: none;
 
@@ -115,17 +115,13 @@ html {
 
 	/*  2. Primary Button Style ----------------------------------------------------------------------------------------- */
 	.ui_element .wpbc_ui_button_primary {
-		background: #0085ba;
+		background:  var(--wpbc_admin-theme-color, #0085ba);
 		border-color: #0073aa #006799 #006799;
+		border-color: transparent;
 		color: #fff;
 		text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
 		text-decoration: none;
 		box-shadow: 0 1px 0px #f1f1f1;
-		/*background: #2271b1;*/
-		/*border-color: #2271b1;*/
-		/*color: #fff;*/
-		/*text-decoration: none;*/
-		/*text-shadow: none;*/
 	}
 	/* :hover, :focus  ---- */
 	.ui_element .wpbc_ui_button_primary.hover:not(.inactive),
@@ -135,7 +131,7 @@ html {
 		/*background: #135e96;*/
 		/*border-color: #135e96;*/
 		/*color: #fff;*/
-		background: #008ec2;
+		background: var(--wpbc_admin-theme-color, #008ec2 );
 		border-color: #006799;
 		color: #fff;
 	}
@@ -143,7 +139,7 @@ html {
 	.ui_element .wpbc_ui_button_primary.focus:not(.inactive),
 	.ui_element .wpbc_ui_button_primary:focus:not(.inactive) {
 		box-shadow:0 0 0 0px #fff, 0 0 2px 1px #a4d7ff;
-		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px var(--wpbc_admin-theme-color, #2271b1);
 	}
 	/* :active  ---- */
 	.ui_element .wpbc_ui_button_primary.active:not(.inactive),
@@ -186,14 +182,14 @@ html {
 		border-color: #d58582;
 		color: #fdfdfd;
 		text-shadow: none;
-		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px var(--wpbc_admin-theme-color, #2271b1);
 		border-color:transparent;
 	}
 	/* :focus  ---- */
 	.ui_element .wpbc_ui_button_danger.focus:not(.inactive),
 	.ui_element .wpbc_ui_button_danger:focus:not(.inactive) {
 		box-shadow:0 0 0 0px #fff, 0 0 2px 1px #a4d7ff;
-		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px var(--wpbc_admin-theme-color, #2271b1);
 		border-color:transparent;
 	}
 	/* :active  ---- */
@@ -205,7 +201,7 @@ html {
 		border-color: #c05d5a;
 		box-shadow: inset 0 1px 7px -3px rgba(0, 0, 0, .1);
 		color: #f3f2f2;
-		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px #2271b1;
+		box-shadow: 0 0 0 1.5px #fff,0 0 0 3px var(--wpbc_admin-theme-color, #2271b1);
 		border-color:transparent;
 	}
 	/* :disabled  ---- */
@@ -299,8 +295,8 @@ html {
 .ui_element .wpbc_ui_text.focus,
 .ui_element .wpbc_ui_text:focus {
 
-	border-color: #2271b1;
-	box-shadow: 0 0 0 1px #2271b1;
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 1px var(--wpbc_admin-theme-color, #2271b1);
 
 	border-color: #d8d8d8;
 	/*box-shadow: 0 0 0 1px #4f94d4, 0 0 2px 1px rgba(79, 148, 212, 0.8);		This is Default: WordPress */
@@ -319,8 +315,8 @@ html {
 .ui_element .wpbc_ui_select.focus,
 .ui_element .wpbc_ui_select:focus {
 
-	border-color: #2271b1;
-	box-shadow: 0 0 0 1px #2271b1;
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 1px var(--wpbc_admin-theme-color, #2271b1);
 
 	border-color: #d8d8d8;
 	/*box-shadow: 0 0 0 1px #4f94d4, 0 0 2px 1px rgba(79, 148, 212, 0.8);		This is Default: WordPress */
@@ -361,14 +357,18 @@ html {
 	margin-right: 0.25rem;
 	line-height: 0.71428571;
 }
+input[type="checkbox"].wpbc_ui_checkbox:checked::before,
+input[type="radio"].wpbc_ui_radio:checked::before {
+	margin: 0.2rem 0.2rem auto;
+}
 /* :focus  ---- */
 .ui_element .wpbc_ui_checkbox.focus,
 .ui_element .wpbc_ui_checkbox:focus,
 .ui_element .wpbc_ui_radio.focus,
 .ui_element .wpbc_ui_radio:focus {
 
-	border-color: #2271b1;
-	box-shadow: 0 0 0 1px #2271b1;
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 1px var(--wpbc_admin-theme-color, #2271b1);
 
 	border-color: #d8d8d8;
 	/*box-shadow: 0 0 0 1px #4f94d4, 0 0 2px 1px rgba(79, 148, 212, 0.8);		This is Default: WordPress */
@@ -406,7 +406,7 @@ html {
 	width: 0;
 }
 .wpbc_ui__toggle input[type=checkbox]:checked + label.wpbc_ui__toggle_icon {
-	background-color: #036aab;
+	background-color: var( --wpbc_admin-theme-color, #036aab );
 }
 .wpbc_ui__toggle input[type=checkbox]:checked + label.wpbc_ui__toggle_icon:after {
 	left: calc(100% - 13px - 2px);
@@ -457,7 +457,7 @@ html {
 	margin: 0 !important;
 }
 .wpbc_ui__toggle:hover input:checked + label.wpbc_ui__toggle_icon {
-	background-color: #215d8f;
+	background-color: var( --wpbc_admin-theme-color, #215d8f );
 }
 .wpbc_ui__toggle:hover .wpbc_ui__toggle_icon {
 	background-color: #777777;
