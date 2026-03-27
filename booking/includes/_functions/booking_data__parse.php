@@ -573,163 +573,498 @@ function wpbc_get__form_data__with_replaced_id( $booking__form_data__str, $new_r
 	return $new__form_data__str;
 }
 
+// FixIn: 10.15.4.1.
 /**
- * Get booking form pair (fields + show template) for listing/inspection purposes,
- * but allow BFB resolver to override legacy options.
+ * Extract "advanced_form" from BFB loader result.
+ *
+ * @param mixed $bfb_pair
+ *
+ * @return string
+ */
+function wpbc_extract__advanced_form_from_bfb_pair__for_field_names_listing( $bfb_pair ) {
+
+	$containers = array();
+
+	if ( ! is_array( $bfb_pair ) ) {
+		return '';
+	}
+
+	/**
+	 * Safety:
+	 * Do not override if loader already fell back to legacy.
+	 */
+	if ( isset( $bfb_pair['source'] ) && ( 'builder' !== $bfb_pair['source'] ) ) {
+		return '';
+	}
+
+	$containers[] = $bfb_pair;
+
+	if ( isset( $bfb_pair['pair'] ) && is_array( $bfb_pair['pair'] ) ) {
+		$containers[] = $bfb_pair['pair'];
+	}
+
+	if ( isset( $bfb_pair['form'] ) && is_array( $bfb_pair['form'] ) ) {
+		$containers[] = $bfb_pair['form'];
+	}
+
+	foreach ( $containers as $container ) {
+
+		if ( isset( $container['form'] ) && is_string( $container['form'] ) ) {
+			return (string) $container['form'];
+		}
+
+		if ( isset( $container['advanced_form'] ) && is_string( $container['advanced_form'] ) ) {
+			return (string) $container['advanced_form'];
+		}
+	}
+
+	return '';
+}
+
+
+/**
+ * Extract "content_form" from BFB loader result.
+ *
+ * @param mixed $bfb_pair
+ *
+ * @return string
+ */
+function wpbc_extract__content_form_from_bfb_pair__for_field_names_listing( $bfb_pair ) {
+
+	$containers = array();
+
+	if ( ! is_array( $bfb_pair ) ) {
+		return '';
+	}
+
+	/**
+	 * Safety:
+	 * Do not override if loader already fell back to legacy.
+	 */
+	if ( isset( $bfb_pair['source'] ) && ( 'builder' !== $bfb_pair['source'] ) ) {
+		return '';
+	}
+
+	$containers[] = $bfb_pair;
+
+	if ( isset( $bfb_pair['pair'] ) && is_array( $bfb_pair['pair'] ) ) {
+		$containers[] = $bfb_pair['pair'];
+	}
+
+	if ( isset( $bfb_pair['form'] ) && is_array( $bfb_pair['form'] ) ) {
+		$containers[] = $bfb_pair['form'];
+	}
+
+	foreach ( $containers as $container ) {
+
+		if ( isset( $container['content'] ) && is_string( $container['content'] ) ) {
+			return (string) $container['content'];
+		}
+
+		if ( isset( $container['content_form'] ) && is_string( $container['content_form'] ) ) {
+			return (string) $container['content_form'];
+		}
+	}
+
+	return '';
+}
+
+
+/**
+ * Maybe get booking form pair from BFB using the same resolver chain as front-end rendering.
  *
  * @param int    $resource_id
  * @param string $form_name
  * @param array  $ctx
  *
- * @return array { form:string, content:string }
+ * @return array
  */
-function wpbc_get__booking_form_pair__for_field_names_listing( $resource_id = 1, $form_name = 'standard', $ctx = array() ) {
+function wpbc_get__bfb_booking_form_pair__for_field_names_listing( $resource_id = 1, $form_name = 'standard', $ctx = array() ) {
 
-	$pair = array(
-		'form'    => wpbc_bf__replace_custom_html_shortcodes( get_bk_option( 'booking_form' ) ),
-		'content' => wpbc_bf__replace_custom_html_shortcodes( get_bk_option( 'booking_form_show' ) ),
-	);
+	$resource_id = absint( $resource_id );
+	$form_name   = sanitize_text_field( (string) $form_name );
+	$ctx         = ( is_array( $ctx ) ) ? $ctx : array();
 
-	// Let BFB override both "form" and "content" if available.
-	if ( class_exists( 'WPBC_BFB_Booking_Data_Content_Resolver' ) ) {
+	if ( '' === $form_name ) {
+		$form_name = 'standard';
+	}
 
-		// Recommended: add this method to the resolver (see section 3 below).
-		if ( method_exists( 'WPBC_BFB_Booking_Data_Content_Resolver', 'maybe_override_booking_form_pair_by_bfb' ) ) {
-			$pair = WPBC_BFB_Booking_Data_Content_Resolver::maybe_override_booking_form_pair_by_bfb(
-				$pair,
-				(int) $resource_id,
-				(string) $form_name,
-				'',       // no form_data here
-				(is_array( $ctx ) ? $ctx : array())
+	$owner_user_id = isset( $ctx['owner_user_id'] ) ? absint( $ctx['owner_user_id'] ) : null;
+
+	if ( ! class_exists( 'WPBC_FE_Form_Source_Resolver' ) ) {
+		return array();
+	}
+
+	if ( ! function_exists( 'wpbc_bfb_get_booking_form_pair' ) ) {
+		return array();
+	}
+
+	$form_status = isset( $ctx['form_status'] ) ? sanitize_key( $ctx['form_status'] ) : 'published';
+
+	if ( in_array( $form_status, array( 'publish', 'published' ), true ) ) {
+		$form_status = 'published';
+	}
+	if ( 'preview' !== $form_status ) {
+		$form_status = 'published';
+	}
+
+	/**
+	 * Preview payload shortcut.
+	 */
+	if (
+		( 'preview' === $form_status )
+		&& function_exists( 'wpbc_bfb_preview__maybe_get_payload_from_context' )
+	) {
+		$payload = wpbc_bfb_preview__maybe_get_payload_from_context( $ctx );
+
+		if ( ! empty( $payload ) && is_array( $payload ) ) {
+
+			$pair = array(
+				'form'    => isset( $payload['advanced_form'] ) ? (string) $payload['advanced_form'] : '',
+				'content' => isset( $payload['content_form'] ) ? (string) $payload['content_form'] : '',
 			);
-		} else {
-			// Fallback: at least keep content resolved by BFB (you already have this method).
-			if ( method_exists( 'WPBC_BFB_Booking_Data_Content_Resolver', 'maybe_override_booking_form_show_by_bfb' ) ) {
-				$pair['content'] = WPBC_BFB_Booking_Data_Content_Resolver::maybe_override_booking_form_show_by_bfb(
-					$pair['content'],
-					(int) $resource_id,
-					(string) $form_name,
-					'',
-					(is_array( $ctx ) ? $ctx : array())
-				);
+
+			if ( ( '' !== trim( $pair['form'] ) ) || ( '' !== trim( $pair['content'] ) ) ) {
+				return $pair;
 			}
 		}
 	}
 
-	// Normalize keys.
-	if ( ! isset( $pair['form'] ) ) {
-		$pair['form'] = '';
-	}
-	if ( ! isset( $pair['content'] ) ) {
-		$pair['content'] = '';
+	$req = array(
+		'resource_id'     => $resource_id,
+		'form_slug'       => $form_name,
+		'form_status'     => $form_status,
+		'custom_params'   => array(),
+		'legacy_instance' => null,
+		'ctx'             => $ctx,
+	);
+
+	if ( null !== $owner_user_id ) {
+		$req['owner_user_id'] = $owner_user_id;
 	}
 
-	$pair['form']    = (string) $pair['form'];
-	$pair['content'] = (string) $pair['content'];
+	$resolved = WPBC_FE_Form_Source_Resolver::resolve( $req );
+
+	// Same behavior as your content resolver: preview can fallback to published.
+	if (
+		( empty( $resolved['engine'] ) || ( 'bfb_db' !== $resolved['engine'] ) )
+		&& ( 'preview' === $form_status )
+	) {
+		$req['form_status'] = 'published';
+		$resolved           = WPBC_FE_Form_Source_Resolver::resolve( $req );
+	}
+
+	if ( empty( $resolved['engine'] ) || ( 'bfb_db' !== $resolved['engine'] ) ) {
+		return array();
+	}
+
+	$bfb_loader_args = array();
+
+	if ( ! empty( $resolved['bfb_loader_args'] ) && is_array( $resolved['bfb_loader_args'] ) ) {
+		$bfb_loader_args = $resolved['bfb_loader_args'];
+	}
+
+	$bfb_pair = wpbc_bfb_get_booking_form_pair( $bfb_loader_args );
+
+	$pair = array(
+		'form'    => wpbc_extract__advanced_form_from_bfb_pair__for_field_names_listing( $bfb_pair ),
+		'content' => wpbc_extract__content_form_from_bfb_pair__for_field_names_listing( $bfb_pair ),
+	);
+
+	if ( '' === trim( $pair['form'] ) && '' === trim( $pair['content'] ) ) {
+		return array();
+	}
+
+	return $pair;
+}
+
+
+/**
+ * Get booking form pair (fields + show template) for listing/inspection purposes.
+ *
+ * - Legacy mode: returns legacy form + content.
+ * - BFB mode: uses resolver and returns advanced_form + content_form.
+ *
+ * @param int    $resource_id
+ * @param string $form_name
+ * @param array  $ctx
+ *
+ * @return array
+ */
+function wpbc_get__booking_form_pair__for_field_names_listing( $resource_id = 1, $form_name = 'standard', $ctx = array() ) {
+
+	$resource_id = absint( $resource_id );
+	$form_name   = sanitize_text_field( (string) $form_name );
+	$ctx         = ( is_array( $ctx ) ) ? $ctx : array();
+
+	if ( '' === $form_name ) {
+		$form_name = 'standard';
+	}
+
+	/**
+	 * ---------------------------------------------------------------------
+	 * Legacy baseline pair.
+	 * ---------------------------------------------------------------------
+	 */
+	$pair = array(
+		'form'    => '',
+		'content' => '',
+	);
+
+	// Legacy "fields" configuration.
+	$pair['form'] = wpbc_get__booking_form_fields__configuration( $resource_id, $form_name );
+	$pair['form'] = wpbc_bf__replace_custom_html_shortcodes( $pair['form'] );
+
+	// Legacy "show/content" configuration.
+	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+
+		$pair['content'] = wpbc_simple_form__get_form_show__as_shortcodes();
+		$pair['content'] = wpbc_bf__replace_custom_html_shortcodes( $pair['content'] );
+
+	} else {
+
+		$pair['content'] = get_bk_option( 'booking_form_show' );
+		$pair['content'] = wpbc_bf__replace_custom_html_shortcodes( $pair['content'] );
+
+		if ( class_exists( 'wpdev_bk_biz_m' ) ) {
+
+			$my_booking_form_name = $form_name;
+
+			if ( empty( $my_booking_form_name ) ) {
+				$my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
+			}
+
+			if ( ( 'standard' !== $my_booking_form_name ) && ( '' !== $my_booking_form_name ) ) {
+				$pair['content'] = apply_bk_filter( 'wpdev_get_booking_form_content', $pair['content'], $my_booking_form_name );
+			}
+
+			$pair['content'] = apply_bk_filter(
+				'wpbc_multiuser_get_booking_form_show_of_regular_user',
+				$pair['content'],
+				$resource_id,
+				$my_booking_form_name
+			);
+		}
+	}
+
+	/**
+	 * ---------------------------------------------------------------------
+	 * BFB override.
+	 * ---------------------------------------------------------------------
+	 */
+	$bfb_pair = wpbc_get__bfb_booking_form_pair__for_field_names_listing( $resource_id, $form_name, $ctx );
+
+	if ( ! empty( $bfb_pair ) ) {
+
+		if ( isset( $bfb_pair['form'] ) && ( '' !== trim( (string) $bfb_pair['form'] ) ) ) {
+			$pair['form'] = (string) $bfb_pair['form'];
+		}
+
+		if ( isset( $bfb_pair['content'] ) && ( '' !== trim( (string) $bfb_pair['content'] ) ) ) {
+			$pair['content'] = (string) $bfb_pair['content'];
+		}
+	}
+
+	$pair['form']    = wpbc_bf__replace_custom_html_shortcodes( (string) $pair['form'] );
+	$pair['content'] = wpbc_bf__replace_custom_html_shortcodes( (string) $pair['content'] );
+
+	$pair['form']    = wpbc_lang( (string) $pair['form'] );
+	$pair['content'] = wpbc_lang( (string) $pair['content'] );
+
 
 	return $pair;
 }
 
 /**
- * Get arr   of all Fields Names 	from  all booking forms  (including custom)
+ * Get arr of all fields names from all booking forms (including custom).
  *
- * @return array   = [
-						 0: [  name = "standard",  num =  8,  listing = [ ... ]    ],
-						 1: [
-							  name = "minimal"
-							  num = 7
-							  listing = [
-										   labels = [
-														0 = " adults"
-														1 = " children"
-														2 = " infants"
-														3 = " gender"
-														4 = " full_name"
-														5 = " email"
-														6 = " phone"
-										   fields = {array[7]}
-														0 = " adults"
-														1 = " children"
-														2 = " infants"
-														3 = " gender"
-														4 = " full_name"
-														5 = " email"
-														6 = " phone"
-										   fields_type = {array[7]}
-														0 = "select"
-														1 = "select"
-														2 = "select"
-														3 = "radio"
-														4 = "text"
-														5 = "email"
-														6 = "text"
-										]
-							]
-						 2: [], ...
- * 					 ]
+ * Legacy mode:
+ * - Keep previous behavior exactly as before.
+ *
+ * BFB mode:
+ * - Load form names via helper.
+ * - Load each pair through BFB-aware resolver logic.
+ *
+ * @return array
  */
 function wpbc_get__in_all_forms__field_names_arr() {
 
-	$booking_form_fields_arr   = array();
-	$ctx = wpbc_get_request_form_context();
+	$booking_form_fields_arr = array();
 
-	$ctx['form_status'] = 'published';
-
-	$pair = wpbc_get__booking_form_pair__for_field_names_listing( 1, 'standard', $ctx );
-
-	$booking_form_fields_arr[] = array(
-		'name'    => 'standard',
-		'form'    => $pair['form'],
-		'content' => $pair['content'],
+	$is_bfb_enabled = (
+		class_exists( 'WPBC_Frontend_Settings' )
+		&& method_exists( 'WPBC_Frontend_Settings', 'is_bfb_enabled' )
+		&& WPBC_Frontend_Settings::is_bfb_enabled( null )
 	);
 
-	/**
-	 * Get custom booking form configurations: [
-	 *                                            [ name = "minimal",
-	 *                                              form = "[calendar]...",
-	 *                                              content = "<div class="payment-content-form"> [name] ..."
-	 * 											  ],
-	 * 											  ...
-	 * 										   ]
-	 */
-	$is_can = apply_bk_filter( 'multiuser_is_user_can_be_here', true, 'only_super_admin' );
-	if ( ( $is_can ) || ( get_bk_option( 'booking_is_custom_forms_for_regular_users' ) === 'On' ) ) {
-		$booking_forms_extended = get_bk_option( 'booking_forms_extended' );
-		$booking_forms_extended = maybe_unserialize( $booking_forms_extended );
-		if (  false !== $booking_forms_extended ) {
-			foreach ( $booking_forms_extended as $form_extended ) {
-				$booking_form_fields_arr[] = $form_extended;
+	// ---------------------------------------------------------------------
+	// Legacy mode: keep previous behavior exactly.
+	// ---------------------------------------------------------------------
+	if ( ! $is_bfb_enabled ) {
+
+		$booking_form_fields_arr[] = array(
+			'name'    => 'standard',
+			'form'    => wpbc_bf__replace_custom_html_shortcodes( get_bk_option( 'booking_form' ) ),
+			'content' => wpbc_bf__replace_custom_html_shortcodes( get_bk_option( 'booking_form_show' ) ),
+		);
+
+		$is_can = apply_bk_filter( 'multiuser_is_user_can_be_here', true, 'only_super_admin' );
+
+		if ( ( $is_can ) || ( get_bk_option( 'booking_is_custom_forms_for_regular_users' ) === 'On' ) ) {
+
+			$booking_forms_extended = get_bk_option( 'booking_forms_extended' );
+			$booking_forms_extended = maybe_unserialize( $booking_forms_extended );
+
+			if ( is_array( $booking_forms_extended ) ) {
+				foreach ( $booking_forms_extended as $form_extended ) {
+					if ( is_array( $form_extended ) ) {
+						$booking_form_fields_arr[] = $form_extended;
+					}
+				}
 			}
+		}
+
+	// ---------------------------------------------------------------------
+	// BFB mode: use new resolver-aware logic.
+	// ---------------------------------------------------------------------
+	} else {
+
+		$ctx = wpbc_get_request_form_context();
+		$ctx['form_status'] = 'published';
+
+		$form_names = array( 'standard' );
+
+		if (
+			class_exists( 'WPBC_FE_Custom_Form_Helper' )
+			&& method_exists( 'WPBC_FE_Custom_Form_Helper', 'get_custom_booking_forms_list' )
+		) {
+			$owner_user_id = 0;
+
+			if ( method_exists( 'WPBC_FE_Custom_Form_Helper', 'wpbc_mu__get_current__owner_user_id' ) ) {
+				$owner_user_id = absint( WPBC_FE_Custom_Form_Helper::wpbc_mu__get_current__owner_user_id() );
+			}
+
+			$ctx['owner_user_id'] = $owner_user_id;
+
+			$forms_list = WPBC_FE_Custom_Form_Helper::get_custom_booking_forms_list(
+				array(
+					'include_standard' => false,
+					'owner_user_id'    => $owner_user_id,
+					'statuses'         => array( 'published' ),
+					'list_mode'        => 'auto',
+				)
+			);
+
+			if ( is_array( $forms_list ) ) {
+				foreach ( $forms_list as $form_data ) {
+
+					if ( empty( $form_data['name'] ) ) {
+						continue;
+					}
+
+					$form_name = sanitize_text_field( (string) $form_data['name'] );
+
+					if ( ( '' !== $form_name ) && ( 'standard' !== $form_name ) ) {
+						$form_names[] = $form_name;
+					}
+				}
+			}
+		} else {
+
+			// Fallback to legacy list only if helper is unavailable.
+			$is_can = apply_bk_filter( 'multiuser_is_user_can_be_here', true, 'only_super_admin' );
+
+			if ( ( $is_can ) || ( get_bk_option( 'booking_is_custom_forms_for_regular_users' ) === 'On' ) ) {
+
+				$booking_forms_extended = get_bk_option( 'booking_forms_extended' );
+				$booking_forms_extended = maybe_unserialize( $booking_forms_extended );
+
+				if ( is_array( $booking_forms_extended ) ) {
+					foreach ( $booking_forms_extended as $form_extended_key => $form_extended ) {
+
+						$form_name = '';
+
+						if ( is_array( $form_extended ) && ! empty( $form_extended['name'] ) ) {
+							$form_name = sanitize_text_field( (string) $form_extended['name'] );
+						} elseif ( is_string( $form_extended_key ) ) {
+							$form_name = sanitize_text_field( (string) $form_extended_key );
+						}
+
+						if ( ( '' !== $form_name ) && ( 'standard' !== $form_name ) ) {
+							$form_names[] = $form_name;
+						}
+					}
+				}
+			}
+		}
+
+		$form_names = array_values( array_unique( $form_names ) );
+
+		foreach ( $form_names as $form_name ) {
+
+			$pair = wpbc_get__booking_form_pair__for_field_names_listing(
+				wpbc_get_default_resource(),
+				$form_name,
+				$ctx
+			);
+
+			$booking_form_fields_arr[] = array(
+				'name'    => $form_name,
+				'form'    => $pair['form'],
+				'content' => $pair['content'],
+			);
 		}
 	}
 
+	// ---------------------------------------------------------------------
+	// Common parser for both legacy and BFB mode.
+	// ---------------------------------------------------------------------
 	foreach ( $booking_form_fields_arr as $form_key => $booking_form_element ) {
 
-		$booking_form = $booking_form_element['form'];
+		$booking_form = isset( $booking_form_element['form'] ) ? (string) $booking_form_element['form'] : '';
 
-		$types = 'text[*]?|email[*]?|time[*]?|textarea[*]?|select[*]?|selectbox[*]?|checkbox[*]?|radio|acceptance|captchac|captchar|file[*]?|quiz';
-		$regex = '%\[\s*(' . $types . ')(\s+[a-zA-Z][0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)?((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
+		$types  = 'text[*]?|email[*]?|time[*]?|textarea[*]?|select[*]?|selectbox[*]?|checkbox[*]?|radio|acceptance|captchac|captchar|file[*]?|quiz';
+		$regex  = '%\[\s*(' . $types . ')(\s+[a-zA-Z][0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)?((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
 		$regex2 = '%\[\s*(country[*]?|starttime[*]?|endtime[*]?)(\s*[a-zA-Z]*[0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)*((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
-		$fields_count = preg_match_all($regex, $booking_form, $fields_matches) ;
-		$fields_count2 = preg_match_all($regex2, $booking_form, $fields_matches2) ;
 
-		//Gathering Together 2 arrays $fields_matches  and $fields_matches2
-		foreach ($fields_matches2 as $key => $value) {
-			if ($key == 2) $value = $fields_matches2[1];
-			foreach ($value as $v) {
-				$fields_matches[$key][count($fields_matches[$key])]  = $v;
+		$fields_matches  = array();
+		$fields_matches2 = array();
+
+		$fields_count  = preg_match_all( $regex, $booking_form, $fields_matches );
+		$fields_count2 = preg_match_all( $regex2, $booking_form, $fields_matches2 );
+
+		foreach ( $fields_matches2 as $key => $value ) {
+
+			if ( 2 === (int) $key ) {
+				$value = $fields_matches2[1];
+			}
+
+			if ( ! isset( $fields_matches[ $key ] ) || ! is_array( $fields_matches[ $key ] ) ) {
+				$fields_matches[ $key ] = array();
+			}
+
+			foreach ( $value as $single_value ) {
+				$fields_matches[ $key ][] = $single_value;
 			}
 		}
+
 		$fields_count += $fields_count2;
 
 		$booking_form_fields_arr[ $form_key ]['num']     = $fields_count;
-		$booking_form_fields_arr[ $form_key ]['listing'] = array();                //$fields_matches;
+		$booking_form_fields_arr[ $form_key ]['listing'] = array();
+
+		if ( ! isset( $fields_matches[1] ) ) {
+			$fields_matches[1] = array();
+		}
+		if ( ! isset( $fields_matches[2] ) ) {
+			$fields_matches[2] = array();
+		}
 
 		$fields_matches[1] = array_map( 'trim', $fields_matches[1] );
 		$fields_matches[2] = array_map( 'trim', $fields_matches[2] );
 
 		$booking_form_fields_arr[ $form_key ]['listing']['labels'] = array_map( 'ucfirst', $fields_matches[2] );
-		$booking_form_fields_arr[ $form_key ]['listing']['fields'] = $fields_matches[2] ;
+		$booking_form_fields_arr[ $form_key ]['listing']['fields'] = $fields_matches[2];
 
 		foreach ( $fields_matches[1] as $key_fm => $value_fm ) {
 			$fields_matches[1][ $key_fm ] = trim( str_replace( '*', '', $value_fm ) );
@@ -737,12 +1072,85 @@ function wpbc_get__in_all_forms__field_names_arr() {
 
 		$booking_form_fields_arr[ $form_key ]['listing']['fields_type'] = $fields_matches[1];
 
-		// Reset
 		unset( $booking_form_fields_arr[ $form_key ]['form'] );
 		unset( $booking_form_fields_arr[ $form_key ]['content'] );
 	}
 
 	return $booking_form_fields_arr;
+}
+
+/**
+ * Get options for billing field assignment from all available booking forms.
+ *
+ * Important:
+ * - Collect fields from standard, legacy custom, and BFB forms.
+ * - Keep option VALUE as plain field name for backwards compatibility.
+ * - Use the first found label as option title.
+ *
+ * @return array
+ */
+function wpbc_get__field_options__for_billing_assignment() {
+
+	$field_options = array(
+		'' => __( 'Please select', 'booking' ),
+	);
+
+	$booking_forms = wpbc_get__in_all_forms__field_names_arr();
+
+	if ( empty( $booking_forms ) || ! is_array( $booking_forms ) ) {
+		return $field_options;
+	}
+
+	$unique_fields = array();
+
+	foreach ( $booking_forms as $single_booking_form ) {
+
+		if (
+			empty( $single_booking_form['listing'] )
+			|| ! is_array( $single_booking_form['listing'] )
+			|| empty( $single_booking_form['listing']['fields'] )
+			|| ! is_array( $single_booking_form['listing']['fields'] )
+		) {
+			continue;
+		}
+
+		$field_labels = array();
+
+		if (
+			isset( $single_booking_form['listing']['labels'] )
+			&& is_array( $single_booking_form['listing']['labels'] )
+		) {
+			$field_labels = $single_booking_form['listing']['labels'];
+		}
+
+		foreach ( $single_booking_form['listing']['fields'] as $field_index => $field_name ) {
+
+			$field_name = trim( (string) $field_name );
+
+			if ( '' === $field_name ) {
+				continue;
+			}
+
+			// Keep first found label/value pair.
+			if ( isset( $unique_fields[ $field_name ] ) ) {
+				continue;
+			}
+
+			$field_label = isset( $field_labels[ $field_index ] ) ? trim( (string) $field_labels[ $field_index ] ) : '';
+
+			if ( '' === $field_label ) {
+				$field_label = $field_name;
+			}
+
+			$unique_fields[ $field_name ] = $field_label;
+		}
+	}
+
+	foreach ( $unique_fields as $field_name => $field_label ) {
+		$field_options[ $field_name ] = $field_label;
+	}
+
+	return $field_options;
 }
 
 // -------------------------------------------------------------------------------------------------------------

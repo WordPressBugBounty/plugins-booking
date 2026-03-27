@@ -594,7 +594,157 @@ function wpbc_bfb_preview__exclude_from_page_lists( $exclude_array ) {
 
 	return array_unique( array_map( 'absint', $exclude_array ) );
 }
-// add_filter( 'wp_list_pages_excludes', 'wpbc_bfb_preview__exclude_from_page_lists' );
+add_filter( 'wp_list_pages_excludes', 'wpbc_bfb_preview__exclude_from_page_lists' );
+
+
+/**
+ * Remove BFB Preview page from get_pages() results.
+ *
+ * This is important for block themes, because the core Page List block
+ * renders its items from get_pages().
+ *
+ * @param array $pages       Array of page objects.
+ * @param array $parsed_args Parsed get_pages() args.
+ *
+ * @return array
+ */
+function wpbc_bfb_preview__exclude_from_get_pages( $pages, $parsed_args ) {
+
+	$page_id = absint( get_option( wpbc_bfb_activation__get_preview_page_option_key() ) );
+
+	if ( $page_id <= 0 ) {
+		return $pages;
+	}
+
+	$filtered_pages = array();
+
+	foreach ( $pages as $page_obj ) {
+
+		if ( empty( $page_obj ) || empty( $page_obj->ID ) ) {
+			$filtered_pages[] = $page_obj;
+			continue;
+		}
+
+		if ( absint( $page_obj->ID ) === $page_id ) {
+			continue;
+		}
+
+		$filtered_pages[] = $page_obj;
+	}
+
+	return $filtered_pages;
+}
+add_filter( 'get_pages', 'wpbc_bfb_preview__exclude_from_get_pages', 10, 2 );
+
+
+/**
+ * Remove BFB Preview page from rendered Navigation Link blocks.
+ *
+ * This handles block-theme menus where the Preview page was manually
+ * inserted as a Navigation Link item.
+ *
+ * @param string   $block_content Rendered block HTML.
+ * @param array    $block         Parsed block data.
+ * @param WP_Block $instance      Block instance.
+ *
+ * @return string
+ */
+function wpbc_bfb_preview__exclude_from_navigation_link_block( $block_content, $block, $instance ) {
+
+	$page_id = absint( get_option( wpbc_bfb_activation__get_preview_page_option_key() ) );
+
+	if ( $page_id <= 0 ) {
+		return $block_content;
+	}
+
+	if ( empty( $block['attrs'] ) || ! is_array( $block['attrs'] ) ) {
+		return $block_content;
+	}
+
+	$attrs       = $block['attrs'];
+	$preview_url = get_permalink( $page_id );
+
+	$block_id    = isset( $attrs['id'] ) ? absint( $attrs['id'] ) : 0;
+	$block_type  = isset( $attrs['type'] ) ? (string) $attrs['type'] : '';
+	$block_kind  = isset( $attrs['kind'] ) ? (string) $attrs['kind'] : '';
+	$block_url   = isset( $attrs['url'] ) ? (string) $attrs['url'] : '';
+
+	if ( $block_id === $page_id ) {
+		return '';
+	}
+
+	if (
+		( 'page' === $block_type )
+		&&
+		( ( 'post-type' === $block_kind ) || ( '' === $block_kind ) )
+		&&
+		( ! empty( $block_id ) )
+		&&
+		( $block_id === $page_id )
+	) {
+		return '';
+	}
+
+	if ( ( ! empty( $preview_url ) ) && ( ! empty( $block_url ) ) ) {
+
+		$normalized_preview_url = untrailingslashit( $preview_url );
+		$normalized_block_url   = untrailingslashit( $block_url );
+
+		if ( $normalized_preview_url === $normalized_block_url ) {
+			return '';
+		}
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block_core/navigation-link', 'wpbc_bfb_preview__exclude_from_navigation_link_block', 10, 3 );
+
+
+/**
+ * Remove BFB Preview page from rendered Page List Item blocks.
+ *
+ * This is important for block themes like Twenty Twenty-Four,
+ * because the Navigation block can use a Page List block that renders
+ * individual core/page-list-item blocks.
+ *
+ * @param string   $block_content Rendered block HTML.
+ * @param array    $block         Parsed block data.
+ * @param WP_Block $instance      Block instance.
+ *
+ * @return string
+ */
+function wpbc_bfb_preview__exclude_from_page_list_item_block( $block_content, $block, $instance ) {
+
+	$page_id = absint( get_option( wpbc_bfb_activation__get_preview_page_option_key() ) );
+
+	if ( $page_id <= 0 ) {
+		return $block_content;
+	}
+
+	if ( empty( $block['attrs'] ) || ! is_array( $block['attrs'] ) ) {
+		return $block_content;
+	}
+
+	$attrs       = $block['attrs'];
+	$preview_url = get_permalink( $page_id );
+
+	$item_id   = isset( $attrs['id'] ) ? absint( $attrs['id'] ) : 0;
+	$item_link = isset( $attrs['link'] ) ? (string) $attrs['link'] : '';
+
+	if ( $item_id === $page_id ) {
+		return '';
+	}
+
+	if ( ( ! empty( $preview_url ) ) && ( ! empty( $item_link ) ) ) {
+		if ( untrailingslashit( $preview_url ) === untrailingslashit( $item_link ) ) {
+			return '';
+		}
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block_core/page-list-item', 'wpbc_bfb_preview__exclude_from_page_list_item_block', 10, 3 );
+
 
 // FixIn: 10.15.3.1.
 /**

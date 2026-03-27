@@ -21,7 +21,7 @@ WPBC_BFB_TEMPLATE_STRUCTURE
 $wpbc_technical_support_form_settings_json = trim(
 	stripcslashes(
 <<<'WPBC_BFB_TEMPLATE_SETTINGS'
-{\"options\":{\"booking_form_theme\":\"\",\"booking_form_layout_width\":\"100%\",\"booking_type_of_day_selections\":\"single\"},\"css_vars\":[],\"bfb_options\":{\"advanced_mode_source\":\"builder\"}}
+{\"options\":{\"booking_form_theme\":\"\",\"booking_form_layout_width\":\"100%\",\"booking_type_of_day_selections\":\"\"},\"css_vars\":[],\"bfb_options\":{\"advanced_mode_source\":\"builder\"}}
 WPBC_BFB_TEMPLATE_SETTINGS
 	)
 );

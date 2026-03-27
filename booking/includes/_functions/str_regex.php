@@ -9,6 +9,8 @@
  * @link https://wpbookingcalendar.com/
  * @email info@wpbookingcalendar.com
  *
+ * @file ../includes/_functions/str_regex.php
+ *
  * @modified 2024-05-14
  */
 
