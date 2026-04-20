@@ -130,6 +130,22 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 					</button>
 				</div>
 			</div>
+			<?php // FixIn: 10.15.5.5. ?>
+			<!-- Code Tools — default hidden -->
+			<div class="wpbc_ui_el__level__folder wpbc_bfb__rightbar_tab_wrap wpbc_bfb__rightbar_tab_wrap--advanced_tools" hidden>
+				<div class="wpbc_ui_el__vert_nav_item wpbc_ui_el__vert_nav_item__builder_booking_form">
+					<button type="button" id="wpbc_tab_advanced_tools"
+							class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__single"
+							role="tab"
+							aria-controls="wpbc_bfb__inspector_advanced_tools"
+							aria-selected="false">
+						<i class="wpbc_ui_el__vert_nav_icon tooltip_right_offset menu_icon icon-1x wpbc_icn_code_off wpbc_icn_rotate_180"
+						   aria-hidden="true"
+						   data-original-title="<?php esc_attr_e( 'Help and generator for Advanced Mode', 'booking' ); ?>"></i>
+						<span><?php esc_html_e( 'Shortcodes', 'booking' ); ?></span>
+					</button>
+				</div>
+			</div>
 		</div>
 		<?php
 	}
@@ -196,7 +212,7 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 			<div id="wpbc_bfb__inspector_form_details"
 					class="wpbc_bfb__inspector_form_details wpbc_bfb__palette_panel wpbc_collapsible wpbc_collapsible--exclusive"
 					role="tabpanel"
-					aria-labelledby="wpbc_tab_form"
+				 	aria-labelledby="wpbc_tab_formdetails"
 					hidden
 					aria-hidden="true">
 				<div class="wpbc_bfb__inspector__head">
@@ -211,6 +227,118 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 					<?php
 					wpbc_bfb_ui__current_form_details__print();
 					?>
+				</div>
+			</div>
+
+			<?php // FixIn: 10.15.5.5. ?>
+			<!-- Advanced Mode Tools — default hidden -->
+			<div id="wpbc_bfb__inspector_advanced_tools"
+					class="wpbc_bfb__inspector_advanced_tools wpbc_bfb__palette_panel wpbc_collapsible wpbc_collapsible--exclusive"
+					role="tabpanel"
+					aria-labelledby="wpbc_tab_advanced_tools"
+					hidden
+					aria-hidden="true">
+				<div class="wpbc_bfb__inspector__head">
+					<div class="header_container">
+						<div class="header_title_content">
+							<h3 class="title"><?php esc_html_e( 'Advanced Mode Tools', 'booking' ); ?></h3>
+							<div class="desc"><?php esc_html_e( 'Generate booking form code, review examples, and get help while working in Advanced Mode.', 'booking' ); ?></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="wpbc_bfb__inspector__body">
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-booking_essentials">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Booking Essentials', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__booking_essentials' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group is-open" data-group="advanced-mode-fields">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Fields', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__fields' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-time_services">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Time & Services', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__time_services' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-layouts">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Layouts', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__layouts' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-hints">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Hints', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__hints' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-conditional_rules">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Conditional Rules', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__conditional_rules' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-simple_html_layout">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Simple HTML Layout', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__simple_html_layout' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-tips_and_tricks">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Tips and Tricks', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__tips_and_tricks' ); ?>
+						</div>
+					</section>
+
+					<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="advanced-mode-other_fields">
+						<button type="button" class="group__header">
+							<h3><?php esc_html_e( 'Other Fields', 'booking' ); ?></h3>
+							<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+						</button>
+						<div class="group__fields">
+							<?php do_action( 'wpbc_bfb_advanced_mode_sidebar__other_fields' ); ?>
+						</div>
+					</section>
+
 				</div>
 			</div>
 
@@ -271,6 +399,24 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 				</div>
 			</section>
 
+			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="fields-hints">
+				<button type="button" class="group__header">
+					<h3><?php
+						esc_html_e( 'Hints', 'booking' ); ?></h3>
+					<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+				</button>
+				<div class="group__fields">
+
+					<ul class="wpbc_bfb__panel_field_types__ul">
+						<?php
+						do_action( 'wpbc_bfb_palette_register_items', 'hints', 'top' );
+						do_action( 'wpbc_bfb_palette_register_items', 'hints', 'bottom' );
+						?>
+					</ul>
+
+				</div>
+			</section>
+
 			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group"  data-group="fields-layout">
 				<button type="button" class="group__header"><h3><?php esc_html_e( 'Layout', 'booking' ); ?></h3><i
 						class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
@@ -302,6 +448,8 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 
 				</div>
 			</section>
+
+
 
 		</div>
 		<?php

@@ -173,7 +173,7 @@
     font-weight: 400;
     text-align: center;
     color:#777;
-    background-color: #faf8f8;
+    background-color: #fff;
 /*    border: 1px solid #E6DB55;*/
     border: 2px dashed #bbb;
     border-radius: 3px;
@@ -187,9 +187,10 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+
 .wpbc-help-message {
-    background-color: #FFFDFD;    
-    text-align: left;    
+	background-color: #fff;
+	text-align: left;
 }
 .wpbc-error-message {
     background-color: #FFEEEE;
@@ -527,6 +528,10 @@ table.wpbc_input_table tr.highlight td:first-child{
         /*height: auto;*/       /* FixIn: 8.4.2.6 */
         /*height: 32px;*/
     }
+}
+.wpbc_page label:has( input[type="checkbox"] ),
+.wpbc_page label:has( input[type="radio"] ){
+	cursor: pointer;
 }
 
 /* Ajax loading icon */

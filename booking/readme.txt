@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 10.15.4
+Stable tag: 10.15.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -267,40 +267,40 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              100.00% [ 3353 / 3353 ], fuzzy 0, not translated 0
-- Danish                       76.08% [ 2551 / 3353 ], fuzzy 299, not translated 503
-- Dutch                        67.85% [ 2275 / 3353 ], fuzzy 576, not translated 502
-- Norwegian (Bokmål)           62.90% [ 2109 / 3353 ], fuzzy 346, not translated 898
-- German                       62.87% [ 2108 / 3353 ], fuzzy 683, not translated 562
-- Hungarian                    58.07% [ 1947 / 3353 ], fuzzy 769, not translated 637
-- Korean                       58.04% [ 1946 / 3353 ], fuzzy 765, not translated 642
-- Spanish (Spain)              53.41% [ 1791 / 3353 ], fuzzy 784, not translated 778
-- Portuguese (Brazil)          50.40% [ 1690 / 3353 ], fuzzy 892, not translated 771
-- Greek                        50.07% [ 1679 / 3353 ], fuzzy 900, not translated 774
-- Turkish                      49.42% [ 1657 / 3353 ], fuzzy 916, not translated 780
-- Italian                      48.17% [ 1615 / 3353 ], fuzzy 825, not translated 913
-- Spanish (Mexico)             46.29% [ 1552 / 3353 ], fuzzy 970, not translated 831
-- Finnish                      46.02% [ 1543 / 3353 ], fuzzy 979, not translated 831
-- Polish                       45.96% [ 1541 / 3353 ], fuzzy 968, not translated 844
-- Romanian                     45.57% [ 1528 / 3353 ], fuzzy 980, not translated 845
-- Swedish                      45.33% [ 1520 / 3353 ], fuzzy 989, not translated 844
-- Arabic                       44.89% [ 1505 / 3353 ], fuzzy 1006, not translated 842
-- Russian                      44.83% [ 1503 / 3353 ], fuzzy 1231, not translated 619
-- Bulgarian                    43.48% [ 1458 / 3353 ], fuzzy 1022, not translated 873
-- Slovenian                    43.36% [ 1454 / 3353 ], fuzzy 1027, not translated 872
-- Chinese (Taiwan)             42.20% [ 1415 / 3353 ], fuzzy 1067, not translated 871
-- Portuguese (Portugal)        41.87% [ 1404 / 3353 ], fuzzy 1051, not translated 898
-- Japanese                     41.28% [ 1384 / 3353 ], fuzzy 558, not translated 1411
-- Chinese (China)              40.50% [ 1358 / 3353 ], fuzzy 1050, not translated 945
-- Ukrainian                    40.20% [ 1348 / 3353 ], fuzzy 1062, not translated 943
-- Catalan                      39.55% [ 1326 / 3353 ], fuzzy 990, not translated 1037
-- Thai                         39.46% [ 1323 / 3353 ], fuzzy 1099, not translated 931
-- Hebrew                       39.22% [ 1315 / 3353 ], fuzzy 1087, not translated 951
-- Galician                     38.20% [ 1281 / 3353 ], fuzzy 1139, not translated 933
-- Slovak                       35.52% [ 1191 / 3353 ], fuzzy 1058, not translated 1104
-- Croatian                     34.39% [ 1153 / 3353 ], fuzzy 1074, not translated 1126
-- Czech                        34.27% [ 1149 / 3353 ], fuzzy 1021, not translated 1183
-- Chinese (Hong Kong)          20.28% [ 680 / 3353 ], fuzzy 374, not translated 2299
+- French (France)              96.52% [ 3353 / 3474 ], fuzzy 76, not translated 45
+- Danish                       73.43% [ 2551 / 3474 ], fuzzy 375, not translated 548
+- Dutch                        65.49% [ 2275 / 3474 ], fuzzy 652, not translated 547
+- Norwegian (Bokmål)           60.71% [ 2109 / 3474 ], fuzzy 421, not translated 944
+- German                       60.68% [ 2108 / 3474 ], fuzzy 759, not translated 607
+- Hungarian                    56.04% [ 1947 / 3474 ], fuzzy 844, not translated 683
+- Korean                       56.02% [ 1946 / 3474 ], fuzzy 840, not translated 688
+- Spanish (Spain)              51.55% [ 1791 / 3474 ], fuzzy 859, not translated 824
+- Portuguese (Brazil)          48.65% [ 1690 / 3474 ], fuzzy 967, not translated 817
+- Greek                        48.33% [ 1679 / 3474 ], fuzzy 975, not translated 820
+- Turkish                      47.70% [ 1657 / 3474 ], fuzzy 991, not translated 826
+- Italian                      46.49% [ 1615 / 3474 ], fuzzy 899, not translated 960
+- Spanish (Mexico)             44.67% [ 1552 / 3474 ], fuzzy 1045, not translated 877
+- Finnish                      44.42% [ 1543 / 3474 ], fuzzy 1054, not translated 877
+- Polish                       44.36% [ 1541 / 3474 ], fuzzy 1043, not translated 890
+- Romanian                     43.98% [ 1528 / 3474 ], fuzzy 1055, not translated 891
+- Swedish                      43.75% [ 1520 / 3474 ], fuzzy 1064, not translated 890
+- Arabic                       43.32% [ 1505 / 3474 ], fuzzy 1081, not translated 888
+- Russian                      43.26% [ 1503 / 3474 ], fuzzy 1306, not translated 665
+- Bulgarian                    41.97% [ 1458 / 3474 ], fuzzy 1097, not translated 919
+- Slovenian                    41.85% [ 1454 / 3474 ], fuzzy 1102, not translated 918
+- Chinese (Taiwan)             40.73% [ 1415 / 3474 ], fuzzy 1142, not translated 917
+- Portuguese (Portugal)        40.41% [ 1404 / 3474 ], fuzzy 1126, not translated 944
+- Japanese                     39.84% [ 1384 / 3474 ], fuzzy 633, not translated 1457
+- Chinese (China)              39.09% [ 1358 / 3474 ], fuzzy 1125, not translated 991
+- Ukrainian                    38.80% [ 1348 / 3474 ], fuzzy 1137, not translated 989
+- Catalan                      38.17% [ 1326 / 3474 ], fuzzy 1063, not translated 1085
+- Thai                         38.08% [ 1323 / 3474 ], fuzzy 1174, not translated 977
+- Hebrew                       37.85% [ 1315 / 3474 ], fuzzy 1162, not translated 997
+- Galician                     36.87% [ 1281 / 3474 ], fuzzy 1214, not translated 979
+- Slovak                       34.28% [ 1191 / 3474 ], fuzzy 1130, not translated 1153
+- Croatian                     33.19% [ 1153 / 3474 ], fuzzy 1146, not translated 1175
+- Czech                        33.07% [ 1149 / 3474 ], fuzzy 1093, not translated 1232
+- Chinese (Hong Kong)          19.57% [ 680 / 3474 ], fuzzy 435, not translated 2359
 
 
 Please recheck the status of each translation, before using plugin.
@@ -322,6 +322,16 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 9. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
 
 == Changelog ==
+= 10.15.5 =
+- Changes in **all** versions:
+	* **New**: Added the new **Accept Terms and Conditions** field to the **Drag & Drop Booking Form Builder**. Create a required consent checkbox and define one or multiple custom links to your Terms, Conditions, Privacy Policy, or other related pages.
+	* **Fix**: Prevent showing error message,  if no email  fields,  and emails because of that  is not sending. (10.15.5.1.)
+	* **Fix**: Support PHP 8.4 - Resolved isue: TypeError: Unsupported operand types: string * int (10.15.5.3.)
+	* **Fix**: Improved compatibility with older PHP versions by fixing a PHP parse error in the Form Builder AJAX controller. (E_PARSE error on line 222 in ../page-form-builder/ajax/bfb-ajax.php.) (10.15.5.6.)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added new hint field packs to the **Drag & Drop Booking Form Builder**, including selected dates/times, check-in/check-out dates, start/end time, number of days/nights, cancellation/pre-check-in dates, booking resource info, capacity, and cost-related hints. These fields make it easier to insert supported hint shortcodes directly from the builder palette.
+	* **Improvement**: Prevents start  day selection on check in date of existed another booking, if activated change-over days feature. (10.15.5.8.)
+
 = 10.15.4 =
 - Changes in **all** versions:
 	* **Fix**: Showing options for the "Booking Quantity Control" field,  regarding custom booking forms in the new Forms Builder. This fix related to  the  Booking Calendar Business Large or higher version. (10.15.4.1)

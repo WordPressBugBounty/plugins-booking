@@ -1349,7 +1349,7 @@ function wpbc_calendar_show( resource_id ){
 	 */
 	function wpbc_calendar__loading__start( resource_id ){
 		if ( ! jQuery( '#calendar_booking' + resource_id ).next().hasClass( 'wpbc_spins_loader_wrapper' ) ){
-			jQuery( '#calendar_booking' + resource_id ).after( '<div class="wpbc_spins_loader_wrapper"><div class="wpbc_spins_loader"></div></div>' );
+			jQuery( '#calendar_booking' + resource_id ).after( '<div class="wpbc_spins_loader_wrapper"><div class="wpbc_spin_loader_one_new"></div></div>' );
 		}
 		if ( ! jQuery( '#calendar_booking' + resource_id ).hasClass( 'wpbc_calendar_blur_small' ) ){
 			jQuery( '#calendar_booking' + resource_id ).addClass( 'wpbc_calendar_blur_small' );

@@ -1039,41 +1039,163 @@ function wpbc_send_email_new_admin( $booking_id, $bktype, $formdata ) {         
     $mail_api->set_replace( $replace );
     $mail_api->fields_values['from_name'] = $mail_api->replace_shortcodes( $mail_api->fields_values['from_name'] );                         // FixIn: 7.0.1.29.
             
-    if ( (  strpos( $mail_api->fields_values['to'], ',') === false ) && (  strpos( $mail_api->fields_values['to'], ';') === false ) ) {
-        
-        $valid_email = sanitize_email( $mail_api->fields_values['to'] );
-        if ( ! empty( $valid_email ) )
-            $to = trim( wp_specialchars_decode( esc_html( stripslashes( $mail_api->fields_values['to_name'] ) ), ENT_QUOTES ) ) 
-                  . ' <' .  $valid_email . '> ';
-    } else {
-        
-        // Comma separated several  emails - validate  all  these emails in Email API class
-        $to_array = $mail_api->fields_values['to']; 
-        
-        $to_array = str_replace(';', ',', $to_array);
-	if ( !is_array( $to_array ) ) $to_array = explode( ',', $to_array );
+    $email_result = false;
 
-        $to_name = str_replace(';', ',', $mail_api->fields_values['to_name']);
-	if ( !is_array( $to_name ) ) $to_name = explode( ',', $to_name );
+    // -------------------------------------------------------------------------------------------------------------
+    // Case #1. Semicolon => send SEPARATE emails.
+    // Example:
+    // to      = admin1@example.com;admin2@example.com
+    // to_name = Admin One;Admin Two
+    //
+    // Also supported:
+    // to      = admin1@example.com,sales@example.com;support@example.com
+    // to_name = Admin One,Sales Team;Support Team
+    // => first email sent to 2 recipients, second email sent separately.
+    // -------------------------------------------------------------------------------------------------------------
+    if ( strpos( $mail_api->fields_values['to'], ';' ) !== false ) {
 
-        $to = array();
-        foreach ( $to_array as $to_ind => $to_email) {
-            
-            $to_name_str = $to_name[ ( count( $to_name ) - 1 ) ];
-            
-            if ( isset( $to_name[ $to_ind ] ) )
-                $to_name_str = $to_name[ $to_ind ];
+        $to_groups = explode( ';', $mail_api->fields_values['to'] );
+        $to_name_groups = explode( ';', $mail_api->fields_values['to_name'] );
 
-            $valid_email = sanitize_email( $to_email );
-            if ( ! empty( $valid_email ) )
-                $to[] = trim( wp_specialchars_decode( esc_html( stripslashes( $to_name_str ) ), ENT_QUOTES ) ) . ' <' . $valid_email  . '> ';            
+        $email_result = true;
+        $sent_emails  = 0;
+
+        foreach ( $to_groups as $group_ind => $to_group ) {
+
+            $to_group = trim( $to_group );
+            if ( '' === $to_group ) {
+                continue;
+            }
+
+            $to_name_group = '';
+            if ( ! empty( $to_name_groups ) ) {
+                $to_name_group = $to_name_groups[ count( $to_name_groups ) - 1 ];
+                if ( isset( $to_name_groups[ $group_ind ] ) ) {
+                    $to_name_group = $to_name_groups[ $group_ind ];
+                }
+            }
+
+            // One recipient in this group.
+            if ( strpos( $to_group, ',' ) === false ) {
+
+                $valid_email = sanitize_email( $to_group );
+
+                if ( empty( $valid_email ) ) {
+                    continue;
+                }
+
+                $to = trim(
+                    wp_specialchars_decode(
+                        esc_html( stripslashes( $to_name_group ) ),
+                        ENT_QUOTES
+                    )
+                ) . ' <' . $valid_email . '> ';
+
+            // Several recipients in this group => send one email to this comma-separated group.
+            } else {
+
+                $to_array = explode( ',', $to_group );
+                $to_name  = explode( ',', $to_name_group );
+
+                $to = array();
+
+                foreach ( $to_array as $to_ind => $to_email ) {
+
+                    $to_name_str = '';
+                    if ( ! empty( $to_name ) ) {
+                        $to_name_str = $to_name[ count( $to_name ) - 1 ];
+                        if ( isset( $to_name[ $to_ind ] ) ) {
+                            $to_name_str = $to_name[ $to_ind ];
+                        }
+                    }
+
+                    $valid_email = sanitize_email( $to_email );
+                    if ( ! empty( $valid_email ) ) {
+                        $to[] = trim(
+                            wp_specialchars_decode(
+                                esc_html( stripslashes( $to_name_str ) ),
+                                ENT_QUOTES
+                            )
+                        ) . ' <' . $valid_email . '> ';
+                    }
+                }
+
+                $to = implode( ',', $to );
+            }
+
+            if ( wpbc_is_not_blank_email( $to, $replace['content'] ) ) {
+                $single_result = $mail_api->send( $to, $replace );
+                $email_result  = ( $email_result && (bool) $single_result );
+                $sent_emails++;
+            }
         }
-        $to = implode(',', $to);
-        
-    }
 
-    if ( wpbc_is_not_blank_email( $to, $replace['content'] ) ) {
-        $email_result = $mail_api->send( $to , $replace );
+        if ( 0 === $sent_emails ) {
+            $email_result = false;
+        }
+
+    // -------------------------------------------------------------------------------------------------------------
+    // Case #2. No semicolon => keep old behavior.
+    // Single email OR one email to several comma-separated recipients.
+    // -------------------------------------------------------------------------------------------------------------
+    } else {
+
+        if ( strpos( $mail_api->fields_values['to'], ',' ) === false ) {
+
+            $valid_email = sanitize_email( $mail_api->fields_values['to'] );
+
+            if ( ! empty( $valid_email ) ) {
+                $to = trim(
+                    wp_specialchars_decode(
+                        esc_html( stripslashes( $mail_api->fields_values['to_name'] ) ),
+                        ENT_QUOTES
+                    )
+                ) . ' <' . $valid_email . '> ';
+            } else {
+                $to = '';
+            }
+
+        } else {
+
+            $to_array = $mail_api->fields_values['to'];
+            if ( ! is_array( $to_array ) ) {
+                $to_array = explode( ',', $to_array );
+            }
+
+            $to_name = $mail_api->fields_values['to_name'];
+            if ( ! is_array( $to_name ) ) {
+                $to_name = explode( ',', $to_name );
+            }
+
+            $to = array();
+
+            foreach ( $to_array as $to_ind => $to_email ) {
+
+                $to_name_str = '';
+                if ( ! empty( $to_name ) ) {
+                    $to_name_str = $to_name[ count( $to_name ) - 1 ];
+                    if ( isset( $to_name[ $to_ind ] ) ) {
+                        $to_name_str = $to_name[ $to_ind ];
+                    }
+                }
+
+                $valid_email = sanitize_email( $to_email );
+                if ( ! empty( $valid_email ) ) {
+                    $to[] = trim(
+                        wp_specialchars_decode(
+                            esc_html( stripslashes( $to_name_str ) ),
+                            ENT_QUOTES
+                        )
+                    ) . ' <' . $valid_email . '> ';
+                }
+            }
+
+            $to = implode( ',', $to );
+        }
+
+        if ( wpbc_is_not_blank_email( $to, $replace['content'] ) ) {
+            $email_result = $mail_api->send( $to, $replace );
+        }
     }
 
     make_bk_action( 'wpbc_mu_set_environment_for_user', $previous_active_user );     // MU

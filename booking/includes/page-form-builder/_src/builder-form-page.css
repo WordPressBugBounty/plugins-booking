@@ -963,9 +963,14 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	gap: 5px;
 	width:100%;
 }
-.inspector__row .wpbc_inline_inputs,
-.inspector__row label{
+.inspector__row .wpbc_inline_inputs {
 	margin:5px 0;
+}
+.inspector__row label {
+	margin: 0 0;
+	font-weight: 550;
+	/*font-size: 13px;*/
+	line-height: 1.75;
 }
 .inspector__row .inspector__control__generator_times .wpbc_inline_inputs,
 .inspector__row .inspector__control__generator_timeslots .wpbc_inline_inputs,
@@ -1705,6 +1710,9 @@ html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
 .wpbc_bfb__form_details_media__img {
 	max-width: 100%;
 	height: auto;
+	max-height: auto;
+	object-fit: cover;
+	overflow: hidden;
 }
 .wpbc_bfb__form_details_media__preview .wpbc-bi-image-fill::before {
 	font-size: 50px;
@@ -1733,6 +1741,9 @@ html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
 	padding: 0;
 	border-radius: 4px;
 	display: none;
+	max-height: 50px;
+	object-fit: cover;
+	overflow: hidden;
 }
 .wpbc_bfb__hint__top_bar.wpbc_bfb__hint__form_name .wpbc_bfb__form_details_media__preview .wpbc_bfb__form_details_media__placeholder {
 	display: block;

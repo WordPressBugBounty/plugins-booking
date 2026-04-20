@@ -150,7 +150,7 @@
 		upsert_shortcode_attr: function( shortcode_raw, attr_name, attr_value, quote_char ) {
 			var escaped_attr_name, pattern, replacement_value, replacement;
 
-			shortcode_raw = $.trim( String( shortcode_raw || '' ) );
+			shortcode_raw = trim_string( shortcode_raw );
 			attr_name     = String( attr_name || '' );
 			attr_value    = String( attr_value || '' );
 			quote_char    = String( quote_char || '' );
@@ -191,16 +191,16 @@
 		normalize_shortcode_raw: function( shortcode_raw, resource_id, form_name ) {
 			resource_id   = this.normalize_resource_id( resource_id );
 			form_name     = this.sanitize_form_name( form_name );
-			shortcode_raw = $.trim( String( shortcode_raw || '' ) );
+			shortcode_raw = trim_string( shortcode_raw );
 
-			if ( ! shortcode_raw || 0 !== $.trim( shortcode_raw ).indexOf( '[booking' ) ) {
+			if ( ( ! shortcode_raw || 0 !== shortcode_raw.indexOf( '[booking' ) ) ) {
 				return this.build_default_shortcode_raw( resource_id, form_name );
 			}
 
 			shortcode_raw = this.upsert_shortcode_attr( shortcode_raw, 'resource_id', String( resource_id ), '' );
 			shortcode_raw = this.upsert_shortcode_attr( shortcode_raw, 'form_type', form_name, '\'' );
 
-			return $.trim( shortcode_raw );
+			return trim_string( shortcode_raw );
 		},
 
 		/**
@@ -823,7 +823,7 @@
 				form_name
 			);
 			page_id       = $modal.find( '#wpbc_bfb_publish_page_id' ).val() || '';
-			page_title    = $.trim( $modal.find( '#wpbc_bfb_publish_page_title' ).val() || '' );
+			page_title    = trim_string( $modal.find( '#wpbc_bfb_publish_page_title' ).val() || '' );
 			$submit_button = $modal.find( '[data-wpbc-bfb-publish-submit="' + mode + '"]' );
 
 			$modal.find( '#wpbc_bfb_publish__form_name' ).val( form_name );
@@ -891,6 +891,17 @@
 				);
 		}
 	};
+
+	/**
+	 * Trim string without using jQuery.trim().
+	 *
+	 * @param {*} value Raw value.
+	 *
+	 * @return {string}
+	 */
+	function trim_string( value ) {
+		return String( value == null ? '' : value ).trim();
+	}
 
 	/**
 	 * Normalize list helper.

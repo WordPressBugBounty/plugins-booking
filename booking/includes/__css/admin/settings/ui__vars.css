@@ -5,6 +5,9 @@
 	--wpbc_admin-default_label-color: #486892;
 	--wpbc_admin-a-color: var(--wpbc_admin-theme-color);
 	--wpbc_admin-theme-opacity: 80%;
+	/* FixIn: 10.15.6.1. */
+	--wpbc_admin-active-tab-color: #707980;
+	--wpbc_admin-resource-badge-color: #556e91;
 	/* -- Responsive Sizes: < 600px (less top icons), < 782px (no wp left bar), < 960px (wp left bar colapse) ----------- */
 	--wpbc_ui__gen__screen_width_small: 960px;
 	--wpbc_ui__gen__screen_width_mini: 782px;

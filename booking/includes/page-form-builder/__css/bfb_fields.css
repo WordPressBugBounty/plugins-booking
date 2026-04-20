@@ -89,3 +89,9 @@ div .wpbc_bfb_form [data-colstyles-active="1"] .wpbc_bfb__row .wpbc_bfb__column 
 .wpbc_bfb_divider_wrap[data-orientation="vertical"] .wpbc_bfb_divider--v {
 	transform: translate(-50%, -50%);
 }
+/* Inline Checkbox Fields: Accept Terms and Condotions */
+div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type="checkbox"],
+div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type="radio"] {
+    margin: 0 5px;
+    margin-top: -5px;
+}

@@ -1070,7 +1070,27 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 	font-weight:600;
 	gap: 0.2em;
 }
-
+.wpbc_container_booking_form .wpbc__field label:has(input[type="checkbox"]),
+.wpbc_container_booking_form .wpbc__field label:has(input[type="checkbox"]):hover {
+	display: block;
+}
+/* Fixes for inline checkbox texts. Usually  it is checkbox with  links. */
+div div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
+	padding: 0;
+	margin: 0;
+}
+div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox,
+div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox:hover {
+	font-weight: 400;
+}
+div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox span,
+div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox a {
+	display: inline-flex;
+	align-items: center;
+}
+div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
+	vertical-align: baseline;
+}
 
 /* Inputs inside field columns */
 .wpbc_container_booking_form .wpbc__field .wpdev-form-control-wrap {

@@ -2581,7 +2581,7 @@ if(1)
 		}
 		// New Spinner Loader 		// FixIn: 10.0.0.25.
 		?><div class="flex_tl_table_loading wpbc_spins_loading_container">
-				<div class="wpbc_booking_form_spin_loader"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spins_loader_mini"></div></div></div>
+				<div class="wpbc_booking_form_spin_loader"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spin_loader_one_new"></div></div></div>
 				<?php // echo '<span class="0glyphicon 0glyphicon-refresh wpbc_icn_autorenew wpbc_spin"></span>' ?>
 				<span><?php esc_html_e('Loading','booking'); ?>...</span>
 		</div><?php

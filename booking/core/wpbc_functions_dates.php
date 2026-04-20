@@ -34,7 +34,7 @@ function wpbc_csv_numbers_to_int_array( $csv, $separator = ',' ) {
  * @return string
  */
 function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezone_offset = false ) {
-
+	// FixIn: 10.15.5.3.
 	if ( empty( $format ) ) {
 		$format = sprintf( '%s %s', get_option( 'booking_date_format' ), get_option( 'booking_time_format' ) );
 	}
@@ -52,8 +52,21 @@ function wpbc_datetime_localized( $date_str_ymdhis, $format = '', $is_add_timezo
 		$date_str_ymdhis = strtotime( $date_str_ymdhis );
 	}
 
+	if ( false === $date_str_ymdhis ) {
+		if ( 'UTC' !== $server_zone ) {
+			// phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+			@date_default_timezone_set( $server_zone );
+		}
+		return '';
+	}
+
+	$date_str_ymdhis = (int) $date_str_ymdhis;
+
 	if ( $is_add_timezone_offset ) {
-		$date_str_ymdhis += (int) ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+		$gmt_offset = get_option( 'gmt_offset', 0 );
+		$gmt_offset = is_numeric( $gmt_offset ) ? (float) $gmt_offset : 0.0;
+
+		$date_str_ymdhis += (int) round( $gmt_offset * HOUR_IN_SECONDS );
 	}
 
 	$local_date = date_i18n( $format, $date_str_ymdhis );

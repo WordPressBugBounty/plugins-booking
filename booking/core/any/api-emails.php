@@ -425,86 +425,89 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
      * @param string $emails
      * @return string
      */
-    public function validate_emails( $emails ) {
+	public function validate_emails( $emails ) {
 
-        $emails = str_replace(';', ',', $emails);
+		$emails = str_replace( ';', ',', $emails );
 
-	if ( !is_array( $emails ) )
-		$emails = explode( ',', $emails );
+		if ( ! is_array( $emails ) ) {
+			$emails = explode( ',', $emails );
+		}
 
-        $emails_list = array();
-	foreach ( (array) $emails as $recipient ) {
-            
-            // Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
-            $recipient_name = '';
-            if( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
-                if ( count( $matches ) == 3 ) {
-                    $recipient_name = $matches[1];
-                    $recipient = $matches[2];                 
-                }
-            } else {                
-                // Check about correct  format  of email
-                if( preg_match( '/([\w\.\-_]+)?\w+@[\w\-_]+(\.\w+){1,}/im', $recipient, $matches ) ) {                  // FixIn: 8.7.7.2.
-                    $recipient = $matches[0];
-                }             
-            }
+		$emails_list = array();
+		foreach ( (array) $emails as $recipient ) {
 
-            //$recipient_name = str_replace('"', '', $recipient_name);
-            $recipient_name = trim( wp_specialchars_decode( esc_html( stripslashes( $recipient_name ) ), ENT_QUOTES ) );
-            
-            $emails_list[] =   ( empty( $recipient_name ) ? '' : $recipient_name . ' '  )
-                               . '<' . sanitize_email( $recipient ) . '>';		
+			// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>".
+			$recipient_name = '';
+			if ( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
+				if ( count( $matches ) == 3 ) {
+					$recipient_name = $matches[1];
+					$recipient      = $matches[2];
+				}
+			} else {
+				// Check about correct  format  of email.
+				if ( preg_match( '/([\w\.\-_]+)?\w+@[\w\-_]+(\.\w+){1,}/im', $recipient, $matches ) ) {                  // FixIn: 8.7.7.2.
+					$recipient = $matches[0];
+				}
+			}
+
+			$recipient_name = trim( wp_specialchars_decode( esc_html( stripslashes( $recipient_name ) ), ENT_QUOTES ) );
+			// FixIn: 10.15.5.1.
+			//$emails_list[] = ( empty( $recipient_name ) ? '' : $recipient_name . ' ' ) . '<' . sanitize_email( $recipient ) . '>';
+			$sanitized_email_address = sanitize_email( $recipient );
+			if ( ! empty( $sanitized_email_address ) ) {
+				$emails_list[] = '<' . sanitize_email( $recipient ) . '>';
+			}
+
+		}
+
+		$emails_list = implode( ',', $emails_list );
+
+		return $emails_list;
 	}
-        
-        $emails_list = implode( ',', $emails_list );
-
-        return $emails_list;
-    }
-
-    
-    /**
-     * Make Email Sending by using wp_mail standard function. 
-     * 
-     * @param string $to - Email
-     * @param array $replace - accociated array  of values to  replace in email Body and Subject. Exmaple: array( 'name' => 'Jo', 'secondname' => 'Smith' )
-     * @return boolean Sent or Failed to send.
-     */ 
-    public function send( $to = '', $replace = array() ) {
-
-        $return = false;
-        
-//        if ( empty( $to ) )
-//            return  $return;
-        
-        $this->sending = true;       
 
 
-        $this->set_replace( $replace );
+	/**
+	 * Make Email Sending by using wp_mail standard function.
+	 *
+	 * @param string $to      - Email
+	 * @param array  $replace - accociated array  of values to  replace in email Body and Subject. Exmaple: array( 'name' => 'Jo', 'secondname' => 'Smith' )
+	 *
+	 * @return boolean Sent or Failed to send.
+	 */
+	public function send( $to = '', $replace = array() ) {
 
-        $to = $this->validate_emails( $to );
+		$return = false;
 
-        $subject        = $this->get_subject();
-        $message        = $this->get_content();
-        $headers        = $this->get_headers();
-        $attachments    = $this->get_attachments();
-//debuge('In email', htmlentities($to), $subject, htmlentities($message), $headers, $attachments)  ;      
-        $is_send_email = true;
-        
-        $is_send_email = apply_filters( 'wpbc_email_api_is_allow_send', $is_send_email, $this->id, $this->fields_values );
-        
-        if ( $is_send_email ) {
-        	$to = apply_filters( 'wpbc_email_api_send_field_to', $to );                                                 // FixIn: 8.1.3.1.
-	        // FixIn: 8.5.2.22.
-	        if ( ! empty( $to ) ) {
-// debuge( '$to, $subject, $message, $headers, $attachments',htmlspecialchars($to), htmlspecialchars($subject), htmlspecialchars($message), htmlspecialchars($headers), htmlspecialchars($attachments));
-//debuge( debug_backtrace() );
-		        $return = wp_mail( $to, $subject, $message, $headers, $attachments );
-	        }
-        }
+		// if ( empty( $to ) ) { return $return; } //.
 
-        $this->sending = false;
+		$this->sending = true;
 
-        // Send Copy to admin email
+		$this->set_replace( $replace );
+
+		$to = $this->validate_emails( $to );
+
+		$subject     = $this->get_subject();
+		$message     = $this->get_content();
+		$headers     = $this->get_headers();
+		$attachments = $this->get_attachments();
+		// FixIn: 10.15.5.2.
+		$attachments = apply_filters( 'wpbc_email_attachments', $attachments, $this->id, $replace );
+
+		$is_send_email = true;
+
+		$is_send_email = apply_filters( 'wpbc_email_api_is_allow_send', $is_send_email, $this->id, $this->fields_values );
+
+		if ( $is_send_email ) {
+			$to = apply_filters( 'wpbc_email_api_send_field_to', $to );                                                 // FixIn: 8.1.3.1.
+			// FixIn: 8.5.2.22.
+			if ( ! empty( $to ) ) {
+				$return = wp_mail( $to, $subject, $message, $headers, $attachments );
+			}
+		}
+
+		$this->sending = false;
+
+		// Send Copy to admin email.
         if (
                 ( isset( $this->fields_values['copy_to_admin'] ) )
              && ( $this->fields_values['copy_to_admin'] == 'On' ) 

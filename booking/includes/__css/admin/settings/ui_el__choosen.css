@@ -469,6 +469,7 @@
 	box-sizing: content-box;
 	background: #6b96ce !important;
 	background: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%)) !important;  /* FixIn: 10.15.1.7. */
+	background: var(--wpbc_admin-resource-badge-color, #556e91) !important;  /* FixIn: 10.15.6.1. */
 	color: #fff !important;
 }
 .wpbc_ui_el__choosen .chzn-container-multi .chzn-choices .search-field {

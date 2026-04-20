@@ -103,6 +103,10 @@ div .wpbc_bfb_form [data-colstyles-active="1"] .wpbc_bfb__row .wpbc_bfb__column 
   -ms-transform: translate(-50%,-50%);
   transform: translate(-50%,-50%)
 }
+div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type=checkbox],
+div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type=radio] {
+  margin: -5px 5px 0
+}
 .wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=horizontal] {
   width: 100%;
   margin: 0;

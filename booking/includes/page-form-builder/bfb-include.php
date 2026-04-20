@@ -116,6 +116,8 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/select/f
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/radio/field-radio-wptpl.php';                   // -- Radio --.
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/checkbox/field-checkbox-wptpl.php';             // -- Checkbox --
 
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/accept-terms/field-accept-terms-wptpl.php';     // -- Terms --
+
 // =====================================================================================================================
 // == Times Packs ==
 // =====================================================================================================================
@@ -126,6 +128,40 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-end
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-duration/field-durationtime-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-duration-service/field-durationtime-service-preset.php';
 // require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-grid/time-grid.php';                    // -- TODO: Time Grid  --.
+
+
+// =====================================================================================================================
+// == Hints Packs ==
+// =====================================================================================================================
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-cost_hint/field-cost-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-selected_short_timedates_hint/field-selected-short-timedates-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-capacity_hint/field-capacity-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-bookingresource_info/field-bookingresource-info-wptpl.php';
+
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-check_in_date_hint/field-check-in-date-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-check_out_date_hint/field-check-out-date-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-check_out_plus1day_hint/field-check-out-plus1day-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-days_number_hint/field-days-number-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-nights_number_hint/field-nights-number-hint-wptpl.php';
+
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-start_time_hint/field-start-time-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-end_time_hint/field-end-time-hint-wptpl.php';
+
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-selected_short_dates_hint/field-selected-short-dates-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-selected_dates_hint/field-selected-dates-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-selected_timedates_hint/field-selected-timedates-hint-wptpl.php';
+
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-cancel_date_hint/field-cancel-date-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-pre_checkin_date_hint/field-pre-checkin-date-hint-wptpl.php';
+
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-original_cost_hint/field-original-cost-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-additional_cost_hint/field-additional-cost-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-deposit_hint/field-deposit-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-balance_hint/field-balance-hint-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-coupon_discount_hint/field-coupon-discount-hint-wptpl.php';
+
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-resource_title_hint/field-resource-title-hint-wptpl.php';
+
 
 // =====================================================================================================================
 // == Structure Packs ==

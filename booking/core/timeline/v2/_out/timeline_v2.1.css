@@ -2,13 +2,16 @@
   --wpbc_timeline-row-height: 37px;
   --wpbc_timeline-matrix-row-header-height: 58px;
   --wpbc_timeline-single-row-header-height: 40px;
-  --wpbc_timeline-booking-pending-color: #ffd86c;
-  --wpbc_timeline-past-booking-pending-color: #fff3d2;
-  --wpbc_timeline-booking-pending-border-color: #e49c2d;
-  --wpbc_timeline-booking-approved-color: #5A71A1;
-  --wpbc_timeline-past-booking-approved-color: #8591aa;
-  --wpbc_timeline-booking-approved-border-color: #4B5E85;
-  --wpbc_timeline-new-month-border-color: transparent
+  --wpbc_timeline-booking-pending-color: #ffea99;
+  --wpbc_timeline-booking-pending-color-opacity: 50%;
+  --wpbc_timeline-past-booking-pending-color: rgb( from var(--wpbc_timeline-booking-pending-color) r g b / var(--wpbc_timeline-booking-pending-color-opacity) );
+  --wpbc_timeline-booking-pending-border-color: #68362e;
+  --wpbc_timeline-booking-approved-color: #458c27;
+  --wpbc_timeline-booking-approved-color-opacity: 55%;
+  --wpbc_timeline-past-booking-approved-color: rgb( from var(--wpbc_timeline-booking-approved-color) r g b / var(--wpbc_timeline-booking-approved-color-opacity) );
+  --wpbc_timeline-booking-approved-border-color: #2b4421;
+  --wpbc_timeline-new-month-border-color: transparent;
+  --wpbc_timeline-gen__text-color: var(--wpbc_ui__gen__text-color, #555)
 }
 .flex_tl_table {
   -ms-flex-flow: column nowrap;
@@ -91,8 +94,7 @@
   -ms-flex: 1 1 0px;
   flex: 1 1 0;
   word-break: break-word;
-  min-width: 0;
-  color: #777
+  min-width: 0
 }
 .flex_tl_table .flex_tl_table_titles .flex_tl_collumn_2 .flex_tl_dates_bar {
   display: -ms-flexbox;
@@ -310,7 +312,8 @@
   background-color: #78a
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id:last-child {
-  border-bottom: none
+  border-bottom: 1px solid;
+  border-top: 1px solid
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id .in_cell_date_booking_pipeline_a,
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id .in_cell_date_booking_pipeline_a:active,
@@ -382,8 +385,9 @@ hr.wpbc_tl_popover_booking_separator {
   min-height: 2.5em;
   margin: 0;
   padding: 5px 30px 5px 6px;
-  border-radius: 5px 5px 0 0;
-  background-color: #fcfcfc
+  border-radius: 5px 0 0;
+  background-color: #fff;
+  border-bottom: 1.5px solid #707980
 }
 .flex_timeline_frame .popover .popover-title .popover-title-id {
   -ms-flex: 0 0 auto;
@@ -423,7 +427,7 @@ hr.wpbc_tl_popover_booking_separator {
   text-decoration: none;
   cursor: pointer;
   -webkit-appearance: none;
-  color: #555;
+  color: var(--wpbc_timeline-gen__text-color,#555);
   border-radius: 3px;
   border: 1px solid rgba(170,170,170,0);
   box-shadow: none;
@@ -516,13 +520,12 @@ hr.wpbc_tl_popover_booking_separator {
   text-shadow: none;
   box-shadow: 0 0 1px #ddd;
   font-weight: 400;
-  font-size: 95%;
-  line-height: 1.7em;
-  padding: .2em .8em;
-  background-color: #5bc0de;
+  line-height: 1.9;
+  padding: .2em .7em;
+  background-color: var(--wpbc_admin-resource-badge-color,#556e91);
   color: #fff;
   text-align: center;
-  vertical-align: baseline;
+  vertical-align: middle;
   margin: .15em .75em .5em 0;
   word-wrap: break-word;
   word-wrap: anywhere;
@@ -533,22 +536,33 @@ hr.wpbc_tl_popover_booking_separator {
   font-weight: 400
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-id {
-  background: #888
+  box-shadow: none;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,.1098039216);
+  color: #717171
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-booking-status.label-pending {
-  background: #ffbb45
+  background-color: #ed9f0a;
+  color: #fff;
+  box-shadow: 0 0 1px #fde4c9
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-booking-status.label-approved {
-  background: #9be
+  background-color: #64aa45;
+  color: #f7fff4;
+  box-shadow: 0 0 1px #b8c6b1
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-payment.payment-label-success {
-  background: #468847
+  background-color: #468847
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-payment.payment-label-unknown {
-  background: #999
+  background-color: #f2f2f3;
+  color: #717379;
+  border: 1px solid #e3e3e3
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-trash {
-  background: #d94a48
+  background: #d94a48;
+  color: #fff;
+  text-shadow: 0 0 1px #e00
 }
 .popover-content .flex-popover-content-data .flex-label.flex-label-resource {
   text-align: left
@@ -590,7 +604,11 @@ hr.wpbc_tl_popover_booking_separator {
 .popover-content .flex-popover-content-data .wpbc-popover-booking-notes {
   margin: 0 0 1em;
   max-width: 100%;
-  word-break: break-word
+  word-break: break-word;
+  background: #fffbef;
+  padding: 5px 10px;
+  font-size: 90%;
+  line-height: 1.9
 }
 .popover-content .flex-popover-content-data .flex-label-dates {
   display: -ms-flexbox;
@@ -608,7 +626,9 @@ hr.wpbc_tl_popover_booking_separator {
   font-size: 103%;
   padding: .1em .7em;
   margin: 0 0 .2em;
-  background: #ffbb45
+  background-color: #ed9f0a;
+  color: #fff;
+  box-shadow: 0 0 1px #fde4c9
 }
 .popover-content .flex-popover-content-data .flex-label-dates .date_tire {
   -ms-flex: 0 1 auto;
@@ -623,7 +643,9 @@ hr.wpbc_tl_popover_booking_separator {
   color: #23282d
 }
 .popover-content .flex-popover-content-data .flex-label-dates .flex-label.field-booking-date.approved {
-  background: #9be
+  background-color: #64aa45;
+  color: #f7fff4;
+  box-shadow: 0 0 1px #b8c6b1
 }
 .popover-content .wpbc_tl_popover_booking_separator {
   margin: 20px 0;
@@ -662,6 +684,9 @@ hr.wpbc_tl_popover_booking_separator {
 }
 .flex_tl_table .flex_tl_table_header .flex_tl_collumn_2 {
   text-align: center
+}
+.flex_tl_table .flex_tl_table_header .flex_tl_collumn_2 .flex_tl_nav .flex_tl_title {
+  color: #777
 }
 .flex_tl_table .flex_tl_table_header .flex_tl_collumn_2 .flex_tl_nav .flex_tl_next,
 .flex_tl_table .flex_tl_table_header .flex_tl_collumn_2 .flex_tl_nav .flex_tl_prev {
@@ -714,7 +739,7 @@ hr.wpbc_tl_popover_booking_separator {
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_1 .flex_tl_resource_title a {
   border-bottom: 0 dashed;
-  color: #789;
+  color: var(--wpbc_timeline-gen__text-color,#555);
   text-shadow: none;
   margin: 0 0 0 2px;
   box-shadow: none;
@@ -771,8 +796,15 @@ hr.wpbc_tl_popover_booking_separator {
 }
 .flex_tl_table .flex_tl_table_titles .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell a,
 .flex_tl_table .flex_tl_table_titles .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell a:hover {
-  color: #789;
-  text-decoration: none
+  color: var(--wpbc_timeline-gen__text-color,#555);
+  text-decoration: none;
+  outline: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  width: auto;
+  -ms-flex-item-align: center;
+  align-self: center;
+  padding: 2px 5px
 }
 .flex_tl_table .flex_tl_table_titles .flex_tl_collumn_2 .flex_tl_dates_bar_month {
   border-bottom: 1px solid #eee;
@@ -808,7 +840,7 @@ hr.wpbc_tl_popover_booking_separator {
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell {
   border-left: 1px solid #f1f1f1;
-  color: #555;
+  color: var(--wpbc_timeline-gen__text-color,#555);
   font-weight: 400;
   font-size: 10px;
   text-shadow: none
@@ -833,10 +865,11 @@ hr.wpbc_tl_popover_booking_separator {
   border-radius: 0
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.start_new_booking {
-  border-radius: 5px 0 0 5px
+  border-left: 2px solid var(--wpbc_timeline-booking-pending-border-color,#68362e);
+  border-radius: 3px 0 0 3px
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking.start_new_booking {
-  border-color: #616f8b
+  border-color: var(--wpbc_timeline-booking-approved-border-color,#2b4421)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.past_date {
   background-color: #f0cf77
@@ -878,9 +911,9 @@ hr.wpbc_tl_popover_booking_separator {
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_booking_titles .in_cell_date_booking_title.several_bookings_in_cell {
   font-weight: 600;
-  background: #fdab36;
+  background: #faf9f8;
   color: #455366;
-  border-left: 2px solid #dd8b16
+  border-left: 2px solid var(--wpbc_timeline-booking-pending-border-color,#68362e)
 }
 .flex_timeline_frame.flex_frame_view_days_num_1.flex_tl_matrix_resources .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_dates,
 .flex_timeline_frame.flex_frame_view_days_num_30.flex_tl_single_resource .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_dates {
@@ -1023,7 +1056,7 @@ hr.wpbc_tl_popover_booking_separator {
   background-color: var(--wpbc_timeline-booking-pending-color)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.start_new_booking {
-  border-left: 2px solid #df8d18
+  border-left: 2px solid var(--wpbc_timeline-booking-pending-border-color,#68362e)
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking {
   background-color: var(--wpbc_timeline-booking-approved-color)
@@ -1039,10 +1072,12 @@ hr.wpbc_tl_popover_booking_separator {
   margin: 2px -1px 0
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.booking_check_in {
-  background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-border-color) 50%,var(--wpbc_timeline-booking-pending-border-color) 52%,var(--wpbc_timeline-booking-pending-color) 52%,var(--wpbc_timeline-booking-pending-color) 100%)
+  background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-border-color) 50%,var(--wpbc_timeline-booking-pending-border-color) 52%,var(--wpbc_timeline-booking-pending-color) 52%,var(--wpbc_timeline-booking-pending-color) 100%);
+  border-bottom: 1px solid
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.booking_check_out {
-  background: linear-gradient(to top left,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-color) 50%,var(--wpbc_timeline-booking-pending-color) 100%)
+  background: linear-gradient(to top left,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-pending-color) 50%,var(--wpbc_timeline-booking-pending-color) 100%);
+  border-top: 1px solid
 }
 .flex_tl_table .flex_tl_table_row_bookings .flex_tl_collumn_2 .flex_tl_dates_bar .flex_tl_day_cell .in_cell_date_container_show_bookings .booking_id.approved_booking.booking_check_in {
   background: linear-gradient(to bottom right,rgba(255,255,255,0) 0,rgba(255,255,255,0) 50%,var(--wpbc_timeline-booking-approved-border-color) 50%,var(--wpbc_timeline-booking-approved-border-color) 52%,var(--wpbc_timeline-booking-approved-color) 52%,var(--wpbc_timeline-booking-approved-color) 100%)
@@ -1076,6 +1111,7 @@ hr.wpbc_tl_popover_booking_separator {
   background: 0 0;
   border: none!important;
   box-shadow: none!important;
+  color: var(--wpbc_timeline-gen__text-color,#555);
   line-height: 2.5
 }
 .wp-core-ui .wpbc_page .wpbc_calendar_overview__navigation .wpbc_button_no_background .menu_icon:before {

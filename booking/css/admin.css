@@ -69,23 +69,28 @@ select option.wpbc_child_resource{
 }
 
 /* Shortcodes  */
+.wpbc-help-message code,
+.wpbc_settings_page_wrapper .description code,
 #wpbc-settings-admin-page .description code {
-  font-style: normal;
-  background: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%));
-  color: #fff;
-  padding: 2px 5px 3px;
-  border-radius: 2px;
-    -webkit-user-select: all; /* Covers Blink-land & Firefox (yup) */
-    user-select: all; /* Someday */
-    line-height: 2.1;
+	font-style: normal;
+	/*background: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%));*/
+	background: #465160cf;
+	color: #fff;
+	padding: 2px 5px 3px;
+	border-radius: 2px;
+	-webkit-user-select: all; /* Covers Blink-land & Firefox (yup) */
+	user-select: all; /* Someday */
+	line-height: 2.1;
 }
 /* General Booking Settings page */
+.wpbc_settings_page_wrapper .form-table .description,
 #wpbc-settings-admin-page .form-table .description {
     font-size: 14px;
     line-height: 2em;
 }
+.wpbc_settings_page_wrapper .form-table span.description,
 #wpbc-settings-admin-page .form-table span.description{
-    padding: 0 10px;    
+    padding: 0 10px;
 }
 #wpbc-settings-admin-page .wpbc_sub_settings_grayed{
     background-color: #f3f3f3;    
@@ -107,6 +112,9 @@ select option.wpbc_child_resource{
     padding:0;
     height: 1px;
 }
+.wpbc_settings_page_wrapper .wpbc_expand_section_link,
+.wpbc_settings_page_wrapper a.wpbc_expand_section_link:hover,
+.wpbc_settings_page_wrapper a.wpbc_expand_section_link:focus,
 #wpbc-settings-admin-page .wpbc_expand_section_link,
 #wpbc-settings-admin-page a.wpbc_expand_section_link:hover,
 #wpbc-settings-admin-page a.wpbc_expand_section_link:focus {
@@ -456,7 +464,7 @@ select option.wpbc_child_resource{
 .wpbc_container_open_or_closed__content {
     padding: 1px 5px 10px 20px;
     margin-top: 10px;
-    background: #f2f2f2;
+
 }
     .wpbc_deprected_help_container *,
     .wpbc_deprected_help_container p.description {

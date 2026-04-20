@@ -250,7 +250,7 @@
 }
 .wpbc_flextable_header_tabs .wpdvlp-top-tabs .nav-tab-active,
 .wpbc_flextable_header_tabs .wpdvlp-top-tabs a.nav-tab-active:focus {
-	border-bottom-color: #707980;
+	border-bottom-color: var(--wpbc_admin-active-tab-color, #707980);
 }
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* RESOURCE    ID --------------- */

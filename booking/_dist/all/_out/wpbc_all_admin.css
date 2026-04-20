@@ -630,6 +630,8 @@ a.wpbc_ui_settings__text_pro:hover {
   --wpbc_admin-default_label-color: #486892;
   --wpbc_admin-a-color: var(--wpbc_admin-theme-color);
   --wpbc_admin-theme-opacity: 80%;
+  --wpbc_admin-active-tab-color: #707980;
+  --wpbc_admin-resource-badge-color: #556e91;
   --wpbc_ui__gen__screen_width_small: 960px;
   --wpbc_ui__gen__screen_width_mini: 782px;
   --wpbc_ui__gen__screen_width_micro: 600px;
@@ -1604,6 +1606,7 @@ only screen and (min-resolution:1.5dppx) {
   box-sizing: content-box;
   background: #6b96ce!important;
   background: rgb(from var(--wpbc_admin-theme-color,#6b96ce) r g b/var(--wpbc_admin-theme-opacity,80%))!important;
+  background: var(--wpbc_admin-resource-badge-color,#556e91)!important;
   color: #fff!important
 }
 .wpbc_ui_el__choosen .chzn-container-multi .chzn-choices .search-field {
@@ -1869,7 +1872,11 @@ body.wpbc_admin_full_screen div.wpbc_admin {
 }
 .wpbc_ui_el__top_nav .wpbc_message_wrapper .wpbc_header_news {
   padding: 0 15px;
-  background: #fff
+  background: #fff;
+  position: absolute;
+  left: 50%;
+  -ms-transform: translate(-50%,0);
+  transform: translate(-50%,0)
 }
 .wpbc_ui_el__top_nav .wpbc_ui_el__buttons_group {
   display: -ms-flexbox;
@@ -2969,7 +2976,7 @@ div.wpbc_ajx_toolbar {
   border-bottom-color: rgba(30,123,199,.1215686275)
 }
 .wpbc_ui__collapsible_group:not(.is-open) .group__header:hover {
-  border-left-color: #707980
+  border-left-color: var(--wpbc_admin-active-tab-color,#707980)
 }
 .wpbc_ui__collapsible_group .group__header:hover .wpbc-bi-chevron-right,
 .wpbc_ui__collapsible_group.is-open .group__header:hover .wpbc-bi-chevron-right {
@@ -3651,7 +3658,9 @@ div.wpbc_ajx_toolbar {
   -ms-flex-pack: start;
   justify-content: flex-start;
   -ms-flex-align: start;
-  align-items: flex-start
+  align-items: flex-start;
+  gap: 10px;
+  padding: 2px 0
 }
 .wpbc_row_wrap.max_height_a .wpbc_col_data {
   white-space: nowrap
@@ -3705,7 +3714,7 @@ div.wpbc_ajx_toolbar {
   text-align: center;
   vertical-align: baseline;
   padding: 5px 10px;
-  margin: 5px 15px 5px 0;
+  margin: 5px;
   background: var(--wpbc_admin-default_label-color,#6b96ce);
   color: #fff;
   border-radius: 4px;
@@ -3752,7 +3761,8 @@ div.wpbc_ajx_toolbar {
 }
 .wpbc_label.wpbc_label_resource {
   background-color: #6b96ce;
-  background-color: rgb(from var(--wpbc_admin-theme-color,#6b96ce) r g b/var(--wpbc_admin-theme-opacity,80%))
+  background-color: rgb(from var(--wpbc_admin-theme-color,#6b96ce) r g b/var(--wpbc_admin-theme-opacity,80%));
+  background-color: var(--wpbc_admin-resource-badge-color,#556e91)
 }
 .wpbc_label.wpbc_label_deleted_resource {
   background-color: #ee6f48
@@ -3774,8 +3784,8 @@ div.wpbc_ajx_toolbar {
   background-color: #992
 }
 .wpbc_label.wpbc_label_payment_status_unknown {
-  background-color: #f7f7f7;
-  color: #7c7c7c;
+  background-color: #f2f2f3;
+  color: #717379;
   border: 1px solid #e3e3e3
 }
 .wpbc_label.wpbc_label_payment_status_error {
@@ -3971,7 +3981,8 @@ div.wpbc_ajx_toolbar {
   line-height: 1.75;
   color: #777;
   box-shadow: none;
-  border: 1px solid #e8e8e8
+  border: 1px solid #d5d5d5;
+  background: #fefefe
 }
 #wpbc_modal__set_booking_note__section textarea {
   margin-top: 5px;

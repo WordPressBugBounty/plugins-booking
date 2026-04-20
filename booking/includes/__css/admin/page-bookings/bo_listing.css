@@ -598,6 +598,8 @@
 			flex-flow: row wrap;
 			justify-content: flex-start;
 			align-items: flex-start;
+			gap: 10px;
+			padding: 2px 0;
 		}
 		/* -- Data -------------------------------------------------------------------------------------------------- */
 		.wpbc_row_wrap.max_height_a .wpbc_col_data {
@@ -663,7 +665,7 @@
 
 	padding: 5px 10px;
 	margin: 5px 15px 5px 0;
-
+	margin: 5px;
 	/*background: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / 100);*/
 	background: var(--wpbc_admin-default_label-color, #6b96ce);
 	color: #fff;
@@ -709,6 +711,7 @@
 .wpbc_label.wpbc_label_resource {
 	background-color: #6b96ce;
 	background-color: rgb(from var(--wpbc_admin-theme-color, #6b96ce) r g b / var(--wpbc_admin-theme-opacity, 80%));
+	background-color: var(--wpbc_admin-resource-badge-color, #556e91);  /* FixIn: 10.15.6.1. */
 }
 .wpbc_label.wpbc_label_deleted_resource {
 	background-color: #ee6f48;
@@ -731,8 +734,8 @@
 	background-color: #992;
 }
 .wpbc_label.wpbc_label_payment_status_unknown {
-	background-color: #f7f7f7;
-	color: #7c7c7c;
+	background-color: #f2f2f3;
+	color: #717379;
 	border: 1px solid #e3e3e3;
 }
 .wpbc_label.wpbc_label_payment_status_error {
@@ -925,7 +928,8 @@
 	line-height: 1.75;
 	color: #777;
 	box-shadow: none;
-	border: 1px solid #e8e8e8;
+	border: 1px solid #d5d5d5;
+	background: #fefefe;
 }
 /* -- Modal Notes --------------------------------------------------------------------------------------------------- */
 #wpbc_modal__set_booking_note__section textarea {

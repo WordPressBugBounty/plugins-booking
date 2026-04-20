@@ -432,7 +432,7 @@ console.groupEnd();
 
 			// Show Spin Loader
 			jQuery( '#booking_form' + resource_id ).after(
-				'<div id="wpbc_booking_form_spin_loader' + resource_id + '" class="wpbc_booking_form_spin_loader" style="position: relative;"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spins_loader_mini"></div></div></div>'
+				'<div id="wpbc_booking_form_spin_loader' + resource_id + '" class="wpbc_booking_form_spin_loader" style="position: relative;"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spin_loader_one_new"></div></div></div>'
 			);
 		}
 
@@ -507,7 +507,7 @@ console.groupEnd();
 										'where'  : 'after'				// 'inside' | 'before' | 'after' | 'right' | 'left'
 									},
 									'style'    : 'position: relative;min-height: 2.8rem;',
-									'class'    : 'wpbc_one_spin_loader_mini 0wpbc_spins_loader_mini'
+									'class'    : 'wpbc_one_spin_loader_mini 0wpbc_spin_loader_one_new'
 								};
 			for ( var p_key in params ){
 				params_default[ p_key ] = params[ p_key ];

@@ -121,8 +121,12 @@ body.wpbc_admin_full_screen {
   margin-left: auto !important;
 }
 .wpbc_ui_el__top_nav .wpbc_message_wrapper .wpbc_header_news {
-  padding: 0 15px;
-  background: #fff;
+	padding: 0 15px;
+	background: #fff;
+
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0);
 }
 /* Button Group,  like "Save Changes" | "Open" ---------------------------------------------------------------------- */
 .wpbc_ui_el__top_nav .wpbc_ui_el__buttons_group {

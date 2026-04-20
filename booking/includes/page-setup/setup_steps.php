@@ -435,7 +435,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 			?><style tye="text/css">
 				@media screen and (max-width: 782px) {
 					.ui_element.wpbc_page_top__wizard_button {
-						top: 49px !important;
+						/*top: 49px !important;*/
 					}
 				}
 				.wp-admin.wpbc_admin_full_screen .wpbc_header_news {
@@ -453,8 +453,15 @@ class WPBC_SETUP_WIZARD_STEPS {
 					background: transparent;
 					right: 69px;
 					top: 40px;
-				}
 
+					right: 15px;
+					top: auto !important;
+					bottom: 15px !important;
+				}
+				div .wpbc_admin_page__tab__builder_booking_form .wpbc_page_top__wizard_button {
+					top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + var(--wpbc_ui_top_nav__height) + 10px) !important;
+					top: auto !important;
+				}
 				.ui_element.wpbc_page_top__wizard_button .wpbc_page_top__wizard_button_content,
 				.ui_element.wpbc_page_top__wizard_button .wpbc_page_top__wizard_button_content:hover {
 					border-radius: 5px;

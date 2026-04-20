@@ -392,8 +392,7 @@ body[class*='page_wpbc-resources'] .wpbc_popup_modal .wpdvlp-top-tabs .nav-tabs 
 /* Border color of active horizontal tab */
 .modal-body .wpbc_settings_flex_container .wpdvlp-top-tabs .nav-tab-active,
 .modal-body .wpbc_settings_flex_container .wpdvlp-top-tabs a.nav-tab-active:hover {
-    border-bottom-color: #9c9c9c;
-    border-bottom-color: #cb8c8c;
+    border-bottom-color: var(--wpbc_admin-active-tab-color, #707980);
 }
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* Vertical Navigation Panel                                                                                          */

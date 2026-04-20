@@ -924,7 +924,7 @@ function wpbc_bfb_spins_loading_container() {
 	<div class="wpbc_spins_loading_container">
 		<div class="wpbc_booking_form_spin_loader">
 			<div class="wpbc_spins_loader_wrapper">
-				<div class="wpbc_spins_loader_mini"></div>
+				<div class="wpbc_spin_loader_one_new"></div>
 			</div>
 		</div>
 		<span><?php echo esc_html__( 'Loading', 'booking' ); ?> ...</span>

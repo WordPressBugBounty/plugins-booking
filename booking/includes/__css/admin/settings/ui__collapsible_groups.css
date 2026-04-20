@@ -25,7 +25,7 @@
 	border-bottom-color: #1e7bc71f;
 }
 .wpbc_ui__collapsible_group:not(.is-open) .group__header:hover {
-	border-left-color: #707980;
+	border-left-color: var(--wpbc_admin-active-tab-color, #707980);
 }
 .wpbc_ui__collapsible_group.is-open .group__header:hover .wpbc-bi-chevron-right,
 .wpbc_ui__collapsible_group         .group__header:hover .wpbc-bi-chevron-right{

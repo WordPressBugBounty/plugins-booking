@@ -218,7 +218,7 @@ function wpbc_bfb_sanitize_form_text( $form_value ) {
 	// Start with WP default allowed tags, then extend with our custom tags (custom wins).
 	$allowed_tags = array_merge(
 		wp_kses_allowed_html( 'post' ),
-		wpbc_get_allowed_simple_html_tags__for_wp_kses(),     // Custom short tags used in legacy / advanced markup.
+		wpbc_get_allowed_simple_html_tags__for_wp_kses()     // Custom short tags used in legacy / advanced markup. 	// FixIn: 10.15.5.6.
 	);
 
 	// Allow 'name' on <p> (if used by legacy markup).
