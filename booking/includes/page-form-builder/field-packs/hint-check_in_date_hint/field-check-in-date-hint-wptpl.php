@@ -23,13 +23,17 @@ function wpbc_bfb_field_check_in_date_hint_wptpl_config() {
 		'script_file'       => 'field-check-in-date-hint-wptpl.js',
 		'handle'            => 'wpbc-bfb_field_check_in_date_hint_wptpl',
 		'boot_var'          => 'WPBC_BFB_Check_In_Date_Hint_Boot',
-		'preview_value'     => '04/18/2026',
+		'preview_value'     => wpbc_bfb_hint_shortcode_preview_value( 'check_in_date_hint', '04/18/2026' ),
 		'icon'              => 'wpbc-bi-calendar-check',
 		'palette_icon'      => 'wpbc-bi-calendar-check',
-		'required_class'    => 'wpdev_bk_biz_m',
-		'pro_label'         => 'Pro | BM+',
-		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
+//		'required_class'    => 'wpdev_bk_biz_m',
+//		'pro_label'         => 'Pro | BM+',
+//		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
+		'required_class'    => '',
+		'pro_label'         => '',
+		'upgrade_text'      => '',
 		'templates_printer' => 'wpbc_bfb_field_check_in_date_hint_wptpl_print_templates',
+		'group'             => 'hints_dates',
 	);
 }
 function wpbc_bfb_register_field_packs__field_check_in_date_hint_wptpl( $packs ) { return wpbc_bfb_hint_shortcode_register_pack( $packs, wpbc_bfb_field_check_in_date_hint_wptpl_config() ); }

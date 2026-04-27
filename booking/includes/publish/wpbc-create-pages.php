@@ -526,9 +526,171 @@ function wpbc_add_shortcode_into_page( $params = array() ) {
 
 
 /**
- * Create new starter page with  booking form
+ * Get starter booking form/page definitions created during plugin activation.
  *
- * @param $default_options_to_add       - array from function wpbc_get_default_options(),  which  passed only  from 'wpbc_before_activation__add_options'. Here we skip  this option.
+ * @return array
+ */
+function wpbc_get_activation_booking_form_page_configs() {
+
+	return array(
+		'full_day_booking' => array(
+			'template_key' => 'dates_advanced_3_steps_review_with_hints',
+			'form_slug'    => 'full_day_booking',
+			'form_title'   => esc_html__( 'Full Day Booking Form', 'booking' ),
+			'page_slug'    => 'wp-booking-calendar-full-day',
+			'page_title'   => esc_html__( 'Full Day Booking', 'booking' ),
+			'button_title' => esc_html__( 'Full day booking form', 'booking' ),
+		),
+		'time_slots_booking' => array(
+			'template_key' => 'time_slots_20_min_3_steps_review_with_hints',
+			'form_slug'    => 'time_slots_booking',
+			'form_title'   => esc_html__( 'Time Slots Booking Form', 'booking' ),
+			'page_slug'    => 'wp-booking-calendar-time-slots',
+			'page_title'   => esc_html__( 'Time Slots Booking', 'booking' ),
+			'button_title' => esc_html__( 'Time slots booking form', 'booking' ),
+		),
+		'time_appointments_booking' => array(
+			'template_key' => 'time_appointments_3_steps_review_with_hints',
+			'form_slug'    => 'time_appointments_booking',
+			'form_title'   => esc_html__( 'Time Appointments Booking Form', 'booking' ),
+			'page_slug'    => 'wp-booking-calendar-time-appointments',
+			'page_title'   => esc_html__( 'Time Appointments Booking', 'booking' ),
+			'button_title' => esc_html__( 'Time appointments booking form', 'booking' ),
+		),
+		'contact_form' => array(
+			'template_key' => 'contact_form_simple',
+			'form_slug'    => 'contact_form',
+			'form_title'   => esc_html__( 'Contact Form', 'booking' ),
+			'page_slug'    => 'wp-booking-calendar-contact',
+			'page_title'   => esc_html__( 'Contact Form', 'booking' ),
+			'button_title' => esc_html__( 'Contact form', 'booking' ),
+		),
+	);
+}
+
+
+/**
+ * Get a bundled BFB template record by template key.
+ *
+ * @param string $template_key Template key.
+ *
+ * @return array
+ */
+function wpbc_get_bfb_template_record_by_key( $template_key ) {
+
+	if (
+		! function_exists( 'wpbc_bfb_activation__get_templates_registry' ) ||
+		! function_exists( 'wpbc_bfb_activation__normalize_template_config' )
+	) {
+		return array();
+	}
+
+	$template_key = sanitize_key( (string) $template_key );
+	$templates    = wpbc_bfb_activation__get_templates_registry();
+
+	if ( empty( $templates ) || ! is_array( $templates ) ) {
+		return array();
+	}
+
+	foreach ( $templates as $template_config ) {
+
+		$template_config = wpbc_bfb_activation__normalize_template_config( $template_config );
+
+		if ( $template_key === $template_config['template_key'] ) {
+			return $template_config['record'];
+		}
+	}
+
+	return array();
+}
+
+
+/**
+ * Create starter custom booking forms from bundled BFB templates.
+ *
+ * @return bool
+ */
+function wpbc_create_activation_custom_booking_forms() {
+
+	if (
+		! defined( 'WPBC_NEW_FORM_BUILDER' ) ||
+		! WPBC_NEW_FORM_BUILDER ||
+		! function_exists( 'wpbc_is_table_exists' ) ||
+		! wpbc_is_table_exists( 'booking_form_structures' ) ||
+		! class_exists( 'WPBC_BFB_Form_Storage' )
+	) {
+		return false;
+	}
+
+	$configs = wpbc_get_activation_booking_form_page_configs();
+	if ( empty( $configs ) || ! is_array( $configs ) ) {
+		return false;
+	}
+
+	$is_created = false;
+
+	foreach ( $configs as $config ) {
+
+		$form_slug = sanitize_text_field( (string) $config['form_slug'] );
+		if ( '' === $form_slug ) {
+			continue;
+		}
+
+		$existing_form = WPBC_BFB_Form_Storage::get_current_form_by_key( $form_slug, 0, 'published' );
+		if ( ! empty( $existing_form ) ) {
+			continue;
+		}
+
+		$template_record = wpbc_get_bfb_template_record_by_key( $config['template_key'] );
+		if ( empty( $template_record ) ) {
+			continue;
+		}
+
+		$template_record['form_slug']           = $form_slug;
+		$template_record['status']              = 'published';
+		$template_record['scope']               = 'global';
+		$template_record['owner_user_id']       = 0;
+		$template_record['booking_resource_id'] = null;
+		$template_record['is_default']          = 0;
+		$template_record['title']               = $config['form_title'];
+		$template_record['picture_url']         = isset( $template_record['picture_url'] ) ? (string) $template_record['picture_url'] : '';
+		if ( function_exists( 'wpbc_bfb_resolve_picture_url' ) ) {
+			$template_record['picture_url'] = wpbc_bfb_resolve_picture_url( $template_record['picture_url'] );
+		}
+
+		$booking_form_id = WPBC_BFB_Form_Storage::save_form( $template_record );
+		if ( ! empty( $booking_form_id ) ) {
+			$is_created = true;
+		}
+	}
+
+	return $is_created;
+}
+
+
+/**
+ * Build starter page content with a booking shortcode.
+ *
+ * @param string $shortcode Booking shortcode.
+ *
+ * @return string
+ */
+function wpbc_get_activation_booking_page_content( $shortcode ) {
+
+	$shortcode = trim( (string) $shortcode );
+
+	if ( WPBC_IS_PLAYGROUND ) {
+		$shortcode = '<style type="text/css"> h1, h2, h3, h4, h5, h6 { font-weight: 500; font-family: var(--wp--preset--font-family--body); } </style>' . $shortcode;
+	}
+
+	return $shortcode;
+}
+
+
+/**
+ * Create new starter pages with booking forms.
+ *
+ * @param array $default_options_to_add Unused. Kept for backward-compatible direct calls.
  *
  * @return void
  */
@@ -546,56 +708,98 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------
-	$post_url = '';
 
-	// FixIn: 10.9.2.5.
-	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url.
-		$post_name_slug = 'wp-booking-calendar';
-	} else {                                                    // Old page already was Created     - Use old url.
-		$post_name_slug = 'wpbc-booking';
+	wpbc_create_activation_custom_booking_forms();
+
+	$configs = wpbc_get_activation_booking_form_page_configs();
+	if ( empty( $configs ) || ! is_array( $configs ) ) {
+		return;
 	}
-	$wp_post = get_page_by_path( $post_name_slug );
 
-	if ( empty( $wp_post ) ) {                                                                                          // No default page.  Create it.
+	$front_page_id = 0;
 
-		$page_params = array(
-			'post_title'   => esc_html( __( 'Booking Form', 'booking' ) ),
-			'post_content' => '[booking resource_id=1]',
-			'post_name'    => $post_name_slug,
+	foreach ( $configs as $config ) {
+
+		$form_slug = sanitize_text_field( (string) $config['form_slug'] );
+		$shortcode = "[booking resource_id=1 form_type='{$form_slug}']";
+		$content   = wpbc_get_activation_booking_page_content( $shortcode );
+
+		$result_arr = wpbc_add_shortcode_into_page(
+			array(
+				'page_post_name'        => $config['page_slug'],
+				'post_title'            => $config['page_title'],
+				'shortcode'             => $content,
+				'check_exist_shortcode' => array(
+					$shortcode,
+					'[booking resource_id=1 form_type="' . $form_slug . '"]',
+				),
+				'resource_id'           => 1,
+			)
 		);
-		if ( WPBC_IS_PLAYGROUND ) {
-			$page_params['post_content'] = '<style type="text/css"> h1, h2, h3, h4, h5, h6 { font-weight: 500; font-family: var(--wp--preset--font-family--body); } </style>' .
-					// '<div class="alignfull" style="margin: 5px auto 0;max-width: Min(900px, 100%);font-size: 16px;font-weight: 400;">' . $page_params['post_content'] . '</div>';
-					$page_params['post_content'];
-		}
-		$post_id = wpbc_create_page( $page_params );
 
-		if ( ! empty( $post_id ) ) {
-			$post_url = wpbc_make_link_relative( get_permalink( $post_id ) );
-			if ( WPBC_IS_PLAYGROUND ) {
-				update_option( 'show_on_front', 'page' );
-				update_option( 'page_on_front', $post_id );
+		if ( WPBC_IS_PLAYGROUND && empty( $front_page_id ) && ! empty( $result_arr['relative_url'] ) ) {
+			$wp_post = get_page_by_path( $config['page_slug'] );
+			if ( ! empty( $wp_post ) ) {
+				$front_page_id = $wp_post->ID;
 			}
 		}
-	} else {
-		$post_url = wpbc_make_link_relative( get_permalink( $wp_post->ID ) );                                          // Page already exist,  so we need to update the.
 	}
 
-	// -----------------------------------------------------------------------------------------------------------------
-
-	// Check  if existing page has our shortcode. We are checking for 'booking'  because it can  be '[booking]' or '[booking type=1]' ...
-	if ( ! wpbc_is_shortcode_exist_in_page( $post_url, '[booking' ) ) {
-
-		$shortcode_to_add = '[booking resource_id=1]';
-		if ( WPBC_IS_PLAYGROUND ) {
-			$shortcode_to_add = '<style type="text/css"> h1, h2, h3, h4, h5, h6 { font-weight: 500; font-family: var(--wp--preset--font-family--body); } </style>' .
-								// '<div class="alignfull" style="margin: 5px auto 0;max-width: Min(900px, 100%);font-size: 16px;font-weight: 400;">' . $shortcode_to_add . '</div>';
-								$shortcode_to_add;
-		}
-		$is_sh_added = wpbc_add_shortcode_to_exist_page( $post_url, $shortcode_to_add );
+	if ( WPBC_IS_PLAYGROUND && ! empty( $front_page_id ) ) {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $front_page_id );
 	}
 }
-add_bk_action( 'wpbc_before_activation__add_options', 'wpbc_create_page_with_booking_form' );
+add_action( 'wpbc_bfb_activation__form_structures_table__after_create', 'wpbc_create_page_with_booking_form', 20 );
+add_action( 'wpbc_bfb_activation__form_structures_table__table_already_exists', 'wpbc_create_page_with_booking_form', 20 );
+
+
+/**
+ * Get published starter pages that contain their expected booking form shortcodes.
+ *
+ * @return array
+ */
+function wpbc_get_published_activation_booking_pages() {
+
+	$pages   = array();
+	$configs = wpbc_get_activation_booking_form_page_configs();
+
+	if ( empty( $configs ) || ! is_array( $configs ) ) {
+		return $pages;
+	}
+
+	foreach ( $configs as $key => $config ) {
+
+		$wp_post = get_page_by_path( $config['page_slug'] );
+		if ( empty( $wp_post ) ) {
+			continue;
+		}
+
+		$form_slug = sanitize_text_field( (string) $config['form_slug'] );
+		$shortcode_single_quote = "[booking resource_id=1 form_type='{$form_slug}']";
+		$shortcode_double_quote = '[booking resource_id=1 form_type="' . $form_slug . '"]';
+
+		if (
+			! wpbc_is_shortcode_exist_in_page_with_id( $wp_post->ID, $shortcode_single_quote ) &&
+			! wpbc_is_shortcode_exist_in_page_with_id( $wp_post->ID, $shortcode_double_quote )
+		) {
+			continue;
+		}
+
+		$post_url = get_permalink( $wp_post->ID );
+		if ( empty( $post_url ) ) {
+			continue;
+		}
+
+		$pages[ $key ] = array(
+			'url'          => $post_url,
+			'button_title' => $config['button_title'],
+			'page_title'   => $config['page_title'],
+		);
+	}
+
+	return $pages;
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 

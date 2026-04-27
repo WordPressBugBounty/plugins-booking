@@ -26,10 +26,14 @@ function wpbc_bfb_field_days_number_hint_wptpl_config() {
 		'preview_value'     => '3',
 		'icon'              => 'wpbc-bi-calendar2-range',
 		'palette_icon'      => 'wpbc-bi-calendar2-range',
-		'required_class'    => 'wpdev_bk_biz_m',
-		'pro_label'         => 'Pro | BM+',
-		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
+//		'required_class'    => 'wpdev_bk_biz_m',
+//		'pro_label'         => 'Pro | BM+',
+//		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
+		'required_class'    => '',
+		'pro_label'         => '',
+		'upgrade_text'      => '',
 		'templates_printer' => 'wpbc_bfb_field_days_number_hint_wptpl_print_templates',
+		'group'             => 'hints_dates',
 	);
 }
 function wpbc_bfb_register_field_packs__field_days_number_hint_wptpl( $packs ) { return wpbc_bfb_hint_shortcode_register_pack( $packs, wpbc_bfb_field_days_number_hint_wptpl_config() ); }

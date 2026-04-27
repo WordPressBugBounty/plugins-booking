@@ -2115,9 +2115,14 @@ function wpbc_ui_settings__panel__statistic(){
 	 *
 	 * @return void
 	 */
-	function wpbc_ui_settings_panel__card__version(){
-		// Version ---------------------------------------------------------------------------------------------------------
+	function wpbc_ui_settings_panel__card__version( $params_btn  = array() ){
 
+		$defaults = array(
+			'is_show_wizard_button' => false,
+		);
+		$params_btn = wp_parse_args( $params_btn, $defaults );
+
+		// Version.
 		$version_title = '';
 
 		if ( class_exists( 'wpdev_bk_personal' ) ) {
@@ -2152,6 +2157,16 @@ function wpbc_ui_settings__panel__statistic(){
 					echo $version_title
 				?></a>
 			</div>
+
+		<?php if ( $params_btn['is_show_wizard_button'] ) { ?>
+			<div class="wpbc_ui_settings__center  wpbc_container wpbc_container_booking_form" style="flex: 1 1 auto;">
+				<a class="wpbc_button_light button-primary wpbc_button_green tooltip_top" style="padding: 12px 24px;"
+				   title="<?php echo esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ); ?>"
+				   href="<?php echo esc_url( wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) ); ?>"><?php
+					esc_html_e( 'Start Setup Wizard', 'booking' )
+				?></a>
+			</div>
+		<?php } ?>
 		</div><?php
 	}
 

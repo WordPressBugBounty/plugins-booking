@@ -42,7 +42,6 @@ function wpbc_get__booking_form__template( $template_name ) {
  <p>'.__('Children' ,'booking').':<br />[selectbox children "0" "1" "2" "3"] </p> \n\
  <p>'.__('Details' ,'booking').':<br /> [textarea details] </p> \n\
  <p>[checkbox* term_and_condition use_label_element "'.__('I Accept term and conditions' ,'booking').'"] </p> \n\
- <p>[captcha]</p> \n\
  <p>[submit class:btn "'.__('Send' ,'booking').'"]</p> \n\
 </div>';
             break;
@@ -64,7 +63,6 @@ function wpbc_get__booking_form__template( $template_name ) {
 		<r><c> <l>' . esc_html__( 'Details', 'booking' ) . ':</l><br> [textarea details]</c></r> \n\
 		<r> \n\
 			<c>[checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"]</c> \n\
-			<c>[captcha]</c> \n\
 		</r> \n\
 		<hr/> \n\
 		<r><c>[submit class:btn "' . __( 'Send', 'booking' ) . '"]</c></r> \n\
@@ -98,7 +96,6 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	</r> \n\
 	<r>\n\
 		<c> [checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"] </c>\n\
-		<c> [captcha] </c>\n\
 	</r>\n\	
 	<p>[submit "' . __( 'Send', 'booking' ) . '"]</p> \n\
 </div>';
@@ -223,7 +220,6 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
 		<c> [checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"] </c>\n\
-		<c> [captcha] </c>\n\
 	</r>\n\
 	<r>\n\
 		<c><p>\n\
@@ -274,7 +270,6 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
 		<c> [checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"] </c>\n\
-		<c> [captcha] </c>\n\
 	</r>\n\
 	<r>\n\
 		<c><p>\n\
@@ -332,7 +327,6 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
 		<c> [checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"] </c>\n\
-		<c> [captcha] </c>\n\
 	</r>\n\
 	<r>\n\
 		<c><p>\n\
@@ -385,7 +379,6 @@ Row: <r>...</r> | Columns: <c>...</c> | Labels: <l>...</l> | Spacer: <spacer></s
 	<div style="margin-top:10px;clear:both;"></div>\n\
 	<r>\n\
 		<c> [checkbox* term_and_condition use_label_element "' . __( 'I Accept term and conditions', 'booking' ) . '"] </c>\n\
-		<c> [captcha] </c>\n\
 	</r>\n\
 	<r>\n\
 		<c><p>\n\
@@ -565,7 +558,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='	<spacer>height:10px;</spacer> \n';
         $form_content .='	<r> \n';
         $form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-        $form_content .='		<c> [captcha] </c> \n';
         $form_content .='	</r> \n';
         if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
             $form_content .= '	<r> <c> \n';
@@ -672,7 +664,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='	<spacer>height:10px;</spacer> \n';
         $form_content .='	<r> \n';
         $form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-        $form_content .='		<c> [captcha] </c> \n';
         $form_content .='	</r> \n';
         if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
             $form_content .='	<r> \n';
@@ -716,7 +707,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
            $form_content .='     <p>' . esc_attr__( 'Children', 'booking' ) . ':<br />[selectbox children "0" "1" "2" "3"]</p> \n';
            $form_content .='     <p>' . esc_attr__( 'Details', 'booking' ) . ':<br /> [textarea details] </p> \n';
            $form_content .='     <p>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </p>\n';
-           $form_content .='     <p>[captcha]</p> \n';
            $form_content .='     <p>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"]</p> \n';
            $form_content .='</div>';
     }
@@ -739,7 +729,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
            $form_content .='     <p>' . esc_attr__( 'Children', 'booking' ) . ':<br />[selectbox children "0" "1" "2" "3"]</p> \n';
            $form_content .='     <p>' . esc_attr__( 'Details', 'booking' ) . ':<br /> [textarea details] </p> \n';
            $form_content .='     <p>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </p>\n';
-           $form_content .='     <p>[captcha]</p> \n';
            $form_content .='     <p>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"]</p> \n';
            $form_content .='</div>';
     }
@@ -784,7 +773,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
             $form_content .='	<spacer>height:10px;</spacer> \n';
             $form_content .='	<r> \n';
             $form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-            $form_content .='		<c> [captcha] </c> \n';
             $form_content .='	</r> \n';
             if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
                 $form_content .='	<r> \n';
@@ -825,7 +813,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='     <p>' . esc_attr__( 'Children', 'booking' ) . ':<br />[selectbox children "0" "1" "2" "3"]</p> \n';
         $form_content .='     <p>' . esc_attr__( 'Details', 'booking' ) . ':<br /> [textarea details] </p> \n';
         $form_content .='     <p>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </p> \n';
-        $form_content .='     <p>[captcha]</p> \n';
         $form_content .='     <p>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"]</p> \n';
         $form_content .='</div>';
     }
@@ -900,7 +887,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='	<spacer>height:10px;</spacer> \n';
         $form_content .='	<r> \n';
         $form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-        $form_content .='		<c> [captcha] </c> \n';
         $form_content .='	</r> \n';
         if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
             $form_content .='	<r> \n';
@@ -940,7 +926,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='		<r><c> <l>' . esc_attr__( 'Details', 'booking' ) . ':</l><br> [textarea details]</c></r> \n';
         $form_content .='		<r> \n';
         $form_content .='			<c>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"]</c> \n';
-        $form_content .='			<c>[captcha]</c> \n';
         $form_content .='		</r> \n';
         $form_content .='		<hr/> \n';
         $form_content .='		<r><c>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"]</c></r> \n';
@@ -960,7 +945,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         // $form_content .='		<r><c> <l>' . esc_attr__( 'Details', 'booking' ) . ':</l><br> [textarea details]</c></r> \n';
         // $form_content .='		<r> \n';
         // $form_content .='			<c>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"]</c> \n';
-        // $form_content .='			<c>[captcha]</c> \n';
         // $form_content .='		</r> \n';
         // $form_content .='		<hr/> \n';
         // $form_content .='		<r><c>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"]</c></r> \n';
@@ -982,7 +966,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         // $form_content .='	</div> \n';
         // $form_content .='	<div class="wpbc_section_100"> \n';
         // $form_content .='		<p>' . esc_attr__( 'Details', 'booking' ) . ':<br /> [textarea details]</p>  \n';
-        // $form_content .='		[captcha] \n';
         // $form_content .='		<p>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"]</p> \n';
         // $form_content .='		<hr/> \n';
         // $form_content .='		<p>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"] </p> \n';
@@ -1106,7 +1089,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
            $form_content .='     <p>' . esc_attr__( 'Children', 'booking' ) . ':<br />[selectbox children "0" "1" "2" "3"]</p> \n';
            $form_content .='     <p>' . esc_attr__( 'Details', 'booking' ) . ':<br /> [textarea details] </p> \n';
            $form_content .='     <p>[checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </p>\n';
-           $form_content .='     <p>[captcha]</p> \n';
            $form_content .='     <p>[submit class:btn "' . esc_attr__( 'Send', 'booking' ) . '"]</p> \n';
            $form_content .='</div>';
     }
@@ -1179,7 +1161,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='	<spacer>height:10px;</spacer> \n';
 		$form_content .='	<r> \n';
 		$form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-		$form_content .='		<c> [captcha] </c> \n';
 		$form_content .='	</r> \n';
 		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
 			$form_content .='	<r> <c> \n';
@@ -1259,7 +1240,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='		<spacer>height:10px;</spacer> \n';
 		$form_content .='		<r> \n';
 		$form_content .='			<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-		$form_content .='			<c> [captcha] </c> \n';
 		$form_content .='		</r> \n';
 		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
 			$form_content .='		<r> <c> \n';
@@ -1342,7 +1322,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
 		$form_content .='	<spacer>height:10px;</spacer> \n';
 		$form_content .='	<r> \n';
 		$form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-		$form_content .='		<c> [captcha] </c> \n';
 		$form_content .='	</r> \n';
 		if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
 			$form_content .='	<r> <c> \n';
@@ -1415,7 +1394,6 @@ function wpbc_get__predefined_booking_form__template( $form_type ){
         $form_content .='	<spacer>height:10px;</spacer> \n';
         $form_content .='	<r> \n';
         $form_content .='		<c> [checkbox* term_and_condition use_label_element "' . esc_attr__( 'I Accept term and conditions', 'booking' ) . '"] </c> \n';
-        $form_content .='		<c> [captcha] </c> \n';
         $form_content .='	</r> \n';
         if ( class_exists( 'wpdev_bk_biz_m' ) ){                                              // >= biz_m
             $form_content .='	<r> \n';

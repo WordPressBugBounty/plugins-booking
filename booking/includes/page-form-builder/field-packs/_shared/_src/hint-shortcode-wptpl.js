@@ -149,10 +149,12 @@
 				var label = raw_label.replace( /\s*:\s*$/, '' ) || L;
 
 				if ( typeof content_exporter.emit_line_bold_field === 'function' ) {
-					content_exporter.emit_line_bold_field( emit, label, S, cfg_export );
+					// Intentionally stop exporting hints into the "Content of booking fields data" form!
+					// content_exporter.emit_line_bold_field( emit, label, S, cfg_export );
 					return;
 				}
-				emit( '<b>' + label + '</b>: <f>[' + S + ']</f><br>' );
+				// Intentionally stop exporting hints into the "Content of booking fields data" form!
+				// emit( '<b>' + label + '</b>: <f>[' + S + ']</f><br>' );
 			} );
 		}
 

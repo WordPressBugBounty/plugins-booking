@@ -22,6 +22,109 @@ function wpbc_bfb_hint_shortcode_is_supported( $cfg ) {
 }
 
 /**
+ * Get localized sample values for date/time hint previews.
+ *
+ * These examples intentionally use the same formatting helpers as the booking
+ * form hints, so the Builder library and canvas follow the site's configured
+ * date and time formats.
+ *
+ * @param string $hint_name Hint shortcode token.
+ * @param string $fallback  Fallback preview text.
+ *
+ * @return string
+ */
+function wpbc_bfb_hint_shortcode_preview_value( $hint_name, $fallback = '' ) {
+
+	$site_now_timestamp       = function_exists( 'current_time' ) ? current_time( 'timestamp' ) : time();
+	$sample_check_in_time     = strtotime( '+1 week', $site_now_timestamp );
+
+	if ( false === $sample_check_in_time ) {
+		return $fallback;
+	}
+
+	$sample_middle_date_time  = strtotime( '+1 day', $sample_check_in_time );
+	$sample_check_out_time    = strtotime( '+2 days', $sample_check_in_time );
+	$sample_check_out_plusone = strtotime( '+1 day', $sample_check_out_time );
+	$sample_cancel_time       = strtotime( '-14 days', $sample_check_in_time );
+	$sample_start             = '14:00:01';
+	$sample_end               = '12:00:02';
+
+	if ( false === $sample_middle_date_time || false === $sample_check_out_time || false === $sample_check_out_plusone || false === $sample_cancel_time ) {
+		return $fallback;
+	}
+
+	$sample_check_in    = gmdate( 'Y-m-d', $sample_check_in_time );
+	$sample_middle_date = gmdate( 'Y-m-d', $sample_middle_date_time );
+	$sample_check_out   = gmdate( 'Y-m-d', $sample_check_out_time );
+
+	if (
+		! function_exists( 'wpbc_get_dates_comma_string_localized' )
+		|| ! function_exists( 'wpbc_get_dates_short_format' )
+		|| ! function_exists( 'wpbc_time_localized' )
+	) {
+		return $fallback;
+	}
+
+	$only_full_days = array(
+		$sample_check_in . ' 00:00:00',
+		$sample_middle_date . ' 00:00:00',
+		$sample_check_out . ' 00:00:00',
+	);
+
+	$days_and_times = array(
+		$sample_check_in . ' ' . $sample_start,
+		$sample_middle_date . ' 00:00:00',
+		$sample_check_out . ' ' . $sample_end,
+	);
+
+	switch ( $hint_name ) {
+		case 'cancel_date_hint':
+			return wpbc_get_dates_comma_string_localized( gmdate( 'Y-m-d H:i:s', $sample_cancel_time ) );
+
+		case 'check_in_date_hint':
+			return wpbc_get_dates_comma_string_localized( $only_full_days[0] );
+
+		case 'check_out_date_hint':
+			return wpbc_get_dates_comma_string_localized( $only_full_days[2] );
+
+		case 'check_out_plus1day_hint':
+			return wpbc_get_dates_comma_string_localized( gmdate( 'Y-m-d H:i:s', $sample_check_out_plusone ) );
+
+		case 'pre_checkin_date_hint':
+			$days_before_check_in = 14;
+			if ( function_exists( 'get_bk_option' ) ) {
+				$pre_checkin_days = get_bk_option( 'booking_number_for_pre_checkin_date_hint' );
+				if ( '' !== $pre_checkin_days ) {
+					$days_before_check_in = intval( $pre_checkin_days );
+				}
+			}
+			return wpbc_get_dates_comma_string_localized(
+				gmdate( 'Y-m-d H:i:s', strtotime( '-' . $days_before_check_in . ' days', $sample_check_in_time ) )
+			);
+
+		case 'selected_dates_hint':
+			return wpbc_get_dates_comma_string_localized( implode( ',', $only_full_days ) );
+
+		case 'selected_short_dates_hint':
+			return wpbc_get_dates_short_format( implode( ',', $only_full_days ) );
+
+		case 'selected_timedates_hint':
+			return wpbc_get_dates_comma_string_localized( implode( ',', $days_and_times ) );
+
+		case 'selected_short_timedates_hint':
+			return wpbc_get_dates_short_format( implode( ',', $days_and_times ) );
+
+		case 'start_time_hint':
+			return wpbc_time_localized( $sample_start );
+
+		case 'end_time_hint':
+			return wpbc_time_localized( $sample_end );
+	}
+
+	return $fallback;
+}
+
+/**
  * Register a generic hint shortcode field pack.
  *
  * @param array $packs Accumulated packs.
@@ -269,7 +372,11 @@ function wpbc_bfb_hint_shortcode_print_templates( $page, $cfg ) {
  */
 function wpbc_bfb_hint_shortcode_palette_item( $group, $position, $cfg ) {
 
-	if ( 'hints' !== $group || 'top' !== $position ) {
+	if ( ! empty( $cfg['group'] ) ) {
+		if ( $cfg['group'] !== $group || 'top' !== $position  ) {
+			return;
+		}
+	} else if ( 'hints' !== $group || 'top' !== $position ) {
 		return;
 	}
 
@@ -279,6 +386,7 @@ function wpbc_bfb_hint_shortcode_palette_item( $group, $position, $cfg ) {
 		data-type="<?php echo esc_attr( $cfg['token'] ); ?>"
 		data-usage_key="<?php echo esc_attr( $cfg['token'] ); ?>"
 		data-prefix_text="<?php echo esc_attr( $cfg['prefix'] ); ?>"
+		data-preview_value="<?php echo esc_attr( $cfg['preview_value'] ); ?>"
 		data-help=""
 		data-label="">
 		<i class="menu_icon icon-1x <?php echo esc_attr( $cfg['palette_icon'] ); ?>"></i>
@@ -288,7 +396,7 @@ function wpbc_bfb_hint_shortcode_palette_item( $group, $position, $cfg ) {
 			echo '<span class="wpbc_pro_label">' . esc_html( $cfg['pro_label'] ) . '</span>';
 		}
 		?>
-		<span class="wpbc_bfb__field-type">[<?php echo esc_html( $cfg['shortcode_display'] ); ?>]</span>
+		<span class="wpbc_bfb__field-type"><?php echo esc_html( $cfg['preview_value'] ); ?></span>
 	</li>
 	<?php
 }

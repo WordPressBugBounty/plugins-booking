@@ -26,6 +26,25 @@ function wpbc_bfb_field_bookingresource_info_wptpl_config() {
 		'script_file'     => 'field-bookingresource-info-wptpl.js',
 		'handle'          => 'wpbc-bfb_field_bookingresource_info_wptpl',
 		'boot_var'        => 'WPBC_BFB_Bookingresource_Info_Boot',
+		'group'             => 'hints_other',
+	);
+}
+
+/**
+ * Get sample values for the Booking Resource Info hint preview.
+ *
+ * @return array
+ */
+function wpbc_bfb_field_bookingresource_info_preview_values() {
+
+	$cost = function_exists( 'wpbc_bfb_hint_cost_like_preview_value' )
+		? wpbc_bfb_hint_cost_like_preview_value( 75, '$ 75.00' )
+		: '$ 75.00';
+
+	return array(
+		'id'    => '3',
+		'title' => __( 'Standard Room', 'booking' ),
+		'cost'  => $cost,
 	);
 }
 
@@ -95,11 +114,7 @@ function wpbc_bfb_enqueue__field_bookingresource_info_wptpl_js( $page ) {
 			'is_cost_supported' => class_exists( 'wpdev_bk_biz_s' ) ? 1 : 0,
 			'upgrade_text'      => __( 'This hint is available only in Booking Calendar Pro versions.', 'booking' ),
 			'cost_upgrade_text' => __( 'Resource Cost is available only in Booking Calendar Business Small or higher versions.', 'booking' ),
-			'preview_values'    => array(
-				'id'    => '3',
-				'title' => __( 'Standard Room', 'booking' ),
-				'cost'  => '$ 75.00',
-			),
+			'preview_values'    => wpbc_bfb_field_bookingresource_info_preview_values(),
 		)
 	);
 }
@@ -307,9 +322,11 @@ function wpbc_bfb_field_bookingresource_info_wptpl_print_templates( $page ) {
  */
 function wpbc_bfb_palette_register_items__bookingresource_info_wptpl( $group, $position ) {
 
-	if ( 'hints' !== $group || 'top' !== $position ) {
+	if ( 'hints_other' !== $group || 'top' !== $position ) {
 		return;
 	}
+
+	$preview_values = wpbc_bfb_field_bookingresource_info_preview_values();
 
 	?>
 	<li class="wpbc_bfb__field"
@@ -327,7 +344,7 @@ function wpbc_bfb_palette_register_items__bookingresource_info_wptpl( $group, $p
 			echo '<span class="wpbc_pro_label">Pro</span>';
 		}
 		?>
-		<span class="wpbc_bfb__field-type">[bookingresource show='title']</span>
+		<span class="wpbc_bfb__field-type"><?php echo esc_html( $preview_values['title'] ); ?></span>
 	</li>
 	<?php
 }

@@ -20,8 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 function wpbc_bfb_hint_cost_like_preview_value( $preview_cost, $fallback ) {
 
 	$cur_sym = function_exists( 'wpbc_get_currency_symbol' ) ? wpbc_get_currency_symbol() : '$';
+	$preview = function_exists( 'wpbc_formate_cost_hint__no_html' ) ? wpbc_formate_cost_hint__no_html( $preview_cost, $cur_sym ) : $fallback;
 
-	return function_exists( 'wpbc_formate_cost_hint__no_html' ) ? wpbc_formate_cost_hint__no_html( $preview_cost, $cur_sym ) : $fallback;
+	return html_entity_decode( $preview, ENT_QUOTES, 'UTF-8' );
 }
 
 /**
@@ -265,12 +266,15 @@ function wpbc_bfb_hint_cost_like_palette_item( $group, $position, $cfg ) {
 		return;
 	}
 
+	$preview_value = wpbc_bfb_hint_cost_like_preview_value( $cfg['preview_cost'], $cfg['preview_fallback'] );
+
 	?>
 	<li class="wpbc_bfb__field"
 		data-id="<?php echo esc_attr( $cfg['token'] ); ?>"
 		data-type="<?php echo esc_attr( $cfg['token'] ); ?>"
 		data-usage_key="<?php echo esc_attr( $cfg['token'] ); ?>"
 		data-prefix_text="<?php echo esc_attr( $cfg['prefix'] ); ?>"
+		data-preview_value="<?php echo esc_attr( $preview_value ); ?>"
 		data-help=""
 		data-label="">
 		<i class="menu_icon icon-1x wpbc_icn_attach_money"></i>
@@ -280,7 +284,7 @@ function wpbc_bfb_hint_cost_like_palette_item( $group, $position, $cfg ) {
 			echo '<span class="wpbc_pro_label">Pro | BM+</span>';
 		}
 		?>
-		<span class="wpbc_bfb__field-type">[<?php echo esc_html( $cfg['token'] ); ?>]</span>
+		<span class="wpbc_bfb__field-type"><?php echo esc_html( $preview_value ); ?></span>
 	</li>
 	<?php
 }

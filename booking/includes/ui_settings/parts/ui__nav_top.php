@@ -80,11 +80,16 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 	$svg_icon_style =  'margin:5px 5px 0 0;'; // 'background-position: 0 0;background-size: ' . $svg_size . ' ' . $svg_size . ';width: ' . $svg_size . ';height: ' . $svg_size . ';'; //.
 	$svg_icon       = wpbc_get_svg_logo_for_background( '#555', '#e5e5e5', '1.0' );
 
-	if ( function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' ) ) {
+	$wpbc_starter_pages       = function_exists( 'wpbc_get_published_activation_booking_pages' ) ? wpbc_get_published_activation_booking_pages() : array();
+	$wp_post_booking_absolute = false;
+
+	if (
+		empty( $wpbc_starter_pages ) &&
+		function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' )
+	) {
 		$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
-	} else {
-		$wp_post_booking_absolute = false;
 	}
+
 	$el_arr = array(
 		// 'title'        => 'Booking Calendar',
 		// 'font_icon'    => 'wpbc-bi-calendar2-range',
@@ -98,10 +103,34 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 		'items'           => array(),
 	);
 
-	if ( ! empty( $wp_post_booking_absolute ) ) {
+	if ( ! empty( $wpbc_starter_pages ) && is_array( $wpbc_starter_pages ) ) {
 		$el_arr['items'][] = array(
 			'type'  => 'header',
-			'title' => __( 'Visit Booking Form', 'booking' ),
+			'title' => __( 'Visit Booking Pages', 'booking' ),
+		);
+
+		foreach ( $wpbc_starter_pages as $wpbc_starter_page ) {
+			if ( empty( $wpbc_starter_page['url'] ) ) {
+				continue;
+			}
+
+			$wpbc_starter_page_title = __( 'Go to page with booking form', 'booking' );
+			if ( ! empty( $wpbc_starter_page['button_title'] ) ) {
+				$wpbc_starter_page_title = $wpbc_starter_page['button_title'];
+			} elseif ( ! empty( $wpbc_starter_page['page_title'] ) ) {
+				$wpbc_starter_page_title = $wpbc_starter_page['page_title'];
+			}
+
+			$el_arr['items'][] = array(
+				'type'  => 'link',
+				'title' => $wpbc_starter_page_title,
+				'url'   => esc_url( $wpbc_starter_page['url'] ),
+			);
+		}
+	} elseif ( ! empty( $wp_post_booking_absolute ) ) {
+		$el_arr['items'][] = array(
+			'type'  => 'header',
+			'title' => __( 'Visit Booking Page', 'booking' ),
 		);
 		$el_arr['items'][] = array(
 			'type'  => 'link',
@@ -136,14 +165,37 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 	$el_arr['items'][] = array( 'type' => 'divider' );
 	$el_arr['items'][] = array(
 		'type'  => 'link',
-		'title' => __( 'What\'s New', 'booking' ),
+		'title' => __( 'Release History', 'booking' ),
 		'url'   => 'https://wpbookingcalendar.com/wn/',
 	);
 	$el_arr['items'][] = array(
 		'type'  => 'link',
-		'title' => __( 'About', 'booking' ),
-		'url'   => 'https://wpbookingcalendar.com/',
+		'title' => __( 'What\'s New', 'booking' ) . ' <span style="float:right">' . wpbc_dashboard_info_get_version_number() . '</span>',
+		'url'   => esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) ),
 	);
+//	$el_arr['items'][] = array(
+//		'type'  => 'link',
+//		'title' => __( 'About', 'booking' ),
+//		'url'   => 'https://wpbookingcalendar.com/',
+//	);
+
+
+	$is_show_up = wpbc_is_show_up();
+
+	if ( $is_show_up ) {
+		$el_arr['items'][] = array( 'type' => 'divider' );
+		$el_arr['items'][] = array(
+			'type'  => 'link',
+			'title' => ( class_exists( 'wpdev_bk_personal' ) )
+				? __( 'View Upgrade Options', 'booking' )
+				: __( 'Upgrade to Pro', 'booking' ),
+			'url'   => wpbc_up_link(),
+			'attr' => array(
+				'class' => 'wpbc_ui_el_upgrade_button wpbc_button_light wpbc_button_green',
+				'style' => 'color:#fff;font-weight: 600;',
+			),
+		);
+	}
 
 	wpbc_ui_el__dropdown_menu( $el_arr );
 }

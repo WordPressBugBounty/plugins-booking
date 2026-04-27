@@ -231,11 +231,9 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	}
 
 
-	$is_show_up = get_bk_option( 'booking_wpdev_copyright_adminpanel' );
-	$is_show_up = ( ( 'Off' !== $is_show_up ) && ( ! class_exists( 'wpdev_bk_multiuser' ) ) );
-
-	$is_show_up = ( ( 'hide' !== get_bk_option( 'booking_menu_go_pro' ) ) && ( ! class_exists( 'wpdev_bk_multiuser' ) ) );
-
+	$is_show_up = wpbc_is_show_up();
+	// Show upgrade icon only  for the Free version here.
+	$is_show_up = ( $is_show_up && ( ! class_exists( 'wpdev_bk_personal' ) ) );
 	if ( $is_show_up ) {
 		?><div class="wpbc_ui_el__vert_left_bar__footer_compensator"></div><?php
 	}

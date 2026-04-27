@@ -159,7 +159,7 @@ function wpbc_ui_settings__panel__publish_into_exist( $params = array() ){
 	 */
 	function wpbc_ui_settings_panel__card__publish_into_exist( $params = array() ){
 
-		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__publish_into_exist">
+		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right0 wpbc_ui_settings_panel__card__publish_into_exist">
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc-bi-arrow-right-short"></i>
 				<h1><span><span class="0wpbc_ui_settings__text_color__black2"> <?php esc_html_e( 'Pre-configured booking page', 'booking' ); ?>
@@ -170,20 +170,46 @@ function wpbc_ui_settings__panel__publish_into_exist( $params = array() ){
 				</span>
 			</div><?php
 
-			$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
-			if ( ! empty( $wp_post_booking_absolute ) ) {
+			$wpbc_starter_pages = function_exists( 'wpbc_get_published_activation_booking_pages' ) ? wpbc_get_published_activation_booking_pages() : array();
+			$wp_post_booking_absolute = empty( $wpbc_starter_pages ) ? wpbc_stp_wiz__is_exist_published_page_with_booking_form() : '';
+
+			if ( ! empty( $wpbc_starter_pages ) || ! empty( $wp_post_booking_absolute ) ) {
 				?>
 				<div class="wpbc_ajx_toolbar wpbc_no_borders" style="margin: 0 auto;margin-top: 15px;">
 					<div class="ui_container ui_container_small">
-						<div class="ui_group ui_group__publish_btn"  style="align-items: center;">
-							<div class="ui_element" style="margin: 0 15px 0 0;">
-								<a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>"
-								   id="ui_btn_publish_into_exist" class="wpbc_ui_control wpbc_ui_button wpbc_ui_button_danger0 tooltip_top "
-								   title="<?php esc_attr_e( 'Go to page with booking form','booking'); ?>"  >
-										<span><?php esc_html_e('Go to page with booking form','booking'); ?>&nbsp;&nbsp;&nbsp;</span>
-										<i class="menu_icon icon-1x wpbc-bi-arrow-right-short" style="margin: 0;"></i>
-								</a>
-							</div>
+						<div class="ui_group ui_group__publish_btn"  style="align-items: center;flex-flow: row wrap;gap: 10px;">
+							<?php
+							if ( ! empty( $wpbc_starter_pages ) ) {
+								foreach ( $wpbc_starter_pages as $wpbc_starter_page_key => $wpbc_starter_page ) {
+									?>
+									<div class="ui_element" style="margin: 0;">
+										<a href="<?php echo esc_url( $wpbc_starter_page['url'] ); ?>"
+										   id="<?php echo esc_attr( 'ui_btn_publish_into_exist_' . sanitize_key( $wpbc_starter_page_key ) ); ?>"
+										   class="wpbc_ui_control wpbc_ui_button <?php
+										   		echo ( 'full_day_booking' === sanitize_key( $wpbc_starter_page_key ) ) ? 'wpbc_ui_button_primary' : '';
+										   ?> tooltip_top "
+										   title="<?php esc_attr_e( 'Go to page with booking form','booking'); ?>"
+										   data-original-title="<?php esc_attr_e( 'Go to page with booking form','booking'); ?>" >
+												<span><?php echo esc_html( $wpbc_starter_page['button_title'] ); ?>&nbsp;&nbsp;&nbsp;</span>
+												<i class="menu_icon icon-1x wpbc-bi-arrow-right-short" style="margin: 0;"></i>
+										</a>
+									</div>
+									<?php
+								}
+							} else {
+								?>
+								<div class="ui_element" style="margin: 0;">
+									<a href="<?php echo esc_url( $wp_post_booking_absolute ); ?>"
+									   id="ui_btn_publish_into_exist" class="wpbc_ui_control wpbc_ui_button wpbc_ui_button_danger0 tooltip_top "
+									   title="<?php esc_attr_e( 'Go to page with booking form','booking'); ?>"
+									   data-original-title="<?php esc_attr_e( 'Go to page with booking form','booking'); ?>" >
+											<span><?php esc_html_e('Go to page with booking form','booking'); ?>&nbsp;&nbsp;&nbsp;</span>
+											<i class="menu_icon icon-1x wpbc-bi-arrow-right-short" style="margin: 0;"></i>
+									</a>
+								</div>
+								<?php
+							}
+							?>
 						</div>
 					</div>
 				</div>
@@ -330,6 +356,16 @@ function wpbc_ui_settings__panel__publish_into_new( $params = array() ){
 function wpbc_stp_wiz__is_exist_published_page_with_booking_form() {
 
 	$is_wp_post_booking = false;
+
+	if ( function_exists( 'wpbc_get_published_activation_booking_pages' ) ) {
+		$wpbc_starter_pages = wpbc_get_published_activation_booking_pages();
+		if ( ! empty( $wpbc_starter_pages ) && is_array( $wpbc_starter_pages ) ) {
+			$wpbc_starter_page = reset( $wpbc_starter_pages );
+			if ( ! empty( $wpbc_starter_page['url'] ) ) {
+				return $wpbc_starter_page['url'];
+			}
+		}
+	}
 
 	// FixIn: 10.9.2.5.
 	if ( empty( get_page_by_path( 'wpbc-booking' ) ) ) {        // Old page, NOT created before     - Use new url

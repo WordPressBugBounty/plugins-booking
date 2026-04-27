@@ -29,13 +29,14 @@ function wpbc_bfb_field_selected_short_timedates_hint_wptpl_config() {
 		'script_file'       => 'field-selected-short-timedates-hint-wptpl.js',
 		'handle'            => 'wpbc-bfb_field_selected_short_timedates_hint_wptpl',
 		'boot_var'          => 'WPBC_BFB_Selected_Short_Timedates_Hint_Boot',
-		'preview_value'     => '04/18/2026 14:00 - 04/20/2026 12:00',
+		'preview_value'     => wpbc_bfb_hint_shortcode_preview_value( 'selected_short_timedates_hint', '04/18/2026 14:00 - 04/20/2026 12:00' ),
 		'icon'              => 'wpbc-bi-calendar3',
 		'palette_icon'      => 'wpbc-bi-calendar4-week',
 		'required_class'    => 'wpdev_bk_biz_m',
 		'pro_label'         => 'Pro | BM+',
 		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
 		'templates_printer' => 'wpbc_bfb_field_selected_short_timedates_hint_wptpl_print_templates',
+		'group'             => 'hints_dates',
 	);
 }
 

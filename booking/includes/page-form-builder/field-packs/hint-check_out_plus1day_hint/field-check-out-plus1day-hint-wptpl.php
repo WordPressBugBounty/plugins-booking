@@ -23,13 +23,14 @@ function wpbc_bfb_field_check_out_plus1day_hint_wptpl_config() {
 		'script_file'       => 'field-check-out-plus1day-hint-wptpl.js',
 		'handle'            => 'wpbc-bfb_field_check_out_plus1day_hint_wptpl',
 		'boot_var'          => 'WPBC_BFB_Check_Out_Plus1day_Hint_Boot',
-		'preview_value'     => '04/21/2026 00:00',
+		'preview_value'     => wpbc_bfb_hint_shortcode_preview_value( 'check_out_plus1day_hint', '04/21/2026' ),
 		'icon'              => 'wpbc-bi-calendar-plus',
 		'palette_icon'      => 'wpbc-bi-calendar-plus',
 		'required_class'    => 'wpdev_bk_biz_m',
 		'pro_label'         => 'Pro | BM+',
 		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
 		'templates_printer' => 'wpbc_bfb_field_check_out_plus1day_hint_wptpl_print_templates',
+		'group'             => 'hints_dates',
 	);
 }
 function wpbc_bfb_register_field_packs__field_check_out_plus1day_hint_wptpl( $packs ) { return wpbc_bfb_hint_shortcode_register_pack( $packs, wpbc_bfb_field_check_out_plus1day_hint_wptpl_config() ); }

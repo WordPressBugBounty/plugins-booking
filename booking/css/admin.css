@@ -143,6 +143,7 @@ select option.wpbc_child_resource{
     color: #555 !important;
     text-shadow: 0 0 0 !important;
     box-shadow: none;
+	background: #fff;
 }
 #bk_news_section .booking-listing-header {
     background: #dfdfdf none repeat scroll 0 0;

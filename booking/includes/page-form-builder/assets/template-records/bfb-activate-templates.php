@@ -137,6 +137,10 @@ function wpbc_bfb_activation__get_templates_registry() {
 		wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_with_vertical_layout.php',
 		wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_wizard_2_steps.php',
 
+		// Hints
+		wpbc_bfb_activation__get_templates_dir_path() . '/time_slots_20_min_3_steps_review_with_hints.php',
+		wpbc_bfb_activation__get_templates_dir_path() . '/time_appointments_3_steps_review_with_hints.php',
+		wpbc_bfb_activation__get_templates_dir_path() . '/dates_advanced_3_steps_review_with_hints.php',
 
 		// Example future records:
 		// wpbc_bfb_activation__get_templates_dir_path() . '/template-contact-inquiry.php',

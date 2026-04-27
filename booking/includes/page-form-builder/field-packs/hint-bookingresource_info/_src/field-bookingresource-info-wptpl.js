@@ -35,6 +35,21 @@
 		return 'Resource Title';
 	}
 
+	function decode_html_entities( value ) {
+		var txt = d.createElement( 'textarea' );
+		txt.innerHTML = String( value || '' );
+		return txt.value;
+	}
+
+	function normalize_preview_values( values ) {
+		values = values || {};
+		return {
+			id: decode_html_entities( values.id || '' ),
+			title: decode_html_entities( values.title || '' ),
+			cost: decode_html_entities( values.cost || '' )
+		};
+	}
+
 	class BookingResourceInfoHintField extends Base {
 		static template_id = 'wpbc-bfb-field-' + T;
 
@@ -75,7 +90,7 @@
 					is_cost_supported: is_cost_supported,
 					upgrade_text: String( boot.upgrade_text || '' ),
 					cost_upgrade_text: String( boot.cost_upgrade_text || '' ),
-					preview_values: boot.preview_values || {}
+					preview_values: normalize_preview_values( boot.preview_values )
 				} ) );
 			} catch ( er ) {
 				w._wpbc?.dev?.error?.( T + '_wptpl.tpl.render', er );

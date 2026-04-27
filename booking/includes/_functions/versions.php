@@ -155,6 +155,24 @@ function wpbc_get_ver_sufix() {
 	return $v;
 }
 
+
+/**
+ * Is show upgrade link.
+ *
+ * @return bool
+ */
+function wpbc_is_show_up() {
+
+	// $is_show_up = get_bk_option( 'booking_wpdev_copyright_adminpanel' );
+	// $is_show_up = ( ( 'Off' !== $is_show_up ) && ( ! class_exists( 'wpdev_bk_multiuser' ) ) );
+	// return $is_show_up;
+
+	$is_show_up = ( ( 'hide' !== get_bk_option( 'booking_menu_go_pro' ) ) && ( ! class_exists( 'wpdev_bk_multiuser' ) ) );
+
+	return $is_show_up;
+}
+
+
 /**
  * Get Up link.
  *

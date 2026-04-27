@@ -36,6 +36,7 @@ function wpbc_bfb_field_resource_title_hint_wptpl_config() {
 		'pro_label'         => 'Pro',
 		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Pro versions.', 'booking' ),
 		'templates_printer' => 'wpbc_bfb_field_resource_title_hint_wptpl_print_templates',
+		'group'             => 'hints_other',
 	);
 }
 

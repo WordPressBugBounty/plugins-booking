@@ -49,7 +49,7 @@ function wpbc_welcome_panel() {
 
 function wpbc_welcome_panel__version2__content() {
 
-	?><div class="wpbc_welcome_panel" style="margin: 100px 0 20px;"><?php
+	?><div class="wpbc_welcome_panel" style="margin: 1px 0 20px;"><?php
 
 		wpbc_ui_settings__panel__welcome();
 
@@ -104,23 +104,24 @@ function wpbc_ui_settings__panel__welcome(){
 
 			wpbc_ui_settings__panel__welcome__header();
 
-			wpbc_ui_settings_panel__card__setup_wizard();
+			// wpbc_ui_settings_panel__card__setup_wizard();
 
-			wpbc_ui_settings_panel__card__version();
+			wpbc_ui_settings_panel__card__version( array( 'is_show_wizard_button' => true ) );
 
-			wpbc_ui_settings_panel__card__welcome__have_questions();
+			if ( ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() ) ) {
+				wpbc_ui_settings_panel__card__publish_into_exist( array() );
+			}
+
 
 			//Info: If needs to show "Shortcode Popup Dialog" and create new Pages, please uncomment all rows marked with: // FixIn: 10.6.6.2.
 			// wpbc_ui_settings_panel__card__publish_into_new( array() );			// FixIn: 10.6.6.2.
 
 			?><div style="flex:100%;border-bottom: 1px solid #eeeff1;"></div><?php		// Divider
 
-			if ( ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() ) ) {
-				wpbc_ui_settings_panel__card__publish_into_exist( array() );
-			}
 
 			wpbc_ui_settings_panel__card__integreate_into_new();
 			wpbc_ui_settings_panel__card__shortcodes_help();
+			wpbc_ui_settings_panel__card__welcome__have_questions();
 
 			//wpbc_ui_settings_panel__card__welcome__next_steps();
 

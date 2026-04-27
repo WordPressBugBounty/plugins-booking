@@ -505,7 +505,69 @@ add_bk_action( 'wpbc_free_version_deactivation', 'wpbc_bfb_deactivation__form_st
  *
  * @return void
  */
+function wpbc_bfb_is_brand_new_install__before_version_update() {
+
+	$stored_version = get_option( 'booking_version_num', false );
+
+	return ( false === $stored_version );
+}
+
+/**
+ * Maybe create the initial standard BFB form from a bundled template.
+ *
+ * Used only during brand new plugin activation, before booking_version_num
+ * gets updated. Upgrades keep migrating the existing legacy configuration.
+ *
+ * @return bool
+ */
+function wpbc_bfb_maybe_create_initial_standard_form_from_template() {
+
+	if ( ! wpbc_bfb_is_brand_new_install__before_version_update() ) {
+		return false;
+	}
+
+	if ( ! class_exists( 'WPBC_BFB_Form_Storage' ) ) {
+		return false;
+	}
+
+	if ( function_exists( 'wpbc_get_bfb_template_record_by_key' ) ) {
+		$template_record = wpbc_get_bfb_template_record_by_key( 'time_appointments_3_steps_review_with_hints' );
+	} else {
+		$template_record = array();
+	}
+
+	if ( empty( $template_record ) || ! is_array( $template_record ) ) {
+		return false;
+	}
+
+	$template_record['form_slug']           = 'standard';
+	$template_record['status']              = 'published';
+	$template_record['scope']               = 'global';
+	$template_record['owner_user_id']       = 0;
+	$template_record['booking_resource_id'] = null;
+	$template_record['is_default']          = 1;
+	$template_record['title']               = __( 'Standard', 'booking' );
+	$template_record['description']         = '';
+	$template_record['picture_url']         = isset( $template_record['picture_url'] ) ? (string) $template_record['picture_url'] : '';
+	if ( function_exists( 'wpbc_bfb_resolve_picture_url' ) ) {
+		$template_record['picture_url'] = wpbc_bfb_resolve_picture_url( $template_record['picture_url'] );
+	}
+
+	$booking_form_id = WPBC_BFB_Form_Storage::save_form( $template_record );
+
+	return ! empty( $booking_form_id );
+}
+
+/**
+ * Import legacy "standard" booking form as initial BFB structure.
+ *
+ * @return void
+ */
 function wpbc_bfb__import_old_booking_forms() {
+
+	if ( wpbc_bfb_maybe_create_initial_standard_form_from_template() ) {
+		return;
+	}
 
 	// Get actual  booking form  structure.
 	$builder_structure_arr = wpbc_simple_form__export_to_bfb_structure();

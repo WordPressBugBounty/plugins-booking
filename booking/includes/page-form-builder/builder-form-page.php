@@ -399,24 +399,6 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 				</div>
 			</section>
 
-			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="fields-hints">
-				<button type="button" class="group__header">
-					<h3><?php
-						esc_html_e( 'Hints', 'booking' ); ?></h3>
-					<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
-				</button>
-				<div class="group__fields">
-
-					<ul class="wpbc_bfb__panel_field_types__ul">
-						<?php
-						do_action( 'wpbc_bfb_palette_register_items', 'hints', 'top' );
-						do_action( 'wpbc_bfb_palette_register_items', 'hints', 'bottom' );
-						?>
-					</ul>
-
-				</div>
-			</section>
-
 			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group"  data-group="fields-layout">
 				<button type="button" class="group__header"><h3><?php esc_html_e( 'Layout', 'booking' ); ?></h3><i
 						class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
@@ -443,6 +425,61 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 						/** Let packs target "advanced" if they want */
 						do_action( 'wpbc_bfb_palette_register_items', 'navigation', 'top' );
 						do_action( 'wpbc_bfb_palette_register_items', 'navigation', 'bottom' );
+						?>
+					</ul>
+
+				</div>
+			</section>
+
+
+			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="fields-hints_dates">
+				<button type="button" class="group__header">
+					<h3><?php
+						esc_html_e( 'Date & Time Hints', 'booking' ); ?></h3>
+					<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+				</button>
+				<div class="group__fields">
+
+					<ul class="wpbc_bfb__panel_field_types__ul">
+						<?php
+						do_action( 'wpbc_bfb_palette_register_items', 'hints_dates', 'top' );
+						do_action( 'wpbc_bfb_palette_register_items', 'hints_dates', 'bottom' );
+						?>
+					</ul>
+
+				</div>
+			</section>
+
+			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="fields-hints">
+				<button type="button" class="group__header">
+					<h3><?php
+						esc_html_e( 'Cost Hints', 'booking' ); ?></h3>
+					<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+				</button>
+				<div class="group__fields">
+
+					<ul class="wpbc_bfb__panel_field_types__ul">
+						<?php
+						do_action( 'wpbc_bfb_palette_register_items', 'hints', 'top' );
+						do_action( 'wpbc_bfb_palette_register_items', 'hints', 'bottom' );
+						?>
+					</ul>
+
+				</div>
+			</section>
+
+			<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="fields-hints_other">
+				<button type="button" class="group__header">
+					<h3><?php
+						esc_html_e( 'Booking Info Hints', 'booking' ); ?></h3>
+					<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+				</button>
+				<div class="group__fields">
+
+					<ul class="wpbc_bfb__panel_field_types__ul">
+						<?php
+						do_action( 'wpbc_bfb_palette_register_items', 'hints_other', 'top' );
+						do_action( 'wpbc_bfb_palette_register_items', 'hints_other', 'bottom' );
 						?>
 					</ul>
 

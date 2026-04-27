@@ -279,8 +279,21 @@ class WPBC_Welcome {
 			   style="font-size: 20px;padding: 0.15em 1.5em;"><?php
 				esc_html_e( 'Go to Booking Admin Panel', 'booking' ); ?></a>
 			<?php
-			$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
-			if ( ! empty( $wp_post_booking_absolute ) ) {
+			$wpbc_starter_pages = function_exists( 'wpbc_get_published_activation_booking_pages' ) ? wpbc_get_published_activation_booking_pages() : array();
+			if ( ! empty( $wpbc_starter_pages ) ) {
+				foreach ( $wpbc_starter_pages as $wpbc_starter_page ) {
+					?>
+					<a class="button button-secondary"
+					   style="font-size: 20px;padding: 0.15em 1em;"
+					   href="<?php
+					   echo esc_url( $wpbc_starter_page['url'] ); ?>"
+					><?php
+						echo esc_html( $wpbc_starter_page['button_title'] ); ?></a>
+					<?php
+				}
+			} else {
+				$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
+				if ( ! empty( $wp_post_booking_absolute ) ) {
 				?>
 				<a class="button button-secondary"
 				   style="font-size: 20px;padding: 0.15em 1em;"
@@ -289,6 +302,7 @@ class WPBC_Welcome {
 				><?php
 					esc_html_e( 'Go to page with booking form', 'booking' ); ?></a>
 			<?php
+				}
 			} ?>
 		</div>
 		<?php

@@ -36,6 +36,7 @@ function wpbc_bfb_field_capacity_hint_wptpl_config() {
 		'pro_label'         => 'Pro | BL+',
 		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Large or higher versions.', 'booking' ),
 		'templates_printer' => 'wpbc_bfb_field_capacity_hint_wptpl_print_templates',
+		'group'             => 'hints_other',
 	);
 }
 

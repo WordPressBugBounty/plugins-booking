@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 10.15.5
+Stable tag: 10.15.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -267,40 +267,40 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              96.52% [ 3353 / 3474 ], fuzzy 76, not translated 45
-- Danish                       73.43% [ 2551 / 3474 ], fuzzy 375, not translated 548
-- Dutch                        65.49% [ 2275 / 3474 ], fuzzy 652, not translated 547
-- Norwegian (Bokmål)           60.71% [ 2109 / 3474 ], fuzzy 421, not translated 944
-- German                       60.68% [ 2108 / 3474 ], fuzzy 759, not translated 607
-- Hungarian                    56.04% [ 1947 / 3474 ], fuzzy 844, not translated 683
-- Korean                       56.02% [ 1946 / 3474 ], fuzzy 840, not translated 688
-- Spanish (Spain)              51.55% [ 1791 / 3474 ], fuzzy 859, not translated 824
-- Portuguese (Brazil)          48.65% [ 1690 / 3474 ], fuzzy 967, not translated 817
-- Greek                        48.33% [ 1679 / 3474 ], fuzzy 975, not translated 820
-- Turkish                      47.70% [ 1657 / 3474 ], fuzzy 991, not translated 826
-- Italian                      46.49% [ 1615 / 3474 ], fuzzy 899, not translated 960
-- Spanish (Mexico)             44.67% [ 1552 / 3474 ], fuzzy 1045, not translated 877
-- Finnish                      44.42% [ 1543 / 3474 ], fuzzy 1054, not translated 877
-- Polish                       44.36% [ 1541 / 3474 ], fuzzy 1043, not translated 890
-- Romanian                     43.98% [ 1528 / 3474 ], fuzzy 1055, not translated 891
-- Swedish                      43.75% [ 1520 / 3474 ], fuzzy 1064, not translated 890
-- Arabic                       43.32% [ 1505 / 3474 ], fuzzy 1081, not translated 888
-- Russian                      43.26% [ 1503 / 3474 ], fuzzy 1306, not translated 665
-- Bulgarian                    41.97% [ 1458 / 3474 ], fuzzy 1097, not translated 919
-- Slovenian                    41.85% [ 1454 / 3474 ], fuzzy 1102, not translated 918
-- Chinese (Taiwan)             40.73% [ 1415 / 3474 ], fuzzy 1142, not translated 917
-- Portuguese (Portugal)        40.41% [ 1404 / 3474 ], fuzzy 1126, not translated 944
-- Japanese                     39.84% [ 1384 / 3474 ], fuzzy 633, not translated 1457
-- Chinese (China)              39.09% [ 1358 / 3474 ], fuzzy 1125, not translated 991
-- Ukrainian                    38.80% [ 1348 / 3474 ], fuzzy 1137, not translated 989
-- Catalan                      38.17% [ 1326 / 3474 ], fuzzy 1063, not translated 1085
-- Thai                         38.08% [ 1323 / 3474 ], fuzzy 1174, not translated 977
-- Hebrew                       37.85% [ 1315 / 3474 ], fuzzy 1162, not translated 997
-- Galician                     36.87% [ 1281 / 3474 ], fuzzy 1214, not translated 979
-- Slovak                       34.28% [ 1191 / 3474 ], fuzzy 1130, not translated 1153
-- Croatian                     33.19% [ 1153 / 3474 ], fuzzy 1146, not translated 1175
-- Czech                        33.07% [ 1149 / 3474 ], fuzzy 1093, not translated 1232
-- Chinese (Hong Kong)          19.57% [ 680 / 3474 ], fuzzy 435, not translated 2359
+- French (France)              96.13% [ 3352 / 3487 ], fuzzy 90, not translated 45
+- Danish                       73.16% [ 2551 / 3487 ], fuzzy 388, not translated 548
+- Dutch                        65.24% [ 2275 / 3487 ], fuzzy 665, not translated 547
+- Norwegian (Bokmål)           60.48% [ 2109 / 3487 ], fuzzy 434, not translated 944
+- German                       60.45% [ 2108 / 3487 ], fuzzy 772, not translated 607
+- Hungarian                    55.84% [ 1947 / 3487 ], fuzzy 857, not translated 683
+- Korean                       55.81% [ 1946 / 3487 ], fuzzy 853, not translated 688
+- Spanish (Spain)              51.36% [ 1791 / 3487 ], fuzzy 872, not translated 824
+- Portuguese (Brazil)          48.47% [ 1690 / 3487 ], fuzzy 980, not translated 817
+- Greek                        48.15% [ 1679 / 3487 ], fuzzy 988, not translated 820
+- Turkish                      47.52% [ 1657 / 3487 ], fuzzy 1004, not translated 826
+- Italian                      46.31% [ 1615 / 3487 ], fuzzy 912, not translated 960
+- Spanish (Mexico)             44.51% [ 1552 / 3487 ], fuzzy 1058, not translated 877
+- Finnish                      44.25% [ 1543 / 3487 ], fuzzy 1067, not translated 877
+- Polish                       44.19% [ 1541 / 3487 ], fuzzy 1056, not translated 890
+- Romanian                     43.82% [ 1528 / 3487 ], fuzzy 1068, not translated 891
+- Swedish                      43.59% [ 1520 / 3487 ], fuzzy 1077, not translated 890
+- Arabic                       43.16% [ 1505 / 3487 ], fuzzy 1094, not translated 888
+- Russian                      43.10% [ 1503 / 3487 ], fuzzy 1319, not translated 665
+- Bulgarian                    41.81% [ 1458 / 3487 ], fuzzy 1110, not translated 919
+- Slovenian                    41.70% [ 1454 / 3487 ], fuzzy 1115, not translated 918
+- Chinese (Taiwan)             40.58% [ 1415 / 3487 ], fuzzy 1155, not translated 917
+- Portuguese (Portugal)        40.26% [ 1404 / 3487 ], fuzzy 1139, not translated 944
+- Japanese                     39.69% [ 1384 / 3487 ], fuzzy 645, not translated 1458
+- Chinese (China)              38.94% [ 1358 / 3487 ], fuzzy 1138, not translated 991
+- Ukrainian                    38.66% [ 1348 / 3487 ], fuzzy 1150, not translated 989
+- Catalan                      38.03% [ 1326 / 3487 ], fuzzy 1076, not translated 1085
+- Thai                         37.94% [ 1323 / 3487 ], fuzzy 1187, not translated 977
+- Hebrew                       37.71% [ 1315 / 3487 ], fuzzy 1175, not translated 997
+- Galician                     36.74% [ 1281 / 3487 ], fuzzy 1227, not translated 979
+- Slovak                       34.16% [ 1191 / 3487 ], fuzzy 1143, not translated 1153
+- Croatian                     33.07% [ 1153 / 3487 ], fuzzy 1159, not translated 1175
+- Czech                        32.95% [ 1149 / 3487 ], fuzzy 1106, not translated 1232
+- Chinese (Hong Kong)          19.50% [ 680 / 3487 ], fuzzy 447, not translated 2360
 
 
 Please recheck the status of each translation, before using plugin.
@@ -322,6 +322,17 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 9. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
 
 == Changelog ==
+= 10.15.6 =
+- Changes in **all** versions:
+	* **New**: Added Free version support for live booking form hint shortcodes: [check_in_date_hint], [check_out_date_hint], [selected_dates_hint], [days_number_hint], [start_time_hint], and [end_time_hint]. These hints now update after date/time selection using the existing Booking Calendar AJAX flow. (10.15.6.2)
+	* **New**: Created 4 default pages with different forms: Full-Day bookings, 20-minute time-slot bookings, service appointment bookings, and a simple contact form.
+	* **Improvement**: Updated the Booking Calendar top menu to show direct links to all 4 default booking pages created during plugin activation, instead of only one generic booking form page.
+	* **New**: Added a new Full-Day / Advanced / 3 Steps Review with Hints booking form template. This template provides a guided three-step booking flow: date selection with live booking, availability, nights, and cost hints; customer and guest details; and a final review step with booking summary, terms acceptance, and submit action. (10.15.6.1)
+	* **New**: Added a new three-step 20-minute time-slot booking wizard with date and time selection, live date/time hints, customer details, and a final review step before sending.
+	* **New**: Added a new three-step service appointment booking wizard with service duration, date and start time selection, live date/time hints, customer details, and a final review step before sending.
+	* **New**: Added a new calendar skin, 26_4_green_1.css, for full-day bookings.
+	* **Fix**: Fixed section appearance selection in dark mode.
+
 = 10.15.5 =
 - Changes in **all** versions:
 	* **New**: Added the new **Accept Terms and Conditions** field to the **Drag & Drop Booking Form Builder**. Create a required consent checkbox and define one or multiple custom links to your Terms, Conditions, Privacy Policy, or other related pages.

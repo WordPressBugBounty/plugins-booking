@@ -23,13 +23,14 @@ function wpbc_bfb_field_pre_checkin_date_hint_wptpl_config() {
 		'script_file'       => 'field-pre-checkin-date-hint-wptpl.js',
 		'handle'            => 'wpbc-bfb_field_pre_checkin_date_hint_wptpl',
 		'boot_var'          => 'WPBC_BFB_Pre_Checkin_Date_Hint_Boot',
-		'preview_value'     => '04/04/2026 00:00',
+		'preview_value'     => wpbc_bfb_hint_shortcode_preview_value( 'pre_checkin_date_hint', '04/04/2026' ),
 		'icon'              => 'wpbc-bi-calendar-minus',
 		'palette_icon'      => 'wpbc-bi-calendar-minus',
 		'required_class'    => 'wpdev_bk_biz_m',
 		'pro_label'         => 'Pro | BM+',
 		'upgrade_text'      => __( 'This hint is available only in Booking Calendar Business Medium or higher versions.', 'booking' ),
 		'templates_printer' => 'wpbc_bfb_field_pre_checkin_date_hint_wptpl_print_templates',
+		'group'             => 'hints_dates',
 	);
 }
 function wpbc_bfb_register_field_packs__field_pre_checkin_date_hint_wptpl( $packs ) { return wpbc_bfb_hint_shortcode_register_pack( $packs, wpbc_bfb_field_pre_checkin_date_hint_wptpl_config() ); }

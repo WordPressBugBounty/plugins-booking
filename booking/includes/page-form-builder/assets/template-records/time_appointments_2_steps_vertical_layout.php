@@ -494,24 +494,30 @@ $wpbc_form_2_steps_appointment_wizard_structure_json = trim(
                 {
                   "type": "field",
                   "data": {
-                    "id": "checkbox",
-                    "type": "checkbox",
-                    "usage_key": "checkbox",
-                    "label": "",
-                    "name": "Terms",
-                    "min_width": "240px",
-                    "html_id": "",
-                    "cssclass": "",
-                    "options": [
+                    "id": "accept_terms",
+                    "type": "accept_terms",
+                    "usage_key": "accept_terms",
+                    "label": "Accept Terms",
+                    "name": "accept_terms",
+                    "required": 1,
+                    "links": [
                       {
-                        "label": "I Accept term and conditions",
-                        "value": "Accept",
-                        "selected": false
+                        "key": "terms",
+                        "text": "terms",
+                        "link_type": "url",
+                        "destination": "https://server.com/terms/",
+                        "target": "_blank",
+                        "cssclass": ""
+                      },
+                      {
+                        "key": "conditions",
+                        "text": "conditions",
+                        "link_type": "url",
+                        "destination": "https://server.com/conditions/",
+                        "target": "_blank",
+                        "cssclass": ""
                       }
-                    ],
-                    "placeholder": "--- Select ---",
-                    "multiple": 1,
-                    "required": 1
+                    ]
                   }
                 }
               ]
@@ -699,7 +705,9 @@ $wpbc_form_2_steps_appointment_wizard_advanced_form = trim(
 		<r>
 			<c style="flex-basis: 100%">
 				<item>
-					[checkbox* Terms use_label_element "I Accept term and conditions@@Accept"]
+					<p class="wpbc_row_inline wpdev-form-control-wrap ">
+					<l class="wpbc_inline_checkbox">[checkbox* accept_terms "I accept"] the <a href="https://server.com/terms/" target="_blank" rel="noopener noreferrer">terms</a> and <a href="https://server.com/conditions/" target="_blank" rel="noopener noreferrer">conditions</a></l>
+					</p>
 				</item>
 			</c>
 		</r>
@@ -731,7 +739,7 @@ $wpbc_form_2_steps_appointment_wizard_content_form = trim(
 	<b>Email</b>: <f>[email]</f><br>
 	<b>Phone</b>: <f>[phone]</f><br>
 	<b>Details</b>: <f>[details]</f><br>
-	<b>Terms</b>: <f>[Terms]</f><br>
+	<b>Accept Terms</b>: <f>[accept_terms]</f><br>
 </div>
 WPBC_BFB_TEMPLATE_CONTENT_FORM
 );

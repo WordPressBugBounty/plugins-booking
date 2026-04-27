@@ -387,7 +387,9 @@ html.wpbc_bfb__dnd-active .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   text-shadow: none;
-  text-align: right
+  text-align: right;
+  max-width: 100%;
+  word-break: break-word
 }
 .wpbc_bfb__preview-input,
 .wpbc_bfb__preview-select,
@@ -634,6 +636,12 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__section.is-selected .wpbc_bfb__column
 }
 html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__section.is-selected .wpbc_bfb__column.is-selected-column {
   background: repeating-linear-gradient(-45deg,rgba(56,116,233,.1294117647) 1px 2px,#fff 3px 5px)
+}
+html:not(.wpbc_bfb__dnd-active) .wpbc_theme_dark_1 .wpbc_bfb__section.is-selected .wpbc_bfb__column {
+  background: repeating-linear-gradient(-45deg,#626262 1px 4px,#4c4c4c 5px 7px)
+}
+html:not(.wpbc_bfb__dnd-active) .wpbc_theme_dark_1 .wpbc_bfb__section.is-selected .wpbc_bfb__column.is-selected-column {
+  background: repeating-linear-gradient(-45deg,#3c3d73 1px 4px,#4c4c4c 5px 7px)
 }
 .wpbc_bfb__section[data-selected-col] .wpbc_bfb__section__cols > .wpbc_bfb__section__col.is-selected-column {
   outline: 2px solid var(--wpbc-bfb-accent-color,#327ab4);
