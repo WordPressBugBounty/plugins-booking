@@ -1379,7 +1379,7 @@ function wpbc_bfb__dispatch_event_safe(name, detail) {
 			if ( is_from_palette ) {
 				// Read data before removing the temporary clone.
 				const field_data = WPBC_Form_Builder_Helper.get_all_data_attributes( el );
-				const usage_key  = paletteId;
+				const usage_key  = field_data.usage_key || paletteId;
 				field_data.usage_key = usage_key;
 				if ( 'uid' in field_data ) {
 					delete field_data.uid;  // Guard: never carry a UID from palette/DOM clones.

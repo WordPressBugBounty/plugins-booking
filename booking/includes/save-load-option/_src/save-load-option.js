@@ -158,6 +158,127 @@
 			.removeData('wpbc-uix-original-html');
 	}
 
+	var wpbc_uix_autosave_registry = {};
+
+	function wpbc_uix_get_option_save_config($el) {
+		return {
+			nonce              : $el.data('wpbc-u-save-nonce'),
+			nonce_action       : $el.data('wpbc-u-save-action'),
+			data_name          : $el.data('wpbc-u-save-name'),
+			fields_raw         : $el.data('wpbc-u-save-fields') || '',
+			inline_value       : wpbc_uix_read_attr_or_data($el, 'data-wpbc-u-save-value', 'wpbc-u-save-value'),
+			json               : wpbc_uix_read_attr_or_data($el, 'data-wpbc-u-save-value-json', 'wpbc-u-save-value-json'),
+			save_mode          : $el.data('wpbc-u-save-mode') || $el.attr('data-wpbc-u-save-mode') || '',
+			value_from_selector: $el.data('wpbc-u-save-value-from') || $el.attr('data-wpbc-u-save-value-from')
+		};
+	}
+
+	function wpbc_uix_build_option_save_payload($el, cfg) {
+		cfg = cfg || wpbc_uix_get_option_save_config($el);
+
+		if (typeof cfg.json === 'string' && cfg.json.trim() !== '') {
+			return cfg.json.trim();
+		}
+
+		if (cfg.value_from_selector) {
+			var $src = $(cfg.value_from_selector);
+			var $control = $src.is('input,select,textarea') ? $src : $src.find('input,select,textarea').first();
+			return wpbc_uix_get_control_value($control);
+		}
+
+		if (typeof cfg.inline_value !== 'undefined' && cfg.inline_value !== null) {
+			return String(cfg.inline_value);
+		}
+
+		if (cfg.fields_raw) {
+			var fields = String(cfg.fields_raw).split(',')
+				.map(function (s) { return String(s || '').trim(); })
+				.filter(Boolean);
+
+			var data = {};
+
+			fields.forEach(function (sel) {
+				var $f = $(sel);
+				if (!$f.length) { return; }
+
+				var $control = $f.is('input,select,textarea') ? $f : $f.find('input,select,textarea').first();
+				if (!$control.length) { return; }
+
+				var key = $control.attr('name') || $control.attr('id');
+				if (!key) { return; }
+
+				data[key] = wpbc_uix_get_control_value($control);
+			});
+
+			return $.param(data);
+		}
+
+		return null;
+	}
+
+	function wpbc_uix_update_autosave_registry_from_element(el, is_dirty) {
+		var $el = $(el);
+		var cfg = wpbc_uix_get_option_save_config($el);
+
+		if (!cfg.data_name) {
+			return;
+		}
+
+		wpbc_uix_autosave_registry[cfg.data_name] = {
+			nonce       : cfg.nonce,
+			nonce_action: cfg.nonce_action,
+			data_name   : cfg.data_name,
+			payload     : wpbc_uix_build_option_save_payload($el, cfg),
+			save_mode   : cfg.save_mode,
+			fields_raw  : cfg.fields_raw,
+			dirty       : !!is_dirty,
+			el          : el
+		};
+	}
+
+	function wpbc_uix_save_autosave_registry_entry(entry) {
+		if (!entry || !entry.dirty || !entry.nonce || !entry.nonce_action || !entry.data_name || entry.payload === null) {
+			return;
+		}
+
+		$(document).trigger('wpbc:option:beforeSave', [ $(), entry.payload ]);
+
+		$.ajax({
+			url:  w.wpbc_option_saver_loader_config.ajax_url,
+			type: 'POST',
+			data: {
+				action:       w.wpbc_option_saver_loader_config.action_save,
+				nonce:        entry.nonce,
+				nonce_action: entry.nonce_action,
+				data_name:    entry.data_name,
+				data_value:   entry.payload,
+				data_mode:    entry.save_mode,
+				data_fields:  (entry.save_mode === 'split' ? String(entry.fields_raw || '') : '')
+			}
+		})
+		.done(function (resp) {
+			if (resp && resp.success) {
+				entry.dirty = false;
+				if (entry.el) {
+					$(entry.el).attr('data-wpbc-u-autosave-dirty', '0');
+				}
+				if (typeof w.wpbc_admin_show_message === 'function') {
+					w.wpbc_admin_show_message((resp.data && resp.data.message) ? resp.data.message : 'Saved', 'success', 1000, false);
+				}
+			} else if (typeof w.wpbc_admin_show_message === 'function') {
+				w.wpbc_admin_show_message((resp && resp.data && resp.data.message) ? resp.data.message : 'Save error', 'error', 30000);
+			}
+
+			$(document).trigger('wpbc:option:afterSave', [ resp ]);
+		})
+		.fail(function (xhr) {
+			if (typeof w.wpbc_admin_show_message === 'function') {
+				w.wpbc_admin_show_message('WPBC | AJAX ' + xhr.status + ' ' + xhr.statusText, 'error', 30000);
+			}
+			$(document).trigger('wpbc:option:afterSave', [ { success: false, data: { message: xhr.statusText } } ]);
+		});
+	}
+
 	/**
 	 * Save Option - send ajax request to save data.
 	 *
@@ -288,6 +409,11 @@
 
 			if (resp && resp.success) {
 
+				$el.attr('data-wpbc-u-autosave-dirty', '0');
+				if (data_name && wpbc_uix_autosave_registry[data_name]) {
+					wpbc_uix_autosave_registry[data_name].dirty = false;
+				}
+
 				if (cb_fn) {
 					try { cb_fn(resp); } catch (e) { console.error(e); }
 				}
@@ -323,6 +449,58 @@
 			wpbc_uix_busy_off($el);
 		});
 	};
+
+	/**
+	 * Wire opt-in autosave of global options after successful BFB form save.
+	 *
+	 * Add data-wpbc-u-autosave-on-form-save="1" to a save control to participate.
+	 * Dirty state is tracked from data-wpbc-u-save-value-from, or data-wpbc-u-autosave-watch when present.
+	 *
+	 * @returns {void}
+	 */
+	function wpbc_uix_bind_autosave_on_form_save() {
+		var autosave_selector = '[data-wpbc-u-autosave-on-form-save="1"]';
+
+		$(document).on('change input', 'input,select,textarea', function () {
+			var changed_el = this;
+
+			$(autosave_selector).each(function () {
+				var $btn = $(this);
+				var watch_selector = $btn.attr('data-wpbc-u-autosave-watch') || $btn.attr('data-wpbc-u-save-value-from') || '';
+
+				if (!watch_selector) {
+					return;
+				}
+
+				var $watched = $(watch_selector);
+				if ($watched.filter(changed_el).length || $watched.has(changed_el).length) {
+					$btn.attr('data-wpbc-u-autosave-dirty', '1');
+					wpbc_uix_update_autosave_registry_from_element(this, true);
+				}
+			});
+		});
+
+		document.addEventListener('wpbc:bfb:form:ajax_saved', function () {
+			$(autosave_selector).each(function () {
+				if (this.getAttribute('data-wpbc-u-autosave-dirty') === '1') {
+					wpbc_uix_update_autosave_registry_from_element(this, true);
+				}
+			});
+
+			Object.keys(wpbc_uix_autosave_registry).forEach(function (option_name) {
+				var entry = wpbc_uix_autosave_registry[option_name];
+				if (!entry || !entry.dirty) {
+					return;
+				}
+
+				if (entry.el && document.documentElement.contains(entry.el)) {
+					w.wpbc_save_option_from_element(entry.el);
+				} else {
+					wpbc_uix_save_autosave_registry_entry(entry);
+				}
+			});
+		});
+	}
 
 	/**
 	 * Load option value via AJAX.
@@ -377,5 +555,7 @@
 			wpbc_uix_busy_off($el);
 		});
 	};
+
+	wpbc_uix_bind_autosave_on_form_save();
 
 }(window, jQuery));

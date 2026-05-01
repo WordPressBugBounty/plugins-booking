@@ -660,7 +660,8 @@
 			let limit              = Infinity;
 
 			allPaletteFields.forEach( (el) => {
-				if ( el.dataset.id === key ) {
+				const usage_key = el.dataset.usage_key || el.dataset.id;
+				if ( el.dataset.id === key || usage_key === key ) {
 					const n = Core.WPBC_BFB_UsageLimitService.parse_usage_limit( el.dataset.usagenumber );
 					// Choose the smallest finite limit (safest if palettes disagree).
 					if ( n < limit ) {
@@ -688,13 +689,14 @@
 			palettes.forEach( (pal) => {
 				pal.querySelectorAll( '.wpbc_bfb__field' ).forEach( (panel_field) => {
 					const paletteId   = panel_field.dataset.id;
+					const usageKey    = panel_field.dataset.usage_key || paletteId;
 					const raw_limit   = panel_field.dataset.usagenumber;
 					const perElLimit  = Core.WPBC_BFB_UsageLimitService.parse_usage_limit( raw_limit );
 					// Effective limit across all palettes is the global limit for this key.
-					const globalLimit = this.get_limit_for_key( paletteId );
+					const globalLimit = this.get_limit_for_key( usageKey );
 					const limit       = Number.isFinite( globalLimit ) ? globalLimit : perElLimit; // prefer global min
 
-					const current = usage[paletteId] || 0;
+					const current = usage[usageKey] || 0;
 					const disable = Number.isFinite( limit ) && current >= limit;
 
 					panel_field.style.pointerEvents = disable ? 'none' : '';

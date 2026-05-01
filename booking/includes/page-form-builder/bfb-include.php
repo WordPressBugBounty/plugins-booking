@@ -127,6 +127,8 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-sta
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-end/field-endtime-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-duration/field-durationtime-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-duration-service/field-durationtime-service-preset.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/weekday-rangetime/field-weekday-rangetime-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/season-rangetime/field-season-rangetime-wptpl.php';
 // require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-grid/time-grid.php';                    // -- TODO: Time Grid  --.
 
 

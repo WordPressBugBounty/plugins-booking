@@ -31,6 +31,7 @@ require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-settings-api.php';     // 
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-settings-page-parts.php';                                   // Settings Template - "Settins Parts", which used in the class-page-structure.php .
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-menu-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2025-02-09.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-page-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2024-12-23.
+require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-sidebar-panels.php';                                       // Common right sidebar panels and collapsible groups.
 
 // -----------------------------------------------------------------------------------------------------------------
 // Booking Listing templates.
@@ -179,12 +180,20 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/bookings__actions.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/bookings__listing.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/bookings__page.php';
 
-// Booking > Availability page.
+// WP Booking Calendar > Availability > Days Availability page.
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__activation.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__toolbar_ui.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__class.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__resource.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.php';
+
+if ( WPBC_NEW_TIME_AVAILABILITY ) {
+	// WP Booking Calendar > Availability > Times Availability page.  // FixIn: 10.16.1.
+	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__front.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__activate.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__save.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__page.php';
+}
 
 if ( WPBC_NEW_FORM_BUILDER ) {
 	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.

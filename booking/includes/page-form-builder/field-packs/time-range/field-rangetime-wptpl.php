@@ -280,6 +280,7 @@ function wpbc_bfb_field_rangetime_wptpl_print_templates( $page ) {
 						</div><!-- .ui_container -->
 					</div><!-- .actions -->
 
+					<?php if ( ! function_exists( 'wpbc_is_mu_user_can_be_here' ) || wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) { ?>
 					<div class="wpbc_ui__collapsible_group" style="width: 99%;">
 						<div class="inspector__row row__bordered" style="background:#f8f8f8;border:0;justify-content: space-between;">
 							<label class="inspector__label"><?php echo esc_html__( 'Show as time picker', 'booking' ); ?></label>
@@ -295,16 +296,19 @@ function wpbc_bfb_field_rangetime_wptpl_print_templates( $page ) {
 							?>
 							<a  href="javascript:void(0);"
 								class="button button-secondary"
-								onclick="(function(btn){var $=jQuery, $panel=$(btn).closest('.wpbc_bfb__inspector_timepicker'), $chk=$panel.find('.js-toggle-timeslot-picker').first(); btn.setAttribute('data-wpbc-u-save-value', $chk.is(':checked')?'On':'Off'); wpbc_save_option_from_element(btn); })(this)"
+								onclick="wpbc_save_option_from_element(this);"
 								data-wpbc-u-save-name="<?php echo esc_attr( $opt_name ); ?>"
 								data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
 								data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
+								data-wpbc-u-save-value-from=".wpbc_bfb__inspector_timepicker .js-toggle-timeslot-picker"
+								data-wpbc-u-autosave-on-form-save="1"
 								data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving', 'booking' ); ?>...">
 								<?php esc_html_e( 'Save Toggle', 'booking' ); ?>
 							</a>
 
 						</div>
 					</div>
+					<?php } ?>
 
 				</div><!-- .header_container -->
 			</div><!-- .wpbc_bfb__inspector__head -->

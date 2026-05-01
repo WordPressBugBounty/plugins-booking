@@ -129,6 +129,416 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 	}
 
 	/**
+	 * Normalize calendar skin option value to the DB-friendly relative path.
+	 *
+	 * @param string $skin_value Calendar skin path or URL.
+	 *
+	 * @return string
+	 */
+	protected static function normalize_calendar_skin_value( $skin_value ) {
+
+		$skin_value = is_scalar( $skin_value ) ? (string) $skin_value : '';
+
+		$replace = array( WPBC_PLUGIN_DIR, WPBC_PLUGIN_URL );
+
+		$upload_dir = wp_upload_dir();
+		if ( ! empty( $upload_dir['basedir'] ) ) {
+			$replace[] = $upload_dir['basedir'];
+		}
+		if ( ! empty( $upload_dir['baseurl'] ) ) {
+			$replace[] = $upload_dir['baseurl'];
+		}
+
+		return str_replace( $replace, '', $skin_value );
+	}
+
+	/**
+	 * Get URL for a relative calendar skin path.
+	 *
+	 * @param string $relative_skin Relative skin path.
+	 *
+	 * @return string
+	 */
+	protected static function get_calendar_skin_url( $relative_skin ) {
+
+		$relative_skin = self::normalize_calendar_skin_value( $relative_skin );
+
+		$upload_dir = wp_upload_dir();
+		$upload_url = ( ! empty( $upload_dir['baseurl'] ) ) ? $upload_dir['baseurl'] : '';
+
+		if ( 0 === strpos( $relative_skin, '/wpbc_skins/' ) && ! empty( $upload_url ) ) {
+			return $upload_url . $relative_skin;
+		}
+
+		return WPBC_PLUGIN_URL . $relative_skin;
+	}
+
+	/**
+	 * Build calendar skin options for the Calendar field Inspector.
+	 *
+	 * Keeps the same option groups as Setup Wizard, stores relative paths,
+	 * and adds the resolved URL as option metadata for live preview.
+	 *
+	 * @return array
+	 */
+	protected static function get_calendar_skin_options_for_select() {
+
+		$options = wpbc_get_calendar_skin_options();
+
+		foreach ( $options as $option_value => $option_label ) {
+
+			if ( is_array( $option_label ) && ! empty( $option_label['optgroup'] ) ) {
+				continue;
+			}
+
+			$relative_skin = self::normalize_calendar_skin_value( $option_value );
+			$skin_url      = self::get_calendar_skin_url( $relative_skin );
+
+			if ( is_array( $option_label ) ) {
+				$option_label['attr'] = ( isset( $option_label['attr'] ) && is_array( $option_label['attr'] ) ) ? $option_label['attr'] : array();
+				$option_label['attr']['data-wpbc-calendar-skin-url'] = $skin_url;
+				$options[ $relative_skin ] = $option_label;
+
+				if ( $relative_skin !== $option_value ) {
+					unset( $options[ $option_value ] );
+				}
+			} else {
+				$options[ $relative_skin ] = array(
+					'title' => $option_label,
+					'attr'  => array(
+						'data-wpbc-calendar-skin-url' => $skin_url,
+					),
+				);
+
+				if ( $relative_skin !== $option_value ) {
+					unset( $options[ $option_value ] );
+				}
+			}
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Print global calendar skin control in the Calendar field Inspector.
+	 *
+	 * @return void
+	 */
+	protected static function print_calendar_skin_inspector_group() {
+
+		if ( ! self::can_manage_global_calendar_options() ) {
+			return;
+		}
+
+		$booking_action = 'booking_skin';
+		$el_id          = 'wpbc_bfb__calendar_field__booking_skin';
+		$current_skin   = self::normalize_calendar_skin_value( get_bk_option( 'booking_skin' ) );
+
+		?>
+		<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group is-open wpbc_bfb__inspector_calendar_skin" data-group="calendar-skin">
+			<button type="button" class="group__header">
+				<h3><?php echo esc_html__( 'Calendar Skin', 'booking' ); ?></h3>
+				<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+			</button>
+			<div class="group__fields">
+				<div class="inspector__row row__bordered" style="align-items:flex-start;justify-content:space-between;">
+					<div class="inspector__control" style="flex:1 1 auto;">
+						<label for="<?php echo esc_attr( $el_id ); ?>" class="inspector__label" style="display:block;margin:0 0 6px;">
+							<strong><?php echo esc_html__( 'Calendar Skin', 'booking' ); ?></strong>
+						</label>
+						<div class="wpbc_ajx_toolbar wpbc_no_borders">
+							<div class="ui_container ui_container_small0">
+								<div class="ui_group">
+									<div class="ui_element ui_nowrap">
+										<?php
+										wpbc_flex_select(
+											array(
+												'id'               => $el_id,
+												'name'             => $booking_action,
+												'label'            => '',
+												'class'            => 'js-wpbc-bfb-calendar-skin wpbc_radio__set_days_customize_plugin',
+												'value'            => $current_skin,
+												'onchange'         => "if ( 'function' === typeof wpbc__calendar__change_skin ) { wpbc__calendar__change_skin( jQuery( this ).find( 'option:selected' ).attr( 'data-wpbc-calendar-skin-url' ) || jQuery( this ).val() ); }",
+												'disabled'         => false,
+												'disabled_options' => array(),
+												'options'          => self::get_calendar_skin_options_for_select(),
+											)
+										);
+
+										$is_apply_rotating_icon = false;
+										wpbc_smpl_form__ui__selectbox_prior_btn( $el_id, $is_apply_rotating_icon );
+										wpbc_smpl_form__ui__selectbox_next_btn( $el_id, $is_apply_rotating_icon );
+										?>
+									</div>
+								</div>
+							</div>
+						</div>
+						<p class="wpbc_bfb__help" style="margin-top:6px;">
+							<?php echo esc_html__( 'This is a global calendar appearance option.', 'booking' ); ?>
+						</p>
+					</div>
+					<?php
+					$nonce_action = 'wpbc_nonce_' . $booking_action;
+					?>
+					<a  href="javascript:void(0);"
+						class="button button-primary"
+						onclick="wpbc_save_option_from_element(this);"
+						data-wpbc-u-save-name="<?php echo esc_attr( $booking_action ); ?>"
+						data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
+						data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
+						data-wpbc-u-save-value-from="#<?php echo esc_attr( $el_id ); ?>"
+						data-wpbc-u-autosave-on-form-save="1"
+						data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving', 'booking' ); ?>...">
+						<?php esc_html_e( 'Save Calendar Skin', 'booking' ); ?>
+					</a>
+				</div>
+			</div>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Check if current user can manage global calendar options from Builder inspector.
+	 *
+	 * @return bool
+	 */
+	protected static function can_manage_global_calendar_options() {
+		return ( ! function_exists( 'wpbc_is_mu_user_can_be_here' ) || wpbc_is_mu_user_can_be_here( 'only_super_admin' ) );
+	}
+
+	/**
+	 * Calendar legend item definitions shared by inspector UI and boot data.
+	 *
+	 * @return array
+	 */
+	protected static function get_calendar_legend_items() {
+		return array(
+			'available'   => array(
+				'label'       => __( 'Available item', 'booking' ),
+				'placeholder' => __( 'Available', 'booking' ),
+				'show'        => 'booking_legend_is_show_item_available',
+				'text'        => 'booking_legend_text_for_item_available',
+			),
+			'pending'     => array(
+				'label'       => __( 'Pending item', 'booking' ),
+				'placeholder' => __( 'Pending', 'booking' ),
+				'show'        => 'booking_legend_is_show_item_pending',
+				'text'        => 'booking_legend_text_for_item_pending',
+			),
+			'approved'    => array(
+				'label'       => __( 'Approved item', 'booking' ),
+				'placeholder' => __( 'Booked', 'booking' ),
+				'show'        => 'booking_legend_is_show_item_approved',
+				'text'        => 'booking_legend_text_for_item_approved',
+			),
+			'partially'   => array(
+				'label'       => __( 'Partially booked item', 'booking' ),
+				'placeholder' => __( 'Partially booked', 'booking' ),
+				'show'        => 'booking_legend_is_show_item_partially',
+				'text'        => 'booking_legend_text_for_item_partially',
+			),
+			'unavailable' => array(
+				'label'       => __( 'Unavailable item', 'booking' ),
+				'placeholder' => __( 'Unavailable', 'booking' ),
+				'show'        => 'booking_legend_is_show_item_unavailable',
+				'text'        => 'booking_legend_text_for_item_unavailable',
+			),
+		);
+	}
+
+	/**
+	 * Get option names saved by the Calendar Legend inspector group.
+	 *
+	 * @return array
+	 */
+	protected static function get_calendar_legend_option_names() {
+		$option_names = array(
+			'booking_is_show_legend',
+			'booking_legend_is_show_numbers',
+			'booking_legend_is_vertical',
+		);
+
+		foreach ( self::get_calendar_legend_items() as $item ) {
+			$option_names[] = $item['show'];
+			$option_names[] = $item['text'];
+		}
+
+		return $option_names;
+	}
+
+	/**
+	 * Get normalized On/Off option value.
+	 *
+	 * @param string $option_name Option name.
+	 *
+	 * @return string
+	 */
+	protected static function get_on_off_option( $option_name ) {
+		return ( 'On' === get_bk_option( $option_name ) ) ? 'On' : 'Off';
+	}
+
+	/**
+	 * Render checkbox control for a Calendar Legend option.
+	 *
+	 * @param string $option_name Option name.
+	 * @param string $class       Additional classes.
+	 *
+	 * @return void
+	 */
+	protected static function print_calendar_legend_checkbox( $option_name, $class = '' ) {
+		?>
+		<input type="checkbox"
+			id="<?php echo esc_attr( $option_name ); ?>"
+			name="<?php echo esc_attr( $option_name ); ?>"
+			class="wpbc_bfb__calendar_legend_fields js-wpbc-bfb-calendar-legend-control <?php echo esc_attr( $class ); ?>"
+			value="On"
+			<?php checked( 'On', self::get_on_off_option( $option_name ) ); ?>>
+		<?php
+	}
+
+	/**
+	 * Get Calendar Legend data for the Builder canvas live preview.
+	 *
+	 * @return array
+	 */
+	protected static function get_calendar_legend_boot_data() {
+		$items     = array();
+		$day_num   = gmdate( 'd' );
+		$item_defs = self::get_calendar_legend_items();
+
+		foreach ( $item_defs as $item_key => $item ) {
+			$items[ $item_key ] = array(
+				'show'            => self::get_on_off_option( $item['show'] ),
+				'title'           => get_bk_option( $item['text'] ),
+				'placeholder'     => $item['placeholder'],
+				'template_number' => self::get_calendar_legend_item_template_html( $item_key, $day_num ),
+				'template_blank'  => self::get_calendar_legend_item_template_html( $item_key, '&nbsp;' ),
+			);
+		}
+
+		return array(
+			'show_legend'  => self::get_on_off_option( 'booking_is_show_legend' ),
+			'show_numbers' => self::get_on_off_option( 'booking_legend_is_show_numbers' ),
+			'is_vertical'  => self::get_on_off_option( 'booking_legend_is_vertical' ),
+			'day_number'   => $day_num,
+			'items_order'  => array_keys( $item_defs ),
+			'items'        => $items,
+		);
+	}
+
+	/**
+	 * Build one legend item HTML template with a replaceable title marker.
+	 *
+	 * @param string $item_key          Legend item key.
+	 * @param string $text_for_day_cell Day-cell text.
+	 *
+	 * @return string
+	 */
+	protected static function get_calendar_legend_item_template_html( $item_key, $text_for_day_cell ) {
+		if ( ! function_exists( 'wpbc_get_calendar_legend__content_html' ) ) {
+			return '';
+		}
+
+		$html = wpbc_get_calendar_legend__content_html(
+			array(
+				'is_vertical'       => false,
+				'text_for_day_cell' => $text_for_day_cell,
+				'items'             => array( $item_key ),
+				'titles'            => array( $item_key => '__WPBC_LEGEND_TITLE__' ),
+			)
+		);
+
+		return $html;
+	}
+
+	/**
+	 * Print global calendar legend controls in the Calendar field Inspector.
+	 *
+	 * @return void
+	 */
+	protected static function print_calendar_legend_inspector_group() {
+
+		if ( ! self::can_manage_global_calendar_options() ) {
+			return;
+		}
+
+		$booking_action = 'wpbc_calendar_legend_options';
+		$nonce_action   = 'wpbc_nonce_' . $booking_action;
+		$save_fields    = array();
+
+		foreach ( self::get_calendar_legend_option_names() as $option_name ) {
+			$save_fields[] = '#' . $option_name;
+		}
+
+		?>
+		<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group is-open wpbc_bfb__inspector_calendar_legend" data-group="calendar-legend">
+			<button type="button" class="group__header">
+				<h3><?php echo esc_html__( 'Calendar Legend', 'booking' ); ?></h3>
+				<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
+			</button>
+			<div class="group__fields">
+				<div class="inspector__row row__bordered">
+					<label class="inspector__label" for="booking_is_show_legend"><?php echo esc_html__( 'Show legend below calendar', 'booking' ); ?></label>
+					<div class="inspector__control">
+						<?php self::print_calendar_legend_checkbox( 'booking_is_show_legend', 'js-wpbc-bfb-calendar-legend-main' ); ?>
+						<p class="wpbc_bfb__help"><?php echo esc_html__( 'This is a global calendar option.', 'booking' ); ?></p>
+					</div>
+				</div>
+
+				<div class="js-wpbc-bfb-calendar-legend-options">
+					<?php foreach ( self::get_calendar_legend_items() as $item_key => $item ) : ?>
+						<div class="inspector__row row__bordered wpbc_bfb__calendar_legend_item" data-legend-item="<?php echo esc_attr( $item_key ); ?>" style="align-items:flex-start;">
+							<label class="inspector__label" for="<?php echo esc_attr( $item['show'] ); ?>"><?php echo esc_html( $item['label'] ); ?></label>
+							<div class="inspector__control">
+								<div style="display:flex;gap:8px;align-items:center;">
+									<?php self::print_calendar_legend_checkbox( $item['show'], 'js-wpbc-bfb-calendar-legend-item-toggle' ); ?>
+									<input type="text"
+										id="<?php echo esc_attr( $item['text'] ); ?>"
+										name="<?php echo esc_attr( $item['text'] ); ?>"
+										class="inspector__input wpbc_bfb__calendar_legend_fields js-wpbc-bfb-calendar-legend-control js-wpbc-bfb-calendar-legend-item-title"
+										value="<?php echo esc_attr( get_bk_option( $item['text'] ) ); ?>"
+										placeholder="<?php echo esc_attr( $item['placeholder'] ); ?>">
+								</div>
+							</div>
+						</div>
+					<?php endforeach; ?>
+
+					<div class="inspector__row row__bordered">
+						<label class="inspector__label" for="booking_legend_is_show_numbers"><?php echo esc_html__( 'Show date number in legend', 'booking' ); ?></label>
+						<div class="inspector__control">
+							<?php self::print_calendar_legend_checkbox( 'booking_legend_is_show_numbers' ); ?>
+						</div>
+					</div>
+
+					<div class="inspector__row row__bordered">
+						<label class="inspector__label" for="booking_legend_is_vertical"><?php echo esc_html__( 'Show legend items in a column', 'booking' ); ?></label>
+						<div class="inspector__control">
+							<?php self::print_calendar_legend_checkbox( 'booking_legend_is_vertical' ); ?>
+						</div>
+					</div>
+				</div>
+
+				<div class="inspector__row" style="justify-content:flex-end;">
+					<a  href="javascript:void(0);"
+						class="button button-primary"
+						onclick="wpbc_save_option_from_element(this);"
+						data-wpbc-u-save-name="<?php echo esc_attr( $booking_action ); ?>"
+						data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
+						data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
+						data-wpbc-u-save-mode="split"
+						data-wpbc-u-save-fields="<?php echo esc_attr( implode( ',', $save_fields ) ); ?>"
+						data-wpbc-u-autosave-watch=".wpbc_bfb__calendar_legend_fields"
+						data-wpbc-u-autosave-on-form-save="1"
+						data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving', 'booking' ); ?>...">
+						<?php esc_html_e( 'Save Calendar Legend', 'booking' ); ?>
+					</a>
+				</div>
+			</div>
+		</section>
+		<?php
+	}
+
+	/**
 	 * Enqueue the field JS (calendar renderer) and pass calendar boot options.
 	 *
 	 * @param string $page Current admin page slug used by the Builder.
@@ -235,6 +645,7 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 				// Real booking resources for Inspector select.
 				'booking_resources'                                       => $booking_resources,
 				'is_free_version' 										  => (int) $is_free_version,
+				'calendar_legend'                                         => self::get_calendar_legend_boot_data(),
 			)
 		);
 	}
@@ -314,10 +725,12 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 				</div>
 
 				<textarea rows="3" cols="50" id="{{ input_id }}" name="{{ input_name }}" autocomplete="off" style="display:none;" tabindex="-1" aria-hidden="true"></textarea>
-				<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo wpbc_get_calendar_legend();
-				?>
+				<div class="js-wpbc-bfb-calendar-legend-preview">
+					<?php
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wpbc_get_calendar_legend();
+					?>
+				</div>
 				<# if ( data.help ) { #>
 					<div class="wpbc_bfb__help">{{ data.help }}</div>
 				<# } #>
@@ -393,6 +806,8 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 						</div>
 					</div>
 				</section>
+				<?php self::print_calendar_skin_inspector_group(); ?>
+				<?php self::print_calendar_legend_inspector_group(); ?>
 <?php /* ?>
 				<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group is-open" data-group="calendar">
 					<button type="button" class="group__header">

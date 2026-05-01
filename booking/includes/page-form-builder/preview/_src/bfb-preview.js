@@ -144,6 +144,72 @@
 			return form_settings;
 		}
 
+		/**
+		 * Get the currently selected calendar skin URL from the Builder page.
+		 *
+		 * @returns {string}
+		 */
+		get_selected_calendar_skin_url() {
+			var select_el = d.querySelector( '.js-wpbc-bfb-calendar-skin' );
+			if ( select_el && select_el.options ) {
+				var selected_option = select_el.options[ select_el.selectedIndex ];
+				if ( selected_option ) {
+					var selected_url = selected_option.getAttribute( 'data-wpbc-calendar-skin-url' );
+					if ( selected_url ) {
+						return String( selected_url );
+					}
+				}
+			}
+
+			var stylesheet = d.getElementById( 'wpbc-calendar-skin-css' );
+			if ( stylesheet && stylesheet.href ) {
+				return String( stylesheet.href );
+			}
+
+			return '';
+		}
+
+		/**
+		 * Apply the unsaved Builder calendar skin inside the loaded Preview iframe.
+		 *
+		 * @param {string} skin_url
+		 * @param {Function} done
+		 * @param {number} tries
+		 */
+		apply_calendar_skin_to_iframe(skin_url, done, tries) {
+			var self        = this;
+			var attempt_num = Number( tries || 0 );
+
+			if ( ! skin_url || ! this.iframe || ! this.iframe.contentWindow ) {
+				if ( typeof done === 'function' ) {
+					done();
+				}
+				return;
+			}
+
+			try {
+				if ( typeof this.iframe.contentWindow.wpbc__calendar__change_skin === 'function' ) {
+					this.iframe.contentWindow.wpbc__calendar__change_skin( skin_url );
+					if ( typeof done === 'function' ) {
+						done();
+					}
+					return;
+				}
+			} catch ( e ) {
+				dev.error( 'wpbc_bfb_preview_client.apply_calendar_skin_to_iframe', e );
+			}
+
+			if ( attempt_num >= 20 ) {
+				if ( typeof done === 'function' ) {
+					done();
+				}
+				return;
+			}
+
+			w.setTimeout( function () {
+				self.apply_calendar_skin_to_iframe( skin_url, done, attempt_num + 1 );
+			}, 100 );
+		}
 
 		/**
 		 * Send snapshot to server and update iframe src with returned preview URL.
@@ -296,6 +362,7 @@
 			}
 
 			var self = this;
+			var preview_calendar_skin_url = this.get_selected_calendar_skin_url();
 
 			function end_busy_now() {
 				self._end_busy( $source_btn );
@@ -330,7 +397,7 @@
 				// Wait until iframe has really loaded the preview URL.
 				var on_load = function () {
 					self.iframe.removeEventListener( 'load', on_load );
-					end_busy_now();
+					self.apply_calendar_skin_to_iframe( preview_calendar_skin_url, end_busy_now );
 				};
 
 				self.iframe.addEventListener( 'load', on_load );

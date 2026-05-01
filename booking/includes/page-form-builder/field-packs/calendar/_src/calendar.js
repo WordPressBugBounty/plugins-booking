@@ -191,6 +191,33 @@
 	}
 
 	/**
+	 * Builder canvas preview starts at next month so it does not mostly show past/unavailable dates near month end.
+	 *
+	 * @returns {number[]} [year, month]
+	 */
+	function get_canvas_next_month_scroll_to() {
+		var today_arr = null;
+
+		try {
+			if ( w._wpbc && typeof w._wpbc.get_other_param === 'function' ) {
+				today_arr = w._wpbc.get_other_param( 'today_arr' );
+			}
+		} catch ( e ) {
+		}
+
+		var base_date = new Date();
+		if ( today_arr && today_arr.length >= 2 ) {
+			base_date = new Date( Number( today_arr[0] ), Number( today_arr[1] ) - 1, 1 );
+		} else {
+			base_date.setDate( 1 );
+		}
+
+		base_date.setMonth( base_date.getMonth() + 1 );
+
+		return [ base_date.getFullYear(), base_date.getMonth() + 1 ];
+	}
+
+	/**
 	 * Push calendar environment parameters for a specific resource and months count.
 	 * We *directly* set parameters (no global polyfill) to keep this file self-contained.
 	 *
@@ -222,7 +249,7 @@
 			set_param( 'booking_start_day_weeek', String( L.booking_start_day_weeek ) );
 		}
 		set_param( 'calendar_number_of_months', String( months ) );
-		set_param( 'calendar_scroll_to', false );
+		set_param( 'calendar_scroll_to', get_canvas_next_month_scroll_to() );
 
 		if ( L.booking_date_format ) {
 			set_param( 'booking_date_format', String( L.booking_date_format ) );
@@ -372,6 +399,7 @@
 
 			// Track last config for soft dedupe (UI churn); keep per-element.
 			try { field_el.setAttribute('data-wpbc-cal-init', '1'); field_el.setAttribute('data-wpbc-cal-loaded-rid', String(rid)); } catch (e3) {}
+			try { apply_calendar_legend_preview_from_controls(); } catch (e4) {}
 
 		}, 40, 100 );
 	}
@@ -410,6 +438,193 @@
 
 	function on_event(type, handler) {
 		document.addEventListener( type, handler );
+	}
+
+	function get_calendar_skin_url_from_select(select_el) {
+		if ( ! select_el || ! select_el.options ) {
+			return '';
+		}
+
+		var selected_option = select_el.options[ select_el.selectedIndex ];
+		if ( selected_option ) {
+			return String( selected_option.getAttribute( 'data-wpbc-calendar-skin-url' ) || select_el.value || '' );
+		}
+
+		return String( select_el.value || '' );
+	}
+
+	function apply_calendar_skin_from_select(select_el) {
+		var skin_url = get_calendar_skin_url_from_select( select_el );
+		if ( ! skin_url || typeof w.wpbc__calendar__change_skin !== 'function' ) {
+			return;
+		}
+
+		try {
+			w.wpbc__calendar__change_skin( skin_url );
+		} catch ( e ) {
+			dev.error( 'calendar_skin_preview', e );
+		}
+	}
+
+	function bind_calendar_skin_preview_events() {
+		document.addEventListener( 'change', function (e) {
+			var target = e && e.target;
+			if ( target && target.matches && target.matches( '.js-wpbc-bfb-calendar-skin' ) ) {
+				apply_calendar_skin_from_select( target );
+			}
+		}, true );
+	}
+
+	function escape_html(s) {
+		return String( s == null ? '' : s )
+			.replace( /&/g, '&amp;' )
+			.replace( /</g, '&lt;' )
+			.replace( />/g, '&gt;' )
+			.replace( /"/g, '&quot;' )
+			.replace( /'/g, '&#039;' );
+	}
+
+	var legend_item_option_map = {
+		available  : { show: 'booking_legend_is_show_item_available', text: 'booking_legend_text_for_item_available' },
+		pending    : { show: 'booking_legend_is_show_item_pending', text: 'booking_legend_text_for_item_pending' },
+		approved   : { show: 'booking_legend_is_show_item_approved', text: 'booking_legend_text_for_item_approved' },
+		partially  : { show: 'booking_legend_is_show_item_partially', text: 'booking_legend_text_for_item_partially' },
+		unavailable: { show: 'booking_legend_is_show_item_unavailable', text: 'booking_legend_text_for_item_unavailable' }
+	};
+
+	function get_checkbox_value_from_id(id, fallback) {
+		var el = document.getElementById( id );
+		if ( el ) {
+			return el.checked ? 'On' : 'Off';
+		}
+		return fallback === 'On' ? 'On' : 'Off';
+	}
+
+	function get_text_value_from_id(id, fallback) {
+		var el = document.getElementById( id );
+		if ( el ) {
+			return String( el.value || '' );
+		}
+		return String( fallback || '' );
+	}
+
+	function get_calendar_legend_values_from_controls() {
+		var boot_legend = Boot.calendar_legend || {};
+		var boot_items  = boot_legend.items || {};
+		var values      = {
+			show_legend : get_checkbox_value_from_id( 'booking_is_show_legend', boot_legend.show_legend ),
+			show_numbers: get_checkbox_value_from_id( 'booking_legend_is_show_numbers', boot_legend.show_numbers ),
+			is_vertical : get_checkbox_value_from_id( 'booking_legend_is_vertical', boot_legend.is_vertical ),
+			items       : {}
+		};
+
+		Object.keys( legend_item_option_map ).forEach( function (item_key) {
+			var map       = legend_item_option_map[item_key];
+			var boot_item = boot_items[item_key] || {};
+			values.items[item_key] = {
+				show : get_checkbox_value_from_id( map.show, boot_item.show ),
+				title: get_text_value_from_id( map.text, boot_item.title || boot_item.placeholder || '' )
+			};
+		} );
+
+		return values;
+	}
+
+	function extract_legend_item_html(template_html) {
+		var tmp = document.createElement( 'div' );
+		tmp.innerHTML = String( template_html || '' );
+		var item = tmp.querySelector( '.wpdev_hint_with_text' );
+		return item ? item.outerHTML : '';
+	}
+
+	function render_calendar_legend_html(values) {
+		var boot_legend = Boot.calendar_legend || {};
+		var boot_items  = boot_legend.items || {};
+		var order       = Array.isArray( boot_legend.items_order ) ? boot_legend.items_order : Object.keys( legend_item_option_map );
+		var html        = '';
+
+		if ( ! values || values.show_legend !== 'On' ) {
+			return '';
+		}
+
+		order.forEach( function (item_key) {
+			var item_values = values.items[item_key] || {};
+			var boot_item   = boot_items[item_key] || {};
+			var template    = (values.show_numbers === 'On') ? boot_item.template_number : boot_item.template_blank;
+			var item_html   = extract_legend_item_html( template );
+
+			if ( item_values.show !== 'On' || ! item_html ) {
+				return;
+			}
+
+			item_html = item_html.replace( /__WPBC_LEGEND_TITLE__/g, escape_html( item_values.title || boot_item.placeholder || '' ) );
+			html += item_html;
+		} );
+
+		if ( ! html ) {
+			return '';
+		}
+
+		return '<div class="block_hints datepick ' + (values.is_vertical === 'On' ? ' block_hints_vertical ' : '') + '">' + html + '</div>';
+	}
+
+	function store_calendar_legend_values_in_boot(values) {
+		Boot.calendar_legend = Boot.calendar_legend || {};
+		Boot.calendar_legend.items = Boot.calendar_legend.items || {};
+		Boot.calendar_legend.show_legend  = values.show_legend;
+		Boot.calendar_legend.show_numbers = values.show_numbers;
+		Boot.calendar_legend.is_vertical  = values.is_vertical;
+
+		Object.keys( values.items || {} ).forEach( function (item_key) {
+			Boot.calendar_legend.items[item_key] = Boot.calendar_legend.items[item_key] || {};
+			Boot.calendar_legend.items[item_key].show  = values.items[item_key].show;
+			Boot.calendar_legend.items[item_key].title = values.items[item_key].title;
+		} );
+	}
+
+	function apply_calendar_legend_preview_from_controls() {
+		var values = get_calendar_legend_values_from_controls();
+		var html   = render_calendar_legend_html( values );
+		var nodes  = document.querySelectorAll( '.js-wpbc-bfb-calendar-legend-preview' );
+
+		store_calendar_legend_values_in_boot( values );
+
+		for ( var i = 0; i < nodes.length; i++ ) {
+			nodes[i].innerHTML = html;
+		}
+	}
+
+	function sync_calendar_legend_inspector_visibility() {
+		var main    = document.getElementById( 'booking_is_show_legend' );
+		var options = document.querySelector( '.js-wpbc-bfb-calendar-legend-options' );
+		if ( ! main || ! options ) {
+			return;
+		}
+		options.style.display = main.checked ? '' : 'none';
+	}
+
+	function bind_calendar_legend_preview_events() {
+		function on_inspector_render() {
+			sync_calendar_legend_inspector_visibility();
+		}
+
+		document.addEventListener( 'change', function (e) {
+			var target = e && e.target;
+			if ( target && target.matches && target.matches( '.js-wpbc-bfb-calendar-legend-control' ) ) {
+				sync_calendar_legend_inspector_visibility();
+				apply_calendar_legend_preview_from_controls();
+			}
+		}, true );
+
+		document.addEventListener( 'input', debounce( function (e) {
+			var target = e && e.target;
+			if ( target && target.matches && target.matches( '.js-wpbc-bfb-calendar-legend-control' ) ) {
+				apply_calendar_legend_preview_from_controls();
+			}
+		}, 150 ), true );
+
+		document.addEventListener( 'wpbc_bfb_inspector_ready', on_inspector_render );
+		document.addEventListener( 'wpbc_bfb_inspector_render', on_inspector_render );
 	}
 
 	/**
@@ -563,6 +778,9 @@
 		setTimeout( function () {
 			init_all_on_page( false );
 			bind_builder_bus_events();
+			bind_calendar_skin_preview_events();
+			bind_calendar_legend_preview_events();
+			sync_calendar_legend_inspector_visibility();
 		}, 0 );
 	} );
 

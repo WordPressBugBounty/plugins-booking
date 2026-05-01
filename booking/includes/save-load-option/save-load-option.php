@@ -48,10 +48,85 @@ class wpbc_option_saver_loader {
 	private static $ajax_action_load = 'wpbc_ajax_option_load';
 	private static $option_prefix    = '';
 	private static $asset_version    = '1.0.1';
+	private static $save_policies    = array();
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_ajax_handlers' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+	}
+
+	/**
+	 * Register an option-specific save policy.
+	 *
+	 * Supported policy keys:
+	 * - can_save            callable(): bool
+	 * - permission_message  string
+	 * - normalize_raw       callable( mixed $data_raw, string $data_name ): mixed
+	 * - force_mode          string
+	 * - allowed_keys        array|callable(): array
+	 * - normalize_item      callable( string $option_key, mixed $value, string $data_name ): mixed
+	 *
+	 * @param string $option_name Option name from data_name.
+	 * @param array  $policy      Policy definition.
+	 *
+	 * @return void
+	 */
+	public static function register_option_policy( $option_name, $policy ) {
+
+		$option_name = sanitize_key( (string) $option_name );
+
+		if ( empty( $option_name ) || ! is_array( $policy ) ) {
+			return;
+		}
+
+		self::$save_policies[ $option_name ] = $policy;
+	}
+
+	/**
+	 * Get a registered option save policy.
+	 *
+	 * @param string $option_name Option name from data_name.
+	 *
+	 * @return array
+	 */
+	private static function get_option_policy( $option_name ) {
+
+		$option_name = sanitize_key( (string) $option_name );
+
+		return ( isset( self::$save_policies[ $option_name ] ) && is_array( self::$save_policies[ $option_name ] ) )
+			? self::$save_policies[ $option_name ]
+			: array();
+	}
+
+	/**
+	 * Get allowed option keys from a policy.
+	 *
+	 * @param array $policy Policy definition.
+	 *
+	 * @return array
+	 */
+	private static function get_policy_allowed_keys( $policy ) {
+
+		if ( empty( $policy['allowed_keys'] ) ) {
+			return array();
+		}
+
+		$allowed_keys = is_callable( $policy['allowed_keys'] )
+			? call_user_func( $policy['allowed_keys'] )
+			: $policy['allowed_keys'];
+
+		if ( ! is_array( $allowed_keys ) ) {
+			return array();
+		}
+
+		return array_values(
+			array_filter(
+				array_map(
+					'sanitize_key',
+					array_map( 'strval', $allowed_keys )
+				)
+			)
+		);
 	}
 
 	/**
@@ -137,6 +212,28 @@ class wpbc_option_saver_loader {
 			wp_send_json_error( array( 'message' => __( 'Missing data name.', 'booking' ) ) );
 		}
 
+		$save_policy = self::get_option_policy( $data_name );
+
+		if ( ! empty( $save_policy['can_save'] ) && is_callable( $save_policy['can_save'] ) && ! call_user_func( $save_policy['can_save'], $data_name ) ) {
+			$permission_message = ( ! empty( $save_policy['permission_message'] ) && is_string( $save_policy['permission_message'] ) )
+				? $save_policy['permission_message']
+				: __( 'You do not have permission to save this option.', 'booking' );
+			wp_send_json_error( array( 'message' => $permission_message ) );
+		}
+
+		if ( ! empty( $save_policy['normalize_raw'] ) && is_callable( $save_policy['normalize_raw'] ) ) {
+			$data_raw = call_user_func( $save_policy['normalize_raw'], $data_raw, $data_name );
+		}
+
+		if ( ! empty( $save_policy['force_mode'] ) ) {
+			$data_mode = sanitize_key( (string) $save_policy['force_mode'] );
+		}
+
+		$policy_allowed_keys = self::get_policy_allowed_keys( $save_policy );
+		if ( ! empty( $policy_allowed_keys ) ) {
+			$data_fields = implode( ',', $policy_allowed_keys );
+		}
+
 		$value_to_store = self::normalize_incoming_value( $data_raw );
 
 		// Split mode: JSON object => multiple options saved separately.
@@ -179,6 +276,10 @@ class wpbc_option_saver_loader {
 					$opt_val = self::sanitize_mixed_value( $opt_val );
 				} else {
 					$opt_val = '';
+				}
+
+				if ( ! empty( $save_policy['normalize_item'] ) && is_callable( $save_policy['normalize_item'] ) ) {
+					$opt_val = call_user_func( $save_policy['normalize_item'], $opt_key, $opt_val, $data_name );
 				}
 
 				self::update_option( self::$option_prefix . $opt_key, $opt_val );
@@ -354,6 +455,8 @@ class wpbc_option_saver_loader {
 		return get_option( $option_key, $default );
 	}
 }
+
+require_once __DIR__ . '/option-save-policies.php';
 
 add_action( 'plugins_loaded', array( 'wpbc_option_saver_loader', 'init' ) );
 

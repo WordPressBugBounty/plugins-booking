@@ -621,6 +621,11 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	// Main function to get "Bookings":   ['2023-08-30'][ > resource_id < ][ > time_seconds_range < ] => booking_date_obj[ booking_id:45, approved:1, ...
 	$bookings__in_dates = wpbc_get__booked_dates__per_resources__arr( $params );
 
+	// -----------------------------------------------------------------------------------------------------------------
+	// Time slots availability blocks.
+	// -----------------------------------------------------------------------------------------------------------------
+	$availability_timeslots__in_dates = array();		// FixIn: 10.16.1.
+
 
 
 	// -----------------------------------------------------------------------------------------------------------------
@@ -643,6 +648,25 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	$unavailable_dates__per_resources__arr = wpbc_aggregate_merge_availability( $unavailable_dates__per_resources__arr,
 																				$resource_id__with_children__arr,
 																				$aggregate_resource_id_arr );
+	// FixIn: 10.16.1.
+	if ( function_exists( 'wpbc_availability_timeslots__get_intervals_for_resources' ) ) {
+		$availability_timeslots__resource_ids = wpbc_get_unique_array_of_resources_id( $resource_id__with_children__arr, $aggregate_resource_id_arr );
+		$availability_timeslots__in_dates     = wpbc_availability_timeslots__get_intervals_for_resources(
+			array(
+				'resource_id'    => $availability_timeslots__resource_ids,
+				'dates_to_check' => $search_dates,
+				'max_days_count' => $params['max_days_count'],
+			)
+		);
+
+		if ( function_exists( 'wpbc_availability_timeslots__aggregate_merge_intervals' ) ) {
+			$availability_timeslots__in_dates = wpbc_availability_timeslots__aggregate_merge_intervals(
+				$availability_timeslots__in_dates,
+				$resource_id__with_children__arr,
+				$aggregate_resource_id_arr
+			);
+		}
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Booking > Resources > Availability page
@@ -1021,6 +1045,17 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			// B O O K I N G S   -   E n d
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			// FixIn: 10.16.1.
+			if (
+				function_exists( 'wpbc_availability_timeslots__apply_blocks_to_availability_obj' )
+				&& isset( $availability_timeslots__in_dates[ $my_day_tag ][ $resource_id ] )
+			) {
+				$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_availability_timeslots__apply_blocks_to_availability_obj(
+					$availability_per_day[ $my_day_tag ][ $resource_id ],
+					$availability_timeslots__in_dates[ $my_day_tag ][ $resource_id ],
+					$as_seconds_timeslots_arr__to_check_intersect
+				);
+			}
 
 			//==========================================================================================================
 			//      $availability_per_day[..]->_day_status  =  'season_filter' | ...
