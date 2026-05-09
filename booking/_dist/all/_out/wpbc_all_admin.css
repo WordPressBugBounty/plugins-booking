@@ -1069,7 +1069,8 @@ a.wpbc_ui_settings__text_pro:hover {
 .wpbc_admin .wpbc_page div.wpbc_inner_message {
   position: fixed;
   top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + 3px);
-  right: 65px;
+  top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + 55px);
+  right: 10px;
   padding: 10px 12px;
   word-break: break-all;
   max-width: 50%;
@@ -1848,8 +1849,8 @@ body.wpbc_admin_full_screen div.wpbc_admin {
   border-bottom-color: var(--wpbc_ui_top_nav__a_hover_border_color);
   color: var(--wpbc_ui_top_nav__a_hover_border_color)
 }
-.wpbc_ui_el__top_nav a:hover *,
-.wpbc_ui_el__top_nav div.wpbc_ui_el_container:has(a:hover) {
+.wpbc_ui_el__top_nav a:hover:not(.button) *,
+.wpbc_ui_el__top_nav div.wpbc_ui_el_container:has(a:hover:not(.button)) {
   color: var(--wpbc_ui_top_nav__a_hover_border_color)
 }
 .wpbc_ui_el__top_nav a {
@@ -3032,6 +3033,114 @@ div.wpbc_ajx_toolbar {
 .wpbc_tab__panel[hidden] {
   display: none!important
 }
+.wpbc_rightbar_palette {
+  --wpbc-palette-accent: var(--wpbc-ts-red, #df202b);
+  --wpbc-palette-bg: var(--wpbc-ts-bg, #fff);
+  --wpbc-palette-bg-soft: var(--wpbc-ts-bg-soft, #f6f7f7);
+  --wpbc-palette-border: var(--wpbc-ts-border, #dfe4ea);
+  --wpbc-palette-muted: var(--wpbc-ts-muted, #646970);
+  --wpbc-palette-radius: var(--wpbc-ts-radius, 6px);
+  --wpbc-palette-text: var(--wpbc-ts-text, #1d2327)
+}
+.wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns {
+  display: none
+}
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head {
+  border-bottom: 1px solid var(--wpbc-palette-border);
+  margin: 0;
+  padding: 0 10px 10px
+}
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head .header_container {
+  padding: 0
+}
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head .title {
+  color: var(--wpbc-palette-text);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.74;
+  margin: 0;
+  text-transform: uppercase
+}
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head .desc {
+  color: var(--wpbc-palette-muted);
+  font-size: 12px;
+  line-height: 1.75;
+  margin: 5px 0 0
+}
+.wpbc_rightbar_palette .wpbc_bfb__inspector__body,
+.wpbc_rightbar_palette .wpbc_ts_inspector_body {
+  padding: 0
+}
+.wpbc_rightbar_palette .wpbc_ts_inspector_row,
+.wpbc_rightbar_palette__row {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 8px;
+  margin-bottom: 14px
+}
+.wpbc_rightbar_palette .wpbc_ts_inspector_row.row__bordered,
+.wpbc_rightbar_palette__row.row__bordered {
+  background: var(--wpbc-palette-bg-soft);
+  border: 1px solid var(--wpbc-palette-border);
+  border-radius: var(--wpbc-palette-radius);
+  padding: 10px
+}
+.wpbc_rightbar_palette .wpbc_ts_inspector_label,
+.wpbc_rightbar_palette .wpbc_ts_inspector_value,
+.wpbc_rightbar_palette__label,
+.wpbc_rightbar_palette__value {
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%
+}
+.wpbc_rightbar_palette .wpbc_ts_inspector_label,
+.wpbc_rightbar_palette__label {
+  color: var(--wpbc-palette-text);
+  font-weight: 600
+}
+.wpbc_rightbar_palette .wpbc_ts_inspector_value,
+.wpbc_rightbar_palette__value {
+  color: var(--wpbc-palette-muted);
+  line-height: 1.5
+}
+.wpbc_rightbar_palette .wpbc_ts_inspector_select,
+.wpbc_rightbar_palette__select {
+  min-height: 36px;
+  width: 100%
+}
+.wpbc_rightbar_palette .wpbc_ts_segmented,
+.wpbc_rightbar_palette__segmented {
+  background: var(--wpbc-palette-bg);
+  border: 1px solid var(--wpbc-palette-border);
+  border-radius: var(--wpbc-palette-radius);
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 12px;
+  overflow: hidden
+}
+.wpbc_rightbar_palette .wpbc_ts_segmented a,
+.wpbc_rightbar_palette__segmented a {
+  border-right: 1px solid var(--wpbc-palette-border);
+  color: var(--wpbc-palette-text);
+  -ms-flex: 1 1 0px;
+  flex: 1 1 0;
+  padding: 9px 12px;
+  text-align: center;
+  text-decoration: none
+}
+.wpbc_rightbar_palette .wpbc_ts_segmented a:last-child,
+.wpbc_rightbar_palette__segmented a:last-child {
+  border-right: 0
+}
+.wpbc_rightbar_palette .wpbc_ts_segmented a.is-active,
+.wpbc_rightbar_palette__segmented a.is-active {
+  background: var(--wpbc-palette-accent);
+  color: #fff
+}
 .inspector__row .wpbc_slider_range_group.wpbc_inline_inputs,
 .wpbc_slider_range_group.wpbc_inline_inputs {
   width: 100%;
@@ -3281,7 +3390,7 @@ div.wpbc_ajx_toolbar {
   background: var(--wpbc_ui_listing__back_color);
   border: 0
 }
-.wpbc_listing_usual_row {
+div .wpbc_listing_usual_row {
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
   display: -ms-flexbox;
@@ -3293,7 +3402,8 @@ div.wpbc_ajx_toolbar {
   -ms-flex-align: start;
   align-items: flex-start;
   border-bottom: 1px solid var(--wpbc_ui_listing__row_border_color);
-  border-left: 4px solid transparent
+  border-left: 4px solid transparent;
+  margin: 0
 }
 .wpbc_listing_usual_row:last-child {
   border-bottom: 0

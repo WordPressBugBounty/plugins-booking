@@ -161,6 +161,16 @@ function remove_bk_action( $action_type, $action ) { // phpcs:ignore WordPress.N
 
 function get_bk_option( $option, $default = false ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
+	global $wpbc__skip_get_bk_options;
+
+	if (
+		! empty( $wpbc__skip_get_bk_options )
+		&& is_array( $wpbc__skip_get_bk_options )
+		&& in_array( $option, $wpbc__skip_get_bk_options, true )
+	) {
+		return $default;
+	}
+
 	$u_value = apply_bk_filter( 'wpdev_bk_get_option', 'no-values', $option, $default );
 	if ( 'no-values' !== $u_value ) {
 		return $u_value;

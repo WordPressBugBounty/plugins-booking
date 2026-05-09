@@ -19,7 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 /** T o o l b a r   C o n t a i n e r   f o r   Add New Booking */
-function wpbc_add_new_booking_toolbar() {
+function wpbc_add_new_booking_toolbar( $args = array() ) {
+
+	$defaults = array(
+		'resource_id'  => null,
+		'booking_form' => null,
+	);
+	$args     = wp_parse_args( $args, $defaults );
 
     wpbc_clear_div();
 
@@ -98,13 +104,13 @@ function wpbc_add_new_booking_toolbar() {
 
             ?><div class="control-group wpbc-no-padding" style="float:right;margin-right: 0;margin-left: 15px;"><?php
 
-				wpbc_toolbar_btn__add_past_booking();
+				wpbc_toolbar_btn__add_past_booking( $args );
 
 				if ( function_exists( 'wpbc_toolbar_btn__auto_fill' ) ) {
 					wpbc_toolbar_btn__auto_fill();
 				}
 
-				wpbc_toolbar_btn__add_new_booking();
+				wpbc_toolbar_btn__add_new_booking( $args );
 
             ?></div><?php
             ////////////////////////////////////////////////////////////////////
@@ -830,17 +836,33 @@ function wpbc_toolbar_btn__calendar_options_reset() {
  *
  * @return void
  */
-function wpbc_toolbar_btn__add_past_booking() {
+function wpbc_toolbar_btn__add_past_booking( $args = array() ) {
 
 	if ( isset( $_GET['allow_past'] ) ) {                                                                               // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		return;
 	}
 
+	$defaults = array(
+		'resource_id'  => null,
+		'booking_form' => null,
+	);
+	$args     = wp_parse_args( $args, $defaults );
+
 	$link = wpbc_get_new_booking_url();
 
-	$link .= ( ! empty( $_REQUEST['booking_type'] ) ) ? '&booking_type=' . intval( $_REQUEST['booking_type'] ) : '';                               // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	$link .= ( ! empty( $_REQUEST['booking_form'] ) ) ? '&booking_form=' . sanitize_text_field( wp_unslash( $_REQUEST['booking_form'] ) ) : '';    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	$link .= ( ! empty( $_REQUEST['booking_hash'] ) ) ? '&booking_form=' . sanitize_text_field( wp_unslash( $_REQUEST['booking_hash'] ) ) : '';    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( null !== $args['resource_id'] ) {
+		$link .= '&booking_type=' . absint( $args['resource_id'] );
+	} else {
+		$link .= ( ! empty( $_REQUEST['booking_type'] ) ) ? '&booking_type=' . intval( $_REQUEST['booking_type'] ) : '';                           // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	}
+
+	if ( null !== $args['booking_form'] ) {
+		$link .= '&booking_form=' . sanitize_text_field( wp_unslash( (string) $args['booking_form'] ) );
+	} else {
+		$link .= ( ! empty( $_REQUEST['booking_form'] ) ) ? '&booking_form=' . sanitize_text_field( wp_unslash( $_REQUEST['booking_form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	}
+
+	$link .= ( ! empty( $_REQUEST['booking_hash'] ) ) ? '&booking_hash=' . sanitize_text_field( wp_unslash( $_REQUEST['booking_hash'] ) ) : '';    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	$link .= ( ! empty( $_REQUEST['is_show_payment_form'] ) ) ? '&is_show_payment_form=Off' : '';                                                  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	$link .= ( ! empty( $_REQUEST['parent_res'] ) ) ? '&parent_res=' . intval( $_REQUEST['parent_res'] ) : '';                                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 
@@ -872,10 +894,16 @@ function wpbc_toolbar_btn__add_past_booking() {
 
 
 /** Add New Booking   Button*/
-function wpbc_toolbar_btn__add_new_booking() {
+function wpbc_toolbar_btn__add_new_booking( $args = array() ) {
 
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	if ( isset( $_GET['booking_type'] ) ) {
+	$defaults = array(
+		'resource_id' => null,
+	);
+	$args     = wp_parse_args( $args, $defaults );
+
+	if ( null !== $args['resource_id'] ) {
+		$bk_type = absint( $args['resource_id'] );
+	} elseif ( isset( $_GET['booking_type'] ) ) {                               // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		$bk_type = intval( $_GET['booking_type'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	} else {
 		$bk_type = 1;

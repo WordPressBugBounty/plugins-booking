@@ -236,12 +236,19 @@ function wpbc_template__booking_listing_row__section_col__labels(){
 			<span class="wpbc_label wpbc_label_booking_id"><span class="label_sup">ID:</span>{{data['parsed_fields']['booking_id']}}</span><?php
 			?>
 			<#
-			if ( '<?php echo esc_js(__( 'Resource not exist', 'booking' )); ?>' == data.parsed_fields.resource_title ) {
-				#><span class="wpbc_label wpbc_label_resource wpbc_label_deleted_resource">{{{data.parsed_fields.resource_title}}}</span><#
-			} else if ( '' != data.parsed_fields.resource_title ) {
+			var resource_title_listing = ( undefined != data.parsed_fields.resource_title_listing && '' != data.parsed_fields.resource_title_listing )
+										 ? data.parsed_fields.resource_title_listing
+										 : data.parsed_fields.resource_title;
+			var resource_id_listing = ( undefined != data.parsed_fields.resource_id_listing && '' != data.parsed_fields.resource_id_listing )
+									  ? data.parsed_fields.resource_id_listing
+									  : data.parsed_fields.resource_id;
+
+			if ( '<?php echo esc_js(__( 'Resource not exist', 'booking' )); ?>' == resource_title_listing ) {
+				#><span class="wpbc_label wpbc_label_resource wpbc_label_deleted_resource">{{{resource_title_listing}}}</span><#
+			} else if ( '' != resource_title_listing ) {
 				#><a  href="javascript:void(0)" class="wpbc_label_link " title='<?php echo esc_attr( __( 'Change resource', 'booking' ) ); ?>'
-					  onclick="wpbc_boo_listing__click__change_booking_resource( {{data['parsed_fields']['booking_id']}}, {{data['parsed_fields']['resource_id']}} );">
-					<span class="wpbc_label wpbc_label_resource">{{{data.parsed_fields.resource_title}}}</span></a><#
+					  onclick="wpbc_boo_listing__click__change_booking_resource( {{data['parsed_fields']['booking_id']}}, {{resource_id_listing}} );">
+					<span class="wpbc_label wpbc_label_resource">{{{resource_title_listing}}}</span></a><#
 			}
 
 			if ( '' != data.templates.payment_label_template ) {
@@ -535,13 +542,17 @@ function wpbc_template__booking_listing__action_edit_booking() {
 		return false;
 	}
 
-	$edit_booking_url  = 'admin.php?page=' . wpbc_get_new_booking_url( false, false );
-	$edit_booking_url .= '&booking_type={{data.parsed_fields.resource_id}}&booking_hash={{data.parsed_fields.hash}}&parent_res=1';
-	$edit_booking_url .= '&booking_form={{data.parsed_fields.wpbc_custom_booking_form}}';                            // FixIn: 9.4.3.12.
-	$edit_booking_url .= '&is_show_payment_form=Off';                                                                // FixIn: 9.9.0.38.
+	$edit_booking_onclick = "if ( '' == '{{data.parsed_fields.hash}}' ) { return false; }"
+							. " wpbc_boo_listing__click__add_booking_modal_from_row("
+							. " '{{data.parsed_fields.booking_id}}',"
+							. " '{{data.parsed_fields.resource_id}}',"
+							. " '{{data.parsed_fields.hash}}',"
+							. " '{{data.parsed_fields.wpbc_custom_booking_form}}'"
+							. ' );';
 	// FixIn: 10.10.1.2  $edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
-	$html_for_drop_down_option = "<a  	href='" . $edit_booking_url . "'
+	$html_for_drop_down_option = "<a  	href='javascript:void(0)'
+										onclick=\"" . $edit_booking_onclick . "\"
 										class=\"ul_dropdown_menu_li_action ul_dropdown_menu_li_action_" . $booking_action .
 											" <# if ( '' == data['parsed_fields']['hash']) { #>wpbc_field_disabled<# } #>\" >" .
 										esc_js( __( 'Edit booking', 'booking' ) ) .

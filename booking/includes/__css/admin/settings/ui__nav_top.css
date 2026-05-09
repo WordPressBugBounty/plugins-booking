@@ -92,8 +92,8 @@ body.wpbc_admin_full_screen {
 	color:var(--wpbc_ui_top_nav__a_hover_border_color);
 }
 /* Color for all A elements on hovering */
-.wpbc_ui_el__top_nav a:hover *,
-.wpbc_ui_el__top_nav div.wpbc_ui_el_container:has(a:hover) {
+.wpbc_ui_el__top_nav a:hover:not(.button) *,
+.wpbc_ui_el__top_nav div.wpbc_ui_el_container:has(a:hover:not(.button)) {
 	color:var(--wpbc_ui_top_nav__a_hover_border_color);
 }
 /* Links styles ! Calc Line Height depends from border width -------------------------------------------------------- */

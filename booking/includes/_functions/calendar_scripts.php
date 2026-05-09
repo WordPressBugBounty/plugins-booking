@@ -270,13 +270,19 @@ function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $shortcod
 
 	$calendar .= '<textarea id="date_booking' . $resource_id . '" name="date_booking' . $resource_id . '" autocomplete="off" style="display:none;"></textarea>';   // Calendar code.
 
-	$calendar .= wpbc_get_calendar_legend();                                                                            // FixIn: 9.4.3.6.
+	$calendar .= wpbc_get_calendar_legend( $resource_id );                                                                            // FixIn: 9.4.3.6.
 
 	$calendar_css_class_outer = 'wpbc_calendar_wraper';
 
 	// FixIn: 7.0.1.24.
 	$is_booking_change_over_days_triangles = get_bk_option( 'booking_change_over_days_triangles' );
-	if ( 'Off' !== $is_booking_change_over_days_triangles ) {
+	if (
+		   ( 'Off' !== $is_booking_change_over_days_triangles )
+		&& (
+			   ( ! function_exists( 'wpbc_is_booking_used_check_in_out_time' ) )
+			|| ( wpbc_is_booking_used_check_in_out_time( false, $resource_id ) )
+		)
+	) {
 		$calendar_css_class_outer .= ' wpbc_change_over_triangle';
 	}
 

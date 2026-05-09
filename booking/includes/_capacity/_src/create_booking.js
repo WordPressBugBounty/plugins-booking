@@ -237,6 +237,9 @@ console.groupEnd();
 					// Show Confirmation | Payment section
 					wpbc_show_thank_you_message_after_booking( response_data );
 
+					// Trigger hook after a booking was created or updated successfully.
+					jQuery( 'body' ).trigger( 'wpbc_booking_form_submit_success', [ response_data[ 'resource_id' ], response_data, params ] );
+
 					setTimeout( function (){
 						wpbc_do_scroll( '#wpbc_scroll_point_' + response_data[ 'resource_id' ], 10 );
 					}, 500 );
@@ -430,7 +433,28 @@ console.groupEnd();
 		 */
 		function wpbc_booking_form__spin_loader__show( resource_id ){
 
-			// Show Spin Loader
+			var $form_container = jQuery( '#booking_form_div' + resource_id );
+			var loader_text     = 'Saving';
+			if ( 'undefined' !== typeof _wpbc && _wpbc.get_message ) {
+				loader_text = _wpbc.get_message( 'message_saving' ) || loader_text;
+			}
+			var loader_html     = '<div id="wpbc_booking_form_spin_loader' + resource_id + '" class="wpbc_booking_form_spin_loader wpbc_booking_form_submit_overlay" aria-live="polite" aria-hidden="false">'
+								+ '<div class="wpbc_spins_loading_container">'
+								+ '<div class="wpbc_booking_form_spin_loader"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spin_loader_one_new"></div></div></div>'
+								+ '<span>' + loader_text + '...</span>'
+								+ '</div>'
+								+ '</div>';
+
+			// Remove any previous inline loader before adding the submit overlay.
+			jQuery( '#wpbc_booking_form_spin_loader' + resource_id ).remove();
+
+			if ( $form_container.length && $form_container.is( ':visible' ) ) {
+				$form_container.addClass( 'wpbc_booking_form_is_submitting' );
+				$form_container.prepend( loader_html );
+				return;
+			}
+
+			// Fallback for any unexpected legacy markup without #booking_form_div{resource_id}.
 			jQuery( '#booking_form' + resource_id ).after(
 				'<div id="wpbc_booking_form_spin_loader' + resource_id + '" class="wpbc_booking_form_spin_loader" style="position: relative;"><div class="wpbc_spins_loader_wrapper"><div class="wpbc_spin_loader_one_new"></div></div></div>'
 			);
@@ -444,6 +468,7 @@ console.groupEnd();
 
 			// Remove Spin Loader
 			jQuery( '#wpbc_booking_form_spin_loader' + resource_id ).remove();
+			jQuery( '#booking_form_div' + resource_id ).removeClass( 'wpbc_booking_form_is_submitting' );
 		}
 
 

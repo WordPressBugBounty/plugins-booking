@@ -3043,13 +3043,23 @@ if(1)
 						$edit_booking_url = $bk_url_add . '&booking_type=' . $bk_booking_type . '&booking_hash=' . $bk_hash . '&parent_res=1';
 						// FixIn: 10.10.1.2  $edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
+						$custom_booking_form = '';
 						if ( ! empty( $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'] ) ) {
-							$edit_booking_url .= '&booking_form=' . $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'];					// FixIn: 9.4.3.12.
+							$custom_booking_form = $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'];
+							$edit_booking_url   .= '&booking_form=' . rawurlencode( $custom_booking_form );					// FixIn: 9.4.3.12.
 						}
+
+						$edit_booking_onclick = "if ( 'function' === typeof wpbc_boo_listing__click__add_booking_modal_from_row ) {"
+												. ' wpbc_boo_listing__click__add_booking_modal_from_row('
+												. absint( $bk_id ) . ','
+												. absint( $bk_booking_type ) . ','
+												. "'" . esc_js( $bk_hash ) . "',"
+												. "'" . esc_js( $custom_booking_form ) . "'"
+												. ' ); return false; }';
 
 						$header_title .= '<a 	class=\'button button-secondary\' 
 												title=\'' . esc_attr( str_replace( "'", '', __( 'Edit', 'booking' ) ) ) . '\' 
-												href=\'' . esc_url($edit_booking_url) . '\' onclick=\'\' ><i class=\'wpbc_icn_draw\'></i></a>';
+												href=\'' . esc_url( $edit_booking_url ) . '\' onclick=\'' . esc_attr( $edit_booking_onclick ) . '\' ><i class=\'wpbc_icn_draw\'></i></a>';
 
 
 						$header_title .= '<span class=\'wpbc-buttons-separator\'></span>';
@@ -3108,15 +3118,15 @@ if(1)
 
 			$header_title .= '</div>';
 		}
-        
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Content 
+        // Content
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Container
         $content_text = '<div id=\'wpbc-booking-id-'.$bk_id.'\' class=\'flex-popover-content-data\' >';
 
-        
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Labels
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3223,10 +3233,10 @@ if(1)
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Notes
-        if ( ! empty( $bookings[$bk_id]->remark ) ) {        
+        if ( ! empty( $bookings[$bk_id]->remark ) ) {
             $content_text .= '<div class=\'wpbc-popover-booking-notes\'>' . '<strong>' . esc_js( __('Note', 'booking') ). ':</strong> ' . esc_textarea( $bookings[$bk_id]->remark ) . '</div>'; //FixIn: 7.1.1.2		// FixIn: 7.1.1.3.
         }
-        
+
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Dates
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3234,7 +3244,7 @@ if(1)
         $bk_dates_short_id = array();                                           //BL
         if ( count( $bookings[$bk_id]->dates ) > 0 )
             $bk_dates_short_id = (isset( $bookings[$bk_id]->dates_short_id )) ? $bookings[$bk_id]->dates_short_id : array();      // Array ([0] => [1] => .... [4] => 6... [11] => [12] => 8 )
-        
+
         $short_dates_content = wpbc_get_short_dates_formated_to_show( $bookings[$bk_id]->dates_short, $is_approved, $bk_dates_short_id, $booking_types );
         $short_dates_content = str_replace( '"', "'", $short_dates_content );
 
@@ -3263,8 +3273,8 @@ if(1)
 		    'title'   => $header_title,
 		    'content' => $content_text
 	    );
-    }        
-    
+    }
+
 }
 
 
@@ -3279,7 +3289,7 @@ function wpbc_ajax_flex_timeline() {
                     [wh_booking_type] => 3,4,1,5,6,7,8,9,2,10,11,12,14
                     [is_matrix] => 1
                     [view_days_num] => 30
-                    [scroll_start_date] => 
+                    [scroll_start_date] =>
                     [scroll_day] => 0
                     [scroll_month] => 0
                 )
@@ -3305,8 +3315,8 @@ function wpbc_ajax_flex_timeline() {
     $timeline = new WPBC_TimelineFlex();
 
     $html_client_id = $timeline->ajax_init( $attr );                            // Define arameters and get bookings
-//debuge($timeline->options);            
-    
+//debuge($timeline->options);
+
     //echo '<div class="wpbc_timeline_ajax_replace">';                          // Replace content of this container
         $timeline->show_timeline();
 
@@ -3324,9 +3334,9 @@ function wpbc_ajax_flex_timeline() {
 
             /* ?><script type="text/javascript"> wpbc_define_tippy_popover(); </script><?php */
         }
-    //echo '</div>'; 
+    //echo '</div>';
 
-            
+
     $timeline_results = ob_get_contents();
 
     ob_end_clean();
@@ -3338,7 +3348,7 @@ function wpbc_ajax_flex_timeline() {
 	}
 
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-    echo  $timeline_results ;    
+    echo  $timeline_results ;
 }
 add_bk_action('wpbc_ajax_flex_timeline', 'wpbc_ajax_flex_timeline');
 

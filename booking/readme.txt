@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 10.15.7
+Stable tag: 11.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,8 +20,12 @@ Use Booking Calendar for **full-day bookings**, **time-slot appointments**, serv
 
 [Features](https://wpbookingcalendar.com/features/ "Features Overview of Booking Calendar") | [See Demos](https://wpbookingcalendar.com/demo/ "Live demos of premium versions") | [FAQ](https://wpbookingcalendar.com/faq/ "Booking Calendar FAQ") | [Get Support](https://wpbookingcalendar.com/support/ "Get support for Booking Calendar plugin")
 
-= Key Features =
+Best for appointments, service scheduling, property rentals, equipment rentals, consultations, classes, events, and availability management.
 
+= Key Features =
+- Block unavailable time intervals by resource and date range
+- Create admin bookings from selected available time slots
+- Configure global availability rules with live preview
 - Accept **full-day** and **time-slot** bookings
 - Show **calendar availability** on your website
 - Create booking, contact, and inquiry forms
@@ -33,6 +37,18 @@ Use Booking Calendar for **full-day bookings**, **time-slot appointments**, serv
 - Sync bookings with external services using **.ics feeds**
 - Import Google Calendar events
 - Works for properties, services, rentals, and events
+
+= New Time Slots Availability & Fast Admin Booking =
+
+Manage unavailable time intervals visually from **Booking Calendar > Availability** or directly from the bookings workflow using the new **Time Slots Availability** popup.
+
+Administrators can choose a date range and block or unblock exact time intervals in an interactive timeline. The timeline clearly shows available, booked, unavailable, and full-day unavailable states, and full-day unavailable states, making it much easier to understand real availability at a glance.
+
+https://www.youtube.com/watch?v=uaLVguJbMP8
+
+Administrators can also create a new booking directly from an available time interval. Simply select an available time slot in the popup, open the booking form with the selected resource, date, start time, and end time already prefilled, and save it as a new booking.
+
+This makes Booking Calendar especially useful for appointment scheduling, service bookings, consultations, rentals, and any workflow where administrators need to quickly review availability and create bookings from the WordPress admin panel.
 
 = New Drag & Drop Booking Form Builder =
 
@@ -60,17 +76,6 @@ As the first booking system for WordPress, we have created a huge number of feat
 Easily **define available dates** and allow your visitors to **reserve** your property or service for a **full day** or **time-slot**.
 
 For those who need more advanced functionality, our premium versions offer an extensive system with **multiple resources**, **seasonal prices**, **conditional dates** selection, **availability search**, and even a **multi-user system** where users can independently manage their own availability, much like an Airbnb portal.
-
-= Booking Calendar is great for =
-
-Whether you’re renting a property or you’re a sole business owner looking to automate your service bookings, Booking Calendar can help you.
-- Resource scheduling (bed & breakfast, houses, apartments, etc.)
-- Client scheduling (photographers, lawyers, beauty salons, spas, etc.)
-- Meeting scheduling (coaching, phone advice)
-- Patient scheduling (doctor, dentists, clinic, medical)
-- Equipment rentals (yachts, boats, cars, bikes, technics, etc.)
-- Event scheduling (conference, course, fitness center, yoga class, gym)
-- Or any other service where booking for a specific time is required
 
 = Full Day Bookings - Drag and Drop Booking Form Builder =
 Easily configure Booking Calendar for full-day bookings with the new Drag and Drop Booking Form Builder. The new Booking Calendar Form Builder makes it much easier to create flexible booking forms without manually editing form code. It is a simple and visual way to build booking forms for different use cases directly inside WordPress.
@@ -112,6 +117,17 @@ That's it! Just configure your settings and [insert booking form shortcode](http
 == Frequently Asked Questions ==
 
 Please see [FAQ](https://wpbookingcalendar.com/faq/).
+
+= Booking Calendar is great for =
+
+Whether you’re renting a property or you’re a sole business owner looking to automate your service bookings, Booking Calendar can help you.
+- Resource scheduling (bed & breakfast, houses, apartments, etc.)
+- Client scheduling (photographers, lawyers, beauty salons, spas, etc.)
+- Meeting scheduling (coaching, phone advice)
+- Patient scheduling (doctor, dentists, clinic, medical)
+- Equipment rentals (yachts, boats, cars, bikes, technics, etc.)
+- Event scheduling (conference, course, fitness center, yoga class, gym)
+- Or any other service where booking for a specific time is required
 
 = All you need to know about booking process =
 
@@ -267,40 +283,41 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              94.40% [ 3352 / 3551 ], fuzzy 132, not translated 67
-- Danish                       71.84% [ 2551 / 3551 ], fuzzy 428, not translated 572
-- Dutch                        64.07% [ 2275 / 3551 ], fuzzy 705, not translated 571
-- Norwegian (Bokmål)           59.39% [ 2109 / 3551 ], fuzzy 473, not translated 969
-- German                       59.36% [ 2108 / 3551 ], fuzzy 812, not translated 631
-- Hungarian                    54.83% [ 1947 / 3551 ], fuzzy 896, not translated 708
-- Korean                       54.80% [ 1946 / 3551 ], fuzzy 892, not translated 713
-- Spanish (Spain)              50.44% [ 1791 / 3551 ], fuzzy 911, not translated 849
-- Portuguese (Brazil)          47.59% [ 1690 / 3551 ], fuzzy 1019, not translated 842
-- Greek                        47.28% [ 1679 / 3551 ], fuzzy 1027, not translated 845
-- Turkish                      46.66% [ 1657 / 3551 ], fuzzy 1043, not translated 851
-- Italian                      45.48% [ 1615 / 3551 ], fuzzy 950, not translated 986
-- Spanish (Mexico)             43.71% [ 1552 / 3551 ], fuzzy 1097, not translated 902
-- Finnish                      43.45% [ 1543 / 3551 ], fuzzy 1106, not translated 902
-- Polish                       43.40% [ 1541 / 3551 ], fuzzy 1094, not translated 916
-- Romanian                     43.03% [ 1528 / 3551 ], fuzzy 1107, not translated 916
-- Swedish                      42.80% [ 1520 / 3551 ], fuzzy 1116, not translated 915
-- Arabic                       42.38% [ 1505 / 3551 ], fuzzy 1133, not translated 913
-- Russian                      42.33% [ 1503 / 3551 ], fuzzy 1358, not translated 690
-- Bulgarian                    41.06% [ 1458 / 3551 ], fuzzy 1148, not translated 945
-- Slovenian                    40.95% [ 1454 / 3551 ], fuzzy 1153, not translated 944
-- Chinese (Taiwan)             39.85% [ 1415 / 3551 ], fuzzy 1193, not translated 943
-- Portuguese (Portugal)        39.54% [ 1404 / 3551 ], fuzzy 1177, not translated 970
-- Japanese                     38.97% [ 1384 / 3551 ], fuzzy 678, not translated 1489
-- Chinese (China)              38.24% [ 1358 / 3551 ], fuzzy 1177, not translated 1016
-- Ukrainian                    37.96% [ 1348 / 3551 ], fuzzy 1188, not translated 1015
-- Catalan                      37.34% [ 1326 / 3551 ], fuzzy 1114, not translated 1111
-- Thai                         37.26% [ 1323 / 3551 ], fuzzy 1225, not translated 1003
-- Hebrew                       37.03% [ 1315 / 3551 ], fuzzy 1213, not translated 1023
-- Galician                     36.07% [ 1281 / 3551 ], fuzzy 1265, not translated 1005
-- Slovak                       33.54% [ 1191 / 3551 ], fuzzy 1181, not translated 1179
-- Croatian                     32.47% [ 1153 / 3551 ], fuzzy 1197, not translated 1201
-- Czech                        32.36% [ 1149 / 3551 ], fuzzy 1144, not translated 1258
-- Chinese (Hong Kong)          19.15% [ 680 / 3551 ], fuzzy 474, not translated 2397
+- French (France)              93.01% [ 3352 / 3604 ], fuzzy 176, not translated 76
+- Danish                       70.78% [ 2551 / 3604 ], fuzzy 470, not translated 583
+- Dutch                        63.12% [ 2275 / 3604 ], fuzzy 747, not translated 582
+- Norwegian (Bokmål)           58.52% [ 2109 / 3604 ], fuzzy 511, not translated 984
+- German                       58.49% [ 2108 / 3604 ], fuzzy 854, not translated 642
+- Hungarian                    54.02% [ 1947 / 3604 ], fuzzy 936, not translated 721
+- Korean                       54.00% [ 1946 / 3604 ], fuzzy 932, not translated 726
+- Spanish (Spain)              49.69% [ 1791 / 3604 ], fuzzy 951, not translated 862
+- Portuguese (Brazil)          46.89% [ 1690 / 3604 ], fuzzy 1057, not translated 857
+- Greek                        46.59% [ 1679 / 3604 ], fuzzy 1066, not translated 859
+- Turkish                      45.98% [ 1657 / 3604 ], fuzzy 1082, not translated 865
+- Italian                      44.81% [ 1615 / 3604 ], fuzzy 988, not translated 1001
+- Spanish (Mexico)             43.06% [ 1552 / 3604 ], fuzzy 1135, not translated 917
+- Finnish                      42.81% [ 1543 / 3604 ], fuzzy 1144, not translated 917
+- Polish                       42.76% [ 1541 / 3604 ], fuzzy 1131, not translated 932
+- Romanian                     42.40% [ 1528 / 3604 ], fuzzy 1145, not translated 931
+- Swedish                      42.18% [ 1520 / 3604 ], fuzzy 1154, not translated 930
+- Arabic                       41.76% [ 1505 / 3604 ], fuzzy 1171, not translated 928
+- Russian                      41.70% [ 1503 / 3604 ], fuzzy 1398, not translated 703
+- Bulgarian                    40.46% [ 1458 / 3604 ], fuzzy 1185, not translated 961
+- Slovenian                    40.34% [ 1454 / 3604 ], fuzzy 1190, not translated 960
+- Chinese (Taiwan)             39.26% [ 1415 / 3604 ], fuzzy 1230, not translated 959
+- Portuguese (Portugal)        38.96% [ 1404 / 3604 ], fuzzy 1214, not translated 986
+- Japanese                     38.40% [ 1384 / 3604 ], fuzzy 710, not translated 1510
+- Chinese (China)              37.68% [ 1358 / 3604 ], fuzzy 1215, not translated 1031
+- Ukrainian                    37.40% [ 1348 / 3604 ], fuzzy 1225, not translated 1031
+- Catalan                      36.79% [ 1326 / 3604 ], fuzzy 1151, not translated 1127
+- Thai                         36.71% [ 1323 / 3604 ], fuzzy 1262, not translated 1019
+- Hebrew                       36.49% [ 1315 / 3604 ], fuzzy 1250, not translated 1039
+- Galician                     35.54% [ 1281 / 3604 ], fuzzy 1302, not translated 1021
+- Slovak                       33.05% [ 1191 / 3604 ], fuzzy 1218, not translated 1195
+- Croatian                     31.99% [ 1153 / 3604 ], fuzzy 1234, not translated 1217
+- Czech                        31.88% [ 1149 / 3604 ], fuzzy 1182, not translated 1273
+- Chinese (Hong Kong)          18.87% [ 680 / 3604 ], fuzzy 500, not translated 2424
+
 
 
 Please recheck the status of each translation, before using plugin.
@@ -314,18 +331,37 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 1. **Drag & Drop Booking Form Builder**: Create booking forms visually without manually editing complex shortcodes or form codes.
 2. **Full-Day Bookings**: In this screenshot, you can see the front-end booking form. It enables users to select and **book multiple days in the calendar** without time fields.
 3. **Time-Slot Appointment Bookings**: This screenshot displays the front-end booking form. It allows users to select **single day** in the calendar and **times** (time-slots or start time and duration of service) in the booking form.
-4. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
+4. **Time Slots Availability**: Block or unblock unavailable time intervals by resource and date range using an interactive timeline with booked and unavailable states.
 5. **Booking Listing**: You can easily manage all your bookings in one place by searching bookings by keyword, dates, status, and other parameters.
 6. **Booking Listing** panel provides a smooth user experience by working instantly without page refresh.
 7. **Timeline View**: Get a clear overview of all your bookings.
 8. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
 9. **Publish Booking Form into a page**. Alternatively you can easily publish a booking form or availability calendar from the WP Booking Calendar > Publish menu page into existing or new pages.
+10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.0 =
+- Changes in **all** versions:
+	* **New**: Added Time Slots Availability page under Booking Calendar > Availability, allowing administrators to define unavailable time intervals for specific booking resources and date ranges.
+	* **New**: Added a reusable Set Times Availability popup to the Booking Listing page, so unavailable time intervals can be managed without leaving the bookings workflow.
+	* **New**: Added the ability to create a new booking directly from a selected time interval in the Time Slots Availability popup.
+	* **New**: Added interactive timeline selection for blocking or unblocking time intervals, including multi-day selection, adjustable time ranges, and visible booked/unavailable states.
+	* **New**: Added support for showing unavailable days in the Time Slots Availability timeline, including days blocked by Days Availability, Season Availability, unavailable weekdays, unavailable time from current time, and limit available days from today settings.
+	* **New**: Added quick links from unavailable full-day timeline bars to the related availability settings page, helping administrators identify and adjust the rule that made a date unavailable.
+	* **Improvement**: Added Add Booking popup integration, with selected booking resource, date, and start/end time prefilled from the selected timeline interval.
+	* **Improvement**: Improved Time Slots Availability controls with date range navigation arrows, visible time range controls, slot step selection down to 5 minutes, and sticky timeline headers for easier work with long date ranges.
+	* **Improvement**: Added progress indicators while loading, blocking, unblocking, and saving time availability changes.
+	* **New**: Added a faster Add Booking popup to the Booking Listing and Timeline pages. Users can now create bookings without leaving the current view, choose the booking resource and custom form inside the popup, edit existing bookings in the same popup, and jump directly to edit the selected booking form.
+	* **Improvement**: Improved booking navigation: the Add Booking page is now available under the Bookings section, while Booking Listing and Timeline include a clearer “New booking” quick-action button for opening the popup without leaving the current view.
+	* **New**: Added a new General Availability settings page for defining global front-end availability rules across all calendars and booking resources. The page includes a live calendar preview, unavailable weekday toggles, availability limits from the current date, booking buffer controls where supported, AJAX saving, reset-to-default preview controls, and a shared right-side palette layout consistent with the Availability and setup wizard interfaces.
+	* **Fix**: Fixed calendar booking status detection.  Fix improves how the front-end calendar reads approved and pending booking statuses for capacity-based resources, including parent/child resources and change-over dates. This should make the front-end booking form calendar reflect the real availability more clearly.
+	* **Fix**: Fixed availability calculation for Booking Form Builder forms with time-slot fields. This ensures dates are marked as fully unavailable when all booking form time slots are already booked, instead of incorrectly appearing as partially available. (10.15.8.2)
+	* **Fix**: Fixed a fatal error on some hosts by reading the local PRO meta.json file directly instead of using WordPress FTP filesystem access.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: Added resource-level exceptions for changeover days, so selected booking resources can use their own same-day times instead of global check-in/check-out times across front-end, admin, and edit flows.
+
 = 10.15.7 =
 - Changes in **all** versions:
-	* **New**: Added a new Weekday Time Slots field pack in the Booking Form Builder for configuring different rangetime selections for specific weekdays, such as separate time slots for weekdays, weekends, or individual weekday groups. (10.15.7.1)
-	* **New**: Added a new Season Time Slots field pack in the Booking Form Builder for configuring different rangetime selections for selected season filters. The field pack lists available season filters and generates conditional booking form shortcodes for season-based time-slot availability. (10.15.7.1)
 	* **New**: Added Calendar Skin selection to the Calendar field inspector in the Booking Form Builder, including live Canvas preview, Preview iframe support for unsaved changes, manual saving, and automatic saving when the booking form is saved. (10.15.7.2)
 	* **New**: Added Calendar Legend configuration to the Calendar field inspector in the Booking Form Builder. The inspector now supports enabling the legend, activating individual legend items, editing item titles, showing date numbers, and switching legend layout between row and column display. These settings are saved as global calendar options. (10.15.7.2)
 	* **Improvement**: Added a flexible global option autosave workflow in the Booking Form Builder, allowing inspector-based global options to be automatically saved when the booking form is saved. (10.15.7.2)
@@ -334,6 +370,9 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 	* **Improvement**: Added validation in the Booking Form Builder to prevent using the standard rangetime field and conditional weekday time slots field in the same booking form, because both fields use the same rangetime booking form value.
 	* **Improvement**: Refactored global option saving into an extensible option save policy system, keeping the generic save/load option handler cleaner and easier to extend. (10.15.7.2)
 	* **Compatibility**: Restricted Calendar Skin, Calendar Legend, and time-slot global option controls for regular users in the Booking Calendar MultiUser version, because these users do not have access to global options. (10.15.7.2)
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added a new Weekday Time Slots field pack in the Booking Form Builder for configuring different rangetime selections for specific weekdays, such as separate time slots for weekdays, weekends, or individual weekday groups. (10.15.7.1)
+	* **New**: Added a new Season Time Slots field pack in the Booking Form Builder for configuring different rangetime selections for selected season filters. The field pack lists available season filters and generates conditional booking form shortcodes for season-based time-slot availability. (10.15.7.1)
 
 = 10.15.6 =
 - Changes in **all** versions:
@@ -431,5 +470,8 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.0 =
+Added Time Slots Availability and General Availability tools for more precise availability management. Administrators can block or unblock exact time intervals from the Availability page or bookings workflow, review booked and unavailable states in an interactive timeline, and create new bookings from selected available intervals with resource, date, and time prefilled. Also includes a faster Add Booking popup and availability accuracy fixes.
+
 = 10.15 =
 New **Drag & Drop Booking Form Builder** for visually creating booking, contact, and inquiry forms. Build forms faster with live preview, templates, multi-page layouts, and flexible visual editing — without manually editing form code.

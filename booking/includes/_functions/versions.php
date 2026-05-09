@@ -265,33 +265,25 @@ function wpbc_get_json_property_from_meta( $property_key ) {
 
 	$meta_file_path = plugin_dir_path( WPBC_PRO_FILE ) . 'meta.json';
 
-	if ( ! file_exists( $meta_file_path ) ) {
+	if ( ( ! is_file( $meta_file_path ) ) || ( ! is_readable( $meta_file_path ) ) ) {
 		return null;
 	}
 
-	global $wp_filesystem;
+	// Read the local plugin metadata directly, so hosts with FTP-based WP_Filesystem settings cannot fatal here.
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	$json_contents = file_get_contents( $meta_file_path );
 
-	if ( ! function_exists( 'request_filesystem_credentials' ) ) {
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-	}
-
-	if ( empty( $wp_filesystem ) ) {
-		WP_Filesystem();
-	}
-
-	$json_contents = $wp_filesystem->get_contents( $meta_file_path );
-
-	if ( empty( $json_contents ) ) {
+	if ( false === $json_contents || '' === trim( $json_contents ) ) {
 		return null;
 	}
 
 	$data = json_decode( $json_contents, true );
 
-	if ( json_last_error() !== JSON_ERROR_NONE ) {
+	if ( ( json_last_error() !== JSON_ERROR_NONE ) || ( ! is_array( $data ) ) ) {
 		return null;
 	}
 
-	return isset( $data[ $property_key ] ) ? $data[ $property_key ] : null;
+	return array_key_exists( $property_key, $data ) ? $data[ $property_key ] : null;
 }
 
 /**

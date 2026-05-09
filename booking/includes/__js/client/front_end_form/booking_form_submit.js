@@ -416,9 +416,14 @@ function wpbc_form_submit_send( resource_id, formdata, captcha_chalange, user_ca
 	}
 
 	var is_send_emeils = 1;
-	if ( jQuery( '#is_send_email_for_pending' ).length ) { // FixIn: 8.7.9.5.
+	var $is_send_email_toggle = jQuery( '#is_send_email_for_pending' );
+	var $modal_send_email_toggle = jQuery( '#booking_form' + resource_id ).closest( '.wpbc_modal__add_booking__section' ).find( '[data-wpbc-add-booking-send-emails]' ).first();
+	if ( $modal_send_email_toggle.length ) {
+		$is_send_email_toggle = $modal_send_email_toggle;
+	}
+	if ( $is_send_email_toggle.length ) { // FixIn: 8.7.9.5.
 
-		is_send_emeils = jQuery( '#is_send_email_for_pending' ).is( ':checked' );
+		is_send_emeils = $is_send_email_toggle.is( ':checked' );
 
 		if ( false === is_send_emeils ) {
 			is_send_emeils = 0;

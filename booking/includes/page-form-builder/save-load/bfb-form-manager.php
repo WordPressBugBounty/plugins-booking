@@ -504,6 +504,14 @@ function wpbc_form_config_save( array $form_config, array $args = array() ) {
  * @return string Default form key.
  */
 function wpbc_bfb_get_default_form_key() {
+
+	if ( isset( $_GET['form_name'] ) ) {                                      // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$form_name = sanitize_text_field( wp_unslash( $_GET['form_name'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( '' !== $form_name ) {
+			return $form_name;
+		}
+	}
+
 	return 'standard';
 }
 

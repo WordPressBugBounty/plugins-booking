@@ -135,6 +135,10 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
             wpbc_show_booking_footer();           
         
         ?></span><!-- wpdevelop class --><?php 
+
+		if ( class_exists( 'WPBC_Add_Booking_Modal' ) ) {
+			WPBC_Add_Booking_Modal::template_for_modal();
+		}
     }
 
 }

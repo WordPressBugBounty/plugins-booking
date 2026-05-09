@@ -122,6 +122,24 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 					'parent' => 'wpbc_bar_availability'
 				)
 			);
+			$wp_admin_bar->add_menu(
+				array(
+					'id'     => 'wpbc_bar_time_slots_availability',
+					'title'  => __( 'Time Slots Availability', 'booking' ),
+					'href'   => function_exists( 'wpbc_get_time_slots_availability_url' ) ? wpbc_get_time_slots_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=time_slots_availability' ),
+					'parent' => 'wpbc_bar_availability'
+				)
+			);
+			if ( wpbc_is_mu_user_can_be_here( 'only_super_admin' ) )
+				$wp_admin_bar->add_menu(
+					array(
+						'id' => 'wpbc_bar_general_availability',
+						'title' => __( 'General Availability', 'booking' ),
+						'href' => function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ),
+						'parent' => 'wpbc_bar_availability'
+					)
+				);
+
 			if ( class_exists( 'wpdev_bk_biz_m' ) ){
 				$wp_admin_bar->add_menu(
 					array(
@@ -141,15 +159,6 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 					)
 				);
 			}
-			if ( wpbc_is_mu_user_can_be_here( 'only_super_admin' ) )
-				$wp_admin_bar->add_menu(
-					array(
-						'id' => 'wpbc_bar_general_availability',
-						'title' => __( 'General Availability', 'booking' ),
-						'href' => wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab',
-						'parent' => 'wpbc_bar_availability'
-					)
-				);
 
 	// Booking > Prices page
 	if ( class_exists( 'wpdev_bk_biz_m' ) ){

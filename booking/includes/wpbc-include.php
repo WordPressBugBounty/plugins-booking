@@ -45,6 +45,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/payment_r
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/change_resource.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/duplicate_booking.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/change_locale.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/booking_action/set_unavailable_times.php';
 // Booking Listing - Filters - ...
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/bo_listing_toolbar.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-bookings/listing_filters/sort_by.php';
@@ -155,6 +156,8 @@ require_once WPBC_PLUGIN_DIR . '/core/admin/wpbc-sql.php';                      
 require_once WPBC_PLUGIN_DIR . '/core/timeline/flex-timeline.php';                       // New. Flex. Timeline.
 
 require_once WPBC_PLUGIN_DIR . '/core/admin/wpbc-dashboard.php';                          // Dashboard Widget.
+require_once WPBC_PLUGIN_DIR . '/includes/page-add-booking/add_booking__component.php';              // Reusable Add Booking component.
+require_once WPBC_PLUGIN_DIR . '/includes/page-add-booking/add_booking__modal.php';                  // Add Booking modal in Booking Listing.
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Admin Pages
@@ -186,6 +189,9 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__toolba
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__class.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__resource.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability/availability__page.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-general/availability_general__page.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-general/ajax/availability_general__save.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-general/ajax/availability_general__preview.php';
 
 if ( WPBC_NEW_TIME_AVAILABILITY ) {
 	// WP Booking Calendar > Availability > Times Availability page.  // FixIn: 10.16.1.
@@ -208,7 +214,7 @@ if ( WPBC_NEW_FORM_BUILDER ) {
 
 // FixIn: 9.6.3.5.
 require_once WPBC_PLUGIN_DIR . '/core/admin/page-timeline.php';                      // Timeline.
-require_once WPBC_PLUGIN_DIR . '/core/admin/page-new.php';                           // Add New Booking page.
+require_once WPBC_PLUGIN_DIR . '/includes/page-add-booking/add_booking__page.php';                           // Add New Booking page.
 
 require_once WPBC_PLUGIN_DIR . '/core/admin/wpbc-settings-functions.php';    // Support functions for Booking > Settings General page.
 require_once WPBC_PLUGIN_DIR . '/core/admin/page-settings.php';              // Settings page.

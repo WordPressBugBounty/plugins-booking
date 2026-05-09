@@ -164,7 +164,7 @@ function wpbc_get_menu_url( $menu_type, $is_absolute_url = true, $is_old = true)
 		case 'new':
 		case 'new-bookings':
 		case 'new-booking':
-			$link = 'wpbc-new';
+			$link = 'wpbc&tab=add-booking';
 			break;
 
 		case 'availability':
@@ -226,6 +226,30 @@ function wpbc_get_bookings_url( $is_absolute_url = true, $is_old = true ) {
  */
 function wpbc_get_availability_url( $is_absolute_url = true, $is_old = true ) {
 	return wpbc_get_menu_url( 'availability', $is_absolute_url, $is_old );
+}
+
+/**
+ * Get URL of Booking > Availability > General Availability page.
+ *
+ * @param boolean $is_absolute_url Absolute or relative url { default: true }.
+ * @param boolean $is_old          Legacy compatibility flag.
+ *
+ * @return string URL to General Availability page.
+ */
+function wpbc_get_general_availability_url( $is_absolute_url = true, $is_old = true ) {
+	return wpbc_get_availability_url( $is_absolute_url, $is_old ) . '&tab=general_availability';
+}
+
+/**
+ * Get URL of Booking > Availability > Time Slots Availability page.
+ *
+ * @param boolean $is_absolute_url Absolute or relative url { default: true }.
+ * @param boolean $is_old          Legacy compatibility flag.
+ *
+ * @return string URL to Time Slots Availability page.
+ */
+function wpbc_get_time_slots_availability_url( $is_absolute_url = true, $is_old = true ) {
+	return wpbc_get_availability_url( $is_absolute_url, $is_old ) . '&tab=time_slots_availability';
 }
 
 /**
@@ -335,18 +359,35 @@ function wpbc_is_bookings_page( $server_param = 'REQUEST_URI' ) {
  * @return boolean true | false
  */
 function wpbc_is_new_booking_page( $server_param = 'REQUEST_URI' ) {
-	// Old.
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'wpdev-booking.phpwpdev-booking-reservation' ) !== false ) ) {
-		return true;
+
+	if ( ! is_admin() || empty( $_SERVER[ $server_param ] ) ) {
+		return false;
 	}
-	// New.
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-new' ) !== false ) ) {
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( wpbc_is_new_booking_page_url( $_SERVER[ $server_param ] ) ) {
 		return true;
 	}
 
 	return false;
+}
+
+/**
+ * Check if a URL points to Booking > Bookings > Add booking.
+ *
+ * @param string $request_uri URL or request URI.
+ *
+ * @return bool
+ */
+function wpbc_is_new_booking_page_url( $request_uri ) {
+
+	$request_uri = (string) $request_uri;
+
+	return (
+		( false !== strpos( $request_uri, 'page=wpbc' ) )
+		&& ( false === strpos( $request_uri, 'page=wpbc-' ) )
+		&& ( false !== strpos( $request_uri, 'tab=add-booking' ) )
+	);
 }
 
 /**

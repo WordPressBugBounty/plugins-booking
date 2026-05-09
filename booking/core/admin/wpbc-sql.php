@@ -25,7 +25,13 @@ function wpbc_define_listing_page_parameters( $page_tag ) {
     if ( wpbc_is_bookings_page() ) {                                            // We are inside of this page. Menu item selected.
 
 	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	    if ( ( isset( $_REQUEST['tab'] ) ) && ( 'vm_booking_listing' === $_REQUEST['tab'] ) ) {             //FixIn: 9.2.0
+	    $requested_tab = isset( $_REQUEST['tab'] ) ? sanitize_key( wp_unslash( $_REQUEST['tab'] ) ) : '';
+	    if ( ( '' !== $requested_tab ) && ( ! in_array( $requested_tab, array( 'vm_booking_listing', 'vm_calendar' ), true ) ) ) { // FixIn: Add Booking lives as its own Bookings tab.
+		    return;
+	    }
+
+	    // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	    if ( 'vm_booking_listing' === $requested_tab ) {             //FixIn: 9.2.0
 		    return;
 	    }
 

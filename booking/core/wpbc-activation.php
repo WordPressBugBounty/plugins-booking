@@ -992,6 +992,8 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
         $default_options['booking_change_over__is_excerpt_on_pages'] = 'Off';         									// FixIn: 8.9.4.10.
      $mu_option4delete[]='booking_change_over__excerpt_on_pages';
         $default_options['booking_change_over__excerpt_on_pages'] = '';         										// FixIn: 8.9.4.10.
+     $mu_option4delete[]='booking_change_over__excerpt_bk_resources';
+        $default_options['booking_change_over__excerpt_bk_resources'] = '';         									// FixIn: 10.16.4.1.
 
 
         $default_options['booking_email_payment_request_adress'] = htmlspecialchars( '"Booking system" <' . get_option( 'admin_email' ) . '>' );

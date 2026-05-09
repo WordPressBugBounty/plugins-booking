@@ -42,7 +42,7 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 			'left_navigation__default_view_mode' => ( $is_full_screen ) ? 'compact' : 'min',   // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'page_title'                         => false,                               // Header - Title.  If false, than hidden.
 			'page_description'                   => false,                               // Header - Title Description.  If false, than hidden.
-			'title'                              => __( 'Booking Listing', 'booking' ),  // Menu - Title.
+			'title'                              => __( 'Bookings', 'booking' ),         // Menu - Title.
 			'hint'                               => __( 'Booking Listing', 'booking' ),  // Menu - Mouse Over Hint.
 			'font_icon'                          => 'wpbc-bi-collection',                // Menu - Icon.
 			'link'                               => '',                                  // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link.

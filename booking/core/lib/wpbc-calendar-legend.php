@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return string HTML content of legend items
  */
-function wpbc_get_calendar_legend() {
+function wpbc_get_calendar_legend( $resource_id = 0 ) {
 
 	$calendar_legend_html = '';
 
@@ -35,6 +35,7 @@ function wpbc_get_calendar_legend() {
 																			  'is_vertical'       => ( 'On' != get_bk_option( 'booking_legend_is_vertical' ) ) ? false : true
 																			, 'text_for_day_cell' => ( 'On' != get_bk_option( 'booking_legend_is_show_numbers' ) ) ? '&nbsp;' : gmdate( 'd' )
 																			, 'items'             => $items_sort
+																			, 'resource_id'       => absint( $resource_id )
 																	) );
 	}
 
@@ -54,6 +55,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 										, 'partially'
 									)
 					, 'unavailable_day_cell_tag' => 'span'
+					, 'resource_id' => 0
 					, 'titles' => array()
     			);
     $params   = wp_parse_args( $params, $defaults );
@@ -129,7 +131,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_partially .= '<span class="' . $booking_timeslot_day_bg_as_available . '">';
 		$my_partially .= '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     // FixIn: 9.3.1.4.
 		$my_partially .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
-		if ( ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time() ) ) {                                                   // FixIn: 8.9.4.10.
+		if ( ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time( false, $params['resource_id'] ) ) ) {                                                   // FixIn: 8.9.4.10.
 			$my_partially .= '<td class="datepick-days-cell date_available date_approved timespartly check_in_time check_in_time_date_approved wpbc_calendar_legend_day_cell_height">';
 		} else {
 			$my_partially .= '<td class="datepick-days-cell date_available date2approve timespartly times_clock wpbc_calendar_legend_day_cell_height">';
@@ -314,6 +316,7 @@ function wpbc_replace_shortcodes_in_booking_form__legend_items( $return_form, $r
 																			, 'unavailable_day_cell_tag' => ( ! empty( $shortcode_params['unavailable_day_cell_tag'] ) )
 																											? $shortcode_params['unavailable_day_cell_tag']
 																											: 'span'
+																			, 'resource_id' => absint( $resource_id )
 																			, 'titles' => $shortcode_titles_params
 																	) );
 

@@ -53,6 +53,7 @@ class WPBC_FE_Render {
 			'shortcode_param__options'                       => '',
 			'calendar_dates_start'            => '',
 			'calendar_dates_end'              => '',
+			'booking_hash'                    => '',
 			'form_status'                     => 'published',
 		);
 		$params_arr     = wp_parse_args( $params_arr, $default_params );
@@ -144,6 +145,7 @@ class WPBC_FE_Render {
 				'selected_dates_without_calendar' => $params_arr['selected_dates_without_calendar'],
 				'cal_count'                       => $params_arr['cal_count'],
 				'shortcode_param__options'                       => $params_arr['shortcode_param__options'],
+				'booking_hash'                    => $params_arr['booking_hash'],
 				'legacy_instance'                 => $legacy,
 			)
 		);
@@ -178,6 +180,7 @@ class WPBC_FE_Render {
 			'shortcode_param__options'            => '',
 			'calendar_dates_start' => '',
 			'calendar_dates_end'   => '',
+			'booking_hash'         => '',
 		);
 		$params_arr     = wp_parse_args( $params_arr, $default_params );
 		$is_echo        = ( ! empty( $params_arr['is_echo'] ) );

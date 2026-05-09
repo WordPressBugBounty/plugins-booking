@@ -104,6 +104,7 @@ function wpbc_ajx_booking_ajax_search_request(){
 console.groupCollapsed('AJX_BOOKING_LISTING'); console.log( ' == Before Ajax Send - search_get_all_params() == ' , wpbc_ajx_booking_listing.search_get_all_params() );
 
 	wpbc_booking_listing_reload_button__spin_start();
+	wpbc_booking_listing_reload__message_show();
 
 /*
 //FixIn: forVideo
@@ -142,10 +143,13 @@ is_this_action = false;
 //FixIn: forVideo
 //jQuery( '#wpbc_loading_section' ).wpbc_my_modal( 'hide' );
 
+try {
 console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); console.groupEnd();
 					// Probably Error
 					if ( (typeof response_data !== 'object') || (response_data === null) ){
 						jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();													// FixIn: 9.6.1.5.
+						wpbc_booking_listing_reload_button__spin_pause();
+						wpbc_booking_listing_reload__message_hide();
 						jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html(
 																	'<div class="wpbc-settings-notice notice-warning" style="text-align:left">' +
 																		response_data +
@@ -158,6 +162,7 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					if (       (     undefined != response_data[ 'ajx_cleaned_params' ])
 							&& ( 'reset_done' === response_data[ 'ajx_cleaned_params' ][ 'ui_reset' ])
 					){
+						wpbc_booking_listing_reload__message_hide();
 						window.location.href = response_data[ 'ajx_cleaned_params' ]['ui_reset_url'];
 						// location.reload();
 						return;
@@ -208,11 +213,18 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					}
 
 					wpbc_booking_listing_reload_button__spin_pause();
+					wpbc_booking_listing_reload__message_hide();
 
 					jQuery( '#ajax_respond' ).html( response_data );		// For ability to show response, add such DIV element to page
+} finally {
+					wpbc_booking_listing_reload_button__spin_pause();
+					wpbc_booking_listing_reload__message_hide();
+}
 				}
 			  ).fail( function ( jqXHR, textStatus, errorThrown ) {    if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
 					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														// FixIn: 9.6.1.5.
+					wpbc_booking_listing_reload_button__spin_pause();
+					wpbc_booking_listing_reload__message_hide();
 					var error_message = '<strong>' + 'Error!' + '</strong> ' + errorThrown ;
 					if ( jqXHR.responseText ){
 						error_message += jqXHR.responseText;
@@ -542,6 +554,58 @@ function wpbc_booking_listing_reload_button__spin_start(){
  */
 function wpbc_booking_listing_reload_button__spin_pause(){
 	jQuery( '#wpbc_booking_listing_reload_button .menu_icon.wpbc_spin' ).addClass( 'wpbc_animation_pause' );
+}
+
+/**
+ * Show visible feedback while Booking Listing is loading.
+ */
+function wpbc_booking_listing_reload__message_show(){
+
+	var ajax_working = document.getElementById( 'ajax_working' );
+
+	if ( ! ajax_working ) {
+		return;
+	}
+
+	wpbc_booking_listing_reload__message_hide();
+
+	var listing_container = '';
+	if (
+		   ( 'undefined' !== typeof wpbc_ajx_booking_listing )
+		&& ( 'function' === typeof wpbc_ajx_booking_listing.get_other_param )
+	) {
+		listing_container = wpbc_ajx_booking_listing.get_other_param( 'listing_container' );
+	}
+
+	if (
+		   listing_container
+		&& jQuery( listing_container ).find( '.wpbc_spins_loading_container' ).length
+	) {
+		return;
+	}
+
+	var unique_div_id = 'wpbc_notice_' + ( new Date() ).getTime();
+
+	jQuery( ajax_working ).append(
+		'<div id="' + unique_div_id + '" class="wpbc_booking_listing_reload_notice" style="opacity: 1;">' +
+			'<div id="wpbc_alert_message" class="wpbc_alert_message">' +
+				'<div class="wpbc_inner_message notice notice-info "> ' +
+					'<a class="close" href="javascript:void(0)" onclick="javascript:jQuery(this).parent().hide();">&times;</a> ' +
+					'<span class="wpdevelop wpbc_booking_listing_reload_processing">' +
+						'<span class="wpbc_icn_rotate_right wpbc_spin wpbc_ajax_icon wpbc_processing wpbc_icn_autorenew" aria-hidden="true"></span>' +
+					'</span> Loading bookings...' +
+				'</div>' +
+			'</div>' +
+		'</div>'
+	);
+}
+
+/**
+ * Hide Booking Listing loading feedback.
+ */
+function wpbc_booking_listing_reload__message_hide(){
+	jQuery( '.wpbc_booking_listing_reload_notice' ).remove();
+	jQuery( '.wpbc_booking_listing_reload_processing' ).closest( '[id^="wpbc_notice_"], .wpbc_inner_message' ).remove();
 }
 
 /**

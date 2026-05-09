@@ -93,6 +93,7 @@ class WPBC_CSS extends WPBC_JS_CSS {
 		if (
 			( 'admin' !== $where_to_load ) ||
 			( wpbc_is_new_booking_page() ) ||
+			( function_exists( 'wpbc_is_add_booking_modal_on_booking_listing_page' ) && wpbc_is_add_booking_modal_on_booking_listing_page() ) ||
 			( wpbc_is_setup_wizard_page() ) ||
 			( wpbc_is_settings_form_page() ) ||
 			( wpbc_is_settings_color_themes_page() ) ||

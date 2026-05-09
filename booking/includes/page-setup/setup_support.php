@@ -130,7 +130,7 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 			<?php
 				esc_html_e( 'This is a preview of your booking form.', 'booking' ); echo ' ';
 				esc_html_e( 'You can adjust settings in the widgets on the right side of the page.', 'booking' );
-				//echo '<a href="'. esc_attr( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab' ).'">Settings > Availability</a>';
+			//echo '<a href="' . esc_attr( function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ) ) . '">Availability > General Availability</a>';
 			?>
 		</div><?php
 

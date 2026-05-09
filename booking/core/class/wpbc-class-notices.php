@@ -98,7 +98,7 @@ class WPBC_Notices {
 		}
 
 
-		$notice_hide = '<a style="background: #fff;border-radius: 7px;margin: 10px 0 0 30px;float: right;font-weight: 600;text-decoration: underline;"  title="' . esc_js( __( "Hide", 'booking' ) ) . '"  href="javascript:void(0)" onclick="javascript:jQuery(this).parent().parent().fadeOut( 500 );">' . esc_html( __( 'Hide', 'booking' ) ) . '</a>';
+		$notice_hide = '<a style="border-radius: 7px;margin: 10px 0 0 30px;float: right;font-weight: 600;text-decoration: underline;"  title="' . esc_js( __( "Hide", 'booking' ) ) . '"  href="javascript:void(0)" onclick="javascript:jQuery(this).parent().parent().fadeOut( 500 );">' . esc_html( __( 'Hide', 'booking' ) ) . '</a>';
 		$wpbc_metabox_id = 'wpbc_message_update_free_to_paid';
 
 		ob_start();
@@ -106,7 +106,7 @@ class WPBC_Notices {
 			'title' => __( 'Dismiss', 'booking' ), //  ' <i class="menu_icon icon-1x wpbc_icn_close"></i> ',            // &times;.
 			'hint'  => __( 'Dismiss Forever', 'booking' ),
 			'class' => 'wpbc_message_update_free_to_paid',
-			'css'   => 'background: #fff;border-radius: 7px;margin: 10px 0 0 30px;text-decoration: underline;',
+			'css'   => 'border-radius: 7px;margin: 10px 0 0 30px;text-decoration: underline;',
 		) );
 		?>
 		<script type="text/javascript">

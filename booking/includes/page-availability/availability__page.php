@@ -52,6 +52,7 @@ class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
 			'disabled'                           => false,   // Is this tab disbaled: true || false.
 			'hided'                              => false,   // Is this tab hided: true || false.
 			'subtabs'                            => array(),
+			'folder_style'                       => 'order:91;',
 		);
         return $tabs;
     }
@@ -162,6 +163,15 @@ if ( 	( false !== $escaped_request_params_arr )
 
 				$request_prefix = false;
 				$escaped_request_params_arr = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  );		 		// Direct: 	$_REQUEST['resource_id']
+			}
+
+			// Direct links from other admin tools can intentionally open availability for a specific resource.
+			// In that case this URL value must override previously saved user toolbar state.
+			if ( false !== wpbc_get_direct_value_in_request( 'resource_id', false ) ) {
+				$direct_request_params_arr = $user_request->get_sanitized__in_request__value_or_default( false );
+				if ( ! empty( $direct_request_params_arr['resource_id'] ) ) {
+					$escaped_request_params_arr['resource_id'] = $direct_request_params_arr['resource_id'];
+				}
 			}
 
 
@@ -397,6 +407,10 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
 
     public function in_page() {
 
+	    if ( class_exists( 'WPBC_Page_Availability_General_Dedicated' ) ) {
+		    return (string) wp_rand( 100000, 1000000 );
+	    }
+
 	    if ( ! wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) {            // If this User not "super admin",  then  do  not load this page at all
 	        return (string) wp_rand( 100000, 1000000 );        // If this User not "super admin",  then  do  not load this page at all
         }
@@ -428,7 +442,7 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
                               'title'		=> __( 'General Availability', 'booking' )										// Title of TAB				//FixIn: 9.8.15.2.2
                             , 'hint'		=> __( 'Define unavailable weekdays for all calendar(s) and unavailable dates depend from today date', 'booking' )						// Hint
                             , 'page_title'	=> __( 'General Availability', 'booking' )						// Title of Page
-                            , 'link' =>  wpbc_get_settings_url( true, false ) . '&scroll_to_section=wpbc_general_settings_availability_tab'                                      // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
+                            , 'link' =>  function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url( true, false ) : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' )                                      // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link
                             , 'position'	=> ''                               // 'left'  ||  'right'  ||  ''
                             , 'css_classes' => 'wpbc_top_tab__general_availability'                               // CSS class(es)
                             , 'icon'		=> ''                               // Icon - link to the real PNG img
@@ -438,7 +452,8 @@ class WPBC_Page_Availability_General extends WPBC_Page_Structure {
                             , 'disabled'	=> false                            // Is this tab disbaled: true || false.
                             , 'hided'		=> false                            // Is this tab hided: true || false.
                             , 'subtabs'		=> array()
-							, 'folder_style'     => 'order:200;',
+							// , 'folder_style'     => 'order:200;',
+							, 'folder_style' => 'order:93;',
         );
         // $subtabs = array();
         // $tabs[ 'items' ][ 'subtabs' ] = $subtabs;

@@ -537,6 +537,10 @@ function wpbc_dashboard_section_news() {
 
 			$show_version = substr( WPDEV_BK_VERSION, 3 );
 
+			if ( ( '' === trim( $show_version ) ) || ( '0' === trim( $show_version ) ) ) {
+				return esc_attr( WP_BK_VERSION_NUM );
+			}
+
 			if ( substr( $show_version, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) ) ) === WP_BK_VERSION_NUM ) {
 				$show_version = substr( $show_version, 0, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) - 1 ) );
 				$show_version = str_replace( '.', ' ', $show_version ) . " <sup><strong style='font-size:12px;'>" . esc_attr( WP_BK_VERSION_NUM ) . "</strong></sup>";
@@ -559,7 +563,7 @@ function wpbc_dashboard_section_version() {
     Disbale hidded notice about Upgrade to  higher version in paid versions
     // FixIn: 8.0.1.6.
     if ( ( $version !== 'free' ) && ( class_exists('wpdev_bk_multiuser') === false ) ) { ?>
-        <div class="wpbc_dashboard_section border_orrange" id="bk_upgrade_section"> 
+        <div class="wpbc_dashboard_section border_orrange" id="bk_upgrade_section">
             <div style="padding:0px 10px;width:96%;">
                 <h4><?php esc_html_e('Upgrade to higher versions' , 'booking' ); ?>:</h4>
                 <p>Check additional advanced functionality, which exist in higher versions and can be interesting for you <a href="https://wpbookingcalendar.com/features/" target="_blank">here &raquo;</a></p>
@@ -574,7 +578,7 @@ function wpbc_dashboard_section_version() {
                 });
             </script>
         <?php } ?>
-    <?php } 
+    <?php }
     */
     ?>
     <div id="wpbc_dashboard_section_current_version" class="wpbc_dashboard_section" >
@@ -588,8 +592,8 @@ function wpbc_dashboard_section_version() {
 			<?php } ?>
             <tr class="first">
                 <td style="width:35%;text-align: right;;" class=""><?php esc_html_e('Version' ,'booking'); ?>:</td>
-                <td style="color: #e50;font-size: 13px;font-weight: 600;text-align: left;text-shadow: 0 -1px 0 #eee;;" 
-                    class="bk_spec_font"><?php 
+                <td style="color: #e50;font-size: 13px;font-weight: 600;text-align: left;text-shadow: 0 -1px 0 #eee;;"
+                    class="bk_spec_font"><?php
 					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo wpbc_dashboard_info_get_version_number();
 
@@ -637,8 +641,8 @@ function wpbc_dashboard_section_version() {
 			</table>
 		</div>
     </div>
-    
-    <?php 
+
+    <?php
 }
 
 

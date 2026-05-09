@@ -206,15 +206,17 @@ public function define_admin_menu(){
                                                                             )
                                                 );
 
-    self::$instance->admin_menu['new']    = new WPBC_Admin_Menus(
-                                                    'wpbc-new' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => '+ ' . ucwords( __('Add booking', 'booking') )	// FixIn: 10.9.3.1.
-                                                  , 'page_header'   => ucwords( __('Add booking','booking') )
-                                                  , 'browser_header'=> ucwords( __('Add booking', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_addbooking' )
-                                                                            )
-                                                );
+	self::$instance->admin_menu['new'] = new WPBC_Admin_Menus(
+		'wpbc-new',
+		array(
+			'in_menu'        => 'wpbc',
+			'menu_title'     => '+ ' . ucwords( __( 'Add booking', 'booking' ) ),                                      // FixIn: 10.9.3.1.
+			'page_header'    => ucwords( __( 'Add booking', 'booking' ) ),
+			'browser_header' => ucwords( __( 'Add booking', 'booking' ) ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+			'user_role'      => get_bk_option( 'booking_user_role_addbooking' ),
+		)
+	);
+
     self::$instance->admin_menu['availability']    = new WPBC_Admin_Menus(												// FixIn: 9.3.0.1.
                                                     'wpbc-availability' , array (
                                                     'in_menu' => 'wpbc'
@@ -318,11 +320,11 @@ public function define_admin_menu(){
 	}
 }
 
-    
-    
-    /** 
+
+
+    /**
 	 * Get Menu Object
-     * 
+     *
      * @param type  - menu type
      * @return boolean
      */
@@ -330,11 +332,11 @@ public function define_admin_menu(){
 
         if ( isset( self::$instance->admin_menu[ $type ] ) )
             return self::$instance->admin_menu[ $type ];
-        else 
+        else
             return false;
     }
 
-    
+
     // Include Files
     private function includes() {
         require_once WPBC_PLUGIN_DIR . '/includes/wpbc-include.php' ;
@@ -366,17 +368,17 @@ public function define_admin_menu(){
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Action is not allowed!', 'booking' ), '1.0' );
     }
 
-    
+
     // Unserializing instances of the class is forbidden
     public function __wakeup() {
 
         _doing_it_wrong( __FUNCTION__, esc_html__( 'Action is not allowed!', 'booking' ), '1.0' );
     }
 
-    
+
     // Initialization
     private function start(){
-        
+
         if (  ( defined( 'DOING_AJAX' ) )  && ( DOING_AJAX )  ){                        // New A J A X    R e s p o n d e r
 
 	        if ( 1 ) {
@@ -387,8 +389,8 @@ public function define_admin_menu(){
 		        }
 	        }
 
-            require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-ajax.php';                        // Ajax 
-            
+            require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-ajax.php';                        // Ajax
+
             return false;
         } else {                                                                        // Usual Loading of plugin
 
@@ -400,23 +402,23 @@ public function define_admin_menu(){
                 // Define Notices System
                 self::$instance->notice = new WPBC_Notices();
             }
-            
+
             // Normal Start
             self::$instance->booking_obj = new wpdev_booking();                                    // GO
-            
+
             // Cron Jobs ..... /////////////////////////////////////////////////
             self::$instance->cron = new WPBC_Cron();
             ////////////////////////////////////////////////////////////////////
         }
         return true;
     }
-    
+
 }
 
 else:   // Its seems that  some instance of Booking Calendar still activted!!!
-    
+
     // FixIn: 7.0.1.6.
-    global $wp_version;                                                     
+    global $wp_version;
     $wpbc_min_wp_version = version_compare( WP_BK_MIN_WP_VERSION, $wp_version, '<=' );
 
     // FixIn: 7.0.1.6.
@@ -424,25 +426,25 @@ else:   // Its seems that  some instance of Booking Calendar still activted!!!
 
         $message_type = 'error';
         $title        = __( 'Error' , 'booking') . '!';
-        
-        
-        $message = 'Booking Calendar ';
-        
-        $booking_version_num = get_option( 'booking_version_num');        
-        if ( ! empty( $booking_version_num ) )
-            $message .= '<strong>' . $booking_version_num . '</strong> '; 
-        
-        
-        global $wp_version; 
 
-        $message .= sprintf(  'require minimum %s . You are using %s. ' 
-                                                        , ' <strong>' . 'WordPress ' . WP_BK_MIN_WP_VERSION . '</strong>'  
-                                                        , ' <strong>' . 'WordPress ' . $wp_version . '</strong>' );                
+
+        $message = 'Booking Calendar ';
+
+        $booking_version_num = get_option( 'booking_version_num');
+        if ( ! empty( $booking_version_num ) )
+            $message .= '<strong>' . $booking_version_num . '</strong> ';
+
+
+        global $wp_version;
+
+        $message .= sprintf(  'require minimum %s . You are using %s. '
+                                                        , ' <strong>' . 'WordPress ' . WP_BK_MIN_WP_VERSION . '</strong>'
+                                                        , ' <strong>' . 'WordPress ' . $wp_version . '</strong>' );
         if ( current_user_can( 'update_core' ) ){
             $message .= ' <a href="' . esc_url( self_admin_url( 'update-core.php' ) ) . '">' .  'Return to Dashboard &rarr; Updates'  . '</a>';
-        }				
-			
-                
+        }
+
+
         $message_content = '';
 
         $message_content .= '<div class="clear"></div>';
@@ -459,27 +461,27 @@ else:   // Its seems that  some instance of Booking Calendar still activted!!!
         $message_content .= '<div class="clear"></div>';
 
         echo wp_kses_post( $message_content );
-    }    
-    
+    }
+
     function wpbc_show_activation_error() {
 
         $message_type = 'error';
         $title        = __( 'Error' , 'booking') . '!';
         $message      = 'Please deactivate previous old version of'  . ' ' . 'Booking Calendar';
-        
-        $booking_version_num = get_option( 'booking_version_num');        
+
+        $booking_version_num = get_option( 'booking_version_num');
         if ( ! empty( $booking_version_num ) )
-            $message .= ' <strong>' . $booking_version_num . '</strong>'; 
-        
-        
+            $message .= ' <strong>' . $booking_version_num . '</strong>';
+
+
         $is_delete_if_deactive =  get_bk_option( 'booking_is_delete_if_deactive' ); // check
 
-        if ( $is_delete_if_deactive == 'On' ) { 
-            
+        if ( $is_delete_if_deactive == 'On' ) {
+
             $message .= '<br/><br/> <strong>Warning!</strong> ' . 'All plugin data will be deleted when plugin had deactivated.' . ' '
                 . sprintf( 'If you want to save your plugin data, please uncheck the %s"Delete plugin data"%s at the', '<strong>', '</strong>') . ' ' . __( 'Settings' , 'booking' ) . '.';
         }
-        
+
         $message_content = '';
 
         $message_content .= '<div class="clear"></div>';
@@ -494,7 +496,7 @@ else:   // Its seems that  some instance of Booking Calendar still activted!!!
         $message_content .= '</div>';
 
         $message_content .= '<div class="clear"></div>';
-        
+
         echo wp_kses_post( $message_content );
     }
 
@@ -503,7 +505,7 @@ else:   // Its seems that  some instance of Booking Calendar still activted!!!
         add_action('admin_notices', 'wpbc_show_min_wp_version_error');
     else
         add_action('admin_notices', 'wpbc_show_activation_error');
-    
+
     return;         // Exit
 
 endif;
@@ -535,14 +537,14 @@ function wpbc_show_debug_info() {
     if ( strpos( $request_uri, 'page=wpbc') === false ) {
         return;
     }
-    echo '<div style="width:800px;margin:10px auto;"><style type="text/css"> a:link{background: inherit !important; } pre { white-space: pre-wrap; }</style>'; 
+    echo '<div style="width:800px;margin:10px auto;"><style type="text/css"> a:link{background: inherit !important; } pre { white-space: pre-wrap; }</style>';
 // phpcs:ignore WordPress.PHP.DevelopmentFunctions.prevent_path_disclosure_phpinfo
 phpinfo();  echo '</div>'; return;
-    
-    ?><div style="width:auto;margin:0 0 0 215px;font-size:11px;    "><?php 
+
+    ?><div style="width:auto;margin:0 0 0 215px;font-size:11px;    "><?php
 
 // SYSTEM  INFO SHOWING ////////////////////////////////////////////////////////
-    
+
     //Note firstly  need to  define this in functions.php file:   define('SAVEQUERIES', true);
     global $wpdb;
     echo '<div class="clear"></div>START SYSTEM<pre>';
@@ -550,8 +552,8 @@ phpinfo();  echo '</div>'; return;
         $total_time = 0;
         $total_num = 0;
         foreach ( $wpdb->queries as $qq_k => $qq ) {
-            if ( 
-                       ( strpos( $qq[0], 'booking') !== false ) 
+            if (
+                       ( strpos( $qq[0], 'booking') !== false )
 
                 ) {
                 if ( $qq[1] > 0.002 ) { echo '<div style="color:#A77;font-weight:bold;">'; }
@@ -563,20 +565,19 @@ phpinfo();  echo '</div>'; return;
         }
 
 	echo '<div><pre class="prettyprint linenums" style="font-size:18px;">[' . esc_html( $total_num . '/' . $total_time ) . '] WPBC Requests TOTAL TIME</pre></div>';
-    
+
         echo '<div class="clear"></div>';
 
 	echo '<div><pre class="prettyprint linenums" style="font-size:18px;">' . esc_html( get_num_queries() . '/' . timer_stop( 0, 3 ) ) . 'qps</pre></div>';
-        
-        echo '<div class="clear"></div>'; 
-            
+
+        echo '<div class="clear"></div>';
+
     echo "</pre>";
     ?><br/><br/><br/><br/><br/><br/><?php
-    echo '<div class="clear"></div>'; 
+    echo '<div class="clear"></div>';
 
 ////////////////////////////////////////////////////////////////////////////////
     ?></div><?php
-    
+
     echo '</div>';
 }
-

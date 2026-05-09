@@ -276,7 +276,7 @@ class WPBC_Welcome {
 			<a class="button button-primary"
 			   href="<?php
 			   echo esc_url( wpbc_get_bookings_url() . '&tab=vm_booking_listing' ); ?>"
-			   style="font-size: 20px;padding: 0.15em 1.5em;"><?php
+			   style="font-size: 20px;padding: 0 1em;height: 44px;line-height: 40px;"><?php
 				esc_html_e( 'Go to Booking Admin Panel', 'booking' ); ?></a>
 			<?php
 			$wpbc_starter_pages = function_exists( 'wpbc_get_published_activation_booking_pages' ) ? wpbc_get_published_activation_booking_pages() : array();
@@ -284,7 +284,7 @@ class WPBC_Welcome {
 				foreach ( $wpbc_starter_pages as $wpbc_starter_page ) {
 					?>
 					<a class="button button-secondary"
-					   style="font-size: 20px;padding: 0.15em 1em;"
+					   style="font-size: 20px;padding: 0 1em;height: 44px;line-height: 40px;"
 					   href="<?php
 					   echo esc_url( $wpbc_starter_page['url'] ); ?>"
 					><?php
@@ -296,7 +296,7 @@ class WPBC_Welcome {
 				if ( ! empty( $wp_post_booking_absolute ) ) {
 				?>
 				<a class="button button-secondary"
-				   style="font-size: 20px;padding: 0.15em 1em;"
+				   style="font-size: 20px;padding: 0 1em;height: 44px;line-height: 40px;"
 				   href="<?php
 				   echo esc_url( $wp_post_booking_absolute ); ?>"
 				><?php
@@ -320,6 +320,7 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
+		wpbc_welcome_section_11_0( $this );
 		wpbc_welcome_section_10_15( $this );
 		wpbc_welcome_section_10_14( $this );
 		wpbc_welcome_section_10_13( $this );
@@ -372,6 +373,7 @@ class WPBC_Welcome {
 
 
 		function section_img_url( $relative_path_to_img ) {
+
 			return esc_url( $this->asset_path . $relative_path_to_img );
 		}
 

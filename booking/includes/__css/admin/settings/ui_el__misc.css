@@ -82,6 +82,8 @@
 	position: fixed;
 	top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + 3px);
 	right: 65px;
+	top: calc(var(--wpbc_ui_top_nav__wp_top_menu_height) + 55px);
+	right: 10px;
 	padding: 10px 12px;
 	word-break: break-all;
 	max-width: 50%;

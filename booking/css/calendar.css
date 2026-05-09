@@ -62,6 +62,7 @@
     .wpbc_calendar_wraper{
         min-width: 341px;
         min-width: Min(341px, 100%);
+		text-align: center;
     }
 /* FixIn: 9.8.3.1  - Min. WIDTH of calendar One Month, before Wrap to next ROW ====================================== */
 .bk_calendar_frame .datepick-inline,

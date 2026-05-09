@@ -27,12 +27,6 @@ function wpbc_ui__get_root_menu_arr() {
 			'title'     => __( 'Bookings', 'booking' ),
 			'font_icon' => 'wpbc-bi-collection',
 		),
-		'wpbc-new'          => array(
-			'type'      => 'menu',
-			'title'     => __( 'Add Booking', 'booking' ),
-			'font_icon' => 'wpbc-bi-plus',
-			'url'       => wpbc_get_new_booking_url(),
-		),
 		'wpbc-divider-1'    => array(
 			'type' => 'divider',
 		),

@@ -884,7 +884,7 @@ function wpbc_stp_wiz__widget__cal_availability__advanced_availability(){
 			<?php
 				esc_html_e( 'You can always change this later', 'booking' );
 				echo ' - ';
-				echo '<a href="'. esc_attr( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab' ).'">Settings > Availability</a>';
+				echo '<a href="' . esc_attr( function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ) ) . '">Availability > General Availability</a>';
 			?>
 		</div><?php
 

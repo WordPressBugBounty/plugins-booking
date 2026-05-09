@@ -24,45 +24,44 @@
     font-weight: 600;
     font-size: 1em;
 }
-#wpbc-admin-page.wpbc_page {}                                                   /* Booking Listing & Timeline */                                                                                
-#wpbc-new-admin-page.wpbc_page {}                                               /* Add New Booking */                                                                                
+#wpbc-admin-page.wpbc_page {}                                                   /* Booking Listing, Timeline & Add New Booking */
 #wpbc-resources-admin-page.wpbc_page {}                                         /* Resources */
 #wpbc-settings-admin-page.wpbc_page {}                                          /* Settings */
 
 /* Form elements - add new client */
-#wpbc-new-admin-page label.wpbc-form-checkbox {
+#wpbc-admin-page.wpbc_page_tab__add-booking label.wpbc-form-checkbox {
     margin: 7px 10px 7px 0;
     vertical-align: middle;
     line-height: 1.2em;
     height: 1.2em;
 }
-#wpbc-new-admin-page label.wpbc-form-checkbox input[type=checkbox] {
-    margin:-3px 5px 0 0;    
+#wpbc-admin-page.wpbc_page_tab__add-booking label.wpbc-form-checkbox input[type=checkbox] {
+    margin:-3px 5px 0 0;
     vertical-align: middle;
 }
-#wpbc-new-admin-page label.wpbc-form-radio {
+#wpbc-admin-page.wpbc_page_tab__add-booking label.wpbc-form-radio {
     margin: 7px 10px 7px 0;
     vertical-align: middle;
     line-height: 1.5em;
-    height: 1.5em;    
+    height: 1.5em;
 }
-#wpbc-new-admin-page label.wpbc-form-radio input[type=radio] {
+#wpbc-admin-page.wpbc_page_tab__add-booking label.wpbc-form-radio input[type=radio] {
     margin:-3px 5px 0 0;
-    vertical-align: middle;    
+    vertical-align: middle;
 }
 
 /* Selection of booking resources */
-.visibility_container select option.wpbc_single_resource, 
+.visibility_container select option.wpbc_single_resource,
 select option.wpbc_single_resource{
     padding:3px;
     font-weight:600;
 }
-.visibility_container select option.wpbc_parent_resource, 
+.visibility_container select option.wpbc_parent_resource,
 select option.wpbc_parent_resource{
     font-weight:600;
     padding:3px;
 }
-.visibility_container select option.wpbc_child_resource, 
+.visibility_container select option.wpbc_child_resource,
 select option.wpbc_child_resource{
     padding:3px 0 3px 20px;
     font-weight: 400
@@ -93,7 +92,7 @@ select option.wpbc_child_resource{
     padding: 0 10px;
 }
 #wpbc-settings-admin-page .wpbc_sub_settings_grayed{
-    background-color: #f3f3f3;    
+    background-color: #f3f3f3;
 }
 #wpbc-settings-admin-page .wpbc_sub_settings_grayed th{
     padding: 10px 0 0 20px;
@@ -123,7 +122,7 @@ select option.wpbc_child_resource{
     outline: 0;
     border:none;
     border-bottom:1px dashed #21759B;
-    text-decoration: none;      
+    text-decoration: none;
 }
 /* Warning message in Demo  version */
 .wpbc_demo_test_version_warning {
@@ -135,7 +134,7 @@ select option.wpbc_child_resource{
     margin: 0;
     text-align: left;
     color: #AA4400;
-    text-shadow: 0 -1px 0 #FFEEEE;    
+    text-shadow: 0 -1px 0 #FFEEEE;
 }
 
 /* Remove shadow at button of ajax loading upgrade section at Settings > Upgrade page */
@@ -168,20 +167,20 @@ select option.wpbc_child_resource{
     font-size: 1em;
     font-weight: 600;
     margin: 10px 0;
-    opacity: 1;    
+    opacity: 1;
 }
 /*#bk_registration_info_reload, */
 #bk_errror_loading .info_message {
     font-size: 1.1em;
     font-weight: 600;
     margin: 10px 0;
-    opacity: 1;    
+    opacity: 1;
 }
 /* Align buttons center for Free version //FixIn: 7.1.2.5 */
 .field-action-buttons.booking-actions.col-sm-2 {
     text-align: center;
 }
-@media (max-width: 782px) { 
+@media (max-width: 782px) {
     .field-action-buttons.booking-actions.col-sm-2 {
         text-align: left;
     }

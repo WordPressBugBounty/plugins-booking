@@ -1,0 +1,121 @@
+/**
+ * Shared right palette styles for Booking Calendar admin pages.
+ */
+
+.wpbc_rightbar_palette {
+	--wpbc-palette-accent: var(--wpbc-ts-red, #df202b);
+	--wpbc-palette-bg: var(--wpbc-ts-bg, #fff);
+	--wpbc-palette-bg-soft: var(--wpbc-ts-bg-soft, #f6f7f7);
+	--wpbc-palette-border: var(--wpbc-ts-border, #dfe4ea);
+	--wpbc-palette-muted: var(--wpbc-ts-muted, #646970);
+	--wpbc-palette-radius: var(--wpbc-ts-radius, 6px);
+	--wpbc-palette-text: var(--wpbc-ts-text, #1d2327);
+}
+.wpbc_ui_el__vert_right_bar__content .wpbc_ui_el__expand_colapse_btns {
+	display: none;
+}
+
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head {
+	border-bottom: 1px solid var(--wpbc-palette-border);
+	margin: 0;
+	padding: 0 10px 10px 10px;
+}
+
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head .header_container {
+	padding: 0;
+}
+
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head .title {
+	color: var(--wpbc-palette-text);
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: 0;
+	line-height: 1.74;
+	margin: 0;
+	text-transform: uppercase;
+}
+
+.wpbc_rightbar_palette .wpbc_bfb__inspector__head .desc {
+	color: var(--wpbc-palette-muted);
+	font-size: 12px;
+	line-height: 1.75;
+	margin: 5px 0 0;
+}
+
+.wpbc_rightbar_palette .wpbc_bfb__inspector__body,
+.wpbc_rightbar_palette .wpbc_ts_inspector_body {
+	padding: 0;
+}
+
+.wpbc_rightbar_palette__row,
+.wpbc_rightbar_palette .wpbc_ts_inspector_row {
+	align-items: flex-start;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 8px;
+	margin-bottom: 14px;
+}
+
+.wpbc_rightbar_palette__row.row__bordered,
+.wpbc_rightbar_palette .wpbc_ts_inspector_row.row__bordered {
+	background: var(--wpbc-palette-bg-soft);
+	border: 1px solid var(--wpbc-palette-border);
+	border-radius: var(--wpbc-palette-radius);
+	padding: 10px;
+}
+
+.wpbc_rightbar_palette__label,
+.wpbc_rightbar_palette__value,
+.wpbc_rightbar_palette .wpbc_ts_inspector_label,
+.wpbc_rightbar_palette .wpbc_ts_inspector_value {
+	flex: 1 1 100%;
+}
+
+.wpbc_rightbar_palette__label,
+.wpbc_rightbar_palette .wpbc_ts_inspector_label {
+	color: var(--wpbc-palette-text);
+	font-weight: 600;
+}
+
+.wpbc_rightbar_palette__value,
+.wpbc_rightbar_palette .wpbc_ts_inspector_value {
+	color: var(--wpbc-palette-muted);
+	line-height: 1.5;
+}
+
+.wpbc_rightbar_palette__select,
+.wpbc_rightbar_palette .wpbc_ts_inspector_select {
+	min-height: 36px;
+	width: 100%;
+}
+
+.wpbc_rightbar_palette__segmented,
+.wpbc_rightbar_palette .wpbc_ts_segmented {
+	background: var(--wpbc-palette-bg);
+	border: 1px solid var(--wpbc-palette-border);
+	border-radius: var(--wpbc-palette-radius);
+	display: flex;
+	margin-bottom: 12px;
+	overflow: hidden;
+}
+
+.wpbc_rightbar_palette__segmented a,
+.wpbc_rightbar_palette .wpbc_ts_segmented a {
+	border-right: 1px solid var(--wpbc-palette-border);
+	color: var(--wpbc-palette-text);
+	flex: 1 1 0;
+	padding: 9px 12px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.wpbc_rightbar_palette__segmented a:last-child,
+.wpbc_rightbar_palette .wpbc_ts_segmented a:last-child {
+	border-right: 0;
+}
+
+.wpbc_rightbar_palette__segmented a.is-active,
+.wpbc_rightbar_palette .wpbc_ts_segmented a.is-active {
+	background: var(--wpbc-palette-accent);
+	color: #fff;
+}

@@ -198,7 +198,8 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 				'font_icon'       => 'wpbc-bi-calendar2-day',
 				'font_icon_right' => 'wpbc-bi-question-circle',
 				'css_classes'     => 'do_expand__' . $section_id . '_link',
-				'onclick'         => "wpbc_admin_ui__do__open_url__expand_section( '" . wpbc_get_settings_url() . "', '" . $section_id . "' );",
+				'link'            => function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ),
+				'onclick'         => '',
 				'default'         => false,
 			)
 		);
@@ -545,6 +546,13 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 			return false;
 		}  // User is not Super admin, so exit.  Basically its was already checked at the bottom of the PHP file, just in case.
 
+		// Redirect legacy Settings > Availability links to the dedicated General Availability page.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( ( ! empty( $_GET['scroll_to_section'] ) ) && ( 'wpbc_general_settings_availability_tab' === sanitize_text_field( wp_unslash( $_GET['scroll_to_section'] ) ) ) ) {
+			wpbc_redirect( function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ) );
+			return;
+		}
+
 		$is_can = apply_bk_filter( 'recheck_version', true );
 		if ( ! $is_can ) {
 			?>
@@ -636,7 +644,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 						<?php
 						$title = esc_attr__( 'Availability', 'booking' );
 						?>
-						<a onclick="javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_availability_tab a' ,'#wpbc_general_settings_availability_metabox', '<?php echo esc_js( $title ); ?>' );" href="javascript:void(0);"><span><?php echo esc_html( $title ); ?></span></a>
+						<a href="<?php echo esc_url( function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ) ); ?>"><span><?php echo esc_html( $title ); ?></span></a>
 					</div>
 					<div id="wpbc_general_settings_capacity_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
 						<?php
@@ -758,7 +766,7 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 						<?php
 						$title = esc_attr__( 'Show All Settings', 'booking' );
 						?>
-						<a 	onclick="javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_all_tab a' ,'.postbox', '<?php echo esc_js( $title ); ?>' );" 
+						<a 	onclick="javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_all_tab a' ,'.postbox', '<?php echo esc_js( $title ); ?>' );"
 							href="javascript:void(0);"><span><?php echo esc_html( $title ); ?></span></a>
 					</div>
 
@@ -1107,4 +1115,4 @@ if ( ! wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) {                    
 */
 
  add_action('wpbc_menu_created', array( new WPBC_Page_SettingsGeneral() , '__construct') );    // Executed after creation of Menu
- 
+

@@ -195,14 +195,14 @@ div.datepick-inline .datepick-title-row th {
   font-size: var(--wpbc_cal-text-general-size);
 }
 /* Mo Tu We Th Fr Sa Su */
-/*#wpbc-new-admin-page .booking_form_div .datepick-inline .datepick .datepick-title-row th,*/
-/*#wpbc-new-admin-page .booking_form_div .datepick-inline .datepick .datepick-title-row th *,*/
+/*#wpbc-admin-page.wpbc_page_tab__add-booking .booking_form_div .datepick-inline .datepick .datepick-title-row th,*/
+/*#wpbc-admin-page.wpbc_page_tab__add-booking .booking_form_div .datepick-inline .datepick .datepick-title-row th *,*/
 .datepick-inline .datepick .datepick-title-row th {
   font-size: var(--wpbc_cal-text-weekdays-size);
 }
 /* Month Name */
-/*#wpbc-new-admin-page .datepick-inline .datepick-header, */
-/*#wpbc-new-admin-page .datepick-inline .datepick-header span,*/
+/*#wpbc-admin-page.wpbc_page_tab__add-booking .datepick-inline .datepick-header, */
+/*#wpbc-admin-page.wpbc_page_tab__add-booking .datepick-inline .datepick-header span,*/
 .datepick-inline .datepick-header,
 .datepick-inline .datepick-header span{
   font-size: var(--wpbc_cal-text-header-size);

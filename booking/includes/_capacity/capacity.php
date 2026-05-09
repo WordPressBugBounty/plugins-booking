@@ -556,6 +556,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		'timeslots_to_check_intersect' => array(),                                            // arr:  '12:20 - 12:55', '13:00 - 14:00' )         // TODO: ? do we really need it, because below we get it from function.
 		'request_uri'                  => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ),  // front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages.
 		'custom_form'                  => '',                                                 // Required for checking all available time-slots and compare with  booked time slots.
+		'force_check_from_today_unavailable' => false,                                        // Optional admin tools can force relative availability checks inside explicit date ranges.
 	);
 
 	$params = wp_parse_args( $params, $defaults );
@@ -564,7 +565,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	if (
 		( false !== strpos( $params['request_uri'], 'allow_past' ) ) ||
 		(
-			( false !== strpos( $params['request_uri'], 'page=wpbc-new' ) ) &&
+			wpbc_is_new_booking_page_url( $params['request_uri'] ) &&
 			( false !== strpos( $params['request_uri'], 'booking_hash' ) )
 		)
 	) {
@@ -686,7 +687,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	// - Is this Booking > Add booking page ? --------------------------------------------------------------------------
-	$is_this_bap_page  = ( false !== strpos( $params['request_uri'], 'page=wpbc-new' ) ) ? true : false;
+	$is_this_bap_page  = wpbc_is_new_booking_page_url( $params['request_uri'] );
 	$is_this_hash_page = ( false !== strpos( $params['request_uri'], 'booking_hash' ) ) ? true : false;                // Set it to TRUE for adding booking in past at Booking > Add booking page
 
 	// FixIn: 10.7.1.2.
@@ -782,6 +783,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		$availability_per_day[ $my_day_tag ]['summary'] = array();
 		$availability_per_day[ $my_day_tag ]['summary']['status_for_day']       = '';                   // available | time_slots_booking | full_day_booking | ...
 		$availability_per_day[ $my_day_tag ]['summary']['status_for_bookings']  = '';                   // pending   |  approved   | CO:   pending_pending  |  pending_approved  |   approved_pending  |   approved_approved
+		$availability_per_day[ $my_day_tag ]['summary']['status_for_bookings_arr'] = array();           // Structured statuses array, e.g. array( 'approved', 'approved_approved' ).
 		$availability_per_day[ $my_day_tag ]['summary']['tooltip_times']        = '';
 		$availability_per_day[ $my_day_tag ]['summary']['tooltip_availability'] = '';
 		$availability_per_day[ $my_day_tag ]['summary']['tooltip_day_cost']     = '';
@@ -958,7 +960,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 				// =====================================================================================================
 				if (
 					   ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) )
-					&& ( wpbc_is_booking_used_check_in_out_time( $params[ 'request_uri' ] ) )
+					&& ( wpbc_is_booking_used_check_in_out_time( $params[ 'request_uri' ], $resource_id ) )
 					&& ( ! $availability_per_day[ $my_day_tag ][ $resource_id ]->is_day_unavailable )   // And this date still free                                 false
 				) {
 
@@ -1066,16 +1068,18 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			// Booking > Availability page                      >>>             'resource_availability'
 			$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__resource_availability( $availability_per_day, $my_day_tag, $resource_id, $unavailable_dates__per_resources__arr );
 
-			// Week Days unavailable                            >>>            'weekday_unavailable'
-			$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__weekday_unavailable( $availability_per_day, $my_day_tag, $resource_id );
+			if ( empty( $params['skip_general_availability'] ) ) {
+				// Week Days unavailable                        >>>            'weekday_unavailable'
+				$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_support_capacity__day_status__weekday_unavailable( $availability_per_day, $my_day_tag, $resource_id );
+			}
 
 			// if ( ( ! $is_this_bap_page ) || ( ! $is_this_hash_page ) ) {
-			if ( ( ! $is_this_bap_page ) && ( ! $is_this_hash_page ) ) {
+			if ( empty( $params['skip_general_availability'] ) && ( ! $is_this_bap_page ) && ( ! $is_this_hash_page ) ) {
 				// Do not apply these settings at Booking > Add booking page, when we edit booking - e.g. exist 'booking_hash'
 
 				// Skip checking unavailable from  today,  if defined the calendar_dates_start='2025-02-10' calendar_dates_end='2025-12-31' in shortcode. // FixIn: 10.13.1.4.
 				$is_skip_check__from_today_unavailable = false;
-				if ( is_array( $params['dates_to_check'] ) ) {
+				if ( is_array( $params['dates_to_check'] ) && empty( $params['force_check_from_today_unavailable'] ) ) {
 					if ( ( ( count( $params['dates_to_check'] ) ) > 0 ) && ( wpbc_is_date_less_than( $params['dates_to_check'][0], $my_day_tag ) ) ) {
 						$is_skip_check__from_today_unavailable = true;
 					}
@@ -1270,17 +1274,19 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			}
 		}
 		$temp_status = array_filter( $temp_status );                                                                    // All entries of array equal to FALSE (0, '', '0' ) will be removed.
-		$temp_status = array_unique( $temp_status );
-		$availability_per_this_day['summary']['status_for_bookings'] = $temp_status;
+		$temp_status = array_values( array_unique( $temp_status ) );
+
+		// Structured booking statuses contract. Keep numeric keys sequential so JSON encodes this as a JS array.
+		$availability_per_this_day['summary']['status_for_bookings_arr'] = $temp_status;
 
 		// Priority:    pending > approved > ''
 
 		// if at least one booking pending then day is pending
-		if ( in_array( 'pending',  $availability_per_this_day['summary']['status_for_bookings'] ) ) {                  $availability_per_this_day['summary']['status_for_bookings'] = 'pending';
-		} else if ( in_array( 'pending_pending',  $availability_per_this_day['summary']['status_for_bookings'] ) ) {   $availability_per_this_day['summary']['status_for_bookings'] = 'pending_pending';
+		if ( in_array( 'pending',  $temp_status ) ) {                  $availability_per_this_day['summary']['status_for_bookings'] = 'pending';
+		} else if ( in_array( 'pending_pending',  $temp_status ) ) {   $availability_per_this_day['summary']['status_for_bookings'] = 'pending_pending';
 			// Usual  situations for change over days:  pending_pending  |  pending_approved  |   approved_pending  |   approved_approved
 		} else {
-			 $availability_per_this_day['summary']['status_for_bookings'] = implode( ' ',  $availability_per_this_day['summary']['status_for_bookings'] );
+			 $availability_per_this_day['summary']['status_for_bookings'] = implode( ' ',  $temp_status );
 		}
 
 

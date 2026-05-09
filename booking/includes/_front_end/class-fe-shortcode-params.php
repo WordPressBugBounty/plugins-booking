@@ -426,7 +426,13 @@ class WPBC_FE_Attr_Postprocessor {
 	public static function resolve_booking_hash_and_maybe_get_parent_resource_id( $params_arr, $context = 'form' ) {
 
 		// Legacy behavior: ONLY checks key existence, not “non-empty”.
-		if ( ! WPBC_GET_Request::has_non_empty_get( 'booking_hash' ) ) {
+		$get_booking_hash = isset( $params_arr['booking_hash'] ) ? sanitize_text_field( wp_unslash( (string) $params_arr['booking_hash'] ) ) : '';
+
+		if ( '' === $get_booking_hash ) {
+			$get_booking_hash = WPBC_GET_Request::has_non_empty_get( 'booking_hash' ) ? WPBC_GET_Request::get_sanitized( 'booking_hash' ) : '';
+		}
+
+		if ( '' === $get_booking_hash ) {
 			return array(
 				'ok'         => true,
 				'params_arr' => $params_arr,
@@ -448,8 +454,6 @@ class WPBC_FE_Attr_Postprocessor {
 				'error_html' => $is_error,
 			);
 		}
-
-		$get_booking_hash = WPBC_GET_Request::get_sanitized( 'booking_hash' );
 
 		$my_booking_id_type = wpbc_hash__get_booking_id__resource_id( $get_booking_hash );
 

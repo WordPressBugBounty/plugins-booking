@@ -279,8 +279,8 @@ function wpbc_hook__init_booking_form_wizard_buttons() {
 		}
 	);
 
-	jQuery( '.wpbc_wizard_step_button' ).on(
-		'click',
+	jQuery( '.wpbc_wizard_step_button' ).off( 'click.wpbc_booking_form_wizard' ).on(
+		'click.wpbc_booking_form_wizard',
 		function (event) {
 			var found_steps_arr = jQuery( this ).attr( 'class' ).match( /wpbc\_wizard\_step\_([\d]+)([\s'"]+|$)/ );
 

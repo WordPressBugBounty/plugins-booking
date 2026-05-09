@@ -510,13 +510,8 @@ function wpbc_ui_settings__panel__calendar( $params = array() ) {
 
 		$title   = esc_attr__( 'General Availability', 'booking' );
 
-		if ( ! empty( $params['is_use_permalink'] ) ) {
-			$permalink = wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_availability_tab';
-			$onclick   = "";
-		} else {
-			$permalink = 'javascript:void(0);';
-			$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_availability_tab a' ,'#wpbc_general_settings_availability_metabox', '" . $title . "' );";
-		}
+		$permalink = function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' );
+		$onclick   = "";
 
 		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__general_availability">
 			<div class="wpbc_ui_settings__text_row">

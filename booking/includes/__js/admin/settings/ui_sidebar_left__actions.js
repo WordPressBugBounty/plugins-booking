@@ -152,8 +152,25 @@ function wpbc_url_get_anchors_arr() {
 /**
  * Auto Expand Settings section based on URL anchor, after  page loaded.
  */
+jQuery( document ).ready( function () { wpbc_admin_ui__redirect_legacy_general_availability_url(); } );
 jQuery( document ).ready( function () { wpbc_admin_ui__do_expand_section(); setTimeout( 'wpbc_admin_ui__do_expand_section', 10 ); } );
 jQuery( document ).ready( function () { wpbc_admin_ui__do_expand_section(); setTimeout( 'wpbc_admin_ui__do_expand_section', 150 ); } );
+
+/**
+ * Redirect old Settings > Availability anchors to the dedicated General Availability page.
+ */
+function wpbc_admin_ui__redirect_legacy_general_availability_url() {
+
+	if (
+		   ( window.location.href.indexOf( 'page=wpbc-settings' ) > -1 )
+		&& (
+			   ( window.location.hash.indexOf( 'wpbc_general_settings_availability_metabox' ) > -1 )
+			|| ( window.location.hash.indexOf( 'wpbc_general_settings_availability_tab' ) > -1 )
+		)
+	) {
+		window.location.replace( window.location.href.split( '?' )[0] + '?page=wpbc-availability&tab=general_availability' );
+	}
+}
 
 /**
  * Expand section in  General Settings page and select Menu item.

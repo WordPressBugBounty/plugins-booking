@@ -237,7 +237,7 @@
 		border: 0;
 	}
 		/* R O W */
-		.wpbc_listing_usual_row {
+		div .wpbc_listing_usual_row {
 			flex: 1 1 100%;
 
 			display: flex;
@@ -246,6 +246,7 @@
 			align-items: flex-start;
 			border-bottom: 1px solid var(--wpbc_ui_listing__row_border_color);
 			border-left: 4px solid transparent;
+			margin:0;
 		}
 		.wpbc_listing_usual_row:last-child {
 			border-bottom: 0;

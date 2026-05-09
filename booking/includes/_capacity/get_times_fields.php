@@ -23,8 +23,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_get_times_fields_configuration__by_dates( $resource_id, $custom_form_name, $start_date_unix_timestamp, $days_count ){
 
-	// Get booking form configuration CONTENT
+	// Get booking form configuration CONTENT.
 	$booking_form_fields = wpbc_get__booking_form_fields__configuration( $resource_id, $custom_form_name );
+	// FixIn: 10.15.8.2.
+	// In BFB mode use the same resolved form source as the front-end renderer. The legacy loader above stays as a fallback.
+	if ( function_exists( 'wpbc_get__booking_form_pair__for_field_names_listing' ) ) {
+
+		$booking_form_pair = wpbc_get__booking_form_pair__for_field_names_listing( $resource_id, $custom_form_name );
+
+		if (
+			   is_array( $booking_form_pair )
+			&& isset( $booking_form_pair['form'] )
+			&& ( '' !== trim( (string) $booking_form_pair['form'] ) )
+		) {
+			$booking_form_fields = (string) $booking_form_pair['form'];
+		}
+	}
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Get conditional  sections,  if exist

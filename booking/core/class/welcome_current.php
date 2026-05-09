@@ -10,9 +10,119 @@ if ( !defined( 'ABSPATH' ) ) exit;
  *
  * @return void
  */
+function wpbc_welcome_section_11_0( $obj ) {
+
+	$section_param_arr = array( 'version_num' => '11.0', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+ 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Time Slots Availability' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.0/wp_booking_calendar__availability__time_slots_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+<!--				<img src="--><?php //echo esc_attr( $obj->section_img_url( '11.0/wp_booking_calendar__availability__time_slots_02.png' ) ); ?><!--" style="margin:10px 0;width:98%;" />-->
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added the **Time Slots Availability** page under **Booking Calendar > Availability**, allowing administrators to define unavailable time intervals for specific booking resources and date ranges.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Interactive timeline selection**: Select one or many days directly in the timeline, adjust start and end time, then block or unblock the selected interval.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Clear availability states**: The timeline now shows available, booked, unavailable, and full-day unavailable states in one place.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Finer control**: Work with visible time range controls, date range navigation arrows, and slot steps down to **5 minutes**.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Better long-range editing**: Sticky timeline headers and progress indicators make loading, blocking, unblocking, and saving easier to follow.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Set Times Availability Popup' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.0/wp_booking_calendar_11_0_set_times_availability_popup.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a reusable **Set Times Availability** popup to the Booking Listing page, so unavailable time intervals can be managed without leaving the bookings workflow.' ) ); ?></li>
+					<li><img src="<?php echo esc_attr( $obj->section_img_url( '11.0/wp_booking_calendar__add_booking _from__timeslots__availability_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+						<?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Create bookings from selected intervals**: Start a new booking directly from the selected time interval inside the Time Slots Availability popup.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Works across multiple days**: Select, block, unblock, and review unavailable intervals across a date range with booked and unavailable states visible.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Unavailable full-day reasons**: The popup can show days blocked by Days Availability, Season Availability, unavailable weekdays, unavailable time from current time, and limit available days from today settings.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Quick rule links**: Full-day unavailable timeline bars can link to the related availability settings page, helping administrators identify and adjust the rule that made a date unavailable.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Faster Add Booking Popup' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.0/wp_booking_calendar_11_0_add_booking_popup.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a faster **Add Booking** popup to the Booking Listing and Timeline pages, so users can create bookings without leaving the current view.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Prefilled from the timeline**: Selected booking resource, date, start time, and end time are passed into the popup when creating a booking from a selected interval.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Choose the right form in place**: Select the booking resource and custom booking form directly inside the popup.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Edit in the same workflow**: Existing bookings can be opened in the popup, with a direct link to edit the selected booking form when needed.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improved navigation**: The Add Booking page is now available under the Bookings section, and Booking Listing and Timeline include a clearer **New booking** quick-action button.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'General Availability Settings' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.0/wp_booking_calendar_11_0_general_availability_settings_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a **General Availability** settings page for defining global front-end availability rules across all calendars and booking resources.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Live calendar preview**: Review unavailable weekdays, availability limits from the current date, unavailable time from current time, and booking buffer effects before saving.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fast settings workflow**: Save changes with AJAX, reset preview controls to defaults, and continue working in the same page layout.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Consistent admin design**: Uses the shared right-side palette layout from the Availability pages and setup wizard interfaces.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Availability Accuracy and Reliability Fixes' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Fixed calendar booking status detection, improving how the front-end calendar reads approved and pending booking statuses for capacity-based resources, including parent/child resources and change-over dates.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Fixed availability calculation for Booking Form Builder forms with time-slot fields, so dates are marked as fully unavailable when all booking form time slots are already booked. (10.15.8.2)' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Fixed a fatal error on some hosts by reading the local PRO **meta.json** file directly instead of using WordPress FTP filesystem access.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: Front-end booking form calendars should now reflect real availability more clearly across booked, pending, blocked, and change-over dates.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
 function wpbc_welcome_section_10_15( $obj ) {
 
-	$section_param_arr = array( 'version_num' => '10.15', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '10.15', 'show_expand' => ! true );
 
 	$obj->expand_section_start( $section_param_arr );
 
@@ -30,7 +140,7 @@ function wpbc_welcome_section_10_15( $obj ) {
 
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
 				<ul>
-					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW / BETA**: Introduced the new **Drag & Drop Booking Form Builder** for visually creating booking forms without manually editing form code.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Introduced the new **Drag & Drop Booking Form Builder** for visually creating booking forms without manually editing form code.' ) ); ?></li>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Build forms visually**: Drag fields into the canvas, arrange the layout, and see the result instantly in the live preview.' ) ); ?></li>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Faster and easier workflow**: Create modern booking forms without working with complex manual shortcodes.' ) ); ?></li>
 					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Available in all versions**: Booking Calendar now supports **multiple custom booking form configurations** in all versions, including the Free version.' ) ); ?></li>

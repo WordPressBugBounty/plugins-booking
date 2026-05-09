@@ -220,6 +220,18 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
 	return false;
 }
 
+function wpbc_is_change_over_enabled_for_resource( resource_id ) {
+
+	if ( ( 'undefined' !== typeof resource_id ) && ( null !== resource_id ) ) {
+		var resource_change_over = _wpbc.calendar__get_param_value( resource_id, 'is_enabled_change_over' );
+		if ( '' !== resource_change_over ) {
+			return ( true === resource_change_over ) || ( 'true' === resource_change_over );
+		}
+	}
+
+	return true === _wpbc.get_other_param( 'is_enabled_change_over' );
+}
+
 
 /**
  * Check if the selected date/time is already in the past compared to "today_arr".
@@ -234,10 +246,10 @@ function wpbc_is_time_field_in_booking_form( resource_id, form_elements ){						
  * @param {Array<Array<string|number>>} sort_date_array Array of date arrays; first element is used as date to check.
  * @returns {boolean} True if selected date/time is in the past, otherwise false.
  */
-function wpbc_is_time_in_the_past_for_today(myTime, sort_date_array) {
+function wpbc_is_time_in_the_past_for_today(myTime, sort_date_array, resource_id) {
 
 	// FixIn: 10.14.10.2.
-	if ( true === _wpbc.get_other_param( 'is_enabled_change_over' ) ) {
+	if ( true === wpbc_is_change_over_enabled_for_resource( resource_id ) ) {
 		return false;
 	}
 	var date_to_check = sort_date_array[0];
@@ -340,7 +352,7 @@ function wpbc_is_valid_time_string(time_str) {
 	function wpbc_is_this_time_selection_not_available( resource_id, form_elements ){
 
 		// Skip this checking if we are in the Admin  panel at Add booking page
-		if ( location.href.indexOf( 'page=wpbc-new' ) > 0 ) {
+		if ( ( location.href.indexOf( 'page=wpbc' ) > 0 ) && ( location.href.indexOf( 'tab=add-booking' ) > 0 ) ) {
 			return false;
 		}
 
@@ -454,7 +466,7 @@ function wpbc_is_valid_time_string(time_str) {
 
 			if ( valid_time !== true ){
 				//return false;                                                  // do not show warning for setting pending days selectable,  if making booking for time-slot   // FixIn: 7.0.1.23.
-				if ( (_wpbc.get_other_param( 'is_enabled_change_over' )) && (element_start !== false) && (element_end !== false) ){      // FixIn: 6.1.1.1.
+				if ( ( wpbc_is_change_over_enabled_for_resource( resource_id ) ) && (element_start !== false) && (element_end !== false) ){      // FixIn: 6.1.1.1.
 					wpbc_front_end__show_message__warning_under_element( '#date_booking' + resource_id, _wpbc.get_message( 'message_check_no_selected_dates' )  );
 				}
 				if ( element_rangetime !== false ){ wpbc_front_end__show_message__warning_under_element( element_rangetime, _wpbc.get_message( 'message_error_range_time' ) ); }
@@ -539,7 +551,7 @@ function wpbc_is_valid_time_string(time_str) {
 		}
 
 		if ( is_start_time ) {
-			if ( wpbc_is_time_in_the_past_for_today( mytime, sort_date_array ) ) {
+			if ( wpbc_is_time_in_the_past_for_today( mytime, sort_date_array, bk_type ) ) {
 				return false;
 			}
 		}

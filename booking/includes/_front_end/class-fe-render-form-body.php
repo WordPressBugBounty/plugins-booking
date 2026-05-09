@@ -70,6 +70,7 @@ class WPBC_FE_Form_Body_Renderer {
 			'selected_dates_without_calendar' => '',
 			'cal_count'                       => 1,
 			'shortcode_param__options'                       => '',
+			'booking_hash'                    => '',
 			'legacy_instance'                 => null,
 		);
 
@@ -80,6 +81,7 @@ class WPBC_FE_Form_Body_Renderer {
 		$selected_dates_without_calendar = (string) $args['selected_dates_without_calendar'];
 		$cal_count                       = (int) $args['cal_count'];
 		$shortcode_param__options        = $args['shortcode_param__options'];
+		$booking_hash                    = sanitize_text_field( wp_unslash( (string) $args['booking_hash'] ) );
 		$legacy_instance                 = $args['legacy_instance'];
 		$form_status                     = isset( $args['form_status'] ) ? (string) $args['form_status'] : 'published';
 
@@ -89,7 +91,7 @@ class WPBC_FE_Form_Body_Renderer {
 
 		$calendar_html = WPBC_FE_Calendar_Markup::build( $resource_id, $cal_count, $shortcode_param__options, $selected_dates_without_calendar );
 
-		$source_res = WPBC_FE_Form_Source::get_form_body_html( $resource_id, $custom_booking_form, $form_status, $custom_params, $legacy_instance );
+		$source_res = WPBC_FE_Form_Source::get_form_body_html( $resource_id, $custom_booking_form, $form_status, $custom_params, $legacy_instance, $booking_hash );
 
 		$form_html = $source_res['body_html'];
 
@@ -345,15 +347,17 @@ class WPBC_FE_Form_Source {
 	 * @param string        $form_status         'published'|'preview'
 	 * @param array         $custom_params
 	 * @param wpdev_booking $legacy_instance
+	 * @param string        $booking_hash
 	 *
 	 * @return array
 	 */
-	public static function get_form_body_html( $resource_id, $custom_booking_form, $form_status, $custom_params, $legacy_instance ) {
+	public static function get_form_body_html( $resource_id, $custom_booking_form, $form_status, $custom_params, $legacy_instance, $booking_hash = '' ) {
 
 		$resource_id         = (int) $resource_id;
 		$custom_booking_form = (string) $custom_booking_form;
 		$form_status         = (string) $form_status;
 		$custom_params       = ( is_array( $custom_params ) ) ? $custom_params : array();
+		$booking_hash        = sanitize_text_field( wp_unslash( (string) $booking_hash ) );
 
 		$req = array(
 			'resource_id'     => $resource_id,
@@ -371,7 +375,7 @@ class WPBC_FE_Form_Source {
 		// == If Booking Edit ? ==
 		// =============================================================================================================
 		// Maybe get the "custom booking form"  and child "booking resource ID", if the booking edited. And this booking was created in custom  booking form.
-		$maybe_edited__booking_id__resource_id = self::maybe_check_if_booking_edit();
+		$maybe_edited__booking_id__resource_id = self::maybe_check_if_booking_edit( $booking_hash );
 
 		if ( ! empty( $maybe_edited__booking_id__resource_id ) ) {
 
@@ -764,7 +768,13 @@ class WPBC_FE_Inline_Scripts {
 		$autofill_js = self::build_autofill_js_body( $resource_id );
 		if ( '' !== $autofill_js ) {
 			$assets_key = 'wpbc:autofill:' . intval( $resource_id );
-			$added      = WPBC_FE_Assets::add_jq_ready_js_to_wp_script( 'wpbc_all', $autofill_js, $assets_key );
+			$added      = false;
+			if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+				$html .= WPBC_FE_Assets::add_inline_js( $autofill_js, $assets_key . ':ajax' );
+				$added = true;
+			} else {
+				$added = WPBC_FE_Assets::add_jq_ready_js_to_wp_script( 'wpbc_all', $autofill_js, $assets_key );
+			}
 			if ( ! $added ) {
 				$html .= WPBC_FE_Assets::add_inline_js( $autofill_js, $assets_key );                                    // Fallback to  direct inline JS,  if previosly  not edded script.
 			}

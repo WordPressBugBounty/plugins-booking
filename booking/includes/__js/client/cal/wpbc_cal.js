@@ -116,9 +116,13 @@ function wpbc_calendar_show( resource_id ){
 	}
 
 	// In case we edit booking in past or have specific parameter in URL.
-	if (   ( location.href.indexOf('page=wpbc-new') != -1 )
+	var wpbc_edit_booking_hash = _wpbc.get_other_param( 'this_page_booking_hash' );
+	var wpbc_is_edit_booking_context = ( 'undefined' !== typeof wpbc_edit_booking_hash ) && ( '' !== wpbc_edit_booking_hash );
+	var wpbc_is_add_booking_admin_page = ( location.href.indexOf( 'page=wpbc' ) != -1 ) && ( location.href.indexOf( 'tab=add-booking' ) != -1 );
+	if (   ( wpbc_is_add_booking_admin_page || wpbc_is_edit_booking_context )
 		&& (
-			  ( location.href.indexOf('booking_hash') != -1 )                  // Comment this line for ability to add  booking in past days at  Booking > Add booking page.
+			  wpbc_is_edit_booking_context
+		   || ( location.href.indexOf('booking_hash') != -1 )                  // Comment this line for ability to add  booking in past days at  Booking > Add booking page.
 		   || ( location.href.indexOf('allow_past') != -1 )                // FixIn: 10.7.1.2.
 		)
 	){
@@ -182,12 +186,12 @@ function wpbc_calendar_show( resource_id ){
 	);
 
 
-	
+
 	// -----------------------------------------------------------------------------------------------------------------
 	// Clear today date highlighting
 	// -----------------------------------------------------------------------------------------------------------------
 	setTimeout( function (){  wpbc_calendars__clear_days_highlighting( resource_id );  }, 500 );                    	// FixIn: 7.1.2.8.
-	
+
 	// -----------------------------------------------------------------------------------------------------------------
 	// Scroll calendar to  specific month
 	// -----------------------------------------------------------------------------------------------------------------
@@ -195,7 +199,69 @@ function wpbc_calendar_show( resource_id ){
 	if ( false !== start_bk_month ){
 		wpbc_calendar__scroll_to( resource_id, start_bk_month[ 0 ], start_bk_month[ 1 ] );
 	}
-}
+	}
+
+
+	/**
+	 * Get booking statuses as array from the structured summary field, with fallback to the legacy string field.
+	 *
+	 * @param date_bookings_obj
+	 * @returns {[]}
+	 */
+	function wpbc_get_booking_statuses__as_arr( date_bookings_obj ){
+
+		if (
+			   ( ! date_bookings_obj )
+			|| ( 'undefined' === typeof (date_bookings_obj[ 'summary' ]) )
+		){
+			return [];
+		}
+
+		if ( Array.isArray( date_bookings_obj[ 'summary' ][ 'status_for_bookings_arr' ] ) ){
+			return date_bookings_obj[ 'summary' ][ 'status_for_bookings_arr' ].filter( function ( booking_status ){
+				return '' !== booking_status;
+			} );
+		}
+
+		if ( ! date_bookings_obj[ 'summary' ][ 'status_for_bookings' ] ){
+			return [];
+		}
+
+		return date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].toString().trim().split( /\s+/ ).filter( function ( booking_status ){
+			return '' !== booking_status;
+		} );
+	}
+
+
+	/**
+	 * Check exact booking status in statuses array.
+	 *
+	 * @param {[]} booking_statuses_arr
+	 * @param {string} booking_status
+	 * @returns {boolean}
+	 */
+	function wpbc_booking_statuses__has( booking_statuses_arr, booking_status ){
+		return booking_statuses_arr.indexOf( booking_status ) > -1;
+	}
+
+
+	/**
+	 * Check booking status part, e.g. "pending" in "approved_pending".
+	 *
+	 * @param {[]} booking_statuses_arr
+	 * @param {string} booking_status_part
+	 * @returns {boolean}
+	 */
+	function wpbc_booking_statuses__has_part( booking_statuses_arr, booking_status_part ){
+
+		for ( var i = 0; i < booking_statuses_arr.length; i++ ){
+			if ( booking_statuses_arr[ i ].split( '_' ).indexOf( booking_status_part ) > -1 ){
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 
 	/**
@@ -260,6 +326,7 @@ function wpbc_calendar_show( resource_id ){
 		// -----------------------------------------------------------------------------------------------------------------
 		//   date_bookings_obj  - Defined.            Dates can be selectable.
 		// -----------------------------------------------------------------------------------------------------------------
+		var booking_statuses_arr = wpbc_get_booking_statuses__as_arr( date_bookings_obj );
 
 		// -----------------------------------------------------------------------------------------------------------------
 		// Add season names to the day CSS classes -- it is required for correct  work  of conditional fields --------------
@@ -302,26 +369,36 @@ function wpbc_calendar_show( resource_id ){
 			case 'season_filter':
 				css_classes__for_date.push( 'date_user_unavailable', 'season_unavailable' );
 				date_bookings_obj[ 'summary']['status_for_bookings' ] = '';														// Reset booking status color for possible old bookings on this date
+				date_bookings_obj[ 'summary']['status_for_bookings_arr' ] = [];
+				booking_statuses_arr = [];
 				break;
 
 			case 'resource_availability':
 				css_classes__for_date.push( 'date_user_unavailable', 'resource_unavailable' );
 				date_bookings_obj[ 'summary']['status_for_bookings' ] = '';														// Reset booking status color for possible old bookings on this date
+				date_bookings_obj[ 'summary']['status_for_bookings_arr' ] = [];
+				booking_statuses_arr = [];
 				break;
 
 			case 'weekday_unavailable':
 				css_classes__for_date.push( 'date_user_unavailable', 'weekday_unavailable' );
 				date_bookings_obj[ 'summary']['status_for_bookings' ] = '';														// Reset booking status color for possible old bookings on this date
+				date_bookings_obj[ 'summary']['status_for_bookings_arr' ] = [];
+				booking_statuses_arr = [];
 				break;
 
 			case 'from_today_unavailable':
 				css_classes__for_date.push( 'date_user_unavailable', 'from_today_unavailable' );
 				date_bookings_obj[ 'summary']['status_for_bookings' ] = '';														// Reset booking status color for possible old bookings on this date
+				date_bookings_obj[ 'summary']['status_for_bookings_arr' ] = [];
+				booking_statuses_arr = [];
 				break;
 
 			case 'limit_available_from_today':
 				css_classes__for_date.push( 'date_user_unavailable', 'limit_available_from_today' );
 				date_bookings_obj[ 'summary']['status_for_bookings' ] = '';														// Reset booking status color for possible old bookings on this date
+				date_bookings_obj[ 'summary']['status_for_bookings_arr' ] = [];
+				booking_statuses_arr = [];
 				break;
 
 			case 'change_over':
@@ -335,10 +412,10 @@ function wpbc_calendar_show( resource_id ){
 
 				css_classes__for_date.push( 'timespartly', 'check_in_time', 'check_out_time' );
 				// FixIn: 10.0.0.2.
-				if ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].indexOf( 'approved_pending' ) > -1 ){
+				if ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved_pending' ) ){
 					css_classes__for_date.push( 'check_out_time_date_approved', 'check_in_time_date2approve' );
 				}
-				if ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].indexOf( 'pending_approved' ) > -1 ){
+				if ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_approved' ) ){
 					css_classes__for_date.push( 'check_out_time_date2approve', 'check_in_time_date_approved' );
 				}
 				break;
@@ -347,9 +424,9 @@ function wpbc_calendar_show( resource_id ){
 				css_classes__for_date.push( 'timespartly', 'check_in_time' );
 
 				// FixIn: 9.9.0.33.
-				if ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].indexOf( 'pending' ) > -1 ){
+				if ( wpbc_booking_statuses__has_part( booking_statuses_arr, 'pending' ) ){
 					css_classes__for_date.push( 'check_in_time_date2approve' );
-				} else if ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].indexOf( 'approved' ) > -1 ){
+				} else if ( wpbc_booking_statuses__has_part( booking_statuses_arr, 'approved' ) ){
 					css_classes__for_date.push( 'check_in_time_date_approved' );
 				}
 				break;
@@ -358,9 +435,9 @@ function wpbc_calendar_show( resource_id ){
 				css_classes__for_date.push( 'timespartly', 'check_out_time' );
 
 				// FixIn: 9.9.0.33.
-				if ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].indexOf( 'pending' ) > -1 ){
+				if ( wpbc_booking_statuses__has_part( booking_statuses_arr, 'pending' ) ){
 					css_classes__for_date.push( 'check_out_time_date2approve' );
-				} else if ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ].indexOf( 'approved' ) > -1 ){
+				} else if ( wpbc_booking_statuses__has_part( booking_statuses_arr, 'approved' ) ){
 					css_classes__for_date.push( 'check_out_time_date_approved' );
 				}
 				break;
@@ -376,43 +453,27 @@ function wpbc_calendar_show( resource_id ){
 
 			var is_set_pending_days_selectable = _wpbc.calendar__get_param_value( resource_id, 'pending_days_selectable' );	// set pending days selectable          // FixIn: 8.6.1.18.
 
-			switch ( date_bookings_obj[ 'summary']['status_for_bookings' ] ){
-
-				case '':
-					// Usually  it's means that day  is available or unavailable without the bookings
-					break;
-
-				case 'pending':
-					css_classes__for_date.push( 'date2approve' );
-					is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
-					break;
-
-				case 'approved':
-					css_classes__for_date.push( 'date_approved' );
-					break;
-
-				// Situations for "change-over" days: ----------------------------------------------------------------------
-				case 'pending_pending':
-					css_classes__for_date.push( 'check_out_time_date2approve', 'check_in_time_date2approve' );
-					is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
-					break;
-
-				case 'pending_approved':
-					css_classes__for_date.push( 'check_out_time_date2approve', 'check_in_time_date_approved' );
-					is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
-					break;
-
-				case 'approved_pending':
-					css_classes__for_date.push( 'check_out_time_date_approved', 'check_in_time_date2approve' );
-					is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
-					break;
-
-				case 'approved_approved':
-					css_classes__for_date.push( 'check_out_time_date_approved', 'check_in_time_date_approved' );
-					break;
-
-				default:
-
+			if ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending' ) ){
+				css_classes__for_date.push( 'date2approve' );
+				is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
+			}
+			if ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved' ) ){
+				css_classes__for_date.push( 'date_approved' );
+			}
+			if ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_pending' ) ){
+				css_classes__for_date.push( 'check_out_time_date2approve', 'check_in_time_date2approve' );
+				is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
+			}
+			if ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_approved' ) ){
+				css_classes__for_date.push( 'check_out_time_date2approve', 'check_in_time_date_approved' );
+				is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
+			}
+			if ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved_pending' ) ){
+				css_classes__for_date.push( 'check_out_time_date_approved', 'check_in_time_date2approve' );
+				is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
+			}
+			if ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved_approved' ) ){
+				css_classes__for_date.push( 'check_out_time_date_approved', 'check_in_time_date_approved' );
 			}
 		}
 
@@ -470,6 +531,7 @@ function wpbc_calendar_show( resource_id ){
 		//  U n h o v e r i n g    in    UNSELECTABLE_CALENDAR  ------------------------------------------------------------
 		var is_unselectable_calendar = ( jQuery( '#calendar_booking_unselectable' + resource_id ).length > 0);				// FixIn: 8.0.1.2.
 		var is_booking_form_exist    = ( jQuery( '#booking_form_div' + resource_id ).length > 0 );
+		var is_add_booking_modal_calendar = ( jQuery( '#calendar_booking' + resource_id ).closest( '#wpbc_modal__add_booking__section' ).length > 0 );
 
 		if ( ( is_unselectable_calendar ) && ( ! is_booking_form_exist ) ){
 
@@ -491,7 +553,8 @@ function wpbc_calendar_show( resource_id ){
 		//  D a y s    H o v e r i n g  ------------------------------------------------------------------------------------
 		if (
 			   ( location.href.indexOf( 'page=wpbc' ) == -1 )
-			|| ( location.href.indexOf( 'page=wpbc-new' ) > 0 )
+			|| ( ( location.href.indexOf( 'page=wpbc' ) > 0 ) && ( location.href.indexOf( 'tab=add-booking' ) > 0 ) )
+			|| ( is_add_booking_modal_calendar )
 			|| ( location.href.indexOf( 'page=wpbc-setup' ) > 0 )
 			|| ( location.href.indexOf( 'page=wpbc-availability' ) > 0 )
 			|| (  ( location.href.indexOf( 'page=wpbc-settings' ) > 0 )  &&
@@ -1235,16 +1298,15 @@ function wpbc_calendar_show( resource_id ){
 		if ( 'available' != date_bookings_obj[ 'summary']['status_for_day' ] ){
 
 			var is_set_pending_days_selectable = _wpbc.calendar__get_param_value( resource_id, 'pending_days_selectable' );		// set pending days selectable          // FixIn: 8.6.1.18.
+			var booking_statuses_arr = wpbc_get_booking_statuses__as_arr( date_bookings_obj );
 
-			switch ( date_bookings_obj[ 'summary']['status_for_bookings' ] ){
-				case 'pending':
-				// Situations for "change-over" days:
-				case 'pending_pending':
-				case 'pending_approved':
-				case 'approved_pending':
-					is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
-					break;
-				default:
+			if (
+				   ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending' ) )
+				|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_pending' ) )
+				|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_approved' ) )
+				|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved_pending' ) )
+			){
+				is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
 			}
 		}
 

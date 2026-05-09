@@ -40,7 +40,6 @@ function wpbc_ui__top_horisontal_nav( $args =array() ) {
 	// Available Main Menu - slug => titles.
 	$show_these_pages_arr = array(
 		'wpbc'              => __( 'Bookings', 'booking' ),
-		'wpbc-new'          => __( 'Add Booking', 'booking' ),
 		'wpbc-availability' => __( 'Availability', 'booking' ),
 		'wpbc-prices'       => __( 'Prices', 'booking' ),
 		'wpbc-resources'    => __( 'Resources', 'booking' ),

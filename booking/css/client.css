@@ -122,6 +122,48 @@ form.booking_form {
 	margin-right: auto;
 }
 
+.booking_form_div.wpbc_booking_form_is_submitting {
+	position: relative;
+}
+.booking_form_div.wpbc_booking_form_is_submitting > :not(.wpbc_booking_form_submit_overlay) {
+	filter: blur(1px);
+	opacity: 0.55;
+	pointer-events: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.booking_form_div.wpbc_booking_form_is_submitting {
+	position: relative;
+	min-height: 220px;
+}
+.booking_form_div .wpbc_booking_form_submit_overlay {
+	position: absolute;
+	top: 12px;
+	inset: 0;
+	pointer-events: none;
+	z-index: 50;
+	height: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.5);
+	-webkit-backdrop-filter: blur(1px);
+	backdrop-filter: blur(1px);
+}
+.booking_form_div .wpbc_booking_form_submit_overlay .wpbc_spins_loading_container {
+	width: max-content;
+	min-width: 100%;
+	height: 100%;
+	min-height: 60px;
+	padding: 0;
+	border-radius: 6px;
+	backdrop-filter: blur(1px);
+	pointer-events: auto;
+	font-weight: 600;
+}
+
 .booking_form .form-group {
 	margin: 15px 0;
 }
@@ -1286,10 +1328,10 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 .add_booking_page_content,
 .add_booking_page_content p {
 	font-size: 15px;
-	line-height: 2;
+	/*line-height: 2;*/
 }
 
-#wpbc-new-admin-page .wpbc_container.wpbc_form input.wpbc_button_light {
+#wpbc-admin-page.wpbc_page_tab__add-booking .wpbc_container.wpbc_form input.wpbc_button_light {
 	font-size: 1.15em;
 	line-height: 100%;
 	min-height: var(--wpbc_form-button-light-size-height);

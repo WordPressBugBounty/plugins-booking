@@ -23,6 +23,12 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 
 	$resource_id = isset( $params['resource_id'] ) ? absint( $params['resource_id'] ) : 1;
 
+	if ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) {
+		$is_enabled_change_over = wpbc_is_booking_used_check_in_out_time( false, $resource_id );
+		$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'is_enabled_change_over' , " . ( $is_enabled_change_over ? 'true' : 'false' ) . " ); ";
+		$start_script_code .= " _wpbc.set_other_param( 'is_enabled_change_over', " . ( $is_enabled_change_over ? 'true' : 'false' ) . " ); ";
+	}
+
 	// Start Month (require [year,month]).
 	$calendar_scroll_to = 'false';
 	if (
@@ -159,6 +165,7 @@ function wpbc__calendar__load( $params = array() ) {
 		'custom_form'                     => 'standard',
 		'calendar_dates_start'            => '',
 		'calendar_dates_end'              => '',
+		'skip_general_availability'       => 0,
 	);
 	$params = wp_parse_args( $params, $defaults );
 
@@ -216,6 +223,7 @@ function wpbc__calendar__load( $params = array() ) {
 		'custom_form'               => (string) $params['custom_form'],
 		'aggregate_resource_id_str' => implode( ',', (array) $params['aggregate_resource_id_arr'] ),
 		'aggregate_type'            => (string) $aggregate_type,
+		'skip_general_availability' => (int) $params['skip_general_availability'],
 	);
 
 	// Send Ajax request to load bookings.
@@ -247,6 +255,31 @@ function wpbc__calendar__load( $params = array() ) {
 	$start_script_code = '<script type="text/javascript"> ' . wpbc_jq_ready_start() . $js_body . wpbc_jq_ready_end() . '</script>';
 
 	return $start_script_code;
+}
+
+
+/**
+ * Get Booking Calendar option names that belong to General Availability rules.
+ *
+ * @return array
+ */
+function wpbc__calendar__get_general_availability_option_names() {
+
+	$option_names = array(
+		'booking_unavailable_days_num_from_today',
+		'booking_available_days_num_from_today',
+		'booking_unavailable_extra_in_out',
+		'booking_unavailable_extra_minutes_in',
+		'booking_unavailable_extra_minutes_out',
+		'booking_unavailable_extra_days_in',
+		'booking_unavailable_extra_days_out',
+	);
+
+	foreach ( range( 0, 6 ) as $week_day_num ) {
+		$option_names[] = 'booking_unavailable_day' . $week_day_num;
+	}
+
+	return $option_names;
 }
 
 
@@ -289,11 +322,25 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 									'aggregate_resource_id_str' => array( 'validate' => 'digit_or_csd', 'default' => '' ),        // Comma separated string of resource ID,  which was used in 'aggregate' parameter.
 									'aggregate_type'            => array( 'validate' => 's', 'default' => 'all' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
 									'dates_to_check'            => array( 'validate' => 'array', 'default' => '' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
+									'skip_general_availability' => array( 'validate' => 'd', 'default' => 0 ),
 																				 )
 											)
 					);
 	$request_prefix = 'calendar_request_params';
 	$request_params = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  );		 		    // NOT Direct: 	$_REQUEST['search_params']['resource_id']
+
+	if ( ! empty( $request_params['skip_general_availability'] ) ) {
+		$can_skip_general_availability = (
+			function_exists( 'wpbc_availability_general__get_manage_cap' )
+			&& function_exists( 'wpbc_is_mu_user_can_be_here' )
+			&& wpbc_is_mu_user_can_be_here( 'only_super_admin' )
+			&& current_user_can( wpbc_availability_general__get_manage_cap() )
+		);
+
+		if ( ! $can_skip_general_availability ) {
+			$request_params['skip_general_availability'] = 0;
+		}
+	}
 
 
 	// Do Job  here !! -------------------------------------------------------------------------------------------------
@@ -319,6 +366,7 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 											'custom_form'     => $request_params['custom_form']
 											, 'additional_bk_types' => $aggregate_resource_id_arr                       // It is array  of booking resources from aggregate parameter()                                 // arrays | CSD | int       // OPTIONAL
 											, 'aggregate_type' => $request_params['aggregate_type']                     // It is string: 'all' | 'bookings_only'                     // OPTIONAL
+											, 'skip_general_availability' => $request_params['skip_general_availability']
 										//	, 'as_single_resource'  => true                                             // get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources'
 										//	, 'max_days_count'      => wpbc_get_max_visible_days_in_calendar()          // 365
 //	, 'timeslots_to_check_intersect' => $timeslots_to_check_intersect  //TODO 2023-10-25: delete it, because we get it in wpbc_get_availability_per_days_arr()  //array( '12:20 - 12:55', '13:00 - 14:00' )
@@ -328,7 +376,7 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 		$availability_per_days__params['dates_to_check'] = $request_params['dates_to_check'];  // Usually  if defined it is: [ '2025-01-01', '2025-12-31' ],  because of shortcode [booking resource_id=4 calendar_dates_start='2025-01-01' calendar_dates_end='2025-12-31' ...]
 	}
 
-	// If in Booking > Add booking page we use in URL .../wp-admin/admin.php?page=wpbc-new&booking_type=2&as_single_resource=1   then get  availability  only for single resource.
+	// If in Booking > Add booking page we use in URL .../wp-admin/admin.php?page=wpbc&tab=add-booking&booking_type=2&as_single_resource=1 then get availability only for single resource.
 	if (
 			( ! empty( $request_params['request_uri'] ) )
 	     && ( strpos( $request_params['request_uri'], 'as_single_resource=1' ) !== false )
@@ -338,7 +386,7 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 
 	/**
 	 * Tricks:
-	 *          if ( strpos( $request_params['request_uri'],'page=wpbc-new' ) !== false ) { $availability_per_days__params['is_days_always_available'] =  true; }
+	 *          if ( wpbc_is_new_booking_page_url( $request_params['request_uri'] ) ) { $availability_per_days__params['is_days_always_available'] =  true; }
 	 *
 	 *          // Set  dates in calendar always available only  for specific resources with specific ID
 	 *          if ( in_array( $request_params['resource_id'], array( 12, 15, 17 ) ) ) { $availability_per_days__params['is_days_always_available'] =  true; }
@@ -346,7 +394,20 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 
 	// Get unavailable dates for calendar
 	// $availability_per_days__params['dates_to_check'] = array( '2025-01-01', '2025-12-31' );  // FixIn: 10.13.1.4.
+	global $wpbc__skip_get_bk_options;
+
+	$previous_skip_get_bk_options = $wpbc__skip_get_bk_options;
+	if ( ! empty( $availability_per_days__params['skip_general_availability'] ) ) {
+		$wpbc__skip_get_bk_options = array_unique(
+			array_merge(
+				(array) $wpbc__skip_get_bk_options,
+				wpbc__calendar__get_general_availability_option_names()
+			)
+		);
+	}
+
 	$availability_per_days_arr = wpbc_get_availability_per_days_arr( $availability_per_days__params );
+	$wpbc__skip_get_bk_options = $previous_skip_get_bk_options;
 
 
 	$ajx_data_arr = array( /**

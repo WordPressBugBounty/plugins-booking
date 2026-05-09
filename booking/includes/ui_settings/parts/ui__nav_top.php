@@ -108,6 +108,11 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 			'type'  => 'header',
 			'title' => __( 'Visit Booking Pages', 'booking' ),
 		);
+		$el_arr['items'][] = array(
+			'type'  => 'link',
+			'title' => __( 'Visit Home Page', 'booking' ),
+			'url'   => esc_url( home_url( '/' ) ),
+		);
 
 		foreach ( $wpbc_starter_pages as $wpbc_starter_page ) {
 			if ( empty( $wpbc_starter_page['url'] ) ) {
@@ -131,6 +136,11 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 		$el_arr['items'][] = array(
 			'type'  => 'header',
 			'title' => __( 'Visit Booking Page', 'booking' ),
+		);
+		$el_arr['items'][] = array(
+			'type'  => 'link',
+			'title' => __( 'Visit Home Page', 'booking' ),
+			'url'   => esc_url( home_url( '/' ) ),
 		);
 		$el_arr['items'][] = array(
 			'type'  => 'link',
@@ -170,7 +180,7 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 	);
 	$el_arr['items'][] = array(
 		'type'  => 'link',
-		'title' => __( 'What\'s New', 'booking' ) . ' <span style="float:right">' . wpbc_dashboard_info_get_version_number() . '</span>',
+		'title' => __( 'What\'s New', 'booking' ) . ' <span style="float:right">' . esc_attr( WP_BK_VERSION_NUM ) . '</span>',
 		'url'   => esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) ),
 	);
 //	$el_arr['items'][] = array(

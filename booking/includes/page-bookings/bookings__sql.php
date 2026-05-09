@@ -1733,6 +1733,24 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 					$resource_owner_user = ( isset( $resources_arr[ $resource_id ] ) ) ? $resources_arr[ $resource_id ]['users'] : $user_id;
 				}
 
+				$resource_title_listing      = $resource_title;
+				$resource_id_listing         = $resource_id;
+				$child_resource_id_arr       = array();
+				if ( ( class_exists( 'wpdev_bk_biz_l' ) ) && ( ! empty( $booking->child_id ) ) && ( is_array( $booking->child_id ) ) ) {
+					foreach ( $booking->child_id as $child_resource_id ) {
+						if ( ! empty( $child_resource_id ) ) {
+							$child_resource_id_arr[] = (int) $child_resource_id;
+						}
+					}
+					$child_resource_id_arr = array_values( array_unique( $child_resource_id_arr ) );
+
+					if ( ( 1 === count( $child_resource_id_arr ) ) && ( isset( $resources_arr[ $child_resource_id_arr[0] ] ) ) ) {
+						$resource_id_listing    = $child_resource_id_arr[0];
+						$resource_title_listing = wpbc_lang( $resources_arr[ $child_resource_id_arr[0] ]['title'] );
+					}
+				}
+				$show_child_resource_in_dates = ( count( $child_resource_id_arr ) > 1 );
+
 				// Parse form  fields only  from  $booking->booking_db->form  ------------------------------------------
 				$booking_data_arr  = wpbc_parse_booking_data_fields(	    $booking->booking_db->form,
 																		array( 	'resource_id' => $resource_id )
@@ -1780,7 +1798,10 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				$booking_data_arr  = wpbc_parse_booking_data_fields_formats( $booking_data_arr );
 
 				// Get SHORT / WIDE Dates showing data -----------------------------------------------------------------
-				$dates_attr = array( 'date_html_tag' => 'span' );
+				$dates_attr = array(
+					'date_html_tag'                 => 'span',
+					'show_child_resource_in_dates'  => $show_child_resource_in_dates,
+				);
 				$short_dates_content = wpbc_get_formated_dates__short( $booking->short_dates, (boolean) $booking->approved, $booking->short_dates_child_id, $resources_arr, $dates_attr );
 				$wide_dates_content  = wpbc_get_formated_dates__wide(  $booking->dates,       (boolean) $booking->approved, $booking->child_id,             $resources_arr, $dates_attr );
 
@@ -1853,6 +1874,8 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				//------------------------------------------------------------------------------------------------------
 				$booking_data_arr['resource_title']      = $resource_title;
 				$booking_data_arr['resource_id']         = $resource_id;
+				$booking_data_arr['resource_title_listing'] = $resource_title_listing;
+				$booking_data_arr['resource_id_listing']    = $resource_id_listing;
 				$booking_data_arr['resource_owner_user'] = $resource_owner_user;
 				//$booking_data_arr['short_dates_content'] = $short_dates_content;
 				//$booking_data_arr['wide_dates_content'] = $wide_dates_content;
@@ -1922,6 +1945,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 				$defaults = array(
 					'date_html_tag' => 'a',
+					'show_child_resource_in_dates' => true,
 				);
 				$params   = wp_parse_args( $attr, $defaults );
 
@@ -1974,6 +1998,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 							// BL.
 					        if (
 								   ( class_exists( 'wpdev_bk_biz_l' ) )
+								&& ( $params['show_child_resource_in_dates'] )
 								&& ( ! empty( $dates_type_id_arr[ $date_number ] ) )
 								&& ( isset( $booking_resources_arr[ $dates_type_id_arr[ $date_number ] ] ) )
 					        ){
@@ -2022,6 +2047,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 				$defaults = array(
 					'date_html_tag' => 'a',
+					'show_child_resource_in_dates' => true,
 				);
 				$params   = wp_parse_args( $attr, $defaults );
 
@@ -2048,6 +2074,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 						// BL
 						if (
 								( class_exists( 'wpdev_bk_biz_l' ) )
+							 && ( $params['show_child_resource_in_dates'] )
 							 && ( '' != $dates_type_id_arr[ $date_number ] )
 						     && ( isset( $booking_resources_arr[ $dates_type_id_arr[ $date_number ] ] ) )
 						){
@@ -2182,7 +2209,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 																									    [rangetime] => 10:00 AM - 12:00 PM
 																									    [name] => test
 																									    [email] => test@wpbookingcalendar.com
-																									     ...				
+																									     ...
 																									     )
 
 			 * @param array $booking_system_arr     array of system  fields  from  DB
@@ -2195,7 +2222,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 																									    [id] => 188
 																									    [approved] => 0
 																								)
-     
+
 			 * @param array $system_keys_arr        system fields keys that  need to  be added,  like this:
 																								Array ( booking_id, trash, sync_gid, is_new, status
 																								       , sort_date, modification_date, hash, booking_type
