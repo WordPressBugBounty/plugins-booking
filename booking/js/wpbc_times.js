@@ -1,6 +1,78 @@
 var start_time_checking_index;
 
 /**
+ * Check if the date has only Working Time limits, without real bookings or manually blocked time slots.
+ *
+ * Working Time intervals still have to stay in the booking data for validation and tooltips,
+ * but they should not produce the small dots inside calendar day cells.
+ *
+ * @param {Object} date_bookings_obj
+ * @param {Array} child_resources_arr
+ * @returns {boolean}
+ */
+function wpbc_is_date_has_only_working_time_limits_for_dots( date_bookings_obj, child_resources_arr ) {
+
+	var has_working_time_limits = false;
+	var has_real_time_limits = false;
+	var resource_day_obj;
+	var time_details_obj;
+	var time_details;
+	var source_type;
+
+	if ( ( ! date_bookings_obj ) || ( null === child_resources_arr ) ) {
+		return false;
+	}
+
+	if (
+		   ( date_bookings_obj[ 'summary' ] )
+		&& ( date_bookings_obj[ 'summary' ][ 'status_for_bookings' ] )
+		&& ( '' !== date_bookings_obj[ 'summary' ][ 'status_for_bookings' ] )
+	) {
+		return false;
+	}
+
+	for ( var i = 0; i < child_resources_arr.length; i++ ) {
+
+		resource_day_obj = date_bookings_obj[ child_resources_arr[ i ] ];
+
+		if ( ! resource_day_obj ) {
+			continue;
+		}
+
+		time_details_obj = resource_day_obj[ '__booked__times__details' ];
+
+		if ( ! time_details_obj ) {
+			if (
+				   ( resource_day_obj.booked_time_slots )
+				&& ( resource_day_obj.booked_time_slots.merged_seconds )
+				&& ( resource_day_obj.booked_time_slots.merged_seconds.length > 0 )
+			) {
+				has_real_time_limits = true;
+			}
+			continue;
+		}
+
+		for ( var time_key in time_details_obj ) {
+
+			if ( ! time_details_obj.hasOwnProperty( time_key ) ) {
+				continue;
+			}
+
+			time_details = time_details_obj[ time_key ];
+			source_type = ( time_details && ( 'undefined' !== typeof( time_details[ 'source_type' ] ) ) ) ? time_details[ 'source_type' ] : 'booking';
+
+			if ( 'working_time' === source_type ) {
+				has_working_time_limits = true;
+			} else {
+				has_real_time_limits = true;
+			}
+		}
+	}
+
+	return ( has_working_time_limits && ! has_real_time_limits );
+}
+
+/**
  * Get dots for partially  booked dates.
  *    For parent booking resources with  specific capacity,
  *    System do not show partially booked dates,  if at least one child booking resource fully  available
@@ -25,6 +97,11 @@ function wpbc_show_date_info_top( param_calendar_id, my_thisDateTime ) {
 
 	// '2023-08-21'
 	var sql_date = wpbc__get__sql_class_date(new Date(my_thisDateTime));
+	var date_bookings_obj = _wpbc.bookings_in_calendar__get_for_date(resource_id, sql_date);
+
+	if ( wpbc_is_date_has_only_working_time_limits_for_dots( date_bookings_obj, child_resources_arr ) ) {
+		return '';
+	}
 
 	var child_resource_id;
 	var merged_seconds;
@@ -39,8 +116,8 @@ function wpbc_show_date_info_top( param_calendar_id, my_thisDateTime ) {
 			// _wpbc.bookings_in_calendar__get_for_date(2,'2023-08-21')[12].booked_time_slots.merged_seconds		= [ "07:00:11 - 07:30:02", "10:00:11 - 00:00:00" ]
 			// _wpbc.bookings_in_calendar__get_for_date(2,'2023-08-21')[2].booked_time_slots.merged_seconds			= [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
 
-			if (false !== _wpbc.bookings_in_calendar__get_for_date(resource_id, sql_date)) {
-				merged_seconds = _wpbc.bookings_in_calendar__get_for_date(resource_id, sql_date)[child_resource_id].booked_time_slots.merged_seconds;		// [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
+			if (false !== date_bookings_obj) {
+				merged_seconds = date_bookings_obj[child_resource_id].booked_time_slots.merged_seconds;		// [  [ 25211, 27002 ], [ 36011, 86400 ]  ]
 			} else {
 				merged_seconds = [];
 			}
@@ -248,6 +325,19 @@ function wpbc_is_change_over_enabled_for_resource( resource_id ) {
  */
 function wpbc_is_time_in_the_past_for_today(myTime, sort_date_array, resource_id) {
 
+	var allow_past_context = _wpbc.get_other_param( 'this_page_allow_past' );
+	var edit_booking_hash_context = _wpbc.get_other_param( 'this_page_booking_hash' );
+	if (
+		   ( '1' === String( allow_past_context ) )
+		|| ( 1 === allow_past_context )
+		|| ( true === allow_past_context )
+		|| ( '' !== String( edit_booking_hash_context || '' ) )
+		|| ( location.href.indexOf( 'booking_hash' ) > -1 )
+		|| ( location.href.indexOf( 'allow_past' ) > -1 )
+	) {
+		return false;
+	}
+
 	// FixIn: 10.14.10.2.
 	if ( true === wpbc_is_change_over_enabled_for_resource( resource_id ) ) {
 		return false;
@@ -375,6 +465,10 @@ function wpbc_is_valid_time_string(time_str) {
 
 			// Skip elements from garbage
 			if ( jQuery( element ).closest( '.booking_form_garbage' ).length ){											// FixIn: 7.1.2.14.
+				continue;
+			}
+
+			if ( '1' === String( jQuery( element ).attr( 'data-wpbc-booking-submit-ignore' ) || '' ) ) {
 				continue;
 			}
 

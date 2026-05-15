@@ -555,6 +555,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		'max_days_count'               => wpbc_get_max_visible_days_in_calendar(),            // 365.
 		'timeslots_to_check_intersect' => array(),                                            // arr:  '12:20 - 12:55', '13:00 - 14:00' )         // TODO: ? do we really need it, because below we get it from function.
 		'request_uri'                  => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ),  // front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages.
+		'allow_past'                   => false,
 		'custom_form'                  => '',                                                 // Required for checking all available time-slots and compare with  booked time slots.
 		'force_check_from_today_unavailable' => false,                                        // Optional admin tools can force relative availability checks inside explicit date ranges.
 	);
@@ -563,6 +564,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 	// FixIn: 10.7.1.2. //FixIn: 10.10.3.2.
 	if (
+		( ! empty( $params['allow_past'] ) ) ||
 		( false !== strpos( $params['request_uri'], 'allow_past' ) ) ||
 		(
 			wpbc_is_new_booking_page_url( $params['request_uri'] ) &&
@@ -692,7 +694,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 	// FixIn: 10.7.1.2.
 	if ( ! $is_this_hash_page ) {
-		$is_this_hash_page = ( false !== strpos( $params['request_uri'], 'allow_past' ) ) ? true : false;
+		$is_this_hash_page = ( ( ! empty( $params['allow_past'] ) ) || ( false !== strpos( $params['request_uri'], 'allow_past' ) ) ) ? true : false;
 	}
 
 	if ( ( $is_this_bap_page ) && ( $is_this_hash_page ) ) {        // Start  days in calendar  from        = PAST
@@ -1047,6 +1049,34 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			// B O O K I N G S   -   E n d
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			// Working Time applies only to time-based booking forms: rangetime, start/end, or start/duration.
+			$working_time__timeslots_to_check_intersect = $as_seconds_timeslots_arr__to_check_intersect;
+			if ( empty( $working_time__timeslots_to_check_intersect ) && ! empty( $params['timeslots_to_check_intersect'] ) ) {
+				if ( ! is_array( $params['timeslots_to_check_intersect'] ) ) {
+					$params['timeslots_to_check_intersect'] = array( $params['timeslots_to_check_intersect'] );
+				}
+				$working_time__timeslots_to_check_intersect = array();
+				foreach ( $params['timeslots_to_check_intersect'] as $time_slot_readable ) {
+					$working_time__timeslots_to_check_intersect[] = wpbc_convert__readable_time_slot__to__time_range_in_seconds( $time_slot_readable );
+				}
+			}
+
+			if (
+				! empty( $working_time__timeslots_to_check_intersect )
+				&& function_exists( 'wpbc_working_time__get_non_working_intervals_for_date' )
+				&& function_exists( 'wpbc_availability_timeslots__apply_blocks_to_availability_obj' )
+			) {
+				$working_time__blocked_intervals = wpbc_working_time__get_non_working_intervals_for_date( $resource_id, $my_day_tag );
+
+				if ( ! empty( $working_time__blocked_intervals ) ) {
+					$availability_per_day[ $my_day_tag ][ $resource_id ] = wpbc_availability_timeslots__apply_blocks_to_availability_obj(
+						$availability_per_day[ $my_day_tag ][ $resource_id ],
+						$working_time__blocked_intervals,
+						$working_time__timeslots_to_check_intersect
+					);
+				}
+			}
+
 			// FixIn: 10.16.1.
 			if (
 				function_exists( 'wpbc_availability_timeslots__apply_blocks_to_availability_obj' )

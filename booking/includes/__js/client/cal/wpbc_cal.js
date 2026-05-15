@@ -118,17 +118,22 @@ function wpbc_calendar_show( resource_id ){
 	// In case we edit booking in past or have specific parameter in URL.
 	var wpbc_edit_booking_hash = _wpbc.get_other_param( 'this_page_booking_hash' );
 	var wpbc_is_edit_booking_context = ( 'undefined' !== typeof wpbc_edit_booking_hash ) && ( '' !== wpbc_edit_booking_hash );
+	var wpbc_allow_past_context = _wpbc.get_other_param( 'this_page_allow_past' );
+	var wpbc_is_allow_past_context = ( '1' === String( wpbc_allow_past_context ) ) || ( 1 === wpbc_allow_past_context ) || ( true === wpbc_allow_past_context );
+	var wpbc_allow_past_date_arr = _wpbc.get_other_param( 'this_page_allow_past_arr' );
 	var wpbc_is_add_booking_admin_page = ( location.href.indexOf( 'page=wpbc' ) != -1 ) && ( location.href.indexOf( 'tab=add-booking' ) != -1 );
-	if (   ( wpbc_is_add_booking_admin_page || wpbc_is_edit_booking_context )
+	if (   ( wpbc_is_add_booking_admin_page || wpbc_is_edit_booking_context || wpbc_is_allow_past_context )
 		&& (
 			  wpbc_is_edit_booking_context
+		   || wpbc_is_allow_past_context
 		   || ( location.href.indexOf('booking_hash') != -1 )                  // Comment this line for ability to add  booking in past days at  Booking > Add booking page.
 		   || ( location.href.indexOf('allow_past') != -1 )                // FixIn: 10.7.1.2.
 		)
 	){
 		// local__min_date = null;
 		// FixIn: 10.14.1.4.
-		local__min_date  = new Date( _wpbc.get_other_param( 'time_local_arr' )[0], ( parseInt( _wpbc.get_other_param( 'time_local_arr' )[1] ) - 1), _wpbc.get_other_param( 'time_local_arr' )[2], _wpbc.get_other_param( 'time_local_arr' )[3], _wpbc.get_other_param( 'time_local_arr' )[4], 0 );
+		var wpbc_min_date_arr = ( wpbc_is_allow_past_context && wpbc_allow_past_date_arr && ( 5 <= wpbc_allow_past_date_arr.length ) ) ? wpbc_allow_past_date_arr : _wpbc.get_other_param( 'time_local_arr' );
+		local__min_date  = new Date( wpbc_min_date_arr[0], ( parseInt( wpbc_min_date_arr[1] ) - 1), wpbc_min_date_arr[2], wpbc_min_date_arr[3], wpbc_min_date_arr[4], 0 );
 		local__max_date = null;
 	}
 
@@ -668,6 +673,15 @@ function wpbc_calendar_show( resource_id ){
 
 		var today_time__real  = new Date( _wpbc.get_other_param( 'time_local_arr' )[0], ( parseInt( _wpbc.get_other_param( 'time_local_arr' )[1] ) - 1), _wpbc.get_other_param( 'time_local_arr' )[2], _wpbc.get_other_param( 'time_local_arr' )[3], _wpbc.get_other_param( 'time_local_arr' )[4], 0 );
 		var today_time__shift = new Date( _wpbc.get_other_param( 'today_arr'      )[0], ( parseInt( _wpbc.get_other_param(      'today_arr' )[1] ) - 1), _wpbc.get_other_param( 'today_arr'      )[2], _wpbc.get_other_param( 'today_arr'      )[3], _wpbc.get_other_param( 'today_arr'      )[4], 0 );
+		var allow_past_context = _wpbc.get_other_param( 'this_page_allow_past' );
+		var edit_booking_hash_context = _wpbc.get_other_param( 'this_page_booking_hash' );
+		var is_allow_past_context =
+			   ( '1' === String( allow_past_context ) )
+			|| ( 1 === allow_past_context )
+			|| ( true === allow_past_context )
+			|| ( '' !== String( edit_booking_hash_context || '' ) )
+			|| ( location.href.indexOf( 'booking_hash' ) > -1 )
+			|| ( location.href.indexOf( 'allow_past' ) > -1 );
 
 		// 4. Loop  all  time Fields options		// FixIn: 10.3.0.2.
 		for ( let field_key = 0; field_key < time_fields_obj_arr.length; field_key++ ){
@@ -682,9 +696,10 @@ function wpbc_calendar_show( resource_id ){
 				// Get Date: '2023-08-18'.
 				sql_date = selected_dates_arr[i];
 
-				var is_time_in_past = wpbc_check_is_time_in_past( today_time__shift, sql_date, time_fields_obj );
+				var is_time_in_past = is_allow_past_context ? false : wpbc_check_is_time_in_past( today_time__shift, sql_date, time_fields_obj );
 				// Exception  for 'End Time' field,  when  selected several dates. // FixIn: 10.14.1.5.
-				if ( ('On' !== _wpbc.calendar__get_param_value( resource_id, 'booking_recurrent_time' )) &&
+				if ( ( ! is_allow_past_context ) &&
+					('On' !== _wpbc.calendar__get_param_value( resource_id, 'booking_recurrent_time' )) &&
 					(-1 !== time_fields_obj.name.indexOf( 'endtime' )) &&
 					(selected_dates_arr.length > 1)
 				) {

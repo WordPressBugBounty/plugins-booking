@@ -156,8 +156,8 @@
 
 			$.each( resources, function ( resourceId, resourceBars ) {
 				$.each( resourceBars || [], function ( index, interval ) {
-					var type = 'blocked' === interval.type ? 'blocked' : ( 'unavailable_day' === interval.type ? 'unavailable_day' : 'booked' );
-					var icon = 'booked' === type ? 'wpbc_icn_lock' : ( 'unavailable_day' === type ? 'wpbc_icn_event_busy' : 'wpbc_icn_do_not_disturb_on' );
+					var type = 'blocked' === interval.type ? 'blocked' : ( 'unavailable_day' === interval.type ? 'unavailable_day' : ( 'working_time' === interval.type ? 'working_time' : 'booked' ) );
+					var icon = 'booked' === type ? 'wpbc_icn_lock' : ( 'unavailable_day' === type ? 'wpbc_icn_event_busy' : ( 'working_time' === type ? 'wpbc-bi-clock-history' : 'wpbc_icn_do_not_disturb_on' ) );
 					var tooltip = interval.tooltip || '';
 					var $bar = $( '<div class="wpbc_ts_bar" data-wpbc-ts-source="server"></div>' );
 					var $iconWrap;
@@ -169,7 +169,7 @@
 							.attr( 'data-wpbc-ts-booking-id', interval.booking_id || '' )
 							.attr( 'aria-label', ( labels.open_booking || 'Open booking in Booking Listing' ) + ( interval.booking_id ? ': ' + interval.booking_id : '' ) )
 							.attr( 'data-original-title', tooltip || '' );
-					} else if ( 'unavailable_day' === type && interval.rule_url ) {
+					} else if ( ( 'unavailable_day' === type || 'working_time' === type ) && interval.rule_url ) {
 						$iconWrap = $( '<a class="wpbc_ts_rule_link tooltip_top"><span></span></a>' );
 						$iconWrap
 							.attr( 'href', interval.rule_url )
@@ -674,7 +674,11 @@
 				resource_id: context.resource_id,
 				booking_form: bookingForm,
 				selected_date: context.selected_date,
-				selected_time: context.selected_time
+				selected_time: context.selected_time,
+				time_override_enabled: 1,
+				time_override_source: 'times_availability',
+				time_override_start: minutes_to_time( context.start_second / 60 ),
+				time_override_end: minutes_to_time( context.end_second / 60 )
 			} );
 		}, 150 );
 

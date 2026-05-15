@@ -55,6 +55,10 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 
             if (  -1 == skip_elements.indexOf( jQuery( el ).attr( 'type' ) )  ){
 
+				if ( '1' === String( jQuery( el ).attr( 'data-wpbc-booking-submit-ignore' ) || '' ) ) {
+					return true;
+				}
+
 				// Check Calendar Dates Selection
                 if ( ( 'date_booking' + bk_type ) == jQuery( el ).attr( 'name' ) ) {
 

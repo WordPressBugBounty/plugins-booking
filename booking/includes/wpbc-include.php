@@ -102,6 +102,7 @@ require_once WPBC_PLUGIN_DIR . '/core/form_parser.php';                         
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-dates.php';                                   // Dates.
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/date-hints.php';                    // Front-end date hints for Free.       // FixIn: 10.15.6.2.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_welcome.php';                                 // Welcome Panel Functions.
+require_once WPBC_PLUGIN_DIR . '/includes/_working_time/working_time.php';               // Working Time settings and availability helpers.
 
 // New Engine       // FixIn: 9.8.0.4.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/wpbc_cache.php';                     // Caching different requests to DB                                 // FixIn: 9.8.0.4.
@@ -193,13 +194,12 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability-general/availability
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-general/ajax/availability_general__save.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-general/ajax/availability_general__preview.php';
 
-if ( WPBC_NEW_TIME_AVAILABILITY ) {
-	// WP Booking Calendar > Availability > Times Availability page.  // FixIn: 10.16.1.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__front.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__activate.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__save.php';
-	require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__page.php';
-}
+// WP Booking Calendar > Availability > Times Availability page.  // FixIn: 10.16.1.
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__front.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__activate.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__save.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__page.php';
+
 
 if ( WPBC_NEW_FORM_BUILDER ) {
 	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.

@@ -78,6 +78,7 @@ class WPBC_Add_Booking_Modal {
 								<div class="wpbc_modal__add_booking__controls">
 									<?php self::print_modal_resource_select(); ?>
 									<?php self::print_modal_booking_form_select(); ?>
+									<?php self::print_modal_allow_past_toggle(); ?>
 								</div>
 							</div>
 						</div>
@@ -87,6 +88,7 @@ class WPBC_Add_Booking_Modal {
 							</div>
 						</div>
 						<div class="modal-footer">
+							<div class="wpbc_modal__add_booking__footer_time_override" data-wpbc-add-booking-time-override-footer="1"></div>
 							<?php self::print_modal_send_emails_toggle(); ?>
 							<a href="javascript:void(0)" id="wpbc_modal__add_booking__button_send" class="button button-primary" onclick="wpbc_boo_listing__submit__add_booking_modal();">
 								<?php esc_html_e( 'Add booking', 'booking' ); ?>
@@ -133,6 +135,38 @@ class WPBC_Add_Booking_Modal {
 		);
 		?>
 		<div class="btn-group" style="position:static;margin:0 10px 0 0;display:inline-flex;vertical-align:middle;">
+			<?php wpbc_flex_toggle( $params_checkbox ); ?>
+		</div>
+		<?php
+	}
+
+
+	/**
+	 * Print modal-scoped toggle for allowing bookings in the past.
+	 *
+	 * @return void
+	 */
+	private static function print_modal_allow_past_toggle() {
+
+		$el_id = 'wpbc_modal__add_booking__allow_past';
+
+		$params_checkbox = array(
+			'id'       => $el_id,
+			'name'     => $el_id,
+			'label'    => array( 'title' => __( 'Allow booking in the past', 'booking' ), 'position' => 'right' ),
+			'style'    => '',
+			'class'    => '',
+			'disabled' => false,
+			'attr'     => array(
+				'data-wpbc-add-booking-allow-past' => '1',
+			),
+			'legend'   => '',
+			'value'    => 'On',
+			'selected' => false,
+			'hint'     => array( 'title' => __( 'Allow booking in the past', 'booking' ), 'position' => 'top' ),
+		);
+		?>
+		<div class="wpbc_modal__add_booking__control wpbc_modal__add_booking__allow_past_control btn-group" style="position:static;margin:0 0 0 6px;display:inline-flex;vertical-align:middle;">
 			<?php wpbc_flex_toggle( $params_checkbox ); ?>
 		</div>
 		<?php
@@ -333,9 +367,14 @@ class WPBC_Add_Booking_Modal {
 				'button_title' => ( 'edit' === $args['mode'] ) ? __( 'Save booking', 'booking' ) : __( 'Add booking', 'booking' ),
 				'booking_id'   => absint( $args['booking_id'] ),
 				'booking_form' => (string) $args['booking_form'],
+				'allow_past'   => absint( $args['allow_past'] ),
 				'selected_dates_without_calendar' => (string) $args['selected_dates_without_calendar'],
 				'selected_date' => (string) $args['selected_date'],
 				'selected_time' => (string) $args['selected_time'],
+				'time_override_enabled' => absint( $args['time_override_enabled'] ),
+				'time_override_source'  => (string) $args['time_override_source'],
+				'time_override_start'   => (string) $args['time_override_start'],
+				'time_override_end'     => (string) $args['time_override_end'],
 			)
 		);
 	}
@@ -355,9 +394,14 @@ class WPBC_Add_Booking_Modal {
 		$resource_id  = isset( $_POST['resource_id'] ) ? absint( $_POST['resource_id'] ) : 0;                           // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$booking_id   = isset( $_POST['booking_id'] ) ? absint( $_POST['booking_id'] ) : 0;                             // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$booking_form = isset( $_POST['booking_form'] ) ? sanitize_text_field( wp_unslash( $_POST['booking_form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$allow_past   = isset( $_POST['allow_past'] ) ? absint( $_POST['allow_past'] ) : 0;                              // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$selected_dates_without_calendar = isset( $_POST['selected_dates_without_calendar'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_dates_without_calendar'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$selected_date = isset( $_POST['selected_date'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$selected_time = isset( $_POST['selected_time'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_time'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$time_override_enabled = isset( $_POST['time_override_enabled'] ) ? absint( $_POST['time_override_enabled'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$time_override_source  = isset( $_POST['time_override_source'] ) ? sanitize_key( wp_unslash( $_POST['time_override_source'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$time_override_start   = isset( $_POST['time_override_start'] ) ? self::sanitize_time_hm( wp_unslash( $_POST['time_override_start'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$time_override_end     = isset( $_POST['time_override_end'] ) ? self::sanitize_time_hm( wp_unslash( $_POST['time_override_end'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 		if ( '' !== $booking_hash ) {
 			$hash_resource = wpbc_hash__get_booking_id__resource_id( $booking_hash );
@@ -368,6 +412,7 @@ class WPBC_Add_Booking_Modal {
 			$booking_id  = absint( $hash_resource[0] );
 			$resource_id = absint( $hash_resource[1] );
 			$mode        = 'edit';
+			$allow_past  = 1;
 		}
 
 		return array(
@@ -378,9 +423,14 @@ class WPBC_Add_Booking_Modal {
 			'booking_hash'                 => $booking_hash,
 			'booking_form'                 => $booking_form,
 			'custom_booking_form'          => $booking_form,
+			'allow_past'                   => $allow_past ? 1 : 0,
 			'selected_dates_without_calendar' => $selected_dates_without_calendar,
 			'selected_date'                => $selected_date,
 			'selected_time'                => $selected_time,
+			'time_override_enabled'        => ( $time_override_enabled && $time_override_start && $time_override_end ) ? 1 : 0,
+			'time_override_source'         => $time_override_source,
+			'time_override_start'          => $time_override_start,
+			'time_override_end'            => $time_override_end,
 			'is_toolbar_visible'           => false,
 			'is_booking_page_js'           => false,
 			'is_booking_page_popover'      => false,
@@ -390,6 +440,32 @@ class WPBC_Add_Booking_Modal {
 			'content_style'                => 'width:100%;margin-bottom:20px;',
 			'is_echo'                      => 0,
 		);
+	}
+
+
+	/**
+	 * Sanitize HH:MM time value.
+	 *
+	 * @param string $time_value Time value.
+	 *
+	 * @return string
+	 */
+	private static function sanitize_time_hm( $time_value ) {
+
+		$time_value = trim( sanitize_text_field( (string) $time_value ) );
+
+		if ( ! preg_match( '/^([0-9]{1,2}):([0-9]{2})$/', $time_value, $matches ) ) {
+			return '';
+		}
+
+		$hour   = absint( $matches[1] );
+		$minute = absint( $matches[2] );
+
+		if ( $hour > 24 || $minute > 59 || ( 24 === $hour && 0 !== $minute ) ) {
+			return '';
+		}
+
+		return sprintf( '%02d:%02d', $hour, $minute );
 	}
 
 
@@ -418,6 +494,10 @@ class WPBC_Add_Booking_Modal {
 			$query_args['parent_res']   = 1;
 		}
 
+		if ( ! empty( $args['allow_past'] ) || ( '' !== $args['booking_hash'] ) ) {
+			$query_args['allow_past'] = 1;
+		}
+
 		if ( '' !== $args['booking_form'] ) {
 			$query_args['booking_form'] = $args['booking_form'];
 		}
@@ -427,7 +507,7 @@ class WPBC_Add_Booking_Modal {
 			$_REQUEST[ $key ] = $value;
 		}
 
-		$_SERVER['REQUEST_URI'] = 'admin.php?' . http_build_query( $query_args, '', '&' );
+		$_SERVER['REQUEST_URI'] = wp_parse_url( admin_url( 'admin.php' ), PHP_URL_PATH ) . '?' . http_build_query( $query_args, '', '&' );
 
 		try {
 			return WPBC_Add_Booking_Component::render( $args );

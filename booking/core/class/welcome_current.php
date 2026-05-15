@@ -4,6 +4,48 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * What's New section for Booking Calendar 11.1
+ *
+ * @param object $obj
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_1( $obj ) {
+
+	$section_param_arr = array( 'version_num' => '11.1', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Working Time' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.1/wp_booking_calendar_11_1_working_time_01.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added **Working Time** settings to **Booking Calendar > Availability > General Availability**, allowing administrators to restrict time-based bookings to specific working hours.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Designed for time-based booking forms**: Working Time applies to booking forms that use **rangetime**, **start/end time**, or **start/duration time** fields.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Flexible schedule control**: Define default working hours for each weekday, then optionally set custom working time rules for specific booking resources.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Clear availability timeline**: Time outside working hours is shown in **Time Slots Availability** as read-only unavailable time, with links back to the related Working Time settings.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Cleaner front-end calendar display**: Dates limited only by Working Time keep their tooltip information, while the calendar avoids showing partial-booking dots when there are no real bookings or manually blocked time slots.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Better editing workflow**: When opening Working Time settings from the Time Slots Availability timeline, the General Availability page automatically expands and scrolls to the Working Time section.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
+/**
  * What's New section for Booking Calendar 11.0
  *
  * @param object $obj

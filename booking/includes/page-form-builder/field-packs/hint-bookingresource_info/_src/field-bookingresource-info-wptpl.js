@@ -226,18 +226,8 @@
 			return;
 		}
 
-		content_exporter.register( T, function ( field, emit, extras ) {
-			extras = extras || {};
-			var cfg = extras.cfg || {};
-			var resource_show = normalize_show( field && field.resource_show );
-			var raw_label = ( field && typeof field.prefix_text === 'string' ) ? field.prefix_text.trim() : '';
-			var label = raw_label.replace( /\s*:\s*$/, '' ) || label_for( resource_show );
-
-			if ( typeof content_exporter.emit_line_bold_field === 'function' ) {
-				content_exporter.emit_line_bold_field( emit, label, shortcode_for( resource_show ), cfg );
-				return;
-			}
-			emit( '<b>' + label + '</b>: <f>[' + shortcode_for( resource_show ) + ']</f><br>' );
+		content_exporter.register( T, function () {
+			// Do not export booking resource info into the "Content of booking fields data" form.
 		} );
 	}
 

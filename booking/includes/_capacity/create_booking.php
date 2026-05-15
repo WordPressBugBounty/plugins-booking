@@ -52,10 +52,15 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 																					'is_emails_send'            => array( 'validate' => 'd', 'default' => 1 ),
 																					'active_locale'             => array( 'validate' => 'strong', 'default'  => '' ),
 																					'form_status'               => array( 'validate' => 'strong', 'default'  => 'published' ),
+																					'allow_past'                => array( 'validate' => 'd', 'default' => 0 ),
 																					'wpbc_bfb_preview'          => array( 'validate' => 'd', 'default'  => 0 ),
 																					'wpbc_bfb_preview_token'    => array( 'validate' => 'strong', 'default'  => '' ),
 																					'wpbc_bfb_preview_form_id'  => array( 'validate' => 'd', 'default'  => 0 ),
 																					'wpbc_bfb_preview_nonce'    => array( 'validate' => 'strong', 'default'  => '' ),
+																					'wpbc_time_override_enabled' => array( 'validate' => 'd', 'default' => 0 ),
+																					'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
+																					'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
+																					'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
 																				)
 												));
 
@@ -104,10 +109,15 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 		'user_id'                   => $local_params['user_id'],
 		'request_uri'               => $server_http_referer_uri,
 		'form_status'               => $request_params['form_status'],
+		'allow_past'                => $request_params['allow_past'],
 		'wpbc_bfb_preview'          => $request_params['wpbc_bfb_preview'],
 		'wpbc_bfb_preview_token'    => $request_params['wpbc_bfb_preview_token'],
 		'wpbc_bfb_preview_form_id'  => $request_params['wpbc_bfb_preview_form_id'],
 		'wpbc_bfb_preview_nonce'    => $request_params['wpbc_bfb_preview_nonce'],
+		'wpbc_time_override_enabled' => $request_params['wpbc_time_override_enabled'],
+		'wpbc_time_override_source'  => $request_params['wpbc_time_override_source'],
+		'wpbc_time_override_start'   => $request_params['wpbc_time_override_start'],
+		'wpbc_time_override_end'     => $request_params['wpbc_time_override_end'],
 	);
 	$booking_save_arr = wpbc_booking_save( $request_save_params );
 
@@ -252,6 +262,7 @@ function wpbc_booking_save( $request_params ){
 								'is_emails_send'        => array( 'validate' => 'd',      'default' => 1 ),             // 0 | 1
 								'is_show_payment_form'  => array( 'validate' => 'd',      'default' => 1 ),             // 0 | 1
 								'user_id'               => array( 'validate' => 'd',      'default' => wpbc_get_current_user_id() ),        // INT
+								'allow_past'            => array( 'validate' => 'd',      'default' => 0 ),
 								'request_uri'           => array( 'validate' => 'strong', 'default'  => ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ),     //  front-end: $server_request_uri | ajax: $server_http_referer_uri
 								// Really Optional:
 								'aggregate_resource_id_arr'         => array( 'validate' => 'digit_or_csd', 'default' => '' ),
@@ -267,6 +278,10 @@ function wpbc_booking_save( $request_params ){
 								'wpbc_bfb_preview_token'   => array( 'validate' => 'strong', 'default' => '' ),
 								'wpbc_bfb_preview_form_id' => array( 'validate' => 'd',      'default' => 0 ),
 								'wpbc_bfb_preview_nonce'   => array( 'validate' => 'strong', 'default' => '' ),
+								'wpbc_time_override_enabled' => array( 'validate' => 'd',      'default' => 0 ),
+								'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
+								'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
+								'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
 						);
 	$re_cleaned_params = wpbc_sanitize_params_in_arr( $request_params, $validate_arr_rules );
 
@@ -306,6 +321,26 @@ function wpbc_booking_save( $request_params ){
 	 */
 	$local_params['structured_booking_data_arr'] = wpbc_get_parsed_booking_data_arr( $re_cleaned_params["form_data"], $re_cleaned_params["resource_id"], array( 'get' => 'value' ) );
 	$local_params['all_booking_data_arr']        = wpbc_get_parsed_booking_data_arr( $re_cleaned_params["form_data"], $re_cleaned_params["resource_id"] );
+	$local_params['time_override_arr']           = wpbc_get_booking_time_override__as_arr( $re_cleaned_params );
+	if ( ! empty( $local_params['time_override_arr'] ) ) {
+		unset( $local_params['structured_booking_data_arr']['rangetime'], $local_params['structured_booking_data_arr']['durationtime'] );
+		$local_params['structured_booking_data_arr']['starttime'] = $local_params['time_override_arr']['start'];
+		$local_params['structured_booking_data_arr']['endtime']   = $local_params['time_override_arr']['end'];
+
+		unset( $local_params['all_booking_data_arr']['rangetime'], $local_params['all_booking_data_arr']['durationtime'] );
+		$local_params['all_booking_data_arr']['starttime'] = array(
+			'type'          => 'text',
+			'original_name' => 'starttime' . $re_cleaned_params['resource_id'],
+			'name'          => 'starttime',
+			'value'         => $local_params['time_override_arr']['start'],
+		);
+		$local_params['all_booking_data_arr']['endtime'] = array(
+			'type'          => 'text',
+			'original_name' => 'endtime' . $re_cleaned_params['resource_id'],
+			'name'          => 'endtime',
+			'value'         => $local_params['time_override_arr']['end'],
+		);
+	}
 	//  Important! : [ 64800, 72000 ]
 	$local_params['time_as_seconds_arr'] = wpbc_get_in_booking_form__time_to_book_as_seconds_arr( $local_params['structured_booking_data_arr'] );
 				 // [ "18:00:00", "20:00:00" ]
@@ -404,6 +439,7 @@ function wpbc_booking_save( $request_params ){
 										'time_as_seconds_arr'           => $local_params['time_as_seconds_arr'],                // [ 36000, 39600 ]
 										'how_many_items_to_book'        => $local_params['how_many_items_to_book'],             // 1
 										'request_uri'                   => $re_cleaned_params['request_uri'],                   // 'http://beta/resource-id2/'
+										'allow_past'                    => ! empty( $re_cleaned_params['allow_past'] ),
 										'is_use_booking_recurrent_time' => $local_params['is_use_booking_recurrent_time'],      // true | false
 										'as_single_resource'            => false,                                                // false
 										'aggregate_resource_id_arr'     => $local_params['aggregate_resource_id_arr'],           // Optional  can  be ''
@@ -1366,6 +1402,79 @@ function wpbc_clear_request_form_context() {
         }
 
 		return $time_as_seconds_arr;
+	}
+
+
+	/**
+	 * Get explicit admin-selected time override from Add Booking modal request.
+	 *
+	 * @param array $request_params Sanitized booking request params.
+	 *
+	 * @return array Empty array or array with start/end HH:MM values.
+	 */
+	function wpbc_get_booking_time_override__as_arr( $request_params ) {
+
+		if ( empty( $request_params['wpbc_time_override_enabled'] ) ) {
+			return array();
+		}
+
+		$start_time = wpbc_sanitize_booking_time_override__hm( isset( $request_params['wpbc_time_override_start'] ) ? $request_params['wpbc_time_override_start'] : '' );
+		$end_time   = wpbc_sanitize_booking_time_override__hm( isset( $request_params['wpbc_time_override_end'] ) ? $request_params['wpbc_time_override_end'] : '' );
+
+		if (
+			   ( '' === $start_time )
+			|| ( '' === $end_time )
+			|| ( wpbc_booking_time_override__hm_to_seconds( $start_time ) >= wpbc_booking_time_override__hm_to_seconds( $end_time ) )
+		) {
+			return array();
+		}
+
+		return array(
+			'start'  => $start_time,
+			'end'    => $end_time,
+			'source' => isset( $request_params['wpbc_time_override_source'] ) ? sanitize_key( $request_params['wpbc_time_override_source'] ) : '',
+		);
+	}
+
+
+	/**
+	 * Sanitize HH:MM value for admin booking time override.
+	 *
+	 * @param string $time_value Time value.
+	 *
+	 * @return string
+	 */
+	function wpbc_sanitize_booking_time_override__hm( $time_value ) {
+
+		$time_value = trim( sanitize_text_field( (string) $time_value ) );
+
+		if ( ! preg_match( '/^([0-9]{1,2}):([0-9]{2})$/', $time_value, $matches ) ) {
+			return '';
+		}
+
+		$hour   = absint( $matches[1] );
+		$minute = absint( $matches[2] );
+
+		if ( $hour > 24 || $minute > 59 || ( 24 === $hour && 0 !== $minute ) ) {
+			return '';
+		}
+
+		return sprintf( '%02d:%02d', $hour, $minute );
+	}
+
+
+	/**
+	 * Convert HH:MM to seconds.
+	 *
+	 * @param string $time_value Time value.
+	 *
+	 * @return int
+	 */
+	function wpbc_booking_time_override__hm_to_seconds( $time_value ) {
+
+		$time_arr = explode( ':', (string) $time_value );
+
+		return ( absint( $time_arr[0] ) * 60 * 60 ) + ( absint( $time_arr[1] ) * 60 );
 	}
 
 

@@ -111,8 +111,9 @@ function wpbc_render_booking_form_shortcodes( $form, $args = array(), $req = arr
 	$admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );        // FixIn: 8.8.1.2.
 
 	$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' );
+	$is_add_booking_admin_context = ( function_exists( 'wpbc_is_new_booking_page_url' ) && wpbc_is_new_booking_page_url( $server_request_uri ) );
 
-	if ( strpos( $server_request_uri, $admin_uri ) === false ) {            // Only in front-end side.
+	if ( ( strpos( $server_request_uri, $admin_uri ) === false ) && ! $is_add_booking_admin_context ) {            // Only in front-end side.
 		if ( false !== $req['current_edit_booking_id'] ) {
 			foreach ( $engine->current_edit_booking['dates'] as $b_date ) {
 				if ( wpbc_is_date_in_past( $b_date ) ) {

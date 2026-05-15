@@ -18,6 +18,9 @@
 	--wpbc-ts-unavailable: #4b5563;
 	--wpbc-ts-unavailable-soft: rgba(75, 85, 99, 0.78);
 	--wpbc-ts-unavailable-line: rgba(255, 255, 255, 0.3);
+	--wpbc-ts-working-time: #6b7280;
+	--wpbc-ts-working-time-soft: rgba(107, 114, 128, 0.72);
+	--wpbc-ts-working-time-line: rgba(255, 255, 255, 0.34);
 	--wpbc-ts-bg: #fff;
 	--wpbc-ts-bg-soft: #f6f7f7;
 	--wpbc-ts-sticky-bg: #fff;
@@ -654,7 +657,10 @@
 .wpbc_ts_bar_booked a:focus,
 .wpbc_ts_bar_unavailable_day a,
 .wpbc_ts_bar_unavailable_day a:hover,
-.wpbc_ts_bar_unavailable_day a:focus {
+.wpbc_ts_bar_unavailable_day a:focus,
+.wpbc_ts_bar_working_time a,
+.wpbc_ts_bar_working_time a:hover,
+.wpbc_ts_bar_working_time a:focus {
 	color: #fff;
 }
 
@@ -667,6 +673,13 @@
 	background-color: var(--wpbc-ts-unavailable-soft);
 	background-image: repeating-linear-gradient(-45deg, var(--wpbc-ts-unavailable-line) 0, var(--wpbc-ts-unavailable-line) 2px, transparent 2px, transparent 8px);
 	box-shadow: inset 0 0 0 1px var(--wpbc-ts-unavailable);
+}
+
+.wpbc_ts_bar_working_time {
+	z-index: 2;
+	background-color: var(--wpbc-ts-working-time-soft);
+	background-image: repeating-linear-gradient(135deg, var(--wpbc-ts-working-time-line) 0, var(--wpbc-ts-working-time-line) 2px, transparent 2px, transparent 8px);
+	box-shadow: inset 0 0 0 1px var(--wpbc-ts-working-time);
 }
 
 .wpbc_ts_selection {
@@ -798,6 +811,13 @@
 	background-color: var(--wpbc-ts-unavailable-soft);
 	background-image: repeating-linear-gradient(-45deg, var(--wpbc-ts-unavailable-line) 0, var(--wpbc-ts-unavailable-line) 2px, transparent 2px, transparent 8px);
 	box-shadow: inset 0 0 0 1px var(--wpbc-ts-unavailable);
+}
+
+.wpbc_ts_legend_working_time {
+	color: #fff;
+	background-color: var(--wpbc-ts-working-time-soft);
+	background-image: repeating-linear-gradient(135deg, var(--wpbc-ts-working-time-line) 0, var(--wpbc-ts-working-time-line) 2px, transparent 2px, transparent 8px);
+	box-shadow: inset 0 0 0 1px var(--wpbc-ts-working-time);
 }
 
 .wpbc_ts_legend_selected {

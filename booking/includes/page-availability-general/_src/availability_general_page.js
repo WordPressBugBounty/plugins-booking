@@ -37,6 +37,66 @@
 		$fields.prop( 'hidden', is_open ).attr( 'aria-hidden', is_open ? 'true' : 'false' );
 	}
 
+	function close_group( $group ) {
+		var $button = $group.find( '> .group__header' );
+		var $fields = $group.find( '> .group__fields' );
+
+		$group.removeClass( 'is-open' );
+		$button.attr( 'aria-expanded', 'false' );
+		$fields.prop( 'hidden', true ).attr( 'aria-hidden', 'true' );
+	}
+
+	function open_group( group_name, is_exclusive ) {
+		var $group = $( '.wpbc_ui__collapsible_group[data-group="' + group_name + '"]' );
+		var $button = $group.find( '> .group__header' );
+		var $fields = $group.find( '> .group__fields' );
+
+		if ( ! $group.length ) {
+			return;
+		}
+
+		if ( is_exclusive ) {
+			$group.siblings( '.wpbc_ui__collapsible_group' ).each( function () {
+				close_group( $( this ) );
+			} );
+		}
+
+		$group.addClass( 'is-open' );
+		$button.attr( 'aria-expanded', 'true' );
+		$fields.prop( 'hidden', false ).attr( 'aria-hidden', 'false' );
+	}
+
+	function scroll_to_group( group_name ) {
+		var $group = $( '.wpbc_ui__collapsible_group[data-group="' + group_name + '"]' );
+		var $scroll_parent;
+		var scroll_top;
+
+		if ( ! $group.length ) {
+			return;
+		}
+
+		$scroll_parent = $group.closest( '.wpbc_ui_el__vert_right_bar__content, .wpbc_rightbar_palette, .wpbc_ag_rightbar_panels' ).first();
+
+		if ( ! $scroll_parent.length ) {
+			$group.get( 0 ).scrollIntoView( { block: 'start' } );
+			return;
+		}
+
+		scroll_top = $scroll_parent.scrollTop() + $group.position().top - 10;
+		$scroll_parent.stop().animate( { scrollTop: Math.max( 0, scroll_top ) }, 180 );
+	}
+
+	function apply_open_section_from_url() {
+		if ( 'working_time' !== cfg.open_section ) {
+			return;
+		}
+
+		open_group( 'general-availability-working-time', true );
+		setTimeout( function () {
+			scroll_to_group( 'general-availability-working-time' );
+		}, 120 );
+	}
+
 	function refresh_buffer_fields() {
 		var value = $( 'input[name="booking_unavailable_extra_in_out"]:checked' ).val() || '';
 
@@ -133,7 +193,8 @@
 			booking_unavailable_extra_minutes_in: $form.find( '[name="booking_unavailable_extra_minutes_in"]' ).val() || '',
 			booking_unavailable_extra_minutes_out: $form.find( '[name="booking_unavailable_extra_minutes_out"]' ).val() || '',
 			booking_unavailable_extra_days_in: $form.find( '[name="booking_unavailable_extra_days_in"]' ).val() || '',
-			booking_unavailable_extra_days_out: $form.find( '[name="booking_unavailable_extra_days_out"]' ).val() || ''
+			booking_unavailable_extra_days_out: $form.find( '[name="booking_unavailable_extra_days_out"]' ).val() || '',
+			working_time: get_working_time_settings_from_form()
 		};
 	}
 
@@ -172,6 +233,7 @@
 
 		$form.find( 'input[name="booking_unavailable_extra_in_out"]' ).prop( 'checked', false );
 		$form.find( 'input[name="booking_unavailable_extra_in_out"][value="' + ( settings.booking_unavailable_extra_in_out || '' ) + '"]' ).prop( 'checked', true );
+		apply_working_time_settings_to_form( settings.working_time || {}, $( '#wpbc_ag_resource_id' ).val() );
 
 		refresh_buffer_fields();
 		sync_all_ranges();
@@ -271,6 +333,167 @@
 			return 0;
 		}
 		return parseInt( value, 10 ) || 0;
+	}
+
+	function time_to_seconds( time ) {
+		var parts = String( time || '' ).split( ':' );
+		var hours;
+		var mins;
+
+		if ( parts.length < 2 ) {
+			return 0;
+		}
+
+		hours = Math.max( 0, Math.min( 24, parseInt( parts[0], 10 ) || 0 ) );
+		mins = hours === 24 ? 0 : Math.max( 0, Math.min( 59, parseInt( parts[1], 10 ) || 0 ) );
+
+		return Math.min( 86400, ( hours * 3600 ) + ( mins * 60 ) );
+	}
+
+	function seconds_to_time( seconds ) {
+		var hours;
+		var mins;
+
+		seconds = Math.max( 0, Math.min( 86400, parseInt( seconds, 10 ) || 0 ) );
+		hours = Math.floor( seconds / 3600 );
+		mins = Math.floor( ( seconds % 3600 ) / 60 );
+
+		return ( hours < 10 ? '0' : '' ) + hours + ':' + ( mins < 10 ? '0' : '' ) + mins;
+	}
+
+	function collect_working_time_weekdays( prefix ) {
+		var $form = get_form();
+		var weekdays = {};
+
+		$form.find( '[data-wpbc-working-time-weekdays="' + prefix + '"] .wpbc_ag_working_time_row' ).each( function () {
+			var $row = $( this );
+			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+
+			weekdays[ day ] = [];
+			if ( ! $row.find( 'input[type="checkbox"]' ).prop( 'checked' ) ) {
+				return;
+			}
+
+			weekdays[ day ].push( {
+				start_second: time_to_seconds( $row.find( '.wpbc_ag_working_time_start' ).val() ),
+				end_second: time_to_seconds( $row.find( '.wpbc_ag_working_time_end' ).val() )
+			} );
+		} );
+
+		return weekdays;
+	}
+
+	function set_working_time_weekdays( prefix, weekdays ) {
+		var $wrap = get_form().find( '[data-wpbc-working-time-weekdays="' + prefix + '"]' );
+
+		$wrap.find( '.wpbc_ag_working_time_row' ).each( function () {
+			var $row = $( this );
+			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+			var intervals = weekdays && weekdays[ day ] ? weekdays[ day ] : [];
+			var interval = intervals.length ? intervals[0] : { start_second: 32400, end_second: 64800 };
+
+			$row.find( 'input[type="checkbox"]' ).prop( 'checked', intervals.length > 0 );
+			$row.find( '.wpbc_ag_working_time_start' ).val( seconds_to_time( interval.start_second ) );
+			$row.find( '.wpbc_ag_working_time_end' ).val( seconds_to_time( interval.end_second ) );
+		} );
+	}
+
+	function refresh_working_time_panels() {
+		var is_enabled = get_form().find( 'input[name="booking_working_time_enabled"]' ).prop( 'checked' );
+		var mode = get_form().find( 'input[name="booking_working_time_resource_mode"]:checked' ).val() || 'inherit';
+
+		get_form()
+			.find( '.wpbc_ag_working_time_block' )
+			.toggleClass( 'is-disabled', ! is_enabled )
+			.find( 'input, select, button' )
+			.prop( 'disabled', ! is_enabled );
+
+		get_form().find( '[data-wpbc-working-time-resource-custom]' ).toggleClass( 'is-visible', mode === 'custom' );
+	}
+
+	function get_working_time_settings_from_form() {
+		var $form = get_form();
+		var resourceId = parseInt( $form.find( '[data-wpbc-working-time-resource-id]' ).val(), 10 ) || parseInt( $( '#wpbc_ag_resource_id' ).val(), 10 ) || 0;
+		var workingTime = $.extend( true, {}, cfg.settings && cfg.settings.working_time ? cfg.settings.working_time : ( cfg.default_settings && cfg.default_settings.working_time ? cfg.default_settings.working_time : {} ) );
+
+		if ( ! workingTime.default ) {
+			workingTime.default = {};
+		}
+		if ( ! workingTime.resources ) {
+			workingTime.resources = {};
+		}
+
+		workingTime.enabled = $form.find( 'input[name="booking_working_time_enabled"]' ).prop( 'checked' ) ? 'On' : 'Off';
+		workingTime.default.weekdays = collect_working_time_weekdays( 'booking_working_time_default' );
+
+		if ( resourceId > 0 ) {
+			workingTime.resources[ resourceId ] = {
+				mode: $form.find( 'input[name="booking_working_time_resource_mode"]:checked' ).val() || 'inherit',
+				weekdays: collect_working_time_weekdays( 'booking_working_time_resource' )
+			};
+		}
+
+		return workingTime;
+	}
+
+	function apply_working_time_settings_to_form( workingTime, resourceId ) {
+		var resourceSettings;
+
+		workingTime = workingTime || {};
+		resourceId = parseInt( resourceId, 10 ) || parseInt( $( '#wpbc_ag_resource_id' ).val(), 10 ) || 0;
+		resourceSettings = workingTime.resources && workingTime.resources[ resourceId ] ? workingTime.resources[ resourceId ] : {
+			mode: 'inherit',
+			weekdays: workingTime.default && workingTime.default.weekdays ? workingTime.default.weekdays : {}
+		};
+
+		get_form().find( 'input[name="booking_working_time_enabled"]' ).prop( 'checked', workingTime.enabled === 'On' );
+		get_form().find( '[data-wpbc-working-time-resource-id]' ).val( resourceId );
+		set_working_time_weekdays( 'booking_working_time_default', workingTime.default && workingTime.default.weekdays ? workingTime.default.weekdays : {} );
+		get_form().find( 'input[name="booking_working_time_resource_mode"][value="' + ( resourceSettings.mode || 'inherit' ) + '"]' ).prop( 'checked', true );
+		set_working_time_weekdays( 'booking_working_time_resource', resourceSettings.weekdays || ( workingTime.default ? workingTime.default.weekdays : {} ) );
+		refresh_working_time_panels();
+	}
+
+	function append_working_time_payload( payload ) {
+		var $form = get_form();
+		var defaultDays = [];
+		var resourceDays = [];
+		var defaultStart = {};
+		var defaultEnd = {};
+		var resourceStart = {};
+		var resourceEnd = {};
+
+		$form.find( '[data-wpbc-working-time-weekdays="booking_working_time_default"] .wpbc_ag_working_time_row' ).each( function () {
+			var $row = $( this );
+			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+
+			defaultStart[ day ] = $row.find( '.wpbc_ag_working_time_start' ).val() || '09:00';
+			defaultEnd[ day ] = $row.find( '.wpbc_ag_working_time_end' ).val() || '18:00';
+			if ( $row.find( 'input[type="checkbox"]' ).prop( 'checked' ) ) {
+				defaultDays.push( day );
+			}
+		} );
+
+		$form.find( '[data-wpbc-working-time-weekdays="booking_working_time_resource"] .wpbc_ag_working_time_row' ).each( function () {
+			var $row = $( this );
+			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+
+			resourceStart[ day ] = $row.find( '.wpbc_ag_working_time_start' ).val() || '09:00';
+			resourceEnd[ day ] = $row.find( '.wpbc_ag_working_time_end' ).val() || '18:00';
+			if ( $row.find( 'input[type="checkbox"]' ).prop( 'checked' ) ) {
+				resourceDays.push( day );
+			}
+		} );
+
+		payload.booking_working_time_enabled = $form.find( 'input[name="booking_working_time_enabled"]' ).prop( 'checked' ) ? 'On' : '';
+		payload.booking_working_time_resource_id = $form.find( '[data-wpbc-working-time-resource-id]' ).val() || $( '#wpbc_ag_resource_id' ).val() || '';
+		payload.booking_working_time_resource_mode = $form.find( 'input[name="booking_working_time_resource_mode"]:checked' ).val() || 'inherit';
+		payload.booking_working_time_default_days = defaultDays;
+		payload.booking_working_time_default_start = defaultStart;
+		payload.booking_working_time_default_end = defaultEnd;
+		payload.booking_working_time_resource_days = resourceDays;
+		payload.booking_working_time_resource_start = resourceStart;
+		payload.booking_working_time_resource_end = resourceEnd;
 	}
 
 	function update_wpbc_preview_params( settings ) {
@@ -671,6 +894,8 @@
 			booking_unavailable_days: settings.weekdays
 		} );
 
+		append_working_time_payload( payload );
+
 		if ( ! cfg.ajax_url ) {
 			show_message( ( cfg.i18n && cfg.i18n.save_failed ) || 'Unable to save general availability settings.', 'error', 10000 );
 			return;
@@ -692,6 +917,9 @@
 			if ( response.data && response.data.settings && response.data.settings.hints ) {
 				update_hints( response.data.settings.hints );
 			}
+			if ( response.data && response.data.settings ) {
+				cfg.settings = response.data.settings;
+			}
 
 			load_calendar_preview();
 			show_message( ( response.data && response.data.message ) || ( cfg.i18n && cfg.i18n.saved ) || 'General availability settings updated.', 'success', 2000 );
@@ -712,7 +940,8 @@
 			booking_unavailable_extra_minutes_in: '',
 			booking_unavailable_extra_minutes_out: '',
 			booking_unavailable_extra_days_in: '',
-			booking_unavailable_extra_days_out: ''
+			booking_unavailable_extra_days_out: '',
+			working_time: {}
 		};
 
 		if ( ! w.confirm( confirm_message ) ) {
@@ -757,6 +986,12 @@
 
 	$( document ).on( 'change', '#wpbc_ag_resource_id, #wpbc_ag_months_count', load_calendar_preview );
 
+	$( document ).on( 'change', '#wpbc_ag_resource_id', function () {
+		cfg.settings = cfg.settings || {};
+		cfg.settings.working_time = get_working_time_settings_from_form();
+		apply_working_time_settings_to_form( cfg.settings.working_time, $( this ).val() );
+	} );
+
 	$( document ).on( 'input change', '[data-wpbc-ag-range-for]', function () {
 		sync_select_from_range( this );
 		schedule_preview_refresh();
@@ -775,6 +1010,10 @@
 		schedule_preview_refresh();
 	} );
 
+	$( document ).on( 'change', 'input[name="booking_working_time_enabled"]', refresh_working_time_panels );
+
+	$( document ).on( 'change', 'input[name="booking_working_time_resource_mode"]', refresh_working_time_panels );
+
 	$( document ).on( 'change', '[data-wpbc-ag-settings-form="1"] input, [data-wpbc-ag-settings-form="1"] select', schedule_preview_refresh );
 
 	$( document ).on( 'submit', '[data-wpbc-ag-settings-form="1"]', function ( event ) {
@@ -791,6 +1030,8 @@
 	} );
 
 	$( document ).ready( function () {
+		apply_working_time_settings_to_form( ( cfg.settings && cfg.settings.working_time ) || ( cfg.default_settings && cfg.default_settings.working_time ) || {}, $( '#wpbc_ag_resource_id' ).val() );
+		apply_open_section_from_url();
 		refresh_buffer_fields();
 		sync_all_ranges();
 		observe_calendar_changes();

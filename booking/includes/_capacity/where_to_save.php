@@ -55,6 +55,7 @@ function wpbc__where_to_save_booking( $local_params ){
 	$server_http_referer_uri = ( ( isset( $_SERVER['HTTP_REFERER'] ) ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 	$defaults = array(
 					'request_uri'                   => ( ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ), //  front-end: $server_request_uri | ajax: $server_http_referer_uri                      // It different in Ajax requests. It's used for change-over days to detect for exception at specific pages
+					'allow_past'                    => false,
 					'as_single_resource'            => false,
 					'is_use_booking_recurrent_time' => ( 'On' === get_bk_option( 'booking_recurrent_time' ) ),
 					'aggregate_resource_id_arr'     => array(),
@@ -91,6 +92,7 @@ function wpbc__where_to_save_booking( $local_params ){
 		'skip_booking_id'     => $local_params['skip_booking_id'],
 		'dates_to_check'      => $maybe_extended__dates_to_check_arr,
 		'request_uri'         => $local_params['request_uri'],
+		'allow_past'          => ! empty( $local_params['allow_past'] ),
 		'as_single_resource' => $local_params['as_single_resource'],                                                            // default FALSE  ::  get dates as for 'single resource' or 'parent' resource including bookings in all 'child booking resources' .
 		'additional_bk_types' => $local_params['aggregate_resource_id_arr'],
 		'aggregate_type'      => empty( $local_params['aggregate_type'] ) ? 'bookings_only' : $local_params['aggregate_type'],  //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.

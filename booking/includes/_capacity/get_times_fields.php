@@ -234,6 +234,106 @@ function wpbc_get_timeslots__from_content( $content ){
 
 
 	/**
+	 * Get values for the first shortcode with this name.
+	 *
+	 * The legacy parser is intentionally kept as the first path. The fallback handles Booking Form Builder exports
+	 * that can include named attributes before option tokens, e.g.:
+	 * [selectbox* starttime default="08:00" "08:00" "09:00"].
+	 *
+	 * @param string $shortcode_name
+	 * @param string $bookingform_configuration_content
+	 *
+	 * @return false|array
+	 */
+	function wpbc_get_times_fields__get_first_shortcode_values( $shortcode_name, $bookingform_configuration_content ) {
+
+		$shortcode_values = wpbc_parse_form__get_first_shortcode_values( $shortcode_name, $bookingform_configuration_content );
+
+		if ( ! empty( $shortcode_values ) ) {
+			return $shortcode_values;
+		}
+
+		$shortcode_values = wpbc_get_times_fields__parse_first_shortcode_values__fallback( $shortcode_name, $bookingform_configuration_content );
+
+		return empty( $shortcode_values ) ? false : $shortcode_values;
+	}
+
+
+	/**
+	 * Fallback parser for time select shortcodes with named attributes.
+	 *
+	 * @param string $shortcode_name
+	 * @param string $bookingform_configuration_content
+	 *
+	 * @return array
+	 */
+	function wpbc_get_times_fields__parse_first_shortcode_values__fallback( $shortcode_name, $bookingform_configuration_content ) {
+
+		$shortcode_name = trim( (string) $shortcode_name );
+
+		if ( '' === $shortcode_name ) {
+			return array();
+		}
+
+		$regex = "%\\[\\s*([a-zA-Z][0-9a-zA-Z_-]*\\*?)\\s+" . preg_quote( $shortcode_name, '%' ) . "(?=\\s|\\])((?:[^\\]\"']+|\"[^\"]*\"|'[^']*')*)\\]%u";
+
+		if ( ! preg_match( $regex, (string) $bookingform_configuration_content, $shortcode_match ) ) {
+			return array();
+		}
+
+		$shortcode_text = $shortcode_match[0];
+		$consumed_attr_value_offsets = array();
+
+		if ( preg_match_all( '/\b[a-zA-Z][\w:-]*\s*[:=]\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s\]"]+))/u', $shortcode_text, $attr_matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+			foreach ( $attr_matches as $attr_match ) {
+				if ( isset( $attr_match[1][1] ) && ( $attr_match[1][1] >= 0 ) ) {
+					$consumed_attr_value_offsets[ $attr_match[1][1] ] = true;
+				}
+				if ( isset( $attr_match[2][1] ) && ( $attr_match[2][1] >= 0 ) ) {
+					$consumed_attr_value_offsets[ $attr_match[2][1] ] = true;
+				}
+			}
+		}
+
+		if ( ! preg_match_all( '/"([^"]*)"|\'([^\']*)\'/u', $shortcode_text, $quoted_matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+			return array();
+		}
+
+		$shortcode_values = array();
+
+		foreach ( $quoted_matches as $quoted_match ) {
+
+			if ( isset( $quoted_match[1][1] ) && ( $quoted_match[1][1] >= 0 ) ) {
+				$raw_value = $quoted_match[1][0];
+				$raw_offset = $quoted_match[1][1];
+			} else {
+				$raw_value = $quoted_match[2][0];
+				$raw_offset = $quoted_match[2][1];
+			}
+
+			if ( isset( $consumed_attr_value_offsets[ $raw_offset ] ) ) {
+				continue;
+			}
+
+			$value_parts = explode( '@@', $raw_value, 2 );
+
+			if ( 2 === count( $value_parts ) ) {
+				$shortcode_values[] = array(
+					'title' => $value_parts[0],
+					'value' => $value_parts[1],
+				);
+			} else {
+				$shortcode_values[] = array(
+					'value' => $value_parts[0],
+				);
+			}
+		}
+
+		return $shortcode_values;
+	}
+
+
+	/**
 	 * Get Time-Slots == RANGE TIME  == [ '10:00 - 12:00', '12:00 - 14:00'  ... ]    from  provided booking form configuration content
 	 *
 	 * @param $bookingform_configuration_content        - '[calendar]... <p>Time: [select* rangetime "Full Day@@00:00 - 24:00" "10:00 AM - 12:00 PM@@10:00 - 12:00"] ...'
@@ -254,7 +354,7 @@ function wpbc_get_timeslots__from_content( $content ){
 	function wpbc_get_timeslots__for_rangetime( $bookingform_configuration_content ) {
 
 		$time_slots_arr   = array();
-		$shortcode_values = wpbc_parse_form__get_first_shortcode_values( 'rangetime', $bookingform_configuration_content );
+		$shortcode_values = wpbc_get_times_fields__get_first_shortcode_values( 'rangetime', $bookingform_configuration_content );
 
 		if ( ! empty( $shortcode_values ) ) {
 			foreach ( $shortcode_values as $timeslot_value ) {
@@ -291,7 +391,7 @@ function wpbc_get_timeslots__from_content( $content ){
 
 		$time_slots_arr   = array();
 
-		$shortcode_values = wpbc_parse_form__get_first_shortcode_values( 'starttime', $bookingform_configuration_content );
+		$shortcode_values = wpbc_get_times_fields__get_first_shortcode_values( 'starttime', $bookingform_configuration_content );
 		if ( ! empty( $shortcode_values ) ) {
 			foreach ( $shortcode_values as $timeslot_value ) {
 
@@ -338,7 +438,7 @@ function wpbc_get_timeslots__from_content( $content ){
 
 		$time_slots_arr   = array();
 
-		$shortcode_values = wpbc_parse_form__get_first_shortcode_values( 'endtime', $bookingform_configuration_content );
+		$shortcode_values = wpbc_get_times_fields__get_first_shortcode_values( 'endtime', $bookingform_configuration_content );
 		if ( ! empty( $shortcode_values ) ) {
 			foreach ( $shortcode_values as $timeslot_value ) {
 
@@ -374,7 +474,7 @@ function wpbc_get_timeslots__from_content( $content ){
 		$min_time_duration = false;
 		$time_duration_in_seconds_arr = array();
 
-		$shortcode_values = wpbc_parse_form__get_first_shortcode_values( 'durationtime', $bookingform_configuration_content );
+		$shortcode_values = wpbc_get_times_fields__get_first_shortcode_values( 'durationtime', $bookingform_configuration_content );
 		if ( ! empty( $shortcode_values ) ) {
 			foreach ( $shortcode_values as $timeslot_value ) {
 

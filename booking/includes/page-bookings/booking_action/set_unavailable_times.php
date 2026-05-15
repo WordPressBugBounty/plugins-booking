@@ -38,9 +38,7 @@ class WPBC_Action_Set_Unavailable_Times {
 	public static function get_button() {
 
 		if (
-			( ! defined( 'WPBC_NEW_TIME_AVAILABILITY' ) )
-			|| ( ! WPBC_NEW_TIME_AVAILABILITY )
-			|| ( ! function_exists( 'wpbc_availability_timeslots__render_timeline_component' ) )
+			   ( ! function_exists( 'wpbc_availability_timeslots__render_timeline_component' ) )
 			|| ( ! self::is_action_available() )
 		) {
 			return false;
@@ -78,9 +76,7 @@ class WPBC_Action_Set_Unavailable_Times {
 		}
 
 		if (
-			( ! defined( 'WPBC_NEW_TIME_AVAILABILITY' ) )
-			|| ( ! WPBC_NEW_TIME_AVAILABILITY )
-			|| ( ! function_exists( 'wpbc_availability_timeslots__render_timeline_component' ) )
+			( ! function_exists( 'wpbc_availability_timeslots__render_timeline_component' ) )
 			|| ( ! self::is_action_available() )
 		) {
 			return false;
@@ -142,9 +138,7 @@ class WPBC_Action_Set_Unavailable_Times {
 	public static function template_for_modal() {
 
 		if (
-			( ! defined( 'WPBC_NEW_TIME_AVAILABILITY' ) )
-			|| ( ! WPBC_NEW_TIME_AVAILABILITY )
-			|| ( ! function_exists( 'wpbc_availability_timeslots__render_timeline_component' ) )
+			( ! function_exists( 'wpbc_availability_timeslots__render_timeline_component' ) )
 			|| ( ! self::is_action_available() )
 		) {
 			return false;

@@ -471,21 +471,28 @@ function wpbc_availability_timeslots__apply_blocks_to_availability_obj( $availab
 	$previous_day_status = $availability_obj->_day_status;
 
 	foreach ( $blocked_intervals as $blocked_interval ) {
+		$source_type  = isset( $blocked_interval['source_type'] ) ? sanitize_key( $blocked_interval['source_type'] ) : 'availability_timeslot';
+		$is_working_time = ( 'working_time' === $source_type );
+		$timeslot_id  = isset( $blocked_interval['timeslot_id'] ) ? (int) $blocked_interval['timeslot_id'] : 0;
 		$time_range = array(
 			wpbc_availability_timeslots__sanitize_second( $blocked_interval['start_second'] ),
 			wpbc_availability_timeslots__sanitize_second( $blocked_interval['end_second'] ),
 		);
+		$details_id = $is_working_time
+			? 'working_time_' . ( isset( $blocked_interval['resource_id'] ) ? intval( $blocked_interval['resource_id'] ) : 0 ) . '_' . ( isset( $blocked_interval['date'] ) ? preg_replace( '/[^0-9\-]/', '', $blocked_interval['date'] ) : '' ) . '_' . $time_range[0] . '_' . $time_range[1]
+			: 'availability_timeslot_' . $timeslot_id;
+		$status_title = $is_working_time ? __( 'Outside working time', 'booking' ) : __( 'Unavailable time-slot', 'booking' );
 
 		if ( $time_range[0] >= $time_range[1] ) {
 			continue;
 		}
 
-		if ( ! $was_day_unavailable ) {
+		if ( ! $was_day_unavailable && ! $is_working_time ) {
 			$availability_obj->_day_status = 'time_slots_booking';
 		}
 		$availability_obj->booked_time_slots['in_seconds'][]  = $time_range;
 		$availability_obj->booked_time_slots['readable24h'][] = wpbc_availability_timeslots__interval_to_readable( $time_range );
-		if ( ! $was_day_unavailable ) {
+		if ( ! $was_day_unavailable && ! $is_working_time ) {
 			$availability_obj->pending_approved[ $time_range[0] ] = 'approved';
 		}
 
@@ -496,12 +503,12 @@ function wpbc_availability_timeslots__apply_blocks_to_availability_obj( $availab
 
 		$availability_obj->__booked__times__details[ $time_range_key ] = (object) array(
 			'approved'                    => '1',
-			'booking_id'                  => 'availability_timeslot_' . (int) $blocked_interval['timeslot_id'],
-			'unavailable_timeslot_id'     => (int) $blocked_interval['timeslot_id'],
-			'availability_timeslot_id'    => (int) $blocked_interval['timeslot_id'],
-			'source_type'                 => 'availability_timeslot',
+			'booking_id'                  => $details_id,
+			'unavailable_timeslot_id'     => $is_working_time ? 0 : $timeslot_id,
+			'availability_timeslot_id'    => $is_working_time ? 0 : $timeslot_id,
+			'source_type'                 => $source_type,
 			'time_slot_status'            => 'unavailable',
-			'time_slot_status_title'      => __( 'Unavailable time-slot', 'booking' ),
+			'time_slot_status_title'      => $status_title,
 			'parent'                      => '0',
 			'prioritet'                   => '0',
 			'type'                        => isset( $blocked_interval['resource_id'] ) ? (string) intval( $blocked_interval['resource_id'] ) : '0',
@@ -510,8 +517,8 @@ function wpbc_availability_timeslots__apply_blocks_to_availability_obj( $availab
 			'readable_time'               => wpbc_transform_timerange__seconds_arr__in__formated_hours( $time_range ),
 			'group_uid'                   => isset( $blocked_interval['group_uid'] ) ? (string) $blocked_interval['group_uid'] : '',
 			'__summary__booking'          => (object) array(
-				'source_type'              => 'availability_timeslot',
-				'unavailable_timeslot_id'  => (int) $blocked_interval['timeslot_id'],
+				'source_type'              => $source_type,
+				'unavailable_timeslot_id'  => $is_working_time ? 0 : $timeslot_id,
 				'time_slot_status'         => 'unavailable',
 			),
 		);
@@ -519,8 +526,8 @@ function wpbc_availability_timeslots__apply_blocks_to_availability_obj( $availab
 		if ( 'On' === get_bk_option( 'booking_is_show_booked_data_in_tooltips' ) ) {
 			$tooltip_text  = '';
 			$tooltip_text .= '<div class="wpbc_tooltip_item tooltip_booked_time">' . wpbc_transform_timerange__seconds_arr__in__formated_hours( $time_range ) . '</div>';
-			$tooltip_text .= '<div class="wpbc_tooltip_item">' . esc_html__( 'Unavailable time-slot', 'booking' ) . '</div>';
-			$availability_obj->tooltips['details'][ 'availability_timeslot_' . (int) $blocked_interval['timeslot_id'] ] = $tooltip_text;
+			$tooltip_text .= '<div class="wpbc_tooltip_item">' . esc_html( $status_title ) . '</div>';
+			$availability_obj->tooltips['details'][ $details_id ] = $tooltip_text;
 		}
 	}
 
@@ -591,9 +598,12 @@ function wpbc_availability_timeslots__get_unavailable_rule_url( $source_type, $r
 		case 'weekday_unavailable':
 		case 'from_today_unavailable':
 		case 'limit_available_from_today':
-			return function_exists( 'wpbc_get_general_availability_url' )
+		case 'working_time':
+			$url = function_exists( 'wpbc_get_general_availability_url' )
 				? esc_url_raw( wpbc_get_general_availability_url( true, false ) )
 				: esc_url_raw( admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ) );
+			$url = add_query_arg( 'wpbc_ag_open', 'working_time', $url );
+			break;
 
 		default:
 			return '';
@@ -736,7 +746,8 @@ function wpbc_availability_timeslots__availability_to_bars( $availability_dates,
 
 			foreach ( $date_obj[ $resource_id ]->__booked__times__details as $time_key => $details ) {
 				$seconds     = wpbc_availability_timeslots__time_key_to_seconds( $time_key );
-				$source_type = ( isset( $details->source_type ) && 'availability_timeslot' === $details->source_type ) ? 'availability_timeslot' : 'booking';
+				$source_type = isset( $details->source_type ) ? sanitize_key( $details->source_type ) : 'booking';
+				$source_type = in_array( $source_type, array( 'availability_timeslot', 'working_time' ), true ) ? $source_type : 'booking';
 				$time_text   = wpbc_transform_timerange__seconds_arr__in__formated_hours( $seconds );
 				$booking_id  = isset( $details->booking_id ) ? (string) $details->booking_id : '';
 				$booking_url = '';
@@ -755,6 +766,14 @@ function wpbc_availability_timeslots__availability_to_bars( $availability_dates,
 						$status_text,
 						$time_text
 					);
+				} elseif ( 'working_time' === $source_type ) {
+					$status_text = __( 'Outside working time', 'booking' );
+					$tooltip     = sprintf(
+						/* translators: 1: unavailable time, 2: rule source. */
+						__( '%1$s | Source: %2$s', 'booking' ),
+						$time_text,
+						__( 'Working Time', 'booking' )
+					);
 				} else {
 					$status_text = __( 'Unavailable time-slot', 'booking' );
 					$tooltip     = sprintf(
@@ -766,7 +785,7 @@ function wpbc_availability_timeslots__availability_to_bars( $availability_dates,
 				}
 
 				$bars[ $date ][ $resource_id ][] = array(
-					'type'                     => ( 'availability_timeslot' === $source_type ) ? 'blocked' : 'booked',
+					'type'                     => ( 'working_time' === $source_type ) ? 'working_time' : ( ( 'availability_timeslot' === $source_type ) ? 'blocked' : 'booked' ),
 					'source_type'              => $source_type,
 					'editable'                 => ( 'availability_timeslot' === $source_type ),
 					'start_second'             => (int) $seconds[0],
@@ -775,11 +794,94 @@ function wpbc_availability_timeslots__availability_to_bars( $availability_dates,
 					'end_minute'               => (int) ceil( $seconds[1] / MINUTE_IN_SECONDS ),
 					'booking_id'               => $booking_id,
 					'booking_url'              => $booking_url,
+					'rule_url'                 => ( 'working_time' === $source_type ) ? wpbc_availability_timeslots__get_unavailable_rule_url( 'working_time', $resource_id ) : '',
+					'rule_source'              => ( 'working_time' === $source_type ) ? __( 'Working Time', 'booking' ) : '',
 					'unavailable_timeslot_id'  => isset( $details->unavailable_timeslot_id ) ? (int) $details->unavailable_timeslot_id : 0,
 					'approved'                 => isset( $details->approved ) ? (string) $details->approved : '',
 					'status_title'             => $status_text,
 					'time_text'                => $time_text,
 					'tooltip'                  => $tooltip,
+				);
+			}
+		}
+	}
+
+	return $bars;
+}
+
+/**
+ * Add read-only bars for time outside configured Working Time.
+ *
+ * @param array $bars Timeline bars.
+ * @param array $dates Dates to check.
+ * @param array $resource_ids Resource IDs.
+ *
+ * @return array
+ */
+function wpbc_availability_timeslots__add_working_time_bars( $bars, $dates, $resource_ids ) {
+
+	if ( ! function_exists( 'wpbc_working_time__get_non_working_intervals_for_date' ) ) {
+		return $bars;
+	}
+
+	$dates        = array_values( array_filter( array_map( 'wpbc_availability_timeslots__sanitize_date', $dates ) ) );
+	$resource_ids = array_values( array_filter( array_map( 'intval', $resource_ids ) ) );
+
+	foreach ( $dates as $date ) {
+		foreach ( $resource_ids as $resource_id ) {
+			if ( ! empty( $bars[ $date ][ $resource_id ] ) ) {
+				foreach ( $bars[ $date ][ $resource_id ] as $existing_bar ) {
+					if ( 'unavailable_day' === ( isset( $existing_bar['type'] ) ? $existing_bar['type'] : '' ) ) {
+						continue 2;
+					}
+				}
+			}
+
+			$intervals = wpbc_working_time__get_non_working_intervals_for_date( $resource_id, $date );
+
+			if ( empty( $intervals ) ) {
+				continue;
+			}
+
+			if ( ! isset( $bars[ $date ] ) ) {
+				$bars[ $date ] = array();
+			}
+			if ( ! isset( $bars[ $date ][ $resource_id ] ) ) {
+				$bars[ $date ][ $resource_id ] = array();
+			}
+
+			foreach ( $intervals as $interval ) {
+				$start_second = wpbc_availability_timeslots__sanitize_second( $interval['start_second'] );
+				$end_second   = wpbc_availability_timeslots__sanitize_second( $interval['end_second'] );
+
+				if ( $start_second >= $end_second ) {
+					continue;
+				}
+
+				$time_text = wpbc_transform_timerange__seconds_arr__in__formated_hours( array( $start_second, $end_second ) );
+
+				$bars[ $date ][ $resource_id ][] = array(
+					'type'                    => 'working_time',
+					'source_type'             => 'working_time',
+					'editable'                => false,
+					'start_second'            => $start_second,
+					'end_second'              => $end_second,
+					'start_minute'            => (int) floor( $start_second / MINUTE_IN_SECONDS ),
+					'end_minute'              => (int) ceil( $end_second / MINUTE_IN_SECONDS ),
+					'booking_id'              => '',
+					'booking_url'             => '',
+					'rule_url'                => wpbc_availability_timeslots__get_unavailable_rule_url( 'working_time', $resource_id ),
+					'rule_source'             => __( 'Working Time', 'booking' ),
+					'unavailable_timeslot_id' => 0,
+					'approved'                => '',
+					'status_title'            => __( 'Outside working time', 'booking' ),
+					'time_text'               => $time_text,
+					'tooltip'                 => sprintf(
+						/* translators: 1: unavailable time, 2: rule source. */
+						__( '%1$s | Source: %2$s', 'booking' ),
+						$time_text,
+						__( 'Working Time', 'booking' )
+					),
 				);
 			}
 		}
@@ -817,6 +919,7 @@ function wpbc_availability_timeslots_ajax_read() {
 	);
 	$resource_ids    = isset( $availability['resources_id_arr__in_dates'] ) ? $availability['resources_id_arr__in_dates'] : array( $resource_id );
 	$timeline_bars   = wpbc_availability_timeslots__availability_to_bars( $availability['dates'], $resource_ids );
+	$timeline_bars   = wpbc_availability_timeslots__add_working_time_bars( $timeline_bars, $dates_to_check, $resource_ids );
 
 	wp_send_json_success(
 		array(

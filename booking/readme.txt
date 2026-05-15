@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.0
+Stable tag: 11.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -283,41 +283,40 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              93.01% [ 3352 / 3604 ], fuzzy 176, not translated 76
-- Danish                       70.78% [ 2551 / 3604 ], fuzzy 470, not translated 583
-- Dutch                        63.12% [ 2275 / 3604 ], fuzzy 747, not translated 582
-- Norwegian (Bokmål)           58.52% [ 2109 / 3604 ], fuzzy 511, not translated 984
-- German                       58.49% [ 2108 / 3604 ], fuzzy 854, not translated 642
-- Hungarian                    54.02% [ 1947 / 3604 ], fuzzy 936, not translated 721
-- Korean                       54.00% [ 1946 / 3604 ], fuzzy 932, not translated 726
-- Spanish (Spain)              49.69% [ 1791 / 3604 ], fuzzy 951, not translated 862
-- Portuguese (Brazil)          46.89% [ 1690 / 3604 ], fuzzy 1057, not translated 857
-- Greek                        46.59% [ 1679 / 3604 ], fuzzy 1066, not translated 859
-- Turkish                      45.98% [ 1657 / 3604 ], fuzzy 1082, not translated 865
-- Italian                      44.81% [ 1615 / 3604 ], fuzzy 988, not translated 1001
-- Spanish (Mexico)             43.06% [ 1552 / 3604 ], fuzzy 1135, not translated 917
-- Finnish                      42.81% [ 1543 / 3604 ], fuzzy 1144, not translated 917
-- Polish                       42.76% [ 1541 / 3604 ], fuzzy 1131, not translated 932
-- Romanian                     42.40% [ 1528 / 3604 ], fuzzy 1145, not translated 931
-- Swedish                      42.18% [ 1520 / 3604 ], fuzzy 1154, not translated 930
-- Arabic                       41.76% [ 1505 / 3604 ], fuzzy 1171, not translated 928
-- Russian                      41.70% [ 1503 / 3604 ], fuzzy 1398, not translated 703
-- Bulgarian                    40.46% [ 1458 / 3604 ], fuzzy 1185, not translated 961
-- Slovenian                    40.34% [ 1454 / 3604 ], fuzzy 1190, not translated 960
-- Chinese (Taiwan)             39.26% [ 1415 / 3604 ], fuzzy 1230, not translated 959
-- Portuguese (Portugal)        38.96% [ 1404 / 3604 ], fuzzy 1214, not translated 986
-- Japanese                     38.40% [ 1384 / 3604 ], fuzzy 710, not translated 1510
-- Chinese (China)              37.68% [ 1358 / 3604 ], fuzzy 1215, not translated 1031
-- Ukrainian                    37.40% [ 1348 / 3604 ], fuzzy 1225, not translated 1031
-- Catalan                      36.79% [ 1326 / 3604 ], fuzzy 1151, not translated 1127
-- Thai                         36.71% [ 1323 / 3604 ], fuzzy 1262, not translated 1019
-- Hebrew                       36.49% [ 1315 / 3604 ], fuzzy 1250, not translated 1039
-- Galician                     35.54% [ 1281 / 3604 ], fuzzy 1302, not translated 1021
-- Slovak                       33.05% [ 1191 / 3604 ], fuzzy 1218, not translated 1195
-- Croatian                     31.99% [ 1153 / 3604 ], fuzzy 1234, not translated 1217
-- Czech                        31.88% [ 1149 / 3604 ], fuzzy 1182, not translated 1273
-- Chinese (Hong Kong)          18.87% [ 680 / 3604 ], fuzzy 500, not translated 2424
-
+- French (France)              92.72% [ 3352 / 3615 ], fuzzy 182, not translated 81
+- Danish                       70.57% [ 2551 / 3615 ], fuzzy 476, not translated 588
+- Dutch                        62.93% [ 2275 / 3615 ], fuzzy 753, not translated 587
+- Norwegian (Bokmål)           58.34% [ 2109 / 3615 ], fuzzy 517, not translated 989
+- German                       58.31% [ 2108 / 3615 ], fuzzy 860, not translated 647
+- Hungarian                    53.86% [ 1947 / 3615 ], fuzzy 942, not translated 726
+- Korean                       53.83% [ 1946 / 3615 ], fuzzy 938, not translated 731
+- Spanish (Spain)              49.54% [ 1791 / 3615 ], fuzzy 957, not translated 867
+- Portuguese (Brazil)          46.75% [ 1690 / 3615 ], fuzzy 1063, not translated 862
+- Greek                        46.45% [ 1679 / 3615 ], fuzzy 1072, not translated 864
+- Turkish                      45.84% [ 1657 / 3615 ], fuzzy 1088, not translated 870
+- Italian                      44.67% [ 1615 / 3615 ], fuzzy 994, not translated 1006
+- Spanish (Mexico)             42.93% [ 1552 / 3615 ], fuzzy 1141, not translated 922
+- Finnish                      42.68% [ 1543 / 3615 ], fuzzy 1150, not translated 922
+- Polish                       42.63% [ 1541 / 3615 ], fuzzy 1137, not translated 937
+- Romanian                     42.27% [ 1528 / 3615 ], fuzzy 1151, not translated 936
+- Swedish                      42.05% [ 1520 / 3615 ], fuzzy 1160, not translated 935
+- Arabic                       41.63% [ 1505 / 3615 ], fuzzy 1177, not translated 933
+- Russian                      41.58% [ 1503 / 3615 ], fuzzy 1404, not translated 708
+- Bulgarian                    40.33% [ 1458 / 3615 ], fuzzy 1191, not translated 966
+- Slovenian                    40.22% [ 1454 / 3615 ], fuzzy 1196, not translated 965
+- Chinese (Taiwan)             39.14% [ 1415 / 3615 ], fuzzy 1236, not translated 964
+- Portuguese (Portugal)        38.84% [ 1404 / 3615 ], fuzzy 1220, not translated 991
+- Japanese                     38.28% [ 1384 / 3615 ], fuzzy 716, not translated 1515
+- Chinese (China)              37.57% [ 1358 / 3615 ], fuzzy 1221, not translated 1036
+- Ukrainian                    37.29% [ 1348 / 3615 ], fuzzy 1231, not translated 1036
+- Catalan                      36.68% [ 1326 / 3615 ], fuzzy 1157, not translated 1132
+- Thai                         36.60% [ 1323 / 3615 ], fuzzy 1268, not translated 1024
+- Hebrew                       36.38% [ 1315 / 3615 ], fuzzy 1256, not translated 1044
+- Galician                     35.44% [ 1281 / 3615 ], fuzzy 1308, not translated 1026
+- Slovak                       32.95% [ 1191 / 3615 ], fuzzy 1224, not translated 1200
+- Croatian                     31.89% [ 1153 / 3615 ], fuzzy 1240, not translated 1222
+- Czech                        31.78% [ 1149 / 3615 ], fuzzy 1188, not translated 1278
+- Chinese (Hong Kong)          18.81% [ 680 / 3615 ], fuzzy 505, not translated 2430
 
 
 Please recheck the status of each translation, before using plugin.
@@ -340,6 +339,20 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.1 =
+- Changes in **all** versions:
+	* **New**: Added Working Time availability rules for time-based booking forms on the WP Booking Calendar > Availability > General Availability page . Administrators can now define allowed working hours for bookings that use time fields, including rangetime, start/end time, and start/duration time.
+	* **New**: Working Time restrictions affect only time-based bookings and do not mark dates as partially booked unless all selectable time slots for that date become unavailable.
+	* **New**: Improved Time Slots Availability to display time outside configured Working Time as read-only unavailable intervals, with direct links back to General Availability settings.
+	* **Improvement**: Improved the Add Booking popup so administrators can create bookings for past dates when needed, and can edit existing bookings that already contain past dates.
+	* **Improvement**: Added the ability to create a new booking directly from a selected interval in the Time Slots Availability interface. The Add Booking popup now shows the selected start/end time fields and includes a toggle to use or ignore the selected timeline interval for the new booking.
+	* **New**: Add new dark  calendar  skin 26_5__dark_1.css
+	* **Fix**: Fixed an issue where bookings with selected start/end times from the Time Slots Availability popup could still be rejected as unavailable when booking in the past was allowed.
+	* **Fix**: Fixed editing of existing bookings with past dates and times, including forms using range time, start/end time, or start time with duration fields.
+	* **Fix**: Fixed an issue where an invalid “specific number of days” value in dynamic range date selection could generate malformed JavaScript and prevent Booking Calendar front-end variables. Error could look  like this: [WPBC][GLOBAL-ERROR] can't access property 0, _wpbc.get_other_param(...) is undefined TypeError: can't access property 0.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added support for default Working Time rules and per-booking-resource overrides. Each resource can inherit the default schedule, use its own custom working hours, or be excluded from Working Time restrictions.
+
 = 11.0 =
 - Changes in **all** versions:
 	* **New**: Added Time Slots Availability page under Booking Calendar > Availability, allowing administrators to define unavailable time intervals for specific booking resources and date ranges.
@@ -470,6 +483,9 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.1 =
+Added Working Time settings to Availability > General Availability, allowing administrators to restrict time-based bookings to specific working hours.
+
 = 11.0 =
 Added Time Slots Availability and General Availability tools for more precise availability management. Administrators can block or unblock exact time intervals from the Availability page or bookings workflow, review booked and unavailable states in an interactive timeline, and create new bookings from selected available intervals with resource, date, and time prefilled. Also includes a faster Add Booking popup and availability accuracy fixes.
 

@@ -89,7 +89,9 @@ function wpbc_availability_general_enqueue_js_files( $where_to_load ) {
 			'nonce'          => wp_create_nonce( 'wpbc_availability_general_ajax_nonce' ),
 			'action'         => 'WPBC_AJX_AVAILABILITY_GENERAL_SAVE',
 			'preview_action' => 'WPBC_AJX_AVAILABILITY_GENERAL_PREVIEW',
+			'settings'       => wpbc_availability_general__get_settings_response(),
 			'default_settings' => wpbc_availability_general__get_default_settings(),
+			'open_section'   => wpbc_availability_general__get_open_section(),
 			'is_buffer_available' => class_exists( 'wpdev_bk_biz_m' ),
 			'is_available_limit_available' => class_exists( 'wpdev_bk_biz_m' ),
 			'i18n'           => array(
@@ -204,6 +206,19 @@ function wpbc_availability_general__get_preview_months_count() {
 	$months = isset( $_REQUEST['months_count'] ) ? absint( wp_unslash( $_REQUEST['months_count'] ) ) : 6;
 
 	return in_array( $months, array( 1, 2, 3, 4, 6, 12 ), true ) ? $months : 6;
+}
+
+/**
+ * Get the General Availability section that should be opened on page load.
+ *
+ * @return string
+ */
+function wpbc_availability_general__get_open_section() {
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$open_section = isset( $_REQUEST['wpbc_ag_open'] ) ? sanitize_key( wp_unslash( $_REQUEST['wpbc_ag_open'] ) ) : '';
+
+	return in_array( $open_section, array( 'working_time' ), true ) ? $open_section : '';
 }
 
 /**
@@ -376,6 +391,73 @@ function wpbc_availability_general__render_select( $name, $options, $selected, $
 }
 
 /**
+ * Render Working Time weekday rows.
+ *
+ * @param string $prefix Field prefix.
+ * @param array  $weekdays Weekday intervals.
+ *
+ * @return void
+ */
+function wpbc_availability_general__render_working_time_weekdays( $prefix, $weekdays ) {
+
+	$days = array(
+		0 => _x( 'Sun', 'Short weekday name', 'booking' ),
+		1 => _x( 'Mon', 'Short weekday name', 'booking' ),
+		2 => _x( 'Tue', 'Short weekday name', 'booking' ),
+		3 => _x( 'Wed', 'Short weekday name', 'booking' ),
+		4 => _x( 'Thu', 'Short weekday name', 'booking' ),
+		5 => _x( 'Fri', 'Short weekday name', 'booking' ),
+		6 => _x( 'Sat', 'Short weekday name', 'booking' ),
+	);
+
+	$start_week_day = absint( get_bk_option( 'booking_start_day_weeek' ) );
+	if ( $start_week_day > 6 ) {
+		$start_week_day = 0;
+	}
+	$days_ordered = array_slice( $days, $start_week_day, null, true ) + array_slice( $days, 0, $start_week_day, true );
+	$time_options = wpbc_availability_general__get_working_time_options();
+	?>
+	<div class="wpbc_ag_working_time_rows" data-wpbc-working-time-weekdays="<?php echo esc_attr( $prefix ); ?>">
+		<?php foreach ( $days_ordered as $day_num => $day_title ) : ?>
+			<?php
+			$interval = ! empty( $weekdays[ $day_num ][0] ) ? $weekdays[ $day_num ][0] : array( 'start_second' => 9 * HOUR_IN_SECONDS, 'end_second' => 18 * HOUR_IN_SECONDS );
+			$is_open  = ! empty( $weekdays[ $day_num ] );
+			?>
+			<div class="wpbc_ag_working_time_row">
+				<label class="wpbc_ag_switch wpbc_ag_working_time_day">
+					<input type="checkbox" name="<?php echo esc_attr( $prefix ); ?>_days[]" value="<?php echo esc_attr( $day_num ); ?>" <?php checked( $is_open ); ?> />
+					<span class="wpbc_ag_switch_control" aria-hidden="true"><span class="wpbc_ag_switch_knob"></span></span>
+					<span class="wpbc_ag_switch_label"><?php echo esc_html( $day_title ); ?></span>
+				</label>
+				<div class="wpbc_ag_working_time_times">
+					<?php
+					wpbc_availability_general__render_select(
+						$prefix . '_start[' . $day_num . ']',
+						$time_options,
+						wpbc_working_time__seconds_to_time( $interval['start_second'] ),
+						array(
+							'id'    => $prefix . '_start_' . $day_num,
+							'class' => 'wpbc_ag_field_control wpbc_ag_working_time_start',
+						)
+					);
+					wpbc_availability_general__render_select(
+						$prefix . '_end[' . $day_num . ']',
+						$time_options,
+						wpbc_working_time__seconds_to_time( $interval['end_second'] ),
+						array(
+							'id'    => $prefix . '_end_' . $day_num,
+							'class' => 'wpbc_ag_field_control wpbc_ag_working_time_end',
+						)
+					);
+					?>
+				</div>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<?php
+}
+
+/**
  * Get default General Availability settings.
  *
  * @return array
@@ -391,7 +473,84 @@ function wpbc_availability_general__get_default_settings() {
 		'booking_unavailable_extra_minutes_out'   => '',
 		'booking_unavailable_extra_days_in'       => '',
 		'booking_unavailable_extra_days_out'      => '',
+		'working_time'                            => wpbc_working_time__get_default_settings(),
 	);
+}
+
+/**
+ * Validate posted one-interval-per-weekday Working Time schedule.
+ *
+ * @param array  $post_data Raw post data.
+ * @param string $prefix Field prefix.
+ *
+ * @return array
+ */
+function wpbc_availability_general__validate_working_time_weekdays( $post_data, $prefix ) {
+
+	$weekdays     = array();
+	$enabled_days = array();
+	$start_values = isset( $post_data[ $prefix . '_start' ] ) && is_array( $post_data[ $prefix . '_start' ] ) ? wp_unslash( $post_data[ $prefix . '_start' ] ) : array();
+	$end_values   = isset( $post_data[ $prefix . '_end' ] ) && is_array( $post_data[ $prefix . '_end' ] ) ? wp_unslash( $post_data[ $prefix . '_end' ] ) : array();
+
+	if ( isset( $post_data[ $prefix . '_days' ] ) && is_array( $post_data[ $prefix . '_days' ] ) ) {
+		foreach ( $post_data[ $prefix . '_days' ] as $day_num ) {
+			$day_num = absint( $day_num );
+			if ( $day_num >= 0 && $day_num <= 6 ) {
+				$enabled_days[] = $day_num;
+			}
+		}
+	}
+
+	for ( $day = 0; $day <= 6; $day++ ) {
+		$weekdays[ $day ] = array();
+		if ( ! in_array( $day, $enabled_days, true ) ) {
+			continue;
+		}
+
+		$start = isset( $start_values[ $day ] ) ? wpbc_working_time__time_to_seconds( sanitize_text_field( $start_values[ $day ] ) ) : 0;
+		$end   = isset( $end_values[ $day ] ) ? wpbc_working_time__time_to_seconds( sanitize_text_field( $end_values[ $day ] ) ) : 0;
+
+		if ( $start < $end ) {
+			$weekdays[ $day ][] = array(
+				'start_second' => $start,
+				'end_second'   => $end,
+			);
+		}
+	}
+
+	return $weekdays;
+}
+
+/**
+ * Validate posted Working Time settings.
+ *
+ * @param array $post_data Raw post data.
+ *
+ * @return array
+ */
+function wpbc_availability_general__validate_working_time_data( $post_data ) {
+
+	$current_settings = wpbc_working_time__get_settings();
+	$resource_id      = isset( $post_data['booking_working_time_resource_id'] ) ? absint( wp_unslash( $post_data['booking_working_time_resource_id'] ) ) : 0;
+	$resource_mode    = isset( $post_data['booking_working_time_resource_mode'] ) ? sanitize_key( wp_unslash( $post_data['booking_working_time_resource_mode'] ) ) : 'inherit';
+
+	if ( ! in_array( $resource_mode, array( 'inherit', 'custom', 'disabled' ), true ) ) {
+		$resource_mode = 'inherit';
+	}
+
+	$current_settings['enabled'] = ( isset( $post_data['booking_working_time_enabled'] ) && 'On' === sanitize_text_field( wp_unslash( $post_data['booking_working_time_enabled'] ) ) ) ? 'On' : 'Off';
+	$current_settings['default'] = array(
+		'weekdays' => wpbc_availability_general__validate_working_time_weekdays( $post_data, 'booking_working_time_default' ),
+	);
+
+	if ( $resource_id > 0 ) {
+		$current_settings['resources'][ $resource_id ] = array(
+			'mode'     => $resource_mode,
+			'weekdays' => wpbc_availability_general__validate_working_time_weekdays( $post_data, 'booking_working_time_resource' ),
+		);
+	}
+
+	return wpbc_working_time__normalize_settings( $current_settings );
 }
 
 /**
@@ -445,6 +604,8 @@ function wpbc_availability_general__validate_data( $post_data ) {
 		}
 	}
 
+	$cleaned['working_time'] = wpbc_availability_general__validate_working_time_data( $post_data );
+
 	return $cleaned;
 }
 
@@ -471,6 +632,8 @@ function wpbc_availability_general__update_settings( $cleaned_data ) {
 		update_bk_option( 'booking_unavailable_extra_days_in', $cleaned_data['booking_unavailable_extra_days_in'] );
 		update_bk_option( 'booking_unavailable_extra_days_out', $cleaned_data['booking_unavailable_extra_days_out'] );
 	}
+
+	wpbc_working_time__update_settings( $cleaned_data['working_time'] );
 }
 
 /**
@@ -498,6 +661,7 @@ function wpbc_availability_general__get_settings_response() {
 		'booking_unavailable_extra_minutes_out'   => get_bk_option( 'booking_unavailable_extra_minutes_out' ),
 		'booking_unavailable_extra_days_in'       => get_bk_option( 'booking_unavailable_extra_days_in' ),
 		'booking_unavailable_extra_days_out'      => get_bk_option( 'booking_unavailable_extra_days_out' ),
+		'working_time'                            => wpbc_working_time__get_settings(),
 		'hints'                                   => array(
 			'booking_unavailable_days_num_from_today__hint' => isset( $hints['booking_unavailable_days_num_from_today__hint'] ) ? $hints['booking_unavailable_days_num_from_today__hint'] : '',
 			'booking_available_days_num_from_today__hint'   => isset( $hints['booking_available_days_num_from_today__hint'] ) ? $hints['booking_available_days_num_from_today__hint'] : '',
@@ -854,6 +1018,16 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 		$is_buffer_available    = class_exists( 'wpdev_bk_biz_m' );
 		$is_available_limit_available = class_exists( 'wpdev_bk_biz_m' );
 		$unavailable_weekdays   = array();
+		$working_time_settings         = wpbc_working_time__get_settings();
+		$working_time_default_settings = wpbc_working_time__get_default_settings();
+		$working_time_resource_id      = wpbc_availability_general__get_preview_resource_id();
+		$open_section                  = wpbc_availability_general__get_open_section();
+		$working_time_resource = isset( $working_time_settings['resources'][ $working_time_resource_id ] )
+			? $working_time_settings['resources'][ $working_time_resource_id ]
+			: array(
+				'mode'     => 'inherit',
+				'weekdays' => $working_time_default_settings['default']['weekdays'],
+			);
 
 		for ( $i = 0; $i < 7; $i++ ) {
 			if ( 'On' === get_bk_option( 'booking_unavailable_day' . $i ) ) {
@@ -873,7 +1047,7 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 						'id'    => 'wpbc_ag_weekdays_group',
 						'group' => 'general-availability-weekdays',
 						'title' => __( 'Unavailable Weekdays', 'booking' ),
-						'open'  => true,
+						'open'  => ( 'working_time' !== $open_section ),
 					),
 					function () use ( $unavailable_weekdays ) {
 						$days           = array(
@@ -910,7 +1084,7 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 						'id'    => 'wpbc_ag_today_group',
 						'group' => 'general-availability-from-today',
 						'title' => __( 'Availability From Today', 'booking' ),
-						'open'  => true,
+						'open'  => false,
 					),
 					function () use ( $hints, $is_available_limit_available ) {
 						?>
@@ -958,7 +1132,7 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 						'id'    => 'wpbc_ag_buffer_group',
 						'group' => 'general-availability-buffer',
 						'title' => __( 'Booking Buffer', 'booking' ),
-						'open'  => true,
+						'open'  => false,
 					),
 					function () use ( $buffer_type, $is_buffer_available ) {
 						?>
@@ -996,32 +1170,46 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 						<?php
 					}
 				);
-/* //TODO: implement it later.
+
 				WPBC_UI_Sidebar_Panels::render_collapsible_group(
 					array(
 						'id'    => 'wpbc_ag_working_time_group',
 						'group' => 'general-availability-working-time',
 						'title' => __( 'Working Time', 'booking' ),
+						'open'  => ( 'working_time' === $open_section ),
 					),
-					function () {
+					function () use ( $working_time_settings, $working_time_resource_id, $working_time_resource ) {
 						?>
-						<div class="wpbc_ag_future_notice"><?php esc_html_e( 'Prepared for the future rule: time outside the working interval will become unavailable for booking resources.', 'booking' ); ?></div>
-						<label class="wpbc_ag_toggle wpbc_ag_toggle_full">
-							<input type="checkbox" disabled="disabled" />
-							<span><?php esc_html_e( 'Enable working time rule', 'booking' ); ?></span>
+						<div class="wpbc_ag_notice wpbc_ag_working_time_notice"><?php esc_html_e( 'Working Time restricts only time-based bookings, such as rangetime, start/end time, or start/duration time fields.', 'booking' ); ?></div>
+						<input type="hidden" name="booking_working_time_resource_id" data-wpbc-working-time-resource-id="1" value="<?php echo esc_attr( $working_time_resource_id ); ?>" />
+						<label class="wpbc_ag_switch wpbc_ag_switch_card">
+							<input type="checkbox" name="booking_working_time_enabled" value="On" <?php checked( $working_time_settings['enabled'], 'On' ); ?> />
+							<span class="wpbc_ag_switch_control" aria-hidden="true"><span class="wpbc_ag_switch_knob"></span></span>
+							<span class="wpbc_ag_switch_label"><?php esc_html_e( 'Restrict time-based bookings to working time', 'booking' ); ?></span>
 						</label>
-						<div class="wpbc_ag_field_row">
-							<label class="wpbc_ag_field_label" for="wpbc_ag_working_time_start"><?php esc_html_e( 'Start time', 'booking' ); ?></label>
-							<?php wpbc_availability_general__render_select( 'wpbc_ag_working_time_start', wpbc_availability_general__get_working_time_options(), '09:00', array( 'disabled' => true ) ); ?>
+
+						<div class="wpbc_ag_working_time_block">
+							<div class="wpbc_ag_scope_title"><?php esc_html_e( 'Default working time', 'booking' ); ?></div>
+							<p class="wpbc_ag_description"><?php esc_html_e( 'Used by all booking resources unless a resource override is configured below.', 'booking' ); ?></p>
+							<?php wpbc_availability_general__render_working_time_weekdays( 'booking_working_time_default', $working_time_settings['default']['weekdays'] ); ?>
 						</div>
-						<div class="wpbc_ag_field_row">
-							<label class="wpbc_ag_field_label" for="wpbc_ag_working_time_end"><?php esc_html_e( 'End time', 'booking' ); ?></label>
-							<?php wpbc_availability_general__render_select( 'wpbc_ag_working_time_end', wpbc_availability_general__get_working_time_options(), '18:00', array( 'disabled' => true ) ); ?>
+
+						<div class="wpbc_ag_working_time_block wpbc_ag_working_time_resource_block" data-wpbc-working-time-resource-block="1">
+							<div class="wpbc_ag_scope_title"><?php esc_html_e( 'Selected resource override', 'booking' ); ?></div>
+							<p class="wpbc_ag_description"><?php esc_html_e( 'This override follows the booking resource selected in the page toolbar.', 'booking' ); ?></p>
+							<div class="wpbc_ag_radio_stack wpbc_ag_working_time_mode">
+								<label><input type="radio" name="booking_working_time_resource_mode" value="inherit" <?php checked( $working_time_resource['mode'], 'inherit' ); ?> /> <?php esc_html_e( 'Inherit default working time', 'booking' ); ?></label>
+								<label><input type="radio" name="booking_working_time_resource_mode" value="custom" <?php checked( $working_time_resource['mode'], 'custom' ); ?> /> <?php esc_html_e( 'Use custom working time', 'booking' ); ?></label>
+								<label><input type="radio" name="booking_working_time_resource_mode" value="disabled" <?php checked( $working_time_resource['mode'], 'disabled' ); ?> /> <?php esc_html_e( 'Do not restrict this resource by working time', 'booking' ); ?></label>
+							</div>
+							<div class="wpbc_ag_working_time_custom" data-wpbc-working-time-resource-custom="1">
+								<?php wpbc_availability_general__render_working_time_weekdays( 'booking_working_time_resource', $working_time_resource['weekdays'] ); ?>
+							</div>
 						</div>
 						<?php
 					}
 				);
-*/
+
 				?>
 			</div>
 		</form>

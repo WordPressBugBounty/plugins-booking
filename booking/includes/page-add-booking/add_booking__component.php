@@ -134,8 +134,13 @@ class WPBC_Add_Booking_Component {
 			'calendar_dates_start'            => '',
 			'calendar_dates_end'              => '',
 			'booking_hash'                    => '',
+			'allow_past'                      => null,
 			'selected_date'                   => '',
 			'selected_time'                   => '',
+			'time_override_enabled'           => 0,
+			'time_override_source'            => '',
+			'time_override_start'             => '',
+			'time_override_end'               => '',
 			'is_toolbar_visible'              => true,
 			'is_booking_page_js'              => true,
 			'is_booking_page_popover'         => true,
@@ -165,9 +170,14 @@ class WPBC_Add_Booking_Component {
 		$args['selected_dates_without_calendar'] = ( null !== $args['selected_dates_without_calendar'] ) ? (string) $args['selected_dates_without_calendar'] : '';
 		$args['calendar_dates_start']            = (string) $args['calendar_dates_start'];
 		$args['calendar_dates_end']              = (string) $args['calendar_dates_end'];
-		$args['booking_hash']                    = sanitize_text_field( wp_unslash( (string) $args['booking_hash'] ) );
+		$args['booking_hash']                    = ( '' !== (string) $args['booking_hash'] ) ? sanitize_text_field( wp_unslash( (string) $args['booking_hash'] ) ) : ( isset( $_GET['booking_hash'] ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$args['allow_past']                      = ( null !== $args['allow_past'] ) ? ( ! empty( $args['allow_past'] ) ? 1 : 0 ) : ( isset( $_GET['allow_past'] ) ? 1 : 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$args['selected_date']                   = sanitize_text_field( wp_unslash( (string) $args['selected_date'] ) );
 		$args['selected_time']                   = sanitize_text_field( wp_unslash( (string) $args['selected_time'] ) );
+		$args['time_override_enabled']           = ! empty( $args['time_override_enabled'] ) ? 1 : 0;
+		$args['time_override_source']            = sanitize_key( wp_unslash( (string) $args['time_override_source'] ) );
+		$args['time_override_start']             = sanitize_text_field( wp_unslash( (string) $args['time_override_start'] ) );
+		$args['time_override_end']               = sanitize_text_field( wp_unslash( (string) $args['time_override_end'] ) );
 
 		return $args;
 	}
@@ -182,21 +192,57 @@ class WPBC_Add_Booking_Component {
 	 */
 	private static function print_context_js( $args ) {
 
-		$booking_hash = isset( $args['booking_hash'] ) ? (string) $args['booking_hash'] : '';
+		$booking_hash        = isset( $args['booking_hash'] ) ? (string) $args['booking_hash'] : '';
+		$allow_past_date_arr = self::get_allow_past_min_date_arr( $args );
 		$context      = array(
 			'resource_id'                     => absint( $args['resource_id'] ),
 			'selected_dates_without_calendar' => (string) $args['selected_dates_without_calendar'],
 			'selected_date'                   => (string) $args['selected_date'],
 			'selected_time'                   => (string) $args['selected_time'],
+			'time_override_enabled'           => absint( $args['time_override_enabled'] ),
+			'time_override_source'            => (string) $args['time_override_source'],
+			'time_override_start'             => (string) $args['time_override_start'],
+			'time_override_end'               => (string) $args['time_override_end'],
+			'allow_past'                      => ! empty( $args['allow_past'] ) ? 1 : 0,
 		);
 		?>
 		<script type="text/javascript">
 			window.wpbc_add_booking_component_context = <?php echo wp_json_encode( $context ); ?>;
 			if ( 'undefined' !== typeof _wpbc ) {
 				_wpbc.set_other_param( 'this_page_booking_hash', <?php echo wp_json_encode( $booking_hash ); ?> );
+				_wpbc.set_other_param( 'this_page_allow_past', <?php echo wp_json_encode( ! empty( $args['allow_past'] ) ? 1 : 0 ); ?> );
+				_wpbc.set_other_param( 'this_page_allow_past_arr', <?php echo wp_json_encode( $allow_past_date_arr ); ?> );
 			}
 		</script>
 		<?php
+	}
+
+
+	/**
+	 * Get minimum date array for modal/admin contexts that allow selecting past days.
+	 *
+	 * @param array $args Component options.
+	 *
+	 * @return array
+	 */
+	private static function get_allow_past_min_date_arr( $args ) {
+
+		if ( empty( $args['allow_past'] ) && empty( $args['booking_hash'] ) ) {
+			return array();
+		}
+
+		if (
+			! function_exists( 'wpbc_get_max_visible_days_in_calendar' )
+			|| ! function_exists( 'wpbc_datetime_localized__use_wp_timezone' )
+			|| ! function_exists( 'wpbc_csv_numbers_to_int_array' )
+		) {
+			return array();
+		}
+
+		$gmt_time  = gmdate( 'Y-m-d H:i:s', strtotime( '-' . intval( wpbc_get_max_visible_days_in_calendar() ) . ' days' ) );
+		$local_csv = wpbc_datetime_localized__use_wp_timezone( $gmt_time, 'Y,m,d,H,i' );
+
+		return wpbc_csv_numbers_to_int_array( $local_csv );
 	}
 
 

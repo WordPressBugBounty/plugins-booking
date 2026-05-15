@@ -684,6 +684,19 @@ $mu_option4delete[]= 'booking_timeslot_picker_skin';
  $mu_option4delete[]='booking_unavailable_day5';  
     $default_options['booking_unavailable_day6'] = 'Off';       
  $mu_option4delete[]='booking_unavailable_day6';  
+
+	// Working Time defaults. Keep disabled by default on fresh activation/reinstall.
+	$default_options['booking_working_time_enabled'] = 'Off';
+ $mu_option4delete[]='booking_working_time_enabled';
+	$default_options['booking_working_time_rules'] = function_exists( 'wpbc_working_time__get_default_settings' ) ? wpbc_working_time__get_default_settings() : array(
+		'enabled'   => 'Off',
+		'default'   => array(
+			'weekdays' => array(),
+		),
+		'resources' => array(),
+	);
+ $mu_option4delete[]='booking_working_time_rules';
+
     $default_options['booking_menu_position'] = ( $is_demo ) ? 'top' : 'top';
  $mu_option4delete[]='booking_menu_position';  
     $default_options['booking_translation_load_from'] = 'wp.org';
