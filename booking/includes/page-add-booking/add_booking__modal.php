@@ -355,6 +355,11 @@ class WPBC_Add_Booking_Modal {
 			wp_send_json_error( array( 'message' => __( 'You do not have access to this booking resource.', 'booking' ) ), 403 );
 		}
 
+		if ( ( 'add' === $args['mode'] ) && ( '' === (string) $args['booking_form'] ) ) {
+			$args['booking_form']        = WPBC_Add_Booking_Component::get_default_booking_form_for_resource( $args['resource_id'], 'standard' );
+			$args['custom_booking_form'] = $args['booking_form'];
+		}
+
 		$html = self::render_component_with_legacy_request_context( $args );
 
 		wp_send_json_success(
@@ -369,6 +374,7 @@ class WPBC_Add_Booking_Modal {
 				'booking_form' => (string) $args['booking_form'],
 				'allow_past'   => absint( $args['allow_past'] ),
 				'selected_dates_without_calendar' => (string) $args['selected_dates_without_calendar'],
+				'selected_dates' => (string) $args['selected_dates'],
 				'selected_date' => (string) $args['selected_date'],
 				'selected_time' => (string) $args['selected_time'],
 				'time_override_enabled' => absint( $args['time_override_enabled'] ),
@@ -396,6 +402,7 @@ class WPBC_Add_Booking_Modal {
 		$booking_form = isset( $_POST['booking_form'] ) ? sanitize_text_field( wp_unslash( $_POST['booking_form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$allow_past   = isset( $_POST['allow_past'] ) ? absint( $_POST['allow_past'] ) : 0;                              // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$selected_dates_without_calendar = isset( $_POST['selected_dates_without_calendar'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_dates_without_calendar'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$selected_dates = isset( $_POST['selected_dates'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_dates'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$selected_date = isset( $_POST['selected_date'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$selected_time = isset( $_POST['selected_time'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_time'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$time_override_enabled = isset( $_POST['time_override_enabled'] ) ? absint( $_POST['time_override_enabled'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -425,6 +432,7 @@ class WPBC_Add_Booking_Modal {
 			'custom_booking_form'          => $booking_form,
 			'allow_past'                   => $allow_past ? 1 : 0,
 			'selected_dates_without_calendar' => $selected_dates_without_calendar,
+			'selected_dates'               => $selected_dates,
 			'selected_date'                => $selected_date,
 			'selected_time'                => $selected_time,
 			'time_override_enabled'        => ( $time_override_enabled && $time_override_start && $time_override_end ) ? 1 : 0,
@@ -598,6 +606,12 @@ class WPBC_Add_Booking_Modal {
 
 		if ( ! is_admin() ) {
 			return false;
+		}
+
+		if ( function_exists( 'wpbc_is_availability_page' ) && wpbc_is_availability_page() ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$requested_tab = isset( $_REQUEST['tab'] ) ? sanitize_key( wp_unslash( $_REQUEST['tab'] ) ) : '';
+			return ( 'time_slots_availability' === $requested_tab );
 		}
 
 		if ( function_exists( 'wpbc_is_bookings_page' ) ) {

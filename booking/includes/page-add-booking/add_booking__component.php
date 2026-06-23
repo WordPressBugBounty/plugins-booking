@@ -135,6 +135,7 @@ class WPBC_Add_Booking_Component {
 			'calendar_dates_end'              => '',
 			'booking_hash'                    => '',
 			'allow_past'                      => null,
+			'selected_dates'                  => '',
 			'selected_date'                   => '',
 			'selected_time'                   => '',
 			'time_override_enabled'           => 0,
@@ -158,7 +159,7 @@ class WPBC_Add_Booking_Component {
 											|| ( ( null !== $args['booking_form'] ) && ( '' !== (string) $args['booking_form'] ) );
 
 		$resource_id = self::get_explicit_or_get_resource_id( $args );
-		$form_name   = self::get_explicit_or_get_booking_form( $args );
+		$form_name   = self::get_explicit_or_get_booking_form( $args, $resource_id );
 
 		$calendar_params = self::get_calendar_params( $args );
 
@@ -172,6 +173,7 @@ class WPBC_Add_Booking_Component {
 		$args['calendar_dates_end']              = (string) $args['calendar_dates_end'];
 		$args['booking_hash']                    = ( '' !== (string) $args['booking_hash'] ) ? sanitize_text_field( wp_unslash( (string) $args['booking_hash'] ) ) : ( isset( $_GET['booking_hash'] ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$args['allow_past']                      = ( null !== $args['allow_past'] ) ? ( ! empty( $args['allow_past'] ) ? 1 : 0 ) : ( isset( $_GET['allow_past'] ) ? 1 : 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$args['selected_dates']                  = sanitize_text_field( wp_unslash( (string) $args['selected_dates'] ) );
 		$args['selected_date']                   = sanitize_text_field( wp_unslash( (string) $args['selected_date'] ) );
 		$args['selected_time']                   = sanitize_text_field( wp_unslash( (string) $args['selected_time'] ) );
 		$args['time_override_enabled']           = ! empty( $args['time_override_enabled'] ) ? 1 : 0;
@@ -197,6 +199,7 @@ class WPBC_Add_Booking_Component {
 		$context      = array(
 			'resource_id'                     => absint( $args['resource_id'] ),
 			'selected_dates_without_calendar' => (string) $args['selected_dates_without_calendar'],
+			'selected_dates'                  => (string) $args['selected_dates'],
 			'selected_date'                   => (string) $args['selected_date'],
 			'selected_time'                   => (string) $args['selected_time'],
 			'time_override_enabled'           => absint( $args['time_override_enabled'] ),
@@ -272,13 +275,50 @@ class WPBC_Add_Booking_Component {
 
 
 	/**
-	 * Resolve booking form: explicit component args first, then legacy $_GET.
+	 * Resolve default booking form for specific booking resource.
 	 *
-	 * @param array $args Component options.
+	 * @param int    $resource_id  Booking resource ID.
+	 * @param string $default_form Fallback form name.
 	 *
 	 * @return string
 	 */
-	private static function get_explicit_or_get_booking_form( $args ) {
+	public static function get_default_booking_form_for_resource( $resource_id, $default_form = 'standard' ) {
+
+		$resource_id  = absint( $resource_id );
+		$default_form = ( '' !== (string) $default_form ) ? (string) $default_form : 'standard';
+
+		if ( $resource_id <= 0 ) {
+			return sanitize_text_field( wp_unslash( $default_form ) );
+		}
+
+		$default_custom_form_name = '';
+		if ( function_exists( 'apply_bk_filter' ) ) {
+			$default_custom_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', '', $resource_id );
+		}
+
+		if (
+			( '' === (string) $default_custom_form_name )
+			&& class_exists( 'WPBC_FE_Custom_Form_Helper' )
+			&& method_exists( 'WPBC_FE_Custom_Form_Helper', 'get_default_custom_form__for__booking_resource' )
+		) {
+			$default_custom_form_name = WPBC_FE_Custom_Form_Helper::get_default_custom_form__for__booking_resource( $resource_id );
+		}
+
+		$default_custom_form_name = sanitize_text_field( wp_unslash( (string) $default_custom_form_name ) );
+
+		return ( '' !== $default_custom_form_name ) ? $default_custom_form_name : sanitize_text_field( wp_unslash( $default_form ) );
+	}
+
+
+	/**
+	 * Resolve booking form: explicit component args first, then legacy $_GET, then resource default.
+	 *
+	 * @param array $args        Component options.
+	 * @param int   $resource_id Booking resource ID.
+	 *
+	 * @return string
+	 */
+	private static function get_explicit_or_get_booking_form( $args, $resource_id = 0 ) {
 
 		if ( ( null !== $args['custom_booking_form'] ) && ( '' !== (string) $args['custom_booking_form'] ) ) {
 			return sanitize_text_field( wp_unslash( (string) $args['custom_booking_form'] ) );
@@ -288,7 +328,11 @@ class WPBC_Add_Booking_Component {
 			return sanitize_text_field( wp_unslash( (string) $args['booking_form'] ) );
 		}
 
-		return WPBC_GET_Request::has_non_empty_get( 'booking_form' ) ? WPBC_GET_Request::get_sanitized( 'booking_form' ) : 'standard';
+		if ( WPBC_GET_Request::has_non_empty_get( 'booking_form' ) ) {
+			return WPBC_GET_Request::get_sanitized( 'booking_form' );
+		}
+
+		return self::get_default_booking_form_for_resource( $resource_id, 'standard' );
 	}
 
 

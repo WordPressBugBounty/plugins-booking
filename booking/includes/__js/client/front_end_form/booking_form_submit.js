@@ -604,6 +604,26 @@ function wpbc_send_ajax_submit(resource_id, formdata, captcha_chalange, user_cap
 		request_params['wpbc_time_override_end']     = $time_override_panel.find( '[data-wpbc-add-booking-time-override-field="end"]' ).first().val() || '';
 	}
 
+	var selected_dates_count = String( request_params['dates_ddmmyy_csv'] || '' ).split( ',' ).filter( function( date_text ){
+		return '' !== String( date_text || '' ).replace( /^\s+|\s+$/g, '' );
+	} ).length;
+	var is_times_availability_override = (
+		   ( 1 === parseInt( request_params['wpbc_time_override_enabled'] || 0, 10 ) )
+		&& ( 'times_availability' === String( request_params['wpbc_time_override_source'] || '' ) )
+	);
+	if (
+		   (
+			   has_add_booking_modal_context
+			&& '1' === String( $add_booking_modal.attr( 'data-wpbc-add-booking-force-recurrent-time' ) || '0' )
+		   )
+		|| (
+			   is_times_availability_override
+			&& ( selected_dates_count > 1 )
+		   )
+	) {
+		request_params['is_use_booking_recurrent_time'] = 1;
+	}
+
 	// If preview, pass session identifiers so PHP can load transient snapshot.
 	if ( preview_args && preview_args.token && preview_args.form_id ) {
 		request_params['wpbc_bfb_preview']         = 1;

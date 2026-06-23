@@ -355,6 +355,31 @@ function wpbc_load_js__required_for_modals() {
 	wp_enqueue_style( 'wpbc-admin-skin', wpbc_plugin_url( '/css/admin-skin.css' ), array( 'wpbc-admin-pages' ), WP_BK_VERSION_NUM );                        // FixIn: 8.0.2.4.
 }
 
+/**
+ * Load only the modal assets required by front-end popup shortcodes.
+ *
+ * This intentionally avoids the broader admin helper above, because front-end
+ * pages should not receive admin page/menu styles when only a modal booking
+ * form is needed.
+ *
+ * @return void
+ */
+function wpbc_load_js__required_for_front_end_modals() {
+
+	// JS for opening modals.
+	wp_enqueue_script( 'wpbc-modal', wpbc_plugin_url( '/vendors/_custom/dropdown_modal/_out/dropdown_modal.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, array( 'in_footer' => WPBC_JS_IN_FOOTER ) );                        // FixIn: 9.8.1.
+
+	// Base Bootstrap CSS is already loaded by Booking Calendar in normal front-end rendering.
+	if ( ! wp_style_is( 'wpdevelop-bts', 'enqueued' ) && ! wp_style_is( 'wpdevelop-bts', 'done' ) ) {
+		wp_enqueue_style( 'wpdevelop-bts', wpbc_plugin_url( '/vendors/_custom/bootstrap-css/css/bootstrap.css' ), array(), WP_BK_VERSION_NUM );                                                                     // FixIn: 9.8.1.
+	}
+	if ( ! wp_style_is( 'wpdevelop-bts-theme', 'enqueued' ) && ! wp_style_is( 'wpdevelop-bts-theme', 'done' ) ) {
+		wp_enqueue_style( 'wpdevelop-bts-theme', wpbc_plugin_url( '/vendors/_custom/bootstrap-css/css/bootstrap-theme.css' ), array(), WP_BK_VERSION_NUM );                                                         // FixIn: 9.8.1.
+	}
+
+	wp_enqueue_style( 'wpbc-admin-modal-popups', wpbc_plugin_url( '/css/modal.css' ), array(), WP_BK_VERSION_NUM );
+}
+
 
 /**
  *  Load JS and CSS files for opening Media Upload PopUp in Admin Panel

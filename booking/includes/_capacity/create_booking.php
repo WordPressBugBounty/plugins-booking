@@ -359,6 +359,14 @@ function wpbc_booking_save( $request_params ){
 	$local_params['dates_only_sql_arr'] = wpbc_convert_dates_str__dd_mm_yyyy__to__yyyy_mm_dd( $re_cleaned_params["dates_ddmmyy_csv"] );
 	$local_params['dates_only_sql_arr'] = explode( ',', $local_params['dates_only_sql_arr'] );
 
+	if (
+		   ( ! empty( $local_params['time_override_arr'] ) )
+		&& ( 'times_availability' === $local_params['time_override_arr']['source'] )
+		&& ( count( array_filter( $local_params['dates_only_sql_arr'] ) ) > 1 )
+	) {
+		$local_params['is_use_booking_recurrent_time'] = true;
+	}
+
 	$local_params['is_show_payment_form'] = $re_cleaned_params["is_show_payment_form"];
 
 	// FixIn: 9.9.0.35.
@@ -441,6 +449,7 @@ function wpbc_booking_save( $request_params ){
 										'request_uri'                   => $re_cleaned_params['request_uri'],                   // 'http://beta/resource-id2/'
 										'allow_past'                    => ! empty( $re_cleaned_params['allow_past'] ),
 										'is_use_booking_recurrent_time' => $local_params['is_use_booking_recurrent_time'],      // true | false
+										'time_override_source'          => ! empty( $local_params['time_override_arr']['source'] ) ? $local_params['time_override_arr']['source'] : '',
 										'as_single_resource'            => false,                                                // false
 										'aggregate_resource_id_arr'     => $local_params['aggregate_resource_id_arr'],           // Optional  can  be ''
 										'aggregate_type'                => $re_cleaned_params['aggregate_type'],                 //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.
@@ -932,7 +941,11 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 	}
 
 	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  CHECK_IN_DATE_OLDER_THAN_CHECK_OUT "  >
-	if ( count( $create_params['dates_only_sql_arr'] ) == 1 ) {															// Is it single selected date ?
+	$is_no_dates_booking = (
+		   function_exists( 'wpbc_is_these_dates__for__no_dates' )
+		&& wpbc_is_these_dates__for__no_dates( $create_params['dates_only_sql_arr'] )
+	);
+	if ( ( count( $create_params['dates_only_sql_arr'] ) == 1 ) && ( ! $is_no_dates_booking ) ) {															// Is it single selected date ?
 
 		// Is 'check in' date/time older than 'check out' date/time when SINGLE day for booking?  Then show error.
 

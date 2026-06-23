@@ -19,6 +19,10 @@
 		return ( value < 10 ? '0' : '' ) + value;
 	}
 
+	function trim_text( value ) {
+		return String( value || '' ).replace( /^\s+|\s+$/g, '' );
+	}
+
 	function minutes_to_time( minutes ) {
 		var hours = Math.floor( minutes / 60 );
 		var mins = minutes % 60;
@@ -95,9 +99,9 @@
 		var axisFontWeight = visibleHours <= 10 ? 550 : 400;
 		var firstHour = Math.ceil( config.start / 60 ) * 60;
 
-		$grid.css( '--wpbc-ts-slot-count', slotCount );
+		$grid.css( '--wpbc-ts-slot-count', String( slotCount ) );
 		$grid.css( '--wpbc-ts-axis-label-size', axisFontSize + 'px' );
-		$grid.css( '--wpbc-ts-axis-label-weight', axisFontWeight );
+		$grid.css( '--wpbc-ts-axis-label-weight', String( axisFontWeight ) );
 
 		for ( minute = firstHour; minute <= config.end; minute += 60 ) {
 			html += '<span class="wpbc_ts_axis_label" style="left:' + percent_for_minute( minute, config ) + '%;">' + minutes_to_time( minute ) + '</span>';
@@ -264,7 +268,7 @@
 	}
 
 	function row_label( $page, rowId ) {
-		return $.trim( $page.find( '.wpbc_ts_row[data-wpbc-ts-row="' + rowId + '"] .wpbc_ts_row_label_text' ).text() );
+		return trim_text( $page.find( '.wpbc_ts_row[data-wpbc-ts-row="' + rowId + '"] .wpbc_ts_row_label_text' ).text() );
 	}
 
 	function escape_html( value ) {
@@ -516,11 +520,33 @@
 		);
 	}
 
-	function close_time_slots_popup( $page ) {
+	function close_time_slots_popup( $page, afterClose ) {
 		var $modal = $page.closest( '.wpbc_modal__availability_timeslots__section, .modal' );
+		var isCallbackDone = false;
+		var run_callback = function () {
+			if ( isCallbackDone ) {
+				return;
+			}
+			isCallbackDone = true;
+
+			if ( 'function' === typeof afterClose ) {
+				afterClose();
+			}
+		};
 
 		if ( ! $modal.length ) {
+			run_callback();
 			return;
+		}
+
+		if ( ! $modal.is( ':visible' ) ) {
+			run_callback();
+			return;
+		}
+
+		if ( 'function' === typeof afterClose ) {
+			$modal.one( 'hidden.wpbc.modal hidden.bs.modal', run_callback );
+			window.setTimeout( run_callback, 500 );
 		}
 
 		if ( 'function' === typeof $modal.wpbc_my_modal ) {
@@ -616,29 +642,45 @@
 		return payload;
 	}
 
+	function get_selection_dates( $page, rows ) {
+		var dates = [];
+		var seen = {};
+
+		$.each( rows || [], function ( rowIndex, rowId ) {
+			var $row = $page.find( '.wpbc_ts_row[data-wpbc-ts-row="' + rowId + '"]' );
+			var date = $row.attr( 'data-wpbc-ts-date' );
+
+			if ( date && ! seen[ date ] ) {
+				seen[ date ] = true;
+				dates.push( date );
+			}
+		} );
+
+		dates.sort();
+		return dates;
+	}
+
 	function get_active_booking_selection_context( $page ) {
 		var item = activeSelectionId ? get_selection_by_id( activeSelectionId ) : null;
-		var $row;
-		var date;
+		var dates;
 
 		if ( ! item && 1 === selectionRanges.length ) {
 			item = selectionRanges[0];
 		}
 
-		if ( ! item || ! item.rows || 1 !== item.rows.length ) {
+		if ( ! item || ! item.rows || ! item.rows.length ) {
 			return null;
 		}
 
-		$row = $page.find( '.wpbc_ts_row[data-wpbc-ts-row="' + item.rows[0] + '"]' );
-		date = $row.attr( 'data-wpbc-ts-date' );
-
-		if ( ! date ) {
+		dates = get_selection_dates( $page, item.rows );
+		if ( ! dates.length ) {
 			return null;
 		}
 
 		return {
 			resource_id: get_control( $page, 'resource' ).val() || '',
-			selected_date: date,
+			selected_date: dates[0],
+			selected_dates: dates.join( ',' ),
 			selected_time: minutes_to_time( item.start ) + ' - ' + minutes_to_time( item.end ),
 			start_second: item.start * 60,
 			end_second: item.end * 60
@@ -649,7 +691,7 @@
 		var settings = window.wpbc_availability_timeslots_page || {};
 		var labels = settings.i18n || {};
 		var context = get_active_booking_selection_context( $page );
-		var bookingForm;
+		var $addBookingModal = $( '#wpbc_modal__add_booking__section' );
 
 		if ( ! context ) {
 			if ( window.wpbc_admin_show_message ) {
@@ -658,21 +700,23 @@
 			return false;
 		}
 
-		if ( 'function' !== typeof window.wpbc_boo_listing__click__add_booking_modal ) {
+		if (
+			   'function' !== typeof window.wpbc_boo_listing__click__add_booking_modal
+			|| ! $addBookingModal.length
+			|| 'function' !== typeof $addBookingModal.wpbc_my_modal
+		) {
 			if ( window.wpbc_admin_show_message ) {
 				wpbc_admin_show_message( labels.add_booking_modal_missing || 'Add Booking popup is not available on this page.', 'warning', 5000 );
 			}
 			return false;
 		}
 
-		bookingForm = $( '#wpbc_modal__add_booking__booking_form' ).val() || '';
-
-		close_time_slots_popup( $page );
-		window.setTimeout( function () {
+		close_time_slots_popup( $page, function () {
 			window.wpbc_boo_listing__click__add_booking_modal( {
 				mode: 'add',
 				resource_id: context.resource_id,
-				booking_form: bookingForm,
+				booking_form: '',
+				selected_dates: context.selected_dates,
 				selected_date: context.selected_date,
 				selected_time: context.selected_time,
 				time_override_enabled: 1,
@@ -680,7 +724,7 @@
 				time_override_start: minutes_to_time( context.start_second / 60 ),
 				time_override_end: minutes_to_time( context.end_second / 60 )
 			} );
-		}, 150 );
+		} );
 
 		return true;
 	}
@@ -778,11 +822,11 @@
 		var start;
 		var end;
 
-		if ( jsDatesArr && $.isArray( jsDatesArr.range ) ) {
+		if ( jsDatesArr && Array.isArray( jsDatesArr.range ) ) {
 			dates = jsDatesArr.range;
-		} else if ( jsDatesArr && $.isArray( jsDatesArr.multiple ) ) {
+		} else if ( jsDatesArr && Array.isArray( jsDatesArr.multiple ) ) {
 			dates = jsDatesArr.multiple;
-		} else if ( $.isArray( jsDatesArr ) ) {
+		} else if ( Array.isArray( jsDatesArr ) ) {
 			dates = jsDatesArr;
 		}
 
@@ -940,7 +984,7 @@
 		var parsed;
 		var sqlMatch;
 
-		text = $.trim( text || '' );
+		text = trim_text( text );
 		if ( ! text ) {
 			return null;
 		}
@@ -1183,9 +1227,14 @@
 					return;
 				}
 
-				$selection = $template.clone( false )
+				$selection = $template.clone( false );
+				if ( $selection[0] ) {
+					$selection[0].hidden = false;
+					$selection[0].removeAttribute( 'hidden' );
+				}
+
+				$selection
 					.removeClass( 'wpbc_ts_selection_template' )
-					.removeAttr( 'hidden' )
 					.addClass( 'is-visible' )
 					.toggleClass( 'is-active', item.id === activeSelectionId )
 					.attr( 'data-wpbc-ts-selection-id', item.id )
@@ -1549,7 +1598,10 @@
 			$tablist.find( '[role="tab"]' ).attr( 'aria-selected', 'false' );
 			$tab.attr( 'aria-selected', 'true' );
 			$( '.wpbc_ts_rightbar_panels .wpbc_bfb__palette_panel' ).attr( 'hidden', 'hidden' ).attr( 'aria-hidden', 'true' );
-			$panel.removeAttr( 'hidden' ).attr( 'aria-hidden', 'false' );
+			$panel.each( function () {
+				this.hidden = false;
+				this.removeAttribute( 'hidden' );
+			} ).attr( 'aria-hidden', 'false' );
 		} );
 	}
 

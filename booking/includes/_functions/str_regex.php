@@ -296,10 +296,13 @@ function wpbc_get_fields_from_booking_form( $booking_form = '' ){
 	}
 
 	$types         = 'text[*]?|email[*]?|time[*]?|textarea[*]?|select[*]?|selectbox[*]?|checkbox[*]?|radio|acceptance|captchac|captchar|file[*]?|quiz';
-	$regex         = '%\[\s*(' . $types . ')(\s+[a-zA-Z][0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)?((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
-	$regex2        = '%\[\s*(country[*]?|starttime[*]?|endtime[*]?)(\s*[a-zA-Z]*[0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)*((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
-	$fields_count  = preg_match_all( $regex, $booking_form, $fields_matches );
-	$fields_count2 = preg_match_all( $regex2, $booking_form, $fields_matches2 );
+	$fields_data   = wpbc_get_booking_form_shortcode_fields_by_types( $booking_form, $types );
+	$fields_count  = $fields_data[0];
+	$fields_matches = $fields_data[1];
+
+	$fields_data2   = wpbc_get_booking_form_shortcode_fields_by_types( $booking_form, 'country[*]?|starttime[*]?|endtime[*]?', false, true );
+	$fields_count2  = $fields_data2[0];
+	$fields_matches2 = $fields_data2[1];
 
 	//Gathering Together 2 arrays $fields_matches  and $fields_matches2
 	foreach ( $fields_matches2 as $key => $value ) {
@@ -332,13 +335,115 @@ function wpbc_get_select_checkbox_fields_from_booking_form( $booking_form = '' )
 		$booking_form  = get_bk_option( 'booking_form' );
 
 	$types = 'select[*]?|selectbox[*]?|checkbox[*]?|radio[*]?';                                                                // FixIn: 8.1.3.7.
-	$regex = '%\[\s*(' . $types . ')(\s+[a-zA-Z][0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)?((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
-
-	$fields_count = preg_match_all($regex, $booking_form, $fields_matches) ;
+	$fields_data = wpbc_get_booking_form_shortcode_fields_by_types( $booking_form, $types );
+	$fields_count = $fields_data[0];
+	$fields_matches = $fields_data[1];
 
 	if ( $fields_count > 0 )
 		 return array( $fields_count, $fields_matches );
 	else return false;
+}
+
+
+/**
+ * Get shortcode fields in the legacy preg_match_all() result shape used by settings pages.
+ *
+ * The parser keeps option assignments such as default="1" in the options group and exposes only standalone
+ * quoted tokens as field values.
+ *
+ * @param string $booking_form
+ * @param string $types
+ * @param bool   $is_name_required
+ * @param bool   $is_name_forced_to_type
+ *
+ * @return array
+ */
+function wpbc_get_booking_form_shortcode_fields_by_types( $booking_form, $types, $is_name_required = true, $is_name_forced_to_type = false ) {
+
+	$fields_matches = array_fill( 0, 5, array() );
+	$regex          = '%\[\s*(' . $types . ')(?=\s|\])((?:[^\]"\']+|"[^"]*"|\'[^\']*\')*)\]%';
+	$found_fields   = array();
+
+	preg_match_all( $regex, $booking_form, $found_fields, PREG_SET_ORDER );
+
+	foreach ( $found_fields as $found_field ) {
+
+		$shortcode_tail = $found_field[2];
+		$field_name     = '';
+		$field_tail     = $shortcode_tail;
+
+		if ( $is_name_forced_to_type ) {
+			$field_name = $found_field[1];
+		} elseif ( preg_match( '%^\s*([a-zA-Z][0-9a-zA-Z:._-]*)(.*)$%s', $shortcode_tail, $shortcode_parts ) ) {
+			$field_name = $shortcode_parts[1];
+			$field_tail = $shortcode_parts[2];
+		}
+
+		if ( $is_name_required && ( '' === $field_name ) ) {
+			continue;
+		}
+
+		if ( '' === $field_name ) {
+			$field_name = $found_field[1];
+		}
+
+		list( $shortcode_options, $shortcode_values ) = wpbc_parse_form_shortcode_options_values( $field_tail );
+
+		$fields_matches[0][] = trim( $found_field[0] );
+		$fields_matches[1][] = trim( $found_field[1] );
+		$fields_matches[2][] = trim( $field_name );
+		$fields_matches[3][] = trim( $shortcode_options );
+		$fields_matches[4][] = trim( $shortcode_values );
+	}
+
+	return array( count( $fields_matches[0] ), $fields_matches );
+}
+
+
+if ( ! function_exists( 'wpbc_parse_form_shortcode_options_values' ) ) {
+	function wpbc_parse_form_shortcode_options_values( $shortcode_tail ){
+
+		$shortcode_options = trim( $shortcode_tail );
+		$shortcode_values  = '';
+
+		$value_matches = array();
+		preg_match_all( '%(?:"[^"]*"|\'[^\']*\')%', $shortcode_tail, $value_matches, PREG_OFFSET_CAPTURE );
+
+		$standalone_values = array();
+		foreach ( $value_matches[0] as $value_match ) {
+			$value_offset = $value_match[1];
+			$prev_offset  = $value_offset - 1;
+
+			if ( ( $prev_offset >= 0 ) && ! ctype_space( $shortcode_tail[ $prev_offset ] ) ) {
+				continue;
+			}
+
+			while ( ( $prev_offset >= 0 ) && ctype_space( $shortcode_tail[ $prev_offset ] ) ) {
+				$prev_offset--;
+			}
+
+			if ( ( $prev_offset >= 0 ) && in_array( $shortcode_tail[ $prev_offset ], array( '=', ':' ), true ) ) {
+				continue;
+			}
+
+			$standalone_values[] = $value_match;
+		}
+
+		if ( ! empty( $standalone_values ) ) {
+			$shortcode_options = trim( substr( $shortcode_tail, 0, $standalone_values[0][1] ) );
+			$shortcode_values  = implode(
+				' ',
+				array_map(
+					function ( $value_match ) {
+						return $value_match[0];
+					},
+					$standalone_values
+				)
+			);
+		}
+
+		return array( $shortcode_options, $shortcode_values );
+	}
 }
 
 

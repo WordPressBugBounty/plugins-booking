@@ -208,6 +208,12 @@ function wpbc_stp_wiz__template__general_info(){
 					<span class="wpbc_wrap_textarea wpdev-form-control-wrap details4"><textarea name="details4" autocomplete="details"></textarea></span> </div>
 			</div-->
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:40px;margin-bottom:5px;border-bottom:1px solid #ccc;"></div>
+			<#
+				var currentStep = data.current_step || '';
+				var currentStepData = ( data.steps && data.steps[ currentStep ] ) ? data.steps[ currentStep ] : {};
+				var nextStep = currentStepData.next || '';
+				var doAction = currentStepData.do_action || 'none';
+			#>
 			<div class="wpbc__row wpbc_setup_wizard_page__section_footer">
 				<div class="wpbc__field">
 					<span class="wpdev-list-item">
@@ -232,8 +238,8 @@ function wpbc_stp_wiz__template__general_info(){
 						   class="wpbc_button_light button-primary"
 						   id="btn__toolbar__buttons_next"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
-																								'current_step': '{{data.steps[ data.current_step ].next}}',
-																								   'do_action': '{{data.steps[ data.current_step ].do_action}}',
+																								'current_step': '{{nextStep}}',
+																								   'do_action': '{{doAction}}',
 																								'ui_clicked_element_id': 'btn__toolbar__buttons_next',
 																								'step_data':{
 																												'wpbc_swp_business_name':     jQuery( '[name=\'wpbc_swp_business_name\']').val(),

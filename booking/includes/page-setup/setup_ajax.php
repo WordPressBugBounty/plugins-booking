@@ -35,13 +35,7 @@ function wpbc_setup_wizard_page__request_rules_structure() {
 								'save_and_continue__general_info',
 								'save_and_continue__date_time_formats',
 								'save_and_continue__bookings_types',
-								'save_and_continue__form_structure',
-								'load_form_template',
-								'save_and_continue__cal_availability',
-								'save_and_continue__color_theme',
-								'save_and_continue__optional_other_settings',
-								'save_and_continue__wizard_publish',
-								'save_and_continue__get_started'
+								'redirect_to_setup_step'
 						),
 			'default'  => 'none'
 		),
@@ -163,9 +157,43 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 		// Ajax Handlers.		Note. "locale_for_ajax" rechecked in wpbc-ajax.php
 		add_action( 'wp_ajax_'		     . 'WPBC_AJX_SETUP_WIZARD_PAGE', array( $this, 'ajax_' . 'WPBC_AJX_SETUP_WIZARD_PAGE' ) );	    // Admin & Client (logged in usres)
+		add_action( 'wp_ajax_'		     . 'WPBC_AJX_SETUP_WIZARD_MARK_STEP_SAVED', array( $this, 'ajax_' . 'WPBC_AJX_SETUP_WIZARD_MARK_STEP_SAVED' ) );
 
 		// Ajax Handlers for actions
 		// add_action( 'wp_ajax_nopriv_' . 'WPBC_AJX_BOOKING_LISTING', array( $this, 'ajax_' . 'WPBC_AJX_BOOKING_LISTING' ) );	    // Client         (not logged in)
+	}
+
+	/**
+	 * Ajax - mark an external setup step as saved after an existing settings page saves successfully.
+	 *
+	 * @return void
+	 */
+	public function ajax_WPBC_AJX_SETUP_WIZARD_MARK_STEP_SAVED() {
+
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! wp_verify_nonce( $nonce, 'wpbc_setup_wizard_mark_step_saved' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'booking' ) ) );
+		}
+
+		$step_name   = isset( $_POST['wpbc_setup_step'] ) ? sanitize_key( wp_unslash( $_POST['wpbc_setup_step'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+		$steps_arr   = $setup_steps->get_steps_arr();
+
+		if ( empty( $step_name ) && function_exists( 'wpbc_setup_wizard__detect_step_from_admin_url' ) ) {
+			$referer_step = wpbc_setup_wizard__detect_step_from_admin_url( wp_get_referer() );
+			if ( ! empty( $referer_step ) && isset( $steps_arr[ $referer_step ] ) ) {
+				$step_name = $referer_step;
+			}
+		}
+
+		if ( empty( $step_name ) || ! isset( $steps_arr[ $step_name ] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Unknown setup step.', 'booking' ) ) );
+		}
+
+		$setup_steps->db__set_step_as_saved( $step_name, true );
+		$setup_steps->db__save_current_step_name( $step_name );
+
+		wp_send_json_success( array( 'step' => $step_name ) );
 	}
 
 
@@ -213,8 +241,11 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 		//--------------------------------------------------------------------------------------------------------------
 		$data_arr['current_step']  = ( ! empty( $cleaned_request_params['current_step'] )
 										? $cleaned_request_params['current_step']
-										: $setup_steps->get_active_step_name() );       // e.g. 'general_info' or 'optional_other_settings'
+										: $setup_steps->get_active_step_name() );       // e.g. 'general_info' or 'date_availability'
 		$data_arr['steps'] = $setup_steps->get_steps_arr();
+		if ( ! isset( $data_arr['steps'][ $data_arr['current_step'] ] ) ) {
+			$data_arr['current_step'] = $setup_steps->get_active_step_name();
+		}
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Get Wizard history
@@ -235,6 +266,8 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 				$is_reseted = $user_request->user_request_params__db_delete();											// Delete from DB
 
+				wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+
 				$cleaned_request_params['do_action'] = $is_reseted ? 'reset_done' : 'reset_error';
 
 				$cleaned_request_params = wpbc_setup_wizard_page__get__request_values__default();
@@ -254,6 +287,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 				// $data_arr['redirect_url'] = wpbc_get_settings_url();
 				$data_arr['redirect_url'] = wpbc_get_bookings_url();
 
+				wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
 				$setup_steps->db__set_all_steps_as( true );        // Mark All Steps as Done
 
 				break;
@@ -301,6 +335,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 					// Legacy  update booking form  and dates selection, as some other options (recurrent time)....
 					wpbc_setup__update__bookings_types( $cleaned_data );
+					$booking_wizard_data_arr['save_and_continue__bookings_types'] = $cleaned_data;
+					update_bk_option( 'booking_wizard_data', $booking_wizard_data_arr );
+					$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 
 					// FixIn: 10.7.1.3. // FixIn: 10.15.1.1.
 					$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__send_email' );
@@ -316,153 +353,25 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 						}
 					}
 
-					$is_bfb_enabled = (bool) WPBC_Frontend_Settings::is_bfb_enabled( null );
-					if ( $is_bfb_enabled ) {
-						$or_sep_url = ( defined( 'WPBC_BFB_TEMPLATE_SEARCH_OR_SEPARATOR_URL' ) ) ? (string) WPBC_BFB_TEMPLATE_SEARCH_OR_SEPARATOR_URL : '^';
-						if ( '' === $or_sep_url ) {
-							$or_sep_url = '^';
-						}
-						$template_search_key = '';
-						if ( 'full_days_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$template_search_key = 'full-days' . $or_sep_url . 'dates_form';
-						}
-						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							if ( 'rangetime' !== $cleaned_data['wpbc_swp_booking_appointments_type'] ) {
-								$template_search_key = 'appointments';// . $or_sep_url . 'duration';
-							} else {
-								$template_search_key = 'time+slots' . $or_sep_url . 'times';
-							}
-						}
-						if ( 'changeover_multi_dates_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$template_search_key = 'changeover' . $or_sep_url . 'triangles';
-						}
-						//  JavaScript redirect: wpbc_redirect( 'url' ); // PHP: redirect:.
-						// wp_redirect( admin_url( 'admin.php?page=wpbc-settings&tab=builder_booking_form&auto_open_template=' . $cleaned_data ) );
-
-						$cleaned_request_params['do_action'] = 'auto_open_template';
-						$data_arr['redirect_url'] = admin_url( 'admin.php?page=wpbc-settings&tab=builder_booking_form&auto_open_template=' . $template_search_key );
-						$data_arr['current_step'] = 'cal_availability';
-						// Mark  as completed, Type of bookings and Form structure!
-						$setup_steps->db__set_step_as_completed( 'bookings_types' );
-						$setup_steps->db__set_step_as_completed( 'form_structure' );
-						break;
-					}
-
-
-					// -------------------------------------------------------------------------------------------------
-					// Save selected option  at the next  step  for paid versions
-					// -------------------------------------------------------------------------------------------------
-					$booking_wizard_data_arr[ 'load_form_template' ] = array();
-					if ( class_exists( 'wpdev_bk_personal' ) ) {
-						if ( 'full_days_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|hints-dev';
-						}
-						if ( 'time_slots_appointments' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							if ( 'durationtime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ) {
-								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments_service_c';    // FixIn: 10.7.1.4.
-							} else {
-								$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|appointments30';    // FixIn: 10.7.1.4.
-							}
-						}
-						if ( 'changeover_multi_dates_bookings' === $cleaned_data['wpbc_swp_booking_types'] ) {
-							$booking_wizard_data_arr['load_form_template'] ['wpbc_swp_booking_form_template_pro'] = 'pro|wizard';
-						}
-					}
-			        // -------------------------------------------------------------------------------------------------
 				}
 
 				$setup_steps->db__set_step_as_completed( 'bookings_types' );
+				if ( ! empty( $cleaned_data ) ) {
+					wpbc_setup_wizard__set_full_screen_mode_for_current_user( true );
+					$data_arr['current_step'] = wpbc_setup_wizard__get_first_profile_step();
+					$current_steps_arr        = $setup_steps->get_steps_arr();
+					$setup_steps->db__reset_steps_from( $data_arr['current_step'] );
+					if (
+						isset( $current_steps_arr[ $data_arr['current_step'] ] )
+						&& 'manual_save_required' === $setup_steps->get_step_save_behavior( $data_arr['current_step'] )
+					) {
+						$setup_steps->db__set_step_as_saved( $data_arr['current_step'], false );
+					}
+					$data_arr['redirect_url'] = $setup_steps->get_step_target_url( $data_arr['current_step'] );
+					$data_arr['steps']        = $current_steps_arr;
+					$cleaned_request_params['do_action'] = 'redirect_to_setup_step';
+				}
 				break;
-
-			case 'save_and_continue__form_structure':
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__form_structure( $cleaned_data );
-				}
-
-				$setup_steps->db__set_step_as_completed( 'form_structure' );
-				break;
-
-			case 'load_form_template':
-
-				if (
-						( 'form_structure' === $data_arr['current_step'] )
-				     && ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) )
-				){
-					$cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__form_structure( $cleaned_data );
-				}
-				if (
-						( 'cal_availability' === $data_arr['current_step'] )
-				     && ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) )
-				){
-					$cleaned_data = wpbc_template__cal_availability__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__cal_availability( $cleaned_data );
-				}
-				if (
-						( 'color_theme' === $data_arr['current_step'] )
-				     && ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) )
-				){
-					$cleaned_data = wpbc_template__color_theme__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__color_theme( $cleaned_data );
-				}
-
-				break;
-
-			case 'save_and_continue__cal_availability':
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__cal_availability__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__cal_availability( $cleaned_data );
-				}
-
-				$setup_steps->db__set_step_as_completed( 'cal_availability' );
-				break;
-
-			case 'save_and_continue__color_theme':
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__color_theme__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__color_theme( $cleaned_data );
-				}
-
-				$setup_steps->db__set_step_as_completed( 'color_theme' );
-				break;
-
-			case 'save_and_continue__optional_other_settings':
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__optional_other_settings__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__optional_other_settings( $cleaned_data );
-				}
-				$setup_steps->db__set_step_as_completed( 'optional_other_settings' );
-				break;
-
-			case 'save_and_continue__wizard_publish':
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__wizard_publish__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__wizard_publish( $cleaned_data );
-				}
-				$setup_steps->db__set_step_as_completed( 'wizard_publish' );
-				break;
-
-			case 'save_and_continue__get_started':
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
-					$cleaned_data = wpbc_template__get_started__action_validate_data( $_POST['all_ajx_params']['step_data'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					wpbc_setup__update__get_started( $cleaned_data );
-				}
-				$setup_steps->db__set_step_as_completed( 'get_started' );
-				break;
-
 
 			default:
 				// Default
@@ -473,185 +382,12 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 		//--------------------------------------------------------------------------------------------------------------
 		$data_arr['steps_is_done']               = $setup_steps->db__get_steps_is_done();
 		$data_arr['left_navigation']             = wpbc_setup_wizard_page__get_left_navigation_menu_arr();
-		$data_arr['plugin_menu__setup_progress'] = $setup_steps->get_plugin_menu_title__setup_progress();
+		$data_arr['plugin_menu__setup_progress'] = $setup_steps->get_plugin_menu_title__setup_progress( $data_arr['current_step'] );
 
-		//--------------------------------------------------------------------------------------------------------------
-		// Load Calendar depend on Step
-		//--------------------------------------------------------------------------------------------------------------
+		// External setup steps are now configured on their existing admin pages, so the setup-page AJAX response does
+		// not need to embed their duplicated calendars or forms.
 		$data_arr['ui'] = array();
-
-		switch ( $data_arr['current_step'] ) {
-
-			case 'form_structure':
-				$data_arr['calendar_force_load'] = '';
-
-				if ( 'save_and_continue__bookings_types' === $cleaned_request_params['do_action'] ) {
-					// We need to  reload the calendar skins,  because at  the previous step 'Booking Types' we updated the calendar skins relative to  selected options
-					ob_start();
-					?>
-					<script type="text/javascript">
-						jQuery( document ).ready( function () {
-							wpbc__calendar__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL  . get_bk_option( 'booking_skin' ) ); ?>' );
-							wpbc__css__change_skin( '<?php echo esc_url( WPBC_PLUGIN_URL . get_bk_option( 'booking_timeslot_picker_skin' ) ); ?>' );
-						} );
-					</script><?php
-					$data_arr['calendar_force_load'] .= ob_get_clean();
-				}
-				$data_arr['calendar_force_load'] .= wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
-				break;
-
-			case 'cal_availability':
-
-				$data_arr['calendar_force_load'] = wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
-
-				// -----------------------------------------------------------------------------------------------------
-				// ==  UNAVAILABLE  WeekDays  ==
-				// -----------------------------------------------------------------------------------------------------
-				$data_arr['ui']['booking_unavailable_day'] = array();
-				for ( $wdi = 0; $wdi < 7; $wdi ++ ) {
-					if ( get_bk_option( 'booking_unavailable_day' . $wdi ) == 'On' ) {
-						$data_arr['ui']['booking_unavailable_day'][] = $wdi;
-					}
-				}
-
-				/**
-				 * $unavailable_from_today_arr = [
-				 *                    booking_unavailable_days_num_from_today = "540m"
-				 *                    booking_unavailable_days_num_from_today__hint = ": 2025-01-25 15:19 - 2025-01-26 00:18:42"
-				 *                    booking_available_days_num_from_today = "0"
-				 *                    booking_available_days_num_from_today__hint = ": 26 Jan, 2025 - ..."
-				 *                  ]
-				 */
-				$unavailable_from_today_arr = wpbc_get_unavailable_from_today_hints_arr();
-
-				$data_arr['ui']['booking_unavailable_days_num_from_today']       = $unavailable_from_today_arr['booking_unavailable_days_num_from_today'];
-				$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = $unavailable_from_today_arr['booking_unavailable_days_num_from_today__hint'];
-				$data_arr['ui']['booking_available_days_num_from_today']         = $unavailable_from_today_arr['booking_available_days_num_from_today'];
-				$data_arr['ui']['booking_available_days_num_from_today__hint']   = $unavailable_from_today_arr['booking_available_days_num_from_today__hint'];
-if(0){
-				// -----------------------------------------------------------------------------------------------------
-				// ==  UNAVAILABLE  Today days  ==
-				// -----------------------------------------------------------------------------------------------------
-				// FixIn: 10.8.1.4.
-				$last_unavailable_date = '';
-				if ( 'm' === substr( get_bk_option( 'booking_unavailable_days_num_from_today' ), - 1 ) ) {
-					// -------------------------------------------------------------------------------------------------
-					// == Minutes ==
-					// -------------------------------------------------------------------------------------------------
-					$data_arr['ui']['booking_unavailable_days_num_from_today'] = intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) );
-
-					// Hints.
-					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': <span style="text-transform: lowercase;font-size:0.9em;">'
-																													. __( 'None', 'booking' ) . '</span>';
-					if ( ! empty( $data_arr['ui']['booking_unavailable_days_num_from_today'] ) ) {
-
-						$start_date_unix         = strtotime( 'now' );
-						$todate_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d H:i' );
-
-						$start_date_unix           = strtotime( '+' . ( intval( $data_arr['ui']['booking_unavailable_days_num_from_today'] ) - 1 ) . ' minutes' );
-						$max_date_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d H:i:s' );
-
-						$last_unavailable_date = $max_date_with_wp_timezone;
-
-						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . $todate_with_wp_timezone . ' - ' . $max_date_with_wp_timezone;        // FixIn: 10.9.4.2.
-					}
-					$data_arr['ui']['booking_unavailable_days_num_from_today'] .= 'm';
-				} else {
-					// -------------------------------------------------------------------------------------------------
-					// == Days ==
-					// -------------------------------------------------------------------------------------------------
-					$data_arr['ui']['booking_unavailable_days_num_from_today'] = intval( get_bk_option( 'booking_unavailable_days_num_from_today' ) );
-
-					// Hints.
-					$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': <span style="text-transform: lowercase;font-size:0.9em;">' . __( 'None', 'booking' ) . '</span>';
-
-					if ( 1 === $data_arr['ui']['booking_unavailable_days_num_from_today'] ) {
-						$last_unavailable_date = wp_date( 'Y-m-d 00:00:00' );
-						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M', strtotime( $last_unavailable_date ) );
-					}
-					if ( $data_arr['ui']['booking_unavailable_days_num_from_today'] > 1 ) {
-						$last_unavailable_date = wp_date( 'Y-m-d 00:00:00', strtotime( '+' . ( $data_arr['ui']['booking_unavailable_days_num_from_today'] - 1 ) . ' days' ) );
-						$data_arr['ui']['booking_unavailable_days_num_from_today__hint'] = ': ' . wp_date( 'd M' ) . ' - ' . wp_date( 'd M', strtotime( $last_unavailable_date ) );
-					}
-				}
-
-				// -----------------------------------------------------------------------------------------------------
-				// ==  AVAILABLE  Today days  ==
-				// -----------------------------------------------------------------------------------------------------
-				// if ( class_exists( 'wpdev_bk_biz_m' ) ) { .
-				$data_arr['ui']['booking_available_days_num_from_today'] = esc_js( get_bk_option( 'booking_available_days_num_from_today' ) );
-
-				// Hints.
-				// $start_available_date = ( '' === $last_unavailable_date ) ? wp_date( 'Y-m-d 00:00:00' ) : wp_date( 'Y-m-d 00:00:00', strtotime( '+1 day', strtotime( $last_unavailable_date ) ) );
-				if ( '' === $last_unavailable_date ) {
-					$start_date_unix         = strtotime( 'now' );
-					$todate_with_wp_timezone = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
-					$start_available_date    = $todate_with_wp_timezone;
-				} else {
-					$start_available_date = $last_unavailable_date;
-					// We use here with  no WP timezone, because timezone already  applied to $last_unavailable_date.
-					$start_available_date = wpbc_datetime_localized__no_wp_timezone( strtotime( $last_unavailable_date ), 'Y-m-d 00:00:00' );
-				}
-
-
-				if ( empty( $data_arr['ui']['booking_available_days_num_from_today'] ) ) {
-					$last_available_date = '';
-				} else {
-					// $last_available_date = wp_date( 'Y-m-d 00:00:00', strtotime( '+' . ( $data_arr['ui']['booking_available_days_num_from_today'] ) . ' days' ) );
-					// FixIn: 10.9.6.3.
-					$start_date_unix = strtotime( '+' . ( intval( $data_arr['ui']['booking_available_days_num_from_today'] ) - 1 ) . ' days' );
-					$last_available_date = wpbc_datetime_localized__use_wp_timezone( gmdate( 'Y-m-d H:i:s', $start_date_unix ), 'Y-m-d 00:00:00' );
-				}
-
-				if ( ! empty( $data_arr['ui']['booking_available_days_num_from_today'] ) ) {
-
-					if ( strtotime( $start_available_date ) < strtotime( $last_available_date ) ) {
-
-						$data_arr['ui']['booking_available_days_num_from_today__hint'] = ': ' . wp_date( 'd M, Y', strtotime( $start_available_date ) ) . ' - ' . wp_date( 'd M, Y', strtotime( $last_available_date ) );
-					} else if ( strtotime( $start_available_date ) == strtotime( $last_available_date ) ) {
-						$data_arr['ui']['booking_available_days_num_from_today__hint'] = ': ' . wp_date( 'd M, Y', strtotime( $start_available_date ) );
-					} else {
-						$data_arr['ui']['booking_available_days_num_from_today__hint'] = ': <span style="text-transform: uppercase;font-size:1.1em;">' . esc_html__( 'None', 'booking' ) . '</span><br>' .
-																						 ' <span style="text-transform: lowercase;font-size:0.9em;color:#cc3a5f;">' .
-																						 'Start available' . ': ' . wp_date( 'd M, Y', strtotime( $start_available_date ) ) . '<br>' .
-																						 'Last available' . ': ' . wp_date( 'd M, Y', strtotime( $last_available_date ) ) . '</span>';
-					}
-				} else {
-					$data_arr['ui']['booking_available_days_num_from_today__hint'] = ': ' . wp_date( 'd M, Y', strtotime( $start_available_date ) ) . ' - ...';
-				}
-}
-
-				$data_arr['ui']['booking_unavailable_extra_in_out']      = get_bk_option( 'booking_unavailable_extra_in_out' );
-				$data_arr['ui']['booking_unavailable_extra_minutes_in']  = get_bk_option( 'booking_unavailable_extra_minutes_in' );
-				$data_arr['ui']['booking_unavailable_extra_minutes_out'] = get_bk_option( 'booking_unavailable_extra_minutes_out' );
-				$data_arr['ui']['booking_unavailable_extra_days_in']     = get_bk_option( 'booking_unavailable_extra_days_in' );
-				$data_arr['ui']['booking_unavailable_extra_days_out']    = get_bk_option( 'booking_unavailable_extra_days_out' );
-
-				break;
-
-			case 'color_theme':
-
-				$data_arr['calendar_force_load'] = wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
-				$data_arr['ui']['booking_form_theme']           = get_bk_option( 'booking_form_theme' );
-				$data_arr['ui']['booking_skin']                 = get_bk_option( 'booking_skin' );
-				$data_arr['ui']['booking_timeslot_picker_skin'] = get_bk_option( 'booking_timeslot_picker_skin' );
-				break;
-
-			case 'optional_other_settings':
-				 $data_arr['calendar_force_load'] = '';//wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
-				break;
-
-			case 'wizard_publish':
-				 $data_arr['calendar_force_load'] = '';//wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
-				break;
-
-			case 'get_started':
-				 $data_arr['calendar_force_load'] = '';//wpbc_setup_wizard_page__get_shortcode_html( $cleaned_request_params['resource_id'] );
-				break;
-
-			default:
-				$data_arr['calendar_force_load'] = '';
-		}
+		$data_arr['calendar_force_load'] = '';
 
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -664,47 +400,12 @@ if(0){
 		$data_arr['booking_wizard_data'] = $booking_wizard_data_arr;
 		// -------------------------------------------------------------------------------------------------------------
 
-//TODO: delete this ?
-if(0){
-
-		$data_arr['customize_steps'] = array();
-		$data_arr['customize_steps']['action']    = 'none';
-
-		// Actions =================================================================================================
-
-		if ( 'save_calendar_additional' == $cleaned_request_params['do_action'] ) {
-
-			$is_updated = update_bk_option( 'booking_max_monthes_in_calendar',  $cleaned_request_params['calendar__booking_max_monthes_in_calendar'] );
-			$is_updated = update_bk_option( 'booking_start_day_weeek',          $cleaned_request_params['calendar__booking_start_day_weeek'] );
-		}
-
-        //----------------------------------------------------------------------------------------------------------
-
-		// Get booking resources (sql)
-		$resources_arr = wpbc_ajx_get_all_booking_resources_arr();          /**
-																			 * Array (   [0] => Array (     [booking_type_id] => 1
-																											[title] => Standard
-																											[users] => 1
-																											[import] =>
-																											[export] =>
-																											[cost] => 25
-																											[default_form] => standard
-																											[prioritet] => 0
-																											[parent] => 0
-																											[visitors] => 2
-																				), ...                  */
-
-		$resources_arr_sorted = wpbc_ajx_get_sorted_booking_resources_arr( $resources_arr );
-
-		$data_arr['ajx_booking_resources'] = $resources_arr_sorted;
-}
-
-
 		// -------------------------------------------------------------------------------------------------------------
 		// Save Status of Wizard for specific user
 		// -------------------------------------------------------------------------------------------------------------
 		if ( 'make_reset' !== $cleaned_request_params['do_action'] ) {
 
+			$cleaned_request_params['current_step'] = $data_arr['current_step'];
 			$request_params_to_save = $cleaned_request_params;
 
 			// Do not safe such elements

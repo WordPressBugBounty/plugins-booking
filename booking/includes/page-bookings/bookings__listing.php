@@ -36,14 +36,10 @@ class WPBC_AJX_Bookings {
 	 */
 	public function init_load_css_js_tpl() {
 
-		// Load only  at  AJX_Bookings Settings Page.
-		if ( 'vm_booking_listing' === wpbc_get_default_saved_view_mode_for_wpbc_page() ) {
+		add_action( 'wpbc_enqueue_js_files', array( $this, 'js_load_files' ), 50 );
+		add_action( 'wpbc_enqueue_css_files', array( $this, 'enqueue_css_files' ), 50 );
 
-			add_action( 'wpbc_enqueue_js_files', array( $this, 'js_load_files' ), 50 );
-			add_action( 'wpbc_enqueue_css_files', array( $this, 'enqueue_css_files' ), 50 );
-
-			add_action( 'wpbc_hook_settings_page_footer', array( $this, 'hook__page_footer_tmpl' ) );
-		}
+		add_action( 'wpbc_hook_settings_page_footer', array( $this, 'hook__page_footer_tmpl' ) );
 	}
 
 
@@ -56,15 +52,31 @@ class WPBC_AJX_Bookings {
 	 */
 	public function js_load_files( $where_to_load ) {
 
-		$in_footer = true;
+		if ( ! is_admin() || ! wpbc_is_bookings_page() ) {
+			return;
+		}
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ), true ) ) ) {
-
-			wp_enqueue_script( 'wpbc-booking_ajx_toolbar_hooks', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js', array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
-			wp_enqueue_script( 'wpbc-booking_ajx_listing', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js', array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
-			wp_enqueue_script( 'wpbc-booking_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js', array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
-			wp_enqueue_script( 'wpbc-boo_listing_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/boo_listing__actions.js', array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
+			self::enqueue_js_files_now();
 		}
+	}
+
+	/**
+	 * Enqueue AJAX booking listing scripts.
+	 *
+	 * The Booking Listing page prints inline initialization in its content. In Free, the saved default view can differ
+	 * from the current tab, so this method is also called directly from the page content as a last-mile guarantee.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_js_files_now() {
+
+		$in_footer = true;
+
+		wp_enqueue_script( 'wpbc-booking_ajx_listing', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js', array( 'wpbc_all', 'wp-util' ), WP_BK_VERSION_NUM, $in_footer );
+		wp_enqueue_script( 'wpbc-booking_ajx_toolbar_hooks', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
+		wp_enqueue_script( 'wpbc-booking_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
+		wp_enqueue_script( 'wpbc-boo_listing_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/boo_listing__actions.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
 	}
 
 

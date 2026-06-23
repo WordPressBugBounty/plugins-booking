@@ -10,39 +10,13 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 /**
- *  ==  How to add a new step ?  ==
- *
- *  1. Create and include (bellow) a new files:
- * 							require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/form_structure__tpl.php' );
- * 							require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/form_structure__action.php' );
- *
- *  2) ../includes/page-setup/setup_steps.php
- *  	- Add a new step  structure    in 	init_steps_data()
- *
- *  3)../includes/page-setup/setup_ajax.php
- *  	- Add validation  option 'save_and_continue__form_structure'   in 	wpbc_setup_wizard_page__request_rules_structure()
- *  	- Add save action in ajax_WPBC_AJX_SETUP_WIZARD_PAGE :
- *                                                            case 'save_and_continue__form_structure': $
- *                                                                if ( isset( $_POST['all_ajx_params']['step_data'] ) && ( ! empty( $_POST['all_ajx_params']['step_data'] ) ) ) {
- *                                                                    $cleaned_data = wpbc_template__form_structure__action_validate_data( $_POST['all_ajx_params']['step_data'] );
- *                                                                    wpbc_setup__update__form_structure( $cleaned_data );
- *                                                                }
- *                                                                $setup_steps->db__set_step_as_completed( 'form_structure' );
- *                                                                break;
- * 		- Optional. Add loading booking form:
- * 																switch ( $cleaned_request_params['current_step'] ) {
- *																	case 'form_structure':
- *  4) ../includes/page-setup/setup_templates.php
- *  - Add loading template in function wpbc_template__stp_wiz__main_content() {
- * 									 									case 'form_structure':
- * 																			template__main_section = wp.template( 'wpbc_stp_wiz__template__form_structure' );
- * 																			break;
- *  - include template in function hook__load_templates_at_footer( $page ):
- * 																		wpbc_stp_wiz__template__form_structure();
+ * The setup wizard renders only the introductory steps on this page. Profile-specific configuration after
+ * "Booking Type" is routed to existing WPBC admin pages and controlled by the floating setup bar.
  */
 
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_templates.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_profiles.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/01.welcome__tpl.php' );
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/02.general_info__tpl.php' );
@@ -53,24 +27,6 @@ require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/03.date_time_for
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/04.bookings_types__tpl.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/04.bookings_types__action.php' );
-
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/05.form_structure__tpl.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/05.form_structure__action.php' );
-
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/06.cal_availability__tpl.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/06.cal_availability__action.php' );
-
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/07.color_theme__tpl.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/07.color_theme__action.php' );
-
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/08.optional_other_settings__tpl.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/08.optional_other_settings__action.php' );
-
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/09.wizard_publish__tpl.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/09.wizard_publish__action.php' );
-
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/10.get_started__tpl.php' );
-require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/10.get_started__action.php' );
 
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_steps.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_ajax.php' );
@@ -292,7 +248,7 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
 		/**
 		 *   JS Examples of showing specific Step:
-		 * 												wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'optional_other_settings' } );
+		 * 												wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'date_availability' } );
 		 *
 		 * 												wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'general_info' } );
 		 */
@@ -330,6 +286,7 @@ function wpbc_setup_wizard_page__force_in_get() {
 
 		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 		$setup_steps->db__set_all_steps_as( true );
+		wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
 
 		return true;
 	}
@@ -353,8 +310,202 @@ function wpbc_setup_wizard_page__force_in_get() {
 		// Clear All Steps      Mark as Undone
 		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 		$setup_steps->db__set_all_steps_as( false );
+		update_bk_option( 'booking_wizard_data', array() );
+		wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
 
 		return true;
+	}
+
+	$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+	$steps_arr   = $setup_steps->get_steps_arr();
+	$request_step = '';
+
+	if ( 'On' === get_bk_option( 'booking_setup_wizard_page_is_completed' ) ) {
+		wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+		return true;
+	}
+	$is_external_setup_flow_started = $setup_steps->db__is_step_completed( 'bookings_types' );
+
+	// Persist the real setup step when the user lands on an external WPBC admin page.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_REQUEST['wpbc_setup_step'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$request_step_from_request = sanitize_key( wp_unslash( $_REQUEST['wpbc_setup_step'] ) );
+		if ( isset( $steps_arr[ $request_step_from_request ] ) ) {
+			$request_step = $request_step_from_request;
+			$setup_steps->db__save_current_step_name( $request_step );
+			wpbc_setup_wizard__set_full_screen_mode_for_current_user( ( ! wpbc_setup_wizard__is_internal_step( $request_step ) ) && ( 'get_started' !== $request_step ) );
+		}
+	}
+
+	if ( $is_external_setup_flow_started && function_exists( 'wpbc_setup_wizard__detect_step_from_admin_request' ) ) {
+		$detected_step = wpbc_setup_wizard__detect_step_from_admin_request();
+		if ( empty( $request_step ) && ! empty( $detected_step ) && isset( $steps_arr[ $detected_step ] ) ) {
+			$setup_steps->db__save_current_step_name( $detected_step );
+			wpbc_setup_wizard__set_full_screen_mode_for_current_user( ! wpbc_setup_wizard__is_internal_step( $detected_step ) );
+		}
+	}
+
+	// Existing settings pages submit their own forms. This flag lets the setup bar remember that save across reloads.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_REQUEST['wpbc_setup_saved_step'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$saved_step = sanitize_key( wp_unslash( $_REQUEST['wpbc_setup_saved_step'] ) );
+		if ( isset( $steps_arr[ $saved_step ] ) ) {
+			$setup_steps->db__set_step_as_saved( $saved_step, true );
+			$setup_steps->db__save_current_step_name( $saved_step );
+		}
+	}
+
+	// Continue from an existing WPBC settings page to the next setup target.
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	if ( isset( $_REQUEST['wpbc_setup_wizard'] ) && 'continue' === $_REQUEST['wpbc_setup_wizard'] ) {
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'wpbc_settings_url_nonce' ) ) {
+			return false;
+		}
+
+		$setup_steps  = new WPBC_SETUP_WIZARD_STEPS();
+		$steps_arr    = $setup_steps->get_steps_arr();
+		$current_step = $setup_steps->get_saved_current_step_name();
+		$has_explicit_step_context = false;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['wpbc_setup_step'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$request_step = sanitize_key( wp_unslash( $_REQUEST['wpbc_setup_step'] ) );
+			if ( isset( $steps_arr[ $request_step ] ) ) {
+				$current_step = $request_step;
+				$has_explicit_step_context = true;
+			}
+		}
+
+		// Prefer the step detected on the page that rendered the setup bar. This avoids stale saved state taking over.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['wpbc_setup_from_page_step'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$from_page_step = sanitize_key( wp_unslash( $_REQUEST['wpbc_setup_from_page_step'] ) );
+			if ( isset( $steps_arr[ $from_page_step ] ) ) {
+				$current_step = $from_page_step;
+				$has_explicit_step_context = true;
+				if ( 'form_structure' === $current_step ) {
+					$setup_steps->db__set_step_as_saved( $current_step, true );
+				}
+			}
+		}
+
+		if ( ( ! $has_explicit_step_context ) && function_exists( 'wpbc_setup_wizard__detect_step_from_admin_url' ) ) {
+			$referer_step = wpbc_setup_wizard__detect_step_from_admin_url( wp_get_referer() );
+			if ( ! empty( $referer_step ) && isset( $steps_arr[ $referer_step ] ) ) {
+				$current_step = $referer_step;
+				if ( 'form_structure' === $current_step ) {
+					$setup_steps->db__set_step_as_saved( $current_step, true );
+				}
+			}
+		}
+
+		$setup_steps->db__save_current_step_name( $current_step );
+
+		if (
+			isset( $steps_arr[ $current_step ] )
+			&& 'manual_save_required' === $setup_steps->get_step_save_behavior( $current_step )
+			&& ! $setup_steps->db__is_step_saved( $current_step )
+		) {
+			wpbc_redirect( add_query_arg( 'wpbc_setup_save_required', '1', $setup_steps->get_step_target_url( $current_step ) ) );
+			exit;
+		}
+
+		if ( isset( $steps_arr[ $current_step ] ) ) {
+			$setup_steps->db__set_step_as_completed( $current_step );
+		}
+
+		$next_step = isset( $steps_arr[ $current_step ]['next'] ) ? $steps_arr[ $current_step ]['next'] : '';
+		if ( ( empty( $next_step ) || ( 'welcome' === $next_step ) ) && function_exists( 'wpbc_setup_wizard__get_next_step_name' ) ) {
+			$route_next_step = wpbc_setup_wizard__get_next_step_name( $current_step );
+			if ( ! empty( $route_next_step ) && isset( $steps_arr[ $route_next_step ] ) ) {
+				$next_step = $route_next_step;
+			}
+		}
+
+		if ( empty( $next_step ) || ( 'welcome' === $next_step ) ) {
+			if ( 'get_started' === $current_step || 'complete' === $setup_steps->get_step_save_behavior( $current_step ) ) {
+				$setup_steps->db__set_all_steps_as( true );
+				wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+				wpbc_redirect( wpbc_get_bookings_url() );
+				exit;
+			}
+
+			if ( 'get_started' !== $current_step ) {
+				$fallback_step = $setup_steps->get_active_step_name();
+				if (
+					( ! empty( $fallback_step ) )
+					&& isset( $steps_arr[ $fallback_step ] )
+					&& ( $fallback_step !== $current_step )
+					&& ! $setup_steps->db__is_step_completed( $fallback_step )
+				) {
+					$setup_steps->db__save_current_step_name( $fallback_step );
+					wpbc_redirect( $setup_steps->get_step_target_url( $fallback_step ) );
+					exit;
+				}
+			}
+
+			wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+			wpbc_redirect( wpbc_get_bookings_url() );
+			exit;
+		}
+
+		$setup_steps->db__reset_steps_from( $next_step );
+
+		$request_params_to_save = wpbc_setup_wizard_page__get_cleaned_params__saved_request_default();
+		if ( ! is_array( $request_params_to_save ) ) {
+			$request_params_to_save = wpbc_setup_wizard_page__get__request_values__default();
+		}
+		$request_params_to_save['current_step'] = $next_step;
+		if (
+			isset( $steps_arr[ $next_step ] )
+			&& 'manual_save_required' === $setup_steps->get_step_save_behavior( $next_step )
+			&& ! $setup_steps->db__is_step_completed( $next_step )
+		) {
+			$setup_steps->db__set_step_as_saved( $next_step, false );
+		}
+
+		$user_request = new WPBC_AJX__REQUEST( array(
+												   'db_option_name'          => 'booking_setup_wizard_page_request_params',
+												   'user_id'                 => wpbc_get_current_user_id(),
+												   'request_rules_structure' => wpbc_setup_wizard_page__request_rules_structure()
+												)
+						);
+		$user_request->user_request_params__db_save( $request_params_to_save );
+
+		wpbc_redirect( $setup_steps->get_step_target_url( $next_step ) );
+		exit;
+	}
+
+	// In the guided setup architecture, Step 5+ is configured on existing WPBC admin pages.
+	if (
+		wpbc_is_setup_wizard_page()
+		&& ( ! ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) )
+	) {
+		$current_step = $setup_steps->get_saved_current_step_name();
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		if ( isset( $_REQUEST['current_step'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$request_step = sanitize_key( wp_unslash( $_REQUEST['current_step'] ) );
+			if ( isset( $steps_arr[ $request_step ] ) ) {
+				$current_step = $request_step;
+			}
+		}
+
+		if (
+			isset( $steps_arr[ $current_step ]['is_external'] )
+			&& $steps_arr[ $current_step ]['is_external']
+		) {
+			wpbc_redirect( $setup_steps->get_step_target_url( $current_step ) );
+			exit;
+		}
 	}
 
 	return false;

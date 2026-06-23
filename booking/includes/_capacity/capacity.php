@@ -1249,6 +1249,7 @@ function wpbc_get_availability_per_days_arr( $params ) {
 			}
 		}
 		$temp_status = array_filter( $temp_status );                                                                    // All entries of array equal to FALSE (0, '', '0' ) will be removed.
+		$temp_status_counts = array_count_values( $temp_status );
 		$temp_status = array_unique( $temp_status );                                                                    // Erase duplicates
 		$availability_per_this_day['summary']['status_for_day'] = $temp_status;
 
@@ -1275,8 +1276,32 @@ function wpbc_get_availability_per_days_arr( $params ) {
 		//                        > season_filter > resource_availability
 		//                        > weekday_unavailable > from_today_unavailable > limit_available_from_today
 
-		// if at least one booking "available" then day has this status
+		// Capacity resources can be available even when every child has a check-in/out or full-day status.
+		$max_capacity = isset( $availability_per_this_day['max_capacity'] ) ? intval( $availability_per_this_day['max_capacity'] ) : 1;
+		$blocking_statuses = array(
+			'full_day_booking',
+			'season_filter',
+			'resource_availability',
+			'weekday_unavailable',
+			'from_today_unavailable',
+			'limit_available_from_today',
+			'change_over',
+		);
+		$blocked_capacity = 0;
+		foreach ( $blocking_statuses as $blocking_status ) {
+			$blocked_capacity += isset( $temp_status_counts[ $blocking_status ] ) ? intval( $temp_status_counts[ $blocking_status ] ) : 0;
+		}
+		$booked_capacity__before_check_in = $blocked_capacity + ( isset( $temp_status_counts['check_out'] ) ? intval( $temp_status_counts['check_out'] ) : 0 );
+		$booked_capacity__after_check_in  = $blocked_capacity + ( isset( $temp_status_counts['check_in'] ) ? intval( $temp_status_counts['check_in'] ) : 0 );
+		$is_capacity_available_during_change_over = (
+			   ( $max_capacity > 1 )
+			&& ( $max_capacity > max( $booked_capacity__before_check_in, $booked_capacity__after_check_in ) )
+			&& ( ! in_array( 'time_slots_booking', $availability_per_this_day['summary']['status_for_day'] ) )
+		);
+
+		// if at least one resource is available then day has this status
 		if ( in_array( 'available', $availability_per_this_day['summary']['status_for_day'] ) ) {                      $availability_per_this_day['summary']['status_for_day'] = 'available';
+		} else if ( $is_capacity_available_during_change_over ) {                                                     $availability_per_this_day['summary']['status_for_day'] = 'available';
 		} else if ( in_array( 'time_slots_booking', $availability_per_this_day['summary']['status_for_day'] ) ) {      $availability_per_this_day['summary']['status_for_day'] = 'time_slots_booking';
 		} else if ( ( ! in_array( 'check_out',  $availability_per_this_day['summary']['status_for_day'] ) )
 	               && ( in_array( 'check_in', $availability_per_this_day['summary']['status_for_day'] ) ) ) {          $availability_per_this_day['summary']['status_for_day'] = 'check_in';

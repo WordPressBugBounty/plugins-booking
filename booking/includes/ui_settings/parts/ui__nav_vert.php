@@ -266,7 +266,9 @@ function wpbc_start_element_scrollable__with_simplebar( $jq_element, $options = 
 	<script type="text/javascript">
 		(function() { var a = setInterval( function() {  if ( ( 'undefined' === typeof jQuery ) || ! window.jQuery ) { return; } clearInterval( a ); jQuery( document ).ready( function () {
 			jQuery( '.wpbc_ui_el__vert_left_bar__section' ).css( { "animation-duration": "1ms" } ); // Set animation of showing left siebar from left to right imediate to prevent flipping.
-			new SimpleBar( jQuery( '<?php echo esc_attr( $jq_element ); ?>' )[0], { <?php echo esc_attr( $options ); ?> } );
+			if ( 'undefined' !== typeof SimpleBar ) {
+				new SimpleBar( jQuery( '<?php echo esc_attr( $jq_element ); ?>' )[0], { <?php echo esc_attr( $options ); ?> } );
+			}
 			var wait_timer = setTimeout( function (){
 				jQuery( '.wpbc_ui_el__vert_left_bar__section' ).css( { "animation-duration": "200ms" } ); // Set animation to normal value.
 			}, 300 );

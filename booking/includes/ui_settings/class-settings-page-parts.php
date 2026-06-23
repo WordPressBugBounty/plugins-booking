@@ -75,16 +75,16 @@ class WPBC_Settings_Page_Parts {
 
 		if ( ! empty( $left_navigation__default_view_mode ) ) {
 			if ( 'none' === $left_navigation__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_left__do_hide(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_left__do_hide ) { wpbc_admin_ui__sidebar_left__do_hide(); } } ); </script>';
 			}
 			if ( 'min' === $left_navigation__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_left__do_min(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_left__do_min ) { wpbc_admin_ui__sidebar_left__do_min(); } } ); </script>';
 			}
 			if ( 'compact' === $left_navigation__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_left__do_compact(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_left__do_compact ) { wpbc_admin_ui__sidebar_left__do_compact(); } } ); </script>';
 			}
 			if ( 'max' === $left_navigation__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_left__do_max(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_left__do_max ) { wpbc_admin_ui__sidebar_left__do_max(); } } ); </script>';
 			}
 		}
 
@@ -97,16 +97,16 @@ class WPBC_Settings_Page_Parts {
 
 		if ( ! empty( $right_vertical_sidebar__default_view_mode ) ) {
 			if ( 'none_right' === $right_vertical_sidebar__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_hide(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_right__do_hide ) { wpbc_admin_ui__sidebar_right__do_hide(); } } ); </script>';
 			}
 			if ( 'min_right' === $right_vertical_sidebar__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_min(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_right__do_min ) { wpbc_admin_ui__sidebar_right__do_min(); } } ); </script>';
 			}
 			if ( 'compact_right' === $right_vertical_sidebar__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_compact(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_right__do_compact ) { wpbc_admin_ui__sidebar_right__do_compact(); } } ); </script>';
 			}
 			if ( 'max_right' === $right_vertical_sidebar__default_view_mode ) {
-				echo '<script type="text/javascript"> jQuery( document ).ready( function () { wpbc_admin_ui__sidebar_right__do_max(); } ); </script>';
+				echo '<script type="text/javascript"> jQuery( document ).ready( function () { if ( "function" === typeof wpbc_admin_ui__sidebar_right__do_max ) { wpbc_admin_ui__sidebar_right__do_max(); } } ); </script>';
 			}
 		}
 		// -------------------------------------------------------------------------------------------------------------
@@ -227,7 +227,7 @@ class WPBC_Settings_Page_Parts {
 		 * and set  correct 'full screen'  or 'normal'  buttons in the rop  right side!
 		 */
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo '<script type="text/javascript">' . wpbc_jq_ready_start() . 'wpbc_check_full_screen_mode();' . wpbc_jq_ready_end() . '</script>';
+		echo '<script type="text/javascript">' . wpbc_jq_ready_start() . 'if ( "function" === typeof wpbc_check_full_screen_mode ) { wpbc_check_full_screen_mode(); }' . wpbc_jq_ready_end() . '</script>';
 	}
 
 

@@ -198,7 +198,36 @@ class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
 		                                }
 		                            } ); ";
 	        */
-		    
+
+			// Open the publish controls when this page is used as the Setup Wizard "Publish" step.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['wpbc_setup_step'] ) && ( 'wizard_publish' === sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) ) ) ) {
+				$js_script .= "
+					jQuery( document ).ready( function() {
+						setTimeout( function() {
+							var publishSelector = '.ui_group__publish_btn:visible';
+							var tableSelector = '#wpbc_booking_resource_table:visible';
+							var \$publishTarget = jQuery( publishSelector ).first();
+							var targetSelector = \$publishTarget.length ? publishSelector : tableSelector;
+
+							if ( ! jQuery( targetSelector ).length ) {
+								return;
+							}
+
+							if ( 'function' === typeof wpbc_scroll_to ) {
+								wpbc_scroll_to( targetSelector );
+							} else {
+								jQuery( 'html, body' ).animate( { scrollTop: jQuery( targetSelector ).first().offset().top - 80 }, 300 );
+							}
+
+							if ( 'function' === typeof wpbc_blink_element ) {
+								wpbc_blink_element( targetSelector, 3, 300 );
+							}
+						}, 350 );
+					} );
+				";
+			}
+
 	        // Enqueue JS to  the footer of the page
 	        wpbc_enqueue_js( $js_script );
 	    }

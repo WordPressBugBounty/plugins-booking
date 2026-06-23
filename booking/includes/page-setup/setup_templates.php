@@ -48,6 +48,35 @@ class WPBC_AJX__Setup_Wizard__Templates {
 			wp_enqueue_script( 'wpbc-setup_wizard_obj',  trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/setup_obj.js', 		array( 'wpbc-settings_obj' ), WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc-setup_wizard_show', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/setup_show.js',		array( 'wpbc-setup_wizard_obj' ), WP_BK_VERSION_NUM, $in_footer );
 			wp_enqueue_script( 'wpbc-setup_wizard_ajax', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/setup_ajax.js',		array( 'wpbc-setup_wizard_obj' ), WP_BK_VERSION_NUM, $in_footer );
+
+			wp_enqueue_script(
+				'wpbc-availability-timeslots-page',
+				wpbc_plugin_url( '/includes/page-availability-timeslots/_out/availability_timeslots_page.js' ),
+				array( 'jquery', 'wpbc_all', 'wpbc-datepick' ),
+				WP_BK_VERSION_NUM,
+				array( 'in_footer' => WPBC_JS_IN_FOOTER )
+			);
+
+			wp_localize_script(
+				'wpbc-availability-timeslots-page',
+				'wpbc_availability_timeslots_page',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'wpbc_availability_timeslots_ajax_nonce' ),
+					'i18n'     => array(
+						'select_slots_first'          => __( 'Select one or more time ranges first.', 'booking' ),
+						'block_success'               => __( 'Selected time ranges have been blocked.', 'booking' ),
+						'unblock_success'             => __( 'Selected time ranges have been unblocked.', 'booking' ),
+						'save_error'                  => __( 'Unable to save time-slot availability.', 'booking' ),
+						'loading'                     => __( 'Loading', 'booking' ),
+						'open_booking'                => __( 'Open booking in Booking Listing', 'booking' ),
+						'open_availability_rule'      => __( 'Open availability settings', 'booking' ),
+						'select_one_slot_for_booking' => __( 'Select one time range on one date first.', 'booking' ),
+						'add_booking_modal_missing'   => __( 'Add Booking popup is not available on this page.', 'booking' ),
+						'saving'                      => __( 'Saving', 'booking' ),
+					),
+				)
+			);
 		}
 	}
 
@@ -58,6 +87,8 @@ class WPBC_AJX__Setup_Wizard__Templates {
 		if ( wpbc_is_setup_wizard_page() ){
 
 			wp_enqueue_style( 'wpbc-setup_wizard_page', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/setup_page.css', array(), WP_BK_VERSION_NUM );
+			wp_enqueue_style( 'wpbc-availability-general-page', wpbc_plugin_url( '/includes/page-availability-general/_out/availability_general_page.css' ), array( 'wpbc-calendar', 'wpbc-all-admin' ), WP_BK_VERSION_NUM );
+			wp_enqueue_style( 'wpbc-availability-timeslots-page', wpbc_plugin_url( '/includes/page-availability-timeslots/_out/availability_timeslots_page.css' ), array( 'wpbc-calendar', 'wpbc-all-admin' ), WP_BK_VERSION_NUM );
 		}
 	}
 
@@ -83,12 +114,6 @@ class WPBC_AJX__Setup_Wizard__Templates {
 				wpbc_stp_wiz__template__general_info();
 				wpbc_stp_wiz__template__date_time_formats();
 				wpbc_stp_wiz__template__bookings_types();
-				wpbc_stp_wiz__template__form_structure();
-				wpbc_stp_wiz__template__cal_availability();
-				wpbc_stp_wiz__template__color_theme();
-				wpbc_stp_wiz__template__optional_other_settings();
-				wpbc_stp_wiz__template__wizard_publish();
-				wpbc_stp_wiz__template__get_started();
 
 				$this->wpbc_template__stp_wiz__left_navigation();
 				$this->wpbc_template__stp_wiz__left_navigation_item();
@@ -126,9 +151,9 @@ class WPBC_AJX__Setup_Wizard__Templates {
 				<#
 					var wpbc_template__timeline_steps = wp.template( 'wpbc_template__timeline_steps' );
 
-					jQuery( '.wpbc__container_place__steps_for_timeline' ).html(  wpbc_template__timeline_steps( data.steps_is_done ) );
+					jQuery( '.wpbc__container_place__steps_for_timeline' ).html(  wpbc_template__timeline_steps( data ) );
 				#>
-				<div class="wpbc__container_place__steps_for_timeline">{{{  wpbc_template__timeline_steps( data.steps_is_done )  }}}</div>
+				<div class="wpbc__container_place__steps_for_timeline">{{{  wpbc_template__timeline_steps( data )  }}}</div>
 				<div class="wpbc_setup_wizard_page__container 		wpbc_ajx_page__container">
 
 				<# if ( false !== data.steps[ data.current_step ][ 'show_section_left' ] ) {  #>
@@ -166,31 +191,6 @@ class WPBC_AJX__Setup_Wizard__Templates {
 
 									case 'bookings_types':
 										template__main_section = wp.template( 'wpbc_stp_wiz__template__bookings_types' );
-										break;
-
-									case 'form_structure':
-										template__main_section = wp.template( 'wpbc_stp_wiz__template__form_structure' );
-										break;
-
-									case 'cal_availability':
-										template__main_section = wp.template( 'wpbc_stp_wiz__template__cal_availability' );
-										break;
-
-									case 'color_theme':
-										template__main_section = wp.template( 'wpbc_stp_wiz__template__color_theme' );
-										break;
-
-									case 'optional_other_settings':
-
-										template__main_section = wp.template( 'wpbc_stp_wiz__template__optional_other_settings' );
-										break;
-
-									case 'wizard_publish':
-										template__main_section = wp.template( 'wpbc_stp_wiz__template__wizard_publish' );
-										break;
-
-									case 'get_started':
-										template__main_section = wp.template( 'wpbc_stp_wiz__template__get_started' );
 										break;
 
 									default:
@@ -235,8 +235,18 @@ class WPBC_AJX__Setup_Wizard__Templates {
 				<div class="wpbc_steps_for_timeline">
 					<#
 
-						var steps_count 	   = wpbc_setup_wizard_page__get_steps_count();
-						var actual_step_number = wpbc_setup_wizard_page__get_actual_step_number();
+						var steps_arr          = data.steps || {};
+						var current_step       = data.current_step || '';
+						var steps_keys         = _.keys( steps_arr );
+						var steps_count 	   = steps_keys.length;
+						var actual_step_number = 1;
+
+						_.each( steps_keys, function( step_key, step_index ) {
+							if ( step_key === current_step ) {
+								actual_step_number = step_index + 1;
+								return false;
+							}
+						} );
 
 						var css_class_for_step = '';
 						var css_class_for_line = '';
@@ -294,6 +304,15 @@ class WPBC_AJX__Setup_Wizard__Templates {
 		private function wpbc_template__stp_wiz__footer_buttons(){
 
 			?><script type="text/html" id="tmpl-wpbc_template__stp_wiz__footer_buttons">
+				<#
+					var currentStep = data.current_step || '';
+					var currentStepData = ( data.steps && data.steps[ currentStep ] ) ? data.steps[ currentStep ] : {};
+					var priorStep = currentStepData.prior || '';
+					var nextStep = currentStepData.next || '';
+					var doAction = currentStepData.do_action || 'none';
+					var priorTitle = currentStepData.prior_title || '<?php echo esc_js( __( 'Go Back', 'booking' ) ); ?>';
+					var nextTitle = currentStepData.next_title || '<?php echo esc_js( __( 'Save and Continue', 'booking' ) ); ?>';
+				#>
 				<div class="wpbc__form__div">
 					<hr>
 					<div class="wpbc__row wpbc__row__btn_prior_next">
@@ -305,16 +324,16 @@ class WPBC_AJX__Setup_Wizard__Templates {
 						</div>
  						<?php */ ?>
 						<div class="wpbc__field">
-							<#  if ( '' != data['steps'][ data['current_step'] ]['prior'] ) { #>
+							<#  if ( '' != priorStep ) { #>
 							<a     class="wpbc_button_light"  style="margin-left:auto;margin-right:10px;" tabindex="0"
 								   id="btn__toolbar__buttons_prior"
 								   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
-								   																		'current_step': '{{data.steps[ data.current_step ].prior}}',
+								   																		'current_step': '{{priorStep}}',
 								   																		'do_action': 'none',
 								   																		'ui_clicked_element_id': 'btn__toolbar__buttons_prior'
 								   																	} );
 								   			wpbc_button_enable_loading_icon( this );
-											wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;{{data.steps[ data.current_step ].prior_title}}</span></a>
+											wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;{{priorTitle}}</span></a>
 
 							<# } else { #>
 								<span style="margin-left:auto;"></span>
@@ -322,12 +341,13 @@ class WPBC_AJX__Setup_Wizard__Templates {
 							<a	   class="wpbc_button_light button-primary" tabindex="0"
 								   id="btn__toolbar__buttons_next"
 								   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
-								   																		'current_step': '{{data.steps[ data.current_step ].next}}',
-								   																		   'do_action': '{{data.steps[ data.current_step ].do_action}}',
+								   																		'current_step': '{{nextStep}}',
+								   																		   'do_action': '{{doAction}}',
 								   																		'ui_clicked_element_id': 'btn__toolbar__buttons_next'
+								   																		,'step_data': ( 'function' === typeof window.wpbc_setup_wizard_get_step_data ) ? window.wpbc_setup_wizard_get_step_data( '{{currentStep}}' ) : {}
 								   																	} );
 								   			wpbc_button_enable_loading_icon( this );
-											wpbc_admin_show_message_processing( '' );" ><span>{{data.steps[ data.current_step ].next_title}}&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
+											wpbc_admin_show_message_processing( '' );" ><span>{{nextTitle}}&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 						</div>
 					</div>
 					<div class="wpbc__row wpbc__row__btn_skip_exist">

@@ -176,6 +176,15 @@ class WPBC_API_SettingsGeneralSync extends WPBC_Settings_API  {
 										, 'group'       => 'import_advanced'
 								);
 
+			$this->fields['booking_ics_import_append_extra_checkout_day'] = array(
+										  'type'        => 'checkbox'
+										, 'default'     => 'Off'
+										, 'title'       => __('Append extra day after imported checkout day', 'booking')
+										, 'label'       => __('Append one extra day after the imported check out day during import .ics feeds.' ,'booking')
+										, 'description' => __('This option works together with "Append check out day" and is useful only if you need to block one additional day after the checkout date from the imported calendar.' ,'booking')
+										, 'group'       => 'import_advanced'
+								);
+
         if ( class_exists( 'wpdev_bk_biz_s' ) ) {
 			// FixIn: 8.1.3.29.
 			$this->fields['booking_ics_import_add_change_over_time'] = array(

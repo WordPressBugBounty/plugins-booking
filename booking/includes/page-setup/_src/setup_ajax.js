@@ -67,9 +67,12 @@ console.log( ' == Response WPBC_AJX_SETUP_WIZARD_PAGE == ', response_data ); con
 				}
 
 				// -------------------------------------------------------------------------------------------------
-				// Auto  redirect  to  new BFB builder - templates section.
+				// Redirect from the internal wizard to the guided setup target page.
 				// -------------------------------------------------------------------------------------------------
-				if (  ( undefined != response_data[ 'ajx_cleaned_params' ] ) && ( 'auto_open_template' === response_data[ 'ajx_cleaned_params' ][ 'do_action' ] )  ){
+				if (
+					( undefined != response_data[ 'ajx_cleaned_params' ] )
+					&& ( 'redirect_to_setup_step' === response_data[ 'ajx_cleaned_params' ][ 'do_action' ] )
+				){
 					if (undefined != response_data[ 'ajx_data' ][ 'redirect_url' ]){
 						window.location.href = response_data[ 'ajx_data' ][ 'redirect_url' ];
 						return;

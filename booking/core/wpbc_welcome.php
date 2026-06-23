@@ -108,7 +108,10 @@ function wpbc_ui_settings__panel__welcome(){
 
 			wpbc_ui_settings_panel__card__version( array( 'is_show_wizard_button' => true ) );
 
-			if ( ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() ) ) {
+			if (
+				function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' )
+				&& ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() )
+			) {
 				wpbc_ui_settings_panel__card__publish_into_exist( array() );
 			}
 

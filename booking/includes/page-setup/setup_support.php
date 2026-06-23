@@ -195,55 +195,19 @@ function wpbc_setup_wizard_page__get_shortcode_html( $resource_id = 1 , $is_show
 
 
 
-//TODO: Left Menu - TEMP . Delete it ?
 function wpbc_setup_wizard_page__get_left_navigation_menu_arr(){
 
    	$navigation_menu_arr = array();
+	$setup_steps         = new WPBC_SETUP_WIZARD_STEPS();
 
-	$navigation_menu_arr['general_info'] = array(
-												'title'  => __( 'General Info', 'booking' ),
-												'icon'   => 'wpbc_icn_check wpbc_icn_dashboard0  wpbc_icn_task_alt0  0wpbc_icn_circle_outline',
-												'class'  => '',
-												//'style'  => 'cursor:not-allowed;',
-												//'a_style'  => 'pointer-events: none;',
-												'action' => "wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'general_info' } );"
-											   ,'right_icon'   => array(
-														'icon' 	 => '',
-														'text' 	 => __('Done', 'booking'),
-														'action' => "console.log( this );",
-													)
-
-											);
-	$navigation_menu_arr['optional_other_settings'] = array(
-												'title'  => __( 'Bookings Type', 'booking' ),
-												'icon'   => 'wpbc-bi-calendar2-range 0wpbc_icn_radio_button_checked',
-												'class'  => '',
-												//'a_style'  => 'color: var(--wpbc_settings__nav_menu_left__active_border_color);',
-												'action' => "wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'optional_other_settings' } );"
-											);
-	$navigation_menu_arr['next_step'] = array(
-												'title'  => '',//__( 'Bookings Type', 'booking' ),
-												'icon'   => 'wpbc-bi-three-dots 0wpbc_icn_radio_button_unchecked',
-												'class'  => '',
-												'a_style'  => 'pointer-events: none;cursor:not-allowed;',
-												'action' => "wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );"
-											);
-//			$navigation_menu_arr['booking_notification'] = array(
-//														'title'  => __( 'Publishing', 'booking' ),
-//														'icon'   => 'wpbc-bi-calendar2-range',
-//														'class'  => 'wpbc_top_border',
-//														'action' => "wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );",
-//																		'right_icon'   => array(
-//																'icon' 	 => 'wpbc_icn_navigate_next expand_more',
-//																'action' => "console.log( this );",
-//															)
-//													);
-//			$navigation_menu_arr['booking_form'] = array(
-//														'title'  => __( 'Booking Form', 'booking' ),
-//														'icon'   => 'wpbc_icn_dashboard',
-//														'class'  => 'wpbc_sub_option',
-//														'action' => "wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );"
-//													);
+	foreach ( array_keys( $setup_steps->get_steps_arr() ) as $step_name ) {
+		$navigation_menu_arr[ $step_name ] = array(
+			'title'  => function_exists( 'wpbc_setup_wizard__get_step_title' ) ? wpbc_setup_wizard__get_step_title( $step_name ) : $step_name,
+			'icon'   => 'wpbc_icn_circle_outline',
+			'class'  => '',
+			'action' => "wpbc_ajx__setup_wizard_page__send_request_with_params( { 'current_step':'" . esc_js( $step_name ) . "' } );",
+		);
+	}
 
 	return $navigation_menu_arr;
 }

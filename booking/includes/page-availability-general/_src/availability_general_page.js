@@ -68,33 +68,70 @@
 
 	function scroll_to_group( group_name ) {
 		var $group = $( '.wpbc_ui__collapsible_group[data-group="' + group_name + '"]' );
-		var $scroll_parent;
+		var $scroll_parent = $();
+		var scroll_parent_el;
+		var group_el;
 		var scroll_top;
+		var parent_rect;
+		var group_rect;
 
 		if ( ! $group.length ) {
 			return;
 		}
 
-		$scroll_parent = $group.closest( '.wpbc_ui_el__vert_right_bar__content, .wpbc_rightbar_palette, .wpbc_ag_rightbar_panels' ).first();
+		$group.parents().each( function () {
+			var $candidate = $( this );
+			var overflow_y = $candidate.css( 'overflow-y' );
+
+			if (
+				$candidate.hasClass( 'simplebar-content-wrapper' )
+				|| (
+					/(auto|scroll)/.test( overflow_y )
+					&& this.scrollHeight > this.clientHeight
+				)
+			) {
+				$scroll_parent = $candidate;
+				return false;
+			}
+		} );
 
 		if ( ! $scroll_parent.length ) {
-			$group.get( 0 ).scrollIntoView( { block: 'start' } );
+			$scroll_parent = $group.closest( '.wpbc_ui_el__vert_right_bar__content' ).find( '.simplebar-content-wrapper' ).first();
+		}
+
+		if ( ! $scroll_parent.length ) {
+			$group.get( 0 ).scrollIntoView( { block: 'nearest' } );
 			return;
 		}
 
-		scroll_top = $scroll_parent.scrollTop() + $group.position().top - 10;
+		scroll_parent_el = $scroll_parent.get( 0 );
+		group_el         = $group.get( 0 );
+		parent_rect      = scroll_parent_el.getBoundingClientRect();
+		group_rect       = group_el.getBoundingClientRect();
+		scroll_top       = $scroll_parent.scrollTop() + group_rect.top - parent_rect.top - 10;
+
 		$scroll_parent.stop().animate( { scrollTop: Math.max( 0, scroll_top ) }, 180 );
 	}
 
 	function apply_open_section_from_url() {
-		if ( 'working_time' !== cfg.open_section ) {
+		var section_groups = {
+			weekdays: 'general-availability-weekdays',
+			from_today: 'general-availability-from-today',
+			buffer: 'general-availability-buffer',
+			working_time: 'general-availability-working-time'
+		};
+		var group_name = section_groups[ cfg.open_section ] || '';
+
+		if ( '' === group_name ) {
 			return;
 		}
 
-		open_group( 'general-availability-working-time', true );
-		setTimeout( function () {
-			scroll_to_group( 'general-availability-working-time' );
-		}, 120 );
+		open_group( group_name, true );
+		$.each( [ 120, 650 ], function ( index, delay ) {
+			setTimeout( function () {
+				scroll_to_group( group_name );
+			}, delay );
+		} );
 	}
 
 	function refresh_buffer_fields() {
@@ -922,6 +959,11 @@
 			}
 
 			load_calendar_preview();
+			document.dispatchEvent( new CustomEvent( 'wpbc:availability-general:settings-saved', {
+				detail: {
+					settings: response.data && response.data.settings ? response.data.settings : {}
+				}
+			} ) );
 			show_message( ( response.data && response.data.message ) || ( cfg.i18n && cfg.i18n.saved ) || 'General availability settings updated.', 'success', 2000 );
 		} ).fail( function () {
 			show_message( ( cfg.i18n && cfg.i18n.save_failed ) || 'Unable to save general availability settings.', 'error', 10000 );

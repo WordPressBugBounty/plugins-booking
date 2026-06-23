@@ -73,10 +73,9 @@ function wpbc_parse_form( $booking_form_configuration ){
 	// Parse select  shortcodes
 	$rx_shortcode_types   = 'text[*]?|email[*]?|coupon[*]?|time[*]?|textarea[*]?|select[*]?|selectbox[*]?|checkbox[*]?|radio[*]?|acceptance|captchac|captchar|file[*]?|quiz';
 	// $rx_shortcode_types= 'select[*]?|selectbox[*]?|checkbox[*]?|radio[*]?';
-	$rx_shortcode_name    = '\s+[a-zA-Z][0-9a-zA-Z:._-]*';
-	$rx_shortcode_options = '[-0-9a-zA-Z:#_/|\s]*';
-	$rx_shortcode_values  = '(?:\s*(?:"[^"]*"|\'[^\']*\'))*';
-	$regex = '%\[\s*(' . $rx_shortcode_types . ')(' . $rx_shortcode_name . ')(' . $rx_shortcode_options . ')?(' . $rx_shortcode_values . ')?\s*\]%';
+	$rx_shortcode_name    = '\s+([a-zA-Z][0-9a-zA-Z:._-]*)';
+	$rx_shortcode_content = '((?:[^\]"\']+|"[^"]*"|\'[^\']*\')*)';
+	$regex = '%\[\s*(' . $rx_shortcode_types . ')(?=\s|\])' . $rx_shortcode_content . '\]%';
 	preg_match_all( $regex, $booking_form_configuration, $found_shortcodes, PREG_SET_ORDER );
 
 
@@ -99,12 +98,18 @@ function wpbc_parse_form( $booking_form_configuration ){
 	$form_shortcodes = array();
 	foreach ( $found_shortcodes as $found_shortcode ) {
 
+		if ( ! preg_match( '%^' . $rx_shortcode_name . '(.*)$%s', $found_shortcode[2], $shortcode_parts ) ) {
+			continue;
+		}
+
+		list( $shortcode_options, $shortcode_values ) = wpbc_parse_form_shortcode_options_values( $shortcode_parts[2] );
+
 		$shortcode_config = array();
 		$shortcode_config['full_shortcode'] = trim( $found_shortcode[0] );
 		$shortcode_config['type']           = trim( $found_shortcode[1] );
-		$shortcode_config['name']           = trim( $found_shortcode[2] );
-		$shortcode_config['options']        = trim( $found_shortcode[3] );
-		$shortcode_config['values_str']         = trim( $found_shortcode[4] );
+		$shortcode_config['name']           = trim( $shortcode_parts[1] );
+		$shortcode_config['options']        = trim( $shortcode_options );
+		$shortcode_config['values_str']     = trim( $shortcode_values );
 		$shortcode_config['values_arr'] = array();
 
 		if ( ! empty( $shortcode_config['values_str'] ) ) {
@@ -115,6 +120,53 @@ function wpbc_parse_form( $booking_form_configuration ){
  	}
 
 	return $form_shortcodes;
+}
+
+
+if ( ! function_exists( 'wpbc_parse_form_shortcode_options_values' ) ) {
+	function wpbc_parse_form_shortcode_options_values( $shortcode_tail ){
+
+		$shortcode_options = trim( $shortcode_tail );
+		$shortcode_values  = '';
+
+		$value_matches = array();
+		preg_match_all( '%(?:"[^"]*"|\'[^\']*\')%', $shortcode_tail, $value_matches, PREG_OFFSET_CAPTURE );
+
+		$standalone_values = array();
+		foreach ( $value_matches[0] as $value_match ) {
+			$value_offset = $value_match[1];
+			$prev_offset  = $value_offset - 1;
+
+			if ( ( $prev_offset >= 0 ) && ! ctype_space( $shortcode_tail[ $prev_offset ] ) ) {
+				continue;
+			}
+
+			while ( ( $prev_offset >= 0 ) && ctype_space( $shortcode_tail[ $prev_offset ] ) ) {
+				$prev_offset--;
+			}
+
+			if ( ( $prev_offset >= 0 ) && in_array( $shortcode_tail[ $prev_offset ], array( '=', ':' ), true ) ) {
+				continue;
+			}
+
+			$standalone_values[] = $value_match;
+		}
+
+		if ( ! empty( $standalone_values ) ) {
+			$shortcode_options = trim( substr( $shortcode_tail, 0, $standalone_values[0][1] ) );
+			$shortcode_values  = implode(
+				' ',
+				array_map(
+					function ( $value_match ) {
+						return $value_match[0];
+					},
+					$standalone_values
+				)
+			);
+		}
+
+		return array( $shortcode_options, $shortcode_values );
+	}
 }
 
 

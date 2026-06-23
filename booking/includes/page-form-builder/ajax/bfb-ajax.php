@@ -829,6 +829,24 @@ function wpbc_bfb_ajax_save_form_config() {
 		}
 	}
 
+	$setup_step_saved = false;
+	$setup_step       = isset( $_POST['wpbc_setup_step'] ) ? sanitize_key( wp_unslash( $_POST['wpbc_setup_step'] ) ) : '';
+	if ( ! empty( $setup_step ) && class_exists( 'WPBC_SETUP_WIZARD_STEPS' ) ) {
+		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+		$steps_arr   = $setup_steps->get_steps_arr();
+		if ( function_exists( 'wpbc_setup_wizard__detect_step_from_admin_url' ) ) {
+			$referer_step = wpbc_setup_wizard__detect_step_from_admin_url( wp_get_referer() );
+			if ( ! empty( $referer_step ) && isset( $steps_arr[ $referer_step ] ) ) {
+				$setup_step = $referer_step;
+			}
+		}
+		if ( isset( $steps_arr[ $setup_step ] ) ) {
+			$setup_steps->db__set_step_as_saved( $setup_step, true );
+			$setup_steps->db__save_current_step_name( $setup_step );
+			$setup_step_saved = true;
+		}
+	}
+
 	wp_send_json_success(
 		array(
 			'booking_form_id' => $booking_form_id,
@@ -840,6 +858,7 @@ function wpbc_bfb_ajax_save_form_config() {
 			'title'          => isset( $form_config['title'] ) ? (string) $form_config['title'] : '',
 			'description'    => isset( $form_config['description'] ) ? (string) $form_config['description'] : '',
 			'picture_url'    => isset( $form_config['picture_url'] ) ? (string) $form_config['picture_url'] : '',
+			'setup_step_saved' => $setup_step_saved,
 		)
 	);
 

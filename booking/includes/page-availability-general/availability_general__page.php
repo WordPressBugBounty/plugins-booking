@@ -218,7 +218,7 @@ function wpbc_availability_general__get_open_section() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$open_section = isset( $_REQUEST['wpbc_ag_open'] ) ? sanitize_key( wp_unslash( $_REQUEST['wpbc_ag_open'] ) ) : '';
 
-	return in_array( $open_section, array( 'working_time' ), true ) ? $open_section : '';
+	return in_array( $open_section, array( 'weekdays', 'from_today', 'buffer', 'working_time' ), true ) ? $open_section : '';
 }
 
 /**

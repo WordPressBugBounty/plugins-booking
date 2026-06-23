@@ -3,7 +3,7 @@
 /**
  * Parameters usually  defined in   Ajax Response or Front-End 	for  == _wpbc_settings.get_all_params__setup_wizard():
  *
- * In 	Front-End side as  JavaScript 		::		wpbc_ajx__setup_wizard_page__send_request_with_params( {  'current_step': 'optional_other_settings', 'do_action': 'none', 'ui_clicked_element_id': 'btn__toolbar__buttons_prior'  } );
+ * In 	Front-End side as  JavaScript 		::		wpbc_ajx__setup_wizard_page__send_request_with_params( {  'current_step': 'date_availability', 'do_action': 'none', 'ui_clicked_element_id': 'btn__toolbar__buttons_prior'  } );
  *
  * After Ajax response in setup_ajax.js  as ::		_wpbc_settings.set_params_arr__setup_wizard( response_data[ 'ajx_data' ] );
  *
@@ -40,7 +40,7 @@ function wpbc_ajx__setup_wizard_page__send_request_with_params ( params_arr ){
 	wpbc_ajx__setup_wizard_page__send_request();
 }
 // Example 1:  wpbc_ajx__setup_wizard_page__send_request_with_params( {  'page_num': page_number  } );
-// Example 2:  wpbc_ajx__setup_wizard_page__send_request_with_params( {  'current_step': 'optional_other_settings', 'do_action': 'none', 'ui_clicked_element_id': 'btn__toolbar__buttons_prior'  } );
+// Example 2:  wpbc_ajx__setup_wizard_page__send_request_with_params( {  'current_step': 'date_availability', 'do_action': 'none', 'ui_clicked_element_id': 'btn__toolbar__buttons_prior'  } );
 
 
 // =====================================================================================================================
@@ -109,14 +109,21 @@ function wpbc_setup_wizard_page__get_steps_count() {
 
 function wpbc_setup_wizard_page__get_actual_step_number() {
 
-	var params_arr = _wpbc_settings.get_all_params__setup_wizard().steps
-	var steps_finished = 1
+	var setup_params = _wpbc_settings.get_all_params__setup_wizard();
+	var params_arr   = setup_params.steps;
+	var current_step = setup_params.current_step;
+	var step_number  = 1;
+	var found_step   = false;
+
 	_.each( params_arr, function ( p_val, p_key, p_data ) {
-		if ( p_val.is_done ){
-			steps_finished++;
+		if ( p_key === current_step ) {
+			found_step = true;
+			return false;
 		}
+		step_number++;
 	} );
-	return steps_finished;
+
+	return found_step ? step_number : 1;
 }
 
 function wpbc_setup_wizard_page__update_steps_status( steps_is_done_arr ){

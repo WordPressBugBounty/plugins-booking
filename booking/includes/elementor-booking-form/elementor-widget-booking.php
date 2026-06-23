@@ -234,6 +234,100 @@ class WPBC_Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'wpbc_booking_popup_enabled',
+			[
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label'        => esc_html__( 'Open in Popup', 'booking' ),
+				'description'  => esc_html__( 'Show a button that opens the booking form in a popup window.', 'booking' ),
+				'label_on'     => esc_html__( 'Yes', 'booking' ),
+				'label_off'    => esc_html__( 'No', 'booking' ),
+				'return_value' => 'yes',
+				'default'      => '',
+				'condition'    => [
+					'wpbc_booking_shortcode' => 'booking',
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_popup_button_title',
+			[
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Popup Button Title', 'booking' ),
+				'default'     => esc_html__( 'Book now', 'booking' ),
+				'placeholder' => esc_html__( 'Book now', 'booking' ),
+				'label_block' => true,
+				'condition'   => [
+					'wpbc_booking_shortcode'      => 'booking',
+					'wpbc_booking_popup_enabled' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_popup_title',
+			[
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Popup Title', 'booking' ),
+				'default'     => esc_html__( 'Booking Form', 'booking' ),
+				'placeholder' => esc_html__( 'Booking Form', 'booking' ),
+				'label_block' => true,
+				'condition'   => [
+					'wpbc_booking_shortcode'      => 'booking',
+					'wpbc_booking_popup_enabled' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_popup_button_class',
+			[
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Popup Button CSS Class', 'booking' ),
+				'default'     => 'wp-element-button',
+				'placeholder' => 'wp-element-button',
+				'label_block' => true,
+				'condition'   => [
+					'wpbc_booking_shortcode'      => 'booking',
+					'wpbc_booking_popup_enabled' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_popup_modal_class',
+			[
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Popup CSS Class', 'booking' ),
+				'default'     => '',
+				'placeholder' => '',
+				'label_block' => true,
+				'condition'   => [
+					'wpbc_booking_shortcode'      => 'booking',
+					'wpbc_booking_popup_enabled' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'wpbc_booking_popup_size',
+			[
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'label'     => esc_html__( 'Popup Size', 'booking' ),
+				'options'   => [
+					'lg'      => esc_html__( 'Large', 'booking' ),
+					'default' => esc_html__( 'Default', 'booking' ),
+					'sm'      => esc_html__( 'Small', 'booking' ),
+				],
+				'default'   => 'lg',
+				'condition' => [
+					'wpbc_booking_shortcode'      => 'booking',
+					'wpbc_booking_popup_enabled' => 'yes',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -371,6 +465,38 @@ class WPBC_Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 			$shortcode_params[] = "startmonth='" . $settings['wpbc_booking_calendar_startmonth'] . "'";
 		}
 
+		if ( 'booking' === $shortcode_type && ! empty( $settings['wpbc_booking_popup_enabled'] ) && 'yes' === $settings['wpbc_booking_popup_enabled'] ) {
+			$shortcode_params[] = 'popup=1';
+
+			$popup_button_title = isset( $settings['wpbc_booking_popup_button_title'] ) ? sanitize_text_field( $settings['wpbc_booking_popup_button_title'] ) : '';
+			if ( '' !== $popup_button_title && esc_html__( 'Book now', 'booking' ) !== $popup_button_title ) {
+				$shortcode_params[] = "popup_button_title='" . str_replace( "'", '', $popup_button_title ) . "'";
+			}
+
+			$popup_title = isset( $settings['wpbc_booking_popup_title'] ) ? sanitize_text_field( $settings['wpbc_booking_popup_title'] ) : '';
+			if ( '' !== $popup_title && esc_html__( 'Booking Form', 'booking' ) !== $popup_title ) {
+				$shortcode_params[] = "popup_title='" . str_replace( "'", '', $popup_title ) . "'";
+			}
+
+			$popup_button_class = isset( $settings['wpbc_booking_popup_button_class'] ) ? sanitize_text_field( $settings['wpbc_booking_popup_button_class'] ) : '';
+			if ( '' !== $popup_button_class && 'wp-element-button' !== $popup_button_class ) {
+				$shortcode_params[] = "popup_button_class='" . str_replace( "'", '', $popup_button_class ) . "'";
+			}
+
+			$popup_modal_class = isset( $settings['wpbc_booking_popup_modal_class'] ) ? sanitize_text_field( $settings['wpbc_booking_popup_modal_class'] ) : '';
+			if ( '' !== $popup_modal_class ) {
+				$shortcode_params[] = "popup_modal_class='" . str_replace( "'", '', $popup_modal_class ) . "'";
+			}
+
+			$popup_size = isset( $settings['wpbc_booking_popup_size'] ) ? sanitize_key( $settings['wpbc_booking_popup_size'] ) : 'lg';
+			if ( ! in_array( $popup_size, array( 'lg', 'sm', 'default' ), true ) ) {
+				$popup_size = 'lg';
+			}
+			if ( 'lg' !== $popup_size ) {
+				$shortcode_params[] = "popup_size='{$popup_size}'";
+			}
+		}
+
 
 
 		// Final parameters string.
@@ -380,11 +506,11 @@ class WPBC_Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 	}
 
 	public function get_script_depends(): array {
-		return array( 'wpbc-elementor-frontend-bridge' );
+		return array( 'wpbc-modal', 'wpbc-elementor-frontend-bridge' );
 	}
 
 	public function get_style_depends(): array {
-		return array( 'wpbc-elementor-frontend-bridge' );
+		return array( 'wpdevelop-bts', 'wpdevelop-bts-theme', 'wpbc-admin-modal-popups', 'wpbc-elementor-frontend-bridge' );
 	}
 
 }

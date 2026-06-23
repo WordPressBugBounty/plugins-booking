@@ -58,6 +58,7 @@ function wpbc__where_to_save_booking( $local_params ){
 					'allow_past'                    => false,
 					'as_single_resource'            => false,
 					'is_use_booking_recurrent_time' => ( 'On' === get_bk_option( 'booking_recurrent_time' ) ),
+					'time_override_source'          => '',
 					'aggregate_resource_id_arr'     => array(),
 					'custom_form'                   => ''                      //FixIn: 10.0.0.10       // Required for checking all available time-slots and compare with  booked time slots
 				);
@@ -113,6 +114,7 @@ function wpbc__where_to_save_booking( $local_params ){
 																					'dates_sql__arr'                => $local_params['dates_only_sql_arr'],
 																					'time_as_seconds_arr'           => $local_params['time_as_seconds_arr'],
 																					'is_use_booking_recurrent_time' => $local_params['is_use_booking_recurrent_time'],
+																					'time_override_source'          => $local_params['time_override_source'],
 																					'availability_per_days'         => $availability_per_days
 																				) );
 
@@ -276,6 +278,7 @@ function wpbc__where_to_save_booking( $local_params ){
 							'dates_sql__arr'         => array(),
 							'time_as_seconds_arr'    => array(),
 							'availability_per_days'  => array(),
+							'time_override_source'   => '',
 							'is_use_booking_recurrent_time' => ( 'On' === get_bk_option( 'booking_recurrent_time' ) )
 						);
 		$params   = wp_parse_args( $params, $defaults );
@@ -323,7 +326,7 @@ function wpbc__where_to_save_booking( $local_params ){
 
 				 foreach ( $params['availability_per_days']['resources_id_arr__in_dates'] as $child_resource_id ) {
 
-					$merged_seconds_arr = wpbc_get__booking_obj__merged_seconds_arr( $date_bookings_obj[ $child_resource_id ] );
+					$merged_seconds_arr = wpbc_get__booking_obj__merged_seconds_arr( $date_bookings_obj[ $child_resource_id ], $params['time_override_source'] );
 
 					$is_intersect       = wpbc_is_intersect__merged_seconds_arr__and__seconds_arr( $merged_seconds_arr['merged_seconds'], $this_date_time_as_seconds_arr );
 
@@ -369,7 +372,21 @@ function wpbc__where_to_save_booking( $local_params ){
 		 *                                    'merged_readable' => $merged_readable
 		 *                             ]
 		 */
-		function wpbc_get__booking_obj__merged_seconds_arr( $date_booking_obj ) {
+		function wpbc_get__booking_obj__merged_seconds_arr( $date_booking_obj, $time_override_source = '' ) {
+
+			$is_times_availability_full_day_status = (
+				   ( 'times_availability' === $time_override_source )
+				&& ( ! empty( $date_booking_obj->is_day_unavailable ) )
+				&& ( ! empty( $date_booking_obj->_day_status ) )
+				&& ( 'full_day_booking' === $date_booking_obj->_day_status )
+			);
+
+			if ( $is_times_availability_full_day_status ) {
+				$merged_seconds_arr = wpbc_get__booking_obj__booked_details_seconds_arr( $date_booking_obj );
+				if ( ! empty( $merged_seconds_arr['merged_seconds'] ) ) {
+					return $merged_seconds_arr;
+				}
+			}
 
 			if ( $date_booking_obj->is_day_unavailable ){
 				$merged_seconds  = array( array( 0, 24 * 60 * 60 ) );                                            // Unavailable
@@ -383,6 +400,46 @@ function wpbc__where_to_save_booking( $local_params ){
 							'merged_seconds'  => $merged_seconds,
 							'merged_readable' => $merged_readable
 						);
+		}
+
+
+		/**
+		 * Rebuild real booked intervals from details after capacity marks the whole day unavailable.
+		 *
+		 * @param object $date_booking_obj Availability object for a date/resource.
+		 *
+		 * @return array
+		 */
+		function wpbc_get__booking_obj__booked_details_seconds_arr( $date_booking_obj ) {
+
+			$seconds_arr = array();
+			$readable_arr = array();
+
+			if ( empty( $date_booking_obj->__booked__times__details ) || ! is_array( $date_booking_obj->__booked__times__details ) ) {
+				return array(
+					'merged_seconds'  => array(),
+					'merged_readable' => array(),
+				);
+			}
+
+			foreach ( $date_booking_obj->__booked__times__details as $time_key => $details ) {
+				if ( '0' === (string) $time_key || false === strpos( (string) $time_key, '-' ) ) {
+					$seconds_arr[] = array( 0, 24 * 60 * 60 );
+				} else {
+					$seconds_arr[] = wpbc_transform_timerange__s_range__in__seconds_arr( $time_key );
+				}
+			}
+
+			$seconds_arr = wpbc_merge_intersected_intervals( $seconds_arr );
+
+			foreach ( $seconds_arr as $booked_time_slots__in_seconds ) {
+				$readable_arr[] = wpbc_transform_timerange__seconds_arr__in__formated_hours( $booked_time_slots__in_seconds );
+			}
+
+			return array(
+				'merged_seconds'  => $seconds_arr,
+				'merged_readable' => $readable_arr,
+			);
 		}
 
 

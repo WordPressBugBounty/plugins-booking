@@ -924,6 +924,9 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 		$default_options['booking_ics_import_append_checkout_day'] = 'Off';                                             //FixIn: 9.6.2.7 // FixIn: 9.5.4.1.
 	//$mu_option4delete[]='booking_ics_import_append_checkout_day';   			// No need to delete ^
 
+	$default_options['booking_ics_import_append_extra_checkout_day'] = 'Off';
+	//$mu_option4delete[]='booking_ics_import_append_extra_checkout_day';   		// No need to delete ^
+
 	// FixIn: 9.8.15.8.
 	$default_options['booking_condition_import_only_new'] = (  get_bk_option( 'booking_ics_force_import' ) === 'On' )   ?  'Off' : 'On';
 	$default_options['booking_condition_import_if_available'] = 'Off';

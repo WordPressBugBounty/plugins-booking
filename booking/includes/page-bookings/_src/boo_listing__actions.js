@@ -118,6 +118,10 @@ function wpbc_boo_listing__normalize_time_value( value ){
 	return String( value || '' ).replace( /\s+/g, '' ).toLowerCase();
 }
 
+function wpbc_boo_listing__trim_text( value ){
+	return String( value || '' ).replace( /^\s+|\s+$/g, '' );
+}
+
 /**
  * Parse "HH:MM - HH:MM" selected time into start/end values.
  *
@@ -129,9 +133,211 @@ function wpbc_boo_listing__parse_selected_time_range( selected_time ){
 	var time_parts = String( selected_time || '' ).split( ' - ' );
 
 	return {
-		start_time: jQuery.trim( time_parts[0] || '' ),
-		end_time: jQuery.trim( time_parts[1] || '' )
+		start_time: wpbc_boo_listing__trim_text( time_parts[0] ),
+		end_time: wpbc_boo_listing__trim_text( time_parts[1] )
 	};
+}
+
+function wpbc_boo_listing__parse_selected_dates( selected_dates ){
+
+	var dates = [];
+	var seen = {};
+
+	if ( Array.isArray( selected_dates ) ) {
+		dates = selected_dates;
+	} else {
+		dates = String( selected_dates || '' ).split( ',' );
+	}
+
+	dates = jQuery.map( dates, function( date ){
+		date = wpbc_boo_listing__trim_text( date );
+		if ( ! date || seen[ date ] ) {
+			return null;
+		}
+		seen[ date ] = true;
+		return date;
+	} );
+
+	return dates;
+}
+
+function wpbc_boo_listing__set_modal_days_select_mode_override( resource_id, is_forced ){
+	var $modal = jQuery( '#wpbc_modal__add_booking__section' );
+	var originalValue;
+
+	if (
+		   ! is_forced
+		|| ! resource_id
+		|| 'undefined' === typeof _wpbc
+		|| 'function' !== typeof _wpbc.calendar__get_param_value
+		|| 'function' !== typeof _wpbc.calendar__set_param_value
+	) {
+		return;
+	}
+
+	if ( 'undefined' === typeof $modal.attr( 'data-wpbc-add-booking-original-days-select-mode' ) ) {
+		originalValue = _wpbc.calendar__get_param_value( resource_id, 'days_select_mode' );
+		$modal.attr( 'data-wpbc-add-booking-original-days-select-mode', String( originalValue || '' ) );
+		$modal.attr( 'data-wpbc-add-booking-original-days-select-resource-id', String( resource_id ) );
+	}
+
+	$modal.off( 'hidden.wpbc.modal.wpbc_add_booking_days_select_mode hidden.bs.modal.wpbc_add_booking_days_select_mode' ).on(
+		'hidden.wpbc.modal.wpbc_add_booking_days_select_mode hidden.bs.modal.wpbc_add_booking_days_select_mode',
+		function(){
+			var restoreResourceId = parseInt( $modal.attr( 'data-wpbc-add-booking-original-days-select-resource-id' ) || 0, 10 );
+			var restoreValue = $modal.attr( 'data-wpbc-add-booking-original-days-select-mode' );
+
+			if (
+				   restoreResourceId
+				&& 'undefined' !== typeof restoreValue
+				&& 'undefined' !== typeof _wpbc
+				&& 'function' === typeof _wpbc.calendar__set_param_value
+			) {
+				_wpbc.calendar__set_param_value( restoreResourceId, 'days_select_mode', restoreValue || '' );
+			}
+
+			$modal
+				.removeAttr( 'data-wpbc-add-booking-original-days-select-mode' )
+				.removeAttr( 'data-wpbc-add-booking-original-days-select-resource-id' );
+		}
+	);
+}
+
+function wpbc_boo_listing__ymd_to_ddmmyyyy( ymd_date ){
+	var dateParts = String( ymd_date || '' ).split( '-' );
+
+	if ( 3 !== dateParts.length ) {
+		return '';
+	}
+
+	return dateParts[2] + '.' + dateParts[1] + '.' + dateParts[0];
+}
+
+function wpbc_boo_listing__sync_selected_dates_to_booking_form( resource_id, selected_dates ){
+	var formatted_dates = jQuery.map( selected_dates, function( date ){
+		return wpbc_boo_listing__ymd_to_ddmmyyyy( date );
+	} );
+	var dateValue = formatted_dates.join( ', ' );
+
+	jQuery( '#date_booking' + resource_id ).val( dateValue );
+
+	if ( 'function' === typeof wpbc_disable_time_fields_in_booking_form ) {
+		wpbc_disable_time_fields_in_booking_form( resource_id );
+	}
+
+	jQuery( '.booking_form_div' ).trigger( 'date_selected', [ resource_id, dateValue, selected_dates ] );
+}
+
+function wpbc_boo_listing__auto_select_dates_in_calendar( resource_id, selected_dates, is_force_multiple ){
+	var attempts = 0;
+	var maxAttempts = 10;
+	var eventName = 'wpbc_calendar_ajx__loaded_data.wpbc_add_booking_modal_date';
+	var applySelection;
+
+	if (
+		   ! selected_dates.length
+		|| ( 'function' !== typeof wpbc_auto_select_dates_in_calendar )
+	) {
+		return;
+	}
+
+	applySelection = function(){
+		var selectedCount;
+
+		attempts++;
+
+		if (
+			   is_force_multiple
+			&& ( 'undefined' !== typeof _wpbc )
+			&& ( 'function' === typeof _wpbc.calendar__get_param_value )
+			&& ( 'multiple' !== _wpbc.calendar__get_param_value( resource_id, 'days_select_mode' ) )
+		) {
+			wpbc_boo_listing__set_modal_days_select_mode_override( resource_id, true );
+			if ( 'function' === typeof _wpbc.calendar__set_param_value ) {
+				_wpbc.calendar__set_param_value( resource_id, 'days_select_mode', 'multiple' );
+			}
+		}
+
+		selectedCount = wpbc_auto_select_dates_in_calendar( resource_id, selected_dates );
+		if ( selectedCount >= selected_dates.length ) {
+			wpbc_boo_listing__sync_selected_dates_to_booking_form( resource_id, selected_dates );
+			jQuery( 'body' ).off( eventName );
+			return true;
+		}
+
+		return false;
+	};
+
+	jQuery( 'body' ).off( eventName ).on( eventName, function( event, loaded_resource_id ){
+		if ( parseInt( loaded_resource_id, 10 ) === resource_id ) {
+			applySelection();
+		}
+	} );
+
+	window.setTimeout( function retrySelection(){
+		if ( applySelection() ) {
+			return;
+		}
+		if ( attempts < maxAttempts ) {
+			window.setTimeout( retrySelection, 300 );
+		}
+	}, 300 );
+}
+
+function wpbc_boo_listing__should_force_recurrent_time( data, selected_dates ){
+	return (
+		   data
+		&& ( selected_dates || [] ).length > 1
+		&& !! parseInt( data.time_override_enabled || 0, 10 )
+		&& 'times_availability' === String( data.time_override_source || '' )
+	);
+}
+
+function wpbc_boo_listing__set_modal_recurrent_time_override( resource_id, is_forced ){
+	var $modal = jQuery( '#wpbc_modal__add_booking__section' );
+	var originalValue;
+
+	$modal.attr( 'data-wpbc-add-booking-force-recurrent-time', is_forced ? '1' : '0' );
+
+	if (
+		   ! is_forced
+		|| ! resource_id
+		|| 'undefined' === typeof _wpbc
+		|| 'function' !== typeof _wpbc.calendar__get_param_value
+		|| 'function' !== typeof _wpbc.calendar__set_param_value
+	) {
+		return;
+	}
+
+	if ( 'undefined' === typeof $modal.attr( 'data-wpbc-add-booking-original-recurrent-time' ) ) {
+		originalValue = _wpbc.calendar__get_param_value( resource_id, 'booking_recurrent_time' );
+		$modal.attr( 'data-wpbc-add-booking-original-recurrent-time', String( originalValue || '' ) );
+		$modal.attr( 'data-wpbc-add-booking-original-recurrent-resource-id', String( resource_id ) );
+	}
+
+	_wpbc.calendar__set_param_value( resource_id, 'booking_recurrent_time', 'On' );
+
+	$modal.off( 'hidden.wpbc.modal.wpbc_add_booking_recurrent_time hidden.bs.modal.wpbc_add_booking_recurrent_time' ).on(
+		'hidden.wpbc.modal.wpbc_add_booking_recurrent_time hidden.bs.modal.wpbc_add_booking_recurrent_time',
+		function(){
+			var restoreResourceId = parseInt( $modal.attr( 'data-wpbc-add-booking-original-recurrent-resource-id' ) || 0, 10 );
+			var restoreValue = $modal.attr( 'data-wpbc-add-booking-original-recurrent-time' );
+
+			if (
+				   restoreResourceId
+				&& 'undefined' !== typeof restoreValue
+				&& 'undefined' !== typeof _wpbc
+				&& 'function' === typeof _wpbc.calendar__set_param_value
+			) {
+				_wpbc.calendar__set_param_value( restoreResourceId, 'booking_recurrent_time', restoreValue || 'Off' );
+			}
+
+			$modal
+				.removeAttr( 'data-wpbc-add-booking-original-recurrent-time' )
+				.removeAttr( 'data-wpbc-add-booking-original-recurrent-resource-id' )
+				.attr( 'data-wpbc-add-booking-force-recurrent-time', '0' );
+		}
+	);
 }
 
 /**
@@ -440,32 +646,28 @@ function wpbc_boo_listing__preload_add_booking_modal_selection( data ){
 
 	var resource_id = parseInt( data.resource_id, 10 );
 	var selected_date = data.selected_date || '';
+	var selected_dates = wpbc_boo_listing__parse_selected_dates( data.selected_dates || selected_date );
 	var selected_time = data.selected_time || '';
 	var selected_dates_without_calendar = data.selected_dates_without_calendar || '';
 	var is_time_override = !! parseInt( data.time_override_enabled || 0, 10 );
+	var is_force_recurrent_time = wpbc_boo_listing__should_force_recurrent_time( data, selected_dates );
 	var apply_time;
 
 	if ( ! resource_id ) {
 		return;
 	}
 
+	wpbc_boo_listing__set_modal_recurrent_time_override( resource_id, is_force_recurrent_time );
+
 	if ( ! is_time_override ) {
 		jQuery( '#wpbc_modal__add_booking__section' ).find( '[data-wpbc-add-booking-time-override-panel]' ).remove();
 	}
 
 	if (
-		   selected_date
+		   selected_dates.length
 		&& ! selected_dates_without_calendar
-		&& ( 'function' === typeof wpbc_auto_select_dates_in_calendar )
 	) {
-		jQuery( 'body' ).off( 'wpbc_calendar_ajx__loaded_data.wpbc_add_booking_modal_date' ).one( 'wpbc_calendar_ajx__loaded_data.wpbc_add_booking_modal_date', function( event, loaded_resource_id ){
-			if ( parseInt( loaded_resource_id, 10 ) === resource_id ) {
-				wpbc_auto_select_dates_in_calendar( resource_id, selected_date, selected_date );
-			}
-		} );
-		window.setTimeout( function(){
-			wpbc_auto_select_dates_in_calendar( resource_id, selected_date, selected_date );
-		}, 300 );
+		wpbc_boo_listing__auto_select_dates_in_calendar( resource_id, selected_dates, is_force_recurrent_time );
 	}
 
 	if ( ! selected_time ) {
@@ -540,7 +742,13 @@ function wpbc_boo_listing__sync_add_booking_modal_controls( $modal, data, mode )
 	}
 
 	if ( $form_select.length ) {
-		$form_select.val( data.booking_form || 'standard' );
+		var booking_form = data.booking_form || 'standard';
+		if ( booking_form && ! $form_select.find( 'option' ).filter( function(){
+			return jQuery( this ).val() === booking_form;
+		} ).length ) {
+			$form_select.append( jQuery( '<option />' ).val( booking_form ).text( booking_form ) );
+		}
+		$form_select.val( booking_form );
 	}
 
 	if ( $form_edit_link.length ) {
@@ -588,14 +796,22 @@ function wpbc_boo_listing__init_add_booking_modal_controls(){
 		function(){
 			var $modal = jQuery( '#wpbc_modal__add_booking__section' );
 			var mode   = $modal.attr( 'data-wpbc-add-booking-mode' ) || 'add';
+			var changed_id   = jQuery( this ).attr( 'id' ) || '';
+			var booking_form = $modal.find( '#wpbc_modal__add_booking__booking_form' ).val() || '';
+
+			if ( 'wpbc_modal__add_booking__resource_id' === changed_id ) {
+				booking_form = '';
+			}
 
 			wpbc_boo_listing__click__add_booking_modal( {
 				mode         : mode,
 				booking_id   : $modal.attr( 'data-wpbc-add-booking-id' ) || '',
 				resource_id  : $modal.find( '#wpbc_modal__add_booking__resource_id' ).val() || '',
 				booking_hash : $modal.attr( 'data-wpbc-add-booking-hash' ) || '',
-				booking_form : $modal.find( '#wpbc_modal__add_booking__booking_form' ).val() || '',
+				booking_form : booking_form,
 				allow_past   : $modal.find( '[data-wpbc-add-booking-allow-past]' ).first().is( ':checked' ) ? 1 : 0,
+				selected_dates_without_calendar : $modal.attr( 'data-wpbc-add-booking-selected-dates-without-calendar' ) || '',
+				selected_dates : $modal.attr( 'data-wpbc-add-booking-selected-dates' ) || '',
 				selected_date : $modal.attr( 'data-wpbc-add-booking-selected-date' ) || '',
 				selected_time : $modal.attr( 'data-wpbc-add-booking-selected-time' ) || '',
 				time_override_enabled : $modal.find( '[data-wpbc-add-booking-time-override-enabled]' ).first().length
@@ -700,12 +916,15 @@ function wpbc_boo_listing__click__add_booking_modal( args ){
 	$modal.attr( 'data-wpbc-add-booking-id', args.booking_id || '' );
 	$modal.attr( 'data-wpbc-add-booking-mode', mode );
 	$modal.attr( 'data-wpbc-add-booking-allow-past', allow_past ? '1' : '0' );
+	$modal.attr( 'data-wpbc-add-booking-selected-dates-without-calendar', args.selected_dates_without_calendar || '' );
+	$modal.attr( 'data-wpbc-add-booking-selected-dates', args.selected_dates || args.selected_date || '' );
 	$modal.attr( 'data-wpbc-add-booking-selected-date', args.selected_date || '' );
 	$modal.attr( 'data-wpbc-add-booking-selected-time', args.selected_time || '' );
 	$modal.attr( 'data-wpbc-add-booking-time-override-enabled', args.time_override_enabled ? '1' : '0' );
 	$modal.attr( 'data-wpbc-add-booking-time-override-source', args.time_override_source || '' );
 	$modal.attr( 'data-wpbc-add-booking-time-override-start', args.time_override_start || '' );
 	$modal.attr( 'data-wpbc-add-booking-time-override-end', args.time_override_end || '' );
+	$modal.attr( 'data-wpbc-add-booking-force-recurrent-time', wpbc_boo_listing__should_force_recurrent_time( args, wpbc_boo_listing__parse_selected_dates( args.selected_dates || args.selected_date ) ) ? '1' : '0' );
 	if ( ! args.time_override_enabled ) {
 		$modal.find( '[data-wpbc-add-booking-time-override-panel]' ).remove();
 	}
@@ -730,6 +949,7 @@ function wpbc_boo_listing__click__add_booking_modal( args ){
 			booking_form : args.booking_form || '',
 			allow_past   : allow_past,
 			selected_dates_without_calendar : args.selected_dates_without_calendar || '',
+			selected_dates : args.selected_dates || args.selected_date || '',
 			selected_date : args.selected_date || '',
 			selected_time : args.selected_time || '',
 			time_override_enabled : args.time_override_enabled ? 1 : 0,
@@ -750,6 +970,8 @@ function wpbc_boo_listing__click__add_booking_modal( args ){
 			$modal.attr( 'data-wpbc-add-booking-id', response.data.booking_id || '' );
 			$modal.attr( 'data-wpbc-add-booking-mode', response.data.mode || mode );
 			$modal.attr( 'data-wpbc-add-booking-allow-past', response.data.allow_past ? '1' : '0' );
+			$modal.attr( 'data-wpbc-add-booking-selected-dates-without-calendar', response.data.selected_dates_without_calendar || '' );
+			$modal.attr( 'data-wpbc-add-booking-selected-dates', response.data.selected_dates || response.data.selected_date || '' );
 			$modal.attr( 'data-wpbc-add-booking-selected-date', response.data.selected_date || '' );
 			$modal.attr( 'data-wpbc-add-booking-selected-time', response.data.selected_time || '' );
 			$modal.attr( 'data-wpbc-add-booking-time-override-enabled', response.data.time_override_enabled ? '1' : '0' );

@@ -354,6 +354,19 @@
 						loaded_data: resp.data,
 						form_name  : cfg.form_name || 'standard'
 					} );
+					if (
+						resp.data
+						&& resp.data.setup_step_saved
+						&& typeof w.wpbc_setup_wizard_set_current_step_saved === 'function'
+					) {
+						try {
+							w.wpbc_setup_wizard_set_current_step_saved();
+						} catch ( _e_setup_set ) {}
+					} else if ( typeof w.wpbc_setup_wizard_mark_current_step_saved === 'function' ) {
+						try {
+							w.wpbc_setup_wizard_mark_current_step_saved();
+						} catch ( _e_setup ) {}
+					}
 
 					// Optional: visual feedback.
 					wpbc_admin_show_message( 'Form saved', 'success', 1000, false );

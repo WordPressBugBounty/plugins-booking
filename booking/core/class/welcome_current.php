@@ -4,6 +4,112 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * What's New section for Booking Calendar 11.2
+ *
+ * @param object $obj
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_2( $obj ) {
+
+	$section_param_arr = array( 'version_num' => '11.2', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Redesigned Setup Wizard' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.2/booking_calendar__setup_wizard__floating_setup_bar.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Redesigned the initial **Setup Wizard** with a floating **Setup Bar** that guides users through configuration directly on the relevant Booking Calendar admin pages.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Step-by-step setup flow**: After choosing the booking type, the wizard opens the exact settings pages needed for form setup, date selection, availability, working time, color theme, and publishing.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Context-aware guidance**: The Setup Bar shows the current step, progress, Back / Continue / Finish controls, and clear instructions for what should be configured on each page.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Smarter page assistance**: Setup steps can automatically open, scroll to, and highlight the related settings section.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Floating Setup Bar' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.2/booking_calendar__setup_wizard__move_setup_bar.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a floating **Setup Bar** available across Booking Calendar admin pages during setup.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Save-aware workflow**: Steps that require saving now keep the Continue button disabled until changes are saved.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Flexible positioning**: The bar can be collapsed, moved by drag and drop, reset to its default position, and automatically shifted away from right-side settings panels.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Reliable completion**: Finishing or skipping setup now correctly hides the Setup Bar across all Booking Calendar admin pages.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Front-End Booking Form Popup' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.2/booking_calendar__open_popup.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added front-end popup support for booking forms using shortcode parameters.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Popup booking form shortcode**: Use **[booking resource_id=1 popup=1]** to show a button that opens the booking form in a modal window.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Dedicated alias shortcode**: Added **[booking_popup]** as a shortcut for popup booking forms.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Customizable popup display**: Configure popup button text, popup title, custom CSS classes, modal class, and popup size.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Automatic assets loading**: Required popup JavaScript and CSS are loaded automatically on front-end pages.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap:1%">
+
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Time Slots Availability Improvements' ) ); ?></h2>
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: Improved the **Create Booking for Selection** workflow in the Time Slots Availability popup.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **More reliable popup handoff**: The Add Booking popup is now validated before the Time Slots popup closes, preventing cases where no booking form appeared.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Better multi-date selections**: Dragged multi-date time intervals are now handled as explicit admin-selected time overrides during availability validation.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Cleaner JavaScript**: Fixed deprecated jQuery warnings in the Time Slots Availability popup.' ) ); ?></li>
+				</ul>
+			</div>
+
+			<div class="wpbc_wn_col"  style="flex: 1 1 48%;">
+				<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Reliability and Sync Improvements' ) ); ?></h2>
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Fixed a PHP 8+ fatal error on the Form Builder page when malformed legacy custom form data was stored incorrectly.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Improved Form Options Costs parsing for selectbox fields with quoted defaults. Available in Business Medium or higher.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Add Booking now correctly loads the default custom booking form assigned to the selected booking resource. Available in Business Medium or higher.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fix**: Fixed Early / Late Booking discount calculation so fixed form option costs are not incorrectly reduced to zero.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added the **Append extra day after imported checkout day** option for **.ics** import sync rules.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
+/**
  * What's New section for Booking Calendar 11.1
  *
  * @param object $obj
@@ -12,11 +118,16 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 function wpbc_welcome_section_11_1( $obj ) {
 
+	?>
+	<hr/>
+	<?php
+
 	$section_param_arr = array( 'version_num' => '11.1', 'show_expand' => false );
 
 	$obj->expand_section_start( $section_param_arr );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
 	?>
+
 	<div class="wpbc_wn_container">
 
 		<div class="wpbc_wn_section">
@@ -53,6 +164,10 @@ function wpbc_welcome_section_11_1( $obj ) {
  * @return void
  */
 function wpbc_welcome_section_11_0( $obj ) {
+
+	?>
+	<hr/>
+	<?php
 
 	$section_param_arr = array( 'version_num' => '11.0', 'show_expand' => false );
 
@@ -163,6 +278,10 @@ function wpbc_welcome_section_11_0( $obj ) {
 }
 
 function wpbc_welcome_section_10_15( $obj ) {
+
+	?>
+	<hr/>
+	<?php
 
 	$section_param_arr = array( 'version_num' => '10.15', 'show_expand' => ! true );
 

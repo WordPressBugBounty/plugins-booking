@@ -459,7 +459,7 @@ return array(
 		'content_form'        => $wpbc_dates_2_columns_sidebar_hints_content_form,
 		'is_default'          => 0,
 		'title'               => 'Dates / 2 Columns / Sidebar Hints',
-		'description'         => 'Two-column booking form with the calendar and live sidebar hints on the left, customer details on the right, and version-aware hint usage for Free and Pro editions.',
+		'description'         => 'Two-column booking form with the calendar and live sidebar hints on the left, customer details on the right, and version-aware hint. Designed for full-days or changeover bookings.',
 		'picture_url'         => 'dates_2_columns_sidebar_hints_01.png',
 	),
 );

@@ -236,7 +236,7 @@ function wpbc_elementor_warn_text_widget_shortcodes( $widget_content, $widget ) 
 	}
 
 	// Detect Booking Calendar shortcodes in the raw editor content.
-	if ( ! preg_match( '/\[(booking|bookingcalendar|bookingform|bookingselect|bookingtimeline)\b/i', $raw ) ) {
+	if ( ! preg_match( '/\[(booking|booking_popup|bookingcalendar|bookingform|bookingselect|bookingtimeline)\b/i', $raw ) ) {
 		return $widget_content;
 	}
 
@@ -307,11 +307,23 @@ function wpbc_elementor_build_text_widget_warning( $faq_url = '' ) {
 
 
 add_action( 'elementor/frontend/after_register_scripts', function() {
+	if ( ! wp_script_is( 'wpbc-modal', 'registered' ) ) {
+		wp_register_script( 'wpbc-modal', wpbc_plugin_url( '/vendors/_custom/dropdown_modal/_out/dropdown_modal.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, true );
+	}
 	wp_register_script( 'wpbc-elementor-frontend-bridge', wpbc_plugin_url( '/includes/elementor-booking-form/_out/wpbc-elementor-frontend-bridge.js' ), array( 'jquery' ), WP_BK_VERSION_NUM, true );
 } );
 
 add_action( 'elementor/frontend/after_register_styles', function() {
-		wp_register_style( 'wpbc-elementor-frontend-bridge', wpbc_plugin_url( '/includes/elementor-booking-form/_out/wpbc-elementor-frontend-bridge.css' ), array(), WP_BK_VERSION_NUM );
+	if ( ! wp_style_is( 'wpdevelop-bts', 'registered' ) ) {
+		wp_register_style( 'wpdevelop-bts', wpbc_plugin_url( '/vendors/_custom/bootstrap-css/css/bootstrap.css' ), array(), WP_BK_VERSION_NUM );
+	}
+	if ( ! wp_style_is( 'wpdevelop-bts-theme', 'registered' ) ) {
+		wp_register_style( 'wpdevelop-bts-theme', wpbc_plugin_url( '/vendors/_custom/bootstrap-css/css/bootstrap-theme.css' ), array(), WP_BK_VERSION_NUM );
+	}
+	if ( ! wp_style_is( 'wpbc-admin-modal-popups', 'registered' ) ) {
+		wp_register_style( 'wpbc-admin-modal-popups', wpbc_plugin_url( '/css/modal.css' ), array(), WP_BK_VERSION_NUM );
+	}
+	wp_register_style( 'wpbc-elementor-frontend-bridge', wpbc_plugin_url( '/includes/elementor-booking-form/_out/wpbc-elementor-frontend-bridge.css' ), array(), WP_BK_VERSION_NUM );
 } );
 
 add_filter( 'wpbc_force_client_assets', function( $force ) {

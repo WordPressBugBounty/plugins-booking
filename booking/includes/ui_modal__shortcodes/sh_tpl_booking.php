@@ -137,6 +137,9 @@ function wpbc_shortcode_config__content__booking() {
 				// Calendar Size
 				wpbc_shortcode_config_fields__calendar_size( $shortcode_name . '_wpbc_size', $shortcode_name );
 
+				// Open booking form in popup.
+				wpbc_shortcode_config_fields__booking_popup( $shortcode_name . '_wpbc_popup', $shortcode_name );
+
 			?></tbody></table>
 		</div><?php
 
@@ -477,6 +480,126 @@ function wpbc_shortcode_config__content__booking() {
 					</td>
 				</tr><?php
 
+	}
+
+	/**
+	 * Shortcode Fields: Open booking form in popup.
+	 *
+	 * @param string $id        Field ID prefix.
+	 * @param string $group_key Shortcode group key.
+	 *
+	 * @return void
+	 */
+	function wpbc_shortcode_config_fields__booking_popup( $id, $group_key ) {
+
+		WPBC_Settings_API::field_checkbox_row_static( $id . '_enabled'
+													, array(
+															  'type'              => 'checkbox'
+															, 'title'             => __( 'Open in popup', 'booking' )
+															, 'description'       => __( 'Show a button that opens the booking form in a popup window.', 'booking' )
+															, 'description_tag'   => 'span'
+															, 'label'             => ''
+															, 'class'             => ''
+															, 'css'               => ''
+															, 'tr_class'          => $group_key . '_standard_section wpbc_sub_settings_grayed'
+															, 'attr'              => array()
+															, 'group'             => $group_key
+															, 'only_field'        => false
+															, 'is_new_line'       => false
+															, 'value'             => false
+														)
+					);
+
+		WPBC_Settings_API::field_text_row_static( $id . '_button_title'
+												, array(
+														  'type'              => 'text'
+														, 'title'             => __( 'Button title', 'booking' )
+														, 'description'       => __( 'Text on the button that opens the booking form popup.', 'booking' )
+														, 'description_tag'   => 'span'
+														, 'placeholder'       => __( 'Book now', 'booking' )
+														, 'class'             => ''
+														, 'css'               => ''
+														, 'tr_class'          => $group_key . '_standard_section wpbc_sub_settings_grayed ' . $id . '_wpbc_sc_booking_popup'
+														, 'attr'              => array()
+														, 'group'             => $group_key
+														, 'only_field'        => false
+														, 'value'             => __( 'Book now', 'booking' )
+													)
+					);
+
+		WPBC_Settings_API::field_text_row_static( $id . '_title'
+												, array(
+														  'type'              => 'text'
+														, 'title'             => __( 'Popup title', 'booking' )
+														, 'description'       => __( 'Title displayed in the popup header.', 'booking' )
+														, 'description_tag'   => 'span'
+														, 'placeholder'       => __( 'Booking Form', 'booking' )
+														, 'class'             => ''
+														, 'css'               => ''
+														, 'tr_class'          => $group_key . '_standard_section wpbc_sub_settings_grayed ' . $id . '_wpbc_sc_booking_popup'
+														, 'attr'              => array()
+														, 'group'             => $group_key
+														, 'only_field'        => false
+														, 'value'             => __( 'Booking Form', 'booking' )
+													)
+					);
+
+		WPBC_Settings_API::field_text_row_static( $id . '_button_class'
+												, array(
+														  'type'              => 'text'
+														, 'title'             => __( 'Button CSS class', 'booking' )
+														, 'description'       => __( 'CSS class for the popup button.', 'booking' )
+														, 'description_tag'   => 'span'
+														, 'placeholder'       => 'wp-element-button'
+														, 'class'             => ''
+														, 'css'               => ''
+														, 'tr_class'          => $group_key . '_standard_section wpbc_sub_settings_grayed ' . $id . '_wpbc_sc_booking_popup'
+														, 'attr'              => array()
+														, 'group'             => $group_key
+														, 'only_field'        => false
+														, 'value'             => 'wp-element-button'
+													)
+					);
+
+		WPBC_Settings_API::field_text_row_static( $id . '_modal_class'
+												, array(
+														  'type'              => 'text'
+														, 'title'             => __( 'Popup CSS class', 'booking' )
+														, 'description'       => __( 'Optional CSS class for the popup modal.', 'booking' )
+														, 'description_tag'   => 'span'
+														, 'placeholder'       => ''
+														, 'class'             => ''
+														, 'css'               => ''
+														, 'tr_class'          => $group_key . '_standard_section wpbc_sub_settings_grayed ' . $id . '_wpbc_sc_booking_popup'
+														, 'attr'              => array()
+														, 'group'             => $group_key
+														, 'only_field'        => false
+														, 'value'             => ''
+													)
+					);
+
+		WPBC_Settings_API::field_select_row_static( $id . '_size'
+													, array(
+															  'type'              => 'select'
+															, 'title'             => __( 'Popup size', 'booking' )
+															, 'description'       => __( 'Select the popup window size.', 'booking' )
+															, 'description_tag'   => 'span'
+															, 'label'             => ''
+															, 'multiple'          => false
+															, 'group'             => $group_key
+															, 'tr_class'          => $group_key . '_standard_section wpbc_sub_settings_grayed ' . $id . '_wpbc_sc_booking_popup'
+															, 'class'             => ''
+															, 'css'               => 'margin-right:10px;'
+															, 'only_field'        => false
+															, 'attr'              => array()
+															, 'value'             => 'lg'
+															, 'options'           => array(
+																'lg'      => __( 'Large', 'booking' ),
+																'default' => __( 'Default', 'booking' ),
+																'sm'      => __( 'Small', 'booking' ),
+															)
+														)
+						);
 	}
 
 	/**

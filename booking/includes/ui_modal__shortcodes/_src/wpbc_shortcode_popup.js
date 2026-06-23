@@ -429,6 +429,46 @@ function wpbc_set_shortcode(){
         }
 
         if (
+                ( 'booking' === shortcode_id )
+             && ( jQuery( '#booking_wpbc_popup_enabled' ).length > 0 )
+        ){
+            if ( jQuery( '#booking_wpbc_popup_enabled' ).is( ':checked' ) ){
+                jQuery( '.booking_wpbc_popup_wpbc_sc_booking_popup' ).show();
+
+                wpbc_shortcode += ' popup=1';
+
+                var popup_button_title_default = jQuery( '#booking_wpbc_popup_button_title' ).attr( 'placeholder' );
+                var popup_button_title_temp = jQuery( '#booking_wpbc_popup_button_title' ).val().trim().replace( /'/gi, '' );
+                if ( ( popup_button_title_temp != '' ) && ( popup_button_title_temp != popup_button_title_default ) ){
+                    wpbc_shortcode += ' popup_button_title=\'' + popup_button_title_temp + '\'';
+                }
+
+                var popup_title_default = jQuery( '#booking_wpbc_popup_title' ).attr( 'placeholder' );
+                var popup_title_temp = jQuery( '#booking_wpbc_popup_title' ).val().trim().replace( /'/gi, '' );
+                if ( ( popup_title_temp != '' ) && ( popup_title_temp != popup_title_default ) ){
+                    wpbc_shortcode += ' popup_title=\'' + popup_title_temp + '\'';
+                }
+
+                var popup_button_class_temp = jQuery( '#booking_wpbc_popup_button_class' ).val().trim().replace( /'/gi, '' );
+                if ( ( popup_button_class_temp != '' ) && ( popup_button_class_temp != 'wp-element-button' ) ){
+                    wpbc_shortcode += ' popup_button_class=\'' + popup_button_class_temp + '\'';
+                }
+
+                var popup_modal_class_temp = jQuery( '#booking_wpbc_popup_modal_class' ).val().trim().replace( /'/gi, '' );
+                if ( popup_modal_class_temp != '' ){
+                    wpbc_shortcode += ' popup_modal_class=\'' + popup_modal_class_temp + '\'';
+                }
+
+                var popup_size_temp = jQuery( '#booking_wpbc_popup_size' ).val().trim();
+                if ( popup_size_temp != 'lg' ){
+                    wpbc_shortcode += ' popup_size=\'' + popup_size_temp + '\'';
+                }
+            } else {
+                jQuery( '.booking_wpbc_popup_wpbc_sc_booking_popup' ).hide();
+            }
+        }
+
+        if (
                 ( jQuery('#' + shortcode_id + '_wpbc_startmonth_active').length > 0 )
              && ( jQuery('#' + shortcode_id + '_wpbc_startmonth_active').is(':checked') )
         ){
@@ -688,6 +728,13 @@ function wpbc_set_shortcode(){
         jQuery( '#' + shortcode_val + '_wpbc_custom_form option:eq(0)' ).prop( 'selected', true );
         jQuery( '#' + shortcode_val + '_wpbc_nummonths option:eq(0)' ).prop( 'selected', true );
         jQuery( '#' + shortcode_val + '_wpbc_size_enabled' ).prop( 'checked', false ).trigger('change');
+
+        jQuery( '#' + shortcode_val + '_wpbc_popup_enabled' ).prop( 'checked', false ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_popup_button_title' ).val( jQuery( '#' + shortcode_val + '_wpbc_popup_button_title' ).attr( 'placeholder' ) ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_popup_title' ).val( jQuery( '#' + shortcode_val + '_wpbc_popup_title' ).attr( 'placeholder' ) ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_popup_button_class' ).val( 'wp-element-button' ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_popup_modal_class' ).val( '' ).trigger('change');
+        jQuery( '#' + shortcode_val + '_wpbc_popup_size option[value="lg"]' ).prop( 'selected', true ).trigger('change');
 
         wpbc_shortcode_config__select_day_weekday__reset( shortcode_val + 'wpbc_select_day_weekday' );
         wpbc_shortcode_config__select_day_season__reset( shortcode_val + 'wpbc_select_day_season' );
@@ -1035,7 +1082,7 @@ function wpbc_shortcode_config_click_show_section( _this, section_id_to_show, sh
     }
 
 
-    
+
 function wpbc_shortcode_config__update_elements_in_timeline(){
 
     var wpbc_is_matrix = false;
@@ -1112,9 +1159,9 @@ function wpbc_shortcode_config__update_elements_in_timeline(){
 
 
     return [ wpbc_is_matrix, view_days_num_temp ];
-}    
+}
 
-    
+
 jQuery( document ).ready( function (){
     // -----------------------------------------------------------------------------------------------------
     // [booking ... ]
@@ -1129,6 +1176,7 @@ jQuery( document ).ready( function (){
         // Hide by Size sections
         // -------------------------------------------------------------------------------------------------------------
         jQuery( '.' + id + '_wpbc_size_wpbc_sc_calendar_size' ).hide();
+        jQuery( '.' + id + '_wpbc_popup_wpbc_sc_booking_popup' ).hide();
 
         // options :: Show / Hide SIZE calendar  section
         jQuery( '#' + id + '_wpbc_size_enabled' ).on( 'change', {'id': id}, function( event ){
@@ -1136,6 +1184,14 @@ jQuery( document ).ready( function (){
                 jQuery( '.' + event.data.id + '_wpbc_size_wpbc_sc_calendar_size' ).show();
             } else {
                 jQuery( '.' + event.data.id + '_wpbc_size_wpbc_sc_calendar_size' ).hide();
+            }
+        } );
+
+        jQuery( '#' + id + '_wpbc_popup_enabled' ).on( 'change', {'id': id}, function( event ){
+            if ( jQuery( '#' + event.data.id + '_wpbc_popup_enabled' ).is( ':checked' ) ){
+                jQuery( '.' + event.data.id + '_wpbc_popup_wpbc_sc_booking_popup' ).show();
+            } else {
+                jQuery( '.' + event.data.id + '_wpbc_popup_wpbc_sc_booking_popup' ).hide();
             }
         } );
 
@@ -1157,6 +1213,13 @@ jQuery( document ).ready( function (){
                 +',#' + id + '_wpbc_size_calendar_width'                      // - Width
                 +',#' + id + '_wpbc_size_calendar_width_px_pr'                // - Width PS | %
                 +',#' + id + '_wpbc_size_calendar_cell_height'                // - Cell Height
+
+                +',#' + id + '_wpbc_popup_enabled'                            // Booking form popup On | Off
+                +',#' + id + '_wpbc_popup_button_title'                       // Popup button title
+                +',#' + id + '_wpbc_popup_title'                              // Popup title
+                +',#' + id + '_wpbc_popup_button_class'                       // Popup button class
+                +',#' + id + '_wpbc_popup_modal_class'                        // Popup modal class
+                +',#' + id + '_wpbc_popup_size'                               // Popup size
 
                 +',#' + id + 'wpbc_select_day_weekday_textarea'               // Rule Weekday
                 +',#' + id + 'wpbc_select_day_season_textarea'                // Rule Season
