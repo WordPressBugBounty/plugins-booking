@@ -759,10 +759,12 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 			break;
 
 		case 'form_structure':
-			$url = ( (bool) WPBC_Frontend_Settings::is_bfb_enabled( null ) )
+			$is_bfb_enabled = ( class_exists( 'WPBC_Frontend_Settings' ) && (bool) WPBC_Frontend_Settings::is_bfb_enabled( null ) );
+
+			$url = $is_bfb_enabled
 				? wpbc_get_settings_url() . '&tab=builder_booking_form'
 				: wpbc_get_settings_url() . '&tab=form';
-			if ( (bool) WPBC_Frontend_Settings::is_bfb_enabled( null ) ) {
+			if ( $is_bfb_enabled ) {
 				$template_search_key = wpbc_setup_wizard__get_bfb_template_search_key();
 				if ( ! empty( $template_search_key ) ) {
 					$url = add_query_arg( 'auto_open_template', $template_search_key, $url );

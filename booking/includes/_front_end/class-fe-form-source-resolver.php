@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-settings.php';
+
 /**
  * MultiUser ownership helper (core-safe; MU add-on hooks via filters).
  *
@@ -56,48 +58,6 @@ class WPBC_FE_MU {
 
 	public static function get_current_user_id() {
 		return wpbc_get_current_user_id();
-	}
-}
-
-
-/**
- * Check if we enabled BFB in Settings, e.g.: 		WPBC_Frontend_Settings::is_bfb_enabled()
- */
-class WPBC_Frontend_Settings {
-
-	/**
-	 * Is the BFB feature compiled/available in this build.
-	 *
-	 * @return bool
-	 */
-	public static function is_bfb_feature_available() {
-		return ( defined( 'WPBC_NEW_FORM_BUILDER' ) && WPBC_NEW_FORM_BUILDER );
-	}
-
-	/**
-	 * Is BFB enabled in settings.
-	 *
-	 * @param WPBC_Frontend_Context|null $ctx Optional, for future use (preview context etc).
-	 *
-	 * @return bool
-	 */
-	public static function is_bfb_enabled( $ctx = null ) {
-
-		if ( ! self::is_bfb_feature_available() ) {
-			return false;
-		}
-
-		$is_enabled = ( 'On' === get_bk_option( 'booking_use_bfb_form' ) );
-
-		/**
-		 * Allow forcing enable/disable externally if needed.
-		 *
-		 * @param bool                 $is_enabled
-		 * @param WPBC_Frontend_Context|null $ctx
-		 */
-		$is_enabled = (bool) apply_filters( 'wpbc_frontend_is_bfb_enabled', $is_enabled, $ctx );
-
-		return $is_enabled;
 	}
 }
 

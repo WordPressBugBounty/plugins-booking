@@ -101,6 +101,7 @@ require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions_dates.php';                
 require_once WPBC_PLUGIN_DIR . '/core/form_parser.php';                                  // Parser for booking form              New in 9.8.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-dates.php';                                   // Dates.
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/date-hints.php';                    // Front-end date hints for Free.       // FixIn: 10.15.6.2.
+require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-settings.php';             // Front-end/BFB settings helper.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_welcome.php';                                 // Welcome Panel Functions.
 require_once WPBC_PLUGIN_DIR . '/includes/_working_time/working_time.php';               // Working Time settings and availability helpers.
 

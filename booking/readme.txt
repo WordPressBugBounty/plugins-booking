@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.2
+Stable tag: 11.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -341,6 +341,10 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.2.1 =
+- Changes in **all** versions:
+	* **Fix**: Fixed a fatal error during plugin activation/update by loading the Booking Form Builder settings helper before Setup Wizard route initialization. E.g.: Uncaught Error: Class "WPBC_Frontend_Settings" not found ...
+
 = 11.2 =
 - Changes in **all** versions:
 	* **New**: Redesigned the Setup Wizard flow with a floating Setup Bar that guides users through configuration on the relevant Booking Calendar admin pages.
