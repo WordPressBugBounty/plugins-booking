@@ -37,7 +37,7 @@ class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
     public function tabs() {
 		$tabs = array();
 		$tabs['availability'] = array(
-			'is_show_top_path'                   => false,  // true | false.  By default value is: false.
+			'is_show_top_path'                   => true,   // true | false.  By default value is: true.
 			'left_navigation__default_view_mode' => 'compact',  // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'title'                              => __( 'Days Availability', 'booking' ),  // Title of TAB //FixIn: 9.8.15.2.2.
 			'hint'                               => __( 'Define available and unavailable days for your calendar(s).', 'booking' ),   // Hint.

@@ -128,7 +128,6 @@ function wpbc_ajx_availability__page_content__show( ajx_data_arr, ajx_search_par
 				'ajx_cleaned_params'    : {
 											calendar__days_selection_mode: "dynamic"
 											calendar__start_week_day: "0"
-											calendar__timeslot_day_bg_as_available: ""
 											calendar__view__cell_height: ""
 											calendar__view__months_in_row: 4
 											calendar__view__visible_months: 12
@@ -218,7 +217,6 @@ function wpbc_ajx_availability__calendar__show( calendar_params_arr ){
 		'<div class="'	+ ' bk_calendar_frame'
 						+ ' months_num_in_row_' + calendar_params_arr.ajx_cleaned_params.calendar__view__months_in_row
 						+ ' cal_month_num_' 	+ calendar_params_arr.ajx_cleaned_params.calendar__view__visible_months
-						+ ' ' 					+ calendar_params_arr.ajx_cleaned_params.calendar__timeslot_day_bg_as_available 				// 'wpbc_timeslot_day_bg_as_available' || ''
 				+ '" '
 			+ 'style="' + width + '">'
 

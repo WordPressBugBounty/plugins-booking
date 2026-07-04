@@ -220,6 +220,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-add-booking/add_booking__page.php
 require_once WPBC_PLUGIN_DIR . '/core/admin/wpbc-settings-functions.php';    // Support functions for Booking > Settings General page.
 require_once WPBC_PLUGIN_DIR . '/core/admin/page-settings.php';              // Settings page.
 require_once WPBC_PLUGIN_DIR . '/core/admin/api-settings.php';               // Settings API.
+require_once WPBC_PLUGIN_DIR . '/includes/page-resource-capacity/page-resource-capacity.php';                          // Resource Capacity Settings.
 
 
 require_once WPBC_PLUGIN_DIR . '/core/admin/wpbc-gutenberg.php';              // Settings page.
@@ -253,7 +254,12 @@ if ( file_exists( WPBC_PLUGIN_DIR . '/inc/_ps/personal.php' ) ) {
 }
 
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-form-options/page-settings-form-options.php';                                     // Booking Form Opyions Settings.
-require_once WPBC_PLUGIN_DIR . '/includes/page-settings-color-themes/page-settings-color-themes.php';                                                 // Appearance / Color Themes / Skins Settings.
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-themes/settings_themes__page.php';                                                // Appearance / Theme Settings.
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-themes/ajax/settings_themes__save.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-themes/ajax/settings_themes__preview.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-calendar/settings_calendar__page.php';                                             // Calendar Settings.
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-calendar/ajax/settings_calendar__save.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-calendar/ajax/settings_calendar__preview.php';
 
 // Booking > Setup page                                                         // FixIn: 10.2.0.1.
 // FixIn: 9.8.0.2.

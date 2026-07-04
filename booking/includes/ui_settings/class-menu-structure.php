@@ -285,8 +285,8 @@ abstract class WPBC_Menu_Structure {
 	 */
 	public function admin_body_class__add_loading_classes( $classes ) {
 
-		// Such method  ->is_use_option__in_subtabs_or_tabs(...)  can be load only  after_tabs_defined !
-		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_default_full_screen' ) ) {
+		// Such methods can be loaded only after_tabs_defined().
+		if ( ( method_exists( $this, 'is_full_screen_mode_enabled' ) ) && ( $this->is_full_screen_mode_enabled() ) ) {
 			$classes .= ' wpbc_admin_full_screen';
 		}
 

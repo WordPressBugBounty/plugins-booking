@@ -124,15 +124,21 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 	if ( 1 ) {
 		$my_partially = '';
 
-		$booking_timeslot_day_bg_as_available  = ( 'On' === get_bk_option( 'booking_timeslot_day_bg_as_available' ) ) ? ' wpbc_timeslot_day_bg_as_available' : '';
-		$booking_timeslot_day_bg_as_available .= ( 'Off' !== get_bk_option( 'booking_change_over_days_triangles' ) ) ? ' wpbc_change_over_triangle' : '';
+		$booking_change_over_triangle = ( 'Off' !== get_bk_option( 'booking_change_over_days_triangles' ) ) ? ' wpbc_change_over_triangle' : '';
 
 
-		$my_partially .= '<span class="' . $booking_timeslot_day_bg_as_available . '">';
+		$my_partially .= '<span class="' . $booking_change_over_triangle . '">';
 		$my_partially .= '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';     // FixIn: 9.3.1.4.
 		$my_partially .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
-		if ( ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time( false, $params['resource_id'] ) ) ) {                                                   // FixIn: 8.9.4.10.
-			$my_partially .= '<td class="datepick-days-cell date_available date_approved timespartly check_in_time check_in_time_date_approved wpbc_calendar_legend_day_cell_height">';
+		$is_change_over_legend = null;
+		if ( function_exists( 'wpbc_settings_calendar__preview_is_changeover_enabled' ) ) {
+			$is_change_over_legend = wpbc_settings_calendar__preview_is_changeover_enabled( $params['resource_id'], false );
+		}
+		if ( null === $is_change_over_legend ) {
+			$is_change_over_legend = ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) ) && ( wpbc_is_booking_used_check_in_out_time( false, $params['resource_id'] ) );                                                   // FixIn: 8.9.4.10.
+		}
+		if ( $is_change_over_legend ) {
+			$my_partially .= '<td class="datepick-days-cell date_available date_approved timespartly check_in_time check_out_time check_in_time_date_approved check_out_time_date2approve wpbc_calendar_legend_day_cell_height">';
 		} else {
 			$my_partially .= '<td class="datepick-days-cell date_available date2approve timespartly times_clock wpbc_calendar_legend_day_cell_height">';
 		}

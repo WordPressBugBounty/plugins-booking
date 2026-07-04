@@ -537,6 +537,7 @@ function wpbc_calendar_show( resource_id ){
 		var is_unselectable_calendar = ( jQuery( '#calendar_booking_unselectable' + resource_id ).length > 0);				// FixIn: 8.0.1.2.
 		var is_booking_form_exist    = ( jQuery( '#booking_form_div' + resource_id ).length > 0 );
 		var is_add_booking_modal_calendar = ( jQuery( '#calendar_booking' + resource_id ).closest( '#wpbc_modal__add_booking__section' ).length > 0 );
+		var is_admin_calendar_preview = ( jQuery( '#calendar_booking' + resource_id ).closest( '[data-wpbc-admin-calendar-preview="1"]' ).length > 0 );
 
 		if ( ( is_unselectable_calendar ) && ( ! is_booking_form_exist ) ){
 
@@ -560,6 +561,7 @@ function wpbc_calendar_show( resource_id ){
 			   ( location.href.indexOf( 'page=wpbc' ) == -1 )
 			|| ( ( location.href.indexOf( 'page=wpbc' ) > 0 ) && ( location.href.indexOf( 'tab=add-booking' ) > 0 ) )
 			|| ( is_add_booking_modal_calendar )
+			|| ( is_admin_calendar_preview )
 			|| ( location.href.indexOf( 'page=wpbc-setup' ) > 0 )
 			|| ( location.href.indexOf( 'page=wpbc-availability' ) > 0 )
 			|| (  ( location.href.indexOf( 'page=wpbc-settings' ) > 0 )  &&

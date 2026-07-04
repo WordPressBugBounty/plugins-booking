@@ -1058,3 +1058,19 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-radio > .wpdev-list
 .wpbc_theme_dark_1 .wpbc_wizard__border_container span:not(.datepick-inline*) {
   color: #fff
 }
+div.wpbc_container.wpbc_form,
+div.wpbc_container.wpbc_form button,
+div.wpbc_container.wpbc_form input,
+div.wpbc_container.wpbc_form label,
+div.wpbc_container.wpbc_form select,
+div.wpbc_container.wpbc_form textarea {
+  color: #3c434a
+}
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 button,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 input,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 label,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 select,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 textarea {
+  color: #bbb
+}

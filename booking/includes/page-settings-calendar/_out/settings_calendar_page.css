@@ -1,0 +1,435 @@
+.wpbc_admin_page__tab__calendar_settings .wpbc_settings_page_content {
+  min-width: 0
+}
+.wpbc_admin_page__tab__calendar_settings,
+.wpbc_calendar_settings_page {
+  --wpbc-calendar-accent: #2271b1;
+  --wpbc-calendar-border: #dfe4ea;
+  --wpbc-calendar-text: #1d2327;
+  --wpbc-calendar-muted: #646970;
+  --wpbc-calendar-bg: #fff;
+  --wpbc-calendar-bg-soft: #f6f7f7;
+  --wpbc-calendar-warning: #b26200;
+  --wpbc-calendar-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --wpbc-calendar-radius: 6px
+}
+.wpbc_calendar_settings_page {
+  box-sizing: border-box;
+  color: var(--wpbc-calendar-text);
+  max-width: 1220px
+}
+.wpbc_calendar_toolbar.wpbc_ts_toolbar {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  background: var(--wpbc-calendar-bg);
+  border: 1px solid var(--wpbc-calendar-border);
+  border-radius: var(--wpbc-calendar-radius);
+  box-shadow: var(--wpbc-calendar-shadow);
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 14px;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+  max-width: 100%;
+  padding: 14px
+}
+.wpbc_calendar_toolbar .wpbc_ts_control {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px
+}
+.wpbc_calendar_toolbar .wpbc_ts_control label {
+  color: var(--wpbc-calendar-text);
+  font-size: 13px;
+  font-weight: 600
+}
+.wpbc_calendar_toolbar .wpbc_ts_control select {
+  min-height: 32px;
+  min-width: 130px
+}
+.wpbc_calendar_toolbar_value {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #f6f7f7;
+  border: 1px solid var(--wpbc-calendar-border);
+  border-radius: var(--wpbc-calendar-radius);
+  box-sizing: border-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 7px;
+  min-height: 32px;
+  padding: 5px 9px
+}
+.wpbc_calendar_toolbar_value .menu_icon {
+  color: var(--wpbc-calendar-accent)
+}
+.wpbc_calendar_upgrade_hint {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  color: var(--wpbc-calendar-muted);
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 12px;
+  gap: 7px;
+  line-height: 1.35;
+  max-width: 360px
+}
+.wpbc_calendar_settings_preview {
+  background: var(--wpbc-calendar-bg);
+  border: 1px solid var(--wpbc-calendar-border);
+  border-radius: var(--wpbc-calendar-radius);
+  box-shadow: var(--wpbc-calendar-shadow);
+  box-sizing: border-box;
+  display: block;
+  padding: 14px
+}
+.wpbc_calendar_settings_real_preview {
+  min-height: 220px;
+  position: relative;
+  transition: opacity .16s ease-in-out
+}
+.wpbc_calendar_settings_real_preview.is-loading {
+  pointer-events: none
+}
+.wpbc_calendar_settings_real_preview.is-loading .wpbc_calendar_wraper {
+  filter: blur(1px);
+  opacity: .34
+}
+.wpbc_calendar_loading.wpbc_calendar_settings_loading {
+  -ms-flex-align: center;
+  align-items: center;
+  background: rgba(255,255,255,.74);
+  box-sizing: border-box;
+  color: #1d2327;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 1.2em;
+  font-weight: 600;
+  inset: 10px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  z-index: 30
+}
+.wpbc_calendar_hint_bar.wpbc_ts_hint {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #f5faff;
+  border: 1px solid #c8ddf5;
+  border-radius: 0;
+  color: var(--wpbc-calendar-text);
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  margin: 15px 0 0;
+  padding: 15px
+}
+.wpbc_calendar_hint_bar .wpbc_icn_info_outline {
+  color: var(--wpbc-calendar-accent)
+}
+.wpbc_calendar_rightbar_panels .wpbc_ui__collapsible_group {
+  border-bottom: 1px solid #e6eaef
+}
+.wpbc_calendar_inspector_body {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 0
+}
+.wpbc_calendar_field_row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0 0 14px;
+  min-width: 0
+}
+.wpbc_calendar_field_row > label:first-child,
+.wpbc_calendar_switch_label {
+  color: var(--wpbc-calendar-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35
+}
+.wpbc_calendar_field_row input[type=number],
+.wpbc_calendar_field_row input[type=text],
+.wpbc_calendar_field_row select,
+.wpbc_calendar_field_row textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+  width: 100%
+}
+.wpbc_calendar_field_row input[type=number] {
+  max-width: 120px
+}
+.wpbc_calendar_description {
+  color: var(--wpbc-calendar-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0
+}
+.wpbc_calendar_radio_stack {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px
+}
+.wpbc_calendar_radio_stack label,
+.wpbc_calendar_switch {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  gap: 7px;
+  line-height: 1.35;
+  margin: 0
+}
+.wpbc_calendar_radio_stack input[type=radio] {
+  margin-top: 1px
+}
+.wpbc_calendar_radio_stack label.is-premium,
+.wpbc_calendar_switch.is-premium {
+  -ms-flex-align: start;
+  align-items: flex-start
+}
+.wpbc_calendar_switch {
+  background: var(--wpbc-calendar-bg,#fff);
+  box-sizing: border-box;
+  cursor: pointer;
+  min-height: 36px;
+  padding: 6px 0
+}
+.wpbc_calendar_switch_card {
+  border-top: 1px solid var(--wpbc-calendar-border);
+  margin-top: 2px;
+  padding-top: 12px
+}
+.wpbc_calendar_switch input {
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+  border: none
+}
+.wpbc_calendar_switch_control {
+  background: #c3c4c7;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: 18px;
+  padding: 2px;
+  transition: background .16s ease-in-out;
+  width: 34px
+}
+.wpbc_calendar_switch_knob {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,.22);
+  display: block;
+  height: 14px;
+  -ms-transform: translateX(0);
+  transform: translateX(0);
+  transition: transform .16s ease-in-out;
+  width: 14px
+}
+.wpbc_calendar_switch input:checked + .wpbc_calendar_switch_control {
+  background: var(--wpbc-calendar-accent)
+}
+.wpbc_calendar_switch input:checked + .wpbc_calendar_switch_control .wpbc_calendar_switch_knob {
+  -ms-transform: translateX(16px);
+  transform: translateX(16px)
+}
+.wpbc_calendar_switch input:focus-visible + .wpbc_calendar_switch_control {
+  box-shadow: 0 0 0 2px #fff,0 0 0 4px var(--wpbc-calendar-accent)
+}
+.wpbc_calendar_locked_premium_field .wpbc_calendar_switch {
+  cursor: default
+}
+.wpbc_calendar_locked_premium_field .wpbc_calendar_switch_control {
+  opacity: .72
+}
+.wpbc_calendar_switch_label {
+  overflow-wrap: anywhere
+}
+.wpbc_calendar_pro_label.wpbc_pro_label,
+.wpbc_calendar_pro_label.wpbc_pro_label:hover {
+  line-height: 1.5;
+  margin-left: 2px;
+  white-space: nowrap
+}
+.wpbc_calendar_premium_dismiss {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  line-height: 1;
+  margin-left: 2px;
+  vertical-align: middle
+}
+.wpbc_calendar_premium_dismiss .wpbc_x_dismiss_btn {
+  color: #787c82;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px
+}
+.wpbc_calendar_premium_dismiss .wpbc_x_dismiss_btn:hover {
+  color: #1d2327
+}
+.wpbc_calendar_premium_note {
+  background: #fff8e5;
+  border: 1px solid #f0d28a;
+  border-radius: var(--wpbc-calendar-radius);
+  box-sizing: border-box;
+  color: var(--wpbc-calendar-text);
+  display: none;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 12px
+}
+.wpbc_calendar_premium_note.is-visible {
+  display: grid
+}
+.wpbc_calendar_premium_note p {
+  color: var(--wpbc-calendar-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 4px 0 0
+}
+.wpbc_calendar_premium_note_actions {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 8px
+}
+.wpbc_calendar_subsettings {
+  background: #f8fafc;
+  border-left: 3px solid #d0d7de;
+  box-sizing: border-box;
+  display: none;
+  margin: 8px 0 14px;
+  padding: 12px
+}
+.wpbc_calendar_range_block.is-visible,
+.wpbc_calendar_subsettings.is-visible,
+.wpbc_calendar_weekday_checks.is-visible {
+  display: block
+}
+.wpbc_calendar_range_block,
+.wpbc_calendar_weekday_checks {
+  display: none
+}
+.wpbc_calendar_legend_items_grid {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 14px
+}
+.wpbc_calendar_legend_item_tile {
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: var(--wpbc-calendar-radius);
+  box-sizing: border-box;
+  display: grid;
+  gap: 8px;
+  padding: 10px
+}
+.wpbc_calendar_legend_item_header {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  min-width: 0
+}
+.wpbc_calendar_legend_item_title {
+  display: grid;
+  gap: 5px
+}
+.wpbc_calendar_legend_item_title label {
+  color: var(--wpbc-calendar-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35
+}
+.wpbc_calendar_field_row[data-wpbc-calendar-availability-cell-settings],
+.wpbc_calendar_field_row[data-wpbc-calendar-availability-tooltip-settings],
+.wpbc_calendar_field_row[data-wpbc-calendar-booked-tooltip-settings],
+.wpbc_calendar_field_row[data-wpbc-calendar-cost-cell-settings],
+.wpbc_calendar_field_row[data-wpbc-calendar-cost-tooltip-settings],
+.wpbc_calendar_field_row[data-wpbc-calendar-timeslot-tooltip-settings] {
+  display: none
+}
+.wpbc_calendar_field_row[data-wpbc-calendar-availability-cell-settings].is-visible,
+.wpbc_calendar_field_row[data-wpbc-calendar-availability-tooltip-settings].is-visible,
+.wpbc_calendar_field_row[data-wpbc-calendar-booked-tooltip-settings].is-visible,
+.wpbc_calendar_field_row[data-wpbc-calendar-cost-cell-settings].is-visible,
+.wpbc_calendar_field_row[data-wpbc-calendar-cost-tooltip-settings].is-visible,
+.wpbc_calendar_field_row[data-wpbc-calendar-timeslot-tooltip-settings].is-visible {
+  display: grid
+}
+.wpbc_calendar_inline_fields {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2,minmax(0,1fr))
+}
+.wpbc_calendar_weekday_checks {
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: var(--wpbc-calendar-radius);
+  box-sizing: border-box;
+  padding: 9px
+}
+.wpbc_calendar_weekday_checks label {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 6px;
+  margin: 0 0 6px
+}
+.wpbc_calendar_weekday_checks label:last-child {
+  margin-bottom: 0
+}
+.wpbc_calendar_attention_pulse {
+  animation: .62s ease-in-out 3 wpbc_calendar_attention_pulse
+}
+@keyframes wpbc_calendar_attention_pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255,196,0,.82);
+    transform: scale(1)
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(255,196,0,.2);
+    transform: scale(1.025)
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255,196,0,0);
+    transform: scale(1)
+  }
+}
+@media (max-width:782px) {
+  .wpbc_calendar_inline_fields {
+    grid-template-columns: 1fr
+  }
+  .wpbc_calendar_toolbar.wpbc_ts_toolbar {
+    padding: 12px
+  }
+}

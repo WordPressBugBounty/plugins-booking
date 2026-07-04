@@ -250,14 +250,10 @@ function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $shortcod
 		$style = '';
 	}
 
-	$booking_timeslot_day_bg_as_available = get_bk_option( 'booking_timeslot_day_bg_as_available' );
-
-	$booking_timeslot_day_bg_as_available = ( 'On' === $booking_timeslot_day_bg_as_available ) ? ' wpbc_timeslot_day_bg_as_available' : '';
-
 	$is_custom_width_css = ( empty( $width ) ) ? ' wpbc_no_custom_width ' : '';
 
 	$calendar = $style .
-				'<div class="wpbc_cal_container bk_calendar_frame' . $is_custom_width_css . ' months_num_in_row_' . $months_num_in_row . ' cal_month_num_' . $cal_count . $booking_timeslot_day_bg_as_available . '" style="' . $width . '">' .
+				'<div class="wpbc_cal_container bk_calendar_frame' . $is_custom_width_css . ' months_num_in_row_' . $months_num_in_row . ' cal_month_num_' . $cal_count . '" style="' . $width . '">' .
 				'<div id="calendar_booking' . $resource_id . '"  class="wpbc_calendar_id_' . $resource_id . '" >' .
 				wpbc_get_calendar_loader_animation( $resource_id, $cal_count ) .
 				'</div>' .
@@ -276,12 +272,19 @@ function wpbc_pre_get_calendar_html( $resource_id = 1, $cal_count = 1, $shortcod
 
 	// FixIn: 7.0.1.24.
 	$is_booking_change_over_days_triangles = get_bk_option( 'booking_change_over_days_triangles' );
-	if (
-		   ( 'Off' !== $is_booking_change_over_days_triangles )
-		&& (
+	$is_booking_used_check_in_out_time     = null;
+	if ( function_exists( 'wpbc_settings_calendar__preview_is_changeover_enabled' ) ) {
+		$is_booking_used_check_in_out_time = wpbc_settings_calendar__preview_is_changeover_enabled( $resource_id, false );
+	}
+	if ( null === $is_booking_used_check_in_out_time ) {
+		$is_booking_used_check_in_out_time = (
 			   ( ! function_exists( 'wpbc_is_booking_used_check_in_out_time' ) )
 			|| ( wpbc_is_booking_used_check_in_out_time( false, $resource_id ) )
-		)
+		);
+	}
+	if (
+		   ( 'Off' !== $is_booking_change_over_days_triangles )
+		&& $is_booking_used_check_in_out_time
 	) {
 		$calendar_css_class_outer .= ' wpbc_change_over_triangle';
 	}

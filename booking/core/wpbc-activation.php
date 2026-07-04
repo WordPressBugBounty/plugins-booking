@@ -624,10 +624,6 @@ $mu_option4delete[]= 'booking_timeslot_picker';
 	$default_options['booking_timeslot_picker_skin'] = '/css/time_picker_skins/light__24_8.css';
 $mu_option4delete[]= 'booking_timeslot_picker_skin';
 
-    $default_options['booking_timeslot_day_bg_as_available'] = 'Off';	//(  ( class_exists( 'wpdev_bk_personal' ) ) ? 'Off' : 'On' );                                                   // FixIn: 8.2.1.27.
- $mu_option4delete[]='booking_timeslot_day_bg_as_available';
-
-
 	$default_options['booking_disable_timeslots_in_tooltip'] = 'Off';													//FixIn: 9.5.0.2.2
  $mu_option4delete[]='booking_disable_timeslots_in_tooltip';
 

@@ -291,9 +291,9 @@ function wpbc_ui__vert_left_bar__do_toggle() {
 	$el_arr['container_style'] = 'padding:0 8px;';
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_show_left_vertical_nav';
 	$el_arr['onclick']         = "if ( jQuery( '.wpbc_ui_el__vert_left_bar__content' ).is( ':visible' ) ) {";
-	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_min(); ';
+	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_min( true ); ';
 	$el_arr['onclick']         .= '} else {';
-	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_max(); ';
+	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_max( true ); ';
 	$el_arr['onclick']         .= '}';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Toggle side menu', 'booking' ),
@@ -312,7 +312,7 @@ function wpbc_ui__vert_left_bar__do_max() {
 	$el_arr                    = array();
 	$el_arr['container_style'] = '';
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_open_left_vertical_nav wpbc_ui__hide hide_in_compact_mode0';
-	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_max(); ';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_max( true ); ';
 	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-right';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Open side menu', 'booking' ),
@@ -331,7 +331,7 @@ function wpbc_ui__vert_left_bar__do_compact() {
 	$el_arr                    = array();
 	$el_arr['container_style'] = '';
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_hide_left_vertical_nav';
-	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_compact(); ';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_compact( true ); ';
 	$el_arr['font_icon']       = 'wpbc-bi-box-arrow-left';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Set side menu compact', 'booking' ),
@@ -369,7 +369,7 @@ function wpbc_ui__vert_left_bar__do_min() {
 	$el_arr                    = array();
 	$el_arr['container_style'] = '';
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_hide_left_vertical_nav';
-	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_min(); ';
+	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_min( true ); ';
 	$el_arr['font_icon']       = 'wpbc_icn_minimize';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Minimize side menu', 'booking' ),
@@ -752,7 +752,7 @@ function wpbc_ui__vert_left_bar__side_button__do_compact() {
 
 	?>
 	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav"
-			onclick="javascript:wpbc_admin_ui__sidebar_left__do_min();" title="<?php esc_attr_e( 'Set side menu compact', 'booking' ); ?>">
+			onclick="javascript:wpbc_admin_ui__sidebar_left__do_min( true );" title="<?php esc_attr_e( 'Minimize side menu', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
 		</svg>
@@ -768,7 +768,7 @@ function wpbc_ui__vert_left_bar__side_button__do_compact() {
 function wpbc_ui__vert_left_bar__side_button__do_max() {
 	?>
 	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_left_vertical_nav"
-			onclick="javascript:wpbc_admin_ui__sidebar_left__do_max();" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
+			onclick="javascript:wpbc_admin_ui__sidebar_left__do_max( true );" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
 		</svg>

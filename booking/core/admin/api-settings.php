@@ -1175,108 +1175,14 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
         $this->fields = apply_filters( 'wpbc_settings_auto_cancelation_approval_section', $this->fields, $default_options_values );
         // </editor-fold>
 
-
-        // <editor-fold     defaultstate="collapsed"                        desc=" Capacity "  >
-
-	     $this->fields = apply_filters( 'wpbc_settings_capacity_based_on_visitors', $this->fields, $default_options_values );
-
-        $this->fields['booking_is_days_always_available'] = array(
-                                'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_days_always_available']         //'On'
-                                , 'title'       => __('Allow unlimited bookings per same day(s)' ,'booking')
-                                /* translators: 1: ... */
-                                , 'label'       => sprintf( __( 'Check this box, if you want to %1$sset any days as available%2$s in calendar. Your visitors will be able to make %3$sunlimited bookings per same date(s) in calendar and do not see any booked date(s)%4$s of other visitors.', 'booking' ), '<strong>', '</strong>' , '<strong>', '</strong>' )
-                                , 'description' => ''
-                                , 'group'       => 'capacity'
-            );
-
-
-        // FixIn: 8.3.2.2.
-        if ( ! class_exists('wpdev_bk_biz_l') )
-		    $this->fields['booking_is_show_pending_days_as_available'] = array(
-		                            'type'          => 'checkbox'
-		                            , 'default'     => $default_options_values['booking_is_show_pending_days_as_available']   //_'Off'
-		                            , 'title'       =>  __('Use pending days as available' ,'booking')
-		                            , 'label'       => sprintf(__('Check this box if you want to show the pending days as available in calendars' ,'booking') )
-		                            , 'description' => ''
-		                            , 'group'       => 'capacity'
-		                            , 'tr_class'    => ''
-		        );
-
-        $this->fields = apply_filters( 'wpbc_settings_pending_days_as_available', $this->fields, $default_options_values );
-
-
-
-		// </editor-fold>
-
-	    // <editor-fold     defaultstate="collapsed"                        desc=" Capacity Free example "  >
-	    if ( ! class_exists('wpdev_bk_personal') ){
-
-		    // Showing availability in tooltip
-		    $this->fields['booking_quantity_control__promote_upgrade'] = array(
-		                              'type'        => 'checkbox'
-	                            , 'default' 	=> 'On'
-		                        , 'value' 	    => 'On'
-		                            , 'title'       =>  __('Booking Quantity Control' ,'booking')
-		                            , 'label'       =>  __('Enable this option to allow visitors to define the number of items they can book for specific dates or times within a single reservation. ' ,'booking')
-		                            , 'description' =>  __('If disabled, visitors can book only one slot within a single reservation.' ,'booking')
-		                            , 'description_tag' => 'p'
-		                            , 'group'       => 'capacity_upgrade'
-			                        , 'tr_class'    => 'wpbc_blur'
-		        );
-			$this->fields['booking_capacity_field__promote_upgrade'] = array(
-										  'type' 			=> 'select'
-								, 'default' 		=> 'items'
-								, 'value' 		    => 'items'
-										, 'title' 			=> __('Quantity field name', 'booking')
-										, 'description' 	=> sprintf( __( 'Select the field that will control how many slots visitors can book during the reservation process.' ,'booking'), '<b>', '</b>' )
-										, 'description_tag' => 'span'
-										, 'css' 			=> ''
-		                                , 'tr_class'    	=> 'wpbc_booking_capacity_field_settings wpbc_sub_settings_grayed'
-								, 'options' 		=> array( 'items'  => __('Items' ,'booking') )
-										, 'group' 			=> 'capacity_upgrade'
-										, 'tr_class'    => 'wpbc_blur'
-								);
-		    $this->fields['booking_is_dissbale_booking_for_different_sub_resources__promote_upgrade'] = array(
-		                            'type'          => 'checkbox'
-                            , 'default'     => 'On'
-			                , 'value'     => 'On'
-		                            , 'title'       => __('Disable bookings in different booking resources' ,'booking')
-		                            , 'label'       => __('Check this box to disable reservations, which can be stored in different booking resources.' ,'booking')
-		                            , 'description' => '<strong>' . esc_html__('Note' ,'booking') . '!</strong> ' . __('When checked, all reserved days must be at same booking resource otherwise error message will show.' ,'booking')
-		                            , 'group'       => 'capacity_upgrade'
-			                        , 'tr_class'    => 'wpbc_blur'
-		        );
-		    $this->fields['capacity_upgrade__promote_upgrade'] = array(
-                                'type'          => 'pure_html'
-                                , 'group'       => 'capacity_upgrade'
-		                        , 'html' => '<tr><td colspan="2">
-									        	<div class="wpbc_widget_content" style="transform: translate(0) translateY(-10em);">
-													<div class="ui_container    ui_container_toolbar		ui_container_small" style="background: #fff;position: relative;">
-														<div class="ui_group    ui_group__upgrade">
-															<div class="wpbc_upgrade_note wpbc_upgrade_theme_green">
-																<div>This <a target="_blank" href="https://wpbookingcalendar.com/features/#capacity">feature</a> 
-																	 is available in the <strong>Business Large or MultiUser version</strong>. 
-																	<a target="_blank" href="https://wpbookingcalendar.com/prices/#bk_news_section">Upgrade to Pro</a>.																
-																</div>
-															</div>
-														</div>														
-													</div>
-												</div>
-									    </td> </tr>'
-                        );
-	    }
-	    // </editor-fold>
-
-        
         // <editor-fold     defaultstate="collapsed"                        desc=" Advanced "  >
-        
+
 
         $this->fields = apply_filters( 'wpbc_settings_edit_url_hash', $this->fields, $default_options_values );
         // FixIn: 10.10.1.2  $this->fields = apply_filters( 'wpbc_settings_resource_no_update__during_editing', $this->fields, $default_options_values );
 
         // Show advanced settings of JavaScript loading
-        
+
 
 //        //Show | Hide links for Advanced JavaScript section
 //        $this->fields['booking_advanced_js_loading_settings'] = array(
@@ -1308,15 +1214,15 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
         $this->fields['booking_is_load_js_css_on_specific_pages'] = array(
                                 'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_load_js_css_on_specific_pages']         //'Off'            
+                                , 'default'     => $default_options_values['booking_is_load_js_css_on_specific_pages']         //'Off'
                                 , 'title'       => __('Load JS and CSS files only on specific pages' ,'booking')
                                 , 'label'       => __('Activate loading of CSS and JavaScript files of plugin only at specific pages.' ,'booking')
                                 , 'description' => ''
                                 , 'group'       => 'advanced'
                                 , 'tr_class'    => 'wpbc_advanced_js_loading_settings'//wpbc_advanced_js_loading_settings wpbc_sub_settings_grayed hidden_items'
                                 , 'is_demo_safe' => wpbc_is_this_demo()
-            );       
-        $this->fields['booking_pages_for_load_js_css'] = array(   
+            );
+        $this->fields['booking_pages_for_load_js_css'] = array(
                                 'type'          => 'textarea'
                                 , 'default'     => $default_options_values['booking_pages_for_load_js_css']         //''
                                 , 'placeholder' => '/booking-form/'
@@ -1343,9 +1249,9 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
 		//$this->fields['hr_booking_is_show_system_debug_log'] = array( 'type' => 'hr', 'group' => 'advanced', 'tr_class' => 'wpbc_advanced_js_loading_settings' ); // wpbc_sub_settings_grayed hidden_items' );
 		// FixIn: 7.2.1.15.
-        $this->fields[ 'booking_is_show_system_debug_log' ] = array(   
+        $this->fields[ 'booking_is_show_system_debug_log' ] = array(
                                 'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_show_system_debug_log']         //'Off'            
+                                , 'default'     => $default_options_values['booking_is_show_system_debug_log']         //'Off'
                                 , 'title'       => __('Show system debugging log for beta features' ,'booking')
                                 , 'label'       => __('Activate this option only for testing beta features' ,'booking')
                                 , 'description' => ''
@@ -1375,60 +1281,60 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 		                                                                 'tr_class' => 'wpbc_advanced_js_loading_settings'// wpbc_sub_settings_grayed hidden_items'
 		    );
 	    }
-        
+
         //  Divider  ///////////////////////////////////////////////////////////////
         $this->fields['hr_calendar_before_advanced_js_loading_settings'] = array( 'type' => 'hr', 'group' => 'advanced' );
 
         // Show settings of powered by notice
-        $this->fields['booking_advanced_powered_by_notice_settings'] = array(    
+        $this->fields['booking_advanced_powered_by_notice_settings'] = array(
                                   'type' => 'html'
-                                , 'html'  =>  
+                                , 'html'  =>
                                           '<a id="wpbc_powered_by_link_show" class="wpbc_expand_section_link" href="javascript:void(0)">+ ' . __('Show settings of powered by notice' ,'booking') . '</a>'
                                         . '<a id="wpbc_powered_by_link_hide" class="wpbc_expand_section_link" href="javascript:void(0)" style="display:none;">- ' . __('Hide settings of powered by notice' ,'booking') . '</a>'
                                 , 'cols'  => 2
                                 , 'group' => 'advanced'
             );
-        $this->fields['booking_is_show_powered_by_notice'] = array(   
+        $this->fields['booking_is_show_powered_by_notice'] = array(
                                 'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_show_powered_by_notice']         //'On'            
+                                , 'default'     => $default_options_values['booking_is_show_powered_by_notice']         //'On'
                                 , 'title'       => __('Powered by notice' ,'booking')
                                 , 'label'       => sprintf(__(' Turn On/Off powered by "Booking Calendar" notice under the calendar.' ,'booking'),'wpbookingcalendar.com')
                                 , 'description' => ''
                                 , 'group'       => 'advanced'
                                 , 'tr_class'    => 'wpbc_is_show_powered_by_notice wpbc_sub_settings_grayed hidden_items'
-            );       
-        $this->fields['booking_wpdev_copyright_adminpanel'] = array(   
+            );
+        $this->fields['booking_wpdev_copyright_adminpanel'] = array(
                                 'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_wpdev_copyright_adminpanel']         //'On'            
+                                , 'default'     => $default_options_values['booking_wpdev_copyright_adminpanel']         //'On'
                                 , 'title'       => __('Help and info notices' ,'booking')
                                 , 'label'       => sprintf(__(' Turn On/Off version notice and help info links at booking admin panel.' ,'booking'),'wpbookingcalendar.com')
                                 , 'description' => ''
                                 , 'group'       => 'advanced'
                                 , 'tr_class'    => 'wpbc_is_show_powered_by_notice wpbc_sub_settings_grayed hidden_items'
 	                            , 'is_demo_safe' => wpbc_is_this_demo()                                                 // FixIn: 8.1.3.9.
-            );       
-        
+            );
+
         // </editor-fold>
-                                 
-        
+
+
         // <editor-fold     defaultstate="collapsed"                        desc=" Information "  >
 if(1){
         if (  function_exists( 'wpbc_get_dashboard_info' ) ) {
-            $this->fields['booking_information'] = array(   
+            $this->fields['booking_information'] = array(
                                'type'              => 'html'
                              , 'html'              => wpbc_get_dashboard_info()
                              , 'cols'              => 2
                              , 'group'             => 'information'
-                     ); 
+                     );
         }
 }
         // </editor-fold>
 
-        
+
         // <editor-fold     defaultstate="collapsed"                        desc=" User permissions for plugin menu pages "  >
-        
-        
-        $this->fields['booking_menu_position'] = array(   
+
+
+        $this->fields['booking_menu_position'] = array(
                                 'type'          => 'select'
                                 , 'default'     => 'top'
                                 , 'title'       => __('Plugin menu position', 'booking')
@@ -1441,8 +1347,8 @@ if(1){
                                 , 'group'       => 'permissions'
                                 , 'is_demo_safe' => wpbc_is_this_demo()
                         );
-        
-        $this->fields['booking_user_role_booking_header'] = array(   
+
+        $this->fields['booking_user_role_booking_header'] = array(
                                     'type'          => 'pure_html'
                                     , 'group'       => 'permissions'
                                     , 'html'        => '<tr valign="top">
@@ -1450,18 +1356,18 @@ if(1){
                                                                 <hr/><p><strong>' . wp_kses_post(  __('User permissions for plugin menu pages' ,'booking') )  . ':</strong></p>
                                                             </th>
                                                         </tr>'
-                            );        
-        
+                            );
+
         $field_options = array();
         $field_options['subscriber']    = translate_user_role('Subscriber');
         $field_options['contributor']   = translate_user_role('Contributor');
         $field_options['author']        = translate_user_role('Author');
         $field_options['editor']        = translate_user_role('Editor');
         $field_options['administrator'] = translate_user_role('Administrator');
-        
-        $this->fields['booking_user_role_booking'] = array(   
+
+        $this->fields['booking_user_role_booking'] = array(
                                 'type'          => 'select'
-                                , 'default'     => $default_options_values['booking_user_role_booking']         //'editor'            
+                                , 'default'     => $default_options_values['booking_user_role_booking']         //'editor'
                                 , 'title'       => __('Bookings', 'booking')
                                 , 'description' => ''
                                 , 'options'     => $field_options
@@ -1499,9 +1405,9 @@ if(1){
                                 , 'is_demo_safe' => wpbc_is_this_demo()
                         );
         if ( class_exists( 'wpdev_bk_personal' ) )
-            $this->fields['booking_user_role_resources'] = array(   
+            $this->fields['booking_user_role_resources'] = array(
                                     'type'          => 'select'
-                                    , 'default'     => $default_options_values['booking_user_role_resources']         //'editor'            
+                                    , 'default'     => $default_options_values['booking_user_role_resources']         //'editor'
                                     , 'title'       => __('Resources', 'booking')
                                     , 'description' => ''
                                     , 'options'     => $field_options
@@ -1536,25 +1442,25 @@ if(1){
                         );
 
         if ( wpbc_is_this_demo() )
-            $this->fields['booking_user_role_settings_demo'] = array( 'group' => 'permissions', 'type' => 'html', 'html' => wpbc_get_warning_text_in_demo_mode(), 'cols' => 2 ); 
-        
-        
+            $this->fields['booking_user_role_settings_demo'] = array( 'group' => 'permissions', 'type' => 'html', 'html' => wpbc_get_warning_text_in_demo_mode(), 'cols' => 2 );
+
+
         // </editor-fold>
-        
-                
+
+
         // <editor-fold     defaultstate="collapsed"                        desc=" Uninstall "  >
-        $this->fields['booking_is_delete_if_deactive'] = array(   
+        $this->fields['booking_is_delete_if_deactive'] = array(
                                 'type'          => 'checkbox'
-                                , 'default'     => $default_options_values['booking_is_delete_if_deactive']         //'Off'            
+                                , 'default'     => $default_options_values['booking_is_delete_if_deactive']         //'Off'
                                 , 'title'       => __('Delete booking data, when plugin deactivated' ,'booking')
                                 , 'label'       => __('Turn on to delete all booking data when you uninstall this plugin.' ,'booking')
                                 , 'description' => ''
                                 , 'group'       => 'uninstall'
 	                            , 'toggle_class' => 'wpbc_toggle_danger'
-            );       
+            );
         // </editor-fold>
-        
-        
+
+
         // <editor-fold     defaultstate="collapsed"                        desc=" Tools "  >
 
         if ( ( ! wpbc_is_this_demo() ) && ( current_user_can( 'activate_plugins' ) ) ) {
@@ -1586,7 +1492,7 @@ if(1){
 	            . '</a>';  // FixIn: 8.5.2.19.
 
 
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized	
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( ( ! empty( $_REQUEST['booking_version_num'] ) ) && ( 'reset' == $_REQUEST['booking_version_num'] ) ) {          // FixIn: 8.5.2.19.
 				delete_bk_option('booking_version_num');
 				?>
@@ -1694,16 +1600,16 @@ if(1){
                  );
 		// </editor-fold>
 
-    }      
-    
+    }
+
 
     /**
 	 * Add Custon JavaScript - for some specific settings options
      *      Need to executes after showing of entire settings page (on hook: wpbc_after_settings_content).
      *      After initial definition of settings,  and possible definition after POST request.
-     * 
+     *
      * @param type $menu_slug
-     * 
+     *
      */
     public function enqueue_js( $menu_slug, $active_page_tab, $active_page_subtab ) {
 
@@ -1731,7 +1637,7 @@ if(1){
                         if ( ! jQuery('#set_gen_booking_is_show_legend').is(':checked') ) {   
                             jQuery('.wpbc_calendar_legend_items').addClass('hidden_items'); 
                         }
-                      ";        
+                      ";
         // Hide or Show Legend items on click checkbox
         $js_script .= " jQuery('#set_gen_booking_is_show_legend').on( 'change', function(){    
                                 if ( this.checked ) { 
@@ -1739,7 +1645,7 @@ if(1){
                                 } else {
                                     jQuery('.wpbc_calendar_legend_items').addClass('hidden_items');
                                 }
-                            } ); ";        
+                            } ); ";
         // Thank you Message or Page
         $js_script .= " 
                         if ( jQuery('#type_of_thank_you_message_message').is(':checked') ) {   
@@ -1748,7 +1654,7 @@ if(1){
                         if ( jQuery('#type_of_thank_you_message_page').is(':checked') ) {   
                             jQuery('.wpbc_calendar_thank_you_message').addClass('hidden_items'); 
                         }
-                      ";        
+                      ";
         $js_script .= " jQuery('input[name=\"set_gen_booking_type_of_thank_you_message\"]').on( 'change', function(){    
                                 if ( jQuery('#type_of_thank_you_message_message').is(':checked') ) {   
                                     jQuery('.wpbc_calendar_thank_you_message').removeClass('hidden_items');
@@ -1757,8 +1663,8 @@ if(1){
                                     jQuery('.wpbc_calendar_thank_you_message').addClass('hidden_items');
                                     jQuery('.wpbc_calendar_thank_you_page').removeClass('hidden_items'); 
                                 }
-                            } ); ";    
-        
+                            } ); ";
+
         // Default calendar view mode (Booking Listing) - set  active / inctive options depend from  resource selection.
         $js_script .= " jQuery('#set_gen_booking_view_days_num').on( 'focus', function(){    
                             if ( jQuery('#set_gen_booking_default_booking_resource').length > 0 ) {
@@ -1781,8 +1687,8 @@ if(1){
                                     jQuery('#set_gen_booking_view_days_num option:eq(5)').prop('disabled', false);                                                                
                                 }
                             }
-                        } ); ";        
-        
+                        } ); ";
+
         ////////////////////////////////////////////////////////////////////////
         // Set  correct  value for dates format,  depend on from selection of radio buttons
         $booking_date_format = esc_js( get_bk_option( 'booking_date_format') );                                         // FixIn: 10.6.1.2.
@@ -1813,12 +1719,12 @@ if(1){
                                         }) 
                                     );
                                 }                            
-                            } ); "; 
-        // If we edit custom "Date Format" Text  field - select Custom Radio button.                                 
+                            } ); ";
+        // If we edit custom "Date Format" Text  field - select Custom Radio button.
         $js_script .= " jQuery('#set_gen_booking_date_format').on( 'change', function(){                                              
                                 jQuery( '#date_format_selection_custom' ).prop('checked', true);
-                            } ); ";        
-        
+                            } ); ";
+
 	    ////////////////////////////////////////////////////////////////////////
 	    // Set  correct  value for Time Format,  depend on from selection of radio buttons
 	    $booking_time_format = esc_js( get_bk_option( 'booking_time_format') );                                         // FixIn: 10.6.1.2.
@@ -1855,40 +1761,6 @@ if(1){
 	                            jQuery( '#time_format_selection_custom' ).prop('checked', true);
 	                        } ); ";
 
-        ////////////////////////////////////////////////////////////////////////
-        // Advanced section
-        ////////////////////////////////////////////////////////////////////////
-        
-        // Click on "Always available "
-        $js_script .= " jQuery('#set_gen_booking_is_days_always_available').on( 'change', function(){    
-                            if ( this.checked ) { 
-                                var answer = confirm('"                 
-                                              . esc_js( __( 'Warning', 'booking' ) ) . '! '
-                                              . esc_js( __( 'You allow unlimited number of bookings per same dates, its can be a reason of double bookings on the same date. Do you really want to do this?', 'booking' ) ) 
-                                      .  "' );  
-                                if ( answer) { 
-                                    this.checked = true;   
-                                    jQuery('#set_gen_booking_quantity_control').prop('checked', false ).trigger('change');                                                                                                            
-                                    jQuery('#set_gen_booking_is_show_pending_days_as_available').prop('checked', false );            
-                                    jQuery('.wpbc_pending_days_as_available_sub_settings').addClass('hidden_items'); 
-                                } else { 
-                                    this.checked = false; 
-                                } 
-                            }                            
-                        } ); ";
-
-        // FixIn: 8.3.2.2.
-	    if ( ! class_exists('wpdev_bk_biz_l') ) {
-	    	// Click on "Use pending days as available"
-	        $js_script .= " jQuery('#set_gen_booking_is_show_pending_days_as_available').on( 'change', function(){            
-                            if ( this.checked ) { 
-                                jQuery('#set_gen_booking_is_days_always_available').prop('checked', false );
-                            } else {
-
-                            }
-                        } ); ";
-        }
-
         // Click  on Show Advanced JavaScript section  link
         $js_script .= " jQuery('#wpbc_show_advanced_section_link_show').on( 'click', function(){                                 
                             jQuery('#wpbc_show_advanced_section_link_show').toggle(200);                            
@@ -1898,17 +1770,17 @@ if(1){
                             if ( ! jQuery('#set_gen_booking_is_load_js_css_on_specific_pages').is(':checked') ) {   
                                 jQuery('.wpbc_is_load_js_css_on_specific_pages').addClass('hidden_items'); 
                             }
-                        } ); ";   
+                        } ); ";
         $js_script .= " jQuery('#wpbc_show_advanced_section_link_hide').on( 'click', function(){    
                             jQuery('#wpbc_show_advanced_section_link_hide').toggle(200);                            
                             jQuery('#wpbc_show_advanced_section_link_show').animate( {opacity: 1}, 200 ).toggle(200);                        
                             jQuery('.wpbc_advanced_js_loading_settings').addClass('hidden_items'); 
-                        } ); ";   
+                        } ); ";
         $js_script .= " jQuery('#set_gen_booking_is_load_js_css_on_specific_pages').on( 'change', function(){    
                             if ( this.checked ) { 
-                                var answer = confirm('"                 
+                                var answer = confirm('"
                                               . esc_js( __( 'Warning', 'booking' ) ) . '! '
-                                              . esc_js( __( 'You are need to be sure what you are doing. You are disable of loading some JavaScripts Do you really want to do this?', 'booking' ) )                                                                                                                           
+                                              . esc_js( __( 'You are need to be sure what you are doing. You are disable of loading some JavaScripts Do you really want to do this?', 'booking' ) )
                                       .  "' );  
                                 if ( answer) {
                                     this.checked = true;                                       
@@ -1924,28 +1796,28 @@ if(1){
                             jQuery('.wpbc_is_load_js_css_on_specific_pages').addClass('hidden_items'); 
                         }
                                                 
-                        ";         
-        
-        
+                        ";
+
+
         // Click  on Powered by  links
         $js_script .= " jQuery('#wpbc_powered_by_link_show').on( 'click', function(){                                 
                             jQuery('#wpbc_powered_by_link_show').toggle(200);                            
                             jQuery('#wpbc_powered_by_link_hide').animate( {opacity: 1}, 200 ).toggle(200);  
                             jQuery('.wpbc_is_show_powered_by_notice').removeClass('hidden_items');                             
-                        } ); ";   
+                        } ); ";
         $js_script .= " jQuery('#wpbc_powered_by_link_hide').on( 'click', function(){    
                             jQuery('#wpbc_powered_by_link_hide').toggle(200);                            
                             jQuery('#wpbc_powered_by_link_show').animate( {opacity: 1}, 200 ).toggle(200);   
                             jQuery('.wpbc_is_show_powered_by_notice').addClass('hidden_items'); 
-                        } ); ";   
+                        } ); ";
 
-        
+
         // Show confirmation window,  if user activate this checkbox
         $js_script .= " jQuery('#set_gen_booking_is_delete_if_deactive').on( 'change', function(){    
                             if ( this.checked ) { 
-                                var answer = confirm('"                 
+                                var answer = confirm('"
                                               . esc_js( __( 'Warning', 'booking' ) ) . '! '
-                                              . esc_js( __( 'If you check this option, all booking data will be deleted when you uninstall this plugin. Do you really want to do this?', 'booking' ) )                                                        
+                                              . esc_js( __( 'If you check this option, all booking data will be deleted when you uninstall this plugin. Do you really want to do this?', 'booking' ) )
                                       .  "' );  
                                 if ( answer) {
                                     this.checked = true;                                                                           
@@ -1954,7 +1826,7 @@ if(1){
                                 } 
                             }
                         } );                         
-                        ";         
+                        ";
 
 
 
@@ -2103,7 +1975,7 @@ if(1){
         // Enqueue JS to  the footer of the page
         wpbc_enqueue_js( $js_script );
     }
-    
+
 }
 
 
@@ -2118,7 +1990,7 @@ function wpbc_settings_validate_fields_before_saving__all( $validated_fields ) {
 
 
     $validated_fields['booking_thank_you_page_URL'] = wpbc_make_link_relative( $validated_fields['booking_thank_you_page_URL'] );
-    
+
     unset( $validated_fields[ 'booking_date_format_selection' ] );                      // We do not need to this field,  because saving to DB only: "date_format" field
     unset( $validated_fields[ 'booking_time_format_selection' ] );                      // We do not need to this field,  because saving to DB only: "time_format" field
 

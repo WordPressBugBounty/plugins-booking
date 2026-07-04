@@ -55,6 +55,7 @@ class WPBC_FE_Render {
 			'calendar_dates_end'              => '',
 			'booking_hash'                    => '',
 			'form_status'                     => 'published',
+			'calendar_request_overrides'      => array(),
 		);
 		$params_arr     = wp_parse_args( $params_arr, $default_params );
 		$is_echo        = ( ! empty( $params_arr['is_echo'] ) );
@@ -107,6 +108,7 @@ class WPBC_FE_Render {
 			'custom_form'                     => $params_arr['custom_booking_form'],
 			'calendar_dates_start'            => $calendar_dates_range['start'],
 			'calendar_dates_end'              => $calendar_dates_range['end'],
+			'calendar_request_overrides'      => $params_arr['calendar_request_overrides'],
 		);
 
 		$start_script_code = wpbc__calendar__load( $calendar_load_params );
@@ -181,6 +183,7 @@ class WPBC_FE_Render {
 			'calendar_dates_start' => '',
 			'calendar_dates_end'   => '',
 			'booking_hash'         => '',
+			'calendar_request_overrides' => array(),
 		);
 		$params_arr     = wp_parse_args( $params_arr, $default_params );
 		$is_echo        = ( ! empty( $params_arr['is_echo'] ) );
@@ -231,6 +234,7 @@ class WPBC_FE_Render {
 			'custom_form'                     => 'standard',                             // Because we show only  'AVAILABILITY CALENDAR' without the form,  at all.
 			'calendar_dates_start'            => $calendar_dates_range['start'],
 			'calendar_dates_end'              => $calendar_dates_range['end'],
+			'calendar_request_overrides'      => $params_arr['calendar_request_overrides'],
 		);
 		$start_script_code    = wpbc__calendar__load( $calendar_load_params );
 

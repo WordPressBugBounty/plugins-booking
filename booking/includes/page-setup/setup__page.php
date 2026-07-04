@@ -58,7 +58,9 @@ class WPBC_Page_AJX_Setup_Wizard extends WPBC_Page_Structure {
 
         $tabs = array();
         $tabs[ 'step_01' ] = array(
+			'is_force_full_screen'              => true,                                  // true | false. Force full screen independently from user preference.
 			'left_navigation__default_view_mode' => 'none',                               // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'left_navigation__force_view_mode'   => 'none',                               // '' | 'min' | 'compact' | 'max' | 'none'. Force sidebar mode independently from user preference.
                               'title'		=> __( 'Setup', 'booking' )						// Title of TAB
                             , 'hint'		=> false//__( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Hint
                             , 'page_title'	=> false//__( 'Setup', 'booking' ) . ' - '	 . 'Booking Calendar'					// Title of Page

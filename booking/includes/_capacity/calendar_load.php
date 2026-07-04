@@ -166,6 +166,7 @@ function wpbc__calendar__load( $params = array() ) {
 		'calendar_dates_start'            => '',
 		'calendar_dates_end'              => '',
 		'skip_general_availability'       => 0,
+		'calendar_request_overrides'      => array(),
 	);
 	$params = wp_parse_args( $params, $defaults );
 
@@ -225,6 +226,14 @@ function wpbc__calendar__load( $params = array() ) {
 		'aggregate_type'            => (string) $aggregate_type,
 		'skip_general_availability' => (int) $params['skip_general_availability'],
 	);
+
+	if ( ! empty( $params['calendar_request_overrides'] ) && is_array( $params['calendar_request_overrides'] ) ) {
+		foreach ( $params['calendar_request_overrides'] as $override_key => $override_value ) {
+			if ( 0 === strpos( (string) $override_key, 'wpbc_settings_calendar_preview' ) ) {
+				$params_for_request[ $override_key ] = $override_value;
+			}
+		}
+	}
 
 	// Send Ajax request to load bookings.
 	$js_body .= " wpbc_calendar__load_data__ajx(" . wp_json_encode( $params_for_request ) . "); ";
@@ -323,6 +332,39 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 									'aggregate_type'            => array( 'validate' => 's', 'default' => 'all' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
 									'dates_to_check'            => array( 'validate' => 'array', 'default' => '' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
 									'skip_general_availability' => array( 'validate' => 'd', 'default' => 0 ),
+									'wpbc_settings_calendar_preview'                => array( 'validate' => 'd', 'default' => 0 ),
+									'wpbc_settings_calendar_preview_changeover'      => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_triangles'       => array( 'validate' => array( 'On', 'Off' ), 'default' => 'On' ),
+									'wpbc_settings_calendar_preview_recurrent_time'  => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_last_checkout'   => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_excerpt_on_pages' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_excerpt_pages'   => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_excerpt_resources' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_show_legend'     => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_show_numbers' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_vertical' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_show_available' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_text_available' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_legend_show_pending' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_text_pending' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_legend_show_approved' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_text_approved' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_legend_show_partially' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_text_partially' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_legend_show_unavailable' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_legend_text_unavailable' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_disable_timeslots_tooltip' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_timeslot_word'    => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_show_availability_tooltip' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_availability_word' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_show_availability_cell' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_availability_cell_word' => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_show_cost_tooltip' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_cost_word'        => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_show_cost_cell'   => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_cost_currency'    => array( 'validate' => 's', 'default' => '' ),
+									'wpbc_settings_calendar_preview_show_booked_details' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
+									'wpbc_settings_calendar_preview_booked_details'   => array( 'validate' => 's', 'default' => '' ),
 																				 )
 											)
 					);
@@ -396,7 +438,12 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 	// $availability_per_days__params['dates_to_check'] = array( '2025-01-01', '2025-12-31' );  // FixIn: 10.13.1.4.
 	global $wpbc__skip_get_bk_options;
 
-	$previous_skip_get_bk_options = $wpbc__skip_get_bk_options;
+	$previous_skip_get_bk_options                = $wpbc__skip_get_bk_options;
+	$previous_settings_calendar_preview_options  = null;
+	$is_settings_calendar_preview                = (
+		function_exists( 'wpbc_settings_calendar__is_calendar_load_preview_request_allowed' )
+		&& wpbc_settings_calendar__is_calendar_load_preview_request_allowed( $request_params )
+	);
 	if ( ! empty( $availability_per_days__params['skip_general_availability'] ) ) {
 		$wpbc__skip_get_bk_options = array_unique(
 			array_merge(
@@ -405,9 +452,17 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 			)
 		);
 	}
+	if ( $is_settings_calendar_preview ) {
+		$previous_settings_calendar_preview_options = wpbc_settings_calendar__preview_options_push(
+			wpbc_settings_calendar__get_calendar_load_preview_options( $request_params )
+		);
+	}
 
 	$availability_per_days_arr = wpbc_get_availability_per_days_arr( $availability_per_days__params );
 	$wpbc__skip_get_bk_options = $previous_skip_get_bk_options;
+	if ( $is_settings_calendar_preview ) {
+		wpbc_settings_calendar__preview_options_pop( $previous_settings_calendar_preview_options );
+	}
 
 
 	$ajx_data_arr = array( /**

@@ -513,6 +513,44 @@ function wpbc_bfb_is_brand_new_install__before_version_update() {
 }
 
 /**
+ * Let the initial standard BFB form follow the global calendar days-selection setting.
+ *
+ * Some bundled templates intentionally override days selection for their own use case.
+ * The installed "standard" form should not carry that template-level override, because
+ * the global Settings > Calendar page is the canonical default for a new site.
+ *
+ * @param array $template_record Form Builder template record.
+ *
+ * @return array
+ */
+function wpbc_bfb_activation__set_standard_form_default_days_selection( $template_record ) {
+
+	if ( empty( $template_record ) || ! is_array( $template_record ) ) {
+		return $template_record;
+	}
+
+	$settings = array();
+	if ( ! empty( $template_record['settings_json'] ) ) {
+		$decoded = json_decode( (string) $template_record['settings_json'], true );
+		if ( is_array( $decoded ) ) {
+			$settings = $decoded;
+		}
+	}
+
+	if ( empty( $settings['options'] ) || ! is_array( $settings['options'] ) ) {
+		$settings['options'] = array();
+	}
+
+	$settings['options']['booking_type_of_day_selections'] = '';
+
+	$template_record['settings_json'] = function_exists( 'wpbc_form_config__encode_json' )
+		? wpbc_form_config__encode_json( $settings )
+		: wp_json_encode( $settings );
+
+	return $template_record;
+}
+
+/**
  * Maybe create the initial standard BFB form from a bundled template.
  *
  * Used only during brand new plugin activation, before booking_version_num
@@ -531,7 +569,9 @@ function wpbc_bfb_maybe_create_initial_standard_form_from_template() {
 	}
 
 	if ( function_exists( 'wpbc_get_bfb_template_record_by_key' ) ) {
-		$template_record = wpbc_get_bfb_template_record_by_key( 'time_appointments_3_steps_review_with_hints' );
+		// Default Booking Form Template - Just  after Booking Calendar activation!
+		// $template_record = wpbc_get_bfb_template_record_by_key( 'time_appointments_3_steps_review_with_hints' );     // Time appointments.
+		$template_record = wpbc_get_bfb_template_record_by_key( 'dates_2_columns_sidebar_hints' );                      // Full  Days - 2 Columns - with  dates hints.
 	} else {
 		$template_record = array();
 	}
@@ -539,6 +579,8 @@ function wpbc_bfb_maybe_create_initial_standard_form_from_template() {
 	if ( empty( $template_record ) || ! is_array( $template_record ) ) {
 		return false;
 	}
+
+	$template_record = wpbc_bfb_activation__set_standard_form_default_days_selection( $template_record );
 
 	$template_record['form_slug']           = 'standard';
 	$template_record['status']              = 'published';

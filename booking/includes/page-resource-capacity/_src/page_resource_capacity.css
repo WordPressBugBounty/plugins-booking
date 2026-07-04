@@ -1,0 +1,19 @@
+.wpbc_resource_capacity_page {
+	max-width: none;
+}
+
+.wpbc_resource_capacity_page .wpbc_sub_settings_grayed {
+	background-color: #f3f3f3;
+}
+
+.wpbc_resource_capacity_page .wpbc_sub_settings_grayed th {
+	padding: 10px 0 0 20px;
+}
+
+.wpbc_resource_capacity_page .wpbc_sub_settings_grayed td fieldset {
+	padding: 0 20px;
+}
+
+.wpbc_resource_capacity_page .wpbc_submit_button {
+	margin-top: 12px;
+}

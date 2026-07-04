@@ -58,15 +58,63 @@ jQuery(
 				$( 'input.wpbc_deactivate-feedback-input' ).on(
 					'click',
 					function () {
-						if ( jQuery( "form.wpbc_deactivate-feedback-form" ).find( 'input[name="reason_slug"]:checked' ).length ) {
-							jQuery( '.wpbc_deactivate-feedback-popup-form-more-details' ).show();
-							jQuery( '.wpbc_deactivate-feedback-popup-form-footer .skip' ).hide();
-						} else {
-							jQuery( '.wpbc_deactivate-feedback-popup-form-more-details' ).hide();
-							jQuery( '.wpbc_deactivate-feedback-popup-form-footer .skip' ).show();
+						_that.set_more_details_state( jQuery( "form.wpbc_deactivate-feedback-form" ) );
+					}
+				);
+
+				$( '#wpbc_deactivate-feedback-popup-wrapper' ).on(
+					'input',
+					'.feedback-textarea',
+					function () {
+						if ( '' !== jQuery.trim( jQuery( this ).val() ) ) {
+							_that.clear_more_details_error( jQuery( this ).closest( 'form.wpbc_deactivate-feedback-form' ) );
 						}
 					}
 				);
+			},
+			set_more_details_state: function (form) {
+				var has_selected_reason = form.find( 'input[name="reason_slug"]:checked' ).length > 0;
+				var details_wrap        = form.find( '.wpbc_deactivate-feedback-popup-form-more-details' );
+				var details_field       = details_wrap.find( '.feedback-textarea' );
+
+				if ( has_selected_reason ) {
+					details_wrap.show();
+					details_field.prop( 'required', true );
+					form.find( '.wpbc_deactivate-feedback-popup-form-footer .skip' ).hide();
+				} else {
+					details_wrap.hide();
+					details_field.prop( 'required', false ).val( '' );
+					form.find( '.wpbc_deactivate-feedback-popup-form-footer .skip' ).show();
+					this.clear_more_details_error( form );
+				}
+			},
+			clear_more_details_error: function (form) {
+				form.find( '.feedback-textarea' ).attr( 'aria-invalid', 'false' );
+				form.find( '.wpbc_deactivate-feedback-more-details-error' ).hide();
+			},
+			show_more_details_error: function (form, message) {
+				var details_field = form.find( '.feedback-textarea' );
+				form.find( '.wpbc_deactivate-feedback-more-details-error' ).text( message ).show();
+				details_field.attr( 'aria-invalid', 'true' ).trigger( 'focus' );
+			},
+			validate_more_details: function (form) {
+				var details_wrap  = form.find( '.wpbc_deactivate-feedback-popup-form-more-details' );
+				var details_field = details_wrap.find( '.feedback-textarea' );
+				var message       = (
+					'undefined' !== typeof wpbc_plugins_params &&
+					'undefined' !== typeof wpbc_plugins_params.more_details_required_text
+					) ? wpbc_plugins_params.more_details_required_text : 'Please share more details before submitting.';
+
+				if ( details_wrap.is( ':visible' ) && '' === jQuery.trim( details_field.val() ) ) {
+					this.show_more_details_error( form, message );
+					return false;
+				}
+
+				this.clear_more_details_error( form );
+				return true;
+			},
+			enable_submit: function (form) {
+				form.find( "button.submit" ).removeClass( "button-disabled button updating-message" );
 			},
 			send_data: function (form) {
 				var reason_slug = form.find( 'input[name="reason_slug"]:checked' ).map(
@@ -77,6 +125,10 @@ jQuery(
 
 				if ( 0 === jQuery( "form.wpbc_deactivate-feedback-form" ).find( 'input[name="reason_slug"]:checked' ).length ) {
 					alert( "Please select at least one option from the list" );
+					return;
+				}
+
+				if ( ! this.validate_more_details( form ) ) {
 					return;
 				}
 
@@ -123,8 +175,21 @@ jQuery(
 						},
 					}
 				).done(
+					function (response) {
+						if ( response && response.success ) {
+							window.location = form.find( "a.skip" ).attr( "href" );
+							return;
+						}
+
+						_that.enable_submit( form );
+						_that.show_more_details_error(
+							form,
+							response && response.data && response.data.message ? response.data.message : 'Please share more details before submitting.'
+						);
+					}
+				).fail(
 					function () {
-						window.location = form.find( "a.skip" ).attr( "href" );
+						_that.enable_submit( form );
 					}
 				);
 			},

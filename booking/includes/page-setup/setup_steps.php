@@ -18,6 +18,16 @@ class WPBC_SETUP_WIZARD_STEPS {
 	private $steps_arr = array();
 
 	/**
+	 * Whether setup route data has been initialized for this instance.
+	 *
+	 * The class is used both as a renderer and as an early setup-state helper. Some callers can reach it before the
+	 * WordPress init hook, so route data must be available before any DB normalization or status checks run.
+	 *
+	 * @var bool
+	 */
+	private $is_steps_data_initialized = false;
+
+	/**
 	 * Whether the setup bar render hook has already been registered.
 	 *
 	 * This class is also used as a setup-state helper in AJAX and routing code, so multiple instances can exist during
@@ -49,6 +59,16 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 	}
 
+	/**
+	 * Check whether translated strings can be loaded without triggering WordPress just-in-time translation notices.
+	 *
+	 * @return bool
+	 */
+	private function is_i18n_ready() {
+
+		return ( WPBC()->is_wp_inited() || did_action( 'init' ) );
+	}
+
 
 	/**
 	 * Define Steps Data Structure  -  Init
@@ -57,6 +77,8 @@ class WPBC_SETUP_WIZARD_STEPS {
 	 */
 	public function init_steps_data(){
 
+		$is_i18n_ready = $this->is_i18n_ready();
+
 		$step_default_params = array(
 										'show_section_left'  => false,
 										'show_section_right' => false,
@@ -64,8 +86,8 @@ class WPBC_SETUP_WIZARD_STEPS {
 										'do_action'          => 'none',
 										'prior'              => '',
 										'next'               => '',
-										'prior_title' 		 => __( 'Go Back', 'booking' ),
-										'next_title' 		 => __( 'Save and Continue', 'booking' )
+										'prior_title' 		 => $is_i18n_ready ? __( 'Go Back', 'booking' ) : 'Go Back',
+										'next_title' 		 => $is_i18n_ready ? __( 'Save and Continue', 'booking' ) : 'Save and Continue'
 									);
 		$steps_arr = array();
 
@@ -87,7 +109,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 			$steps_arr[ $step_name ]['prior']     = ( 0 === $step_index ) ? '' : $route[ $step_index - 1 ];
 			$steps_arr[ $step_name ]['next']      = isset( $route[ $step_index + 1 ] ) ? $route[ $step_index + 1 ] : 'welcome';
 
-			if ( function_exists( 'wpbc_setup_wizard__get_step_route_metadata' ) ) {
+			if ( $is_i18n_ready && function_exists( 'wpbc_setup_wizard__get_step_route_metadata' ) ) {
 				$steps_arr[ $step_name ] = array_merge(
 					$steps_arr[ $step_name ],
 					wpbc_setup_wizard__get_step_route_metadata( $step_name )
@@ -95,13 +117,26 @@ class WPBC_SETUP_WIZARD_STEPS {
 			}
 		}
 
-		foreach ( array( 'date_selection', 'working_time', 'time_slots_availability', 'date_availability', 'form_structure', 'color_theme', 'wizard_publish' ) as $continue_step_name ) {
+		foreach ( array( 'date_selection', 'changeover_days', 'working_time', 'time_slots_availability', 'date_availability', 'form_structure', 'color_theme', 'wizard_publish' ) as $continue_step_name ) {
 			if ( isset( $steps_arr[ $continue_step_name ] ) ) {
-				$steps_arr[ $continue_step_name ]['next_title'] = __( 'Continue', 'booking' );
+				$steps_arr[ $continue_step_name ]['next_title'] = $is_i18n_ready ? __( 'Continue', 'booking' ) : 'Continue';
 			}
 		}
 
 		$this->steps_arr = $steps_arr;
+		$this->is_steps_data_initialized = true;
+	}
+
+	/**
+	 * Ensure setup route data is available before this instance reads or normalizes step state.
+	 *
+	 * @return void
+	 */
+	private function ensure_steps_data_initialized() {
+
+		if ( ! $this->is_steps_data_initialized ) {
+			$this->init_steps_data();
+		}
 	}
 
 	/**
@@ -109,7 +144,9 @@ class WPBC_SETUP_WIZARD_STEPS {
 	 * @return array
 	 */
 	public function get_steps_arr(){
-	    return $this->steps_arr;
+		$this->ensure_steps_data_initialized();
+
+		return $this->steps_arr;
 	}
 
 
@@ -479,6 +516,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 		$active_steps_names = array_keys( $this->get_steps_arr() );
 		$normalized_steps   = array();
 
+		if ( empty( $active_steps_names ) ) {
+			return is_array( $steps_is_done ) ? $steps_is_done : array();
+		}
+
 		foreach ( $active_steps_names as $step_name ) {
 			$normalized_steps[ $step_name ] = $is_completed ? true : ( ( is_array( $steps_is_done ) && isset( $steps_is_done[ $step_name ] ) ) ? (bool) $steps_is_done[ $step_name ] : false );
 		}
@@ -711,6 +752,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 		$steps_arr = $this->db__get_steps_is_done();
 
+		if ( empty( $steps_arr ) ) {
+			return false;
+		}
+
 		foreach ( $steps_arr as $step_name => $steps_val ) {
 			if ( empty( $steps_val ) ) {
 				return false;
@@ -854,6 +899,12 @@ class WPBC_SETUP_WIZARD_STEPS {
 					top: auto !important;
 					right: var(--wpbc-setup-bar-auto-right, 15px) !important;
 					bottom: 15px !important;
+				}
+				.wpbc_page_top__wizard_button.wpbc_setup_wizard_bar_auto_top {
+					left: auto !important;
+					top: var(--wpbc-setup-bar-auto-top, 15px) !important;
+					right: var(--wpbc-setup-bar-auto-right, 15px) !important;
+					bottom: auto !important;
 				}
 				.wpbc_page_top__wizard_button.wpbc_setup_wizard_bar_is_dragging {
 					user-select: none;
@@ -1223,10 +1274,12 @@ class WPBC_SETUP_WIZARD_STEPS {
 						$bar
 							.removeClass( 'wpbc_setup_wizard_bar_is_moved' )
 							.removeClass( 'wpbc_setup_wizard_bar_auto_shifted' )
+							.removeClass( 'wpbc_setup_wizard_bar_auto_top' )
 							.css( {
 								'--wpbc-setup-bar-left': '',
 								'--wpbc-setup-bar-bottom': '',
-								'--wpbc-setup-bar-auto-right': ''
+								'--wpbc-setup-bar-auto-right': '',
+								'--wpbc-setup-bar-auto-top': ''
 							} );
 						return;
 					}
@@ -1240,11 +1293,22 @@ class WPBC_SETUP_WIZARD_STEPS {
 						$bar
 							.addClass( 'wpbc_setup_wizard_bar_is_moved' )
 							.removeClass( 'wpbc_setup_wizard_bar_auto_shifted' )
+							.removeClass( 'wpbc_setup_wizard_bar_auto_top' )
 							.css( {
 								'--wpbc-setup-bar-left': clampedPosition.left + 'px',
 								'--wpbc-setup-bar-bottom': clampedPosition.bottom + 'px',
-								'--wpbc-setup-bar-auto-right': ''
+								'--wpbc-setup-bar-auto-right': '',
+								'--wpbc-setup-bar-auto-top': ''
 							} );
+					}
+
+					function wpbcSetupWizardShouldUseTopDefault() {
+						return -1 !== jQuery.inArray( step, [
+							'date_selection',
+							'changeover_days',
+							'working_time',
+							'time_slots_availability'
+						] );
 					}
 
 					function wpbcSetupWizardGetRightSidebarOffset() {
@@ -1293,14 +1357,30 @@ class WPBC_SETUP_WIZARD_STEPS {
 						rightOffset = wpbcSetupWizardGetRightSidebarOffset();
 						maxRight = Math.max( 15, jQuery( window ).width() - barWidth - 10 );
 
+						if ( wpbcSetupWizardShouldUseTopDefault() ) {
+							$bar
+								.removeClass( 'wpbc_setup_wizard_bar_is_moved' )
+								.addClass( 'wpbc_setup_wizard_bar_auto_shifted' )
+								.addClass( 'wpbc_setup_wizard_bar_auto_top' )
+								.css( {
+									'--wpbc-setup-bar-left': '',
+									'--wpbc-setup-bar-bottom': '',
+									'--wpbc-setup-bar-auto-right': Math.min( Math.max( rightOffset, 15 ), maxRight ) + 'px',
+									'--wpbc-setup-bar-auto-top': '15px'
+								} );
+							return;
+						}
+
 						if ( rightOffset > 15 ) {
 							$bar
 								.removeClass( 'wpbc_setup_wizard_bar_is_moved' )
+								.removeClass( 'wpbc_setup_wizard_bar_auto_top' )
 								.addClass( 'wpbc_setup_wizard_bar_auto_shifted' )
 								.css( {
 									'--wpbc-setup-bar-left': '',
 									'--wpbc-setup-bar-bottom': '',
-									'--wpbc-setup-bar-auto-right': Math.min( rightOffset, maxRight ) + 'px'
+									'--wpbc-setup-bar-auto-right': Math.min( rightOffset, maxRight ) + 'px',
+									'--wpbc-setup-bar-auto-top': ''
 								} );
 							return;
 						}

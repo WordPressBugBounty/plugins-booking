@@ -74,8 +74,11 @@ if ( is_plugin_active( 'booking-calendar-com/booking-calendar-com.php' ) ) {
 				<div class="wpbc_deactivate-feedback-popup-form-more-details">
 					<label for="wpbc_deactivate-feedback-more-details"
 						class="wpbc_deactivate-feedback-label"><?php echo wp_kses_post( __( 'Could you share more details? We\'d love to fix them!', 'booking' ) ); ?></label>
-					<textarea name="wpbc_deactivate-feedback-more-details" placeholder="<?php echo esc_attr( __( 'Please share your feedback', 'booking' ) ); ?>"
-							class="feedback-textarea" rows="4"></textarea>
+					<textarea id="wpbc_deactivate-feedback-more-details" name="wpbc_deactivate-feedback-more-details" placeholder="<?php echo esc_attr( __( 'Please share your feedback', 'booking' ) ); ?>"
+							class="feedback-textarea" rows="4" aria-describedby="wpbc_deactivate-feedback-more-details-error" aria-invalid="false"></textarea>
+					<span id="wpbc_deactivate-feedback-more-details-error" class="wpbc_deactivate-feedback-more-details-error" aria-live="polite">
+						<?php esc_html_e( 'Please share more details before submitting.', 'booking' ); ?>
+					</span>
 				</div>
 				<button class="submit" type="submit"><?php esc_html_e( 'Submit &amp; Deactivate', 'booking' ); ?></button>
 			</div>

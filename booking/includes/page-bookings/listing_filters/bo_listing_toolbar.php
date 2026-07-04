@@ -25,6 +25,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 function wpbc_bo_listing__show_send_emails_btn( $active_page_tag, $active_tab_tab ) {
 
 	if ( ( 'wpbc' === $active_page_tag ) && ( 'vm_booking_listing' === $active_tab_tab ) ) {
+		$defaults                      = wpbc_ajx_get__request_params__names_default( 'default' );
+		$escaped_search_request_params = false;
+
+		if ( function_exists( 'wpbc_ajx__user_request_params__get_sanitized' ) ) {
+			$escaped_search_request_params = wpbc_ajx__user_request_params__get_sanitized( wpbc_get_current_user_id() );
+		}
+		if ( ! is_array( $escaped_search_request_params ) ) {
+			$escaped_search_request_params = array();
+		}
 		?>
 		<div class="wpbc_ajx_toolbar wpbc_no_borders wpbc_not_toolbar_is_send_emails" style="margin-left: auto;">
 			<div class="ui_container ui_container_micro">
@@ -33,7 +42,7 @@ function wpbc_bo_listing__show_send_emails_btn( $active_page_tag, $active_tab_ta
 						<?php
 						// This JS var wpbc_ajx_booking_listing.search_get_param( 'ui_usr__send_emails' ) can be 'send' | 'not_send' .
 
-						wpbc_bo_listing__is_send_emails_toggle( '', wpbc_ajx_get__request_params__names_default( 'default' ) );
+						wpbc_bo_listing__is_send_emails_toggle( $escaped_search_request_params, $defaults );
 						?>
 					</div>
 				</div>
@@ -41,15 +50,23 @@ function wpbc_bo_listing__show_send_emails_btn( $active_page_tag, $active_tab_ta
 		</div>
 		<script type="text/javascript">
 			(function () {
+				var wait_count = 0;
 				var a = setInterval( function () {
 					if ( ('undefined' === typeof wpbc_ajx_booking_listing) || ('undefined' === typeof jQuery) || !window.jQuery ) {
 						return;
 					}
-					clearInterval( a );
 					jQuery( document ).ready( function () {
 						var param_ui_usr__send_emails = wpbc_ajx_booking_listing.search_get_param( 'ui_usr__send_emails' );
-						param_ui_usr__send_emails     = ('send' === param_ui_usr__send_emails);
-						jQuery( "#ui_usr__send_emails" ).prop( "checked", param_ui_usr__send_emails );
+
+						if ( ( 'send' === param_ui_usr__send_emails ) || ( 'not_send' === param_ui_usr__send_emails ) ) {
+							clearInterval( a );
+							jQuery( "#ui_usr__send_emails" ).prop( "checked", ( 'send' === param_ui_usr__send_emails ) );
+						}
+
+						wait_count++;
+						if ( wait_count > 20 ) {
+							clearInterval( a );
+						}
 					} );
 				}, 500 );
 			})();

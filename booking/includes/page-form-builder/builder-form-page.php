@@ -54,15 +54,17 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 		$tabs = array();
 		$tabs['builder_booking_form'] = array(
 			'is_default_full_screen'                    => true,                             // true | false.  By default value is: false.
-			'is_show_top_path'                          => false,                             // true | false.  By default value is: false.
+			'is_force_full_screen'                      => true,                             // true | false. Force full screen independently from user preference.
+			'is_show_top_path'                          => true,                              // true | false.  By default value is: true.
 			'is_show_top_navigation'                    => false,                            // true | false.  By default value is: false.
 			'right_vertical_sidebar__is_show'           => true,                             // true | false.  By default value is: false.
 			'right_vertical_sidebar__default_view_mode' => '',                               // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'right_vertical_sidebar_compact__is_show'   => true,                             // true | false.  By default value is: false.
 			'left_navigation__default_view_mode'        => 'compact',                        // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'left_navigation__force_view_mode'          => 'compact',                        // '' | 'min' | 'compact' | 'max' | 'none'. Force sidebar mode independently from user preference.
 
-			'title' 									=> __( 'Forms Builder', 'booking' ) .                            // Title of TAB.
-														   '<span class="wpbc_new_label" style="margin-left: auto;">' . esc_html__( 'New', 'booking' ) . '</span>',
+			'top_path_title'                            => __( 'Forms Builder', 'booking' ),
+			'title' 									=> __( 'Forms Builder', 'booking' ),                            // Title of TAB.
 			'hint'                                      => '',                            //__( 'Define available and unavailable days for your calendar(s).', 'booking' ),     // Hint.
 			'page_title'                                => __( 'Forms Builder', 'booking' ),                            // Title of Page.
 			'link'                                      => '',                            // Can be skiped,  then generated link based on Page and Tab tags. Or can  be extenral link.

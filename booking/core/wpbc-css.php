@@ -92,11 +92,7 @@ class WPBC_CSS extends WPBC_JS_CSS {
 		$server_request_uri = ( ( isset( $_SERVER['REQUEST_URI'] ) ) ? sanitize_text_field( $_SERVER['REQUEST_URI'] ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash */ /* FixIn: sanitize_unslash */
 		if (
 			( 'admin' !== $where_to_load ) ||
-			( wpbc_is_new_booking_page() ) ||
-			( function_exists( 'wpbc_is_add_booking_modal_on_booking_listing_page' ) && wpbc_is_add_booking_modal_on_booking_listing_page() ) ||
-			( wpbc_is_setup_wizard_page() ) ||
-			( wpbc_is_settings_form_page() ) ||
-			( wpbc_is_settings_color_themes_page() ) ||
+			( wpbc_is_admin_page_with_frontend_booking_preview() ) ||
 			( ( wpbc_is_settings_page() ) && ( strpos( $server_request_uri, 'tab=payment' ) !== false ) )
 		) {
 			wpbc_enqueue_styles__front_end();
@@ -116,7 +112,6 @@ class WPBC_CSS extends WPBC_JS_CSS {
 			wpbc_is_new_booking_page() ||
 			wpbc_is_setup_wizard_page() ||
 			wpbc_is_settings_form_page() ||
-			wpbc_is_settings_color_themes_page() ||
 			wpbc_is_resources_page() ||
 			wpbc_is_settings_page()
 		) {
@@ -153,7 +148,7 @@ class WPBC_CSS extends WPBC_JS_CSS {
 function wpbc_enqueue_styles__front_end() {
 
 	// Client or Add New Booking page.
-	if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || ( wpbc_is_setup_wizard_page() || wpbc_is_builder_booking_form_page() ) ) {                                                // FixIn: 8.7.11.10.
+	if ( ( 'On' === get_bk_option( 'booking_timeslot_picker' ) ) || wpbc_is_setup_wizard_page() || wpbc_is_builder_booking_form_page() || wpbc_is_settings_themes_page() ) {                                                // FixIn: 8.7.11.10.
 		wp_enqueue_style( 'wpbc-time_picker', wpbc_plugin_url( '/css/wpbc_time-selector.css' ), array(), WP_BK_VERSION_NUM );
 
 		$time_picker_skin_path = wpbc_get_time_picker_skin_url();

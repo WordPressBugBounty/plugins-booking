@@ -286,6 +286,17 @@ function wpbc_get_resources_url( $is_absolute_url = true, $is_old = true ) {
 }
 
 /**
+ * Get URL of Booking > Resources > Capacity page
+ *
+ * @param boolean $is_absolute_url  - Absolute or relative url { default: true }
+ * @param boolean $is_old           - { default: true }
+ * @return string                   - URL  to  menu
+ */
+function wpbc_get_resource_capacity_url( $is_absolute_url = true, $is_old = true ) {
+	return wpbc_get_resources_url( $is_absolute_url, $is_old ) . '&tab=capacity';
+}
+
+/**
  * Get URL of Booking > Settings page
  *
  * @param boolean $is_absolute_url  - Absolute or relative url { default: true }
@@ -294,6 +305,28 @@ function wpbc_get_resources_url( $is_absolute_url = true, $is_old = true ) {
  */
 function wpbc_get_settings_url( $is_absolute_url = true, $is_old = true ) {
 	return wpbc_get_menu_url( 'settings', $is_absolute_url, $is_old );
+}
+
+/**
+ * Get URL of Booking > Settings > Calendar page
+ *
+ * @param boolean $is_absolute_url  - Absolute or relative url { default: true }
+ * @param boolean $is_old           - { default: true }
+ * @return string                   - URL  to  menu
+ */
+function wpbc_get_settings_calendar_url( $is_absolute_url = true, $is_old = true ) {
+	return wpbc_get_settings_url( $is_absolute_url, $is_old ) . '&tab=calendar_settings';
+}
+
+/**
+ * Get URL of Booking > Settings > Appearance / Theme page
+ *
+ * @param boolean $is_absolute_url  - Absolute or relative url { default: true }
+ * @param boolean $is_old           - { default: true }
+ * @return string                   - URL  to  menu
+ */
+function wpbc_get_settings_themes_url( $is_absolute_url = true, $is_old = true ) {
+	return wpbc_get_settings_url( $is_absolute_url, $is_old ) . '&tab=themes';
 }
 
 /**
@@ -429,21 +462,57 @@ function wpbc_is_settings_bfb_page( $server_param = 'REQUEST_URI' ) {
 
 
 /**
- * Check if this WP Booking Calendar > Settings > Booking Form page
+ * Check if this WP Booking Calendar > Settings > Appearance / Theme page
  *
  * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
  *
  * @return boolean true | false
  */
-function wpbc_is_settings_color_themes_page( $server_param = 'REQUEST_URI' ) {
+function wpbc_is_settings_themes_page( $server_param = 'REQUEST_URI' ) {
 	// Regular  user overwrite settings.
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	if ( ( is_admin() ) && ( false !== strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) ) && ( false !== strpos( $_SERVER[ $server_param ], '&tab=color_themes' ) ) ) {
+	if ( ( is_admin() ) && ( false !== strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) ) && ( false !== strpos( $_SERVER[ $server_param ], '&tab=themes' ) ) ) {
 		return true;
 	}
 
 	return false;
+}
+
+/**
+ * Check if this WP Booking Calendar > Settings > Calendar page
+ *
+ * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ *
+ * @return boolean true | false
+ */
+function wpbc_is_settings_calendar_page( $server_param = 'REQUEST_URI' ) {
+	// Regular  user overwrite settings.
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	if ( ( is_admin() ) && ( false !== strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) ) && ( false !== strpos( $_SERVER[ $server_param ], '&tab=calendar_settings' ) ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Check if this admin page renders a real front-end booking form or calendar preview.
+ *
+ * @return boolean true | false
+ */
+function wpbc_is_admin_page_with_frontend_booking_preview() {
+
+	return (
+		wpbc_is_new_booking_page()
+		|| wpbc_is_settings_form_page()
+		|| wpbc_is_settings_themes_page()
+		|| wpbc_is_settings_calendar_page()
+		|| wpbc_is_setup_wizard_page()
+		|| wpbc_is_builder_booking_form_page()
+		|| ( function_exists( 'wpbc_is_add_booking_modal_on_booking_listing_page' ) && wpbc_is_add_booking_modal_on_booking_listing_page() )
+	);
 }
 
 /**

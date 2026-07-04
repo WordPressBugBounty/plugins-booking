@@ -71,7 +71,8 @@ class WPBC_Settings_Page_Parts {
 		// -------------------------------------------------------------------------------------------------------------
 		// 'Left Sidebar'  - By default it shoud be ''. Other options: '', 'min', 'compact', 'max'.
 		// -------------------------------------------------------------------------------------------------------------
-		$left_navigation__default_view_mode = strval( $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'left_navigation__default_view_mode' ) );
+		$left_navigation__default_view_mode    = strval( $this->page_structure_obj->get_left_navigation_default_view_mode() );
+		$left_navigation__is_user_mode_enabled = $this->page_structure_obj->is_left_navigation_user_mode_enabled();
 
 		if ( ! empty( $left_navigation__default_view_mode ) ) {
 			if ( 'none' === $left_navigation__default_view_mode ) {
@@ -121,9 +122,10 @@ class WPBC_Settings_Page_Parts {
 
 		wpbc_ui__top_nav(
 			array(
-				'page_tag'           => $this->active_page,
-				'active_page_tab'    => $this->active_tab,
-				'active_page_subtab' => $this->active_subtab,
+				'page_tag'                         => $this->active_page,
+				'active_page_tab'                  => $this->active_tab,
+				'active_page_subtab'               => $this->active_subtab,
+				'is_full_screen_user_mode_enabled' => $this->page_structure_obj->is_full_screen_user_mode_enabled(),
 			)
 		);
 
@@ -133,7 +135,20 @@ class WPBC_Settings_Page_Parts {
 		echo '<div class="wpbc_settings_page_wrapper ' .
 							esc_attr( $left_navigation__default_view_mode ) . ' ' .
 							esc_attr( $right_vertical_sidebar__default_view_mode ) .
-						'">';
+						'" data-wpbc-left-sidebar-user-mode="' . esc_attr( $left_navigation__is_user_mode_enabled ? '1' : '0' ) . '">';
+
+		if ( $left_navigation__is_user_mode_enabled ) {
+			$user_cust_option = 'left_sidebar_view_mode';
+			$nonce_action     = $user_cust_option . '_nonce_act';
+
+			echo '<span id="wpbc_left_sidebar_view_mode_saver" style="display:none;"' .
+				' data-wpbc-u-save-name="' . esc_attr( $user_cust_option ) . '"' .
+				' data-wpbc-u-save-value="' . esc_attr( $left_navigation__default_view_mode ) . '"' .
+				' data-wpbc-u-save-nonce="' . esc_attr( wp_create_nonce( $nonce_action ) ) . '"' .
+				' data-wpbc-u-save-user-id="' . esc_attr( wpbc_get_current_user_id() ) . '"' .
+				' data-wpbc-u-save-action="' . esc_attr( $nonce_action ) . '"' .
+				'></span>';
+		}
 
 		// Left  vertical  menu.
 		wpbc_ui__left_vertical_nav(
@@ -156,9 +171,11 @@ class WPBC_Settings_Page_Parts {
 					<div class="clear"></div>
 					<?php
 
-					$is_show_top_path = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_path' );
+					$is_show_top_path = method_exists( $this->page_structure_obj, 'is_top_path_enabled' )
+						? $this->page_structure_obj->is_top_path_enabled()
+						: $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_path' );
 					if ( $is_show_top_path ) {
-						wpbc_ui_settings__top_path();
+						wpbc_ui_settings__top_path( $this->page_structure_obj );
 					}
 
 					$is_show_top_navigation = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'is_show_top_navigation' );

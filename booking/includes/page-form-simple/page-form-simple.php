@@ -80,7 +80,7 @@ class WPBC_Page_SettingsFormFieldsFree extends WPBC_Page_Structure {
 		);
 
         $tabs[ 'form' ] = array(
-			'is_show_top_path'                   => false,                                // true | false.  By default value is: false.
+			'is_show_top_path'                   => true,                                 // true | false.  By default value is: true.
 			'left_navigation__default_view_mode' => 'compact',                           // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'page_title'                         => __( 'Booking Form', 'booking'). ' (' . __('legacy','booking') . ')',                               // Header - Title.  If false, than hidden.
 			'page_description'                   => __('Add, remove, or customize fields in your booking form.','booking'),                               // Header - Title Description.  If false, than hidden.

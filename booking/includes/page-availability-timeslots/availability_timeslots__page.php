@@ -522,11 +522,12 @@ class WPBC_Page_TimeSlots_Availability extends WPBC_Page_Structure {
 
 		$tabs = array();
 		$tabs['time_slots_availability'] = array(
-			'is_show_top_path'                          => false,
+			'is_show_top_path'                          => true,
 			'right_vertical_sidebar__is_show'           => true,
 			'right_vertical_sidebar__default_view_mode' => '',
 			'right_vertical_sidebar_compact__is_show'   => true,
 			'left_navigation__default_view_mode'        => 'compact',
+			'top_path_title'                            => __( 'Time Slots Availability', 'booking' ),
 			'title'                                     => __( 'Time Slots Availability', 'booking' ).                            // Title of TAB.
 														   '<span class="wpbc_new_label" style="margin-left: auto;">' . esc_html__( 'New', 'booking' ) . '</span>',
 			'hint'                                      => __( 'Flexible blocking time-slot ranges.', 'booking' ),

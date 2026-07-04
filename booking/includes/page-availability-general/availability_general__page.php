@@ -891,13 +891,13 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 		$tabs = array();
 
 		$tabs['general_availability'] = array(
-			'is_show_top_path'                          => false,
+			'is_show_top_path'                          => true,
 			'right_vertical_sidebar__is_show'           => true,
 			'right_vertical_sidebar__default_view_mode' => '',
 			'right_vertical_sidebar_compact__is_show'   => true,
 			'left_navigation__default_view_mode'        => 'compact',
-			'title'                                     => __( 'General Availability', 'booking' ) .
-														   '<span class="wpbc_new_label" style="margin-left: auto;">' . esc_html__( 'New', 'booking' ) . '</span>',
+			'top_path_title'                            => __( 'General Availability', 'booking' ),
+			'title'                                     => __( 'General Availability', 'booking' ),
 			'hint'                                      => __( 'Define global front-end availability rules for all calendars, including unavailable weekdays, booking buffers, and availability limits.', 'booking' ),
 			'page_title'                                => __( 'General Availability', 'booking' ),
 			'link'                                      => '',

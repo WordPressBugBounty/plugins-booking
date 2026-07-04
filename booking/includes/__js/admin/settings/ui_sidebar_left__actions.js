@@ -4,9 +4,39 @@
 // =====================================================================================================================
 
 /**
- * Expand Vertical Left Bar.
+ * Save user's preferred left sidebar mode.
+ *
+ * @param string mode
  */
-function wpbc_admin_ui__sidebar_left__do_max() {
+function wpbc_admin_ui__sidebar_left__save_mode( mode ) {
+	var allowed_modes = [ 'min', 'compact', 'max' ];
+
+	if ( allowed_modes.indexOf( mode ) === -1 ) {
+		return;
+	}
+
+	var $saver = jQuery( '#wpbc_left_sidebar_view_mode_saver' );
+
+	if ( ! $saver.length ) {
+		return;
+	}
+
+	if ( 'function' !== typeof wpbc_save_custom_user_data_from_element ) {
+		return;
+	}
+
+	$saver.data( 'wpbc-u-save-value', mode );
+	$saver.attr( 'data-wpbc-u-save-value', mode );
+
+	wpbc_save_custom_user_data_from_element( $saver.get( 0 ) );
+}
+
+/**
+ * Expand Vertical Left Bar.
+ *
+ * @param bool is_save_user_state Save this mode as user's preference.
+ */
+function wpbc_admin_ui__sidebar_left__do_max( is_save_user_state ) {
 	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min max compact none' );
 	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'max' );
 	jQuery( '.wpbc_ui__top_nav__btn_open_left_vertical_nav' ).addClass( 'wpbc_ui__hide' );
@@ -14,12 +44,18 @@ function wpbc_admin_ui__sidebar_left__do_max() {
 
 	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
 	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_max' );
+
+	if ( is_save_user_state ) {
+		wpbc_admin_ui__sidebar_left__save_mode( 'max' );
+	}
 }
 
 /**
  * Hide Vertical Left Bar.
+ *
+ * @param bool is_save_user_state Save this mode as user's preference.
  */
-function wpbc_admin_ui__sidebar_left__do_min() {
+function wpbc_admin_ui__sidebar_left__do_min( is_save_user_state ) {
 	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min max compact none' );
 	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'min' );
 	jQuery( '.wpbc_ui__top_nav__btn_open_left_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
@@ -27,12 +63,18 @@ function wpbc_admin_ui__sidebar_left__do_min() {
 
 	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
 	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_min' );
+
+	if ( is_save_user_state ) {
+		wpbc_admin_ui__sidebar_left__save_mode( 'min' );
+	}
 }
 
 /**
  * Colapse Vertical Left Bar.
+ *
+ * @param bool is_save_user_state Save this mode as user's preference.
  */
-function wpbc_admin_ui__sidebar_left__do_compact() {
+function wpbc_admin_ui__sidebar_left__do_compact( is_save_user_state ) {
 	jQuery( '.wpbc_settings_page_wrapper' ).removeClass( 'min max compact none' );
 	jQuery( '.wpbc_settings_page_wrapper' ).addClass( 'compact' );
 	jQuery( '.wpbc_ui__top_nav__btn_open_left_vertical_nav' ).removeClass( 'wpbc_ui__hide' );
@@ -40,6 +82,10 @@ function wpbc_admin_ui__sidebar_left__do_compact() {
 
 	jQuery( '.wp-admin' ).removeClass( 'wpbc_page_wrapper_left_min wpbc_page_wrapper_left_max wpbc_page_wrapper_left_compact wpbc_page_wrapper_left_none' );
 	jQuery( '.wp-admin' ).addClass( 'wpbc_page_wrapper_left_compact' );
+
+	if ( is_save_user_state ) {
+		wpbc_admin_ui__sidebar_left__save_mode( 'compact' );
+	}
 }
 
 /**

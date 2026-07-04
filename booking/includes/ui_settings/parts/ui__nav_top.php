@@ -27,7 +27,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function wpbc_ui__top_nav( $args = array() ) {
 
 	$defaults = array(
-		'attr' => array(),
+		'attr'                             => array(),
+		'is_full_screen_user_mode_enabled' => true,
 	);
 	$params   = wp_parse_args( $args, $defaults );
 
@@ -61,8 +62,8 @@ function wpbc_ui__top_nav( $args = array() ) {
 
 
 	// Full Screen Buttons.
-	wpbc_ui__top_nav__btn_full_screen();
-	wpbc_ui__top_nav__btn_normal_screen();
+	wpbc_ui__top_nav__btn_full_screen( $params );
+	wpbc_ui__top_nav__btn_normal_screen( $params );
 
 	echo '</div>';
 }
@@ -216,12 +217,16 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
  *
  * @return void
  */
-function wpbc_ui__top_nav__btn_full_screen() {
+function wpbc_ui__top_nav__btn_full_screen( $args = array() ) {
+
+	$defaults = array(
+		'is_full_screen_user_mode_enabled' => true,
+	);
+	$params   = wp_parse_args( $args, $defaults );
 
 	$el_arr = array();
 
-	$el_arr['onclick']  = "jQuery( '.wpbc_ui__top_nav__btn_full_screen,.wpbc_ui__top_nav__btn_normal_screen' ).toggleClass( 'wpbc_ui__hide' );";
-	$el_arr['onclick'] .= "jQuery('body').toggleClass('wpbc_admin_full_screen');wpbc_check_full_screen_mode();";
+	$el_arr['onclick'] = 'wpbc_admin_ui__full_screen__do_on( this, ' . ( $params['is_full_screen_user_mode_enabled'] ? 'true' : 'false' ) . ' );';
 
 	$el_arr['font_icon'] = 'wpbc-bi-arrows-fullscreen';
 	$el_arr['hint']      = array(
@@ -231,7 +236,7 @@ function wpbc_ui__top_nav__btn_full_screen() {
 
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_full_screen';
 
-	if ( ! wpbc_is_setup_wizard_page() ) {
+	if ( ( ! wpbc_is_setup_wizard_page() ) && ( $params['is_full_screen_user_mode_enabled'] ) ) {
 
 		// Params for saving user option.
 		$user_cust_option = 'is_full_screen';
@@ -244,12 +249,10 @@ function wpbc_ui__top_nav__btn_full_screen() {
 			'data-wpbc-u-save-user-id' => wpbc_get_current_user_id(),
 			'data-wpbc-u-save-action'  => $nonce_action,
 		);
-		$el_arr['onclick'] .= 'wpbc_save_custom_user_data_from_element(this);';
-
 		?><script type="text/javascript"><?php
 
 			$is_full_screen = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), $user_cust_option );
-			$is_full_screen = ( 'On' === $is_full_screen );
+			$is_full_screen = ( 'On' === wpbc_ui__get_full_screen_mode_from_cookie( $is_full_screen ) );
 
 			echo wpbc_jq_ready_start();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
@@ -270,12 +273,16 @@ function wpbc_ui__top_nav__btn_full_screen() {
  *
  * @return void
  */
-function wpbc_ui__top_nav__btn_normal_screen() {
+function wpbc_ui__top_nav__btn_normal_screen( $args = array() ) {
+
+	$defaults = array(
+		'is_full_screen_user_mode_enabled' => true,
+	);
+	$params   = wp_parse_args( $args, $defaults );
 
 	$el_arr = array();
 
-	$el_arr['onclick']  = "jQuery( '.wpbc_ui__top_nav__btn_full_screen,.wpbc_ui__top_nav__btn_normal_screen' ).toggleClass( 'wpbc_ui__hide' );";
-	$el_arr['onclick'] .= "jQuery('body').toggleClass('wpbc_admin_full_screen');wpbc_check_full_screen_mode();";
+	$el_arr['onclick'] = 'wpbc_admin_ui__full_screen__do_off( this, ' . ( $params['is_full_screen_user_mode_enabled'] ? 'true' : 'false' ) . ' );';
 
 	$el_arr['title']     = '';
 	$el_arr['font_icon'] = 'wpbc-bi-arrows-angle-contract';
@@ -285,19 +292,47 @@ function wpbc_ui__top_nav__btn_normal_screen() {
 	);
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_normal_screen wpbc_ui__hide';
 
-	// Params for saving user option.
-	$user_cust_option = 'is_full_screen';
-	$nonce_action     = $user_cust_option . '_nonce_act';
-	$el_arr['attr']   = array(
-		'data-wpbc-u-save-name'    => $user_cust_option,
-		'data-wpbc-u-save-value'   => 'Off',
-		'data-wpbc-u-save-nonce'   => wp_create_nonce( $nonce_action ), // do not need to  make escaping the values because: wpbc_get_custom_attr() should handle escaping.
-		'data-wpbc-u-save-user-id' => wpbc_get_current_user_id(),
-		'data-wpbc-u-save-action'  => $nonce_action,
-	);
-	$el_arr['onclick'] .= 'wpbc_save_custom_user_data_from_element(this);';
+	if ( $params['is_full_screen_user_mode_enabled'] ) {
+		// Params for saving user option.
+		$user_cust_option = 'is_full_screen';
+		$nonce_action     = $user_cust_option . '_nonce_act';
+		$el_arr['attr']   = array(
+			'data-wpbc-u-save-name'    => $user_cust_option,
+			'data-wpbc-u-save-value'   => 'Off',
+			'data-wpbc-u-save-nonce'   => wp_create_nonce( $nonce_action ), // do not need to  make escaping the values because: wpbc_get_custom_attr() should handle escaping.
+			'data-wpbc-u-save-user-id' => wpbc_get_current_user_id(),
+			'data-wpbc-u-save-action'  => $nonce_action,
+		);
+	}
 
 	wpbc_ui_el__a( $el_arr );
+}
+
+
+/**
+ * Get Full Screen mode from the immediate browser cookie, falling back to saved user meta value.
+ *
+ * @param string $saved_value Saved user-meta value.
+ *
+ * @return string 'On', 'Off', or empty string.
+ */
+function wpbc_ui__get_full_screen_mode_from_cookie( $saved_value = '' ) {
+
+	$saved_value = in_array( $saved_value, array( 'On', 'Off' ), true ) ? $saved_value : '';
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+	if ( ! isset( $_COOKIE['wpbc_admin_full_screen'] ) ) {
+		return $saved_value;
+	}
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+	$cookie_value = sanitize_text_field( $_COOKIE['wpbc_admin_full_screen'] );
+
+	if ( in_array( $cookie_value, array( 'On', 'Off' ), true ) ) {
+		return $cookie_value;
+	}
+
+	return $saved_value;
 }
 
 
@@ -311,6 +346,7 @@ function wpbc_ui__top_nav__btn_normal_screen() {
 function wpbc_check_full_screen_mode_on_loading( $classes ) {
 
 	$is_full_screen = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), 'is_full_screen' );
+	$is_full_screen = wpbc_ui__get_full_screen_mode_from_cookie( $is_full_screen );
 	$is_full_screen = ( 'On' === $is_full_screen );
 
 	if ( ( wpbc_is_this_plugin_page() ) && ( $is_full_screen ) && ( ! wpbc_is_setup_wizard_page() ) ) {

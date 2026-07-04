@@ -18,13 +18,13 @@ if ( ! defined( 'WPBC_FEEDBACK_TIMEOUT' ) ) {       define( 'WPBC_FEEDBACK_TIMEO
 //if ( ! defined( 'WPBC_FEEDBACK_TIMEOUT' ) ) {       define( 'WPBC_FEEDBACK_TIMEOUT',    '+30 seconds' ); }
 
 // == For testing ==
-//update_option( 'booking_feedback_03', gmdate( 'Y-m-d H:i:s', strtotime( '+10 seconds', strtotime( 'now' ) ) ) );
+//update_option( 'booking_feedback_04', gmdate( 'Y-m-d H:i:s', strtotime( '+10 seconds', strtotime( 'now' ) ) ) );
 
 // Init Timer
-// update_option( 'booking_feedback_03', gmdate( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) ) );
+// update_option( 'booking_feedback_04', gmdate( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) ) );
 
 // Reset
-// delete_option( 'booking_feedback_03');
+// delete_option( 'booking_feedback_04');
 
 function wpbc_get_feedback_defaults( $param_name ){
 
@@ -186,7 +186,7 @@ class WPBC_Feedback_01 {
 		}
 
 		 if (  wpbc_is__feedback_01__timeout_need_to_show()  ) {														// Check  if time go out
-			update_option( 'booking_feedback_03', '' );
+			update_option( 'booking_feedback_04', '' );
 		 } else {
 			return  false;
 		 }
@@ -441,13 +441,13 @@ function wpbc_booking_do_action__feedback_01( $request_params, $params ) {
 
 		// Update new period for showing Feedback
 		$feedback_date = gmdate('Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) );
-		update_option('booking_feedback_03', $feedback_date );
+		update_option('booking_feedback_04', $feedback_date );
 
 	} elseif ( ( $feedback_stars > 0 ) && ( $feedback_stars <= 5 ) ) {
 
 		// Send email
 		wpbc_feedback_01__send_email( $feedback_stars, $feedback__note );
-		update_option('booking_feedback_03_rating', $feedback_stars );
+		update_option('booking_feedback_04_rating', $feedback_stars );
 
 	}
 
@@ -544,16 +544,18 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 		 */
 		function wpbc_feedback_01_get_version(){
 
-			if ( substr( WPDEV_BK_VERSION, 0, 3 ) == '11.' ) {
-				$show_version = substr( WPDEV_BK_VERSION, 3 );
-				if ( substr( $show_version, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) ) ) === WP_BK_VERSION_NUM ) {
-					$show_version = substr( $show_version, 0, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) - 1 ) );
-					$show_version = str_replace( '.', ' ', $show_version ) . ' ' . WP_BK_VERSION_NUM;
-				}
+			//			if ( substr( WPDEV_BK_VERSION, 0, 3 ) == '11.' ) {
+			//				$show_version = substr( WPDEV_BK_VERSION, 3 );
+			//				if ( substr( $show_version, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) ) ) === WP_BK_VERSION_NUM ) {
+			//					$show_version = substr( $show_version, 0, ( - 1 * ( strlen( WP_BK_VERSION_NUM ) ) - 1 ) );
+			//					$show_version = str_replace( '.', ' ', $show_version ) . ' ' . WP_BK_VERSION_NUM;
+			//				}
+			//
+			//			} else {
+			//				$show_version = WPDEV_BK_VERSION;
+			//			}
 
-			} else {
-				$show_version = WPDEV_BK_VERSION;
-			}
+			$show_version = wpbc_get_wpbc_versions_numbers();
 
 			$ver = wpbc_get_plugin_version_type();
 			if ( class_exists( 'wpdev_bk_multiuser' ) ) {
@@ -592,7 +594,7 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 
 		//return true;
 
-			$feedback_01_date = get_option( 'booking_feedback_03' );
+			$feedback_01_date = get_option( 'booking_feedback_04' );
 
 			if (
 				( ! empty( $feedback_01_date ) )
@@ -618,7 +620,7 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 				return false;
 			}
 			$feedback_date = gmdate( 'Y-m-d H:i:s', strtotime( WPBC_FEEDBACK_TIMEOUT, strtotime( 'now' ) ) );
-			add_option( 'booking_feedback_03', $feedback_date );
+			add_option( 'booking_feedback_04', $feedback_date );
 		}
 		add_bk_action( 'wpbc_before_activation' , 'wpbc_is__feedback_01__timer_install' );
 
@@ -633,7 +635,7 @@ function wpbc_feedback_01__send_email( $stars_num, $feedback_description ) {
 	$wpbc_js_css_loading = new WPBC_Feedback_01;
 	$wpbc_js_css_loading->define_ajax_hook();
 
-	if ( ! empty( get_option( 'booking_feedback_03' ) ) ){
+	if ( ! empty( get_option( 'booking_feedback_04' ) ) ){
 		$wpbc_js_css_loading->init_load_css_js();
 	}
  }

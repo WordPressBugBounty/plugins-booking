@@ -106,6 +106,17 @@
 #wpbc_deactivate-feedback-popup-wrapper .wpbc_deactivate-feedback-popup-inner .wpbc_deactivate-feedback-popup-form-footer .feedback-textarea::placeholder {
 	color: #ccc;
 }
+#wpbc_deactivate-feedback-popup-wrapper .wpbc_deactivate-feedback-popup-inner .wpbc_deactivate-feedback-popup-form-footer .feedback-textarea[aria-invalid="true"] {
+	border-color: #d63638;
+	box-shadow: 0 0 0 1px #d63638;
+}
+#wpbc_deactivate-feedback-popup-wrapper .wpbc_deactivate-feedback-popup-inner .wpbc_deactivate-feedback-popup-form-footer .wpbc_deactivate-feedback-more-details-error {
+	color: #d63638;
+	display: none;
+	font-size: 12px;
+	line-height: 1.4;
+	margin: -4px 0 10px;
+}
 #wpbc_deactivate-feedback-popup-wrapper .wpbc_deactivate-feedback-popup-inner .wpbc_deactivate-feedback-popup-form-footer button.submit {
 	background-color: #475bb2;
 	color: white;

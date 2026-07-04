@@ -60,6 +60,28 @@ function wpbc_get_warning_text_in_demo_mode() {
 }
 
 
+function wpbc_get_wpbc_versions_numbers() {
+
+	$version_numbers = array();
+
+	if ( defined( 'WP_BK_VERSION_NUM' ) ) {
+		$version_numbers [] = WP_BK_VERSION_NUM;
+	} else {
+		$version_numbers [] = ( defined( 'WPDEV_BK_VERSION' ) ) ? WPDEV_BK_VERSION : 'N/A';
+	}
+
+	if ( defined( 'WPBC_PRO_VERSION_NUM' ) ) {
+		if ( ( count( $version_numbers ) > 0 ) && ( $version_numbers[0] !== WPBC_PRO_VERSION_NUM ) ) {
+			$version_numbers [] = WPBC_PRO_VERSION_NUM;
+		}
+	}
+
+	$version_numbers_str = implode( ' | ', $version_numbers );
+
+	return $version_numbers_str;
+}
+
+
 function wpbc_get_version_type__and_mu(){
 	$version = 'free';
 	if ( class_exists( 'wpdev_bk_personal' ) ) $version = 'personal';

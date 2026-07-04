@@ -4,6 +4,95 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * What's New section for Booking Calendar 11.3
+ *
+ * @param object $obj
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_3( $obj ) {
+
+	$section_param_arr = array( 'version_num' => '11.3', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'New Calendar Settings Page' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.3/booking_calendar__settings_calendar_live_preview.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a dedicated **Settings > Calendar** page with a live calendar preview and right-side configuration panels.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Days selection preview**: Configure single day, multiple days, range selection, start weekdays, and related selection rules while immediately seeing how the calendar behaves.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Changeover settings**: Configure check-in/check-out changeover days, diagonal or vertical markings, recurrent times, and changeover exceptions from the same visual interface.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Calendar legend and tooltips**: Show or hide the legend, edit legend item titles, and configure date tooltip content with instant preview updates.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'New Appearance / Theme Settings Page' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.3/booking_calendar__settings_theme_live_preview.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a dedicated **Settings > Appearance / Theme** page for configuring the calendar skin and booking form visual style.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Real booking form preview**: Preview the real calendar and booking form using selected resources, month count, custom forms, and preview modes.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Theme controls**: Switch between light and dark booking form themes, choose calendar skins, configure time picker appearance, and review the result before saving.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Cleaner settings experience**: Legacy Appearance / Color Theme settings were replaced with a clearer visual workflow.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap:1%">
+
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Setup Wizard Improvements' ) ); ?></h2>
+
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+<!--				<img src="--><?php //echo esc_attr( $obj->section_img_url( '11.3/booking_calendar__setup_wizard_calendar_flow.png' ) ); ?><!--" style="margin:10px 0;width:98%;" />-->
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: Setup Wizard steps now open the new Calendar and Appearance / Theme settings pages instead of older settings screens.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Smarter changeover setup**: Changeover workflows now include a dedicated Changeover Days step and continue through Date Availability, Color Theme, Publish, and Booking Listing.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Better Setup Bar positioning**: The floating Setup Bar moves to a better default top position on visual settings pages, while preserving any user-dragged position.' ) ); ?></li>
+				</ul>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Resources and Admin Workflow' ) ); ?></h2>
+
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+<!--				<img src="--><?php //echo esc_attr( $obj->section_img_url( '11.3/booking_calendar__resources_capacity_rules.png' ) ); ?><!--" style="margin:10px 0;width:98%;" />-->
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Moved capacity-related settings to **Resources > Capacity Rules**, keeping booking quantity and pending-day rules closer to resource configuration.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: Added a shared top path/status line across Booking Calendar admin pages for clearer navigation.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Improvement**: Admin left sidebar and full-screen mode preferences are now saved per user, while special setup and builder workflows can still enforce their required layout.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Fixes**: Improved Calendar preview saving, changeover rendering, legend refresh, tooltip settings, Setup Wizard routing, and Booking Listing email toggle persistence.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
+/**
  * What's New section for Booking Calendar 11.2
  *
  * @param object $obj
@@ -11,6 +100,10 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @return void
  */
 function wpbc_welcome_section_11_2( $obj ) {
+
+	?>
+	<hr/>
+	<?php
 
 	$section_param_arr = array( 'version_num' => '11.2', 'show_expand' => false );
 

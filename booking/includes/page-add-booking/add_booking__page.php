@@ -32,7 +32,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 		$tabs                = array();
 		$tabs['add-booking'] = array(
-			'is_show_top_path'                   => false,                                 // true | false.  By default value is: false.
+			'is_show_top_path'                   => true,                                  // true | false.  By default value is: true.
 			'is_show_top_navigation'             => true,
 			'left_navigation__default_view_mode' => 'min',                             // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'page_title'                         => __( 'Add New Booking', 'booking' ),        // Header - Title.  If false, than hidden.

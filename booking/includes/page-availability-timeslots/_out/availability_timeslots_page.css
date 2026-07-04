@@ -397,7 +397,6 @@
   justify-content: center;
   min-height: 160px;
   background: rgba(255,255,255,.72);
-  -webkit-backdrop-filter: blur(1px);
   backdrop-filter: blur(1px)
 }
 .wpbc_ts_timeline_card.is-loading .wpbc_ts_loading_overlay {

@@ -113,9 +113,6 @@ class WPBC_AJX__Availability {
 //			, 'calendar__view__max_width' 		=> array( 'validate' => 's',  	'default' => '300px' )			// default ''   it's will be set  as 341px,
 //			, 'calendar__view__cell_height' 	=> array( 'validate' => 's',  	'default' => '48px' )		// '45px' || ''
 
-			, 'calendar__timeslot_day_bg_as_available' 	=> array( 'validate' => 's'
-															    , 'default' => ('On' === get_bk_option( 'booking_timeslot_day_bg_as_available' ) ) ? ' wpbc_timeslot_day_bg_as_available' : '' )
-
 		);
 
 	}
@@ -691,9 +688,6 @@ class WPBC_AJX__Availability {
 				unset( $request_params_to_save['ui_clicked_element_id'] );
 				unset( $request_params_to_save['do_action'] );
 				unset( $request_params_to_save['dates_selection'] );
-				// Do not save "Do not change background color for partially booked days" option ! it must reflect from Booking > Settings General page and not from User options
-				unset( $request_params_to_save['calendar__timeslot_day_bg_as_available'] );                             // FixIn: 9.5.5.4.
-
 				$is_success_update = $user_request->user_request_params__db_save( $request_params_to_save );					// Save to DB		// - $request_params - serialized here automatically
 			}
 

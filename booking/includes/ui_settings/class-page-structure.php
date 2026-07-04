@@ -23,14 +23,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  * TODO Refactorig: Continue work with description of the:   List of all parameters, that possible to use in  public function tabs() { ... }
 
 'is_default_full_screen'                    => false,                                                                   // true | false.     Default: false.
+'is_force_full_screen'                      => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__is_show'           => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__default_view_mode' => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'left_navigation__default_view_mode'        => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
+'left_navigation__force_view_mode'          => '',                                                                      // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'right_vertical_sidebar_compact__is_show'   => false,                                                                   // true | false.     Default: false.
 
 // TODO: recheck functionality  and ability to use:
 
-	'is_show_top_path'                          => true,                                                                    // true | false.  By default value is: false.
+	'is_show_top_path'                          => true,                                                                    // true | false.  By default value is: true.
 	'is_show_top_navigation'                    => false,                                                                   // true | false.  By default value is: false.
 	'title'                                     => __( 'Booking Form Builder', 'booking' ),                                 // Title of TAB //FixIn: 9.8.15.2.2.
 	'hint'                                      => __( 'Define available days', 'booking' ),                                // Hint.
@@ -365,6 +367,446 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 								: false;
 
 		return $is_use_option;
+	}
+
+	/**
+	 * Get allowed left sidebar mode.
+	 *
+	 * @param string $mode Sidebar mode.
+	 *
+	 * @return string
+	 */
+	private function get_valid_left_navigation_mode( $mode ) {
+
+		$mode          = strval( $mode );
+		$allowed_modes = array( '', 'min', 'compact', 'max', 'none' );
+
+		return in_array( $mode, $allowed_modes, true ) ? $mode : '';
+	}
+
+	/**
+	 * Get page-defined left sidebar mode before user preferences.
+	 *
+	 * @return string
+	 */
+	private function get_page_left_navigation_default_mode() {
+
+		return $this->get_valid_left_navigation_mode( $this->is_use_option__in_subtabs_or_tabs( 'left_navigation__default_view_mode' ) );
+	}
+
+	/**
+	 * Get forced left sidebar mode, if the current page must not use the user preference.
+	 *
+	 * @return string
+	 */
+	private function get_forced_left_navigation_mode() {
+
+		return $this->get_valid_left_navigation_mode( $this->is_use_option__in_subtabs_or_tabs( 'left_navigation__force_view_mode' ) );
+	}
+
+	/**
+	 * Check whether the current page should save and restore the user left sidebar preference.
+	 *
+	 * @return bool
+	 */
+	public function is_left_navigation_user_mode_enabled() {
+
+		$forced_mode = $this->get_forced_left_navigation_mode();
+
+		if ( ! empty( $forced_mode ) ) {
+			return false;
+		}
+
+		if ( 'none' === $this->get_page_left_navigation_default_mode() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Resolve the initial left sidebar mode.
+	 *
+	 * Forced page mode wins, then the saved user preference, then the page default.
+	 *
+	 * @return string
+	 */
+	public function get_left_navigation_default_view_mode() {
+
+		$forced_mode = $this->get_forced_left_navigation_mode();
+
+		if ( ! empty( $forced_mode ) ) {
+			return $forced_mode;
+		}
+
+		$page_default_mode = $this->get_page_left_navigation_default_mode();
+
+		if ( 'none' === $page_default_mode ) {
+			return 'none';
+		}
+
+		$saved_user_mode = '';
+		if ( class_exists( 'WPBC_User_Custom_Data_Saver' ) ) {
+			$saved_user_mode = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), 'left_sidebar_view_mode' );
+			$saved_user_mode = $this->get_valid_left_navigation_mode( $saved_user_mode );
+		}
+
+		if ( ! empty( $saved_user_mode ) && ( 'none' !== $saved_user_mode ) ) {
+			return $saved_user_mode;
+		}
+
+		return $page_default_mode;
+	}
+
+	/**
+	 * Check whether the current page should open in fullscreen.
+	 *
+	 * Forced page mode wins, then the saved user preference, then the page default.
+	 *
+	 * @return bool
+	 */
+	public function is_full_screen_mode_enabled() {
+
+		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_force_full_screen' ) ) {
+			return true;
+		}
+
+		if ( class_exists( 'WPBC_User_Custom_Data_Saver' ) ) {
+			$saved_full_screen = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), 'is_full_screen' );
+			$saved_full_screen = function_exists( 'wpbc_ui__get_full_screen_mode_from_cookie' )
+				? wpbc_ui__get_full_screen_mode_from_cookie( $saved_full_screen )
+				: $saved_full_screen;
+
+			if ( 'On' === $saved_full_screen ) {
+				return true;
+			}
+
+			if ( 'Off' === $saved_full_screen ) {
+				return false;
+			}
+		}
+
+		return (bool) $this->is_use_option__in_subtabs_or_tabs( 'is_default_full_screen' );
+	}
+
+	/**
+	 * Check whether the current page should save and restore the user fullscreen preference.
+	 *
+	 * @return bool
+	 */
+	public function is_full_screen_user_mode_enabled() {
+
+		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_force_full_screen' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get breadcrumb/status-line items for the top path.
+	 *
+	 * Pages usually only need 'is_show_top_path' => true. Optional 'top_path'
+	 * settings in tabs/subtabs can override root title, root URL, version
+	 * visibility, or provide custom items.
+	 *
+	 * @return array
+	 */
+	public function get_top_path_items() {
+
+		$page_tag        = $this->get_top_path_page_tag();
+		$top_path_config = $this->is_use_option__in_subtabs_or_tabs( 'top_path' );
+		$top_path_config = is_array( $top_path_config ) ? $top_path_config : array();
+
+		if ( ! empty( $top_path_config['items'] ) && is_array( $top_path_config['items'] ) ) {
+			$items = $this->normalize_top_path_items( $top_path_config['items'] );
+			return apply_filters( 'wpbc_ui_settings_top_path_items', $items, $this, $top_path_config );
+		}
+
+		$items = array();
+
+		if ( ! isset( $top_path_config['product_title'] ) || false !== $top_path_config['product_title'] ) {
+			$items[] = array(
+				'title'  => isset( $top_path_config['product_title'] ) ? $top_path_config['product_title'] : __( 'WP Booking Calendar', 'booking' ),
+				'url'    => isset( $top_path_config['product_url'] ) ? $top_path_config['product_url'] : $this->get_top_path_product_url(),
+				'active' => false,
+			);
+		}
+
+		if ( ! isset( $top_path_config['root_title'] ) || false !== $top_path_config['root_title'] ) {
+			$items[] = array(
+				'title'  => isset( $top_path_config['root_title'] ) ? $top_path_config['root_title'] : $this->get_top_path_default_root_title( $page_tag ),
+				'url'    => isset( $top_path_config['root_url'] ) ? $top_path_config['root_url'] : $this->get_top_path_default_root_url( $page_tag ),
+				'active' => false,
+			);
+		}
+
+		$tab_item = $this->get_top_path_tab_item( $page_tag );
+		if ( ! empty( $tab_item ) ) {
+			$items = $this->append_top_path_item( $items, $tab_item );
+		}
+
+		$subtab_item = $this->get_top_path_subtab_item( $page_tag );
+		if ( ! empty( $subtab_item ) ) {
+			$items = $this->append_top_path_item( $items, $subtab_item );
+		}
+
+		if ( ! empty( $items ) ) {
+			$last_item_index = count( $items ) - 1;
+			foreach ( $items as $item_index => $item ) {
+				$items[ $item_index ]['active'] = ( $item_index === $last_item_index );
+			}
+		}
+
+		$items = $this->normalize_top_path_items( $items );
+
+		return apply_filters( 'wpbc_ui_settings_top_path_items', $items, $this, $top_path_config );
+	}
+
+	/**
+	 * Check whether the top path should be visible.
+	 *
+	 * The status line is visible by default. Pages can disable it explicitly
+	 * with 'is_show_top_path' => false in tab or subtab definition.
+	 *
+	 * @return bool
+	 */
+	public function is_top_path_enabled() {
+
+		if ( isset( $this->current_page_params['subtab'] ) && array_key_exists( 'is_show_top_path', $this->current_page_params['subtab'] ) ) {
+			return ( false !== $this->current_page_params['subtab']['is_show_top_path'] );
+		}
+
+		if ( isset( $this->current_page_params['tab'] ) && array_key_exists( 'is_show_top_path', $this->current_page_params['tab'] ) ) {
+			return ( false !== $this->current_page_params['tab']['is_show_top_path'] );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check whether the top path should include the version/status block.
+	 *
+	 * @return bool
+	 */
+	public function is_top_path_show_version() {
+
+		$top_path_config = $this->is_use_option__in_subtabs_or_tabs( 'top_path' );
+
+		if ( is_array( $top_path_config ) && array_key_exists( 'show_version', $top_path_config ) ) {
+			return (bool) $top_path_config['show_version'];
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get active page tag for top path generation.
+	 *
+	 * @return string
+	 */
+	private function get_top_path_page_tag() {
+
+		$this_page     = $this->in_page();
+		$this_page_arr = is_array( $this_page ) ? $this_page : array( $this_page );
+		$request_page  = isset( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+
+		if ( in_array( $request_page, $this_page_arr, true ) ) {
+			return $request_page;
+		}
+
+		return (string) reset( $this_page_arr );
+	}
+
+	/**
+	 * Get default root title.
+	 *
+	 * @param string $page_tag Page tag.
+	 *
+	 * @return string
+	 */
+	private function get_top_path_default_root_title( $page_tag ) {
+
+		$root_titles = array(
+			'wpbc'              => __( 'Bookings', 'booking' ),
+			'wpbc-availability' => __( 'Availability', 'booking' ),
+			'wpbc-prices'       => __( 'Prices', 'booking' ),
+			'wpbc-resources'    => __( 'Resources', 'booking' ),
+			'wpbc-settings'     => __( 'Settings', 'booking' ),
+			'wpbc-setup'        => __( 'Setup', 'booking' ),
+		);
+
+		return isset( $root_titles[ $page_tag ] ) ? $root_titles[ $page_tag ] : __( 'Booking Calendar', 'booking' );
+	}
+
+	/**
+	 * Get product root URL.
+	 *
+	 * @return string
+	 */
+	private function get_top_path_product_url() {
+
+		if ( function_exists( 'wpbc_get_bookings_url' ) ) {
+			return wpbc_get_bookings_url();
+		}
+
+		return admin_url( 'admin.php?page=wpbc' );
+	}
+
+	/**
+	 * Get default root URL.
+	 *
+	 * @param string $page_tag Page tag.
+	 *
+	 * @return string
+	 */
+	private function get_top_path_default_root_url( $page_tag ) {
+
+		if ( 'wpbc' === $page_tag && function_exists( 'wpbc_get_bookings_url' ) ) {
+			return wpbc_get_bookings_url();
+		}
+
+		if ( 'wpbc-availability' === $page_tag && function_exists( 'wpbc_get_availability_url' ) ) {
+			return wpbc_get_availability_url();
+		}
+
+		if ( 'wpbc-prices' === $page_tag && function_exists( 'wpbc_get_price_url' ) ) {
+			return wpbc_get_price_url();
+		}
+
+		if ( 'wpbc-settings' === $page_tag && function_exists( 'wpbc_get_settings_url' ) ) {
+			return wpbc_get_settings_url();
+		}
+
+		if ( 'wpbc-resources' === $page_tag && function_exists( 'wpbc_get_resources_url' ) ) {
+			return wpbc_get_resources_url();
+		}
+
+		if ( 'wpbc-setup' === $page_tag && function_exists( 'wpbc_get_setup_wizard_page_url' ) ) {
+			return wpbc_get_setup_wizard_page_url();
+		}
+
+		return admin_url( add_query_arg( array( 'page' => $page_tag ), 'admin.php' ) );
+	}
+
+	/**
+	 * Get top path item for the active tab.
+	 *
+	 * @param string $page_tag Page tag.
+	 *
+	 * @return array
+	 */
+	private function get_top_path_tab_item( $page_tag ) {
+
+		$active_tab_tag = $this->get_active__tab__tag();
+		$nav_tabs       = $this->get_nav_tabs();
+		$tab_arr        = isset( $nav_tabs[ $page_tag ][ $active_tab_tag ] ) ? $nav_tabs[ $page_tag ][ $active_tab_tag ] : array();
+
+		if ( empty( $tab_arr ) && ! empty( $this->current_page_params['tab'] ) ) {
+			$tab_arr = $this->current_page_params['tab'];
+		}
+
+		if ( empty( $active_tab_tag ) || empty( $tab_arr ) ) {
+			return array();
+		}
+
+		return array(
+			'title'   => isset( $tab_arr['top_path_title'] ) ? $tab_arr['top_path_title'] : ( isset( $tab_arr['title'] ) ? $tab_arr['title'] : '' ),
+			'url'     => ! empty( $tab_arr['url'] ) ? $tab_arr['url'] : $this->get_tab_url( $page_tag, $active_tab_tag ),
+			'onclick' => ! empty( $tab_arr['onclick'] ) ? $tab_arr['onclick'] : '',
+			'active'  => true,
+		);
+	}
+
+	/**
+	 * Get top path item for the active subtab.
+	 *
+	 * @param string $page_tag Page tag.
+	 *
+	 * @return array
+	 */
+	private function get_top_path_subtab_item( $page_tag ) {
+
+		$active_tab_tag    = $this->get_active__tab__tag();
+		$active_subtab_tag = $this->get_active__subtab__tag();
+		$nav_tabs          = $this->get_nav_tabs();
+		$subtab_arr        = isset( $nav_tabs[ $page_tag ][ $active_tab_tag ]['subtabs'][ $active_subtab_tag ] ) ? $nav_tabs[ $page_tag ][ $active_tab_tag ]['subtabs'][ $active_subtab_tag ] : array();
+
+		if ( empty( $subtab_arr ) && ! empty( $this->current_page_params['subtab'] ) ) {
+			$subtab_arr = $this->current_page_params['subtab'];
+		}
+
+		if ( empty( $active_tab_tag ) || empty( $active_subtab_tag ) || empty( $subtab_arr ) || empty( $subtab_arr['type'] ) || 'subtab' !== $subtab_arr['type'] ) {
+			return array();
+		}
+
+		return array(
+			'title'   => isset( $subtab_arr['top_path_title'] ) ? $subtab_arr['top_path_title'] : ( isset( $subtab_arr['title'] ) ? $subtab_arr['title'] : '' ),
+			'url'     => ! empty( $subtab_arr['url'] ) ? $subtab_arr['url'] : $this->get_tab_url( $page_tag, $active_tab_tag, $active_subtab_tag ),
+			'onclick' => ! empty( $subtab_arr['onclick'] ) ? $subtab_arr['onclick'] : '',
+			'active'  => true,
+		);
+	}
+
+	/**
+	 * Normalize top path item values.
+	 *
+	 * @param array $items Top path items.
+	 *
+	 * @return array
+	 */
+	private function normalize_top_path_items( $items ) {
+
+		$normalized_items = array();
+
+		foreach ( $items as $item ) {
+			if ( empty( $item['title'] ) ) {
+				continue;
+			}
+
+			$normalized_items[] = array(
+				'title'   => wp_strip_all_tags( $item['title'] ),
+				'url'     => isset( $item['url'] ) ? $item['url'] : '',
+				'onclick' => isset( $item['onclick'] ) ? $item['onclick'] : '',
+				'active'  => ! empty( $item['active'] ),
+			);
+		}
+
+		return $normalized_items;
+	}
+
+	/**
+	 * Append top path item, avoiding consecutive duplicate labels.
+	 *
+	 * @param array $items Top path items.
+	 * @param array $item  New top path item.
+	 *
+	 * @return array
+	 */
+	private function append_top_path_item( $items, $item ) {
+
+		if ( empty( $items ) || empty( $item['title'] ) ) {
+			$items[] = $item;
+			return $items;
+		}
+
+		$last_item_index = count( $items ) - 1;
+		$last_title      = isset( $items[ $last_item_index ]['title'] ) ? wp_strip_all_tags( $items[ $last_item_index ]['title'] ) : '';
+		$item_title      = wp_strip_all_tags( $item['title'] );
+
+		if ( $last_title === $item_title ) {
+			if ( ! empty( $item['url'] ) ) {
+				$items[ $last_item_index ]['url'] = $item['url'];
+			}
+			if ( ! empty( $item['onclick'] ) ) {
+				$items[ $last_item_index ]['onclick'] = $item['onclick'];
+			}
+			return $items;
+		}
+
+		$items[] = $item;
+
+		return $items;
 	}
 
 	/**

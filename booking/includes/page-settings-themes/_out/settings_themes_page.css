@@ -1,0 +1,445 @@
+.wpbc_admin_page__tab__themes .wpbc_settings_page_content {
+  min-width: 0
+}
+.wpbc_admin_page__tab__themes,
+.wpbc_theme_page {
+  --wpbc-theme-accent: #2271b1;
+  --wpbc-theme-border: #dfe4ea;
+  --wpbc-theme-text: #1d2327;
+  --wpbc-theme-muted: #646970;
+  --wpbc-theme-bg: #fff;
+  --wpbc-theme-bg-soft: #f6f7f7;
+  --wpbc-theme-success: #008a20;
+  --wpbc-theme-warning: #b26200;
+  --wpbc-theme-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --wpbc-theme-radius: 6px
+}
+.wpbc_theme_page {
+  box-sizing: border-box;
+  color: var(--wpbc-theme-text);
+  max-width: 1220px
+}
+.wpbc_theme_toolbar.wpbc_ts_toolbar {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  background: var(--wpbc-theme-bg);
+  border: 1px solid var(--wpbc-theme-border);
+  border-radius: var(--wpbc-theme-radius);
+  box-shadow: var(--wpbc-theme-shadow);
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 14px;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+  max-width: 100%;
+  padding: 14px
+}
+.wpbc_theme_toolbar .wpbc_ts_control {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px
+}
+.wpbc_theme_toolbar .wpbc_ts_control label {
+  color: var(--wpbc-theme-text);
+  font-size: 13px;
+  font-weight: 600
+}
+.wpbc_theme_toolbar .wpbc_ts_control select {
+  min-height: 32px;
+  min-width: 130px
+}
+.wpbc_theme_attention_pulse {
+  animation: .62s ease-in-out 3 wpbc_theme_attention_pulse
+}
+@keyframes wpbc_theme_attention_pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255,196,0,.82);
+    transform: scale(1)
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(255,196,0,.2);
+    transform: scale(1.025)
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255,196,0,0);
+    transform: scale(1)
+  }
+}
+.wpbc_theme_toolbar_value {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #f6f7f7;
+  border: 1px solid var(--wpbc-theme-border);
+  border-radius: var(--wpbc-theme-radius);
+  box-sizing: border-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 7px;
+  min-height: 32px;
+  padding: 5px 9px
+}
+.wpbc_theme_toolbar_value .menu_icon {
+  color: var(--wpbc-theme-accent)
+}
+.wpbc_theme_upgrade_hint {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  color: var(--wpbc-theme-muted);
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 12px;
+  gap: 7px;
+  line-height: 1.35;
+  max-width: 360px
+}
+.wpbc_theme_premium_dismiss {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  line-height: 1;
+  margin-left: -3px;
+  vertical-align: middle
+}
+.wpbc_theme_premium_dismiss .wpbc_x_dismiss_btn {
+  color: #787c82;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px
+}
+.wpbc_theme_premium_dismiss .wpbc_x_dismiss_btn:hover {
+  color: #1d2327
+}
+.wpbc_theme_control_form {
+  display: none!important
+}
+.wpbc_theme_control_form.is-visible {
+  display: -ms-flexbox!important;
+  display: flex!important
+}
+.wpbc_theme_hint_bar.wpbc_ts_hint {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #f5faff;
+  border: 1px solid #c8ddf5;
+  border-radius: 0;
+  color: var(--wpbc-theme-text);
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  margin: 15px 0 0;
+  padding: 15px
+}
+.wpbc_theme_hint_bar .wpbc_icn_info_outline {
+  color: var(--wpbc-theme-accent)
+}
+.wpbc_theme_preview {
+  background: var(--wpbc-theme-bg);
+  border: 1px solid var(--wpbc-theme-border);
+  border-radius: var(--wpbc-theme-radius);
+  box-shadow: var(--wpbc-theme-shadow);
+  box-sizing: border-box;
+  display: block;
+  padding: 14px;
+  transition: background .16s ease-in-out,border-color .16s ease-in-out,color .16s ease-in-out
+}
+.wpbc_theme_real_preview {
+  min-height: 220px;
+  position: relative;
+  transition: opacity .16s ease-in-out
+}
+.wpbc_theme_real_preview.is-loading {
+  pointer-events: none
+}
+.wpbc_theme_real_preview.is-loading .wpbc_booking_form_structure,
+.wpbc_theme_real_preview.is-loading .wpbc_calendar_wraper {
+  filter: blur(1px);
+  opacity: .34
+}
+.wpbc_calendar_loading.wpbc_theme_calendar_loading {
+  -ms-flex-align: center;
+  align-items: center;
+  background: rgba(255,255,255,.74);
+  box-sizing: border-box;
+  color: #1d2327;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 1.2em;
+  font-weight: 600;
+  inset: 10px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  z-index: 30
+}
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_calendar_loading.wpbc_theme_calendar_loading {
+  background: rgba(31,36,43,.74);
+  color: #f1f5f9
+}
+.wpbc_theme_form_preview {
+  background: #f8fafc;
+  border: 1px solid #d9e1ea;
+  border-radius: var(--wpbc-theme-radius);
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px
+}
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_theme_form_preview {
+  background: #111827;
+  border-color: #334155
+}
+.wpbc_theme_preview_title {
+  color: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3
+}
+.wpbc_theme_preview_grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr
+}
+.wpbc_theme_preview_grid label {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 5px
+}
+.wpbc_theme_preview_grid span {
+  color: var(--wpbc-theme-muted);
+  font-size: 12px;
+  font-weight: 600
+}
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_theme_preview_grid span {
+  color: #cbd5e1
+}
+.wpbc_theme_preview_grid input,
+.wpbc_theme_times_preview select {
+  background: #fff;
+  border: 1px solid #cfd7df;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #1d2327;
+  min-height: 34px;
+  width: 100%
+}
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_theme_preview_grid input,
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_theme_times_preview select {
+  background: #0f172a;
+  border-color: #475569;
+  color: #f8fafc
+}
+.wpbc_theme_times_preview {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 8px
+}
+.wpbc_theme_times_preview button {
+  background: #fff;
+  border: 1px solid #cfd7df;
+  border-radius: 4px;
+  color: #1d2327;
+  cursor: default;
+  min-height: 32px;
+  padding: 5px 10px
+}
+.wpbc_theme_times_preview button.is-selected {
+  background: var(--wpbc-theme-accent);
+  border-color: var(--wpbc-theme-accent);
+  color: #fff
+}
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_theme_times_preview button {
+  background: #0f172a;
+  border-color: #475569;
+  color: #f8fafc
+}
+.wpbc_theme_preview.wpbc_theme_dark_1 .wpbc_theme_times_preview button.is-selected {
+  background: #38bdf8;
+  border-color: #38bdf8;
+  color: #082f49
+}
+.wpbc_theme_inspector_body {
+  box-sizing: border-box;
+  padding: 10px
+}
+.wpbc_theme_field_row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px
+}
+.wpbc_theme_field_label {
+  color: var(--wpbc-theme-text);
+  font-size: 13px;
+  font-weight: 600
+}
+.wpbc_theme_field_row > select {
+  max-width: 100%;
+  min-height: 32px;
+  width: 100%
+}
+.wpbc_theme_description {
+  color: var(--wpbc-theme-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 8px 0 0
+}
+.wpbc_theme_choice_grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2,minmax(0,1fr))
+}
+.wpbc_theme_choice {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--wpbc-theme-border);
+  border-radius: var(--wpbc-theme-radius);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 8px;
+  min-height: 48px;
+  padding: 9px
+}
+.wpbc_theme_choice input {
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  width: 1px
+}
+.wpbc_theme_choice.is-selected,
+.wpbc_theme_choice:has(input:checked) {
+  border-color: var(--wpbc-theme-accent);
+  box-shadow: 0 0 0 1px var(--wpbc-theme-accent)
+}
+.wpbc_theme_choice_swatch {
+  background: linear-gradient(135deg,#fff 0,#f2f4f7 100%);
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: 24px;
+  width: 24px
+}
+.wpbc_theme_choice_swatch.wpbc_theme_dark_1 {
+  background: linear-gradient(135deg,#111827 0,#334155 100%);
+  border-color: #0f172a
+}
+.wpbc_theme_choice_label {
+  color: var(--wpbc-theme-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere
+}
+.wpbc_theme_switch {
+  -ms-flex-align: center;
+  align-items: center;
+  background: var(--wpbc-theme-bg,#fff);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 0
+}
+.wpbc_theme_switch_card {
+  border-top: 1px solid var(--wpbc-theme-border);
+  margin-top: 10px;
+  padding-top: 12px
+}
+.wpbc_theme_switch input {
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  width: 1px
+}
+.wpbc_theme_switch_control {
+  background: #c3c4c7;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: 18px;
+  padding: 2px;
+  transition: background .16s ease-in-out;
+  width: 34px
+}
+.wpbc_theme_switch_knob {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,.22);
+  display: block;
+  height: 14px;
+  -ms-transform: translateX(0);
+  transform: translateX(0);
+  transition: transform .16s ease-in-out;
+  width: 14px
+}
+.wpbc_theme_switch input:checked + .wpbc_theme_switch_control {
+  background: var(--wpbc-theme-accent)
+}
+.wpbc_theme_switch input:checked + .wpbc_theme_switch_control .wpbc_theme_switch_knob {
+  -ms-transform: translateX(16px);
+  transform: translateX(16px)
+}
+.wpbc_theme_choice input:focus-visible + .wpbc_theme_choice_swatch,
+.wpbc_theme_switch input:focus-visible + .wpbc_theme_switch_control {
+  box-shadow: 0 0 0 2px #fff,0 0 0 4px var(--wpbc-theme-accent)
+}
+.wpbc_theme_switch_label {
+  color: var(--wpbc-theme-text);
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere
+}
+select.wpbc_radio__set_days_customize_plugin {
+  max-width: calc(100% - 140px)
+}
+.wpbc_theme_notice {
+  background: #fff8e5;
+  border: 1px solid #e8c76a;
+  box-sizing: border-box;
+  color: #3c434a;
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 12px
+}
+@media (max-width:960px) {
+  .wpbc_theme_preview {
+    grid-template-columns: 1fr
+  }
+}
+@media (max-width:640px) {
+  .wpbc_theme_choice_grid {
+    grid-template-columns: 1fr
+  }
+  .wpbc_theme_toolbar .wpbc_ts_control,
+  .wpbc_theme_toolbar .wpbc_ts_control select {
+    width: 100%
+  }
+}

@@ -184,12 +184,21 @@ function wpbc_setup_wizard__get_profile_route_map() {
 		'get_started',
 	);
 
+	$changeover_route = array(
+		'form_structure',
+		'date_selection',
+		'changeover_days',
+		'date_availability',
+		'color_theme',
+		'wizard_publish',
+		'get_started',
+	);
+
 	$time_based_route = array(
 		'form_structure',
 		'date_selection',
 		'working_time',
 		'time_slots_availability',
-		'date_availability',
 		'color_theme',
 		'wizard_publish',
 		'get_started',
@@ -197,7 +206,7 @@ function wpbc_setup_wizard__get_profile_route_map() {
 
 	return array(
 		'full_day'              => $full_day_route,
-		'changeover'            => $full_day_route,
+		'changeover'            => $changeover_route,
 		'time_slots'            => $time_based_route,
 		'duration_appointments' => $time_based_route,
 	);
@@ -217,7 +226,7 @@ function wpbc_setup_wizard__get_profile_route( $profile = null, $is_bfb_enabled 
 	$route_map  = wpbc_setup_wizard__get_profile_route_map();
 	$route      = isset( $route_map[ $profile ] ) ? $route_map[ $profile ] : $route_map['full_day'];
 
-	if ( wpbc_is_this_demo() ) {
+	if ( wpbc_is_this_demo() && 'changeover' !== $profile ) {
 		$route = array_values( array_diff( $route, array( 'wizard_publish' ) ) );
 	}
 
@@ -271,6 +280,8 @@ function wpbc_setup_wizard__detect_step_from_admin_request() {
 	$scroll_to_section = isset( $_GET['scroll_to_section'] ) ? sanitize_key( wp_unslash( $_GET['scroll_to_section'] ) ) : '';
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$wpbc_ag_open = isset( $_GET['wpbc_ag_open'] ) ? sanitize_key( wp_unslash( $_GET['wpbc_ag_open'] ) ) : '';
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$wpbc_calendar_section = isset( $_GET['wpbc_calendar_section'] ) ? sanitize_key( wp_unslash( $_GET['wpbc_calendar_section'] ) ) : '';
 
 	if ( 'wpbc-settings' === $page ) {
 		if ( 'builder_booking_form' === $tab ) {
@@ -281,11 +292,18 @@ function wpbc_setup_wizard__detect_step_from_admin_request() {
 			return 'form_structure';
 		}
 
+		if ( 'calendar_settings' === $tab ) {
+			if ( 'changeover_times' === $wpbc_calendar_section ) {
+				return 'changeover_days';
+			}
+			return 'date_selection';
+		}
+
 		if ( 'wpbc_general_settings_calendar_tab' === $scroll_to_section ) {
 			return 'date_selection';
 		}
 
-		if ( 'color_themes' === $tab ) {
+		if ( 'themes' === $tab ) {
 			return 'color_theme';
 		}
 	}
@@ -330,10 +348,11 @@ function wpbc_setup_wizard__detect_step_from_admin_url( $url ) {
 	$query_args = array();
 	wp_parse_str( $url_parts['query'], $query_args );
 
-	$page              = isset( $query_args['page'] ) ? sanitize_key( $query_args['page'] ) : '';
-	$tab               = isset( $query_args['tab'] ) ? sanitize_key( $query_args['tab'] ) : '';
-	$scroll_to_section = isset( $query_args['scroll_to_section'] ) ? sanitize_key( $query_args['scroll_to_section'] ) : '';
-	$wpbc_ag_open      = isset( $query_args['wpbc_ag_open'] ) ? sanitize_key( $query_args['wpbc_ag_open'] ) : '';
+	$page                  = isset( $query_args['page'] ) ? sanitize_key( $query_args['page'] ) : '';
+	$tab                   = isset( $query_args['tab'] ) ? sanitize_key( $query_args['tab'] ) : '';
+	$scroll_to_section     = isset( $query_args['scroll_to_section'] ) ? sanitize_key( $query_args['scroll_to_section'] ) : '';
+	$wpbc_ag_open          = isset( $query_args['wpbc_ag_open'] ) ? sanitize_key( $query_args['wpbc_ag_open'] ) : '';
+	$wpbc_calendar_section = isset( $query_args['wpbc_calendar_section'] ) ? sanitize_key( $query_args['wpbc_calendar_section'] ) : '';
 
 	if ( 'wpbc-settings' === $page ) {
 		if ( 'builder_booking_form' === $tab ) {
@@ -344,11 +363,18 @@ function wpbc_setup_wizard__detect_step_from_admin_url( $url ) {
 			return 'form_structure';
 		}
 
+		if ( 'calendar_settings' === $tab ) {
+			if ( 'changeover_times' === $wpbc_calendar_section ) {
+				return 'changeover_days';
+			}
+			return 'date_selection';
+		}
+
 		if ( 'wpbc_general_settings_calendar_tab' === $scroll_to_section ) {
 			return 'date_selection';
 		}
 
-		if ( 'color_themes' === $tab ) {
+		if ( 'themes' === $tab ) {
 			return 'color_theme';
 		}
 	}
@@ -387,6 +413,7 @@ function wpbc_setup_wizard__get_step_title( $step_name ) {
 		'date_time_formats'       => __( 'Dates and Times', 'booking' ),
 		'bookings_types'          => __( 'Booking Type', 'booking' ),
 		'date_selection'          => __( 'Date Selection', 'booking' ),
+		'changeover_days'         => __( 'Changeover Days', 'booking' ),
 		'working_time'            => __( 'Working Time', 'booking' ),
 		'time_slots_availability' => __( 'Time Slots', 'booking' ),
 		'date_availability'       => __( 'Date Availability', 'booking' ),
@@ -415,6 +442,7 @@ function wpbc_setup_wizard__get_step_heading( $step_name ) {
 		'bookings_types'          => __( 'Choose the main booking workflow', 'booking' ),
 		'form_structure'          => __( 'Select and save the booking form template', 'booking' ),
 		'date_selection'          => __( 'Set how visitors select dates', 'booking' ),
+		'changeover_days'         => __( 'Configure changeover days', 'booking' ),
 		'working_time'            => __( 'Define when bookings can start and end', 'booking' ),
 		'time_slots_availability' => __( 'Review availability for appointment slots', 'booking' ),
 		'date_availability'       => __( 'Set date availability rules', 'booking' ),
@@ -442,8 +470,9 @@ function wpbc_setup_wizard__get_step_description( $step_name ) {
 		'bookings_types'          => __( 'Select whether bookings use full days, appointment time slots, or changeover-style date ranges. This choice controls the next configuration steps.', 'booking' ),
 		'form_structure'          => __( 'Open the form template chooser, select the template that matches your booking type, and save the Booking Form page before continuing.', 'booking' ),
 		'date_selection'          => __( 'Choose whether visitors can select one day, multiple individual days, or an available date range in the calendar. Save the General Settings page after changing this option.', 'booking' ),
+		'changeover_days'         => __( 'Enable and review check-in/check-out changeover days, including diagonal or vertical markings and related changeover options.', 'booking' ),
 		'working_time'            => __( 'Set the daily working hours that should be available for bookings. These hours are used as the base schedule for time-based availability.', 'booking' ),
-		'time_slots_availability' => __( 'Check the generated appointment slots and adjust any slot-specific availability rules before moving to broader date availability.', 'booking' ),
+		'time_slots_availability' => __( 'Check the generated appointment slots and adjust any slot-specific availability rules before choosing the calendar appearance.', 'booking' ),
 		'date_availability'       => __( 'Set which weekdays, dates, booking windows, and buffer rules should be available or unavailable for visitors.', 'booking' ),
 		'color_theme'             => __( 'Choose the calendar skin and visual style so the booking form fits your site before you publish it.', 'booking' ),
 		'wizard_publish'          => __( 'Use the Publish buttons for each booking resource to insert the booking form into an existing page, create a new page, or copy the shortcode.', 'booking' ),
@@ -477,13 +506,21 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 		),
 		'date_selection'          => array(
 			'save_behavior'      => 'manual_save_required',
-			'target_selector'    => '.wpbc_tr_set_gen_booking_type_of_day_selections, #wpbc_general_settings_calendar_metabox',
-			'scroll_selector'    => '.wpbc_tr_set_gen_booking_type_of_day_selections:visible, #wpbc_general_settings_calendar_metabox:visible',
-			'highlight_selector' => '.wpbc_tr_set_gen_booking_type_of_day_selections:visible, #wpbc_general_settings_calendar_metabox:visible',
-			'form_selector'      => '#wpbc_general_settings_form',
-			'save_selector'      => '#wpbc_general_settings_form .wpbc_submit_button_trigger, #wpbc_general_settings_form .wpbc_submit_button',
+			'target_selector'    => '.wpbc_admin_page__tab__calendar_settings, [data-wpbc-calendar-page="1"], .wpbc_tr_set_gen_booking_type_of_day_selections, #wpbc_general_settings_calendar_metabox',
+			'scroll_selector'    => '[data-wpbc-calendar-page="1"]:visible, .wpbc_admin_page__tab__calendar_settings:visible, .wpbc_tr_set_gen_booking_type_of_day_selections:visible, #wpbc_general_settings_calendar_metabox:visible',
+			'highlight_selector' => '[data-wpbc-calendar-page="1"]:visible, .wpbc_admin_page__tab__calendar_settings:visible, .wpbc_tr_set_gen_booking_type_of_day_selections:visible, #wpbc_general_settings_calendar_metabox:visible',
+			'form_selector'      => '[data-wpbc-calendar-settings-form="1"], #wpbc_general_settings_form',
+			'save_selector'      => '[data-wpbc-calendar-save="1"], #wpbc_general_settings_form .wpbc_submit_button_trigger, #wpbc_general_settings_form .wpbc_submit_button',
 			'save_events'        => 'wpbc:setup-wizard:step-saved',
-			'open_action'        => 'settings_section',
+		),
+		'changeover_days'         => array(
+			'save_behavior'      => 'manual_save_required',
+			'target_selector'    => '[data-group="settings-calendar-time"], [data-wpbc-calendar-changeover-settings="1"], [name="booking_range_selection_time_is_active"], [data-wpbc-calendar-page="1"]',
+			'scroll_selector'    => '[data-group="settings-calendar-time"]:visible, [data-wpbc-calendar-changeover-settings="1"]:visible, [name="booking_range_selection_time_is_active"]:visible, [data-wpbc-calendar-page="1"]:visible',
+			'highlight_selector' => '[data-group="settings-calendar-time"]:visible, [data-wpbc-calendar-changeover-settings="1"]:visible, [name="booking_range_selection_time_is_active"]:visible',
+			'form_selector'      => '[data-wpbc-calendar-settings-form="1"]',
+			'save_selector'      => '[data-wpbc-calendar-save="1"]',
+			'save_events'        => 'wpbc:setup-wizard:step-saved',
 		),
 		'working_time'            => array(
 			'save_behavior'      => 'manual_save_required',
@@ -513,11 +550,11 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 		),
 		'color_theme'             => array(
 			'save_behavior'      => 'manual_save_required',
-			'target_selector'    => '#wpbc_general_settings_form',
-			'scroll_selector'    => '#wpbc_general_settings_form:visible',
-			'highlight_selector' => '#wpbc_general_settings_form:visible',
-			'form_selector'      => '#wpbc_general_settings_form',
-			'save_selector'      => '#wpbc_general_settings_form .wpbc_submit_button_trigger, #wpbc_general_settings_form .wpbc_submit_button',
+			'target_selector'    => '.wpbc_admin_page__tab__themes, [data-wpbc-theme-page="1"]',
+			'scroll_selector'    => '[data-wpbc-theme-page="1"]:visible, .wpbc_admin_page__tab__themes:visible',
+			'highlight_selector' => '[data-wpbc-theme-page="1"]:visible, .wpbc_admin_page__tab__themes:visible',
+			'form_selector'      => '[data-wpbc-theme-settings-form="1"]',
+			'save_selector'      => '[data-wpbc-theme-save="1"]',
 			'save_events'        => 'wpbc:setup-wizard:step-saved',
 		),
 		'wizard_publish'          => array(
@@ -728,14 +765,17 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 
 	switch ( $step_name ) {
 		case 'date_selection':
-			$url  = add_query_arg(
-				array(
-					'tab'               => 'general',
-					'scroll_to_section' => 'wpbc_general_settings_calendar_tab',
-				),
-				wpbc_get_settings_url()
-			);
-			$url .= '#do_expand__wpbc_general_settings_calendar_metabox#do_other_actions__blink_day_selections';
+			$url = function_exists( 'wpbc_get_settings_calendar_url' )
+				? wpbc_get_settings_calendar_url()
+				: wpbc_get_settings_url() . '&tab=calendar_settings';
+			$url = add_query_arg( 'wpbc_calendar_section', 'days_selection', $url );
+			break;
+
+		case 'changeover_days':
+			$url = function_exists( 'wpbc_get_settings_calendar_url' )
+				? wpbc_get_settings_calendar_url()
+				: wpbc_get_settings_url() . '&tab=calendar_settings';
+			$url = add_query_arg( 'wpbc_calendar_section', 'changeover_times', $url );
 			break;
 
 		case 'working_time':
@@ -773,7 +813,9 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 			break;
 
 		case 'color_theme':
-			$url = wpbc_get_settings_url() . '&tab=color_themes';
+			$url = function_exists( 'wpbc_get_settings_themes_url' )
+				? wpbc_get_settings_themes_url()
+				: wpbc_get_settings_url() . '&tab=themes';
 			break;
 
 		case 'wizard_publish':

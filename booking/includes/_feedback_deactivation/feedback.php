@@ -54,7 +54,14 @@ if ( ! class_exists( 'WPBC_Admin_Deactivation_Feedback', false ) ) :
 								WP_BK_VERSION_NUM,
 								array( 'in_footer' => WPBC_JS_IN_FOOTER )
 			);
-			wp_localize_script( 'wpbc-admin-deactivation-feedback', 'wpbc_plugins_params', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_localize_script(
+				'wpbc-admin-deactivation-feedback',
+				'wpbc_plugins_params',
+				array(
+					'ajax_url'                   => admin_url( 'admin-ajax.php' ),
+					'more_details_required_text' => esc_html__( 'Please share more details before submitting.', 'booking' ),
+				)
+			);
 
 			wp_enqueue_style( 'wpbc-admin-deactivation-feedback', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/feedback.css', array(), WP_BK_VERSION_NUM );
 		}
@@ -115,6 +122,14 @@ if ( ! class_exists( 'WPBC_Admin_Deactivation_Feedback', false ) ) :
 
 			if ( ! empty( $_POST[ "wpbc_deactivate-feedback-more-details" ] ) ) {
 				$reason_text = sanitize_textarea_field( wp_unslash( $_POST[ "wpbc_deactivate-feedback-more-details" ] ) );
+			}
+
+			if ( ( '' !== $reason_slug ) && ( '' === trim( $reason_text ) || '---' === $reason_text ) ) {
+				wp_send_json_error(
+					array(
+						'message' => esc_html__( 'Please share more details before submitting.', 'booking' ),
+					)
+				);
 			}
 
 			$deactivation_data = array(

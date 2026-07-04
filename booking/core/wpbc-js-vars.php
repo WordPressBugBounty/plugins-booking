@@ -175,7 +175,8 @@ function wpbc_get_localized_js_vars() {
 	$script .= "_wpbc.set_message( 'message_error_range_time', "               . wp_json_encode( __( 'The time(s) may be booked, or already in the past!', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_error_duration_time', "            . wp_json_encode( __( 'The time(s) may be booked, or already in the past!', 'booking' ) ) . " ); ";
 
-	$script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";
+	// $script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";
+	$script .= "console.log( '== WPBC VARS " . esc_attr( wpbc_get_wpbc_versions_numbers() ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";
 	return $script;
 }
 

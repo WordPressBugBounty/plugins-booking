@@ -725,10 +725,10 @@ function wpbc_get_availability_per_days_arr( $params ) {
 
 		$start_day_number = 1;
 
-		$today_inix_timestamp = strtotime( $params['dates_to_check'][0] . ' 00:00:00' );                                // '2023-09-03 00:00:00'
+		$today_inix_timestamp = strtotime( $params['dates_to_check'][0] . ' 00:00:00 UTC' );                            // '2023-09-03 00:00:00'
 
-		$dif_in_days =   strtotime( $params['dates_to_check'][ ( count( $params['dates_to_check'] ) - 1 ) ] . ' 00:00:00' )
-		               - strtotime( $params['dates_to_check'][0] . ' 00:00:00' );
+		$dif_in_days =   strtotime( $params['dates_to_check'][ ( count( $params['dates_to_check'] ) - 1 ) ] . ' 00:00:00 UTC' )
+		               - strtotime( $params['dates_to_check'][0] . ' 00:00:00 UTC' );
 
 		$dif_in_days = $dif_in_days / ( 24 * 60 * 60 );
 		$params['max_days_count'] = ceil( $dif_in_days ) + 1;
@@ -960,9 +960,18 @@ function wpbc_get_availability_per_days_arr( $params ) {
 				// =====================================================================================================
 				// Change over days  =
 				// =====================================================================================================
+				$is_booking_used_check_in_out_time = null;
+				if ( function_exists( 'wpbc_settings_calendar__preview_is_changeover_enabled' ) ) {
+					$is_booking_used_check_in_out_time = wpbc_settings_calendar__preview_is_changeover_enabled( $resource_id, $params['request_uri'] );
+				}
+				if ( null === $is_booking_used_check_in_out_time ) {
+					$is_booking_used_check_in_out_time = (
+						   ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) )
+						&& ( wpbc_is_booking_used_check_in_out_time( $params['request_uri'], $resource_id ) )
+					);
+				}
 				if (
-					   ( function_exists( 'wpbc_is_booking_used_check_in_out_time' ) )
-					&& ( wpbc_is_booking_used_check_in_out_time( $params[ 'request_uri' ], $resource_id ) )
+					   $is_booking_used_check_in_out_time
 					&& ( ! $availability_per_day[ $my_day_tag ][ $resource_id ]->is_day_unavailable )   // And this date still free                                 false
 				) {
 

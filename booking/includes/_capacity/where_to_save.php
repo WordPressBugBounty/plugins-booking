@@ -120,7 +120,7 @@ function wpbc__where_to_save_booking( $local_params ){
 
 	$main__resource_id = 0;
 	// == In      SAME      'child' booking resources   ============================================================
-	if ( 'On' === get_bk_option( 'booking_is_dissbale_booking_for_different_sub_resources' ) ) {
+	if ( class_exists( 'wpdev_bk_biz_l' ) && ( 'On' === get_bk_option( 'booking_is_dissbale_booking_for_different_sub_resources' ) ) ) {
 
 		$availability_in_same_child_resources = $availability_per_days['resources_id_arr__in_dates'];
 

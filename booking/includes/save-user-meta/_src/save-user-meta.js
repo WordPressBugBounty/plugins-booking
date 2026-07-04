@@ -1,21 +1,31 @@
+function wpbc_user_data_saver__read_attr_or_data( $el, attr_name, data_name ) {
+	var attr_value = $el.attr( attr_name );
+
+	if ( attr_value !== undefined ) {
+		return attr_value;
+	}
+
+	return $el.data( data_name );
+}
+
 function wpbc_save_custom_user_data_from_element(el) {
 
 	if ( typeof WPBC_UserDataSaver === 'undefined' ) {
 		console.error( 'WPBC | Global AJAX object is missing.' );
-		return;
+		return false;
 	}
 
 	const $el = jQuery( el );
 
-	const user_id      = $el.data( 'wpbc-u-save-user-id' );
-	const nonce        = $el.data( 'wpbc-u-save-nonce' );
-	const nonce_action = $el.data( 'wpbc-u-save-action' );
-	const data_name    = $el.data( 'wpbc-u-save-name' );
-	const fields_raw   = $el.data( 'wpbc-u-save-fields' ) || '';
-	const inline_value = $el.data( 'wpbc-u-save-value' );
-	const json         = $el.data( 'wpbc-u-save-value-json' );
+	const user_id      = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-user-id', 'wpbc-u-save-user-id' );
+	const nonce        = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-nonce', 'wpbc-u-save-nonce' );
+	const nonce_action = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-action', 'wpbc-u-save-action' );
+	const data_name    = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-name', 'wpbc-u-save-name' );
+	const fields_raw   = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-fields', 'wpbc-u-save-fields' ) || '';
+	const inline_value = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-value', 'wpbc-u-save-value' );
+	const json         = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-value-json', 'wpbc-u-save-value-json' );
 
-	const callbackFnName = $el.data( 'wpbc-u-save-callback' );
+	const callbackFnName = wpbc_user_data_saver__read_attr_or_data( $el, 'data-wpbc-u-save-callback', 'wpbc-u-save-callback' );
 	const callbackFn     = typeof window[callbackFnName] === 'function' ? window[callbackFnName] : null;
 	if ( callbackFnName && !callbackFn ) {
 		console.warn( 'WPBC | Callback not found:', callbackFnName );
@@ -23,7 +33,7 @@ function wpbc_save_custom_user_data_from_element(el) {
 
 	if ( !user_id || !nonce || !nonce_action || !data_name ) {
 		console.error( 'WPBC | Missing required data attributes.' );
-		return;
+		return false;
 	}
 
 	let serialized = '';
@@ -33,7 +43,7 @@ function wpbc_save_custom_user_data_from_element(el) {
 			serialized = jQuery.param( JSON.parse( json ) );
 		} catch ( e ) {
 			console.error( 'WPBC | Invalid JSON in data-wpbc-u-save-value-json' );
-			return;
+			return false;
 		}
 	} else if ( inline_value !== undefined ) {
 		// Save simple direct value as single param.
@@ -57,12 +67,12 @@ function wpbc_save_custom_user_data_from_element(el) {
 		serialized = jQuery.param( data );
 	} else {
 		console.error( 'WPBC | Missing data-wpbc-u-save-fields or data-wpbc-u-save-value.' );
-		return;
+		return false;
 	}
 
 	jQuery( document ).trigger( 'wpbc:userdata:beforeSave', [ $el, serialized ] );
 
-	jQuery.ajax( {
+	return jQuery.ajax( {
 		url    : WPBC_UserDataSaver.ajax_url,
 		type   : 'POST',
 		data   : {

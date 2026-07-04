@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.2.1
+Stable tag: 11.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -283,50 +283,46 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              98.91% [ 3634 / 3674 ], fuzzy 21, not translated 19
-- Danish                       69.43% [ 2551 / 3674 ], fuzzy 507, not translated 616
-- Dutch                        61.92% [ 2275 / 3674 ], fuzzy 784, not translated 615
-- Norwegian (Bokmål)           57.40% [ 2109 / 3674 ], fuzzy 546, not translated 1019
-- German                       57.38% [ 2108 / 3674 ], fuzzy 891, not translated 675
-- Hungarian                    52.99% [ 1947 / 3674 ], fuzzy 972, not translated 755
-- Korean                       52.97% [ 1946 / 3674 ], fuzzy 969, not translated 759
-- Spanish (Spain)              48.75% [ 1791 / 3674 ], fuzzy 987, not translated 896
-- Portuguese (Brazil)          46.00% [ 1690 / 3674 ], fuzzy 1093, not translated 891
-- Greek                        45.70% [ 1679 / 3674 ], fuzzy 1102, not translated 893
-- Turkish                      45.10% [ 1657 / 3674 ], fuzzy 1117, not translated 900
-- Italian                      43.96% [ 1615 / 3674 ], fuzzy 1022, not translated 1037
-- Spanish (Mexico)             42.24% [ 1552 / 3674 ], fuzzy 1170, not translated 952
-- Finnish                      42.00% [ 1543 / 3674 ], fuzzy 1180, not translated 951
-- Polish                       41.94% [ 1541 / 3674 ], fuzzy 1167, not translated 966
-- Romanian                     41.59% [ 1528 / 3674 ], fuzzy 1180, not translated 966
-- Swedish                      41.37% [ 1520 / 3674 ], fuzzy 1189, not translated 965
-- Arabic                       40.96% [ 1505 / 3674 ], fuzzy 1207, not translated 962
-- Russian                      40.91% [ 1503 / 3674 ], fuzzy 1434, not translated 737
-- Bulgarian                    39.68% [ 1458 / 3674 ], fuzzy 1221, not translated 995
-- Slovenian                    39.58% [ 1454 / 3674 ], fuzzy 1225, not translated 995
-- Chinese (Taiwan)             38.51% [ 1415 / 3674 ], fuzzy 1265, not translated 994
-- Portuguese (Portugal)        38.21% [ 1404 / 3674 ], fuzzy 1249, not translated 1021
-- Japanese                     37.67% [ 1384 / 3674 ], fuzzy 743, not translated 1547
-- Chinese (China)              36.96% [ 1358 / 3674 ], fuzzy 1249, not translated 1067
-- Ukrainian                    36.69% [ 1348 / 3674 ], fuzzy 1260, not translated 1066
-- Catalan                      36.09% [ 1326 / 3674 ], fuzzy 1184, not translated 1164
-- Thai                         36.01% [ 1323 / 3674 ], fuzzy 1296, not translated 1055
-- Hebrew                       35.79% [ 1315 / 3674 ], fuzzy 1284, not translated 1075
-- Galician                     34.87% [ 1281 / 3674 ], fuzzy 1336, not translated 1057
-- Slovak                       32.42% [ 1191 / 3674 ], fuzzy 1249, not translated 1234
-- Croatian                     31.38% [ 1153 / 3674 ], fuzzy 1265, not translated 1256
-- Czech                        31.27% [ 1149 / 3674 ], fuzzy 1215, not translated 1310
-- Chinese (Hong Kong)          18.51% [ 680 / 3674 ], fuzzy 526, not translated 2468
-
-
-
+- French (France)              97.06% [ 3635 / 3745 ], fuzzy 66, not translated 44
+- Danish                       68.12% [ 2551 / 3745 ], fuzzy 552, not translated 642
+- Dutch                        60.77% [ 2276 / 3745 ], fuzzy 828, not translated 641
+- Norwegian (Bokmål)           56.32% [ 2109 / 3745 ], fuzzy 586, not translated 1050
+- German                       56.32% [ 2109 / 3745 ], fuzzy 935, not translated 701
+- Hungarian                    52.02% [ 1948 / 3745 ], fuzzy 1011, not translated 786
+- Korean                       51.99% [ 1947 / 3745 ], fuzzy 1008, not translated 790
+- Spanish (Spain)              47.85% [ 1792 / 3745 ], fuzzy 1025, not translated 928
+- Portuguese (Brazil)          45.13% [ 1690 / 3745 ], fuzzy 1133, not translated 922
+- Greek                        44.83% [ 1679 / 3745 ], fuzzy 1142, not translated 924
+- Turkish                      44.25% [ 1657 / 3745 ], fuzzy 1157, not translated 931
+- Italian                      43.12% [ 1615 / 3745 ], fuzzy 1059, not translated 1071
+- Spanish (Mexico)             41.44% [ 1552 / 3745 ], fuzzy 1209, not translated 984
+- Finnish                      41.20% [ 1543 / 3745 ], fuzzy 1218, not translated 984
+- Polish                       41.15% [ 1541 / 3745 ], fuzzy 1205, not translated 999
+- Romanian                     40.80% [ 1528 / 3745 ], fuzzy 1219, not translated 998
+- Swedish                      40.59% [ 1520 / 3745 ], fuzzy 1227, not translated 998
+- Arabic                       40.19% [ 1505 / 3745 ], fuzzy 1245, not translated 995
+- Russian                      40.13% [ 1503 / 3745 ], fuzzy 1474, not translated 768
+- Bulgarian                    38.93% [ 1458 / 3745 ], fuzzy 1260, not translated 1027
+- Slovenian                    38.83% [ 1454 / 3745 ], fuzzy 1263, not translated 1028
+- Chinese (Taiwan)             37.78% [ 1415 / 3745 ], fuzzy 1303, not translated 1027
+- Portuguese (Portugal)        37.49% [ 1404 / 3745 ], fuzzy 1288, not translated 1053
+- Japanese                     36.98% [ 1385 / 3745 ], fuzzy 772, not translated 1588
+- Chinese (China)              36.26% [ 1358 / 3745 ], fuzzy 1288, not translated 1099
+- Ukrainian                    35.99% [ 1348 / 3745 ], fuzzy 1298, not translated 1099
+- Catalan                      35.41% [ 1326 / 3745 ], fuzzy 1224, not translated 1195
+- Thai                         35.33% [ 1323 / 3745 ], fuzzy 1334, not translated 1088
+- Hebrew                       35.11% [ 1315 / 3745 ], fuzzy 1322, not translated 1108
+- Galician                     34.21% [ 1281 / 3745 ], fuzzy 1374, not translated 1090
+- Slovak                       31.80% [ 1191 / 3745 ], fuzzy 1287, not translated 1267
+- Croatian                     30.79% [ 1153 / 3745 ], fuzzy 1303, not translated 1289
+- Czech                        30.68% [ 1149 / 3745 ], fuzzy 1253, not translated 1343
+- Chinese (Hong Kong)          18.16% [ 680 / 3745 ], fuzzy 545, not translated 2520
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
 = Tech support =
 
 If you have some questions, which you haven't found at [FAQ](https://wpbookingcalendar.com/faq/) you can post them at [technical help board](https://wpbookingcalendar.com/support/)
-
 
 == Screenshots ==
 1. **Drag & Drop Booking Form Builder**: Create booking forms visually without manually editing complex shortcodes or form codes.
@@ -341,6 +337,28 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.3 =
+- Changes in **all** versions:
+	* **New**: Added a dedicated **Appearance / Theme** settings page with a live calendar and booking form preview. Users can select the calendar skin, booking form light/dark theme, time picker skin, preview mode, booking resource, number of months, and custom booking form from one visual interface before saving the final design.
+	* **New**: Added a new **Calendar** settings page with a live calendar preview and right-side settings panels. Administrators can configure days selection, changeover days, calendar legend, date tooltips, mobile month behavior, and other calendar options while immediately seeing how the calendar reacts.
+	* **New**: Added a dedicated **Resources > Capacity Rules** submenu for capacity-related settings, including booking quantity control, quantity field selection, pending days as available, and auto-cancel rules. These settings were moved from the general Settings area to the Resources section where they better match the resource workflow.
+	* **Improvement**: Reworked Setup Wizard navigation so the Color Theme and Days Selection steps open the new Appearance / Theme and Calendar settings pages instead of the old settings screens.
+	* **Improvement**: Improved the new Calendar settings preview so days selection, range selection hints, changeover days, calendar legend, and tooltip options are refreshed in real time using the same calendar behavior as the front-end booking form and Add Booking workflows.
+	* **Improvement**: Improved Calendar and Theme settings preview performance by delaying preview reloads while typing in text fields, avoiding unnecessary repeated AJAX requests.
+	* **Improvement**: Added submenu links for sections of the new Calendar settings page, allowing administrators to open the Calendar page directly to Days Selection, Changeover and Times, Calendar Legend, Calendar Dates Tooltips, or Calendar General sections.
+	* **Improvement**: Added a shared top path/status line across Booking Calendar admin pages, showing clear navigation such as Booking Calendar > Settings > Calendar > Days Selection.
+	* **Improvement**: Improved admin layout persistence. The left sidebar view mode and full-screen mode are now saved per user, while special workflows such as the Form Builder and Setup Wizard can still force their required layout.
+	* **Improvement**: Updated predefined booking form templates so the standard form uses the default days selection behavior instead of forcing single-day selection.
+	* **Removed**: Removed the advanced "Show partially booked days with the same background as the legend item" setting to keep the new Appearance / Theme page simpler. Sites that still need the old visual behavior can add the `wpbc_timeslot_day_bg_as_available` CSS class to an outer wrapper around the booking form or calendar. The compatibility CSS remains in these direct calendar skin files: `24_9__light.css`, `black.css`, `black-2.css`, `green-01.css`, `light-01.css`, `multidays.css`, `premium-black.css`, `premium-light.css`, `premium-light-noborder.css`, `premium-marine.css`, `premium-steel.css`, `premium-steel-noborder.css`, `standard.css`, `traditional.css`, `traditional-light.css`, and `traditional-times.css`.
+	* **Removed**: Removed the old **Settings > Calendar > Calendar Settings** submenu because its options are now available in the new Calendar settings page, and capacity options were moved to Resources > Capacity Rules.
+	* **Fix**: Resolved an issue where incorrect text colors were appearing in the booking form on certain themes.
+	* **Fix**: Fixed a Setup Bar lifecycle issue where the wizard could keep running on the wrong admin pages after setup navigation.
+	* **Fix**: Fixed early translation loading notices caused by Setup Wizard startup checks being initialized too early on some WordPress installations.
+	* **Fix**: Fixed Calendar settings saving and preview handling for dynamic weekdays used by range days selection.
+	* **Fix**: Fixed changeover day preview rendering in the new Calendar settings page, including calendar date cells and legend items for diagonal or vertical changeover styles.
+	* **Fix**: Fixed the historical "Disable times in tooltips" option by presenting it as a clearer "Enable times in tooltips" setting while preserving the existing stored option behavior.
+	* **Fix**: Fixed the Booking Listing "Emails sending" toggle so the saved user choice is shown correctly after reloading the page.
+
 = 11.2.1 =
 - Changes in **all** versions:
 	* **Fix**: Fixed a fatal error during plugin activation/update by loading the Booking Form Builder settings helper before Setup Wizard route initialization. E.g.: Uncaught Error: Class "WPBC_Frontend_Settings" not found ...
@@ -512,6 +530,9 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.3 =
+Added new visual Settings > Calendar and Settings > Appearance / Theme pages with live previews, moved capacity rules to Resources, and improved admin navigation, setup flow, and preview behavior.
+
 = 11.2 =
 Redesigned Setup Wizard with a floating Setup Bar that guides configuration across the relevant admin pages. Adds front-end popup booking forms via [booking resource_id=1 popup=1] and [booking_popup], and other improvements...
 

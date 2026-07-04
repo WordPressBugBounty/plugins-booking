@@ -61,8 +61,7 @@ class WPBC_API_Settings_Form_Options extends WPBC_Settings_API {
 									'type'          => 'checkbox'
 									, 'default'     => $default_options_values['booking_use_bfb_form']         // 'Off'
 									, 'title'       =>  __('Drag & Drop Booking Form Builder' ,'booking') .
-														'<span class="wpbc_new_label" style="padding: 3px 4px;margin: 0 10px;">' . esc_html__( 'New', 'booking' ) . '</span>' .
-									 					'<span class="wpbc_new_label" style="padding: 3px 4px;background: #e18900;text-transform: none;">Beta</span> '
+														'<span class="wpbc_new_label" style="padding: 3px 4px;margin: 0 10px;">' . esc_html__( 'New', 'booking' ) . '</span>'
 									, 'label'       => __('Enable the new drag & drop booking form builder.' ,'booking')
 									, 'description' => __( 'Enables the new drag & drop form builder. Disable this option to use the classic booking form.', 'booking' )
 									, 'group'       => 'form'

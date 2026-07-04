@@ -322,6 +322,7 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
+		wpbc_welcome_section_11_3( $this );
 		wpbc_welcome_section_11_2( $this );
 		wpbc_welcome_section_11_1( $this );
 		wpbc_welcome_section_11_0( $this );

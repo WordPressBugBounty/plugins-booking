@@ -62,7 +62,6 @@
 .wpbc_theme_dark_1 .wpbc_wizard__border_container {
 	border: 1px solid rgb(0, 0, 0);
 	background: #626262;
-	color: #999;
 	color: #bbb;
 	box-shadow: 0 0px 3px #3b3b3b;
 }
@@ -72,4 +71,21 @@
 .wpbc_theme_dark_1 .wpbc_wizard__border_container p,
 .wpbc_theme_dark_1 .wpbc_wizard__border_container label {
 	color: #fff;
+}
+/* Default text color */
+div.wpbc_container.wpbc_form,
+div.wpbc_container.wpbc_form input,
+div.wpbc_container.wpbc_form label,
+div.wpbc_container.wpbc_form select,
+div.wpbc_container.wpbc_form button,
+div.wpbc_container.wpbc_form textarea {
+	color:#3c434a;
+}
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 input,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 label,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 select,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 button,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 textarea {
+	color: #bbb;
 }
