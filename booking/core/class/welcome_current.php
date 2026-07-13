@@ -4,6 +4,94 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * What's New section for Booking Calendar 11.4
+ *
+ * @param object $obj
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_4( $obj ) {
+
+	$section_param_arr = array( 'version_num' => '11.4', 'show_expand' => false );
+
+	$obj->expand_section_start( $section_param_arr );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'New Global Booking Form Styles' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.4/booking_calendar__booking_form_styles.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added global **Booking Form Styles** with Light and Dark bordered, borderless, and soft-background presets, plus a fully configurable Custom style.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Complete appearance controls**: Customize form backgrounds, borders, spacing, text, fields, focus states, checkbox and radio controls, and buttons.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Consistent live previews**: Select and preview the same global Form Style in **Settings > Appearance / Theme** and the **Booking Form Builder**.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Unified front-end design**: Form styles now apply consistently across booking forms and supported payment buttons while preserving PayPal branding.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Two-Click Date Range Selection' ) ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.4/booking_calendar__date_range_selection.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added two-click date-range selection in **Booking Calendar Free and higher editions**, allowing visitors to select the first and last booking dates.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Clear visual selection**: Available dates and the prospective date range are highlighted while visitors move through the calendar.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Better visitor guidance**: Added clearer instructions for completing a range and more useful feedback when it contains unavailable dates.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Faster full-day setup**: Two-click range selection is now the default when Full Day Booking mode is activated in the Setup Wizard.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap:1%">
+
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Centralized Form Messages' ) ); ?></h2>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+					<img src="<?php echo esc_attr( $obj->section_img_url( '11.4/booking_calendar__form_messages.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				</div>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **NEW**: Added a dedicated **Form Messages** settings page for date selection notices, validation errors, submission messages, and other visitor-facing text.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Multilingual messages**: Customize messages with **[lang=LOCALE]** language shortcodes while keeping translated plugin defaults.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Simpler settings workflow**: Edit all message groups on one page, use quick section navigation, restore defaults, and save with AJAX notifications.' ) ); ?></li>
+				</ul>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h2><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( 'Streamlined Form Builder Workflow' ) ); ?></h2>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+					<img src="<?php echo esc_attr( $obj->section_img_url( '11.4/booking_calendar__form_builder_workflow.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				</div>
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Modernized form configuration**: Removed legacy Booking Form settings pages and routed form configuration to the **Booking Form Builder**.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Safe legacy migration**: Existing Simple and Advanced legacy forms are imported into the Booking Form Builder during updates.' ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( '&bull; **Setup Wizard improvement**: Added **Save and Continue** and limited visual highlighting to the settings relevant to the current setup step.' ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<?php
+
+	$obj->expand_section_end( $section_param_arr );
+}
+
+/**
  * What's New section for Booking Calendar 11.3
  *
  * @param object $obj
@@ -11,6 +99,10 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @return void
  */
 function wpbc_welcome_section_11_3( $obj ) {
+
+	?>
+	<hr/>
+	<?php
 
 	$section_param_arr = array( 'version_num' => '11.3', 'show_expand' => false );
 

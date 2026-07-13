@@ -9,7 +9,7 @@
  *
  * Args shape:
  * array(
- *   'type'    => 'toggle'|'select'|'radio'|'length'|'range'|'input'|'textarea',
+ *   'type'    => 'toggle'|'select'|'radio'|'length'|'spacing'|'range'|'color'|'input'|'textarea',
  *   'key'     => 'booking_timeslot_picker',
  *   'scope'   => 'global'|'form'|'ui',
  *   'save_ui' => 'always'|'when_changed',         // only for scope=global
@@ -82,11 +82,28 @@ class WPBC_BFB_Setting_Options {
 
 		// Wrapper classes.
 		$row_class = 'wpbc_bfb__form_setting wpbc-setting';
+		if ( ! empty( $args['row_class'] ) && is_scalar( $args['row_class'] ) ) {
+			$row_extra_classes = preg_split( '/\s+/', trim( (string) $args['row_class'] ) );
+			foreach ( $row_extra_classes as $row_extra_class ) {
+				$row_extra_class = sanitize_html_class( $row_extra_class );
+				if ( '' !== $row_extra_class ) {
+					$row_class .= ' ' . $row_extra_class;
+				}
+			}
+		}
+
+		$row_attr = ( isset( $args['row_attr'] ) && is_array( $args['row_attr'] ) ) ? $args['row_attr'] : array();
+		if ( ! empty( $args['row_hidden'] ) ) {
+			$row_attr['hidden']      = 'hidden';
+			$row_attr['aria-hidden'] = 'true';
+		}
+		$row_attr_str = self::build_attr_string( $row_attr );
 		?>
 		<div class="<?php echo esc_attr( $row_class ); ?>"
 		     data-scope="<?php echo esc_attr( $scope ); ?>"
 		     data-key="<?php echo esc_attr( $key ); ?>"
-		     data-type="<?php echo esc_attr( $type ); ?>">
+		     data-type="<?php echo esc_attr( $type ); ?>"
+			<?php echo $row_attr_str; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<div class="inspector__row" style="justify-content:space-between;">
 				<div class="inspector__control" style="flex:1 1 auto;">
 
@@ -154,7 +171,8 @@ class WPBC_BFB_Setting_Options {
 		// Radio.
 		if ( 'radio' === $type ) {
 			$options     = ( isset( $args['options'] ) && is_array( $args['options'] ) ) ? $args['options'] : array();
-			$radio_layout = ( isset( $args['radio_layout'] ) && 'inline' === $args['radio_layout'] ) ? 'inline' : 'stack';
+			$radio_layout = isset( $args['radio_layout'] ) ? (string) $args['radio_layout'] : 'stack';
+			$radio_layout = in_array( $radio_layout, array( 'inline', 'choice_grid' ), true ) ? $radio_layout : 'stack';
 			self::print_radio( $id, $key, $scope, $label, $value, $options, $radio_layout );
 			return;
 		}
@@ -166,10 +184,24 @@ class WPBC_BFB_Setting_Options {
 			return;
 		}
 
+		// Spacing: two px number controls saved as CSS shorthand, e.g. "10px 30px".
+		if ( 'spacing' === $type ) {
+			$spacing = ( isset( $args['spacing'] ) && is_array( $args['spacing'] ) ) ? $args['spacing'] : array();
+			self::print_spacing( $id, $key, $scope, $label, $value, $spacing );
+			return;
+		}
+
 		// Range (slider number).
 		if ( 'range' === $type ) {
 			$range = ( isset( $args['range'] ) && is_array( $args['range'] ) ) ? $args['range'] : array();
 			self::print_range( $id, $key, $scope, $label, $value, $range, $attr, $css_class );
+			return;
+		}
+
+		// Color picker (Coloris).
+		if ( 'color' === $type ) {
+			$input_attrs = ( isset( $args['input_attrs'] ) && is_array( $args['input_attrs'] ) ) ? $args['input_attrs'] : array();
+			self::print_color( $id, $key, $scope, $label, $value, $attr, $css_class, $input_attrs );
 			return;
 		}
 
@@ -237,12 +269,18 @@ class WPBC_BFB_Setting_Options {
 
 		$v = is_scalar( $value ) ? (string) $value : '';
 
+		$is_choice_grid = ( 'choice_grid' === $radio_layout );
+		$wrapper_class  = $is_choice_grid ? 'wpbc_theme_choice_grid wpbc_bfb_style_choice_grid' : '';
 		$wrapper_style = ( 'inline' === $radio_layout )
 			? 'display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0;'
 			: 'margin:0;';
 		$item_style = ( 'inline' === $radio_layout )
 			? ''
 			: 'display:flex;align-items:center;gap:8px;margin:4px 0;';
+		if ( $is_choice_grid ) {
+			$wrapper_style = '';
+			$item_style    = '';
+		}
 
 		// Put fs data on wrapper (JS reads control id from wrapper).
 		$wrap_attr = array(
@@ -258,14 +296,18 @@ class WPBC_BFB_Setting_Options {
 		     <?php echo $wrap_attr_str; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<div style="margin:0 0 6px 0;"><strong><?php echo esc_html( $label ); ?></strong></div>
 
-			<div style="<?php echo esc_attr( $wrapper_style ); ?>">
+			<div class="<?php echo esc_attr( $wrapper_class ); ?>" style="<?php echo esc_attr( $wrapper_style ); ?>">
 				<?php
 				$i = 0;
 				foreach ( $options as $opt_value => $opt_label ) :
 					$i++;
 					$rid = $id . '__' . $i;
+					$item_class = $is_choice_grid ? 'wpbc_theme_choice' : '';
+					if ( $is_choice_grid && (string) $opt_value === $v ) {
+						$item_class .= ' is-selected';
+					}
 					?>
-					<label style="<?php echo esc_attr( $item_style ); ?>">
+					<label class="<?php echo esc_attr( $item_class ); ?>" style="<?php echo esc_attr( $item_style ); ?>">
 						<input type="radio"
 						       name="<?php echo esc_attr( $id ); ?>"
 						       id="<?php echo esc_attr( $rid ); ?>"
@@ -273,7 +315,12 @@ class WPBC_BFB_Setting_Options {
 						       data-wpbc-bfb-fs-radio="1"
 							<?php checked( (string) $opt_value, $v ); ?>
 						/>
+						<?php if ( $is_choice_grid ) : ?>
+							<span class="wpbc_theme_choice_swatch wpbc_theme_choice_swatch_<?php echo esc_attr( sanitize_html_class( (string) $opt_value ) ); ?>"></span>
+							<span class="wpbc_theme_choice_label"><?php echo esc_html( (string) $opt_label ); ?></span>
+						<?php else : ?>
 						<?php echo esc_html( (string) $opt_label ); ?>
+						<?php endif; ?>
 					</label>
 				<?php endforeach; ?>
 			</div>
@@ -477,6 +524,81 @@ class WPBC_BFB_Setting_Options {
 		<?php
 	}
 
+	private static function print_spacing( $id, $key, $scope, $label, $value, $spacing ) {
+
+		$min  = isset( $spacing['min'] ) ? (float) $spacing['min'] : 0;
+		$max  = isset( $spacing['max'] ) ? (float) $spacing['max'] : 120;
+		$step = isset( $spacing['step'] ) ? (float) $spacing['step'] : 1;
+
+		$raw = is_scalar( $value ) ? trim( (string) $value ) : '';
+		if ( '' === $raw ) {
+			$raw = '10px 30px';
+		}
+
+		preg_match_all( '/-?\d+(?:\.\d+)?/', $raw, $matches );
+		$numbers    = isset( $matches[0] ) ? $matches[0] : array();
+		$vertical   = isset( $numbers[0] ) ? (float) $numbers[0] : 10;
+		$horizontal = isset( $numbers[1] ) ? (float) $numbers[1] : $vertical;
+
+		$vertical   = max( $min, min( $max, $vertical ) );
+		$horizontal = max( $min, min( $max, $horizontal ) );
+
+		$vertical_value   = (string) ( $vertical + 0 );
+		$horizontal_value = (string) ( $horizontal + 0 );
+		$combined         = $vertical_value . 'px ' . $horizontal_value . 'px';
+
+		$writer_attr                          = self::with_common_fs_data( array( 'id' => $id ), $key, $scope, 'spacing', $combined );
+		$writer_attr['data-wpbc-bfb-fs-type'] = 'spacing';
+		$writer_attr['data-wpbc_spacing_writer'] = '1';
+
+		$common_input_attr = array(
+			'data-wpbc-bfb-fs-key'   => $key,
+			'data-wpbc-bfb-fs-scope' => $scope,
+			'data-wpbc-bfb-fs-type'  => 'spacing',
+		);
+
+		?>
+		<label class="inspector__label"><strong><?php echo esc_html( $label ); ?></strong></label>
+
+		<div class="inspector__control">
+			<div class="wpbc_spacing_group wpbc_inline_inputs inspector__w_100">
+				<label style="display:flex;flex-direction:column;gap:4px;flex:1 1 90px;">
+					<span class="wpbc_bfb__help" style="margin:0;"><?php esc_html_e( 'Top / bottom', 'booking' ); ?></span>
+					<input type="number"
+						   class="inspector__input"
+						   data-wpbc_spacing_vertical="1"
+						   autocomplete="off"
+						   min="<?php echo esc_attr( (string) $min ); ?>"
+						   max="<?php echo esc_attr( (string) $max ); ?>"
+						   step="<?php echo esc_attr( (string) $step ); ?>"
+						   value="<?php echo esc_attr( $vertical_value ); ?>"
+						<?php echo self::build_attr_string( $common_input_attr ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					/>
+				</label>
+				<label style="display:flex;flex-direction:column;gap:4px;flex:1 1 90px;">
+					<span class="wpbc_bfb__help" style="margin:0;"><?php esc_html_e( 'Left / right', 'booking' ); ?></span>
+					<input type="number"
+						   class="inspector__input"
+						   data-wpbc_spacing_horizontal="1"
+						   autocomplete="off"
+						   min="<?php echo esc_attr( (string) $min ); ?>"
+						   max="<?php echo esc_attr( (string) $max ); ?>"
+						   step="<?php echo esc_attr( (string) $step ); ?>"
+						   value="<?php echo esc_attr( $horizontal_value ); ?>"
+						<?php echo self::build_attr_string( $common_input_attr ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					/>
+				</label>
+				<input type="text"
+					   class="inspector__input"
+					   style="display:none;"
+					   value="<?php echo esc_attr( $combined ); ?>"
+					<?php echo self::build_attr_string( $writer_attr ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				/>
+			</div>
+		</div>
+		<?php
+	}
+
 	private static function print_input( $id, $key, $scope, $label, $value, $attr, $css_class, $input_type, $input_attrs ) {
 
 		$v = is_scalar( $value ) ? (string) $value : '';
@@ -490,6 +612,33 @@ class WPBC_BFB_Setting_Options {
 		<label style="display:block;">
 			<div style="margin:0 0 6px 0;"><strong><?php echo esc_html( $label ); ?></strong></div>
 			<input type="<?php echo esc_attr( $input_type ); ?>"
+			       class="<?php echo esc_attr( $css_class ); ?>"
+			       value="<?php echo esc_attr( $v ); ?>"
+			       <?php echo $attr_str; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			       <?php echo $extra_attr_str; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			/>
+		</label>
+		<?php
+	}
+
+	private static function print_color( $id, $key, $scope, $label, $value, $attr, $css_class, $input_attrs ) {
+
+		$v = is_scalar( $value ) ? (string) $value : '';
+
+		$control_attr = self::with_common_fs_data( $attr, $key, $scope, 'color', $v );
+		$control_attr['data-wpbc-bfb-fs-type'] = 'color';
+		$control_attr['data-inspector-type']   = 'color';
+		$control_attr['data-coloris']          = '';
+		$control_attr['data-default-color']    = $v;
+		$control_attr['autocomplete']          = 'off';
+		$control_attr['placeholder']           = '#ffffff';
+
+		$attr_str       = self::build_attr_string( $control_attr );
+		$extra_attr_str = self::build_attr_string( $input_attrs );
+		?>
+		<label style="display:block;">
+			<div style="margin:0 0 6px 0;"><strong><?php echo esc_html( $label ); ?></strong></div>
+			<input type="text"
 			       class="<?php echo esc_attr( $css_class ); ?>"
 			       value="<?php echo esc_attr( $v ); ?>"
 			       <?php echo $attr_str; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -554,6 +703,7 @@ class WPBC_BFB_Setting_Options {
 		if ( 'when_changed' === $save_ui ) {
 			$wrap_class .= ' is-hidden';
 		}
+		$autosave_attr = ! empty( $args['autosave_on_form_save'] ) ? ' data-wpbc-u-autosave-on-form-save="1"' : '';
 		?>
 		<div class="<?php echo esc_attr( $wrap_class ); ?>">
 			<button type="button"
@@ -568,6 +718,7 @@ class WPBC_BFB_Setting_Options {
 					data-wpbc-u-save-ui="<?php echo esc_attr( $save_ui ); ?>"
 					data-wpbc-u-save-scope="global"
 					data-wpbc-u-save-value-from="<?php echo esc_attr( $value_from ); ?>"
+					<?php echo $autosave_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			><?php echo esc_html__( 'Save', 'booking' ); ?></button>
 		</div>
 		<?php

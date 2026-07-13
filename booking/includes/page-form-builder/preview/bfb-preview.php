@@ -236,7 +236,7 @@ class WPBC_BFB_Preview_Service {
 			'wpbc-bfb-preview',
 			wpbc_plugin_url( '/includes/page-form-builder/preview/_out/bfb-preview.js' ),
 			array( 'wpbc-bfb_builder' ),
-			'1.0.0',
+			WP_BK_VERSION_NUM,
 			true
 		);
 		wp_enqueue_style(
@@ -660,7 +660,9 @@ class WPBC_BFB_Preview_Service {
 
 		$shortcode = '[booking resource_id="' . esc_attr( $resource_id ) . '" form_type="' . esc_attr( $form_name ) . '" form_status="preview"]';
 
-		return do_shortcode( $shortcode );
+		$preview_html = do_shortcode( $shortcode );
+
+		return $this->filter_wrapped_html_for_preview_form_style( $preview_html, array(), $resource_id, $form_name );
 	}
 
 	public function filter_form_advanced_form_for_preview( $advanced_form, $form_id ) {
@@ -726,6 +728,168 @@ class WPBC_BFB_Preview_Service {
 	}
 
 	/**
+	 * Apply unsaved global Form Style values to the preview iframe only.
+	 *
+	 * @param string $wrapped_html             Wrapped booking form HTML.
+	 * @param array  $bfb_settings             BFB settings.
+	 * @param int    $resource_id              Booking resource ID.
+	 * @param string $custom_booking_form_name Form slug.
+	 * @return string
+	 */
+	public function filter_wrapped_html_for_preview_form_style( $wrapped_html, $bfb_settings, $resource_id, $custom_booking_form_name ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+		$preview_style = $this->get_preview_form_style();
+		if ( empty( $preview_style ) ) {
+			return $wrapped_html;
+		}
+
+		$style  = isset( $preview_style['booking_form_style'] ) ? wpbc_bfb_settings__sanitize_form_style( $preview_style['booking_form_style'] ) : wpbc_bfb_settings__get_default_form_style();
+		$preset = wpbc_bfb_settings__get_form_style_preset( $style );
+
+		$wrapped_html = $this->remove_classes_from_first_form_wrapper(
+			$wrapped_html,
+			array(
+				'wpbc_theme_dark_1',
+				'wpbc_bfb_form_appearance_custom',
+			)
+		);
+		$wrapped_html = $this->remove_classes_from_first_tag_with_classes(
+			$wrapped_html,
+			array( 'wpbc_bfb_form' ),
+			array(
+				'wpbc_theme_dark_1',
+				'wpbc_bfb_form_appearance_custom',
+			)
+		);
+
+		$theme_class = isset( $preset['theme_class'] ) ? sanitize_html_class( (string) $preset['theme_class'] ) : '';
+		if ( '' !== $theme_class ) {
+			$wrapped_html = WPBC_FE_Form_Style_Injector::add_class_to_first_tag_with_classes( $wrapped_html, array( 'wpbc_container', 'wpbc_form' ), $theme_class );
+		}
+
+		$css_vars = wpbc_bfb_settings__get_form_style_css_vars( $style, $preview_style );
+		if ( ! empty( $css_vars ) ) {
+			$wrapped_html = WPBC_FE_Form_Style_Injector::inject_css_vars_into_form_wrapper( $wrapped_html, $css_vars );
+			$wrapped_html = WPBC_FE_Form_Style_Injector::inject_css_vars_into_bfb_root( $wrapped_html, $css_vars );
+		}
+
+		if ( wpbc_bfb_settings__is_custom_form_style( $style ) ) {
+			$wrapped_html = WPBC_FE_Form_Style_Injector::add_class_to_first_tag_with_classes( $wrapped_html, array( 'wpbc_container', 'wpbc_form' ), 'wpbc_bfb_form_appearance_custom' );
+			$wrapped_html = WPBC_FE_Form_Style_Injector::add_class_to_first_tag_with_classes( $wrapped_html, array( 'wpbc_bfb_form' ), 'wpbc_bfb_form_appearance_custom' );
+		}
+
+		return $wrapped_html;
+	}
+
+	/**
+	 * Get sanitized preview Form Style override from the current transient data.
+	 *
+	 * @return array
+	 */
+	protected function get_preview_form_style() {
+
+		if ( empty( $this->current_preview_data['form_style'] ) || ! is_array( $this->current_preview_data['form_style'] ) ) {
+			return array();
+		}
+
+		$style = isset( $this->current_preview_data['form_style']['booking_form_style'] ) ? $this->current_preview_data['form_style']['booking_form_style'] : '';
+		$style = wpbc_bfb_settings__sanitize_form_style( $style );
+
+		$custom_options = wpbc_bfb_settings__get_custom_form_style_options( $this->current_preview_data['form_style'] );
+
+		return array_merge(
+			array(
+				'booking_form_style' => $style,
+			),
+			$custom_options
+		);
+	}
+
+	/**
+	 * Remove classes from the first outer booking form wrapper.
+	 *
+	 * @param string $html        HTML.
+	 * @param array  $class_names Class names to remove.
+	 * @return string
+	 */
+	protected function remove_classes_from_first_form_wrapper( $html, $class_names ) {
+
+		return $this->remove_classes_from_first_tag_with_classes( $html, array( 'wpbc_container', 'wpbc_form' ), $class_names );
+	}
+
+	/**
+	 * Remove classes from the first tag that has all required classes.
+	 *
+	 * @param string $html             HTML.
+	 * @param array  $required_classes Required classes.
+	 * @param array  $class_names      Class names to remove.
+	 * @return string
+	 */
+	protected function remove_classes_from_first_tag_with_classes( $html, $required_classes, $class_names ) {
+
+		$html        = (string) $html;
+		$required_classes = is_array( $required_classes ) ? $required_classes : array();
+		$class_names = is_array( $class_names ) ? $class_names : array();
+		$remove_map  = array();
+		$required_map = array();
+
+		foreach ( $required_classes as $class_name ) {
+			$class_name = sanitize_html_class( (string) $class_name );
+			if ( '' !== $class_name ) {
+				$required_map[ $class_name ] = true;
+			}
+		}
+
+		foreach ( $class_names as $class_name ) {
+			$class_name = sanitize_html_class( (string) $class_name );
+			if ( '' !== $class_name ) {
+				$remove_map[ $class_name ] = true;
+			}
+		}
+
+		if ( empty( $remove_map ) || empty( $required_map ) ) {
+			return $html;
+		}
+
+		$done = false;
+		$out  = preg_replace_callback(
+			'/<div\b[^>]*\bclass\s*=\s*(["\'])(.*?)\1[^>]*>/i',
+			function ( $matches ) use ( &$done, $remove_map, $required_map ) {
+
+				$tag = $matches[0];
+				if ( $done ) {
+					return $tag;
+				}
+
+				$quote   = $matches[1];
+				$classes = preg_split( '/\s+/', trim( (string) $matches[2] ) );
+				$classes = is_array( $classes ) ? $classes : array();
+
+				foreach ( $required_map as $required_class => $unused ) {
+					if ( ! in_array( $required_class, $classes, true ) ) {
+						return $tag;
+					}
+				}
+
+				$filtered = array();
+				foreach ( $classes as $class_name ) {
+					if ( '' === $class_name || isset( $remove_map[ $class_name ] ) ) {
+						continue;
+					}
+					$filtered[] = $class_name;
+				}
+
+				$done = true;
+
+				return preg_replace( '/\bclass\s*=\s*(["\'])(.*?)\1/i', 'class=' . $quote . esc_attr( implode( ' ', $filtered ) ) . $quote, $tag, 1 );
+			},
+			$html
+		);
+
+		return ( null === $out ) ? $html : $out;
+	}
+
+	/**
 	 * Hide the preview page from the Pages list in admin.
 	 *
 	 * @param WP_Query $query Main query.
@@ -770,7 +934,7 @@ class WPBC_BFB_Preview_Service {
 	 *
 	 * @return array|false { preview_url, token } or false on failure.
 	 */
-	public function create_preview_session( $preview_form_id, $user_id, $structure, $form_name = 'standard', $advanced_form = '', $content_form = '' ) {
+	public function create_preview_session( $preview_form_id, $user_id, $structure, $form_name = 'standard', $advanced_form = '', $content_form = '', $form_style = array() ) {
 
 
 		$preview_form_id     = (int) $preview_form_id;
@@ -779,6 +943,18 @@ class WPBC_BFB_Preview_Service {
 		$form_name = sanitize_text_field( (string) $form_name );
 		if ( '' === $form_name ) {
 			$form_name = 'standard';
+		}
+		$form_style = is_array( $form_style ) ? $form_style : array();
+		if ( ! empty( $form_style ) ) {
+			$style_key          = isset( $form_style['booking_form_style'] ) ? $form_style['booking_form_style'] : '';
+			$sanitized_style    = wpbc_bfb_settings__sanitize_form_style( $style_key );
+			$custom_style       = wpbc_bfb_settings__get_custom_form_style_options( $form_style );
+			$form_style         = array_merge(
+				array(
+					'booking_form_style' => $sanitized_style,
+				),
+				$custom_style
+			);
 		}
 		if ( $preview_form_id <= 0 ) {
 			$preview_form_id = 1;
@@ -806,6 +982,7 @@ class WPBC_BFB_Preview_Service {
 			'time'      => time(),
 			'advanced_form'   => (string) $advanced_form,
 			'content_form'    => (string) $content_form,
+			'form_style'      => $form_style,
 		);
 
 		set_transient( $transient_key, $payload, 10 * MINUTE_IN_SECONDS );

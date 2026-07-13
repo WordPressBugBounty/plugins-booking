@@ -17,11 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_captcha__in_ajx__check( $request_params, $is_from_admin_panel , $original_ajx_search_params ) {
 
-	if (
-			( ( 'On' === get_bk_option( 'booking_is_use_captcha' ) ) || ( WPBC_NEW_FORM_BUILDER ) ) &&
-			( ! $is_from_admin_panel ) &&
-			( ( isset( $original_ajx_search_params['captcha_user_input'] ) ) && ( isset( $original_ajx_search_params['captcha_chalange'] ) ) )
-	) {
+	if ( ( ! $is_from_admin_panel ) && ( ( isset( $original_ajx_search_params['captcha_user_input'] ) ) && ( isset( $original_ajx_search_params['captcha_chalange'] ) ) ) ) {
 
 		if ( ! wpbc_captcha__simple__is_ansfer_correct( $request_params['captcha_user_input'], $request_params['captcha_chalange'] ) ) {
 
@@ -31,7 +27,7 @@ function wpbc_captcha__in_ajx__check( $request_params, $is_from_admin_panel , $o
 			$ajx_data_arr['status']                          = 'error';
 			$ajx_data_arr['status_error']                    = 'captcha_simple_wrong';
 			$ajx_data_arr['captcha__simple']                 = $captcha_arr;
-			$ajx_data_arr['ajx_after_action_message']        = __( 'The code you entered is incorrect', 'booking' );
+			$ajx_data_arr['ajx_after_action_message']        = wpbc_frontend_messages__get( 'message_captcha_incorrect', array(), $request_params['resource_id'] );
 			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
 
 			wp_send_json(
@@ -188,11 +184,7 @@ function wpbc_captcha__simple__is_installed() {
  */
 function wpbc_booking_form_is_captcha_allowed_here() {
 
-	if ( ( 'On' !== get_bk_option( 'booking_is_use_captcha' ) ) && ( ! WPBC_NEW_FORM_BUILDER ) ) {
-		return false;
-	}
-
-	// In admin area we usually do not show CAPTCHA, except settings form page.
+	// In admin area we usually do not show CAPTCHA, except booking form builder preview pages.
 	// if ( is_admin() && ( ! wpbc_is_settings_form_page() ) ) { return false; }  //.
 
 	// old URI-based logic for edge cases, keep it as extra guard:.
@@ -201,7 +193,12 @@ function wpbc_booking_form_is_captcha_allowed_here() {
 	// Optional legacy-style admin URI check.
 	$admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );
 
-	if ( ( '' !== $server_request_uri ) && ( false !== strpos( $server_request_uri, $admin_uri ) ) && ( ! wpbc_is_settings_form_page() ) ) {
+	if (
+		( '' !== $server_request_uri )
+		&& ( false !== strpos( $server_request_uri, $admin_uri ) )
+		&& ( ! wpbc_is_settings_form_page() )
+		&& ( ! wpbc_is_builder_booking_form_page() )
+	) {
 		return false;
 	}
 

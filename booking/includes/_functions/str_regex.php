@@ -292,7 +292,7 @@ function wpbc_get_shortcodes_in_text__as_unique_replace( $content_text, $shortco
 function wpbc_get_fields_from_booking_form( $booking_form = '' ){
 
 	if ( empty( $booking_form ) ) {
-		$booking_form = get_bk_option( 'booking_form' );
+		$booking_form = function_exists( 'wpbc_get__booking_form_fields__configuration' ) ? wpbc_get__booking_form_fields__configuration( wpbc_get_default_resource(), 'standard' ) : '';
 	}
 
 	$types         = 'text[*]?|email[*]?|time[*]?|textarea[*]?|select[*]?|selectbox[*]?|checkbox[*]?|radio|acceptance|captchac|captchar|file[*]?|quiz';
@@ -332,7 +332,7 @@ function wpbc_get_fields_from_booking_form( $booking_form = '' ){
 function wpbc_get_select_checkbox_fields_from_booking_form( $booking_form = '' ){
 
 	if ( empty( $booking_form )  )
-		$booking_form  = get_bk_option( 'booking_form' );
+		$booking_form = function_exists( 'wpbc_get__booking_form_fields__configuration' ) ? wpbc_get__booking_form_fields__configuration( wpbc_get_default_resource(), 'standard' ) : '';
 
 	$types = 'select[*]?|selectbox[*]?|checkbox[*]?|radio[*]?';                                                                // FixIn: 8.1.3.7.
 	$fields_data = wpbc_get_booking_form_shortcode_fields_by_types( $booking_form, $types );

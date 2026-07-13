@@ -60,7 +60,6 @@
 				'dynamic' === _wpbc.calendar__get_param_value( resourceId, 'days_select_mode' )
 			) {
 				inst = ( typeof w.wpbc_calendar__get_inst === 'function' ) ? w.wpbc_calendar__get_inst( resourceId ) : null;
-				$( '.wpbc_select_check_out_date_message' ).remove();
 				if ( null !== inst && inst.stayOpen === true ) {
 					$( '.wpbc_free_date_hint' ).html( '...' );
 					return false;

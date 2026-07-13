@@ -279,7 +279,7 @@ function wpbc_ui_settings__panel__welcome(){
 						<li><div class="welcome-icon"><?php
 							/* translators: 1: ... */
 							echo esc_html( sprintf( __( 'Configure  %1$sForm Fields%2$s, %3$sEmails%4$s and other %5$sSettings%6$s.', 'booking' )
-										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) . '&tab=form' ) . '">', '</a>'
+										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) . '&tab=builder_booking_form' ) . '">', '</a>'
 										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) . '&tab=email' ) . '">', '</a>'
 										, '<a href="' . esc_url( wpbc_get_settings_url(true, false) ) . '">', '</a>'
 									) );

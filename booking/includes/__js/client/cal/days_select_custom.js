@@ -156,6 +156,36 @@ function wpbc_cal_days_select__fixed( resource_id, days_number, week_days__start
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
+ * Set the existing calendar parameters to two-click range mode after page load.
+ * Free uses the unrestricted shared handler; Business Small+ keeps its already initialized advanced range rules.
+ *
+ * @param resource_id ID of booking resource.
+ */
+function wpbc_cal_ready_days_select__range_mode( resource_id ){
+
+	jQuery(document).ready(function(){
+		setTimeout(function(){
+			wpbc_cal_days_select__range_mode( resource_id );
+		}, 1000);
+	});
+}
+
+/**
+ * Switch to two-click range mode without changing any advanced range parameters.
+ *
+ * @param resource_id ID of booking resource.
+ */
+function wpbc_cal_days_select__range_mode( resource_id ){
+
+	_wpbc.calendar__set_parameters( resource_id, {'days_select_mode': 'dynamic'} );
+
+	wpbc_cal_days_select__re_init( resource_id );
+	wpbc_cal__re_init( resource_id );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
  * Set Range Days selection  with  2 mouse clicks  - after page load
  *
  * @integer resource_id			- 1				   		-- ID of booking resource (calendar)

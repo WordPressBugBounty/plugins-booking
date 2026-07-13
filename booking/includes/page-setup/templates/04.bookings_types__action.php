@@ -63,6 +63,35 @@ function wpbc_template__bookings_types__action_validate_data( $post_data ){
 	return $escaped_data;
 }
 
+/**
+ * Save Setup Wizard booking form choice into the BFB standard form.
+ *
+ * @param string     $advanced_form Advanced booking form shortcodes.
+ * @param string     $content_form  Content of booking fields data shortcodes.
+ * @param array|bool $visual_form_structure Optional old Simple visual structure for BFB conversion.
+ *
+ * @return void
+ */
+function wpbc_setup__save_standard_bfb_form( $advanced_form, $content_form, $visual_form_structure = false ) {
+
+	if ( ! function_exists( 'wpbc_bfb_save_standard_form_from_advanced_mode' ) ) {
+		return;
+	}
+
+	$owner_user_id = class_exists( 'WPBC_FE_Custom_Form_Helper' )
+		? WPBC_FE_Custom_Form_Helper::wpbc_mu__get_current__owner_user_id()
+		: 0;
+
+	wpbc_bfb_save_standard_form_from_advanced_mode(
+		$advanced_form,
+		$content_form,
+		$owner_user_id,
+		array(
+			'visual_form_structure' => $visual_form_structure,
+		)
+	);
+}
+
 
 
 /**
@@ -91,11 +120,12 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 		    case 'full_days_bookings':
 
 			    if ( class_exists( 'wpdev_bk_personal' ) ) {
-				    update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'hints-dev' ) ) );
-				    update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'hints-dev' ) ) );
+				    wpbc_setup__save_standard_bfb_form(
+					    str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'hints-dev' ) ),
+					    str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'hints-dev' ) )
+				    );
 
-					//    update_bk_option( 'booking_form',       str_replace( '\\n\\', '', wpbc_get__booking_form__template( '2_columns' ) ) );
-					//    update_bk_option( 'booking_form_show',  str_replace( '\\n\\', '', wpbc_get__booking_data__template( '2_columns' ) ) );
+					//    wpbc_setup__save_standard_bfb_form( wpbc_get__booking_form__template( '2_columns' ), wpbc_get__booking_data__template( '2_columns' ) );
 			    } else {
 				    // Free
 
@@ -114,22 +144,25 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 					// Default Form
 				    $visual_form_structure = wpbc_simple_form__visual__get_default_form__without_times();
 
-					update_bk_option( 'booking_form_visual', $visual_form_structure );
-				    update_bk_option( 'booking_form',       wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ) );
-				    update_bk_option( 'booking_form_show',  wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ) );
+				    wpbc_setup__save_standard_bfb_form(
+					    wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ),
+					    wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ),
+					    $visual_form_structure
+				    );
 			    }
 
-				if ( class_exists('wpdev_bk_biz_s')) {
-				    update_bk_option( 'booking_type_of_day_selections' ,    'range' );
-			        update_bk_option( 'booking_range_selection_type',       'dynamic');
+				// Full-day bookings use the two-click range by default in every edition.
+				// Free/Personal apply the unrestricted range engine; Business Small+ can additionally apply its range rules.
+				update_bk_option( 'booking_type_of_day_selections', 'range' );
+				update_bk_option( 'booking_range_selection_type', 'dynamic' );
+
+				if ( class_exists( 'wpdev_bk_biz_s' ) ) {
 			        update_bk_option( 'booking_range_selection_days_count', '1');
 			        update_bk_option( 'booking_range_selection_days_max_count_dynamic',30);
 			        update_bk_option( 'booking_range_selection_days_specific_num_dynamic','');
 			        update_bk_option( 'booking_range_start_day' ,           '-1' );
 			        update_bk_option( 'booking_range_selection_days_count_dynamic','1');
 			        update_bk_option( 'booking_range_start_day_dynamic' ,   '-1' );
-				} else {
-					update_bk_option( 'booking_type_of_day_selections',     'multiple' );
 				}
 		        update_bk_option( 'booking_range_selection_time_is_active', 'Off');              // Changeover
 				update_bk_option( 'booking_recurrent_time' , 'On');                             // Use selected times for each booking date
@@ -147,12 +180,16 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 					// FixIn: 10.7.1.4.
 					if ( 'rangetime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ){
-						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments30' ) ) );
-						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments30' ) ) );
+						wpbc_setup__save_standard_bfb_form(
+							str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments30' ) ),
+							str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments30' ) )
+						);
 					} else{
 						 // FixIn: 10.12.4.8.
-						update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments_service_c' ) ) );
-						update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments_service_c' ) ) );
+						wpbc_setup__save_standard_bfb_form(
+							str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'appointments_service_c' ) ),
+							str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'appointments_service_c' ) )
+						);
 					}
 
 			    } else {
@@ -174,9 +211,11 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 						$visual_form_structure = wpbc_simple_form__visual__get_default_form__times_30min();
 					}
 
-					update_bk_option( 'booking_form_visual', $visual_form_structure );
-				    update_bk_option( 'booking_form',       wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ) );
-				    update_bk_option( 'booking_form_show',  wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ) );
+				    wpbc_setup__save_standard_bfb_form(
+					    wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ),
+					    wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ),
+					    $visual_form_structure
+				    );
 			    }
 
 				update_bk_option( 'booking_type_of_day_selections' , 'single' );
@@ -197,8 +236,10 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				update_bk_option( 'booking_change_over_days_triangles', ( 'On' === $cleaned_data['wpbc_swp_booking_change_over_days_triangles'] ) ? 'On' : 'Off' );
 
 			    if ( class_exists( 'wpdev_bk_personal' ) ) {
-				    update_bk_option( 'booking_form',       str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'wizard' ) ) );
-				    update_bk_option( 'booking_form_show',  str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'wizard' ) ) );
+				    wpbc_setup__save_standard_bfb_form(
+					    str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_form__template( 'wizard' ) ),
+					    str_replace( array('\\n\\','\\n'), "\n", wpbc_get__predefined_booking_data__template( 'wizard' ) )
+				    );
 			    } else {
 				    // Free
 
@@ -210,9 +251,11 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 					// Default Form
 				    $visual_form_structure = wpbc_simple_form__visual__get_default_form__without_times();
 
-					update_bk_option( 'booking_form_visual', $visual_form_structure );
-				    update_bk_option( 'booking_form',       wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ) );
-				    update_bk_option( 'booking_form_show',  wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ) );
+				    wpbc_setup__save_standard_bfb_form(
+					    wpbc_simple_form__get_booking_form__as_shortcodes( $visual_form_structure ),
+					    wpbc_simple_form__get_form_show__as_shortcodes( $visual_form_structure ),
+					    $visual_form_structure
+				    );
 			    }
 
 

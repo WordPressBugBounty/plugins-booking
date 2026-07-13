@@ -24,6 +24,33 @@ if ( ! defined( 'ABSPATH' ) ) {        // Exit if accessed directly.
 global $wpbc_bk_action, $wpbc_bk_filter;
 
 
+/**
+ * Mark whether destructive Booking Calendar deactivation is running in this request.
+ *
+ * WordPress cannot unload plugin PHP after deactivate_plugins() is called. This
+ * state lets already-loaded Pro and MultiUser callbacks avoid using deleted data.
+ *
+ * @param bool $is_deactivating Whether deactivation is in progress.
+ */
+function wpbc_set_plugin_deactivation_state( $is_deactivating ) {
+	global $wpbc_plugin_deactivation_in_progress;
+
+	$wpbc_plugin_deactivation_in_progress = (bool) $is_deactivating;
+}
+
+
+/**
+ * Check whether destructive Booking Calendar deactivation is running.
+ *
+ * @return bool
+ */
+function wpbc_is_plugin_deactivation_in_progress() {
+	global $wpbc_plugin_deactivation_in_progress;
+
+	return ! empty( $wpbc_plugin_deactivation_in_progress );
+}
+
+
 function add_bk_filter( $filter_type, $filter ) {   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 	global $wpbc_bk_filter;
 

@@ -82,8 +82,11 @@ function wpbc_settings__system_info__reset_booking_forms() {
 
 		wpbc_open_meta_box_section( 'wpbc_general_settings_system_info', 'System Info' );
 
-			// Reset Custom Booking Forms to  NONE
-			update_bk_option( 'booking_forms_extended', serialize( array() ) );
+			global $wpdb;
+			if ( function_exists( 'wpbc_is_table_exists' ) && wpbc_is_table_exists( 'booking_form_structures' ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->query( "DELETE FROM {$wpdb->prefix}booking_form_structures WHERE form_slug <> 'standard'" );
+			}
 
 			wpbc_show_message_in_settings( '<strong>Custom forms</strong> has been reseted!', 'info' );
 

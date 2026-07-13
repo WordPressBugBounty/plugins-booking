@@ -330,6 +330,17 @@ function wpbc_get_settings_themes_url( $is_absolute_url = true, $is_old = true )
 }
 
 /**
+ * Get URL of Booking > Settings > Form Messages page.
+ *
+ * @param boolean $is_absolute_url Absolute or relative URL.
+ * @param boolean $is_old Legacy menu URL style.
+ * @return string
+ */
+function wpbc_get_settings_messages_url( $is_absolute_url = true, $is_old = true ) {
+	return wpbc_get_settings_url( $is_absolute_url, $is_old ) . '&tab=form_messages';
+}
+
+/**
  * Get URL of Booking > Setup page
  *
  * @param boolean $is_absolute_url  - Absolute or relative url { default: true }
@@ -433,8 +444,16 @@ function wpbc_is_new_booking_page_url( $request_uri ) {
 function wpbc_is_settings_form_page( $server_param = 'REQUEST_URI' ) {
 	// Regular  user overwrite settings.
 
+	// Match the legacy `form` tab exactly. A substring check also matched newer
+	// tabs whose names start with `form`, such as `form_messages`.
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$request_uri = ! empty( $_SERVER[ $server_param ] ) ? (string) $_SERVER[ $server_param ] : '';
+	$is_form_tab = (bool) preg_match( '/(?:[?&])tab=form(?:&|$)/', $request_uri );
+
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	if ( ( is_admin() ) && ( strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) !== false ) && ( ( strpos( $_SERVER[ $server_param ], '&tab=form' ) !== false ) || ( ( class_exists( 'wpdev_bk_multiuser' ) ) && ( ! empty( $_REQUEST['tab'] ) ) && ( 'form' === $_REQUEST['tab'] ) ) ) ) {
+	$is_multiuser_form_tab = class_exists( 'wpdev_bk_multiuser' ) && ! empty( $_REQUEST['tab'] ) && 'form' === $_REQUEST['tab'];
+
+	if ( is_admin() && false !== strpos( $request_uri, 'page=wpbc-settings' ) && ( $is_form_tab || $is_multiuser_form_tab ) ) {
 		return true;
 	}
 
@@ -498,6 +517,17 @@ function wpbc_is_settings_calendar_page( $server_param = 'REQUEST_URI' ) {
 }
 
 /**
+ * Check if this is WP Booking Calendar > Settings > Form Messages.
+ *
+ * @param string $server_param Server URL parameter.
+ * @return boolean
+ */
+function wpbc_is_settings_messages_page( $server_param = 'REQUEST_URI' ) {
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	return is_admin() && ! empty( $_SERVER[ $server_param ] ) && false !== strpos( $_SERVER[ $server_param ], 'page=wpbc-settings' ) && false !== strpos( $_SERVER[ $server_param ], '&tab=form_messages' );
+}
+
+/**
  * Check if this admin page renders a real front-end booking form or calendar preview.
  *
  * @return boolean true | false
@@ -509,6 +539,7 @@ function wpbc_is_admin_page_with_frontend_booking_preview() {
 		|| wpbc_is_settings_form_page()
 		|| wpbc_is_settings_themes_page()
 		|| wpbc_is_settings_calendar_page()
+		|| wpbc_is_settings_messages_page()
 		|| wpbc_is_setup_wizard_page()
 		|| wpbc_is_builder_booking_form_page()
 		|| ( function_exists( 'wpbc_is_add_booking_modal_on_booking_listing_page' ) && wpbc_is_add_booking_modal_on_booking_listing_page() )

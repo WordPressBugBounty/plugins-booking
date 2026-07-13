@@ -148,6 +148,23 @@ function wpbc_bfb_activation__get_templates_registry() {
 		// wpbc_bfb_activation__get_templates_dir_path() . '/template-event-registration.php',
 	);
 
+	// Keep private live-demo fixtures out of customer template libraries.
+	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
+		$template_files = array_merge(
+			$template_files,
+			array(
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_personal.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_business_small.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_business_medium.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_business_large.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_multiuser.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_multiuser_owner_1.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_multiuser_owner_2.php',
+				wpbc_bfb_activation__get_templates_dir_path() . '/demo_multiuser_owner_3.php',
+			)
+		);
+	}
+
 	foreach ( $template_files as $template_file ) {
 		if ( file_exists( $template_file ) ) {
 			$template_config = require $template_file;
@@ -164,6 +181,46 @@ function wpbc_bfb_activation__get_templates_registry() {
 	$templates = apply_filters( 'wpbc_bfb_activation__templates_registry', $templates );
 
 	return $templates;
+}
+
+/**
+ * Add default form appearance settings to bundled template settings_json.
+ *
+ * Individual templates can override any key in their own settings_json; this only fills missing values.
+ *
+ * @param string $settings_json Template settings JSON.
+ *
+ * @return string
+ */
+function wpbc_bfb_activation__add_default_form_appearance_settings( $settings_json ) {
+
+	$settings = array();
+	if ( is_string( $settings_json ) && '' !== trim( $settings_json ) ) {
+		$decoded = json_decode( (string) $settings_json, true );
+		if ( is_array( $decoded ) ) {
+			$settings = $decoded;
+		}
+	}
+
+	if ( empty( $settings['options'] ) || ! is_array( $settings['options'] ) ) {
+		$settings['options'] = array();
+	}
+
+	if ( function_exists( 'wpbc_bfb_settings__strip_form_style_options_from_form_settings' ) ) {
+		$settings = wpbc_bfb_settings__strip_form_style_options_from_form_settings( $settings );
+	}
+
+	if ( empty( $settings['css_vars'] ) || ! is_array( $settings['css_vars'] ) ) {
+		$settings['css_vars'] = array();
+	}
+
+	if ( empty( $settings['bfb_options'] ) || ! is_array( $settings['bfb_options'] ) ) {
+		$settings['bfb_options'] = array( 'advanced_mode_source' => 'builder' );
+	}
+
+	return function_exists( 'wpbc_form_config__encode_json' )
+		? wpbc_form_config__encode_json( $settings )
+		: wp_json_encode( $settings );
 }
 
 /**
@@ -222,6 +279,7 @@ function wpbc_bfb_activation__normalize_template_config( $template_config ) {
 	$template_config['record']['title']          = (string) $template_config['record']['title'];
 	$template_config['record']['description']    = (string) $template_config['record']['description'];
 	$template_config['record']['picture_url']    = (string) $template_config['record']['picture_url'];
+	$template_config['record']['settings_json']  = wpbc_bfb_activation__add_default_form_appearance_settings( (string) $template_config['record']['settings_json'] );
 
 	if ( null !== $template_config['record']['booking_resource_id'] ) {
 		$template_config['record']['booking_resource_id'] = (int) $template_config['record']['booking_resource_id'];

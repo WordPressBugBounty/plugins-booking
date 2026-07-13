@@ -348,14 +348,26 @@ function wpbc_setup_wizard_page__force_in_get() {
 		}
 	}
 
+	$is_ajax_request = ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX );
+
 	// Existing settings pages submit their own forms. This flag lets the setup bar remember that save across reloads.
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	if ( isset( $_REQUEST['wpbc_setup_saved_step'] ) ) {
+	if ( isset( $_REQUEST['wpbc_setup_saved_step'] ) && ! $is_ajax_request ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 		$saved_step = sanitize_key( wp_unslash( $_REQUEST['wpbc_setup_saved_step'] ) );
 		if ( isset( $steps_arr[ $saved_step ] ) ) {
 			$setup_steps->db__set_step_as_saved( $saved_step, true );
 			$setup_steps->db__save_current_step_name( $saved_step );
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+			$continue_after_save = isset( $_REQUEST['wpbc_setup_continue_after_save'] )
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+				? sanitize_text_field( wp_unslash( $_REQUEST['wpbc_setup_continue_after_save'] ) )
+				: '';
+			if ( '1' === $continue_after_save ) {
+				wpbc_redirect( $setup_steps->get_step_continue_url( $saved_step ) );
+				exit;
+			}
 		}
 	}
 

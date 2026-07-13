@@ -499,18 +499,19 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'save_behavior'      => 'manual_save_required',
 			'target_selector'    => '.wpbc_admin_page__tab__builder_booking_form, #wpbc_form_field_free',
 			'scroll_selector'    => '.wpbc_bfb_popup_modal__forms_loading_section:visible, #wpbc_form_field_free:visible, .wpbc_admin_page__tab__builder_booking_form:visible',
-			'highlight_selector' => '.wpbc_bfb_popup_modal__forms_loading_section:visible, #wpbc_form_field_free:visible, .wpbc_admin_page__tab__builder_booking_form:visible',
+			'highlight_disabled' => '1',
 			'form_selector'      => '#wpbc_form_field_free',
 			'save_selector'      => '#wpbc_form_field_free .wpbc_submit_button_trigger, #wpbc_form_field_free .wpbc_submit_button, [onclick*="wpbc_bfb__ajax_save_current_form"], [data-wpbc-bfb-save-source]',
 			'save_events'        => 'wpbc:bfb:form:ajax_saved,wpbc:bfb:form:saved,wpbc:bfb:save:done,wpbc:bfb:ajax_saved,wpbc:setup-wizard:step-saved',
 		),
 		'date_selection'          => array(
 			'save_behavior'      => 'manual_save_required',
-			'target_selector'    => '.wpbc_admin_page__tab__calendar_settings, [data-wpbc-calendar-page="1"], .wpbc_tr_set_gen_booking_type_of_day_selections, #wpbc_general_settings_calendar_metabox',
-			'scroll_selector'    => '[data-wpbc-calendar-page="1"]:visible, .wpbc_admin_page__tab__calendar_settings:visible, .wpbc_tr_set_gen_booking_type_of_day_selections:visible, #wpbc_general_settings_calendar_metabox:visible',
-			'highlight_selector' => '[data-wpbc-calendar-page="1"]:visible, .wpbc_admin_page__tab__calendar_settings:visible, .wpbc_tr_set_gen_booking_type_of_day_selections:visible, #wpbc_general_settings_calendar_metabox:visible',
+			'target_selector'    => '.wpbc_admin_page__tab__calendar_settings, [data-wpbc-calendar-page="1"], [data-group="settings-calendar-days-selection"], [data-wpbc-calendar-settings-form="1"]',
+			'scroll_selector'    => '[data-group="settings-calendar-days-selection"]:visible, .wpbc_calendar__inspector_settings:visible, [data-wpbc-calendar-settings-form="1"]:visible',
+			'highlight_selector' => '[data-group="settings-calendar-days-selection"]:visible, .wpbc_calendar__inspector_settings:visible, [data-wpbc-calendar-settings-form="1"]:visible',
 			'form_selector'      => '[data-wpbc-calendar-settings-form="1"], #wpbc_general_settings_form',
 			'save_selector'      => '[data-wpbc-calendar-save="1"], #wpbc_general_settings_form .wpbc_submit_button_trigger, #wpbc_general_settings_form .wpbc_submit_button',
+			'save_ajax_action'   => 'WPBC_AJX_SETTINGS_CALENDAR_SAVE',
 			'save_events'        => 'wpbc:setup-wizard:step-saved',
 		),
 		'changeover_days'         => array(
@@ -520,6 +521,7 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'highlight_selector' => '[data-group="settings-calendar-time"]:visible, [data-wpbc-calendar-changeover-settings="1"]:visible, [name="booking_range_selection_time_is_active"]:visible',
 			'form_selector'      => '[data-wpbc-calendar-settings-form="1"]',
 			'save_selector'      => '[data-wpbc-calendar-save="1"]',
+			'save_ajax_action'   => 'WPBC_AJX_SETTINGS_CALENDAR_SAVE',
 			'save_events'        => 'wpbc:setup-wizard:step-saved',
 		),
 		'working_time'            => array(
@@ -529,6 +531,7 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'highlight_selector' => '[data-group="general-availability-working-time"]:visible, .wpbc_ag_working_time_block:visible',
 			'form_selector'      => '[data-wpbc-ag-settings-form="1"]',
 			'save_selector'      => '[data-wpbc-ag-save="1"]',
+			'save_ajax_action'   => 'WPBC_AJX_AVAILABILITY_GENERAL_SAVE',
 			'save_events'        => 'wpbc:availability-general:settings-saved,wpbc:setup-wizard:step-saved',
 			'open_action'        => 'availability_section',
 		),
@@ -536,7 +539,7 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'save_behavior'      => 'link_only',
 			'target_selector'    => '.wpbc_admin_page__tab__time_slots_availability, .wpbc_ts_page',
 			'scroll_selector'    => '.wpbc_admin_page__tab__time_slots_availability:visible, .wpbc_ts_page:visible',
-			'highlight_selector' => '.wpbc_admin_page__tab__time_slots_availability:visible, .wpbc_ts_page:visible',
+			'highlight_disabled' => '1',
 		),
 		'date_availability'       => array(
 			'save_behavior'      => 'manual_save_required',
@@ -545,16 +548,18 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'highlight_selector' => '[data-group="general-availability-weekdays"]:visible, [data-wpbc-ag-settings-form="1"]:visible',
 			'form_selector'      => '[data-wpbc-ag-settings-form="1"]',
 			'save_selector'      => '[data-wpbc-ag-save="1"]',
+			'save_ajax_action'   => 'WPBC_AJX_AVAILABILITY_GENERAL_SAVE',
 			'save_events'        => 'wpbc:availability-general:settings-saved,wpbc:setup-wizard:step-saved',
 			'open_action'        => 'availability_section',
 		),
 		'color_theme'             => array(
 			'save_behavior'      => 'manual_save_required',
 			'target_selector'    => '.wpbc_admin_page__tab__themes, [data-wpbc-theme-page="1"]',
-			'scroll_selector'    => '[data-wpbc-theme-page="1"]:visible, .wpbc_admin_page__tab__themes:visible',
-			'highlight_selector' => '[data-wpbc-theme-page="1"]:visible, .wpbc_admin_page__tab__themes:visible',
+			'scroll_selector'    => '.wpbc_theme__inspector_settings:visible, [data-wpbc-theme-settings-form="1"]:visible, .wpbc_theme_rightbar_panels:visible',
+			'highlight_selector' => '.wpbc_theme__inspector_settings:visible, [data-wpbc-theme-settings-form="1"]:visible, .wpbc_theme_rightbar_panels:visible',
 			'form_selector'      => '[data-wpbc-theme-settings-form="1"]',
 			'save_selector'      => '[data-wpbc-theme-save="1"]',
+			'save_ajax_action'   => 'WPBC_AJX_SETTINGS_THEMES_SAVE',
 			'save_events'        => 'wpbc:setup-wizard:step-saved',
 		),
 		'wizard_publish'          => array(
@@ -568,7 +573,7 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'save_behavior'      => 'complete',
 			'target_selector'    => '.wpbc_admin_page',
 			'scroll_selector'    => '.wpbc_admin_page:visible',
-			'highlight_selector' => '.wpbc_admin_page:visible',
+			'highlight_disabled' => '1',
 		),
 	);
 }
@@ -637,9 +642,25 @@ function wpbc_setup_wizard__get_step_scroll_selector( $step_name ) {
  */
 function wpbc_setup_wizard__get_step_highlight_selector( $step_name ) {
 
+	if ( wpbc_setup_wizard__is_step_highlight_disabled( $step_name ) ) {
+		return '';
+	}
+
 	$highlight_selector = wpbc_setup_wizard__get_step_ui_matrix_value( $step_name, 'highlight_selector' );
 
 	return ( ! empty( $highlight_selector ) ) ? $highlight_selector : wpbc_setup_wizard__get_step_target_selector( $step_name );
+}
+
+/**
+ * Check if external setup page highlighting is disabled for a step.
+ *
+ * @param string $step_name Step name.
+ *
+ * @return bool
+ */
+function wpbc_setup_wizard__is_step_highlight_disabled( $step_name ) {
+
+	return '1' === wpbc_setup_wizard__get_step_ui_matrix_value( $step_name, 'highlight_disabled' );
 }
 
 /**
@@ -664,6 +685,18 @@ function wpbc_setup_wizard__get_step_open_action( $step_name ) {
 function wpbc_setup_wizard__get_step_save_events( $step_name ) {
 
 	return wpbc_setup_wizard__get_step_ui_matrix_value( $step_name, 'save_events' );
+}
+
+/**
+ * Get AJAX action name used by the existing page save button related to the setup step.
+ *
+ * @param string $step_name Step name.
+ *
+ * @return string
+ */
+function wpbc_setup_wizard__get_step_save_ajax_action( $step_name ) {
+
+	return wpbc_setup_wizard__get_step_ui_matrix_value( $step_name, 'save_ajax_action' );
 }
 
 /**
@@ -799,16 +832,11 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 			break;
 
 		case 'form_structure':
-			$is_bfb_enabled = ( class_exists( 'WPBC_Frontend_Settings' ) && (bool) WPBC_Frontend_Settings::is_bfb_enabled( null ) );
+			$url = wpbc_get_settings_url() . '&tab=builder_booking_form';
 
-			$url = $is_bfb_enabled
-				? wpbc_get_settings_url() . '&tab=builder_booking_form'
-				: wpbc_get_settings_url() . '&tab=form';
-			if ( $is_bfb_enabled ) {
-				$template_search_key = wpbc_setup_wizard__get_bfb_template_search_key();
-				if ( ! empty( $template_search_key ) ) {
-					$url = add_query_arg( 'auto_open_template', $template_search_key, $url );
-				}
+			$template_search_key = wpbc_setup_wizard__get_bfb_template_search_key();
+			if ( ! empty( $template_search_key ) ) {
+				$url = add_query_arg( 'auto_open_template', $template_search_key, $url );
 			}
 			break;
 
@@ -877,8 +905,10 @@ function wpbc_setup_wizard__get_step_route_metadata( $step_name ) {
 		'target_selector' => wpbc_setup_wizard__get_step_target_selector( $step_name ),
 		'scroll_selector' => wpbc_setup_wizard__get_step_scroll_selector( $step_name ),
 		'highlight_selector' => wpbc_setup_wizard__get_step_highlight_selector( $step_name ),
+		'highlight_disabled' => wpbc_setup_wizard__is_step_highlight_disabled( $step_name ) ? '1' : '0',
 		'form_selector'   => wpbc_setup_wizard__get_step_form_selector( $step_name ),
 		'save_selector'   => wpbc_setup_wizard__get_step_save_selector( $step_name ),
+		'save_ajax_action' => wpbc_setup_wizard__get_step_save_ajax_action( $step_name ),
 		'save_events'     => wpbc_setup_wizard__get_step_save_events( $step_name ),
 		'open_action'     => wpbc_setup_wizard__get_step_open_action( $step_name ),
 	);

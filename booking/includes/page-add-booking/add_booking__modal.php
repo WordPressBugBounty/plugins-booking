@@ -251,7 +251,7 @@ class WPBC_Add_Booking_Modal {
 	 */
 	private static function print_modal_booking_form_edit_link() {
 
-		if ( ! defined( 'WPBC_NEW_FORM_BUILDER' ) || ! WPBC_NEW_FORM_BUILDER || ! function_exists( 'wpbc_get_settings_url' ) ) {
+		if ( ! function_exists( 'wpbc_get_settings_url' ) ) {
 			return;
 		}
 

@@ -280,7 +280,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 					array(
 						'id' => 'wpbc_bar_settings_form',
 						'title' => __( 'Booking Form', 'booking' ),
-						'href' => $link_settings . '&tab=form',
+						'href' => $link_settings . '&tab=builder_booking_form',
 						'parent' => 'wpbc_bar_settings'
 					)
 			);

@@ -53,10 +53,10 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 		var arr_of_selected_additional_calendars = wpbc_get_arr_of_selected_additional_calendars( resource_id ); // FixIn: 8.5.2.26.
 
 		if ( ! arr_of_selected_additional_calendars || ( arr_of_selected_additional_calendars.length === 0 ) ) {
-			wpbc_front_end__show_message__error_under_element(
+			wpbc_front_end__show_message__warning(
 				'#booking_form_div' + resource_id + ' .bk_calendar_frame',
 				_wpbc.get_message( 'message_check_no_selected_dates' ),
-				3000
+				'text'
 			);
 			return;
 		}
@@ -199,7 +199,7 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 						( jQuery( element ).is( ':visible' ) ) && // FixIn: 7.2.1.12.2.
 						( ! jQuery( ':radio[name="' + element.name + '"]', submit_form ).is( ':checked' ) )
 					) {
-						wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_radio_box' ) ); // FixIn: 8.5.1.3.
+						wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_radio_box' ), 'text' ); // FixIn: 8.5.1.3.
 						return;
 					}
 
@@ -271,7 +271,7 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 					if ( ( element.type === 'checkbox' ) && ( element.checked === false ) ) {
 
 						if ( ! jQuery( ':checkbox[name="' + element.name + '"]', submit_form ).is( ':checked' ) ) {
-							wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_check_box' ) ); // FixIn: 8.5.1.3.
+							wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_check_box' ), 'text' ); // FixIn: 8.5.1.3.
 							return;
 						}
 					}
@@ -279,13 +279,13 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 					if ( element.type === 'radio' ) {
 
 						if ( ! jQuery( ':radio[name="' + element.name + '"]', submit_form ).is( ':checked' ) ) {
-							wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_radio_box' ) ); // FixIn: 8.5.1.3.
+							wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required_for_radio_box' ), 'text' ); // FixIn: 8.5.1.3.
 							return;
 						}
 					}
 
 					if ( ( element.type !== 'checkbox' ) && ( element.type !== 'radio' ) && ( '' === wpbc_trim( inp_value ) ) ) {
-						wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required' ) ); // FixIn: 8.5.1.3.
+						wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required' ), 'text' ); // FixIn: 8.5.1.3.
 						return;
 					}
 				}
@@ -298,7 +298,7 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 
 					if ( inp_value !== '' ) {
 						if ( reg_email.test( inp_value ) === false ) {
-							wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_email' ) ); // FixIn: 8.5.1.3.
+							wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_email' ), 'text' ); // FixIn: 8.5.1.3.
 							return;
 						}
 					}
@@ -316,7 +316,7 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 						if ( jQuery( '[name="' + primary_email_name + resource_id + '"]' ).length > 0 ) {
 
 							if ( jQuery( '[name="' + primary_email_name + resource_id + '"]' ).val() !== inp_value ) {
-								wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_same_email' ) ); // FixIn: 8.5.1.3.
+								wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_same_email' ), 'text' ); // FixIn: 8.5.1.3.
 								return;
 							}
 						}

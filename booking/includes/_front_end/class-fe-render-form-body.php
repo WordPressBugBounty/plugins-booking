@@ -3,9 +3,9 @@
  * Front-End Form Body Rendering
  *
  *  - Calendar markup (or hidden selected-dates field)
- *  - Form body source resolution (BFB / legacy / simple)
+ *  - Form body source resolution (BFB)
  *  - Legacy post-processing hooks (additional calendars, captcha, change-over times)
- *  - Legacy wrapper (<form> container + nonce + hidden fields)
+ *  - Shared wrapper (<form> container + nonce + hidden fields)
  *  - Legacy inline scripts (duplicate-calendar warning, cost hints, autofill)
  *
  * @package Booking Calendar
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Booking Form Body Renderer.
  *
- * Orchestrates building of the booking form HTML while preserving legacy output and
+	 * Orchestrates building of the booking form HTML while preserving output and
  * filter/action execution order.
  *
  * @since 11.0.x
@@ -35,9 +35,7 @@ class WPBC_FE_Form_Body_Renderer {
 	 *  1) Parse shortcode "options" into custom parameters (for BFB/simple form context).
 	 *  2) Build calendar markup OR hidden textarea with preselected dates.
 	 *  3) Resolve form body source:
-	 *      - BFB source (if available) with filter override and shortcode-engine fallback.
-	 *      - Legacy booking form (personal.php).
-	 *      - Simple form fallback.
+	 *      - BFB source with filter override and shortcode-engine fallback.
 	 *  4) Post-process composed markup:
 	 *      - Insert calendar ([calendar] placeholder or prepend).
 	 *      - Replace additional calendars via legacy filter.
@@ -340,7 +338,7 @@ class WPBC_FE_Form_Source {
 
 
 	/**
-	 * Return the booking form body HTML, choosing BFB source if available, else legacy.
+	 * Return the booking form body HTML from BFB storage.
 	 *
 	 * @param int           $resource_id
 	 * @param string        $custom_booking_form
@@ -448,7 +446,7 @@ class WPBC_FE_Form_Source {
 		$custom_booking_form = (string) $req['form_slug'];
 
 		/**
-		 * $resolved = array(   'engine'                  : 'bfb_db'|'legacy'|'simple'
+		 * $resolved = array(   'engine'                  : 'bfb_db'|'bfb_missing'
 		 *                      'apply_after_load_filter' : bool
 		 *                      'bfb_loader_args'         : array()
 		 *                      'fallback_chain'          : array()
@@ -467,28 +465,29 @@ class WPBC_FE_Form_Source {
 			}
 		}
 
-		// -----------------------------------------------------------------
-		// Legacy engine (unchanged output).
-		// -----------------------------------------------------------------
-		if ( ( ! empty( $legacy_instance ) )
-			 && ( false !== $legacy_instance->wpdev_bk_personal )
-			 // && ( 'On' != get_bk_option( 'booking_is_use_simple_booking_form' ) )  // Important! in paid versions, if edited in "Simple mode" the compiled form, still saved as "Advanced form" content, so we need to get it from there!
-		) {
-			return array(
-				'body_html'               => $legacy_instance->wpdev_bk_personal->get_booking_form( $resource_id, $custom_booking_form, $custom_params ),
-				'apply_after_load_filter' => false,
-				'bfb_settings'            => array(),
-			);
-		}
-
-		// -----------------------------------------------------------------
-		// Simple fallback. - ONLY  for the Booking Calendar Free version !
-		// -----------------------------------------------------------------
 		return array(
-			'body_html'               => wpbc_simple_form__get_booking_form__as_html( $resource_id, $custom_booking_form, $custom_params ),
-			'apply_after_load_filter' => true,
+			'body_html'               => self::get_missing_bfb_form_html( $resolved ),
+			'apply_after_load_filter' => false,
 			'bfb_settings'            => array(),
 		);
+	}
+
+	/**
+	 * Render a controlled empty state when no BFB form row exists.
+	 *
+	 * @param array $resolved Resolver result.
+	 *
+	 * @return string
+	 */
+	private static function get_missing_bfb_form_html( $resolved ) {
+
+		$reason = ( is_array( $resolved ) && ! empty( $resolved['reason'] ) ) ? (string) $resolved['reason'] : 'bfb_form_not_found';
+
+		if ( is_admin() || current_user_can( 'manage_options' ) ) {
+			return '<div class="wpbc_bfb_missing_form wpbc_alert_warning">' . esc_html__( 'Booking form configuration was not found. Please open the Booking Form Builder and save the form once.', 'booking' ) . ' <span class="wpbc_bfb_missing_reason">' . esc_html( $reason ) . '</span></div>';
+		}
+
+		return '<div class="wpbc_bfb_missing_form" style="display:none;"></div>';
 	}
 
 
@@ -711,7 +710,10 @@ class WPBC_FE_Form_Wrapper {
 
 		$booking_form_is_using_bs_css = get_bk_option( 'booking_form_is_using_bs_css' );
 		$booking_form_format_type     = get_bk_option( 'booking_form_format_type' );
-		$booking_form_theme           = get_bk_option( 'booking_form_theme' );
+		$form_style_preset            = function_exists( 'wpbc_bfb_settings__get_form_style_preset' )
+			? wpbc_bfb_settings__get_form_style_preset( wpbc_bfb_settings__get_current_form_style() )
+			: array();
+		$booking_form_theme           = isset( $form_style_preset['theme_class'] ) ? sanitize_html_class( $form_style_preset['theme_class'] ) : '';
 
 		$form_container_random_id = 'form_id' . ( time() * wp_rand( 0, 1000 ) );
 		$form_container_css       = 'wpbc_container wpbc_form wpbc_container_booking_form ' . ( ( 'On' === wpbc_is_this_demo() ) ? ' wpbc_demo_site ' : '' ) .
@@ -845,65 +847,75 @@ class WPBC_FE_Form_Style_Injector {
 	 */
 	public static function inject_css_vars_into_bfb_root( $html, $css_vars ) {
 
-		$html     = (string) $html;
-		$css_vars = is_array( $css_vars ) ? $css_vars : array();
+		return self::inject_css_vars_into_first_tag_with_classes( $html, $css_vars, array( 'wpbc_bfb_form' ) );
+	}
 
-		if ( empty( $css_vars ) ) {
+	/**
+	 * Inject CSS variables into the FIRST outer booking form wrapper.
+	 *
+	 * @param string $html
+	 * @param array  $css_vars
+	 *
+	 * @return string
+	 */
+	public static function inject_css_vars_into_form_wrapper( $html, $css_vars ) {
+
+		return self::inject_css_vars_into_first_tag_with_classes( $html, $css_vars, array( 'wpbc_container', 'wpbc_form' ) );
+	}
+
+	/**
+	 * Add a class to the FIRST <div> with all required class tokens.
+	 *
+	 * @param string $html
+	 * @param array  $required_classes
+	 * @param string $class_name
+	 *
+	 * @return string
+	 */
+	public static function add_class_to_first_tag_with_classes( $html, $required_classes, $class_name ) {
+
+		$html             = (string) $html;
+		$required_classes = is_array( $required_classes ) ? $required_classes : array();
+		$class_name       = sanitize_html_class( (string) $class_name );
+
+		if ( '' === $class_name || empty( $required_classes ) ) {
 			return $html;
 		}
-		if ( false === strpos( $html, 'wpbc_bfb_form' ) ) {
+
+		$pattern = self::get_first_div_with_classes_pattern( $required_classes );
+		if ( '' === $pattern ) {
 			return $html;
 		}
 
-		$style_append = self::build_css_vars_style_fragment( $css_vars );
-		if ( '' === $style_append ) {
-			return $html;
-		}
-
-		// Match FIRST <div ... class="... wpbc_bfb_form ..."> tag.
-		$pattern = '/<div\b[^>]*\bclass\s*=\s*(["\'])(?:(?!\1).)*\bwpbc_bfb_form\b(?:(?!\1).)*\1[^>]*>/i';
-
+		$done = false;
 		$result = preg_replace_callback(
 			$pattern,
-			function( $m ) use ( $style_append ) {
+			function( $m ) use ( $required_classes, $class_name, &$done ) {
 
 				$tag = $m[0];
 
-				// If style already exists: append.
-				if ( preg_match( '/\bstyle\s*=\s*(["\'])(.*?)\1/i', $tag, $sm ) ) {
-
-					$quote    = $sm[1];
-					$existing = (string) $sm[2];
-
-					// Avoid double-escaping if the tag already contains entities.
-					$existing = html_entity_decode( $existing, ENT_QUOTES, 'UTF-8' );
-
-					$merged = trim( $existing );
-					if ( ( '' !== $merged ) && ( ';' !== substr( $merged, -1 ) ) ) {
-						$merged .= ';';
-					}
-					$merged .= $style_append;
-
-					$tag = preg_replace(
-						'/\bstyle\s*=\s*(["\'])(.*?)\1/i',
-						'style=' . $quote . esc_attr( $merged ) . $quote,
-						$tag,
-						1
-					);
-
+				if ( ! empty( $done ) || ! self::tag_has_required_classes( $tag, $required_classes ) ) {
 					return $tag;
 				}
 
-				// No style attr: add it.
-				$tag = rtrim( $tag, '>' ) . ' style="' . esc_attr( $style_append ) . '">';
+				if ( ! preg_match( '/\bclass\s*=\s*(["\'])(.*?)\1/i', $tag, $cm ) ) {
+					return $tag;
+				}
 
-				return $tag;
+				$quote   = $cm[1];
+				$classes = trim( preg_replace( '/\s+/', ' ', (string) $cm[2] ) );
+
+				if ( false === strpos( ' ' . $classes . ' ', ' ' . $class_name . ' ' ) ) {
+					$classes = trim( $classes . ' ' . $class_name );
+				}
+
+				$done = true;
+
+				return preg_replace( '/\bclass\s*=\s*(["\'])(.*?)\1/i', 'class=' . $quote . esc_attr( $classes ) . $quote, $tag, 1 );
 			},
-			$html,
-			1
+			$html
 		);
 
-		// preg_replace_callback can return null on regex error.
 		return ( null === $result ) ? $html : $result;
 	}
 
@@ -948,7 +960,7 @@ class WPBC_FE_Form_Style_Injector {
 
 		// Optional: enforce prefix to avoid abusing other vars (case-insensitive).
 		$lower = strtolower( $name );
-		if ( 0 !== strpos( $lower, '--wpbc-' ) && 0 !== strpos( $lower, '--wpbc_bfb-' ) ) {
+		if ( 0 !== strpos( $lower, '--wpbc-' ) && 0 !== strpos( $lower, '--wpbc_bfb-' ) && 0 !== strpos( $lower, '--wpbc_form-' ) ) {
 			return '';
 		}
 
@@ -976,5 +988,111 @@ class WPBC_FE_Form_Style_Injector {
 		);
 
 		return trim( $value );
+	}
+
+	private static function inject_css_vars_into_first_tag_with_classes( $html, $css_vars, $required_classes ) {
+
+		$html     = (string) $html;
+		$css_vars = is_array( $css_vars ) ? $css_vars : array();
+
+		if ( empty( $css_vars ) ) {
+			return $html;
+		}
+
+		$style_append = self::build_css_vars_style_fragment( $css_vars );
+		if ( '' === $style_append ) {
+			return $html;
+		}
+
+		$pattern = self::get_first_div_with_classes_pattern( $required_classes );
+		if ( '' === $pattern ) {
+			return $html;
+		}
+
+		$done = false;
+		$result = preg_replace_callback(
+			$pattern,
+			function( $m ) use ( $required_classes, $style_append, &$done ) {
+
+				$tag = $m[0];
+
+				if ( ! empty( $done ) || ! self::tag_has_required_classes( $tag, $required_classes ) ) {
+					return $tag;
+				}
+
+				// If style already exists: append.
+				if ( preg_match( '/\bstyle\s*=\s*(["\'])(.*?)\1/i', $tag, $sm ) ) {
+
+					$quote    = $sm[1];
+					$existing = (string) $sm[2];
+
+					// Avoid double-escaping if the tag already contains entities.
+					$existing = html_entity_decode( $existing, ENT_QUOTES, 'UTF-8' );
+
+					$merged = trim( $existing );
+					if ( ( '' !== $merged ) && ( ';' !== substr( $merged, -1 ) ) ) {
+						$merged .= ';';
+					}
+					$merged .= $style_append;
+
+					$done = true;
+
+					return preg_replace(
+						'/\bstyle\s*=\s*(["\'])(.*?)\1/i',
+						'style=' . $quote . esc_attr( $merged ) . $quote,
+						$tag,
+						1
+					);
+				}
+
+				// No style attr: add it.
+				$done = true;
+				return rtrim( $tag, '>' ) . ' style="' . esc_attr( $style_append ) . '">';
+			},
+			$html
+		);
+
+		return ( null === $result ) ? $html : $result;
+	}
+
+	private static function get_first_div_with_classes_pattern( $required_classes ) {
+
+		$required_classes = is_array( $required_classes ) ? $required_classes : array();
+		$has_class        = false;
+
+		foreach ( $required_classes as $class_name ) {
+			$class_name = sanitize_html_class( (string) $class_name );
+			if ( '' === $class_name ) {
+				continue;
+			}
+			$has_class = true;
+		}
+
+		if ( ! $has_class ) {
+			return '';
+		}
+
+		return '/<div\b[^>]*\bclass\s*=\s*(["\'])(.*?)\1[^>]*>/i';
+	}
+
+	private static function tag_has_required_classes( $tag, $required_classes ) {
+
+		if ( ! preg_match( '/\bclass\s*=\s*(["\'])(.*?)\1/i', (string) $tag, $cm ) ) {
+			return false;
+		}
+
+		$classes = ' ' . preg_replace( '/\s+/', ' ', (string) $cm[2] ) . ' ';
+
+		foreach ( (array) $required_classes as $class_name ) {
+			$class_name = sanitize_html_class( (string) $class_name );
+			if ( '' === $class_name ) {
+				continue;
+			}
+			if ( false === strpos( $classes, ' ' . $class_name . ' ' ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

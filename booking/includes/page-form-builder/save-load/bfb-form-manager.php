@@ -6,17 +6,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Helper functions for saving / loading between different versions of booking forms.
  *
- * This file is the bridge between:
- *
- * - Old world: booking_form, booking_form_show, booking_forms_extended, etc.
- * - New world: booking_form_structures table.
+ * This file manages Booking Form Builder form configuration stored in
+ * booking_form_structures. Legacy option readers live in the import-only
+ * module: includes/page-form-builder/legacy-import/.
  *
  * It introduces a normalized FormConfig array:
  *
  * [
  *     'id'                  => booking_form_id,
  *     'form_name'           => 'standard' or custom key (maps to form_slug),
- *     'engine'              => 'bfb' | 'legacy_advanced' | 'legacy_simple',
+ *     'engine'              => 'bfb' | 'advanced_mode',
  *     'engine_version'      => '1.0',
  *     'title'               => string,
  *     'description'         => string,
@@ -35,24 +34,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  * ]
  *
  * What we do:
- * - Re-use booking_form_structures as canonical FormConfig storage.
- *   Each row now carries:
- *   - form_slug (your form_name): 'standard', custom names, etc.
- *   - owner_user_id for MultiUser ownership.
- *   - engine, engine_version.
- *   - structure_json (BFB structure, or legacy stub/simple_form).
- *   - advanced_form + content_form (what front-end uses today).
+ * - Use booking_form_structures as canonical FormConfig storage.
+ *   Each row carries form_slug, owner_user_id, engine, structure_json,
+ *   settings_json, advanced_form and content_form.
  *
  * Main public API:
  * - wpbc_form_config_load():
- *     Tries the booking_form_structures table first, falls back to legacy
- *     wp_options-based configuration if no row exists.
+ *     Loads only from booking_form_structures.
  *
  * - wpbc_form_config_save():
- *     Used by the new Builder save controller. Writes to
- *     booking_form_structures via WPBC_BFB_Form_Storage::save_form().
- *     Optionally syncs booking_form / booking_forms_extended so all old
- *     runtime code keeps working.
+ *     Writes only to booking_form_structures via
+ *     WPBC_BFB_Form_Storage::save_form().
  *
  * @package     Booking Calendar.
  * @author      wpdevelop, oplugins
@@ -160,146 +152,20 @@ function wpbc_form_config_exists_in_storage( $form_key, $user_id = 0 ) { // phpc
 }
 
 
-// == 4. Legacy loader (fallback from old options) ==
-
-/**
- * Build FormConfig from legacy options when no row exists in booking_form_structures.
- *
- * Behaviour:
- * - Standard form uses:
- *     - booking_form          (advanced form).
- *     - booking_form_show     (content form).
- *     - booking_form_visual   (Simple form structure, if present).
- * - Custom forms use booking_forms_extended (serialized array of forms).
- *
- * Returned FormConfig uses:
- * - engine: 'legacy_advanced' or 'legacy_simple' depending on available data.
- * - structure_json: encoded visual/simple_form structure or legacy stub.
- *
- * @param string $form_key Form key. 'standard' or custom key used in legacy options.
- * @param int    $user_id  Owner user ID for bookkeeping. Default 0.
- *
- * @return array|null FormConfig array on success or null if no legacy form found.
- */
-function wpbc_form_config__load_from_legacy( $form_key, $user_id = 0 ) {
-
-	$form_key = (string) $form_key;
-	if ( '' === $form_key ) {
-		$form_key = wpbc_bfb_get_default_form_key();
-	}
-
-	// 1) Standard form.
-	if ( 'standard' === $form_key ) {
-
-		$engine        = 'legacy_advanced';
-		$advanced_form = wpbc_bfb_get_legacy_option_value( 'booking_form', $user_id );
-		$content_form  = wpbc_bfb_get_legacy_option_value( 'booking_form_show', $user_id );
-
-		$visual = wpbc_bfb_get_legacy_option_value( 'booking_form_visual', $user_id );
-		$visual = maybe_unserialize( $visual );
-
-		$structure_json = wpbc_form_config__encode_json( array() );
-
-		// Free version only: use Simple Form structure as fallback Builder structure.
-		if ( ! class_exists( 'wpdev_bk_personal' ) ) {
-			if ( is_array( $visual ) && ! empty( $visual ) ) {
-				$engine        = 'legacy_simple';
-				$structure_arr = wpbc_simple_form__export_to_bfb_structure( $visual );
-				$structure_json = wpbc_form_config__encode_json( $structure_arr );
-			}
-		}
-
-		return array(
-			'id'                  => 0,
-			'owner_user_id'       => (int) $user_id,
-			'form_name'           => 'standard',
-			'engine'              => $engine,
-			'engine_version'      => '1.0',
-			'title'               => 'Standard',
-			'description'         => '',
-			'scope'               => 'global',
-			'status'              => 'published',
-			'is_default'          => 1,
-			'booking_resource_id' => null,
-			'structure_json'      => $structure_json,
-			'settings'            => array(),
-			'advanced_form'       => (string) $advanced_form,
-			'content_form'        => (string) $content_form,
-			'picture_url'         => '',
-			'created_at'          => '',
-			'updated_at'          => '',
-		);
-	}
-
-	// 2) Custom forms from booking_forms_extended.
-	$extended = wpbc_bfb_get_legacy_option_value( 'booking_forms_extended', $user_id );
-	$extended = maybe_unserialize( $extended );
-
-	if ( is_array( $extended ) ) {
-		foreach ( $extended as $one ) {
-
-			if ( empty( $one['name'] ) || (string) $one['name'] !== $form_key ) {
-				continue;
-			}
-
-			$adv            = isset( $one['form'] ) ? $one['form'] : '';
-			$cnt            = isset( $one['content'] ) ? $one['content'] : '';
-			$engine         = 'legacy_advanced';
-			$structure_json = wpbc_form_config__encode_json( array() );
-
-			// Only if Advanced Form is absent, or plugin works in Free mode.
-			if ( ( ! class_exists( 'wpdev_bk_personal' ) ) || empty( $adv ) ) {
-				if ( ! empty( $one['simple_form'] ) && is_array( $one['simple_form'] ) ) {
-					$engine         = 'legacy_simple';
-					$structure_arr  = wpbc_simple_form__export_to_bfb_structure( $one['simple_form'] );
-					$structure_json = wpbc_form_config__encode_json( $structure_arr );
-				}
-			}
-
-			return array(
-				'id'                  => 0,
-				'owner_user_id'       => (int) $user_id,
-				'form_name'           => $form_key,
-				'engine'              => $engine,
-				'engine_version'      => '1.0',
-				'title'               => isset( $one['title'] ) ? (string) $one['title'] : (string) $form_key,
-				'description'         => isset( $one['description'] ) ? (string) $one['description'] : '',
-				'scope'               => 'global',
-				'status'              => 'published',
-				'is_default'          => ! empty( $one['is_default'] ) ? 1 : 0,
-				'booking_resource_id' => isset( $one['booking_resource_id'] ) ? intval( $one['booking_resource_id'] ) : null,
-				'structure_json'      => $structure_json,
-				'settings'            => array(),
-				'advanced_form'       => (string) $adv,
-				'content_form'        => (string) $cnt,
-				'picture_url'         => '',
-				'created_at'          => '',
-				'updated_at'          => '',
-			);
-		}
-	}
-
-	return null;
-}
-
-// == 5. Public loader: try DB first, then legacy ==
+// == 4. Public loader: DB only ==
 
 /**
  * Load unified FormConfig for a given form_key and optional owner.
  *
  * This is the main read API for booking form configuration:
- * - First tries the booking_form_structures table (new engine).
- *   Currently we load status = 'published' row via
- *   WPBC_BFB_Form_Storage::get_current_form_by_key().
- * - If nothing is found, falls back to legacy options via
- *   wpbc_form_config__load_from_legacy().
+ * Loads only from the booking_form_structures table.
  *
  * @param string $form_key Form key. 'standard' or custom key. Default 'standard'.
  * @param int    $user_id  Owner user ID for MultiUser environment. Default 0.
  *
  * @return array|null Normalized FormConfig array or null if nothing found.
  */
-function wpbc_form_config_load( $form_key = 'standard', $user_id = 0, $status = 'published', $is_fallback_to_legacy = true ) {
+function wpbc_form_config_load( $form_key = 'standard', $user_id = 0, $status = 'published', $is_fallback_to_legacy = false ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 
 	$form_key = (string) $form_key;
 	if ( '' === $form_key ) {
@@ -307,104 +173,21 @@ function wpbc_form_config_load( $form_key = 'standard', $user_id = 0, $status = 
 
 	}
 
-	// 1) Try storage table first (status = 'published').
 	$row = WPBC_BFB_Form_Storage::get_current_form_by_key( $form_key, $user_id, $status );
 	if ( $row ) {
 		return wpbc_form_config__from_row( $row );
-	}
-
-	// 2) Fallback to legacy options.
-	if ( $is_fallback_to_legacy ) {
-
-		return wpbc_form_config__load_from_legacy( $form_key, $user_id );
-
 	}
 
 	// Not found.
 	return null;
 }
 
-// == 6. Sync back to legacy options (for runtime compatibility) ==
-
-/**
- * Sync a normalized FormConfig back into legacy wp_options for runtime compatibility.
- *
- * This keeps all existing Booking Calendar runtime code working while the
- * new Form Builder engine is being rolled out.
- *
- * Behaviour:
- * - 'standard' form maps to:
- *     - booking_form      (advanced_form).
- *     - booking_form_show (content_form).
- * - Custom forms are stored in booking_forms_extended (serialized array).
- *
- * @param array $cfg FormConfig array produced by the Form Manager.
- *
- * @return void
- */
-function wpbc_form_config__sync_legacy_options( array $cfg ) {
-
-	if ( empty( $cfg['form_name'] ) ) {
-		return;
-	}
-
-	$form_name     = (string) $cfg['form_name'];
-	$advanced_form = isset( $cfg['advanced_form'] ) ? (string) $cfg['advanced_form'] : '';
-	$content_form  = isset( $cfg['content_form'] ) ? (string) $cfg['content_form'] : '';
-
-	// Standard form.
-	if ( 'standard' === $form_name ) {
-		if ( '' !== $advanced_form ) {
-			update_bk_option( 'booking_form', $advanced_form );
-		}
-		if ( '' !== $content_form ) {
-			update_bk_option( 'booking_form_show', $content_form );
-		}
-
-		// Optionally update booking_form_visual from structure_json for legacy_simple
-		// (we can add this later when exact mapping is defined).
-		return;
-	}
-
-	// Custom forms: booking_forms_extended.
-	$extended = get_bk_option( 'booking_forms_extended' );
-	$extended = maybe_unserialize( $extended );
-
-	if ( ! is_array( $extended ) ) {
-		$extended = array();
-	}
-
-	$found = false;
-
-	foreach ( $extended as &$one ) {
-		if ( empty( $one['name'] ) || (string) $one['name'] !== $form_name ) {
-			continue;
-		}
-
-		$one['form']    = $advanced_form;
-		$one['content'] = $content_form;
-		$found          = true;
-		break;
-	}
-	unset( $one );
-
-	if ( ! $found ) {
-		$extended[] = array(
-			'name'    => $form_name,
-			'form'    => $advanced_form,
-			'content' => $content_form,
-		);
-	}
-
-	update_bk_option( 'booking_forms_extended', serialize( $extended ) );
-}
-
-// == 7. Public saver: BFB (and later other engines) -> DB + legacy ==
+// == 5. Public saver: BFB (and later other engines) -> DB ==
 
 /**
  * Save BFB Form into DB  - Main Save Function!
  *
- * Save unified FormConfig into booking_form_structures and sync legacy options.
+ * Save unified FormConfig into booking_form_structures.
  *
  * Expected minimal keys in $form_config:
  * - form_name
@@ -417,14 +200,12 @@ function wpbc_form_config__sync_legacy_options( array $cfg ) {
  * - Always writes to booking_form_structures via WPBC_BFB_Form_Storage::save_form().
  *   - Uses form_slug = form_name.
  *   - Uses status from $form_config['status'] or 'published' by default.
- * - Optionally calls wpbc_form_config__sync_legacy_options() to keep
- *   existing legacy runtime code working.
  *
  * @param array $form_config Normalized FormConfig array.
  * @param array $args        {
  *     Optional. Additional saving arguments.
  *
- *     @type bool $sync_legacy Whether to sync legacy wp_options. Default true.
+ *     @type bool $sync_legacy Deprecated. Ignored. BFB does not sync legacy options.
  * }
  *
  * @return int|false booking_form_id on success, or false on failure.
@@ -434,7 +215,7 @@ function wpbc_form_config_save( array $form_config, array $args = array() ) {
 	$args = wp_parse_args(
 		$args,
 		array(
-			'sync_legacy' => true,
+			'sync_legacy' => false,
 		)
 	);
 
@@ -448,6 +229,9 @@ function wpbc_form_config_save( array $form_config, array $args = array() ) {
 
 	$structure_json = isset( $form_config['structure_json'] ) ? (string) $form_config['structure_json'] : '';
 	$settings       = isset( $form_config['settings'] ) ? $form_config['settings'] : array();
+	if ( function_exists( 'wpbc_bfb_settings__strip_form_style_options_from_form_settings' ) ) {
+		$settings = wpbc_bfb_settings__strip_form_style_options_from_form_settings( $settings );
+	}
 	$settings_json  = wpbc_form_config__encode_json( $settings ); // Returns '' on error/empty.
 
 	$advanced_form = isset( $form_config['advanced_form'] ) ? (string) $form_config['advanced_form'] : '';
@@ -486,11 +270,95 @@ function wpbc_form_config_save( array $form_config, array $args = array() ) {
 
 	$booking_form_id = WPBC_BFB_Form_Storage::save_form( $storage_data );
 
-	if ( $booking_form_id && ! empty( $args['sync_legacy'] ) ) {
-		wpbc_form_config__sync_legacy_options( $form_config );
+	return $booking_form_id;
+}
+
+/**
+ * Save the Standard booking form as a BFB canonical form record.
+ *
+ * This is used by activation/setup paths that previously wrote directly into
+ * legacy options such as booking_form and booking_form_show.
+ *
+ * @param string $advanced_form Advanced booking form shortcodes.
+ * @param string $content_form  Content of booking fields data shortcodes.
+ * @param int    $owner_user_id Optional MultiUser owner ID.
+ * @param array  $args          Optional args: visual_form_structure, form_name, title.
+ *
+ * @return int|false booking_form_id on success, or false on failure.
+ */
+function wpbc_bfb_save_standard_form_from_advanced_mode( $advanced_form, $content_form, $owner_user_id = 0, $args = array() ) {
+
+	$args = wp_parse_args(
+		$args,
+		array(
+			'visual_form_structure' => false,
+			'form_name'             => 'standard',
+			'title'                 => __( 'Standard', 'booking' ),
+		)
+	);
+
+	$structure_arr = array();
+	$engine        = 'advanced_mode';
+
+	if ( is_array( $args['visual_form_structure'] ) && function_exists( 'wpbc_simple_form__export_to_bfb_structure' ) ) {
+		$structure_arr = wpbc_simple_form__export_to_bfb_structure( $args['visual_form_structure'] );
+		if ( is_array( $structure_arr ) && ! empty( $structure_arr ) ) {
+			$engine = 'bfb';
+		}
 	}
 
-	return $booking_form_id;
+	$form_config = array(
+		'form_name'           => (string) $args['form_name'],
+		'engine'              => $engine,
+		'engine_version'      => '1.0',
+		'structure_json'      => wpbc_form_config__encode_json( $structure_arr ),
+		'settings'            => array(),
+		'advanced_form'       => (string) $advanced_form,
+		'content_form'        => (string) $content_form,
+		'owner_user_id'       => max( 0, (int) $owner_user_id ),
+		'title'               => (string) $args['title'],
+		'description'         => '',
+		'scope'               => 'global',
+		'status'              => 'published',
+		'is_default'          => 1,
+		'booking_resource_id' => null,
+	);
+
+	return wpbc_form_config_save( $form_config, array( 'sync_legacy' => false ) );
+}
+
+
+/**
+ * Delete all BFB forms owned by one regular MultiUser account.
+ *
+ * This belongs to the full owner-settings deletion lifecycle. Merely switching
+ * an owner Off must not call it, so the user's Builder forms remain available
+ * after reactivation.
+ *
+ * @param int $owner_user_id Owner user ID.
+ *
+ * @return bool
+ */
+function wpbc_bfb_delete_forms_for_owner( $owner_user_id ) {
+
+	$owner_user_id = absint( $owner_user_id );
+	if ( $owner_user_id <= 0 ) {
+		return false;
+	}
+	if ( function_exists( 'wpbc_is_table_exists' ) && ! wpbc_is_table_exists( 'booking_form_structures' ) ) {
+		return true;
+	}
+
+	global $wpdb;
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$deleted = $wpdb->delete(
+		$wpdb->prefix . 'booking_form_structures',
+		array( 'owner_user_id' => $owner_user_id ),
+		array( '%d' )
+	);
+
+	return ( false !== $deleted );
 }
 
 

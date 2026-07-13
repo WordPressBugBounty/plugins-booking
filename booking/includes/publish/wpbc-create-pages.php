@@ -613,8 +613,6 @@ function wpbc_get_bfb_template_record_by_key( $template_key ) {
 function wpbc_create_activation_custom_booking_forms() {
 
 	if (
-		! defined( 'WPBC_NEW_FORM_BUILDER' ) ||
-		! WPBC_NEW_FORM_BUILDER ||
 		! function_exists( 'wpbc_is_table_exists' ) ||
 		! wpbc_is_table_exists( 'booking_form_structures' ) ||
 		! class_exists( 'WPBC_BFB_Form_Storage' )

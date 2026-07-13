@@ -212,6 +212,35 @@
 			return count;
 		};
 
+		api.get_first_real_template_slug = function (forms) {
+			for ( let i = 0; i < ( forms || [] ).length; i++ ) {
+				const item = forms[ i ] || {};
+				const slug = String( item.form_slug || '' );
+
+				if ( slug && slug !== api.blank_template_slug ) {
+					return slug;
+				}
+			}
+
+			return '';
+		};
+
+		api.select_first_real_template = function (forms) {
+			const slug = api.get_first_real_template_slug(
+				forms || ( api.modal_el && api.modal_el.__wpbc_bfb_templates_cache ) || []
+			);
+
+			if ( ! slug ) {
+				return false;
+			}
+
+			api.set_selected_template_slug( slug );
+			api.refresh_selection_highlight();
+			api.on_selection_change( slug, api );
+
+			return true;
+		};
+
 		/**
 		 * Delete template by delete button element and refresh current picker list.
 		 *

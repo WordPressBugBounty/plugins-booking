@@ -79,6 +79,26 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__days_specific',    [" . $days_selection_arr['dynamic__days_specific'] . "] ); ";
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . ", 'dynamic__week_days__start', [" . $days_selection_arr['dynamic__week_days__start'] . "] ); ";
 
+	// Informational help shown between the first and second clicks in range mode.
+	// Integrations can disable it per calendar/resource without changing the selection engine.
+	/**
+	 * Filters whether the two-click range-selection guidance is shown for a calendar.
+	 *
+	 * @param bool  $is_enabled Whether guidance is enabled.
+	 * @param int   $resource_id Booking resource ID.
+	 * @param array $params Calendar shortcode/render parameters.
+	 */
+	$range_selection_guidance_default = function_exists( 'wpbc_frontend_messages__is_enabled' )
+		? wpbc_frontend_messages__is_enabled( 'message_range_selection_click_last_date' )
+		: true;
+	$range_selection_guidance_is_enabled = (bool) apply_filters(
+		'wpbc_calendar_range_selection_guidance_is_enabled',
+		$range_selection_guidance_default,
+		$resource_id,
+		$params
+	);
+	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . ", 'range_selection_guidance_is_enabled', " . ( $range_selection_guidance_is_enabled ? 'true' : 'false' ) . " ); ";
+
 	// Date / Time formats.
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . ", 'booking_date_format', " . wp_json_encode( (string) get_bk_option( 'booking_date_format' ) ) . " ); ";
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . ", 'booking_time_format', " . wp_json_encode( (string) get_bk_option( 'booking_time_format' ) ) . " ); ";
@@ -123,20 +143,30 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 										? wpbc_get_specific_range_dates__as_comma_list( get_bk_option( 'booking_range_selection_days_specific_num_dynamic' ) )
 										: '';
 			$data_arr = array();
-			// Modes :: Selection of Days
-			$data_arr['days_select_mode'] = ( 'range' === get_bk_option('booking_type_of_day_selections') )
-														? get_bk_option('booking_range_selection_type')
-														: get_bk_option( 'booking_type_of_day_selections');
-			$data_arr['fixed__days_num']            = intval( get_bk_option( 'booking_range_selection_days_count' ) );                 /* Number of days selection with 1 mouse click */
+			// Modes :: Selection of Days.
+			$day_selection_type = get_bk_option( 'booking_type_of_day_selections' );
+			if ( 'range' === $day_selection_type ) {
+				// Free/Personal use the unrestricted two-click range. Business Small+ can apply its saved range subtype/rules.
+				$data_arr['days_select_mode'] = class_exists( 'wpdev_bk_biz_s' )
+					? get_bk_option( 'booking_range_selection_type' )
+					: 'dynamic';
+			} else {
+				$data_arr['days_select_mode'] = $day_selection_type;
+			}
+			$fixed_days_num                         = absint( get_bk_option( 'booking_range_selection_days_count' ) );
+			$data_arr['fixed__days_num']            = ( 0 < $fixed_days_num ) ? min( 180, $fixed_days_num ) : 3;                    /* Number of days selection with 1 mouse click */
 			$data_arr['fixed__week_days__start']    = get_bk_option( 'booking_range_start_day' );                                      /* { -1 - Any | 0 - Su,  1 - Mo,  2 - Tu, 3 - We, 4 - Th, 5 - Fr, 6 - Sat } */
 			$data_arr['dynamic__days_min']          = intval( get_bk_option( 'booking_range_selection_days_count_dynamic' ) );         /* Min. Number of days selection with 2 mouse clicks */
 			$data_arr['dynamic__days_max']          = intval( get_bk_option( 'booking_range_selection_days_max_count_dynamic' ) );     /* Max. Number of days selection with 2 mouse clicks */
 			$data_arr['dynamic__days_specific']     = $specific_days_selection;                                                        /* Example: '5,7' */
 			$data_arr['dynamic__week_days__start']  = get_bk_option( 'booking_range_start_day_dynamic' );                              /* { -1 - Any | 0 - Su,  1 - Mo,  2 - Tu, 3 - We, 4 - Th, 5 - Fr, 6 - Sat } */
 
-			// Fix about possible issue of downgrade from  Paid to  free version  and try  to  use 'Range days' selection,  which  is not supports in that  version.      // FixIn: 10.4.0.4.
-			if ( ( ! class_exists( 'wpdev_bk_biz_s' ) ) && ( in_array( $data_arr['days_select_mode'], array( 'dynamic', 'fixed' ) ) ) ) {
-				$data_arr['days_select_mode'] = 'multiple';
+			// A fixed one-click range remains Business Small+. On downgrade, preserve the Range choice but use Free's unrestricted two-click mode.
+			if ( ( ! class_exists( 'wpdev_bk_biz_s' ) ) && ( in_array( $data_arr['days_select_mode'], array( 'dynamic', 'fixed' ), true ) ) ) {
+				$data_arr['days_select_mode'] = 'dynamic';
+				$data_arr['dynamic__days_min']         = 1;
+				$data_arr['dynamic__days_specific']    = '';
+				$data_arr['dynamic__week_days__start'] = '-1';
 			}
 
 			return $data_arr;

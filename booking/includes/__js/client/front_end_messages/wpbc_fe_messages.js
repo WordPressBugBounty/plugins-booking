@@ -54,12 +54,17 @@ function wpbc_front_end__show_message( message, params = {} ){
 							    'css_class': '',								// For example can  be: 'wpbc_fe_message_alt'
 								'delay'    : 0,									// how many microsecond to  show,  if 0  then  show forever
 								'if_visible_not_show': false,					// if true,  then do not show message,  if previos message was not hided (not apply if 'where'   : 'inside' )
-								'is_scroll': true								// is scroll  to  this element
+								'is_scroll': true,								// is scroll  to  this element
+								'content_mode': 'html'							// 'html' for trusted legacy content | 'text' for editable/user content
 						};
 	for ( var p_key in params ){
 		params_default[ p_key ] = params[ p_key ];
 	}
 	params = params_default;
+
+	if ( 'text' === params[ 'content_mode' ] ) {
+		message = jQuery( '<div>' ).text( null === message || 'undefined' === typeof message ? '' : String( message ) ).html().replace( /\n/g, '<br />' );
+	}
 
     var unique_div_id = new Date();
     unique_div_id = 'wpbc_notice_' + unique_div_id.getTime();
@@ -177,14 +182,17 @@ function wpbc_front_end__show_message( message, params = {} ){
 	 * @param message	- Message HTML
 	 * @returns string  - HTML ID		or 0 if not showing during this time.
 	 */
-	function wpbc_front_end__show_message__error( jq_node, message ){
+	function wpbc_front_end__show_message__error( jq_node, message, content_mode ){
+
+		content_mode = ( 'undefined' === typeof content_mode ) ? 'html' : content_mode;
 
 		var notice_message_id = wpbc_front_end__show_message(
 																message,
 																{
 																	'type'               : 'error',
 																	'delay'              : 10000,
-																	'if_visible_not_show': true,
+																			'if_visible_not_show': true,
+																			'content_mode'       : content_mode,
 																	'show_here'          : {
 																							'where'  : 'right',
 																							'jq_node': jq_node
@@ -202,18 +210,20 @@ function wpbc_front_end__show_message( message, params = {} ){
 	 * @param message	- Message HTML
 	 * @returns string  - HTML ID		or 0 if not showing during this time.
 	 */
-	function wpbc_front_end__show_message__error_under_element( jq_node, message, message_delay ){
+	function wpbc_front_end__show_message__error_under_element( jq_node, message, message_delay, content_mode ){
 
 		if ( 'undefined' === typeof (message_delay) ){
 			message_delay = 0
 		}
+		content_mode = ( 'undefined' === typeof content_mode ) ? 'html' : content_mode;
 
 		var notice_message_id = wpbc_front_end__show_message(
 																message,
 																{
 																	'type'               : 'error',
 																	'delay'              : message_delay,
-																	'if_visible_not_show': true,
+																			'if_visible_not_show': true,
+																			'content_mode'       : content_mode,
 																	'show_here'          : {
 																							'where'  : 'after',
 																							'jq_node': jq_node
@@ -231,18 +241,20 @@ function wpbc_front_end__show_message( message, params = {} ){
 	 * @param message	- Message HTML
 	 * @returns string  - HTML ID		or 0 if not showing during this time.
 	 */
-	function wpbc_front_end__show_message__error_above_element( jq_node, message, message_delay ){
+	function wpbc_front_end__show_message__error_above_element( jq_node, message, message_delay, content_mode ){
 
 		if ( 'undefined' === typeof (message_delay) ){
 			message_delay = 10000
 		}
+		content_mode = ( 'undefined' === typeof content_mode ) ? 'html' : content_mode;
 
 		var notice_message_id = wpbc_front_end__show_message(
 																message,
 																{
 																	'type'               : 'error',
 																	'delay'              : message_delay,
-																	'if_visible_not_show': true,
+																			'if_visible_not_show': true,
+																			'content_mode'       : content_mode,
 																	'show_here'          : {
 																							'where'  : 'before',
 																							'jq_node': jq_node
@@ -260,14 +272,17 @@ function wpbc_front_end__show_message( message, params = {} ){
 	 * @param message	- Message HTML
 	 * @returns string  - HTML ID		or 0 if not showing during this time.
 	 */
-	function wpbc_front_end__show_message__warning( jq_node, message ){
+	function wpbc_front_end__show_message__warning( jq_node, message, content_mode ){
+
+		content_mode = ( 'undefined' === typeof content_mode ) ? 'html' : content_mode;
 
 		var notice_message_id = wpbc_front_end__show_message(
 																message,
 																{
 																	'type'               : 'warning',
 																	'delay'              : 10000,
-																	'if_visible_not_show': true,
+																			'if_visible_not_show': true,
+																			'content_mode'       : content_mode,
 																	'show_here'          : {
 																							'where'  : 'right',
 																							'jq_node': jq_node
@@ -286,14 +301,17 @@ function wpbc_front_end__show_message( message, params = {} ){
 	 * @param message	- Message HTML
 	 * @returns string  - HTML ID		or 0 if not showing during this time.
 	 */
-	function wpbc_front_end__show_message__warning_under_element( jq_node, message ){
+	function wpbc_front_end__show_message__warning_under_element( jq_node, message, content_mode ){
+
+		content_mode = ( 'undefined' === typeof content_mode ) ? 'html' : content_mode;
 
 		var notice_message_id = wpbc_front_end__show_message(
 																message,
 																{
 																	'type'               : 'warning',
 																	'delay'              : 10000,
-																	'if_visible_not_show': true,
+																			'if_visible_not_show': true,
+																			'content_mode'       : content_mode,
 																	'show_here'          : {
 																							'where'  : 'after',
 																							'jq_node': jq_node
@@ -311,14 +329,17 @@ function wpbc_front_end__show_message( message, params = {} ){
 	 * @param message	- Message HTML
 	 * @returns string  - HTML ID		or 0 if not showing during this time.
 	 */
-	function wpbc_front_end__show_message__warning_above_element( jq_node, message ){
+	function wpbc_front_end__show_message__warning_above_element( jq_node, message, content_mode ){
+
+		content_mode = ( 'undefined' === typeof content_mode ) ? 'html' : content_mode;
 
 		var notice_message_id = wpbc_front_end__show_message(
 																message,
 																{
 																	'type'               : 'warning',
 																	'delay'              : 10000,
-																	'if_visible_not_show': true,
+																			'if_visible_not_show': true,
+																			'content_mode'       : content_mode,
 																	'show_here'          : {
 																							'where'  : 'before',
 																							'jq_node': jq_node

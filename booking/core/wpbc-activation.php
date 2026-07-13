@@ -554,10 +554,6 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
     $default_options['booking_is_use_autofill_4_logged_user'] = ($is_demo) ? 'On' : 'Off';
  $mu_option4delete[]='booking_is_use_autofill_4_logged_user';
 
-if ( defined( 'WPBC_NEW_FORM_BUILDER' ) && WPBC_NEW_FORM_BUILDER ) {
-	$default_options['booking_use_bfb_form'] = 'On';
-$mu_option4delete[]                      = 'booking_use_bfb_form';
-}
  	// FixIn: 10.13.1.5.
     $default_options['booking_is_use_phone_validation'] = 'Off';
  $mu_option4delete[]='booking_is_use_phone_validation';
@@ -772,9 +768,69 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
  $mu_option4delete[]='booking_is_show_powered_by_notice';  
     $default_options['booking_form_theme'] = '';
  $mu_option4delete[]='booking_form_theme';
-    $default_options['booking_is_use_captcha'] = 'Off';
+    $default_options['booking_form_style'] = 'light_bordered';
+ $mu_option4delete[]='booking_form_style';
+    $default_options['booking_form_appearance_preset'] = 'bordered';
+ $mu_option4delete[]='booking_form_appearance_preset';
+    $default_options['booking_form_appearance_background_color'] = '#ffffff';
+ $mu_option4delete[]='booking_form_appearance_background_color';
+    $default_options['booking_form_appearance_border_color'] = '#cccccc';
+ $mu_option4delete[]='booking_form_appearance_border_color';
+    $default_options['booking_form_appearance_border_width'] = '1px';
+ $mu_option4delete[]='booking_form_appearance_border_width';
+    $default_options['booking_form_appearance_border_radius'] = '2px';
+ $mu_option4delete[]='booking_form_appearance_border_radius';
+    $default_options['booking_form_appearance_padding'] = '10px 30px';
+ $mu_option4delete[]='booking_form_appearance_padding';
+    $default_options['booking_form_custom_background_color'] = '#ffffff';
+ $mu_option4delete[]='booking_form_custom_background_color';
+    $default_options['booking_form_custom_border_color'] = '#cccccc';
+ $mu_option4delete[]='booking_form_custom_border_color';
+    $default_options['booking_form_custom_border_width'] = '1px';
+ $mu_option4delete[]='booking_form_custom_border_width';
+    $default_options['booking_form_custom_border_radius'] = '2px';
+ $mu_option4delete[]='booking_form_custom_border_radius';
+    $default_options['booking_form_custom_padding_vertical'] = '10px';
+ $mu_option4delete[]='booking_form_custom_padding_vertical';
+    $default_options['booking_form_custom_padding_horizontal'] = '30px';
+ $mu_option4delete[]='booking_form_custom_padding_horizontal';
+    $default_options['booking_form_custom_text_color'] = '#1d2327';
+ $mu_option4delete[]='booking_form_custom_text_color';
+    $default_options['booking_form_custom_field_background_color'] = '#ffffff';
+ $mu_option4delete[]='booking_form_custom_field_background_color';
+    $default_options['booking_form_custom_field_text_color'] = '#3c434a';
+ $mu_option4delete[]='booking_form_custom_field_text_color';
+    $default_options['booking_form_custom_field_border_color'] = '#cccccc';
+ $mu_option4delete[]='booking_form_custom_field_border_color';
+    $default_options['booking_form_custom_button_background_color'] = '#066aab';
+ $mu_option4delete[]='booking_form_custom_button_background_color';
+    $default_options['booking_form_custom_button_text_color'] = '#ffffff';
+ $mu_option4delete[]='booking_form_custom_button_text_color';
+    $default_options['booking_form_custom_button_border_color'] = '#066aab';
+ $mu_option4delete[]='booking_form_custom_button_border_color';
+    $default_options['booking_form_custom_button_hover_background_color'] = '#055589';
+ $mu_option4delete[]='booking_form_custom_button_hover_background_color';
+    $default_options['booking_form_custom_button_hover_text_color'] = '#ffffff';
+ $mu_option4delete[]='booking_form_custom_button_hover_text_color';
+    $default_options['booking_form_custom_button_hover_border_color'] = '#055589';
+ $mu_option4delete[]='booking_form_custom_button_hover_border_color';
+    $default_options['booking_form_custom_secondary_button_background_color'] = '#fdfdfd';
+ $mu_option4delete[]='booking_form_custom_secondary_button_background_color';
+    $default_options['booking_form_custom_secondary_button_text_color'] = '#444444';
+ $mu_option4delete[]='booking_form_custom_secondary_button_text_color';
+    $default_options['booking_form_custom_secondary_button_border_color'] = '#eeeeee';
+ $mu_option4delete[]='booking_form_custom_secondary_button_border_color';
+    $default_options['booking_form_custom_secondary_button_hover_background_color'] = '#fdfdfd';
+ $mu_option4delete[]='booking_form_custom_secondary_button_hover_background_color';
+    $default_options['booking_form_custom_secondary_button_hover_text_color'] = '#444444';
+ $mu_option4delete[]='booking_form_custom_secondary_button_hover_text_color';
+    $default_options['booking_form_custom_secondary_button_hover_border_color'] = '#4d91cd';
+ $mu_option4delete[]='booking_form_custom_secondary_button_hover_border_color';
+	$default_options['booking_is_use_captcha'] = 'Off';
  $mu_option4delete[]='booking_is_use_captcha';
-    $default_options['booking_is_show_legend'] = 'On';
+	$default_options['booking_frontend_messages'] = array( 'version' => 1, 'messages' => array(), 'enabled' => array() );
+	$mu_option4delete[]='booking_frontend_messages';
+	$default_options['booking_is_show_legend'] = 'On';
  $mu_option4delete[]='booking_is_show_legend';
     $default_options['booking_send_button_title'] = __( 'Send', 'booking' );                // FixIn: 8.8.1.14.
  $mu_option4delete[]='booking_send_button_title';
@@ -856,14 +912,9 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 	// -----------------------------------------------------------------------------------------------------------------
     if ( class_exists( 'wpdev_bk_personal' ) ) {
 
-        $default_options['booking_is_use_simple_booking_form'] = 'Off';                                              	// FixIn: 8.1.1.12.
-     $mu_option4delete[]='booking_is_use_simple_booking_form';
 
         $default_options['booking_is_use_codehighlighter_booking_form'] = 'On';                                         // FixIn: 8.4.7.18.
      $mu_option4delete[]='booking_is_use_codehighlighter_booking_form';
-
-        $default_options['booking_form']        = str_replace( '\\n\\', '', wpbc_get_default_booking_form() );
-        $default_options['booking_form_show']   = str_replace( '\\n\\', '', wpbc_get_default_booking_form_show() );
 
         $default_options['booking_url_bookings_edit_by_visitors'] = site_url();
      $mu_option4delete[]='booking_url_bookings_edit_by_visitors';
@@ -1043,7 +1094,6 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
         $default_options['booking_unavailable_extra_days_out'] = '';
      $mu_option4delete[]='booking_unavailable_extra_days_out';
 
-        $default_options['booking_forms_extended'] = serialize( array() );
         $default_options['booking_advanced_costs_values'] = serialize( array() );
         $default_options['booking_is_resource_deposit_payment_active'] = 'On';
      $mu_option4delete[]='booking_is_resource_deposit_payment_active';        

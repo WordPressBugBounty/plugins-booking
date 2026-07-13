@@ -479,7 +479,7 @@ function wpbc_is_valid_time_string(time_str) {
 				var my_element = element.name; //.toString();
 				if ( my_element.indexOf( 'rangetime' ) !== -1 ){                       	// Range Time
 					if ( element.value == '' ){                                 										//FixIn: 7.0.Beta.19
-					 	var notice_message_id = wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required' ) );
+					 	var notice_message_id = wpbc_front_end__show_message__warning( element, _wpbc.get_message( 'message_check_required' ), 'text' );
 						return true;
 					}
 					var my_rangetime = element.value.split( '-' );
@@ -561,12 +561,12 @@ function wpbc_is_valid_time_string(time_str) {
 			if ( valid_time !== true ){
 				//return false;                                                  // do not show warning for setting pending days selectable,  if making booking for time-slot   // FixIn: 7.0.1.23.
 				if ( ( wpbc_is_change_over_enabled_for_resource( resource_id ) ) && (element_start !== false) && (element_end !== false) ){      // FixIn: 6.1.1.1.
-					wpbc_front_end__show_message__warning_under_element( '#date_booking' + resource_id, _wpbc.get_message( 'message_check_no_selected_dates' )  );
+					wpbc_front_end__show_message__warning( '#booking_form_div' + resource_id + ' .bk_calendar_frame', _wpbc.get_message( 'message_check_no_selected_dates' ), 'text' );
 				}
-				if ( element_rangetime !== false ){ wpbc_front_end__show_message__warning_under_element( element_rangetime, _wpbc.get_message( 'message_error_range_time' ) ); }
-				if ( element_duration !== false ){  wpbc_front_end__show_message__warning_under_element( element_duration, _wpbc.get_message( 'message_error_duration_time' ) ); }
-				if ( element_start !== false ){ 	wpbc_front_end__show_message__warning_under_element( element_start, _wpbc.get_message( 'message_error_start_time' ) ); }
-				if ( element_end !== false ){ 		wpbc_front_end__show_message__warning_under_element( element_end, _wpbc.get_message( 'message_error_end_time' ) ); }
+				if ( element_rangetime !== false ){ wpbc_front_end__show_message__warning_under_element( element_rangetime, _wpbc.get_message( 'message_error_range_time' ), 'text' ); }
+				if ( element_duration !== false ){  wpbc_front_end__show_message__warning_under_element( element_duration, _wpbc.get_message( 'message_error_duration_time' ), 'text' ); }
+				if ( element_start !== false ){ 	wpbc_front_end__show_message__warning_under_element( element_start, _wpbc.get_message( 'message_error_start_time' ), 'text' ); }
+				if ( element_end !== false ){ 		wpbc_front_end__show_message__warning_under_element( element_end, _wpbc.get_message( 'message_error_end_time' ), 'text' ); }
 
 				return true;
 

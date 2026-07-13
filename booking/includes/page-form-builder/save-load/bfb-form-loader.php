@@ -1,22 +1,16 @@
 <?php
 /**
- * Booking Form Loader (Builder + Legacy fallback).
+ * Booking Form Loader (Builder storage only).
  *
  * This helper:
  *  - Accepts a logical form identifier (form_slug) + status (and optional form_id).
  *  - Asks the Booking Form Builder (BFB) for exported form/content.
- *  - If Builder returns nothing, falls back to legacy:
- *      * booking_form / booking_form_show options.
- *      * booking_forms_extended (custom forms).
- *      * simple visual form export (booking_form_visual).
  *
  * It only returns the **source strings** (shortcodes):
  *  - "booking form" (form) – the main form shortcodes.
  *  - "Content of booking fields data" (content) – email/content template.
  *
- * Rendering/parsing of shortcodes stays in:
- *  - WPBC_BFB _FormShortcodeEngine (new engine), or
- *  - the legacy HTML generators (simple form free).
+ * Rendering/parsing of shortcodes stays in WPBC_BFB_FormShortcodeEngine.
  *
  * @package Booking Calendar
  * @subpackage Form Builder
@@ -35,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Central helper for resolving which booking form configuration
- * should be used on the front-end (Builder vs legacy).
+ * should be used on the front-end.
  */
 class WPBC_BFB_Form_Loader {
 
@@ -161,7 +155,7 @@ class WPBC_BFB_Form_Loader {
 	}
 
 	/**
-	 * Internal logic for resolving Builder vs legacy form.
+	 * Internal logic for resolving Builder form.
 	 *
 	 * @param array $args Arguments.
 	 *
@@ -230,17 +224,11 @@ class WPBC_BFB_Form_Loader {
 			}
 		}
 
-
-		// ---------------------------------------------------------------------
-		// 2. Fallback to legacy storage (options / usermeta).
-		// ---------------------------------------------------------------------
-		$legacy_pair = $this->load_from_legacy( $args );
-
 		return array(
-			'form'          => isset( $legacy_pair['form'] ) ? $legacy_pair['form'] : '',
-			'content'       => isset( $legacy_pair['content'] ) ? $legacy_pair['content'] : '',
-			'settings_json' => '', // legacy has no per-form settings_json yet.
-			'source'        => 'legacy',
+			'form'          => '',
+			'content'       => '',
+			'settings_json' => '',
+			'source'        => 'builder',
 			'form_slug'     => $resolved_slug,
 		);
 	}
@@ -272,7 +260,7 @@ class WPBC_BFB_Form_Loader {
 	}
 
 	/**
-	 * Resolve empty or special slugs into real legacy form names.
+	 * Resolve empty or special slugs into real form names.
 	 *
 	 * Examples:
 	 *  - '' or 'auto'  => current default custom form for $resource_id (or 'standard').
@@ -312,8 +300,8 @@ class WPBC_BFB_Form_Loader {
 	 * The actual lookup is delegated to a filter so that this class
 	 * does not depend on any concrete BFB DB schema.
 	 *
-	 * If Builder is disabled, the table is missing or the requested slug/ID
-	 * does not exist, the filter should return the $empty value.
+	 * If the table is missing or the requested slug/ID does not exist, the
+	 * filter should return the $empty value.
 	 *
 	 * @param array $args Loader arguments.
 	 *
@@ -374,112 +362,6 @@ class WPBC_BFB_Form_Loader {
 		return $pair;
 	}
 
-	/**
-	 * Fallback loader that reads forms from legacy options (and MultiUser usermeta).
-	 *
-	 * It reuses the same mechanisms as your current code:
-	 *  - Default form:
-	 *      * booking_form / booking_form_show options.
-	 *  - Custom forms:
-	 *      * booking_forms_extended via:
-	 *          - apply_bk_filter( 'wpdev_get_booking_form', ... )
-	 *          - wpbc_get_custom_booking_form() for content.
-	 *  - Simple mode:
-	 *      * wpbc_simple_form__get_booking_form__as_shortcodes().
-	 *      * wpbc_simple_form__get_form_show__as_shortcodes().
-	 *
-	 * @param array $args Loader arguments.
-	 *
-	 * @return array {
-	 *     @type string $form    Booking form (shortcodes).
-	 *     @type string $content Content of booking fields data (shortcodes).
-	 * }
-	 */
-	protected function load_from_legacy( $args ) {
-
-		$form_slug = isset( $args['form_slug'] ) ? (string) $args['form_slug'] : 'standard';
-
-		// -----------------------------------------------------------------
-		// 1. Advanced booking form (shortcodes).
-		// -----------------------------------------------------------------
-		$default_form = get_bk_option( 'booking_form' );
-		$form         = '';
-
-		if ( 'standard' === $form_slug || '' === $form_slug ) {
-
-			// Default standard form.
-			$form = $default_form;
-
-		} else {
-
-			// Custom form via existing filter that reads booking_forms_extended.
-			$form = apply_bk_filter( 'wpdev_get_booking_form', $default_form, $form_slug );
-		}
-
-		// If still empty, build advanced form from Simple mode visual structure.
-		if ( ( '' === trim( $form ) ) && function_exists( 'wpbc_simple_form__get_booking_form__as_shortcodes' ) ) {
-			$form = wpbc_simple_form__get_booking_form__as_shortcodes();
-		}
-
-		// -----------------------------------------------------------------
-		// 2. "Content of booking fields data" (shortcodes).
-		// -----------------------------------------------------------------
-		$default_content = get_bk_option( 'booking_form_show' );
-		$content         = '';
-
-		if ( 'standard' === $form_slug || '' === $form_slug ) {
-
-			// Default standard content.
-			$content = $default_content;
-
-		} else {
-
-			// Custom content via helper that reads booking_forms_extended[name]['content'].
-			if ( function_exists( 'wpbc_get_custom_booking_form' ) ) {
-				$content = wpbc_get_custom_booking_form(
-					$default_content,
-					$form_slug,
-					false,        // Let helper call get_bk_option( 'booking_forms_extended' ) internally.
-					'content',
-					true          // Replace simple HTML shortcodes <r>, <c>, <f>, <l>, <item>.
-				);
-			}
-		}
-
-		// If still empty, build content from Simple mode visual structure.
-		if ( ( '' === trim( $content ) ) && function_exists( 'wpbc_simple_form__get_form_show__as_shortcodes' ) ) {
-			$content = wpbc_simple_form__get_form_show__as_shortcodes();
-		}
-
-		/**
-		 * Final filter over legacy values before returning.
-		 *
-		 * @param array $pair {
-		 *     @type string $form    Booking form (shortcodes).
-		 *     @type string $content Content of booking fields data (shortcodes).
-		 * }
-		 * @param array $args Loader arguments.
-		 */
-		$pair = apply_filters(
-			'wpbc_bfb_form_loader_legacy',
-			array(
-				'form'    => $form,
-				'content' => $content,
-			),
-			$args
-		);
-
-		// Ensure expected shape.
-		$pair = wp_parse_args(
-			$pair,
-			array(
-				'form'    => '',
-				'content' => '',
-			)
-		);
-
-		return $pair;
-	}
 }
 
 

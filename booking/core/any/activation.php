@@ -313,6 +313,7 @@ abstract class WPBC_Install {
 	 * Run Deactivate
 	 */
 	public function wpbc_deactivate() {
+		wpbc_set_plugin_deactivation_state( true );
 
 		WPBC_Action_Scheduler_Compatibility::raise_memory_limit();
 		WPBC_Action_Scheduler_Compatibility::raise_time_limit( 300 );

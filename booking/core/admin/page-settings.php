@@ -526,18 +526,6 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 						<a onclick="javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_dashboard_tab a' ,'#wpbc_general_settings_dashboard_metabox', '<?php echo esc_js( $title ); ?>' );"
 							href="javascript:void(0);"><span><?php echo esc_html( $title ); ?></span></a>
 					</div>
-					<div id="wpbc_general_settings_form_tab" class="wpbc_settings_navigation_item">
-						<?php
-						$title = esc_attr__( 'Form Options', 'booking' );
-						?>
-						<a onclick="javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_form_tab a' ,'#wpbc_general_settings_form_metabox', '<?php echo esc_js( $title ); ?>' );" href="javascript:void(0);"><span><?php echo esc_html( $title ); ?></span></a>
-					</div>
-					<div id="wpbc_general_settings_time_slots_tab" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-						<?php
-						$title = esc_attr__( 'Time Slots', 'booking' );
-						?>
-						<a onclick="javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_time_slots_tab a' ,'#wpbc_general_settings_time_slots_metabox', '<?php echo esc_js( $title ); ?>' );" href="javascript:void(0);"><span><?php echo esc_html( $title ); ?></span></a>
-					</div>
 					<div id="wpbc_general_settings_booking_confirmation_tab" class="wpbc_settings_navigation_item">
 						<?php
 						$title = esc_attr__( 'Booking Confirmation', 'booking' );

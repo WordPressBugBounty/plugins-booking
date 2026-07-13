@@ -340,9 +340,9 @@ if ( 0 ) {
 						_wpbc.calendar__set_param_value( 220, 'dynamic__week_days__start', [-1] );
 						_wpbc.calendar__set_param_value( 220, 'booking_date_format', 'j M Y' );
 						_wpbc.calendar__set_param_value( 220, 'booking_time_format', 'g:i A' );
-						_wpbc.set_message( 'message_dates_times_unavailable', 'These dates and times in this calendar are already booked or unavailable.' );
-						_wpbc.set_message( 'message_choose_alternative_dates', 'Please choose alternative date(s), times, or adjust the number of slots booked.' );
-						_wpbc.set_message( 'message_cannot_save_in_one_resource', 'It is not possible to store this sequence of the dates into the one same resource.' );
+						_wpbc.set_message( 'message_dates_times_unavailable', <?php echo wp_json_encode( wpbc_frontend_messages__get( 'message_dates_times_unavailable' ) ); ?> );
+						_wpbc.set_message( 'message_choose_alternative_dates', <?php echo wp_json_encode( wpbc_frontend_messages__get( 'message_choose_alternative_dates' ) ); ?> );
+						_wpbc.set_message( 'message_cannot_save_in_one_resource', <?php echo wp_json_encode( wpbc_frontend_messages__get( 'message_cannot_save_in_one_resource' ) ); ?> );
 						_wpbc.calendar__set_param_value( 220, 'is_parent_resource', 0 );
 						_wpbc.calendar__set_param_value( 220, 'booking_capacity_field', 'visitors' );
 						_wpbc.calendar__set_param_value( 220, 'booking_is_dissbale_booking_for_different_sub_resources', 'Off' );

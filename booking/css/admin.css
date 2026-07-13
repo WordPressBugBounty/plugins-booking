@@ -227,7 +227,8 @@ select option.wpbc_child_resource{
     min-height: 29px;
 }
 .wp-core-ui .wpbc_page input[type="text"] {
-    min-height: 30px;
+	min-height: 30px;
+	max-width: 100%;
 }
 .wp-admin .wpbc_page select {
     color:#32373c;

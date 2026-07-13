@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.3
+Stable tag: 11.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -233,6 +233,7 @@ Configure email confirmation to be sent to the site administrator and visitors f
 
 **Other settings**
  Customizable **date format** for your bookings.<br>
+ **Two-click range selection** for choosing any continuous range of available booking dates.<br>
  **Restriction of access** to plugin menus for standard WordPress user roles.<br>
 <br>
 And **much more**... Check ton of features in [premium versions](https://wpbookingcalendar.com/features/ "Booking Calendar Features list") of plugin.
@@ -248,7 +249,7 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 **Booking Calendar Business Small (or higher versions)**
 - [Online Payments](https://wpbookingcalendar.com/features/#payments) - accept online payments for your bookings, with support for various payment gateways like **Stripe, PayPal, Authorize.Net, Redsys**, and more.
 - [Changeover Days](https://wpbookingcalendar.com/features/#change-over-days) - enable **split bookings** marked by vertical or diagonal lines, allowing visitors to check out and check in on the same date.
-- [Range days selection](https://wpbookingcalendar.com/features/#range-days-selection) - easily enable week(s) or any specific number of days selection with 1 or 2 mouse clicks, and configure minimum and maximum number of days, as well as specific start weekdays for selections.
+- [Advanced range selection rules](https://wpbookingcalendar.com/features/#range-days-selection) - enable fixed ranges with one click, configure minimum and maximum lengths or specific permitted lengths, and restrict range starts to selected weekdays.
 - [Auto Approval / Cancellation](https://wpbookingcalendar.com/features/#auto-cancellation) - set up automatic cancellation of unpaid pending bookings after a specific time, or enable auto-approval for incoming bookings.
 - [Advanced Hourly Bookings](https://wpbookingcalendar.com/features/#times) - increase the flexibility of your Booking Calendar by allowing visitors to book specific start and end times or duration of time, ensuring precise scheduling for your services.
 
@@ -283,40 +284,40 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              97.06% [ 3635 / 3745 ], fuzzy 66, not translated 44
-- Danish                       68.12% [ 2551 / 3745 ], fuzzy 552, not translated 642
-- Dutch                        60.77% [ 2276 / 3745 ], fuzzy 828, not translated 641
-- Norwegian (Bokmål)           56.32% [ 2109 / 3745 ], fuzzy 586, not translated 1050
-- German                       56.32% [ 2109 / 3745 ], fuzzy 935, not translated 701
-- Hungarian                    52.02% [ 1948 / 3745 ], fuzzy 1011, not translated 786
-- Korean                       51.99% [ 1947 / 3745 ], fuzzy 1008, not translated 790
-- Spanish (Spain)              47.85% [ 1792 / 3745 ], fuzzy 1025, not translated 928
-- Portuguese (Brazil)          45.13% [ 1690 / 3745 ], fuzzy 1133, not translated 922
-- Greek                        44.83% [ 1679 / 3745 ], fuzzy 1142, not translated 924
-- Turkish                      44.25% [ 1657 / 3745 ], fuzzy 1157, not translated 931
-- Italian                      43.12% [ 1615 / 3745 ], fuzzy 1059, not translated 1071
-- Spanish (Mexico)             41.44% [ 1552 / 3745 ], fuzzy 1209, not translated 984
-- Finnish                      41.20% [ 1543 / 3745 ], fuzzy 1218, not translated 984
-- Polish                       41.15% [ 1541 / 3745 ], fuzzy 1205, not translated 999
-- Romanian                     40.80% [ 1528 / 3745 ], fuzzy 1219, not translated 998
-- Swedish                      40.59% [ 1520 / 3745 ], fuzzy 1227, not translated 998
-- Arabic                       40.19% [ 1505 / 3745 ], fuzzy 1245, not translated 995
-- Russian                      40.13% [ 1503 / 3745 ], fuzzy 1474, not translated 768
-- Bulgarian                    38.93% [ 1458 / 3745 ], fuzzy 1260, not translated 1027
-- Slovenian                    38.83% [ 1454 / 3745 ], fuzzy 1263, not translated 1028
-- Chinese (Taiwan)             37.78% [ 1415 / 3745 ], fuzzy 1303, not translated 1027
-- Portuguese (Portugal)        37.49% [ 1404 / 3745 ], fuzzy 1288, not translated 1053
-- Japanese                     36.98% [ 1385 / 3745 ], fuzzy 772, not translated 1588
-- Chinese (China)              36.26% [ 1358 / 3745 ], fuzzy 1288, not translated 1099
-- Ukrainian                    35.99% [ 1348 / 3745 ], fuzzy 1298, not translated 1099
-- Catalan                      35.41% [ 1326 / 3745 ], fuzzy 1224, not translated 1195
-- Thai                         35.33% [ 1323 / 3745 ], fuzzy 1334, not translated 1088
-- Hebrew                       35.11% [ 1315 / 3745 ], fuzzy 1322, not translated 1108
-- Galician                     34.21% [ 1281 / 3745 ], fuzzy 1374, not translated 1090
-- Slovak                       31.80% [ 1191 / 3745 ], fuzzy 1287, not translated 1267
-- Croatian                     30.79% [ 1153 / 3745 ], fuzzy 1303, not translated 1289
-- Czech                        30.68% [ 1149 / 3745 ], fuzzy 1253, not translated 1343
-- Chinese (Hong Kong)          18.16% [ 680 / 3745 ], fuzzy 545, not translated 2520
+- French (France)              93.91% [ 3621 / 3856 ], fuzzy 127, not translated 108
+- Danish                       66.08% [ 2548 / 3856 ], fuzzy 603, not translated 705
+- Dutch                        58.95% [ 2273 / 3856 ], fuzzy 879, not translated 704
+- Norwegian (Bokmål)           54.62% [ 2106 / 3856 ], fuzzy 636, not translated 1114
+- German                       54.62% [ 2106 / 3856 ], fuzzy 986, not translated 764
+- Hungarian                    50.47% [ 1946 / 3856 ], fuzzy 1060, not translated 850
+- Korean                       50.44% [ 1945 / 3856 ], fuzzy 1057, not translated 854
+- Spanish (Spain)              46.40% [ 1789 / 3856 ], fuzzy 1075, not translated 992
+- Portuguese (Brazil)          43.80% [ 1689 / 3856 ], fuzzy 1181, not translated 986
+- Greek                        43.52% [ 1678 / 3856 ], fuzzy 1190, not translated 988
+- Turkish                      42.95% [ 1656 / 3856 ], fuzzy 1205, not translated 995
+- Italian                      41.86% [ 1614 / 3856 ], fuzzy 1107, not translated 1135
+- Spanish (Mexico)             40.22% [ 1551 / 3856 ], fuzzy 1257, not translated 1048
+- Finnish                      39.99% [ 1542 / 3856 ], fuzzy 1266, not translated 1048
+- Polish                       39.94% [ 1540 / 3856 ], fuzzy 1253, not translated 1063
+- Romanian                     39.60% [ 1527 / 3856 ], fuzzy 1267, not translated 1062
+- Swedish                      39.39% [ 1519 / 3856 ], fuzzy 1275, not translated 1062
+- Arabic                       39.00% [ 1504 / 3856 ], fuzzy 1294, not translated 1058
+- Russian                      38.93% [ 1501 / 3856 ], fuzzy 1523, not translated 832
+- Bulgarian                    37.79% [ 1457 / 3856 ], fuzzy 1308, not translated 1091
+- Slovenian                    37.68% [ 1453 / 3856 ], fuzzy 1311, not translated 1092
+- Chinese (Taiwan)             36.67% [ 1414 / 3856 ], fuzzy 1351, not translated 1091
+- Portuguese (Portugal)        36.38% [ 1403 / 3856 ], fuzzy 1336, not translated 1117
+- Japanese                     35.89% [ 1384 / 3856 ], fuzzy 818, not translated 1654
+- Chinese (China)              35.22% [ 1358 / 3856 ], fuzzy 1336, not translated 1162
+- Ukrainian                    34.96% [ 1348 / 3856 ], fuzzy 1346, not translated 1162
+- Catalan                      34.36% [ 1325 / 3856 ], fuzzy 1271, not translated 1260
+- Thai                         34.28% [ 1322 / 3856 ], fuzzy 1383, not translated 1151
+- Hebrew                       34.10% [ 1315 / 3856 ], fuzzy 1370, not translated 1171
+- Galician                     33.20% [ 1280 / 3856 ], fuzzy 1423, not translated 1153
+- Slovak                       30.89% [ 1191 / 3856 ], fuzzy 1332, not translated 1333
+- Croatian                     29.90% [ 1153 / 3856 ], fuzzy 1349, not translated 1354
+- Czech                        29.80% [ 1149 / 3856 ], fuzzy 1298, not translated 1409
+- Chinese (Hong Kong)          17.63% [ 680 / 3856 ], fuzzy 578, not translated 2598
 
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
@@ -337,6 +338,28 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.4 =
+- Changes in **all** versions:
+    * **New**: Added global Booking Form Styles with Light and Dark bordered, borderless, and soft-background presets, plus a fully configurable Custom style.
+    * **New**: Added Custom Form Style controls for form backgrounds, borders, spacing, text, fields, focus states, checkbox/radio controls, and buttons.
+	* **New**: Added two-click date-range selection in Booking Calendar Free and higher editions.
+	* **New**: Added centralized Form Messages settings with `[lang=LOCALE]` translation support.
+	* **Improvement**: Added available-date and date-range highlighting during calendar selection.
+	* **Improvement**: Added clearer range-selection instructions and unavailable-date messages.
+	* **Improvement**: Made two-click range selection the default for Full Day Booking mode in the Setup Wizard.
+	* **Improvement**: Added a simplified single-page Form Messages interface with section navigation and contextual help.
+	* **Improvement**: Added AJAX message saving with global notifications and a Saving... button state.
+    * **Improvement**: Made Form Style a global setting that applies consistently to all booking forms.
+    * **Improvement**: Added consistent Form Style selection and live previews in Settings > Appearance / Theme and the Booking Form Builder.
+    * **Improvement**: Centralized Form Style presets, appearance colors, CSS variables, and button styles for easier maintenance and future expansion.
+    * **Improvement**: Preserved PayPal branding while integrating Stripe and other payment buttons with the selected Form Style.
+    * **Improvement**: Updated the initial booking form to use the same bordered template structure as the Booking Form Builder.
+    * **Improvement**: Added Save and Continue to the Setup Wizard and limited highlighting to the relevant settings or tables.
+    * **Fix**: Ensured selected Booking Form Styles are applied consistently in the Theme preview, Form Builder canvas, and Form Builder preview.
+    * **Fix**: Improved Dark Form Style readability for text, labels, fields, focus states, checkbox/radio controls, and buttons.
+    * **Refactoring**: Removed legacy Booking Form settings pages and routed old form configuration access to the Booking Form Builder.
+    * **Improvement**: Added one-way legacy form import so existing Simple and Advanced legacy forms are migrated into the Booking Form Builder during updates.
+
 = 11.3 =
 - Changes in **all** versions:
 	* **New**: Added a dedicated **Appearance / Theme** settings page with a live calendar and booking form preview. Users can select the calendar skin, booking form light/dark theme, time picker skin, preview mode, booking resource, number of months, and custom booking form from one visual interface before saving the final design.
@@ -530,6 +553,9 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.4 =
+Added global Booking Form Styles, two-click date-range selection in Free and higher editions, centralized multilingual Form Messages, and a streamlined Booking Form Builder migration and setup workflow.
+
 = 11.3 =
 Added new visual Settings > Calendar and Settings > Appearance / Theme pages with live previews, moved capacity rules to Resources, and improved admin navigation, setup flow, and preview behavior.
 

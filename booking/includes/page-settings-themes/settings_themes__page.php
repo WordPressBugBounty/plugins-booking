@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once WPBC_PLUGIN_DIR . '/includes/_front_end/form-style-presets.php';
+
 /**
  * Check whether the Appearance / Theme settings page is active.
  *
@@ -135,6 +137,9 @@ function wpbc_settings_themes_enqueue_js_files( $where_to_load ) {
 			'action'         => 'WPBC_AJX_SETTINGS_THEMES_SAVE',
 			'preview_action' => 'WPBC_AJX_SETTINGS_THEMES_PREVIEW',
 			'settings'       => wpbc_settings_themes__get_settings_response(),
+			'form_style_presets' => wpbc_bfb_settings__get_form_style_presets(),
+			'form_style_css_var_names' => wpbc_bfb_settings__get_form_style_css_var_names(),
+			'custom_form_style_defaults' => wpbc_bfb_settings__get_default_custom_form_style_options(),
 			'days_selection' => wpbc_settings_themes__get_days_selection_response(),
 			'i18n'           => array(
 				'saving'                     => __( 'Saving', 'booking' ),
@@ -492,6 +497,85 @@ function wpbc_settings_themes__get_form_theme_options() {
 }
 
 /**
+ * Get booking form container preset options.
+ *
+ * @return array
+ */
+function wpbc_settings_themes__get_form_appearance_preset_options() {
+
+	return array(
+		'bordered' => __( 'Bordered', 'booking' ),
+		'none'     => __( 'No border', 'booking' ),
+		'soft'     => __( 'Soft background', 'booking' ),
+		'custom'   => __( 'Custom per form', 'booking' ),
+	);
+}
+
+/**
+ * Get combined booking form style choices for the visual selector.
+ *
+ * @return array
+ */
+function wpbc_settings_themes__get_form_style_options() {
+
+	return wpbc_bfb_settings__get_form_style_options();
+}
+
+/**
+ * Resolve the combined visual form style value from saved settings.
+ *
+ * @param string $theme  Form theme option.
+ * @param string $preset Form appearance preset option.
+ *
+ * @return string
+ */
+function wpbc_settings_themes__get_form_style_value( $theme, $preset ) {
+
+	$theme  = ( 'wpbc_theme_dark_1' === (string) $theme ) ? 'dark' : 'light';
+	$preset = (string) $preset;
+
+	if ( 'custom' === $preset ) {
+		return 'custom';
+	}
+	if ( ! in_array( $preset, array( 'bordered', 'none', 'soft' ), true ) ) {
+		$preset = 'bordered';
+	}
+
+	return $theme . '_' . $preset;
+}
+
+/**
+ * Map the combined visual form style value to existing saved options.
+ *
+ * @param string $style         Combined style value.
+ * @param string $current_theme Current theme fallback.
+ *
+ * @return array
+ */
+function wpbc_settings_themes__map_form_style_to_options( $style, $current_theme = '' ) {
+
+	$style         = sanitize_key( (string) $style );
+	$current_theme = ( 'wpbc_theme_dark_1' === (string) $current_theme ) ? 'wpbc_theme_dark_1' : '';
+
+	if ( 'custom' === $style ) {
+		return array(
+			'booking_form_theme'             => $current_theme,
+			'booking_form_appearance_preset' => 'custom',
+		);
+	}
+
+	$parts  = explode( '_', $style );
+	$theme  = ( isset( $parts[0] ) && 'dark' === $parts[0] ) ? 'wpbc_theme_dark_1' : '';
+	$preset = isset( $parts[1] ) ? (string) $parts[1] : 'bordered';
+	$preset = in_array( $preset, array( 'bordered', 'none', 'soft' ), true ) ? $preset : 'bordered';
+
+	return array(
+		'booking_form_theme'             => $theme,
+		'booking_form_appearance_preset' => $preset,
+	);
+}
+
+/**
  * Get time picker skin options.
  *
  * @return array
@@ -612,11 +696,25 @@ function wpbc_settings_themes__get_calendar_skin_options_for_select() {
  */
 function wpbc_settings_themes__get_settings_response() {
 
-	return array(
-		'booking_form_theme'                   => get_bk_option( 'booking_form_theme' ),
+	$form_style        = wpbc_bfb_settings__get_current_form_style();
+	$transition_values = wpbc_settings_themes__map_form_style_to_options( $form_style, '' );
+	$custom_values     = wpbc_bfb_settings__get_custom_form_style_options();
+
+	return array_merge(
+		array(
+			'booking_form_style'                 => $form_style,
+			'booking_form_theme'                 => $transition_values['booking_form_theme'],
+			'booking_form_appearance_preset'     => $transition_values['booking_form_appearance_preset'],
+			'booking_form_appearance_background_color' => get_bk_option( 'booking_form_appearance_background_color' ) ? get_bk_option( 'booking_form_appearance_background_color' ) : '#ffffff',
+			'booking_form_appearance_border_color' => get_bk_option( 'booking_form_appearance_border_color' ) ? get_bk_option( 'booking_form_appearance_border_color' ) : '#cccccc',
+			'booking_form_appearance_border_width' => get_bk_option( 'booking_form_appearance_border_width' ) ? get_bk_option( 'booking_form_appearance_border_width' ) : '1px',
+			'booking_form_appearance_border_radius' => get_bk_option( 'booking_form_appearance_border_radius' ) ? get_bk_option( 'booking_form_appearance_border_radius' ) : '2px',
+			'booking_form_appearance_padding'    => get_bk_option( 'booking_form_appearance_padding' ) ? get_bk_option( 'booking_form_appearance_padding' ) : '10px 30px',
 		'booking_skin'                         => wpbc_settings_themes__normalize_calendar_skin_value( get_bk_option( 'booking_skin' ) ),
 		'booking_timeslot_picker_skin'         => get_bk_option( 'booking_timeslot_picker_skin' ),
 		'booking_timeslot_picker'              => get_bk_option( 'booking_timeslot_picker' ),
+		),
+		$custom_values
 	);
 }
 
@@ -654,7 +752,29 @@ add_bk_filter( 'wpdev_bk_get_option', 'wpbc_settings_themes__preview_get_bk_opti
 function wpbc_settings_themes__get_preview_option_overrides( $current_settings ) {
 
 	$option_names = array(
-		'booking_form_theme',
+		'booking_form_style',
+		'booking_form_custom_background_color',
+		'booking_form_custom_border_color',
+		'booking_form_custom_border_width',
+		'booking_form_custom_border_radius',
+		'booking_form_custom_padding_vertical',
+		'booking_form_custom_padding_horizontal',
+		'booking_form_custom_text_color',
+		'booking_form_custom_field_background_color',
+		'booking_form_custom_field_text_color',
+		'booking_form_custom_field_border_color',
+		'booking_form_custom_button_background_color',
+		'booking_form_custom_button_text_color',
+		'booking_form_custom_button_border_color',
+		'booking_form_custom_button_hover_background_color',
+		'booking_form_custom_button_hover_text_color',
+		'booking_form_custom_button_hover_border_color',
+		'booking_form_custom_secondary_button_background_color',
+		'booking_form_custom_secondary_button_text_color',
+		'booking_form_custom_secondary_button_border_color',
+		'booking_form_custom_secondary_button_hover_background_color',
+		'booking_form_custom_secondary_button_hover_text_color',
+		'booking_form_custom_secondary_button_hover_border_color',
 		'booking_skin',
 		'booking_timeslot_picker_skin',
 		'booking_timeslot_picker',
@@ -665,6 +785,17 @@ function wpbc_settings_themes__get_preview_option_overrides( $current_settings )
 		if ( array_key_exists( $option_name, $current_settings ) ) {
 			$overrides[ $option_name ] = $current_settings[ $option_name ];
 		}
+	}
+
+	if ( isset( $overrides['booking_form_style'] ) ) {
+		$style             = wpbc_bfb_settings__sanitize_form_style( $overrides['booking_form_style'] );
+		$preset            = wpbc_bfb_settings__get_form_style_preset( $style );
+		$legacy_theme      = isset( $preset['theme_class'] ) ? sanitize_html_class( (string) $preset['theme_class'] ) : '';
+		$legacy_container  = isset( $preset['container_style'] ) ? sanitize_key( (string) $preset['container_style'] ) : 'bordered';
+		$legacy_container  = in_array( $legacy_container, array( 'bordered', 'none', 'soft', 'custom' ), true ) ? $legacy_container : 'bordered';
+
+		$overrides['booking_form_theme']             = $legacy_theme;
+		$overrides['booking_form_appearance_preset'] = $legacy_container;
 	}
 
 	return $overrides;
@@ -680,21 +811,121 @@ function wpbc_settings_themes__get_preview_option_overrides( $current_settings )
 function wpbc_settings_themes__validate_data( $post_data ) {
 
 	$default_options_values = wpbc_get_default_options();
-	$form_theme_options     = wpbc_settings_themes__get_form_theme_options();
 	$calendar_skin_options  = wpbc_settings_themes__get_calendar_skin_options_for_select();
 	$time_skin_options      = wpbc_settings_themes__get_time_picker_skin_options();
+	$custom_values          = wpbc_bfb_settings__get_custom_form_style_options();
 
-	$cleaned = array(
-		'booking_form_theme'                   => isset( $default_options_values['booking_form_theme'] ) ? $default_options_values['booking_form_theme'] : '',
+	$cleaned = array_merge(
+		array(
+			'booking_form_style'                 => isset( $default_options_values['booking_form_style'] ) ? wpbc_bfb_settings__sanitize_form_style( $default_options_values['booking_form_style'] ) : wpbc_bfb_settings__get_default_form_style(),
 		'booking_skin'                         => isset( $default_options_values['booking_skin'] ) ? $default_options_values['booking_skin'] : '',
 		'booking_timeslot_picker_skin'         => isset( $default_options_values['booking_timeslot_picker_skin'] ) ? $default_options_values['booking_timeslot_picker_skin'] : '',
 		'booking_timeslot_picker'              => isset( $default_options_values['booking_timeslot_picker'] ) ? $default_options_values['booking_timeslot_picker'] : 'Off',
+		),
+		$custom_values
 	);
 
-	if ( isset( $post_data['booking_form_theme'] ) ) {
-		$value = sanitize_text_field( wp_unslash( $post_data['booking_form_theme'] ) );
-		if ( array_key_exists( $value, $form_theme_options ) ) {
-			$cleaned['booking_form_theme'] = $value;
+	if ( isset( $post_data['booking_form_style'] ) ) {
+		$cleaned['booking_form_style'] = wpbc_bfb_settings__sanitize_form_style( wp_unslash( $post_data['booking_form_style'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	}
+
+	$sanitize_color = function ( $value, $fallback ) {
+		$value = trim( sanitize_text_field( wp_unslash( $value ) ) );
+		if ( preg_match( '/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i', $value ) || 'transparent' === $value ) {
+			return $value;
+		}
+		return $fallback;
+	};
+	$sanitize_length = function ( $value, $fallback ) {
+		$value = trim( sanitize_text_field( wp_unslash( $value ) ) );
+		if ( preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
+			return $value;
+		}
+		return $fallback;
+	};
+	$sanitize_spacing = function ( $value, $fallback ) {
+		$value = preg_replace( '/\s+/', ' ', trim( sanitize_text_field( wp_unslash( $value ) ) ) );
+		if ( '' === $value ) {
+			return $fallback;
+		}
+		$parts = explode( ' ', $value );
+		if ( count( $parts ) < 1 || count( $parts ) > 4 ) {
+			return $fallback;
+		}
+		foreach ( $parts as $part ) {
+			if ( ! preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $part ) ) {
+				return $fallback;
+			}
+		}
+		return implode( ' ', $parts );
+	};
+
+	if ( 'custom' === $cleaned['booking_form_style'] ) {
+		if ( isset( $post_data['booking_form_custom_background_color'] ) ) {
+			$cleaned['booking_form_custom_background_color'] = $sanitize_color( $post_data['booking_form_custom_background_color'], '#ffffff' );
+		}
+		if ( isset( $post_data['booking_form_custom_border_color'] ) ) {
+			$cleaned['booking_form_custom_border_color'] = $sanitize_color( $post_data['booking_form_custom_border_color'], '#cccccc' );
+		}
+		if ( isset( $post_data['booking_form_custom_border_width'] ) ) {
+			$cleaned['booking_form_custom_border_width'] = $sanitize_length( $post_data['booking_form_custom_border_width'], '1px' );
+		}
+		if ( isset( $post_data['booking_form_custom_border_radius'] ) ) {
+			$cleaned['booking_form_custom_border_radius'] = $sanitize_length( $post_data['booking_form_custom_border_radius'], '2px' );
+		}
+		if ( isset( $post_data['booking_form_custom_padding_vertical'] ) ) {
+			$cleaned['booking_form_custom_padding_vertical'] = $sanitize_length( $post_data['booking_form_custom_padding_vertical'], '10px' );
+		}
+		if ( isset( $post_data['booking_form_custom_padding_horizontal'] ) ) {
+			$cleaned['booking_form_custom_padding_horizontal'] = $sanitize_length( $post_data['booking_form_custom_padding_horizontal'], '30px' );
+		}
+		if ( isset( $post_data['booking_form_custom_text_color'] ) ) {
+			$cleaned['booking_form_custom_text_color'] = $sanitize_color( $post_data['booking_form_custom_text_color'], '#1d2327' );
+		}
+		if ( isset( $post_data['booking_form_custom_field_background_color'] ) ) {
+			$cleaned['booking_form_custom_field_background_color'] = $sanitize_color( $post_data['booking_form_custom_field_background_color'], '#ffffff' );
+		}
+		if ( isset( $post_data['booking_form_custom_field_text_color'] ) ) {
+			$cleaned['booking_form_custom_field_text_color'] = $sanitize_color( $post_data['booking_form_custom_field_text_color'], '#3c434a' );
+		}
+		if ( isset( $post_data['booking_form_custom_field_border_color'] ) ) {
+			$cleaned['booking_form_custom_field_border_color'] = $sanitize_color( $post_data['booking_form_custom_field_border_color'], '#cccccc' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_background_color'] ) ) {
+			$cleaned['booking_form_custom_button_background_color'] = $sanitize_color( $post_data['booking_form_custom_button_background_color'], '#066aab' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_text_color'] ) ) {
+			$cleaned['booking_form_custom_button_text_color'] = $sanitize_color( $post_data['booking_form_custom_button_text_color'], '#ffffff' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_border_color'] ) ) {
+			$cleaned['booking_form_custom_button_border_color'] = $sanitize_color( $post_data['booking_form_custom_button_border_color'], '#066aab' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_hover_background_color'] ) ) {
+			$cleaned['booking_form_custom_button_hover_background_color'] = $sanitize_color( $post_data['booking_form_custom_button_hover_background_color'], '#055589' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_hover_text_color'] ) ) {
+			$cleaned['booking_form_custom_button_hover_text_color'] = $sanitize_color( $post_data['booking_form_custom_button_hover_text_color'], '#ffffff' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_hover_border_color'] ) ) {
+			$cleaned['booking_form_custom_button_hover_border_color'] = $sanitize_color( $post_data['booking_form_custom_button_hover_border_color'], '#055589' );
+		}
+		if ( isset( $post_data['booking_form_custom_secondary_button_background_color'] ) ) {
+			$cleaned['booking_form_custom_secondary_button_background_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_background_color'], '#fdfdfd' );
+		}
+		if ( isset( $post_data['booking_form_custom_secondary_button_text_color'] ) ) {
+			$cleaned['booking_form_custom_secondary_button_text_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_text_color'], '#444444' );
+		}
+		if ( isset( $post_data['booking_form_custom_secondary_button_border_color'] ) ) {
+			$cleaned['booking_form_custom_secondary_button_border_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_border_color'], '#eeeeee' );
+		}
+		if ( isset( $post_data['booking_form_custom_secondary_button_hover_background_color'] ) ) {
+			$cleaned['booking_form_custom_secondary_button_hover_background_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_hover_background_color'], '#fdfdfd' );
+		}
+		if ( isset( $post_data['booking_form_custom_secondary_button_hover_text_color'] ) ) {
+			$cleaned['booking_form_custom_secondary_button_hover_text_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_hover_text_color'], '#444444' );
+		}
+		if ( isset( $post_data['booking_form_custom_secondary_button_hover_border_color'] ) ) {
+			$cleaned['booking_form_custom_secondary_button_hover_border_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_hover_border_color'], '#4d91cd' );
 		}
 	}
 
@@ -728,7 +959,29 @@ function wpbc_settings_themes__validate_data( $post_data ) {
  */
 function wpbc_settings_themes__update_settings( $cleaned_data ) {
 
-	update_bk_option( 'booking_form_theme', $cleaned_data['booking_form_theme'] );
+	update_bk_option( 'booking_form_style', $cleaned_data['booking_form_style'] );
+	update_bk_option( 'booking_form_custom_background_color', $cleaned_data['booking_form_custom_background_color'] );
+	update_bk_option( 'booking_form_custom_border_color', $cleaned_data['booking_form_custom_border_color'] );
+	update_bk_option( 'booking_form_custom_border_width', $cleaned_data['booking_form_custom_border_width'] );
+	update_bk_option( 'booking_form_custom_border_radius', $cleaned_data['booking_form_custom_border_radius'] );
+	update_bk_option( 'booking_form_custom_padding_vertical', $cleaned_data['booking_form_custom_padding_vertical'] );
+	update_bk_option( 'booking_form_custom_padding_horizontal', $cleaned_data['booking_form_custom_padding_horizontal'] );
+	update_bk_option( 'booking_form_custom_text_color', $cleaned_data['booking_form_custom_text_color'] );
+	update_bk_option( 'booking_form_custom_field_background_color', $cleaned_data['booking_form_custom_field_background_color'] );
+	update_bk_option( 'booking_form_custom_field_text_color', $cleaned_data['booking_form_custom_field_text_color'] );
+	update_bk_option( 'booking_form_custom_field_border_color', $cleaned_data['booking_form_custom_field_border_color'] );
+	update_bk_option( 'booking_form_custom_button_background_color', $cleaned_data['booking_form_custom_button_background_color'] );
+	update_bk_option( 'booking_form_custom_button_text_color', $cleaned_data['booking_form_custom_button_text_color'] );
+	update_bk_option( 'booking_form_custom_button_border_color', $cleaned_data['booking_form_custom_button_border_color'] );
+	update_bk_option( 'booking_form_custom_button_hover_background_color', $cleaned_data['booking_form_custom_button_hover_background_color'] );
+	update_bk_option( 'booking_form_custom_button_hover_text_color', $cleaned_data['booking_form_custom_button_hover_text_color'] );
+	update_bk_option( 'booking_form_custom_button_hover_border_color', $cleaned_data['booking_form_custom_button_hover_border_color'] );
+	update_bk_option( 'booking_form_custom_secondary_button_background_color', $cleaned_data['booking_form_custom_secondary_button_background_color'] );
+	update_bk_option( 'booking_form_custom_secondary_button_text_color', $cleaned_data['booking_form_custom_secondary_button_text_color'] );
+	update_bk_option( 'booking_form_custom_secondary_button_border_color', $cleaned_data['booking_form_custom_secondary_button_border_color'] );
+	update_bk_option( 'booking_form_custom_secondary_button_hover_background_color', $cleaned_data['booking_form_custom_secondary_button_hover_background_color'] );
+	update_bk_option( 'booking_form_custom_secondary_button_hover_text_color', $cleaned_data['booking_form_custom_secondary_button_hover_text_color'] );
+	update_bk_option( 'booking_form_custom_secondary_button_hover_border_color', $cleaned_data['booking_form_custom_secondary_button_hover_border_color'] );
 	update_bk_option( 'booking_skin', $cleaned_data['booking_skin'] );
 	update_bk_option( 'booking_timeslot_picker_skin', $cleaned_data['booking_timeslot_picker_skin'] );
 	update_bk_option( 'booking_timeslot_picker', $cleaned_data['booking_timeslot_picker'] );
@@ -833,7 +1086,9 @@ function wpbc_settings_themes__render_calendar_preview( $resource_id, $months_co
 	$resource_id              = wpbc_settings_themes__sanitize_preview_resource_id( $resource_id );
 	$months_count             = wpbc_settings_themes__sanitize_preview_months_count( $months_count );
 	$current_settings         = wp_parse_args( $preview_settings, wpbc_settings_themes__get_settings_response() );
-	$form_theme               = sanitize_html_class( $current_settings['booking_form_theme'] );
+	$form_style               = isset( $current_settings['booking_form_style'] ) ? wpbc_bfb_settings__sanitize_form_style( $current_settings['booking_form_style'] ) : wpbc_bfb_settings__get_default_form_style();
+	$form_style_preset        = wpbc_bfb_settings__get_form_style_preset( $form_style );
+	$form_theme               = isset( $form_style_preset['theme_class'] ) ? sanitize_html_class( (string) $form_style_preset['theme_class'] ) : '';
 	$preview_mode             = wpbc_settings_themes__sanitize_preview_mode( $preview_mode );
 	$custom_booking_form      = wpbc_settings_themes__sanitize_custom_booking_form( $custom_booking_form );
 	$previous_preview_options = isset( $wpbc_settings_themes__preview_options ) ? $wpbc_settings_themes__preview_options : null;
@@ -985,7 +1240,7 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 														   '<span class="wpbc_new_label" style="margin-left: auto;">' . esc_html__( 'New', 'booking' ) . '</span>',
 			'hint'                                      => __( 'Preview and configure the booking form theme, calendar skin, and time slot appearance.', 'booking' ),
 			'page_title'                                => __( 'Appearance', 'booking' ) . ' / ' . __( 'Theme', 'booking' ),
-			'link'                                      => '',
+			'link'                                      => function_exists( 'wpbc_get_settings_themes_url' ) ? wpbc_get_settings_themes_url() : admin_url( 'admin.php?page=wpbc-settings&tab=themes' ),
 			'position'                                  => '',
 			'css_classes'                               => 'wpbc_top_tab__themes',
 			'icon'                                      => '',
@@ -1099,9 +1354,11 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 
 		$form_name             = 'wpbc_settings_themes_form';
 		$current_settings      = wpbc_settings_themes__get_settings_response();
-		$form_theme_options    = wpbc_settings_themes__get_form_theme_options();
+		$form_style_options    = wpbc_settings_themes__get_form_style_options();
 		$calendar_skin_options = wpbc_settings_themes__get_calendar_skin_options_for_select();
 		$time_skin_options     = wpbc_settings_themes__get_time_picker_skin_options();
+		$current_form_style    = wpbc_bfb_settings__sanitize_form_style( $current_settings['booking_form_style'] );
+		$transition_values     = wpbc_settings_themes__map_form_style_to_options( $current_form_style, '' );
 
 		WPBC_UI_Sidebar_Panels::render_inspector_header( __( 'Appearance', 'booking' ) . ' / ' . __( 'Theme', 'booking' ), __( 'Visual settings for the booking form and calendar preview.', 'booking' ) );
 		?>
@@ -1114,21 +1371,41 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 					array(
 						'id'    => 'wpbc_theme_form_group',
 						'group' => 'settings-theme-form',
-						'title' => __( 'Form Theme', 'booking' ),
+						'title' => __( 'Form Style', 'booking' ),
 						'open'  => true,
 					),
-					function () use ( $form_theme_options, $current_settings ) {
+					function () use ( $form_style_options, $current_form_style, $transition_values ) {
+						$is_custom = ( 'custom' === (string) $current_form_style );
+						$builder_url = add_query_arg(
+							array(
+								'page'           => 'wpbc-settings',
+								'tab'            => 'builder_booking_form',
+								'wpbc_bfb_panel' => 'form_settings',
+								'wpbc_bfb_group' => 'settings-appearance',
+								'wpbc_bfb_focus' => 'booking_form_custom_background_color',
+							),
+							admin_url( 'admin.php' )
+						);
 						?>
-						<div class="wpbc_theme_choice_grid">
-							<?php foreach ( $form_theme_options as $theme_value => $theme_title ) : ?>
-								<label class="wpbc_theme_choice <?php echo ( (string) $current_settings['booking_form_theme'] === (string) $theme_value ) ? 'is-selected' : ''; ?>">
-									<input type="radio" name="booking_form_theme" value="<?php echo esc_attr( $theme_value ); ?>" <?php checked( (string) $current_settings['booking_form_theme'], (string) $theme_value ); ?> />
-									<span class="wpbc_theme_choice_swatch <?php echo esc_attr( sanitize_html_class( $theme_value ) ); ?>"></span>
-									<span class="wpbc_theme_choice_label"><?php echo esc_html( $theme_title ); ?></span>
+						<input type="hidden" id="booking_form_theme" value="<?php echo esc_attr( $transition_values['booking_form_theme'] ); ?>" />
+						<input type="hidden" id="booking_form_appearance_preset" value="<?php echo esc_attr( $transition_values['booking_form_appearance_preset'] ); ?>" data-wpbc-theme-appearance-control="1" />
+						<div class="wpbc_theme_choice_grid wpbc_theme_style_choice_grid">
+							<?php foreach ( $form_style_options as $style_value => $style_title ) : ?>
+								<label class="wpbc_theme_choice <?php echo ( (string) $current_form_style === (string) $style_value ) ? 'is-selected' : ''; ?>">
+									<input type="radio" name="booking_form_style" value="<?php echo esc_attr( $style_value ); ?>" <?php checked( (string) $current_form_style, (string) $style_value ); ?> />
+									<span class="wpbc_theme_choice_swatch wpbc_theme_choice_swatch_<?php echo esc_attr( sanitize_html_class( $style_value ) ); ?>"></span>
+									<span class="wpbc_theme_choice_label"><?php echo esc_html( $style_title ); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
-						<p class="wpbc_theme_description"><?php esc_html_e( 'The form theme changes the booking form surface and can also guide matching calendar and time slot skins.', 'booking' ); ?></p>
+						<p class="wpbc_theme_description"><?php esc_html_e( 'Used globally by all booking forms. Dark styles can also guide matching calendar and time slot skins.', 'booking' ); ?></p>
+						<div class="wpbc_theme_notice" data-wpbc-theme-custom-appearance-notice="1" <?php echo $is_custom ? '' : 'style="display:none;"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+							<p style="margin:0 0 10px 0;"><?php esc_html_e( 'Configure the global Custom style, including its container, fields, and buttons, in Forms Builder.', 'booking' ); ?></p>
+							<a class="button button-secondary" href="<?php echo esc_url( $builder_url ); ?>">
+								<i class="menu_icon icon-1x wpbc-bi-input-cursor-text"></i>
+								<span><?php esc_html_e( 'Edit in Forms Builder', 'booking' ); ?></span>
+							</a>
+						</div>
 						<?php
 					}
 				);

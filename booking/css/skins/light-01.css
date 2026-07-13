@@ -327,6 +327,11 @@ td.timespartly.check_in_time.check_out_time.check_out_time_date2approve.check_in
 .datepick-inline td.datepick-days-cell.check_out_time  .wpbc-cell-box{
     background-color: #F5F5F5;
 }
+/* Available Background for check in/out dates in calendar  legend. */
+div .block_hints .datepick-inline td.datepick-days-cell.check_out_time .wpbc-cell-box .wpbc-co-out svg polygon{
+   fill: #f5f5f5;
+}
+
 /* Pending */
 .datepick-inline td.datepick-days-cell.check_in_time.check_in_time_date2approve     .wpbc-cell-box .wpbc-co-in svg polygon,     /* Check In  */
 .datepick-inline td.datepick-days-cell.check_out_time.check_out_time_date2approve   .wpbc-cell-box .wpbc-co-out svg polygon     /* Check Out */

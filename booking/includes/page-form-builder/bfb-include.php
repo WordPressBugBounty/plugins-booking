@@ -24,10 +24,7 @@ if ( ! defined( 'WPBC_BFB_BUILDER_PAGE_SLUG' ) ) {
 	define( 'WPBC_BFB_BUILDER_PAGE_SLUG', 'wpbc-ajx_booking_builder_booking_form' );
 }
 
-// Slug of the Builder page passed by footer hook / bootstrap.
-if ( ! defined( 'WPBC_BFB_DEBUG' ) ) {
-	define( 'WPBC_BFB_DEBUG', !false );
-}
+require_once WPBC_PLUGIN_DIR . '/includes/_front_end/form-style-presets.php';                                          // Shared global form style presets.
 
 // =====================================================================================================================
 // == Ajax ==
@@ -37,11 +34,14 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/ajax/bfb-ajax.php'; 
 // =====================================================================================================================
 // == Save / Load ==
 // =====================================================================================================================
-require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-form-manager.php';                            // Bridge between legacy booking form options and the new booking_form_structures table. Provides wpbc_form_config_load() / wpbc_form_config_save().
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-form-storage.php';                            // Low-level storage for BFB form structures. Handles DB.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-form-manager.php';                            // Booking Form Builder storage manager.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/legacy-import/form_templates.php';                          // Import-only legacy form templates.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/legacy-import/form_simple__default.php';                    // Import-only Simple form defaults.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/legacy-import/form_simple__get_data.php';                   // Import-only Simple form shortcode conversion helpers.
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-activate.php';                                // Activate / Deactivate.
-require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-import-simple-form.php';                      // Import - Simple form - migration loader.
-require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-import-legacy-forms.php';                     // Import - all legacy forms - migration loader.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/legacy-import/bfb-import-simple-form.php';                  // Import - Simple form - migration loader.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/legacy-import/bfb-import-legacy-forms.php';                 // Import - all legacy forms - migration loader.
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/save-load/bfb-form-loader.php';                             // Loader.
 
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/assets/template-records/bfb-activate-templates.php';        // Update Templaets on Activation.

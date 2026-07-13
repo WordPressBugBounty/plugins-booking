@@ -2945,6 +2945,12 @@ div.wpbc_ajx_toolbar {
 #wpbc_booking_listing_reload_button i.menu_icon::before {
   font-size: 22px
 }
+.wpbc_admin .clr-field button {
+  height: calc(100% - 6px);
+  right: 3px;
+  pointer-events: unset;
+  cursor: pointer
+}
 .wpbc_ui__collapsible_group .group__header {
   width: 100%;
   display: -ms-flexbox;

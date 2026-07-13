@@ -145,6 +145,97 @@
 		}
 
 		/**
+		 * Read a Form Style control directly from DOM.
+		 *
+		 * @param {string} key
+		 * @returns {string|null}
+		 */
+		read_form_style_control_value(key) {
+			var control = null;
+			var checked = null;
+
+			if ( key === 'booking_form_style' ) {
+				checked = d.querySelector( 'input[type="radio"][name="booking_form_style"]:checked' );
+				return checked ? String( checked.value || '' ) : null;
+			}
+
+			control = d.querySelector( '[data-wpbc-bfb-fs-key="' + key + '"]' );
+			if ( ! control ) {
+				control = d.getElementById( key );
+			}
+			if ( ! control ) {
+				return null;
+			}
+
+			if ( control.matches && control.matches( 'input[type="radio"]' ) ) {
+				checked = d.querySelector( 'input[type="radio"][name="' + control.name + '"]:checked' );
+				return checked ? String( checked.value || '' ) : null;
+			}
+
+			if ( typeof control.value !== 'undefined' ) {
+				return String( control.value == null ? '' : control.value );
+			}
+
+			return null;
+		}
+
+		/**
+		 * Build the current global Form Style override for preview only.
+		 *
+		 * @returns {Object}
+		 */
+		get_current_form_style_settings() {
+			var style_keys = [
+				'booking_form_style',
+				'booking_form_custom_background_color',
+				'booking_form_custom_border_color',
+				'booking_form_custom_border_width',
+				'booking_form_custom_border_radius',
+				'booking_form_custom_padding_vertical',
+				'booking_form_custom_padding_horizontal',
+				'booking_form_custom_text_color',
+				'booking_form_custom_field_background_color',
+				'booking_form_custom_field_text_color',
+				'booking_form_custom_field_border_color',
+				'booking_form_custom_button_background_color',
+				'booking_form_custom_button_text_color',
+				'booking_form_custom_button_border_color',
+				'booking_form_custom_button_hover_background_color',
+				'booking_form_custom_button_hover_text_color',
+				'booking_form_custom_button_hover_border_color',
+				'booking_form_custom_secondary_button_background_color',
+				'booking_form_custom_secondary_button_text_color',
+				'booking_form_custom_secondary_button_border_color',
+				'booking_form_custom_secondary_button_hover_background_color',
+				'booking_form_custom_secondary_button_hover_text_color',
+				'booking_form_custom_secondary_button_hover_border_color'
+			];
+			var out = {};
+			var collected = {};
+			var self = this;
+			var localized = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.global_form_style
+				? w.wpbc_bfb_settings_vars.global_form_style
+				: {};
+
+			if ( w.WPBC_BFB_FormSettings && typeof w.WPBC_BFB_FormSettings.collect === 'function' ) {
+				collected = w.WPBC_BFB_FormSettings.collect( 'global' ) || {};
+			}
+
+			style_keys.forEach( function (key) {
+				var dom_value = self.read_form_style_control_value( key );
+				if ( null !== dom_value ) {
+					out[key] = dom_value;
+				} else if ( Object.prototype.hasOwnProperty.call( collected, key ) ) {
+					out[key] = collected[key];
+				} else if ( Object.prototype.hasOwnProperty.call( localized, key ) ) {
+					out[key] = localized[key];
+				}
+			} );
+
+			return out;
+		}
+
+		/**
 		 * Get the currently selected calendar skin URL from the Builder page.
 		 *
 		 * @returns {string}
@@ -247,6 +338,7 @@
 
 			// Build settings payload (same as real saving).
 			var form_settings = this.get_current_form_settings( cfg.form_name || 'standard' );
+			var preview_form_style = this.get_current_form_style_settings();
 
 			payload.append( 'action', 'WPBC_AJX_BFB_SAVE_FORM_CONFIG' );
 			payload.append( 'nonce', ( cfg.nonce_save || this.nonce || '' ) );
@@ -264,6 +356,7 @@
 
 			// Send real settings (options + compiled css_vars).
 			payload.append( 'settings', JSON.stringify( form_settings ) );
+			payload.append( 'preview_form_style', JSON.stringify( preview_form_style ) );
 
 			// ----------------------------------------------------------------------------
 			// Choose where advanced_form + content_form are taken from (auto|builder|advanced)

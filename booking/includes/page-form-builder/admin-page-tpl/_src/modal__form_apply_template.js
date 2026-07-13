@@ -177,9 +177,13 @@
 
 		// Optional initial search (prefill + auto-load).
 		let initial_search = '';
+		let auto_select_first_real = false;
 		try {
 			if ( opts && typeof opts === 'object' && opts.initial_search ) {
 				initial_search = String( opts.initial_search || '' ).trim();
+			}
+			if ( opts && typeof opts === 'object' && opts.auto_select_first_real ) {
+				auto_select_first_real = true;
 			}
 		} catch ( _e0 ) {}
 
@@ -187,7 +191,11 @@
 		initial_search = w.wpbc_bfb__normalize_template_search( initial_search );
 
 		picker.set_pager( 1, false );
-		picker.apply_search_value( initial_search, function () { } );
+		picker.apply_search_value( initial_search, function (ok, data) {
+			if ( auto_select_first_real && ok && picker && typeof picker.select_first_real_template === 'function' ) {
+				picker.select_first_real_template( ( data && data.forms ) ? data.forms : null );
+			}
+		} );
 
 		// Focus search input.
 		w.setTimeout( function () {
@@ -284,7 +292,11 @@ function wpbc_bfb__apply_template_from_payload(payload, menu_option_this) {
 		wpbc_bfb__apply_template_to_current_form(
 			{
 				structure     : [ { page: 1, content: [] } ],
-				settings      : { options: {}, css_vars: [], bfb_options: { advanced_mode_source: 'builder' } },
+				settings      : {
+					options    : {},
+					css_vars   : [],
+					bfb_options: { advanced_mode_source: 'builder' }
+				},
 				advanced_form : '',
 				content_form  : ''
 			}
@@ -330,6 +342,7 @@ function wpbc_bfb__apply_template_from_payload(payload, menu_option_this) {
  * @param {HTMLElement|null} menu_option_this
  * @param {Object} [opts]
  * @param {string} [opts.initial_search] Optional prefilled template search string.
+ * @param {boolean} [opts.auto_select_first_real] Select the first non-blank result after search load.
  */
 function wpbc_bfb__menu_forms__apply_template(menu_option_this, opts) {
 
@@ -365,8 +378,9 @@ function wpbc_bfb__menu_forms__apply_template(menu_option_this, opts) {
  *
  * @param {string} search_key
  * @param {HTMLElement|null} menu_option_this Optional menu button (busy UI). Can be null.
+ * @param {Object} [opts]
  */
-function wpbc_bfb__menu_forms__apply_template_search(search_key, menu_option_this) {
+function wpbc_bfb__menu_forms__apply_template_search(search_key, menu_option_this, opts) {
 
 	search_key = String( search_key || '' )
 		.replace( /[\u0000-\u001F\u007F]/g, ' ' )
@@ -376,8 +390,13 @@ function wpbc_bfb__menu_forms__apply_template_search(search_key, menu_option_thi
 	// Normalize configured OR separator (default "|") so server can split reliably.
 	search_key = window.wpbc_bfb__normalize_template_search( search_key );
 
+	if ( ! opts || typeof opts !== 'object' ) {
+		opts = {};
+	}
+	opts.initial_search = search_key;
+
 	// Open the same modal, but pass initial_search.
-	wpbc_bfb__menu_forms__apply_template( menu_option_this || null, { initial_search: search_key } );
+	wpbc_bfb__menu_forms__apply_template( menu_option_this || null, opts );
 }
 
 /**

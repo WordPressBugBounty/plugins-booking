@@ -160,11 +160,11 @@ function wpbc__where_to_save_booking( $local_params ){
 			// Bad not save
 			return array(
 							'result'  => 'error',
-							'message' => __( 'These dates and times in this calendar are already booked or unavailable.', 'booking' )
+							'message' => wpbc_frontend_messages__get( 'message_dates_times_unavailable', array(), $local_params['resource_id'] )
 							             . ' <br> '
-										 . __( 'It is not possible to store this sequence of the dates into the one same resource.' , 'booking' )
+										 . wpbc_frontend_messages__get( 'message_cannot_save_in_one_resource', array(), $local_params['resource_id'] )
 							             . ' <br> '
-										 . __( 'Please choose alternative date(s), times, or adjust the number of slots booked.' , 'booking' )
+										 . wpbc_frontend_messages__get( 'message_choose_alternative_dates', array(), $local_params['resource_id'] )
 										 . ' <a href="javascript:void(0)" onclick="'
 							                             .'jQuery( this ).next().toggle();'
 							                             .'jQuery( this).hide();'
@@ -209,9 +209,9 @@ function wpbc__where_to_save_booking( $local_params ){
 				// We can not store booking in this date  day_sql_key2,  number of available child booking resources less than  required
 				return array(
 							'result'  => 'error',
-							'message' => __( 'These dates and times in this calendar are already booked or unavailable.', 'booking' )
+							'message' => wpbc_frontend_messages__get( 'message_dates_times_unavailable', array(), $local_params['resource_id'] )
 							             . ' <br> '
-										 . __( 'Please choose alternative date(s), times, or adjust the number of slots booked.' , 'booking' )
+										 . wpbc_frontend_messages__get( 'message_choose_alternative_dates', array(), $local_params['resource_id'] )
 										 . ' <a href="javascript:void(0)" onclick="'
 							                             .'jQuery( this ).next().toggle();'
 							                             .'jQuery( this).hide();'

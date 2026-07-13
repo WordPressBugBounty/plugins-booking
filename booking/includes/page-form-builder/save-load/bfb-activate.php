@@ -600,6 +600,282 @@ function wpbc_bfb_maybe_create_initial_standard_form_from_template() {
 	return ! empty( $booking_form_id );
 }
 
+
+/**
+ * Get the dedicated bundled template for the current live-demo edition.
+ *
+ * @param int $owner_user_id Optional MultiUser owner ID.
+ *
+ * @return string Template key, or an empty string outside a supported demo.
+ */
+function wpbc_bfb_live_demo__get_template_key( $owner_user_id = 0 ) {
+
+	if ( ! function_exists( 'wpbc_is_this_demo' ) || ! wpbc_is_this_demo() ) {
+		return '';
+	}
+
+	$owner_user_id = absint( $owner_user_id );
+
+	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
+		return ( $owner_user_id > 0 ) ? 'demo_multiuser_owner_1' : 'demo_multiuser';
+	}
+	if ( class_exists( 'wpdev_bk_biz_l' ) ) {
+		return 'demo_business_large';
+	}
+	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
+		return 'demo_business_medium';
+	}
+	if ( class_exists( 'wpdev_bk_biz_s' ) ) {
+		return 'demo_business_small';
+	}
+	if ( class_exists( 'wpdev_bk_personal' ) ) {
+		return 'demo_personal';
+	}
+
+	return '';
+}
+
+
+/**
+ * Get the global Form Style used by the current live-demo edition.
+ *
+ * @return string Form Style preset key.
+ */
+function wpbc_bfb_live_demo__get_form_style() {
+
+	if ( class_exists( 'wpdev_bk_multiuser' ) || class_exists( 'wpdev_bk_biz_l' ) ) {
+		return 'light_bordered';
+	}
+	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
+		return 'light_soft';
+	}
+	if ( class_exists( 'wpdev_bk_biz_s' ) ) {
+		return 'light_bordered';
+	}
+	if ( class_exists( 'wpdev_bk_personal' ) ) {
+		return 'light_none';
+	}
+
+	return 'light_bordered';
+}
+
+
+/**
+ * Provision a live-demo standard form from a real bundled BFB template.
+ *
+ * Normal owner activation is idempotent and preserves an existing form. The
+ * explicit demo reset path may request replacement to restore fixture data.
+ *
+ * @param int    $owner_user_id Owner ID, or 0 for the global/Super Admin form.
+ * @param string $template_key  Optional explicit bundled template key.
+ * @param bool   $replace       Whether to replace an existing standard form.
+ *
+ * @return int|false Booking form ID on success, false on failure.
+ */
+function wpbc_bfb_live_demo__provision_standard_form( $owner_user_id = 0, $template_key = '', $replace = false ) {
+
+	if ( ! function_exists( 'wpbc_is_this_demo' ) || ! wpbc_is_this_demo() ) {
+		return false;
+	}
+	if ( ! class_exists( 'WPBC_BFB_Form_Storage' ) ) {
+		return false;
+	}
+	if ( function_exists( 'wpbc_is_table_exists' ) && ! wpbc_is_table_exists( 'booking_form_structures' ) ) {
+		return false;
+	}
+
+	$owner_user_id = absint( $owner_user_id );
+	$template_key  = sanitize_key( (string) $template_key );
+	if ( '' === $template_key ) {
+		$template_key = wpbc_bfb_live_demo__get_template_key( $owner_user_id );
+	}
+	if ( '' === $template_key ) {
+		return false;
+	}
+
+	$existing = WPBC_BFB_Form_Storage::get_current_form_by_key( 'standard', $owner_user_id, 'published' );
+	if ( ! empty( $existing->booking_form_id ) && ! $replace ) {
+		return (int) $existing->booking_form_id;
+	}
+
+	$template_record = function_exists( 'wpbc_get_bfb_template_record_by_key' )
+		? wpbc_get_bfb_template_record_by_key( $template_key )
+		: array();
+
+	if (
+		empty( $template_record ) ||
+		! is_array( $template_record ) ||
+		empty( $template_record['structure_json'] ) ||
+		empty( $template_record['engine'] ) ||
+		'bfb' !== (string) $template_record['engine']
+	) {
+		return false;
+	}
+
+	$template_record['form_slug']           = 'standard';
+	$template_record['status']              = 'published';
+	$template_record['scope']               = ( $owner_user_id > 0 ) ? 'user' : 'global';
+	$template_record['owner_user_id']       = $owner_user_id;
+	$template_record['booking_resource_id'] = null;
+	$template_record['is_default']          = 1;
+	$template_record['title']               = __( 'Standard', 'booking' );
+	$template_record['description']         = '';
+	$template_record['picture_url']         = isset( $template_record['picture_url'] ) ? (string) $template_record['picture_url'] : '';
+
+	if ( function_exists( 'wpbc_bfb_resolve_picture_url' ) ) {
+		$template_record['picture_url'] = wpbc_bfb_resolve_picture_url( $template_record['picture_url'] );
+	}
+
+	$booking_form_id = WPBC_BFB_Form_Storage::save_form( $template_record );
+
+	return ! empty( $booking_form_id ) ? (int) $booking_form_id : false;
+}
+
+
+/**
+ * Return regular-owner fixtures used by the MultiUser live demo.
+ *
+ * @return array Owner user ID => bundled template key.
+ */
+function wpbc_bfb_live_demo__get_multiuser_owner_template_map() {
+
+	$owner_templates = array(
+		3 => 'demo_multiuser_owner_1',
+		4 => 'demo_multiuser_owner_2',
+		5 => 'demo_multiuser_owner_3',
+	);
+
+	/**
+	 * Allow a private demo installation to use different owner IDs while
+	 * retaining the same centralized provisioning flow.
+	 *
+	 * @param array $owner_templates Owner user ID => template key.
+	 */
+	$owner_templates = apply_filters( 'wpbc_bfb_live_demo_multiuser_owner_templates', $owner_templates );
+
+	return is_array( $owner_templates ) ? $owner_templates : array();
+}
+
+
+/**
+ * Apply all standard-form fixtures required by the active live demo.
+ *
+ * This is the canonical final activation step. It intentionally replaces demo
+ * fixtures, but never runs on customer installations.
+ *
+ * @return bool True when every applicable fixture was saved.
+ */
+function wpbc_bfb_live_demo__provision_all_standard_forms() {
+
+	if ( ! function_exists( 'wpbc_is_this_demo' ) || ! wpbc_is_this_demo() ) {
+		return false;
+	}
+
+	// Pro-only reactivation does not necessarily rerun the Free activation
+	// callback that normally synchronizes bundled template rows.
+	if ( function_exists( 'wpbc_bfb_activation__seed_templates' ) ) {
+		wpbc_bfb_activation__seed_templates();
+	}
+
+	$is_success = ( false !== wpbc_bfb_live_demo__provision_standard_form( 0, '', true ) );
+
+	// Form Style is a site-wide setting, not part of an individual form row.
+	// Write directly to the global option so the result is deterministic even
+	// when finalization runs from a regular MultiUser administrator session.
+	update_option( 'booking_form_style', wpbc_bfb_live_demo__get_form_style() );
+
+	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
+		foreach ( wpbc_bfb_live_demo__get_multiuser_owner_template_map() as $owner_user_id => $template_key ) {
+			$owner_user_id = absint( $owner_user_id );
+			$template_key  = sanitize_key( (string) $template_key );
+			if ( $owner_user_id <= 0 || '' === $template_key ) {
+				$is_success = false;
+				continue;
+			}
+
+			if ( function_exists( 'get_userdata' ) && ! get_userdata( $owner_user_id ) ) {
+				$is_success = false;
+				continue;
+			}
+
+			if ( false === wpbc_bfb_live_demo__provision_standard_form( $owner_user_id, $template_key, true ) ) {
+				$is_success = false;
+			}
+		}
+	}
+
+	return $is_success;
+}
+
+
+/**
+ * Ensure that a regular MultiUser owner has an independent standard BFB form.
+ *
+ * Existing owner forms are never overwritten. On normal installations the
+ * current global standard form is cloned, preserving the Super Admin's chosen
+ * Builder structure. Live demos use their dedicated bundled fixture instead.
+ *
+ * @param int $owner_user_id Regular MultiUser owner ID.
+ *
+ * @return int|false Booking form ID on success, false on failure.
+ */
+function wpbc_bfb_ensure_standard_form_for_owner( $owner_user_id ) {
+
+	$owner_user_id = absint( $owner_user_id );
+	if ( $owner_user_id <= 0 || ! class_exists( 'WPBC_BFB_Form_Storage' ) ) {
+		return false;
+	}
+	if ( function_exists( 'wpbc_is_table_exists' ) && ! wpbc_is_table_exists( 'booking_form_structures' ) ) {
+		return false;
+	}
+
+	$existing = WPBC_BFB_Form_Storage::get_current_form_by_key( 'standard', $owner_user_id, 'published' );
+	if ( ! empty( $existing->booking_form_id ) ) {
+		return (int) $existing->booking_form_id;
+	}
+
+	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
+		return wpbc_bfb_live_demo__provision_standard_form( $owner_user_id, '', false );
+	}
+
+	$global_standard = WPBC_BFB_Form_Storage::get_current_form_by_key( 'standard', 0, 'published' );
+	$form_record     = ! empty( $global_standard ) ? get_object_vars( $global_standard ) : array();
+
+	if ( empty( $form_record['structure_json'] ) && function_exists( 'wpbc_get_bfb_template_record_by_key' ) ) {
+		$form_record = wpbc_get_bfb_template_record_by_key( 'dates_2_columns_sidebar_hints' );
+	}
+	if (
+		empty( $form_record ) ||
+		! is_array( $form_record ) ||
+		empty( $form_record['structure_json'] ) ||
+		empty( $form_record['engine'] ) ||
+		'bfb' !== (string) $form_record['engine']
+	) {
+		return false;
+	}
+
+	unset(
+		$form_record['booking_form_id'],
+		$form_record['created_at'],
+		$form_record['created_by'],
+		$form_record['updated_at'],
+		$form_record['updated_by']
+	);
+
+	$form_record['form_slug']           = 'standard';
+	$form_record['status']              = 'published';
+	$form_record['scope']               = 'user';
+	$form_record['owner_user_id']       = $owner_user_id;
+	$form_record['booking_resource_id'] = null;
+	$form_record['is_default']          = 1;
+	$form_record['title']               = __( 'Standard', 'booking' );
+	$form_record['description']         = '';
+
+	$booking_form_id = WPBC_BFB_Form_Storage::save_form( $form_record );
+
+	return ! empty( $booking_form_id ) ? (int) $booking_form_id : false;
+}
+
 /**
  * Import legacy "standard" booking form as initial BFB structure.
  *
@@ -611,38 +887,17 @@ function wpbc_bfb__import_old_booking_forms() {
 		return;
 	}
 
-	// Get actual  booking form  structure.
-	$builder_structure_arr = wpbc_simple_form__export_to_bfb_structure();
-
-	$resource_id      = wpbc_get_default_resource();  // FixIn: 2026-03-07.
-	$formdata         = '';
-	$custom_form_name = 'standard';
-
-	$advanced_form = wpbc_get__booking_form_fields__configuration( $resource_id, $custom_form_name );
-	$content_form  = wpbc_get__booking_form_data_configuration( $resource_id, $formdata );
-
-	$form_config = array(
-		'form_name'           => 'standard',
-		'engine'              => 'bfb',
-		'engine_version'      => '1.0',
-		'structure_json'      => wpbc_form_config__encode_json( $builder_structure_arr ),
-		'settings'            => array(),
-		'advanced_form'       => $advanced_form,
-		'content_form'        => $content_form,
-		'owner_user_id'       => 0,
-		'title'               => 'Standard',
-		'description'         => '',
-		'scope'               => 'global',
-		'status'              => 'published',
-		'is_default'          => 1,
-		'booking_resource_id' => null,
-	);
-
-	// We do not need to update legacy options (booking_form, etc...) in BFB.
-	$sync_legacy = false;
-	// == One Saving point ==
-	$booking_form_id = wpbc_form_config_save( $form_config, array( 'sync_legacy' => (bool) $sync_legacy ) );
-
+	if ( function_exists( 'wpbc_bfb_import_legacy_forms' ) ) {
+		wpbc_bfb_import_legacy_forms(
+			array(
+				'mode'                     => 'all_global',
+				'import_standard'          => true,
+				'import_custom'            => true,
+				'skip_if_exists'           => true,
+				'set_bfb_form_not_defined' => false,
+			)
+		);
+	}
 }
 
 
@@ -914,23 +1169,42 @@ function wpbc_bfb_import_legacy_forms__on_activation() {
 		return;
 	}
 
-	$import_version = '11.0.0';
-	if ( $import_version === get_option( 'wpbc_bfb_legacy_import_done_for_pro', '' ) ) {
-		return;
-	}
-
 	if ( false === ( $is_in_action_late_activation = get_transient( 'wpbc_pro_versions__late_activation_60' ) ) ) {
 		return;
 	}
 
 	delete_transient( 'wpbc_pro_versions__late_activation_60' );
 
+	$import_version = '11.3.1';
+
+	// Live demos use dedicated BFB fixtures as their canonical source. Importing
+	// legacy options here would overwrite the fixtures installed during the
+	// activation request, especially because the old demo importer used
+	// skip_if_exists=false.
+	if ( wpbc_is_this_demo() ) {
+		if ( wpbc_bfb_live_demo__provision_all_standard_forms() ) {
+			update_option( 'wpbc_bfb_legacy_import_done_for_pro', $import_version );
+		} else {
+			// Keep a bounded retry available if activation dependencies were not
+			// ready yet on this request.
+			$retry_count = is_numeric( $is_in_action_late_activation ) ? absint( $is_in_action_late_activation ) : 0;
+			if ( $retry_count < 3 ) {
+				set_transient( 'wpbc_pro_versions__late_activation_60', $retry_count + 1, HOUR_IN_SECONDS );
+			}
+		}
+		return;
+	}
+
+	if ( $import_version === get_option( 'wpbc_bfb_legacy_import_done_for_pro', '' ) ) {
+		return;
+	}
+
 	$summary = wpbc_bfb_import_legacy_forms(
 		array(
 			'mode'                     => ( class_exists( 'wpdev_bk_multiuser' ) ) ? 'all_users' : 'all_global',
 			'import_standard'          => true,
 			'import_custom'            => true,
-			'skip_if_exists'           => ( wpbc_is_this_demo() ) ? false : true,
+			'skip_if_exists'           => true,
 			'set_bfb_form_not_defined' => true,
 		)
 	);
@@ -945,6 +1219,12 @@ add_action( 'init', 'wpbc_bfb_import_legacy_forms__on_activation', 1000 );
  * @return void
  */
 function wpbc_pro_versions__late_activation(){
+
+	// A regular MultiUser owner activation runs the Pro activation callbacks in
+	// its own context. It must not schedule a later demo-wide reset.
+	if ( false !== apply_bk_filter( 'wpbc_is_user_in_activation_process' ) ) {
+		return;
+	}
 
 	// Get any existing copy of our transient data
 	if ( false === ( $is_in_action_late_activation = get_transient( 'wpbc_pro_versions__late_activation_60' ) ) ) {

@@ -847,14 +847,21 @@ class WPBC_SETUP_WIZARD_STEPS {
 			$target_selector = $this->get_step_meta_value( $current_step, 'target_selector' );
 			$scroll_selector = $this->get_step_meta_value( $current_step, 'scroll_selector' );
 			$highlight_selector = $this->get_step_meta_value( $current_step, 'highlight_selector' );
+			$highlight_disabled = $this->get_step_meta_value( $current_step, 'highlight_disabled' );
 			$form_selector   = $this->get_step_meta_value( $current_step, 'form_selector' );
 			$save_selector   = $this->get_step_meta_value( $current_step, 'save_selector' );
+			$save_ajax_action = $this->get_step_meta_value( $current_step, 'save_ajax_action' );
 			$save_events     = $this->get_step_meta_value( $current_step, 'save_events' );
 			$open_action     = $this->get_step_meta_value( $current_step, 'open_action' );
-			$continue_title = ( 'complete' === $save_behavior ) ? __( 'Finish Setup', 'booking' ) : __( 'Continue', 'booking' );
-			$is_step_saved       = $this->db__is_step_saved( $current_step );
-			$is_continue_disabled = ( 'manual_save_required' === $save_behavior && ! $is_step_saved );
-			$continue_href       = $is_continue_disabled ? '#wpbc_setup_save_required' : $continue_url;
+			$can_save_from_bar  = ( 'manual_save_required' === $save_behavior && ! empty( $save_selector ) );
+			$continue_title     = ( 'complete' === $save_behavior ) ? __( 'Finish Setup', 'booking' ) : __( 'Continue', 'booking' );
+			if ( $can_save_from_bar ) {
+				$continue_title = __( 'Save and Continue', 'booking' );
+			}
+			$is_step_saved        = $this->db__is_step_saved( $current_step );
+			$is_step_unsaved      = ( 'manual_save_required' === $save_behavior && ! $is_step_saved );
+			$is_continue_disabled = ( $is_step_unsaved && ! $can_save_from_bar );
+			$continue_href        = $is_step_unsaved ? '#wpbc_setup_save_required' : $continue_url;
 			$mark_saved_nonce    = wp_create_nonce( 'wpbc_setup_wizard_mark_step_saved' );
 			$step_target_url     = $this->get_step_target_url( $current_step );
 			$skip_wizard_url     = add_query_arg( 'wpbc_setup_wizard', 'completed', wpbc_get_bookings_url() );
@@ -1106,8 +1113,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 				 data-wpbc-setup-target-selector="<?php echo esc_attr( $target_selector ); ?>"
 				 data-wpbc-setup-scroll-selector="<?php echo esc_attr( $scroll_selector ); ?>"
 				 data-wpbc-setup-highlight-selector="<?php echo esc_attr( $highlight_selector ); ?>"
+				 data-wpbc-setup-highlight-disabled="<?php echo esc_attr( $highlight_disabled ); ?>"
 				 data-wpbc-setup-form-selector="<?php echo esc_attr( $form_selector ); ?>"
 				 data-wpbc-setup-save-selector="<?php echo esc_attr( $save_selector ); ?>"
+				 data-wpbc-setup-save-ajax-action="<?php echo esc_attr( $save_ajax_action ); ?>"
 				 data-wpbc-setup-save-events="<?php echo esc_attr( $save_events ); ?>"
 				 data-wpbc-setup-open-action="<?php echo esc_attr( $open_action ); ?>">
 				<div class="wpbc_ui_control wpbc_page_top__wizard_button_content">
@@ -1208,8 +1217,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 					var selector = $bar.attr( 'data-wpbc-setup-target-selector' ) || '';
 					var scrollSelector = $bar.attr( 'data-wpbc-setup-scroll-selector' ) || selector;
 					var highlightSelector = $bar.attr( 'data-wpbc-setup-highlight-selector' ) || selector;
+					var highlightDisabled = ( '1' === ( $bar.attr( 'data-wpbc-setup-highlight-disabled' ) || '' ) );
 					var formSelector = $bar.attr( 'data-wpbc-setup-form-selector' ) || '';
 					var saveSelector = $bar.attr( 'data-wpbc-setup-save-selector' ) || '';
+					var saveAjaxAction = $bar.attr( 'data-wpbc-setup-save-ajax-action' ) || '';
 					var saveEvents = ( $bar.attr( 'data-wpbc-setup-save-events' ) || '' ).split( ',' );
 					var openAction = $bar.attr( 'data-wpbc-setup-open-action' ) || '';
 					var ajaxUrl = $bar.attr( 'data-wpbc-setup-ajax-url' ) || '';
@@ -1218,6 +1229,9 @@ class WPBC_SETUP_WIZARD_STEPS {
 					var $note = $bar.find( '.wpbc_page_top__wizard_button_note' ).first();
 					var savedNote = '<?php echo esc_js( __( 'Changes saved. You can continue.', 'booking' ) ); ?>';
 					var saveRequiredNote = <?php echo wp_json_encode( wp_kses_post( $save_required_note ) ); ?>;
+					var continueTitle = <?php echo wp_json_encode( ( 'complete' === $save_behavior ) ? __( 'Finish Setup', 'booking' ) : __( 'Continue', 'booking' ) ); ?>;
+					var saveAndContinueTitle = <?php echo wp_json_encode( __( 'Save and Continue', 'booking' ) ); ?>;
+					var savingTitle = <?php echo wp_json_encode( __( 'Saving', 'booking' ) . '...' ); ?>;
 					var $toggleButton = $bar.find( '.wpbc_setup_wizard_bar_toggle_button' ).first();
 					var $toggleIcon = $toggleButton.find( 'i' ).first();
 					var $resetButton = $bar.find( '.wpbc_setup_wizard_bar_reset_button' ).first();
@@ -1228,6 +1242,8 @@ class WPBC_SETUP_WIZARD_STEPS {
 					var expandLabel = <?php echo wp_json_encode( __( 'Expand setup bar', 'booking' ) ); ?>;
 					var $target;
 					var saveClicked = false;
+					var saveAndContinueRequested = false;
+					var saveAndContinueRedirecting = false;
 
 					function wpbcSetupWizardStorageGet( key ) {
 						try {
@@ -1708,7 +1724,8 @@ class WPBC_SETUP_WIZARD_STEPS {
 						$continueButton
 							.removeClass( 'disabled' )
 							.removeAttr( 'aria-disabled' )
-							.attr( 'href', $continueButton.attr( 'data-wpbc-setup-continue-url' ) || '#' );
+							.attr( 'href', $continueButton.attr( 'data-wpbc-setup-continue-url' ) || '#' )
+							.text( continueTitle );
 						if ( $note.length ) {
 							$note
 								.addClass( 'wpbc_setup_wizard_bar_note_saved' )
@@ -1718,10 +1735,12 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 					function wpbcSetupWizardSetUnsaved() {
 						$bar.attr( 'data-wpbc-setup-is-saved', '0' );
-						$continueButton
-							.addClass( 'disabled' )
-							.attr( 'aria-disabled', 'true' )
-							.attr( 'href', '#wpbc_setup_save_required' );
+						$continueButton.attr( 'href', '#wpbc_setup_save_required' ).text( saveSelector ? saveAndContinueTitle : continueTitle );
+						if ( saveSelector ) {
+							$continueButton.removeClass( 'disabled' ).removeAttr( 'aria-disabled' );
+						} else {
+							$continueButton.addClass( 'disabled' ).attr( 'aria-disabled', 'true' );
+						}
 						if ( $note.length ) {
 							$note
 								.removeClass( 'wpbc_setup_wizard_bar_note_saved' )
@@ -1729,9 +1748,46 @@ class WPBC_SETUP_WIZARD_STEPS {
 						}
 					}
 
-					function wpbcSetupWizardMarkSaved() {
+					function wpbcSetupWizardSetSaveAndContinueBusy( isBusy ) {
+						if ( ! saveSelector ) {
+							return;
+						}
+
+						$continueButton.toggleClass( 'disabled', !! isBusy ).text( isBusy ? savingTitle : saveAndContinueTitle );
+						if ( isBusy ) {
+							$continueButton.attr( 'aria-disabled', 'true' );
+						} else {
+							$continueButton.removeAttr( 'aria-disabled' );
+						}
+					}
+
+					function wpbcSetupWizardGetContinueUrl() {
+						return $continueButton.attr( 'data-wpbc-setup-continue-url' ) || $continueButton.attr( 'href' ) || '';
+					}
+
+					function wpbcSetupWizardContinueAfterSave() {
+						var continueUrl;
+
+						if ( saveAndContinueRedirecting ) {
+							return;
+						}
+
+						continueUrl = wpbcSetupWizardGetContinueUrl();
+						if ( ! continueUrl || '#wpbc_setup_save_required' === continueUrl ) {
+							wpbcSetupWizardSetSaveAndContinueBusy( false );
+							return;
+						}
+
+						saveAndContinueRedirecting = true;
+						window.location.href = continueUrl;
+					}
+
+					function wpbcSetupWizardMarkSaved( afterSavedCallback ) {
 						if ( ! step || ! ajaxUrl || ! nonce ) {
 							wpbcSetupWizardSetSaved();
+							if ( 'function' === typeof afterSavedCallback ) {
+								afterSavedCallback();
+							}
 							return;
 						}
 
@@ -1747,6 +1803,14 @@ class WPBC_SETUP_WIZARD_STEPS {
 							}
 							if ( response && response.success ) {
 								wpbcSetupWizardSetSaved();
+								if ( 'function' === typeof afterSavedCallback ) {
+									afterSavedCallback();
+								}
+							}
+						} ).fail( function() {
+							if ( saveAndContinueRequested ) {
+								wpbcSetupWizardSetSaveAndContinueBusy( false );
+								saveAndContinueRequested = false;
 							}
 						} );
 					}
@@ -1757,7 +1821,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 					function wpbcSetupWizardLooksSuccessfulResponse( response ) {
 						if ( ! response ) {
-							return true;
+							return false;
 						}
 
 						return (
@@ -1769,16 +1833,103 @@ class WPBC_SETUP_WIZARD_STEPS {
 						);
 					}
 
+					function wpbcSetupWizardGetAjaxAction( ajaxSettings ) {
+						var data = ajaxSettings && ajaxSettings.data ? ajaxSettings.data : '';
+						var matches;
+
+						if ( ! data ) {
+							return '';
+						}
+
+						if ( 'string' === typeof data ) {
+							matches = data.match( /(?:^|&)action=([^&]+)/ );
+							return matches && matches[1] ? decodeURIComponent( matches[1].replace( /\+/g, ' ' ) ) : '';
+						}
+
+						if ( window.FormData && data instanceof window.FormData && 'function' === typeof data.get ) {
+							return data.get( 'action' ) || '';
+						}
+
+						if ( 'object' === typeof data && data.action ) {
+							return data.action;
+						}
+
+						return '';
+					}
+
+					function wpbcSetupWizardIsExpectedSaveAjax( ajaxSettings ) {
+						var ajaxAction;
+
+						if ( ! saveAjaxAction ) {
+							return true;
+						}
+
+						ajaxAction = wpbcSetupWizardGetAjaxAction( ajaxSettings );
+
+						return saveAjaxAction === ajaxAction;
+					}
+
+					function wpbcSetupWizardHandleSavedEvent() {
+						saveClicked = false;
+						wpbcSetupWizardSetSaved();
+						if ( saveAndContinueRequested ) {
+							wpbcSetupWizardMarkSaved( wpbcSetupWizardContinueAfterSave );
+							return;
+						}
+						wpbcSetupWizardMarkSaved();
+					}
+
 					function wpbcSetupWizardRegisterSavedEvent( eventName ) {
 						eventName = ( eventName || '' ).replace( /^\s+|\s+$/g, '' );
 						if ( ! eventName ) {
 							return;
 						}
 
-						document.addEventListener( eventName, function() {
-							wpbcSetupWizardSetSaved();
-							wpbcSetupWizardMarkSaved();
-						}, true );
+						document.addEventListener( eventName, wpbcSetupWizardHandleSavedEvent, true );
+						jQuery( document ).on( eventName + '.wpbc_setup_wizard', wpbcSetupWizardHandleSavedEvent );
+					}
+
+					function wpbcSetupWizardFindSaveControl() {
+						var $saveControl = wpbcSetupWizardGetFirstElement( saveSelector );
+
+						if ( $saveControl.length ) {
+							return $saveControl;
+						}
+
+						if ( ! formSelector ) {
+							return jQuery();
+						}
+
+						return wpbcSetupWizardGetFirstElement(
+							formSelector + ' button[type="submit"],' +
+							formSelector + ' input[type="submit"],' +
+							formSelector + ' .wpbc_submit_button_trigger,' +
+							formSelector + ' .wpbc_submit_button'
+						);
+					}
+
+					function wpbcSetupWizardTriggerSaveAndContinue() {
+						var $saveControl = wpbcSetupWizardFindSaveControl();
+
+						if ( saveAndContinueRequested ) {
+							return;
+						}
+
+						if ( ! $saveControl.length || $saveControl.hasClass( 'disabled' ) || 'true' === $saveControl.attr( 'aria-disabled' ) ) {
+							if ( typeof wpbc_admin_show_message === 'function' ) {
+								wpbc_admin_show_message( '<?php echo esc_js( __( 'Please save changes on this page before continuing setup.', 'booking' ) ); ?>', 'warning', 4000, false );
+							}
+							wpbcSetupWizardPulseSaveRequiredMessage();
+							return;
+						}
+
+						saveAndContinueRequested = true;
+						wpbcSetupWizardSaveStarted();
+						wpbcSetupWizardSetSaveAndContinueBusy( true );
+						if ( formSelector ) {
+							jQuery( formSelector ).find( 'input[name="wpbc_setup_continue_after_save"]' ).val( '1' );
+						}
+						$saveControl.trigger( 'click' );
 					}
 
 					if ( 'manual_save_required' === saveBehavior ) {
@@ -1792,6 +1943,9 @@ class WPBC_SETUP_WIZARD_STEPS {
 							wpbcSetupWizardSaveStarted();
 							event.detail.payload.wpbc_setup = '1';
 							event.detail.payload.wpbc_setup_step = step;
+							if ( saveAndContinueRequested ) {
+								event.detail.payload.wpbc_setup_continue_after_save = '1';
+							}
 						}, true );
 
 						saveEvents.forEach( wpbcSetupWizardRegisterSavedEvent );
@@ -1811,13 +1965,17 @@ class WPBC_SETUP_WIZARD_STEPS {
 								if ( ! $form.find( 'input[name="wpbc_setup"]' ).length ) {
 									$form.append( '<input type="hidden" name="wpbc_setup" value="" />' );
 								}
+								if ( ! $form.find( 'input[name="wpbc_setup_continue_after_save"]' ).length ) {
+									$form.append( '<input type="hidden" name="wpbc_setup_continue_after_save" value="" />' );
+								}
 								$form.find( 'input[name="wpbc_setup_saved_step"]' ).val( step );
 								$form.find( 'input[name="wpbc_setup_step"]' ).val( step );
 								$form.find( 'input[name="wpbc_setup"]' ).val( '1' );
+								$form.find( 'input[name="wpbc_setup_continue_after_save"]' ).val( '0' );
 								$form
 									.off( 'change.wpbc_setup_wizard input.wpbc_setup_wizard', ':input' )
 									.on( 'change.wpbc_setup_wizard input.wpbc_setup_wizard', ':input', function() {
-										if ( jQuery( this ).is( '[name="wpbc_setup_saved_step"],[name="wpbc_setup_step"],[name="wpbc_setup"],[name="form_visible_section"]' ) ) {
+										if ( jQuery( this ).is( '[name="wpbc_setup_saved_step"],[name="wpbc_setup_step"],[name="wpbc_setup"],[name="wpbc_setup_continue_after_save"],[name="form_visible_section"]' ) ) {
 											return;
 										}
 										wpbcSetupWizardSetUnsaved();
@@ -1829,6 +1987,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 										$form.find( 'input[name="wpbc_setup_saved_step"]' ).val( step );
 										$form.find( 'input[name="wpbc_setup_step"]' ).val( step );
 										$form.find( 'input[name="wpbc_setup"]' ).val( '1' );
+										$form.find( 'input[name="wpbc_setup_continue_after_save"]' ).val( saveAndContinueRequested ? '1' : '0' );
 									} );
 							} );
 						}
@@ -1836,6 +1995,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 						$continueButton.on( 'click', function( event ) {
 							if ( '1' !== $bar.attr( 'data-wpbc-setup-is-saved' ) ) {
 								event.preventDefault();
+								if ( saveSelector ) {
+									wpbcSetupWizardTriggerSaveAndContinue();
+									return;
+								}
 								if ( typeof wpbc_admin_show_message === 'function' ) {
 									wpbc_admin_show_message( '<?php echo esc_js( __( 'Please save changes on this page before continuing setup.', 'booking' ) ); ?>', 'warning', 4000, false );
 								}
@@ -1853,9 +2016,12 @@ class WPBC_SETUP_WIZARD_STEPS {
 								} );
 						}
 
-						jQuery( document ).ajaxComplete( function( _event, xhr ) {
+						jQuery( document ).ajaxComplete( function( _event, xhr, ajaxSettings ) {
 							var response;
 							if ( ! saveClicked ) {
+								return;
+							}
+							if ( ! wpbcSetupWizardIsExpectedSaveAjax( ajaxSettings ) ) {
 								return;
 							}
 							saveClicked = false;
@@ -1868,23 +2034,37 @@ class WPBC_SETUP_WIZARD_STEPS {
 							}
 							if ( response && response.data && response.data.setup_step_saved ) {
 								wpbcSetupWizardSetSaved();
+								if ( saveAndContinueRequested ) {
+									wpbcSetupWizardContinueAfterSave();
+								}
 							} else if ( wpbcSetupWizardLooksSuccessfulResponse( response ) ) {
-								wpbcSetupWizardMarkSaved();
+								if ( saveAndContinueRequested ) {
+									wpbcSetupWizardMarkSaved( wpbcSetupWizardContinueAfterSave );
+								} else {
+									wpbcSetupWizardMarkSaved();
+								}
+							} else if ( saveAndContinueRequested ) {
+								wpbcSetupWizardSetSaveAndContinueBusy( false );
+								saveAndContinueRequested = false;
 							}
 						} );
+					}
+
+					if ( highlightDisabled ) {
+						highlightSelector = '';
 					}
 
 					if ( ! selector && ! scrollSelector && ! highlightSelector ) {
 						return;
 					}
 
-					$target = wpbcSetupWizardGetFirstElement( highlightSelector || selector );
-					if ( $target.length ) {
+					$target = highlightDisabled ? jQuery() : wpbcSetupWizardGetFirstElement( highlightSelector || selector );
+					if ( ! highlightDisabled && $target.length ) {
 						wpbcSetupWizardHighlightElement( $target );
 					}
 
 					setTimeout( function() {
-						var $scrollTarget = wpbcSetupWizardGetFirstElement( scrollSelector || highlightSelector || selector );
+						var $scrollTarget = wpbcSetupWizardGetFirstElement( scrollSelector || ( highlightDisabled ? selector : highlightSelector ) || selector );
 						if ( ! $scrollTarget.length ) {
 							$scrollTarget = $target;
 						}

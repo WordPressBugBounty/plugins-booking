@@ -121,10 +121,49 @@ class WPBC_BFB_Bootstrap {
 
 		// Form Settings.
 		// // FixIn: 2026-01-24 wp_enqueue_script( 'wpbc-bfb-so', wpbc_plugin_url( '/includes/page-form-builder/settings-options/_out/bfb-so.js' ), array( 'jquery', 'wp-util', 'wpbc-save-load-option' ), WP_BK_VERSION_NUM, $in_footer );
-		wp_enqueue_script( 'wpbc-bfb-form_settings', wpbc_plugin_url( '/includes/page-form-builder/form-settings/_out/settings.js' ), array( 'jquery', 'wp-util', 'wpbc-save-load-option' ), WP_BK_VERSION_NUM, $in_footer );
+		wp_enqueue_script( 'wpbc-bfb-form_settings', wpbc_plugin_url( '/includes/page-form-builder/form-settings/_out/settings.js' ), array( 'jquery', 'wp-util', 'wpbc-save-load-option', 'coloris' ), WP_BK_VERSION_NUM, $in_footer );
 		wp_enqueue_script( 'wpbc-bfb-global_save_behavior', wpbc_plugin_url( '/includes/page-form-builder/form-settings/_out/global_save_behavior.js' ), array( 'wpbc-bfb-form_settings' ), WP_BK_VERSION_NUM, $in_footer );
 		wp_enqueue_script( 'wpbc-bfb-form_settings_effects', wpbc_plugin_url( '/includes/page-form-builder/form-settings/_out/settings_effects.js' ), array( 'wpbc-bfb-form_settings' ), WP_BK_VERSION_NUM, $in_footer );
-		// wp_localize_script( 'wpbc-bfb-form_settings', 'wpbc_bfb_settings_vars', array( 'plugin_url' => wpbc_plugin_url( '' ), ) );
+		$wpbc_bfb_form_style         = wpbc_bfb_settings__get_current_form_style();
+		$wpbc_bfb_form_style_preset  = wpbc_bfb_settings__get_form_style_preset( $wpbc_bfb_form_style );
+		$wpbc_bfb_custom_form_style  = wpbc_bfb_settings__get_custom_form_style_options();
+		$wpbc_bfb_form_style_vars    = wpbc_bfb_settings__get_form_style_css_vars( $wpbc_bfb_form_style, $wpbc_bfb_custom_form_style );
+		$wpbc_bfb_container_style    = isset( $wpbc_bfb_form_style_preset['container_style'] ) ? (string) $wpbc_bfb_form_style_preset['container_style'] : 'bordered';
+		$wpbc_bfb_theme_class        = isset( $wpbc_bfb_form_style_preset['theme_class'] ) ? (string) $wpbc_bfb_form_style_preset['theme_class'] : '';
+		$wpbc_bfb_legacy_appearance  = array(
+			'booking_form_theme'                  => $wpbc_bfb_theme_class,
+			'booking_form_container_style'        => $wpbc_bfb_container_style,
+			'booking_form_background_color'       => isset( $wpbc_bfb_form_style_vars['--wpbc-bfb-form-background'] ) ? $wpbc_bfb_form_style_vars['--wpbc-bfb-form-background'] : '#ffffff',
+			'booking_form_border_color'           => isset( $wpbc_bfb_form_style_vars['--wpbc-bfb-form-border-color'] ) ? $wpbc_bfb_form_style_vars['--wpbc-bfb-form-border-color'] : '#cccccc',
+			'booking_form_border_width'           => isset( $wpbc_bfb_form_style_vars['--wpbc-bfb-form-border-width'] ) ? $wpbc_bfb_form_style_vars['--wpbc-bfb-form-border-width'] : '1px',
+			'booking_form_border_radius'          => isset( $wpbc_bfb_form_style_vars['--wpbc-bfb-form-border-radius'] ) ? $wpbc_bfb_form_style_vars['--wpbc-bfb-form-border-radius'] : '2px',
+			'booking_form_padding'                => isset( $wpbc_bfb_form_style_vars['--wpbc-bfb-form-padding'] ) ? $wpbc_bfb_form_style_vars['--wpbc-bfb-form-padding'] : '10px 30px',
+			'booking_form_text_color'             => isset( $wpbc_bfb_form_style_vars['--wpbc_form-label-color'] ) ? $wpbc_bfb_form_style_vars['--wpbc_form-label-color'] : '',
+			'booking_form_field_background_color' => isset( $wpbc_bfb_form_style_vars['--wpbc_form-field-background-color'] ) ? $wpbc_bfb_form_style_vars['--wpbc_form-field-background-color'] : '',
+			'booking_form_field_text_color'       => isset( $wpbc_bfb_form_style_vars['--wpbc_form-field-text-color'] ) ? $wpbc_bfb_form_style_vars['--wpbc_form-field-text-color'] : '',
+			'booking_form_field_border_color'     => isset( $wpbc_bfb_form_style_vars['--wpbc_form-field-border-color'] ) ? $wpbc_bfb_form_style_vars['--wpbc_form-field-border-color'] : '',
+		);
+		wp_localize_script(
+			'wpbc-bfb-form_settings',
+			'wpbc_bfb_settings_vars',
+			array(
+				'global_form_style'          => array_merge(
+					array(
+						'booking_form_style' => $wpbc_bfb_form_style,
+						'theme_class'        => $wpbc_bfb_theme_class,
+						'container_style'    => $wpbc_bfb_container_style,
+						'css_vars'           => $wpbc_bfb_form_style_vars,
+					),
+					$wpbc_bfb_custom_form_style
+				),
+				'form_style_options'         => wpbc_bfb_settings__get_form_style_options(),
+				'form_style_presets'         => wpbc_bfb_settings__get_form_style_presets(),
+				'form_style_css_var_names'   => wpbc_bfb_settings__get_form_style_css_var_names(),
+				'form_style_option_keys'     => wpbc_bfb_settings__get_form_json_style_option_keys(),
+				'custom_form_style_defaults' => wpbc_bfb_settings__get_default_custom_form_style_options(),
+				'global_appearance'          => $wpbc_bfb_legacy_appearance,
+			)
+		);
 
 		// Form Details.
 		wp_enqueue_script( 'wpbc-bfb-form_details_ui', wpbc_plugin_url( '/includes/page-form-builder/form-details/_out/current-form-details-ui.js' ), array( 'wpbc-bfb-form_settings' ), WP_BK_VERSION_NUM, $in_footer );
@@ -139,9 +178,8 @@ class WPBC_BFB_Bootstrap {
 
 		// --- Exporter ---
 		wp_enqueue_script( 'wpbc-bfb_exporter', wpbc_plugin_url( '/includes/page-form-builder/_out/export/builder-exporter.js' ), array( 'wpbc-bfb_builder' ), WP_BK_VERSION_NUM, $in_footer );
-		if ( WPBC_BFB_DEBUG ) {
-			wp_enqueue_script( 'wpbc-bfb_debug_ui', wpbc_plugin_url( '/includes/page-form-builder/_out/export/debug-ui.js' ), array( 'wpbc-bfb_exporter' ), WP_BK_VERSION_NUM, $in_footer );
-		}
+		wp_enqueue_script( 'wpbc-bfb_debug_ui', wpbc_plugin_url( '/includes/page-form-builder/_out/export/debug-ui.js' ), array( 'wpbc-bfb_exporter' ), WP_BK_VERSION_NUM, $in_footer );
+
 
 
 		// -- Templates (optional tools) --

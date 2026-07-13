@@ -68,7 +68,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
                          && ( wpbc_get_arr_of_selected_additional_calendars( bk_type ).length == 0 )                    // FixIn: 8.5.2.26.
                     ){            // FixIn: 8.4.4.5.
 
-                        var notice_message_id = wpbc_front_end__show_message__error_under_element( '#booking_form_div' + bk_type + ' .bk_calendar_frame', _wpbc.get_message( 'message_check_no_selected_dates' ) , 3000 );
+                        var notice_message_id = wpbc_front_end__show_message__warning( '#booking_form_div' + bk_type + ' .bk_calendar_frame', _wpbc.get_message( 'message_check_no_selected_dates' ), 'text' );
 
 						//wpbc_do_scroll('#calendar_booking' + bk_type);            // Scroll to the calendar    		// FixIn: 8.5.1.3.
 						is_error_in_field = true;    // Error
@@ -103,7 +103,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 
                                     checkbox_parent_element = jQuery( el );
                                 }
-                                var notice_message_id = wpbc_front_end__show_message__warning( checkbox_parent_element, _wpbc.get_message( 'message_check_required_for_check_box' ) );
+                                var notice_message_id = wpbc_front_end__show_message__warning( checkbox_parent_element, _wpbc.get_message( 'message_check_required_for_check_box' ), 'text' );
 
                                 fields_with_errors_arr.push( el );
 								is_error_in_field = true;    // Error
@@ -113,7 +113,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 						} else if ( 'radio' == jQuery( el ).attr( 'type' ) ){
 
 							if ( !jQuery( ':radio[name="' + jQuery( el ).attr( 'name' ) + '"]', my_form ).is( ':checked' ) ){
-                                var notice_message_id = wpbc_front_end__show_message__warning( jQuery( el ).parents('.wpdev-form-control-wrap'), _wpbc.get_message( 'message_check_required_for_radio_box' ) );
+                                var notice_message_id = wpbc_front_end__show_message__warning( jQuery( el ).parents('.wpdev-form-control-wrap'), _wpbc.get_message( 'message_check_required_for_radio_box' ), 'text' );
                                 fields_with_errors_arr.push( el );
 								is_error_in_field = true;    // Error
 							}
@@ -125,7 +125,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 
                             if ( '' === wpbc_trim( inp_value ) ){                                                       //FixIn: 8.8.1.3        // FixIn: 8.7.11.12.
 
-                                var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_required' ) );
+                                var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_required' ), 'text' );
 
                                 fields_with_errors_arr.push( el );
 								is_error_in_field = true;    // Error
@@ -140,7 +140,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 						var reg = /^([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,})$/;
 						if ( (inp_value != '') && (reg.test( inp_value ) == false) ){
 
-                            var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_email' ) );
+                            var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_email' ), 'text' );
                             fields_with_errors_arr.push( el );
 							is_error_in_field = true;    // Error
 						}
@@ -165,11 +165,11 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 
                                 // Valid values: 09-25-2018, 09/25/2018, 09-25-2018,  31-9-1918  ---   m/d/Y, m.d.Y, m-d-Y, d/m/Y, d.m.Y, d-m-Y
                                 var regex = new RegExp( '^[0-3]?\\d{1}[\\/\\.\\-]+[0-3]?\\d{1}[\\/\\.\\-]+[0-2]+\\d{3}$' );       // Check for Date 09/25/2018
-                                var message_verif_phone = 'This field must be valid date like this ' + '09/25/2018';
+								var message_verif_phone = _wpbc.get_message( 'message_check_valid_date' ).replace( '{date_example}', '09/25/2018' );
                                 var inp_value = jQuery( el ).val();
 
                                 if (  ( inp_value != '' ) && ( regex.test( inp_value ) == false )  ){
-                                    wpbc_front_end__show_message__warning( el, message_verif_phone );
+                                    wpbc_front_end__show_message__warning( el, message_verif_phone, 'text' );
                                     fields_with_errors_arr.push( el );
                                     is_error_in_field = true;    // Error
                                 }
@@ -181,11 +181,11 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
                             if ( 'validate_as_digit' === cl_item ) {
 
                                 var regex = new RegExp( '^[0-9]+\\.?[0-9]*$' );       // Check for digits
-                                var message_verif_phone = 'This field must contain only digits';
+								var message_verif_phone = _wpbc.get_message( 'message_check_digits_only' );
                                 var inp_value = jQuery( el ).val();
 
                                 if (  ( inp_value != '' ) && ( regex.test( inp_value ) == false )  ){
-                                    wpbc_front_end__show_message__warning( el, message_verif_phone );
+                                    wpbc_front_end__show_message__warning( el, message_verif_phone, 'text' );
                                     fields_with_errors_arr.push( el );
                                     is_error_in_field = true;    // Error
                                 }
@@ -206,11 +206,11 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
                                 if ( !isNaN( digits_to_check ) ){
 
                                     var regex = new RegExp( '^\\d{' + digits_to_check + '}$' );       // We was valid it as parseInt - only integer variable - digits_to_check
-                                    var message_verif_phone = 'This field must contain ' + digits_to_check + ' digits';
+									var message_verif_phone = _wpbc.get_message( 'message_check_digits_count' ).replace( '{digits}', digits_to_check );
                                     var inp_value = jQuery( el ).val();
 
 									if (  ( inp_value != '' ) && ( regex.test( inp_value ) == false )  ){
-                                        wpbc_front_end__show_message__warning( el, message_verif_phone );
+                                        wpbc_front_end__show_message__warning( el, message_verif_phone, 'text' );
                                         fields_with_errors_arr.push( el );
                                         is_error_in_field = true;    // Error
                                     }

@@ -155,25 +155,17 @@ function wpbc_get_localized_js_vars() {
 	$script .= "_wpbc.set_other_param( 'update', '" . esc_attr( WP_BK_VERSION_NUM ) . "' ); ";
 	$script .= "_wpbc.set_other_param( 'version', '" . wpbc_get_version_type__and_mu() . "' ); ";
 
-	// Warning Messages.
-	$script .= "_wpbc.set_message( 'message_dates_times_unavailable', "        . wp_json_encode( __( 'These dates and times in this calendar are already booked or unavailable.', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_choose_alternative_dates', "       . wp_json_encode( __( 'Please choose alternative date(s), times, or adjust the number of slots booked.', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_cannot_save_in_one_resource', "    . wp_json_encode( __( 'It is not possible to store this sequence of the dates into the one same resource.', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_check_required', "                 . wp_json_encode( __( 'This field is required', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_check_required_for_check_box', "   . wp_json_encode( __( 'This checkbox must be checked', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_check_required_for_radio_box', "   . wp_json_encode( __( 'At least one option must be selected', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_check_email', "                    . wp_json_encode( __( 'Incorrect email address', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_check_same_email', "               . wp_json_encode( __( 'Your emails do not match', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_check_no_selected_dates', "        . wp_json_encode( __( 'Please, select booking date(s) at Calendar.', 'booking' ) ) . " ); ";
+	// Visitor-facing messages resolve through one multilingual, plain-text registry.
+	foreach ( array_keys( wpbc_frontend_messages__get_registry() ) as $message_key ) {
+		$script .= '_wpbc.set_message( ' . wp_json_encode( $message_key ) . ', ' . wp_json_encode( wpbc_frontend_messages__get( $message_key ) ) . ' ); ';
+	}
+
+	// Internal/admin progress messages remain gettext-controlled and cannot be customized from the booking-form page.
 	$script .= "_wpbc.set_message( 'message_processing', "                     . wp_json_encode( __( 'Processing', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_deleting', "                       . wp_json_encode( __( 'Deleting', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_updating', "                       . wp_json_encode( __( 'Updating', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_saving', "                         . wp_json_encode( __( 'Saving', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_error_check_in_out_time', "        . wp_json_encode( __( 'Error! Please reset your check-in/check-out dates above.', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_error_start_time', "               . wp_json_encode( __( 'Start Time is invalid. The date or time may be booked, or already in the past! Please choose another date or time.', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_error_end_time', "                 . wp_json_encode( __( 'End Time is invalid. The date or time may be booked, or already in the past. The End Time may also be earlier that the start time, if only 1 day was selected! Please choose another date or time.', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_error_range_time', "               . wp_json_encode( __( 'The time(s) may be booked, or already in the past!', 'booking' ) ) . " ); ";
-	$script .= "_wpbc.set_message( 'message_error_duration_time', "            . wp_json_encode( __( 'The time(s) may be booked, or already in the past!', 'booking' ) ) . " ); ";
 
 	// $script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";
 	$script .= "console.log( '== WPBC VARS " . esc_attr( wpbc_get_wpbc_versions_numbers() ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";

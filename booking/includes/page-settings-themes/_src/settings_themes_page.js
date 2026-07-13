@@ -91,7 +91,12 @@
 		var $form = get_form();
 		var data = {};
 
+		sync_form_style_choice();
+
 		$.each( $form.serializeArray(), function ( index, item ) {
+			if ( 0 === String( item.name || '' ).indexOf( 'wpbc_setup' ) ) {
+				return;
+			}
 			data[ item.name ] = item.value;
 		} );
 
@@ -104,17 +109,342 @@
 		return data;
 	}
 
-	function apply_form_theme() {
-		var theme = get_form().find( '[name="booking_form_theme"]:checked' ).val() || '';
-		var $preview = $( '[data-wpbc-theme-preview="1"]' );
+	function map_form_style_choice( value ) {
+		var choice = String( value || 'light_bordered' );
+		var current_theme = $( '#booking_form_theme' ).val() || '';
+		var parts;
+		var preset;
 
-		$preview.removeClass( 'wpbc_theme_dark_1' );
-		if ( theme ) {
-			$preview.addClass( theme );
+		if ( 'custom' === choice ) {
+			return {
+				theme : current_theme,
+				preset: 'custom'
+			};
 		}
 
+		parts = choice.split( '_' );
+		preset = parts[1] || 'bordered';
+		if ( [ 'bordered', 'none', 'soft' ].indexOf( preset ) === -1 ) {
+			preset = 'bordered';
+		}
+
+		return {
+			theme : ( 'dark' === parts[0] ) ? 'wpbc_theme_dark_1' : '',
+			preset: preset
+		};
+	}
+
+	function get_form_style_choice_from_values() {
+		var theme = $( '#booking_form_theme' ).val() || '';
+		var preset = $( '#booking_form_appearance_preset' ).val() || 'bordered';
+		var prefix = theme ? 'dark' : 'light';
+
+		if ( 'custom' === preset ) {
+			return 'custom';
+		}
+		if ( [ 'bordered', 'none', 'soft' ].indexOf( preset ) === -1 ) {
+			preset = 'bordered';
+		}
+
+		return prefix + '_' + preset;
+	}
+
+	function sync_form_style_choice() {
+		var $checked = get_form().find( '[name="booking_form_style"]:checked' );
+		var mapped;
+
+		if ( ! $checked.length ) {
+			return;
+		}
+
+		mapped = map_form_style_choice( $checked.val() );
+		$( '#booking_form_theme' ).val( mapped.theme );
+		$( '#booking_form_appearance_preset' ).val( mapped.preset );
+	}
+
+	function sync_form_style_choice_selection() {
+		var choice = get_form_style_choice_from_values();
+		var $choices = get_form().find( '[name="booking_form_style"]' );
+
+		$choices.prop( 'checked', false );
+		$choices.filter( '[value="' + choice + '"]' ).prop( 'checked', true );
+
 		$( '.wpbc_theme_choice' ).removeClass( 'is-selected' );
-		get_form().find( '[name="booking_form_theme"]:checked' ).closest( '.wpbc_theme_choice' ).addClass( 'is-selected' );
+		$choices.filter( ':checked' ).closest( '.wpbc_theme_choice' ).addClass( 'is-selected' );
+	}
+
+	function apply_form_theme() {
+		var theme = $( '#booking_form_theme' ).val() || '';
+		var $preview = $( '[data-wpbc-theme-preview="1"]' );
+		var $theme_targets = $preview.add( $preview.find( '.wpbc_container.wpbc_form, .wpbc_container_booking_form' ) );
+
+		$theme_targets.each( function () {
+			var $target = $( this );
+			var classes = String( this.className || '' ).split( /\s+/ );
+
+			$.each( classes, function ( index, class_name ) {
+				if ( /^wpbc_theme_/.test( class_name ) && ! /^wpbc_theme_preview/.test( class_name ) ) {
+					$target.removeClass( class_name );
+				}
+			} );
+		} );
+		if ( theme ) {
+			$theme_targets.addClass( theme );
+		}
+
+		sync_form_style_choice_selection();
+	}
+
+	function get_form_appearance_presets() {
+		return {
+			bordered: {
+				background : '#ffffff',
+				borderColor: '#cccccc',
+				borderWidth: '1px',
+				radius     : '2px',
+				padding    : '10px 30px',
+				shadow     : 'rgba(0, 0, 0, 0.05) 0px 2px 6px 0px'
+			},
+			none    : {
+				background : 'transparent',
+				borderColor: 'transparent',
+				borderWidth: '0px',
+				radius     : '0px',
+				padding    : '0px',
+				shadow     : 'none'
+			},
+			soft    : {
+				background : '#f9f9fa',
+				borderColor: '#fff',
+				borderWidth: '3px',
+				radius     : '8px',
+				padding    : '20px',
+				shadow     : 'rgba(15, 23, 42, 0.06) 0px 4px 16px 0px'
+			}
+		};
+	}
+
+	function is_dark_form_theme() {
+		return 'wpbc_theme_dark_1' === String( $( '#booking_form_theme' ).val() || '' );
+	}
+
+	function get_form_appearance_preset_for_theme( preset ) {
+		var presets = get_form_appearance_presets();
+
+		if ( ! is_dark_form_theme() ) {
+			return presets[preset] || presets.bordered;
+		}
+
+		if ( 'soft' === preset ) {
+			return {
+				background : '#1f2937',
+				borderColor: '#334155',
+				borderWidth: '3px',
+				radius     : '8px',
+				padding    : '20px',
+				shadow     : 'rgba(0, 0, 0, 0.24) 0px 4px 16px 0px'
+			};
+		}
+
+		return presets[preset] || presets.bordered;
+	}
+
+	function sanitize_theme_color( value, fallback ) {
+		var v = String( value || '' ).trim();
+		return /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( v ) || 'transparent' === v ? v : fallback;
+	}
+
+	function sanitize_theme_length( value, fallback ) {
+		var v = String( value || '' ).trim();
+		return /^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( v ) ? v : fallback;
+	}
+
+	function sanitize_theme_spacing( value, fallback ) {
+		var v = String( value || '' ).trim().replace( /\s+/g, ' ' );
+		var parts = v ? v.split( ' ' ) : [];
+		var i;
+
+		if ( parts.length < 1 || parts.length > 4 ) {
+			return fallback;
+		}
+		for ( i = 0; i < parts.length; i++ ) {
+			if ( ! /^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( parts[i] ) ) {
+				return fallback;
+			}
+		}
+		return parts.join( ' ' );
+	}
+
+	function get_form_style_presets() {
+		return cfg.form_style_presets && 'object' === typeof cfg.form_style_presets ? cfg.form_style_presets : {};
+	}
+
+	function get_current_form_style() {
+		var $checked = get_form().find( '[name="booking_form_style"]:checked' );
+		return $checked.length ? String( $checked.val() || 'light_bordered' ) : 'light_bordered';
+	}
+
+	function get_custom_form_style_defaults() {
+		return $.extend( {
+			booking_form_custom_background_color       : '#ffffff',
+			booking_form_custom_border_color           : '#cccccc',
+			booking_form_custom_border_width           : '1px',
+			booking_form_custom_border_radius          : '2px',
+			booking_form_custom_padding_vertical       : '10px',
+			booking_form_custom_padding_horizontal     : '30px',
+			booking_form_custom_text_color             : '#1d2327',
+			booking_form_custom_field_background_color : '#ffffff',
+			booking_form_custom_field_text_color       : '#3c434a',
+			booking_form_custom_field_border_color     : '#cccccc',
+			booking_form_custom_button_background_color: '#066aab',
+			booking_form_custom_button_text_color      : '#ffffff',
+			booking_form_custom_button_border_color    : '#066aab',
+			booking_form_custom_button_hover_background_color: '#055589',
+			booking_form_custom_button_hover_text_color: '#ffffff',
+			booking_form_custom_button_hover_border_color: '#055589',
+			booking_form_custom_secondary_button_background_color: '#fdfdfd',
+			booking_form_custom_secondary_button_text_color: '#444444',
+			booking_form_custom_secondary_button_border_color: '#eeeeee',
+			booking_form_custom_secondary_button_hover_background_color: '#fdfdfd',
+			booking_form_custom_secondary_button_hover_text_color: '#444444',
+			booking_form_custom_secondary_button_hover_border_color: '#4d91cd'
+		}, cfg.custom_form_style_defaults && 'object' === typeof cfg.custom_form_style_defaults ? cfg.custom_form_style_defaults : {} );
+	}
+
+	function get_custom_form_style_css_vars() {
+		var defaults = get_custom_form_style_defaults();
+		var values = $.extend( {}, defaults, cfg.settings && 'object' === typeof cfg.settings ? cfg.settings : {} );
+
+		return {
+			'--wpbc-bfb-form-background'          : sanitize_theme_color( values.booking_form_custom_background_color, defaults.booking_form_custom_background_color ),
+			'--wpbc-bfb-form-border-color'        : sanitize_theme_color( values.booking_form_custom_border_color, defaults.booking_form_custom_border_color ),
+			'--wpbc-bfb-form-border-width'        : sanitize_theme_length( values.booking_form_custom_border_width, defaults.booking_form_custom_border_width ),
+			'--wpbc-bfb-form-border-radius'       : sanitize_theme_length( values.booking_form_custom_border_radius, defaults.booking_form_custom_border_radius ),
+			'--wpbc-bfb-form-padding'             : sanitize_theme_length( values.booking_form_custom_padding_vertical, defaults.booking_form_custom_padding_vertical ) + ' ' + sanitize_theme_length( values.booking_form_custom_padding_horizontal, defaults.booking_form_custom_padding_horizontal ),
+			'--wpbc-bfb-form-box-shadow'          : 'rgba(0, 0, 0, 0.05) 0px 2px 6px 0px',
+			'--wpbc_form-label-color'             : sanitize_theme_color( values.booking_form_custom_text_color, defaults.booking_form_custom_text_color ),
+			'--wpbc_form-label-sublabel-color'    : sanitize_theme_color( values.booking_form_custom_text_color, defaults.booking_form_custom_text_color ),
+			'--wpbc_form-label-error-color'       : '#d63637',
+			'--wpbc_form-field-background-color'  : sanitize_theme_color( values.booking_form_custom_field_background_color, defaults.booking_form_custom_field_background_color ),
+			'--wpbc_form-field-menu-color'        : sanitize_theme_color( values.booking_form_custom_field_background_color, defaults.booking_form_custom_field_background_color ),
+			'--wpbc_form-field-text-color'        : sanitize_theme_color( values.booking_form_custom_field_text_color, defaults.booking_form_custom_field_text_color ),
+			'--wpbc_form-field-border-color'      : sanitize_theme_color( values.booking_form_custom_field_border_color, defaults.booking_form_custom_field_border_color ),
+			'--wpbc_form-field-border-color-spare': sanitize_theme_color( values.booking_form_custom_field_border_color, defaults.booking_form_custom_field_border_color ),
+			'--wpbc_form-field-focus-border-color': '#066aab',
+			'--wpbc_form-field-focus-shadow-color': '#066aab',
+			'--wpbc_form-field-disabled-color'    : 'rgba(0, 0, 0, 0.2)',
+			'--wpbc_form-button-background-color' : sanitize_theme_color( values.booking_form_custom_button_background_color, defaults.booking_form_custom_button_background_color ),
+			'--wpbc_form-button-background-color-alt': sanitize_theme_color( values.booking_form_custom_button_background_color, defaults.booking_form_custom_button_background_color ),
+			'--wpbc_form-button-border-color'     : sanitize_theme_color( values.booking_form_custom_button_border_color, defaults.booking_form_custom_button_border_color ),
+			'--wpbc_form-button-text-color'       : sanitize_theme_color( values.booking_form_custom_button_text_color, defaults.booking_form_custom_button_text_color ),
+			'--wpbc_form-button-text-color-alt'   : sanitize_theme_color( values.booking_form_custom_button_text_color, defaults.booking_form_custom_button_text_color ),
+			'--wpbc_form-button-hover-background-color': sanitize_theme_color( values.booking_form_custom_button_hover_background_color, defaults.booking_form_custom_button_hover_background_color ),
+			'--wpbc_form-button-hover-border-color': sanitize_theme_color( values.booking_form_custom_button_hover_border_color, defaults.booking_form_custom_button_hover_border_color ),
+			'--wpbc_form-button-hover-text-color' : sanitize_theme_color( values.booking_form_custom_button_hover_text_color, defaults.booking_form_custom_button_hover_text_color ),
+			'--wpbc_form-choice-checked-border-color': '#066aab',
+			'--wpbc_form-choice-checked-color'    : '#066aab',
+			'--wpbc_form-choice-focus-color'      : '#066aab',
+			'--wpbc_form-button-light-background-color': sanitize_theme_color( values.booking_form_custom_secondary_button_background_color, defaults.booking_form_custom_secondary_button_background_color ),
+			'--wpbc_form-button-light-border-color': sanitize_theme_color( values.booking_form_custom_secondary_button_border_color, defaults.booking_form_custom_secondary_button_border_color ),
+			'--wpbc_form-button-light-text-color' : sanitize_theme_color( values.booking_form_custom_secondary_button_text_color, defaults.booking_form_custom_secondary_button_text_color ),
+			'--wpbc_form-button-light-box-shadow' : '0 2px 10px 2px #ffffff54',
+			'--wpbc_form-button-light-hover-background-color': sanitize_theme_color( values.booking_form_custom_secondary_button_hover_background_color, defaults.booking_form_custom_secondary_button_hover_background_color ),
+			'--wpbc_form-button-light-hover-border-color': sanitize_theme_color( values.booking_form_custom_secondary_button_hover_border_color, defaults.booking_form_custom_secondary_button_hover_border_color ),
+			'--wpbc_form-button-light-hover-text-color': sanitize_theme_color( values.booking_form_custom_secondary_button_hover_text_color, defaults.booking_form_custom_secondary_button_hover_text_color ),
+			'--wpbc_form-button-light-hover-box-shadow': '0 2px 10px 2px #ffffff54',
+			'--wpbc_form-button-primary-hover-border-color': sanitize_theme_color( values.booking_form_custom_button_hover_border_color, defaults.booking_form_custom_button_hover_border_color ),
+			'--wpbc_form-page-break-color'        : '#066aab'
+		};
+	}
+
+	function get_form_style_css_var_names() {
+		var keys = [];
+		var presets;
+
+		if ( Array.isArray( cfg.form_style_css_var_names ) && cfg.form_style_css_var_names.length ) {
+			return cfg.form_style_css_var_names;
+		}
+
+		presets = get_form_style_presets();
+		$.each( presets, function ( preset_key, preset ) {
+			if ( preset && preset.css_vars && 'object' === typeof preset.css_vars ) {
+				$.each( preset.css_vars, function ( var_name ) {
+					if ( -1 === keys.indexOf( var_name ) ) {
+						keys.push( var_name );
+					}
+				} );
+			}
+		} );
+
+		$.each( get_custom_form_style_css_vars(), function ( var_name ) {
+			if ( -1 === keys.indexOf( var_name ) ) {
+				keys.push( var_name );
+			}
+		} );
+
+		return keys;
+	}
+
+	function resolve_form_style_css_vars( style ) {
+		var presets = get_form_style_presets();
+		var preset = presets[ style ] || presets.light_bordered || {};
+
+		if ( 'custom' === style || preset.custom ) {
+			return get_custom_form_style_css_vars();
+		}
+
+		return preset.css_vars && 'object' === typeof preset.css_vars ? preset.css_vars : {};
+	}
+
+	function apply_form_style_to_preview() {
+		var style = get_current_form_style();
+		var presets = get_form_style_presets();
+		var preset = presets[ style ] || presets.light_bordered || {};
+		var css_vars = resolve_form_style_css_vars( style );
+		var css_var_names = get_form_style_css_var_names();
+		var is_custom = ( 'custom' === style || preset.custom );
+		var $preview = $( '[data-wpbc-theme-preview="1"]' );
+		var $targets = $preview.find( '.wpbc_container.wpbc_form, .wpbc_bfb_form, .wpbc_bfb__form_preview_section_container' );
+
+		$( '[data-wpbc-theme-custom-appearance-notice="1"]' ).toggle( is_custom );
+
+		if ( ! $targets.length ) {
+			return;
+		}
+
+		$targets
+			.removeClass( 'wpbc_bfb_form_appearance_custom' )
+			.each( function () {
+				var style_obj = this.style;
+
+				$.each( css_var_names, function ( index, var_name ) {
+					style_obj.removeProperty( var_name );
+				} );
+
+				$.each( css_vars, function ( var_name, value ) {
+					if ( '' !== String( value || '' ) ) {
+						style_obj.setProperty( var_name, value );
+					}
+				} );
+			} );
+
+		if ( is_custom ) {
+			$targets.filter( '.wpbc_container.wpbc_form, .wpbc_bfb_form' ).addClass( 'wpbc_bfb_form_appearance_custom' );
+		}
+	}
+
+	function resolve_form_appearance() {
+		var preset = $( '#booking_form_appearance_preset' ).val() || 'bordered';
+
+		if ( 'custom' === preset ) {
+			return get_form_appearance_presets().bordered;
+		}
+
+		return get_form_appearance_preset_for_theme( preset );
+	}
+
+	function apply_form_appearance() {
+		apply_form_style_to_preview();
 	}
 
 	function apply_calendar_skin() {
@@ -363,6 +693,7 @@
 						cfg.days_selection = response.data.days_selection;
 					}
 					apply_form_theme();
+					apply_form_appearance();
 					apply_calendar_skin();
 					apply_time_skin();
 					ensure_calendar_only_days_selection();
@@ -462,6 +793,20 @@
 			show_calendar_only_theme_notice();
 		} );
 
+		$( document ).on( 'change', '[name="booking_form_style"]', function () {
+			sync_form_style_choice();
+			apply_form_theme();
+			apply_form_appearance();
+			apply_related_skins_for_theme( $( '#booking_form_theme' ).val() || '' );
+			show_calendar_only_theme_notice();
+			schedule_preview_refresh();
+		} );
+
+		$( document ).on( 'input change', '[data-wpbc-theme-appearance-control]', function () {
+			apply_form_appearance();
+			schedule_preview_refresh();
+		} );
+
 		$( document ).on( 'change', '[data-wpbc-theme-calendar-skin="1"]', function () {
 			apply_calendar_skin();
 		} );
@@ -497,6 +842,7 @@
 		bind_events();
 		refresh_preview_mode_controls();
 		apply_form_theme();
+		apply_form_appearance();
 		ensure_calendar_only_days_selection();
 		sync_time_picker_preview();
 	} );

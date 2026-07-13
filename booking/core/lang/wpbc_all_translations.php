@@ -555,7 +555,6 @@ function wpbc_all_translations1() { $wpbc_all_translations = array();
  $wpbc_all_translations[] = __('Check the box to activate auto-fill form fields for logged in users.', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Simple', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Booking Form', 'booking'); /* translators: 1: ... */ 
- $wpbc_all_translations[] = __('Check the box, if you want to use simple booking form customization from Free plugin version at Settings - Form page.', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Syntax highlighter', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Check the box, if you want to use syntax highlighter during customization booking form.', 'booking'); /* translators: 1: ... */ 
  $wpbc_all_translations[] = __('Pre-Check-in Display Duration', 'booking'); /* translators: 1: ... */ 

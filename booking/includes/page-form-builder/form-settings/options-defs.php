@@ -31,6 +31,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function wpbc_bfb_ui__settings_options__print() {
 
+	$wpbc_bfb_current_form_style  = function_exists( 'wpbc_bfb_settings__get_current_form_style' ) ? wpbc_bfb_settings__get_current_form_style() : 'light_bordered';
+	$wpbc_bfb_custom_style_values = function_exists( 'wpbc_bfb_settings__get_custom_form_style_options' ) ? wpbc_bfb_settings__get_custom_form_style_options() : array();
+
 	// ======================================================================
 	// == Group: Basic
 	// ======================================================================
@@ -45,19 +48,6 @@ function wpbc_bfb_ui__settings_options__print() {
 
 		<div class="group__fields" id="<?php echo esc_attr( $panel_id_basic ); ?>" aria-hidden="false">
 			<?php
-
-			WPBC_BFB_Setting_Options::print_option(
-				array(
-					'type'    => 'toggle',
-					'key'     => 'booking_use_bfb_form',
-					'scope'   => 'global',
-					'save_ui' => 'when_changed', // always | when_changed.
-					'default' => get_bk_option( 'booking_use_bfb_form', 'On' ),
-					'label'   => __( 'Drag & Drop Form Builder', 'booking' ),
-					'help'    =>  __( 'Enables the new drag & drop form builder. Disable this option to use the classic booking form. Reload the page, after saving.', 'booking' ),
-					'attr'    => array(),
-				)
-			);
 
 			WPBC_BFB_Setting_Options::print_option(
 				array(
@@ -111,26 +101,6 @@ function wpbc_bfb_ui__settings_options__print() {
 		<div class="group__fields" id="<?php echo esc_attr( $panel_id_appearance ); ?>" aria-hidden="true">
 			<?php
 
-			// Color theme (LOCAL FORM SETTING).
-			WPBC_BFB_Setting_Options::print_option(
-				array(
-					'type'         => 'radio',
-					'key'          => 'booking_form_theme',
-					'scope'        => 'form',
-					'default'      => '', // Applied from JS: 'wpbc:bfb:form_settings:apply' -- In 'settings_json' table field it's: { "options":{"booking_form_theme":"wpbc_theme_dark_1", ... } }.
-					'label'        => __( 'Color theme', 'booking' ),
-					'help'         => __( 'Select a color theme for your booking form that matches the look of your website.', 'booking' ),
-					'attr'         => array(
-						'id' => 'booking_form_theme',
-					),
-					'radio_layout' => 'inline', // inline | stack.
-					'options'      => array(
-						''                  => __( 'Light', 'booking' ),
-						'wpbc_theme_dark_1' => __( 'Dark', 'booking' ),
-					),
-				)
-			);
-
 			// Form width (LOCAL FORM SETTING) stored as ONE combined value like "100%".
 			WPBC_BFB_Setting_Options::print_option(
 				array(
@@ -161,7 +131,450 @@ function wpbc_bfb_ui__settings_options__print() {
 				)
 			);
 
+
+			// Combined global style selector. It uses the same option as Settings > Theme.
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'radio',
+					'key'                   => 'booking_form_style',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => $wpbc_bfb_current_form_style,
+					'label'                 => __( 'Form style', 'booking' ),
+					'help'                  => __( 'Choose the global form style used by all booking forms.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_style',
+					),
+					'radio_layout' => 'choice_grid',
+					'options'      => function_exists( 'wpbc_bfb_settings__get_form_style_options' ) ? wpbc_bfb_settings__get_form_style_options() : array(
+						'light_bordered' => __( 'Light bordered', 'booking' ),
+						'custom'         => __( 'Custom', 'booking' ),
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'        => 'color',
+					'key'         => 'booking_form_custom_background_color',
+					'scope'       => 'global',
+					'save_ui'     => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'     => isset( $wpbc_bfb_custom_style_values['booking_form_custom_background_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_background_color'] : '#ffffff',
+					'label'       => __( 'Background color', 'booking' ),
+					'help'        => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'        => array(
+						'id' => 'booking_form_custom_background_color',
+					),
+					'row_class'   => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'  => true,
+					'input_attrs' => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'        => 'color',
+					'key'         => 'booking_form_custom_border_color',
+					'scope'       => 'global',
+					'save_ui'     => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'     => isset( $wpbc_bfb_custom_style_values['booking_form_custom_border_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_border_color'] : '#cccccc',
+					'label'       => __( 'Border color', 'booking' ),
+					'help'        => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'        => array(
+						'id' => 'booking_form_custom_border_color',
+					),
+					'row_class'   => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'  => true,
+					'input_attrs' => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'    => 'length',
+					'key'     => 'booking_form_custom_border_width',
+					'scope'   => 'global',
+					'save_ui' => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default' => isset( $wpbc_bfb_custom_style_values['booking_form_custom_border_width'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_border_width'] : '1px',
+					'label'   => __( 'Border width', 'booking' ),
+					'help'    => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'    => array(
+						'id' => 'booking_form_custom_border_width',
+					),
+					'row_class' => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden' => true,
+					'length'  => array(
+						'default_unit' => 'px',
+						'units'        => array(
+							'px'  => 'px',
+							'rem' => 'rem',
+							'em'  => 'em',
+						),
+						'bounds_map'   => array(
+							'px'  => array( 'min' => 0, 'max' => 20, 'step' => 1 ),
+							'rem' => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+							'em'  => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+						),
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'    => 'length',
+					'key'     => 'booking_form_custom_border_radius',
+					'scope'   => 'global',
+					'save_ui' => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default' => isset( $wpbc_bfb_custom_style_values['booking_form_custom_border_radius'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_border_radius'] : '2px',
+					'label'   => __( 'Corner radius', 'booking' ),
+					'help'    => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'    => array(
+						'id' => 'booking_form_custom_border_radius',
+					),
+					'row_class' => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden' => true,
+					'length'  => array(
+						'default_unit' => 'px',
+						'units'        => array(
+							'px'  => 'px',
+							'rem' => 'rem',
+							'em'  => 'em',
+						),
+						'bounds_map'   => array(
+							'px'  => array( 'min' => 0, 'max' => 40, 'step' => 1 ),
+							'rem' => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+							'em'  => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+						),
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'length',
+					'key'                   => 'booking_form_custom_padding_vertical',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_padding_vertical'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_padding_vertical'] : '10px',
+					'label'                 => __( 'Inner spacing top / bottom', 'booking' ),
+					'help'                  => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_padding_vertical',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'length'                => array(
+						'default_unit' => 'px',
+						'units'        => array(
+							'px'  => 'px',
+							'rem' => 'rem',
+							'em'  => 'em',
+						),
+						'bounds_map'   => array(
+							'px'  => array( 'min' => 0, 'max' => 120, 'step' => 1 ),
+							'rem' => array( 'min' => 0, 'max' => 10,  'step' => 0.1 ),
+							'em'  => array( 'min' => 0, 'max' => 10,  'step' => 0.1 ),
+						),
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'length',
+					'key'                   => 'booking_form_custom_padding_horizontal',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_padding_horizontal'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_padding_horizontal'] : '30px',
+					'label'                 => __( 'Inner spacing left / right', 'booking' ),
+					'help'                  => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_padding_horizontal',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'length'                => array(
+						'default_unit' => 'px',
+						'units'        => array(
+							'px'  => 'px',
+							'rem' => 'rem',
+							'em'  => 'em',
+						),
+						'bounds_map'   => array(
+							'px'  => array( 'min' => 0, 'max' => 120, 'step' => 1 ),
+							'rem' => array( 'min' => 0, 'max' => 10,  'step' => 0.1 ),
+							'em'  => array( 'min' => 0, 'max' => 10,  'step' => 0.1 ),
+						),
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'        => 'color',
+					'key'         => 'booking_form_custom_text_color',
+					'scope'       => 'global',
+					'save_ui'     => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'     => isset( $wpbc_bfb_custom_style_values['booking_form_custom_text_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_text_color'] : '#1d2327',
+					'label'       => __( 'Text color', 'booking' ),
+					'help'        => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'        => array(
+						'id' => 'booking_form_custom_text_color',
+					),
+					'row_class'   => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'  => true,
+					'input_attrs' => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'        => 'color',
+					'key'         => 'booking_form_custom_field_background_color',
+					'scope'       => 'global',
+					'save_ui'     => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'     => isset( $wpbc_bfb_custom_style_values['booking_form_custom_field_background_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_field_background_color'] : '#ffffff',
+					'label'       => __( 'Field background', 'booking' ),
+					'help'        => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'        => array(
+						'id' => 'booking_form_custom_field_background_color',
+					),
+					'row_class'   => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'  => true,
+					'input_attrs' => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'        => 'color',
+					'key'         => 'booking_form_custom_field_text_color',
+					'scope'       => 'global',
+					'save_ui'     => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'     => isset( $wpbc_bfb_custom_style_values['booking_form_custom_field_text_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_field_text_color'] : '#3c434a',
+					'label'       => __( 'Field text color', 'booking' ),
+					'help'        => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'        => array(
+						'id' => 'booking_form_custom_field_text_color',
+					),
+					'row_class'   => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'  => true,
+					'input_attrs' => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'        => 'color',
+					'key'         => 'booking_form_custom_field_border_color',
+					'scope'       => 'global',
+					'save_ui'     => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'     => isset( $wpbc_bfb_custom_style_values['booking_form_custom_field_border_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_field_border_color'] : '#cccccc',
+					'label'       => __( 'Field border color', 'booking' ),
+					'help'        => __( 'Used when Form style is Custom.', 'booking' ),
+					'attr'        => array(
+						'id' => 'booking_form_custom_field_border_color',
+					),
+					'row_class'   => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'  => true,
+					'input_attrs' => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_custom_button_background_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_background_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_background_color'] : '#066aab',
+					'label'                 => __( 'Primary button background', 'booking' ),
+					'help'                  => __( 'Used by submit and primary buttons when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_background_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_custom_button_text_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_text_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_text_color'] : '#ffffff',
+					'label'                 => __( 'Primary button text', 'booking' ),
+					'help'                  => __( 'Used by submit and primary buttons when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_text_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_custom_button_border_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_border_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_border_color'] : '#066aab',
+					'label'                 => __( 'Primary button border', 'booking' ),
+					'help'                  => __( 'Used by submit and primary buttons when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_border_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_custom_button_hover_background_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_hover_background_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_hover_background_color'] : '#055589',
+					'label'                 => __( 'Primary hover background', 'booking' ),
+					'help'                  => __( 'Used when a submit or primary button is hovered, focused, or active.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_hover_background_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_custom_button_hover_text_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_hover_text_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_hover_text_color'] : '#ffffff',
+					'label'                 => __( 'Primary hover text', 'booking' ),
+					'help'                  => __( 'Used when a submit or primary button is hovered, focused, or active.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_hover_text_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_custom_button_hover_border_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_hover_border_color'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_hover_border_color'] : '#055589',
+					'label'                 => __( 'Primary hover border', 'booking' ),
+					'help'                  => __( 'Used when a submit or primary button is hovered, focused, or active.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_hover_border_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			$secondary_button_color_options = array(
+				'booking_form_custom_secondary_button_background_color' => array( __( 'Secondary button background', 'booking' ), __( 'Used by Previous, Next, lightweight, and Stripe buttons.', 'booking' ), '#fdfdfd' ),
+				'booking_form_custom_secondary_button_text_color' => array( __( 'Secondary button text', 'booking' ), __( 'Used by Previous, Next, lightweight, and Stripe buttons.', 'booking' ), '#444444' ),
+				'booking_form_custom_secondary_button_border_color' => array( __( 'Secondary button border', 'booking' ), __( 'Used by Previous, Next, lightweight, and Stripe buttons.', 'booking' ), '#eeeeee' ),
+				'booking_form_custom_secondary_button_hover_background_color' => array( __( 'Secondary hover background', 'booking' ), __( 'Used when a secondary button is hovered, focused, or active.', 'booking' ), '#fdfdfd' ),
+				'booking_form_custom_secondary_button_hover_text_color' => array( __( 'Secondary hover text', 'booking' ), __( 'Used when a secondary button is hovered, focused, or active.', 'booking' ), '#444444' ),
+				'booking_form_custom_secondary_button_hover_border_color' => array( __( 'Secondary hover border', 'booking' ), __( 'Used when a secondary button is hovered, focused, or active.', 'booking' ), '#4d91cd' ),
+			);
+
+			foreach ( $secondary_button_color_options as $option_key => $option_data ) {
+				WPBC_BFB_Setting_Options::print_option(
+					array(
+						'type'                  => 'color',
+						'key'                   => $option_key,
+						'scope'                 => 'global',
+						'save_ui'               => 'when_changed',
+						'autosave_on_form_save' => true,
+						'default'               => isset( $wpbc_bfb_custom_style_values[ $option_key ] ) ? $wpbc_bfb_custom_style_values[ $option_key ] : $option_data[2],
+						'label'                 => $option_data[0],
+						'help'                  => $option_data[1],
+						'attr'                  => array(
+							'id' => $option_key,
+						),
+						'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+						'row_hidden'            => true,
+						'input_attrs'           => array(
+							'pattern' => '^#[0-9A-Fa-f]{6}$',
+						),
+					)
+				);
+			}
+
 			?>
+			<div class="wpbc_bfb__form_setting wpbc_bfb__form_setting_custom_appearance_reset" data-wpbc-bfb-custom-appearance-reset-row="1" hidden aria-hidden="true" style="border: 1.5px dashed #dd4e4e;">
+				<div class="inspector__row" style="justify-content:flex-start;">
+					<div class="inspector__control" style="flex:1 1 auto;">
+						<button type="button" class="button button-secondary" data-wpbc-bfb-reset-custom-appearance="1" style="margin: 10px auto;display: block;">
+							<?php esc_html_e( 'Reset custom style', 'booking' ); ?>
+						</button>
+						<p class="wpbc_bfb__help" style="margin:6px 0 0 0;">
+							<?php esc_html_e( 'Restore the default custom container, spacing, field, and button colors. Save Form also saves these style changes.', 'booking' ); ?>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 	<?php
@@ -251,6 +664,7 @@ function wpbc_bfb_ui__settings_options__print() {
 					''         => __( 'Default', 'booking' ) . ' (' . __( 'calendar settings', 'booking' ) . ')',
 					'single'   => __( 'Single day', 'booking' ),
 					'multiple' => __( 'Multiple days', 'booking' ),
+					'range'    => __( 'Range days - 2 mouse clicks', 'booking' ),
 				),
 			) );
 

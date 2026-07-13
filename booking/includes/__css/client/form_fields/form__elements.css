@@ -1,0 +1,17 @@
+.wpbc_cal_powered_by,
+.wpbc_cal_powered_by a{
+	font-size: 7px;
+	text-align: left;
+	margin: 0 0 10px;
+	text-shadow: none;
+}
+.wpbc_range_selection_guidance,
+.wpbc_range_selection_guidance.wpbc_front_end__message.wpbc_fe_message_info i.menu_icon {
+	border: 0;
+	box-shadow: none;
+	line-height: 2;
+	font-size: var(--wpbc_form-label-size-sublabel-font-size, 14px);
+	color: #848280;
+	color: var(--wpbc_form-label-color, #3c434a);
+	opacity: 0.55;
+}

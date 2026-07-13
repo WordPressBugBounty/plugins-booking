@@ -1176,8 +1176,8 @@ function wpbc_bfb__dispatch_event_safe(name, detail) {
 					return false;
 				}
 
-				// Open modal with prefilled search.
-				window.wpbc_bfb__menu_forms__apply_template_search( search_key, null );
+				// Open modal with prefilled search and preselect the first non-blank result.
+				window.wpbc_bfb__menu_forms__apply_template_search( search_key, null, { auto_select_first_real: true } );
 
 				return true;
 

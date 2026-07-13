@@ -21,6 +21,42 @@
 	let raf_id      = 0;
 	let retry_count = 0;
 	const retry_max = 20;
+	const fallback_form_style_option_keys = [
+		'booking_form_style',
+		'booking_form_custom_background_color',
+		'booking_form_custom_border_color',
+		'booking_form_custom_border_width',
+		'booking_form_custom_border_radius',
+		'booking_form_custom_padding_vertical',
+		'booking_form_custom_padding_horizontal',
+		'booking_form_custom_text_color',
+		'booking_form_custom_field_background_color',
+		'booking_form_custom_field_text_color',
+		'booking_form_custom_field_border_color',
+		'booking_form_custom_button_background_color',
+		'booking_form_custom_button_text_color',
+		'booking_form_custom_button_border_color',
+		'booking_form_custom_button_hover_background_color',
+		'booking_form_custom_button_hover_text_color',
+		'booking_form_custom_button_hover_border_color',
+		'booking_form_custom_secondary_button_background_color',
+		'booking_form_custom_secondary_button_text_color',
+		'booking_form_custom_secondary_button_border_color',
+		'booking_form_custom_secondary_button_hover_background_color',
+		'booking_form_custom_secondary_button_hover_text_color',
+		'booking_form_custom_secondary_button_hover_border_color',
+		'booking_form_theme',
+		'booking_form_container_style',
+		'booking_form_background_color',
+		'booking_form_border_color',
+		'booking_form_border_width',
+		'booking_form_border_radius',
+		'booking_form_padding',
+		'booking_form_text_color',
+		'booking_form_field_background_color',
+		'booking_form_field_text_color',
+		'booking_form_field_border_color'
+	];
 
 	// -----------------------------------------------------------------------------------------------
 	// Small helpers
@@ -69,6 +105,97 @@
 		return query_all(d, '.wpbc-setting[data-key]').length > 0;
 	}
 
+	function init_coloris_pickers(root) {
+		if ( ! root || ! w.Coloris ) {
+			return;
+		}
+
+		const inputs = query_all(root, 'input[data-wpbc-bfb-fs-type="color"][data-coloris], input[data-inspector-type="color"][data-coloris]');
+		if ( ! inputs.length ) {
+			return;
+		}
+
+		inputs.forEach(function (input) {
+			if (input.classList.contains('wpbc_bfb_coloris')) return;
+			input.classList.add('wpbc_bfb_coloris');
+		});
+
+		try {
+			w.Coloris({
+				el       : '.wpbc_bfb_coloris',
+				alpha    : false,
+				format   : 'hex',
+				themeMode: 'auto',
+				onChange : function (color, input) {
+					if ( ! input ) {
+						return;
+					}
+					try {
+						input.dispatchEvent( new CustomEvent( 'wpbc:bfb:coloris:change', {
+							bubbles: true,
+							detail : {
+								color    : color,
+								currentEl: input
+							}
+						} ) );
+					} catch ( _e ) {}
+				}
+			});
+		} catch (e) {
+			console.warn('WPBC Form Settings: Coloris init failed:', e);
+		}
+	}
+
+	function get_default_custom_appearance_settings() {
+		const localized = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.custom_form_style_defaults
+			? w.wpbc_bfb_settings_vars.custom_form_style_defaults
+			: {};
+
+		return Object.assign( {
+			booking_form_custom_background_color       : '#ffffff',
+			booking_form_custom_border_color           : '#cccccc',
+			booking_form_custom_border_width           : '1px',
+			booking_form_custom_border_radius          : '2px',
+			booking_form_custom_padding_vertical       : '10px',
+			booking_form_custom_padding_horizontal     : '30px',
+			booking_form_custom_text_color             : '#1d2327',
+			booking_form_custom_field_background_color : '#ffffff',
+			booking_form_custom_field_text_color       : '#3c434a',
+			booking_form_custom_field_border_color     : '#cccccc',
+			booking_form_custom_button_background_color: '#066aab',
+			booking_form_custom_button_text_color      : '#ffffff',
+			booking_form_custom_button_border_color    : '#066aab',
+			booking_form_custom_button_hover_background_color: '#055589',
+			booking_form_custom_button_hover_text_color: '#ffffff',
+			booking_form_custom_button_hover_border_color: '#055589',
+			booking_form_custom_secondary_button_background_color: '#fdfdfd',
+			booking_form_custom_secondary_button_text_color: '#444444',
+			booking_form_custom_secondary_button_border_color: '#eeeeee',
+			booking_form_custom_secondary_button_hover_background_color: '#fdfdfd',
+			booking_form_custom_secondary_button_hover_text_color: '#444444',
+			booking_form_custom_secondary_button_hover_border_color: '#4d91cd'
+		}, localized );
+	}
+
+	function get_form_style_option_keys() {
+		const localized = w.wpbc_bfb_settings_vars && Array.isArray( w.wpbc_bfb_settings_vars.form_style_option_keys )
+			? w.wpbc_bfb_settings_vars.form_style_option_keys
+			: [];
+
+		return localized.length ? localized : fallback_form_style_option_keys;
+	}
+
+	function strip_form_style_options_from_pack(settings_pack) {
+		if (!settings_pack || typeof settings_pack !== 'object') return settings_pack;
+		if (!settings_pack.options || typeof settings_pack.options !== 'object') return settings_pack;
+
+		get_form_style_option_keys().forEach(function (key) {
+			delete settings_pack.options[key];
+		});
+
+		return settings_pack;
+	}
+
 	// -----------------------------------------------------------------------------------------------
 	// Row setter
 	// -----------------------------------------------------------------------------------------------
@@ -96,6 +223,11 @@
 				const should_check = (String(radio.value) === target_value);
 				radio.checked = should_check;
 				if (should_check) checked_radio = radio;
+
+				const choice = radio.closest ? radio.closest('.wpbc_theme_choice') : null;
+				if ( choice ) {
+					choice.classList.toggle('is-selected', should_check);
+				}
 			});
 
 			if (wrap) set_initial_attr(wrap, target_value);
@@ -145,6 +277,30 @@
 			const combined = String( value == null ? '' : value );
 			writer.value   = combined;
 			set_initial_attr( writer, combined );
+			if ( do_trigger_events ) trigger_input( writer );
+			return;
+		}
+
+		// Spacing: two number inputs saved into a hidden CSS shorthand writer.
+		if ( row_type === 'spacing' ) {
+			const group = row.querySelector( '.wpbc_spacing_group' );
+			const vertical_input = group ? group.querySelector( 'input[data-wpbc_spacing_vertical]' ) : null;
+			const horizontal_input = group ? group.querySelector( 'input[data-wpbc_spacing_horizontal]' ) : null;
+			const writer = group ? group.querySelector( 'input[data-wpbc_spacing_writer]' ) : null;
+			const parsed = parse_spacing_value( value );
+
+			if ( ! writer ) {
+				return;
+			}
+
+			if ( vertical_input ) {
+				vertical_input.value = parsed.vertical;
+			}
+			if ( horizontal_input ) {
+				horizontal_input.value = parsed.horizontal;
+			}
+			writer.value = parsed.combined;
+			set_initial_attr( writer, parsed.combined );
 			if ( do_trigger_events ) trigger_input( writer );
 			return;
 		}
@@ -204,7 +360,39 @@
 	api.apply = function (settings_pack, scope, opts) {
 		if (!settings_pack || typeof settings_pack !== 'object') return;
 		if (!settings_pack.options || typeof settings_pack.options !== 'object') return; // strict Option A
+		strip_form_style_options_from_pack(settings_pack);
 		apply_flat_settings(settings_pack.options, scope || 'form', opts);
+	};
+
+	api.reset_custom_appearance = function () {
+		const defaults = get_default_custom_appearance_settings();
+
+		if ( ! last_settings_pack || typeof last_settings_pack !== 'object' ) {
+			last_settings_pack = { options: {}, css_vars: {} };
+		}
+		if ( ! last_settings_pack.options || typeof last_settings_pack.options !== 'object' ) {
+			last_settings_pack.options = {};
+		}
+		Object.keys( defaults ).forEach( function (key) {
+			last_settings_pack.options[key] = defaults[key];
+		} );
+
+		apply_flat_settings( defaults, 'global', { trigger_change: true } );
+		init_coloris_pickers( d );
+
+		if ( w.WPBC_BFB_Settings_Effects && typeof w.WPBC_BFB_Settings_Effects.apply_all === 'function' ) {
+			w.WPBC_BFB_Settings_Effects.apply_all( defaults, { source: 'reset-custom-appearance', options: defaults } );
+		}
+
+		try {
+			d.dispatchEvent( new CustomEvent( 'wpbc:bfb:form_settings:changed', {
+				bubbles: true,
+				detail : {
+					source  : 'reset-custom-appearance',
+					settings: { options: Object.assign( {}, defaults ) }
+				}
+			} ) );
+		} catch ( _e ) {}
 	};
 
 	/**
@@ -248,6 +436,11 @@
 				return;
 			}
 
+			if (type === 'spacing') {
+				out[key] = get_spacing_value(row);
+				return;
+			}
+
 			if (type === 'range') {
 				const writer =
 					row.querySelector('input[data-wpbc_slider_range_writer]') ||
@@ -263,6 +456,42 @@
 		return out;
 	};
 
+	function parse_spacing_value(value) {
+		const fallback = { vertical: '10', horizontal: '30', combined: '10px 30px' };
+		const matches = String(value == null ? '' : value).match(/-?\d+(?:\.\d+)?/g) || [];
+		let vertical = matches[0] != null ? String(matches[0]) : fallback.vertical;
+		let horizontal = matches[1] != null ? String(matches[1]) : vertical;
+
+		if (isNaN(Number(vertical))) {
+			vertical = fallback.vertical;
+		}
+		if (isNaN(Number(horizontal))) {
+			horizontal = fallback.horizontal;
+		}
+
+		return {
+			vertical  : vertical,
+			horizontal: horizontal,
+			combined  : vertical + 'px ' + horizontal + 'px'
+		};
+	}
+
+	function get_spacing_value(row) {
+		const group = row ? row.querySelector('.wpbc_spacing_group') : null;
+		const vertical_input = group ? group.querySelector('input[data-wpbc_spacing_vertical]') : null;
+		const horizontal_input = group ? group.querySelector('input[data-wpbc_spacing_horizontal]') : null;
+		const writer = group ? group.querySelector('input[data-wpbc_spacing_writer]') : null;
+		const vertical = vertical_input ? String(vertical_input.value || '0') : '0';
+		const horizontal = horizontal_input ? String(horizontal_input.value || vertical) : vertical;
+		const combined = parse_spacing_value(vertical + 'px ' + horizontal + 'px').combined;
+
+		if (writer) {
+			writer.value = combined;
+		}
+
+		return combined;
+	}
+
 	/**
 	 * Re-apply last received settings (useful after DOM re-render).
 	 */
@@ -272,6 +501,8 @@
 	};
 
 	api.init = function () {
+		init_coloris_pickers(d);
+
 		// If apply event fired before init, try again now.
 		if (last_settings_pack) schedule_apply_retry();
 	};
@@ -296,6 +527,7 @@
 		Object.keys(collected).forEach(function (k) {
 			target_pack.options[k] = collected[k];
 		});
+		strip_form_style_options_from_pack(target_pack);
 	});
 
 	// Load: receive settings from AJAX and apply.
@@ -307,6 +539,16 @@
 		retry_count = 0;
 		schedule_apply_retry();
 	});
+
+	d.addEventListener( 'click', function (e) {
+		const btn = e && e.target && e.target.closest ? e.target.closest( '[data-wpbc-bfb-reset-custom-appearance]' ) : null;
+		if ( ! btn ) {
+			return;
+		}
+
+		e.preventDefault();
+		api.reset_custom_appearance();
+	}, false );
 
 	function schedule_apply_retry() {
 		if (raf_id) return;
@@ -322,6 +564,7 @@
 			}
 
 			api.reapply_last();
+			init_coloris_pickers(d);
 		});
 	}
 

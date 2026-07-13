@@ -58,13 +58,13 @@
 
 /* “Dark” variant — tweak text colors inside form area */
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form label {
-	color: #ddd;
+	color: var(--wpbc_form-label-color, #ddd);
 }
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form input[type="text"],
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form input[type="email"],
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form textarea,
 .wpbc_booking_form_structure.wpbc_form_dark .wpbc_structure_form select {
-	color: #000;
+	color: var(--wpbc_form-field-text-color, #000);
 }
 
 /* “Form right” layout — calendar + form side‑by‑side (responsive) */
@@ -181,7 +181,7 @@ form.booking_form {
 .booking_form_div input[type="text"],
 .booking_form_div input[type="email"],
 .booking_form_div select {
-	border-color: #DFDFDF;
+	border-color: var(--wpbc_form-field-border-color, #DFDFDF);
 	border-radius: 4px;
 	border-style: solid;
 	border-width: 1px;
@@ -222,19 +222,24 @@ form.booking_form {
 .booking_form input[type="time"]:focus,
 .booking_form input[type="url"]:focus,
 .booking_form input[type="week"]:focus,
-.booking_form input[type="checkbox"]:focus,
-.booking_form input[type="radio"]:focus,
 .booking_form select:focus,
 .booking_form textarea:focus {
-	box-shadow: 0 0 2px #2d7eff;
+	box-shadow: 0 0 2px var(--wpbc_form-field-focus-shadow-color, #2d7eff);
 	outline: none;
-	border-color: #567cb8;
+	border-color: var(--wpbc_form-field-focus-border-color, #567cb8);
+}
+
+.booking_form input[type="checkbox"]:focus,
+.booking_form input[type="radio"]:focus {
+	box-shadow: 0 0 2px var(--wpbc_form-choice-focus-color, #2d7eff);
+	outline: none;
+	border-color: var(--wpbc_form-choice-focus-color, #567cb8);
 }
 
 /* Disabled/Booked select options */
 .booking_form_div select option.booked,
 .booking_form_div select option:disabled {
-	color: #ddd;
+	color: var(--wpbc_form-field-disabled-color, #ddd);
 }
 
 /* Small selects (visitors count) */
@@ -1037,8 +1042,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 
 /* Overall container width & top spacing */
 .wpbc_container_booking_form {
-	width: 99%;
-	margin-top: 1em;
+	width: calc(100% - 10px);
+	margin: 5px;
 }
 
 /* Unified row: flex layout with small gap */
@@ -1282,7 +1287,9 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 .wpbc_container.wpbc_container_booking_form textarea[rows*="9"] {
 	height: auto;
 }
-
+.wpbc_form {
+	border:0;
+}
 /* Theme quirks: fix min heights in some WP themes (e.g., Twenty Five) */
 .is-layout-constrained .wpbc_form { /* FixIn: 10.14.2.1. */
 	margin: 5px auto 0;
@@ -1370,8 +1377,8 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 }
 
 /* Near-field warning spacing */
-.wpbc_booking_form_simple .wpbc_front_end__message_container_right {
-	margin: 10px 0;
+.wpbc_calendar_wraper .wpbc_front_end__message_container_right {
+	display:flex;
 }
 
 
@@ -1527,7 +1534,7 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 
 /* ========================================================================== */
 /*  Payment Gateways — layout & per-gateway buttons                           */
-/*  What: gateway cards, iDEAL table, button skins (Stripe/PayPal variants)   */
+/*  What: gateway cards, iDEAL table, and payment layout                      */
 /* ========================================================================== */
 .wpbc_ty__content_gateways .wpbc_ty__gateway {
 	flex: 1 1 100%;
@@ -1585,225 +1592,6 @@ table.wpbc_ideal_payment_table {
 }
 .wpbc_ideal_payment_table td label {
 	font-weight: 600;
-}
-
-
-/* ========================================================================== */
-/*  Buttons — generic lightweight button                                      */
-/*  What: neutral button baseline used across front-end                       */
-/* ========================================================================== */
-.wpbc_container.wpbc_form input.wpbc_button_light,
-.wpbc_container.wpbc_form input.wpbc_button_light:focus,
-.wpbc_container.wpbc_form input.wpbc_button_light:hover,
-.wpbc_container .wpbc_button_light,
-.wpbc_container .wpbc_button_light:focus,
-.wpbc_container .wpbc_button_light:hover,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:hover {
-	font-size: clamp(1em, 1em + ((1vw - 0.2em) * 0.208), 1.125em);
-	border: 2px solid #eeeeeeb5;
-	box-shadow: 0 2px 10px 2px #ffffff54;
-	background: #fdfdfd;
-	color: #444444e0;
-	border-radius: 0.375em;
-	padding: 0 2.2em;
-	line-height: calc(var(--wpbc_form-button-light-size-height) - 3px);
-	text-decoration: none;
-	cursor: pointer;
-	outline: none;
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-	align-items: center;
-	margin: 0;
-	height: var(--wpbc_form-button-light-size-height);
-	box-sizing: border-box;
-	text-shadow: none;
-	/* word wraping */
-	text-overflow: ellipsis;
-	overflow: hidden;
-	overflow-wrap: normal;
-	height: auto;
-	white-space: normal;
-	hyphens: auto;
-}
-
-/* Hover/focus emphasis */
-.wpbc_container.wpbc_form input.wpbc_button_light:focus,
-.wpbc_container.wpbc_form input.wpbc_button_light:hover,
-.wpbc_container .wpbc_button_light:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:focus,
-.wpbc_container .wpbc_button_light:hover,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:hover {
-	border: 2px solid rgb(77, 145, 205);
-}
-
-/* Primary button */
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary {
-	background: var(--wpbc_form-button-background-color, #066aab);
-	color: #fff;
-}
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:hover {
-	background: var(--wpbc_form-button-background-color, #066aab);
-	color: #fff;
-	border-color: #fff;
-	box-shadow: 0 0 0px 2px var(--wpbc_form-button-background-color, #066aab);
-}
-
-/* Disabled/active states */
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:active,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:hover {
-	color: #ccc;
-	border: 2px solid #eeeeeeb5;
-	cursor: not-allowed;
-}
-
-/* Danger variant */
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger {
-	background: #de605c;
-	border-color: #de605c;
-	color: #f7f7f7;
-	text-shadow: 0 0px #ba5956;
-}
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger:hover {
-	background: #e65d59;
-	color: #fff;
-	border-color: #fff;
-	box-shadow: 0 0 0px 2px #de605c;
-}
-
-
-/* ========================================================================== */
-/*  Stripe — gateway button                                                   */
-/* ========================================================================== */
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe * {
-	color: #fff;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe {
-	background: 90% 50% / 80px auto no-repeat url("../inc/assets/stripe.svg"), #fff;
-	background-color: rgb(77, 77, 77);
-	padding-right: 130px;
-	border: 2px solid rgb(77, 77, 77);
-	color: #fff;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe.wpbc_button_gw_bccom {
-	background: 90% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/stripe.svg"), #fff;
-	background-color: rgb(77, 77, 77);
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover {
-	border: 2px solid #5f5f5f;
-	background-color: #5f5f5f;
-}
-
-
-/* ========================================================================== */
-/*  PayPal — gateway buttons (yellow/blue/silver/white/black)                 */
-/* ========================================================================== */
-/* Yellow/Silver/White base */
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white {
-	padding-right: 115px;
-	background-color: #ffc439 !important;
-	border: 2px solid #ffc439 !important;
-	color: #2C2E2F;
-	box-shadow: none;
-	text-indent: -9999px;
-	background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_commerce.svg"), #ffc439 !important;
-	min-width: 175px;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow.wpbc_button_gw_bccom,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver.wpbc_button_gw_bccom,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white.wpbc_button_gw_bccom {
-	background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_commerce.svg"), #ffc439 !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:hover,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver:hover,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white:hover {
-	background-color: #f2ba36;
-	border-color: #f2ba36;
-	box-shadow: 0 5px 10px #f0f0f8;
-	color: #5f5f5f;
-}
-
-/* Blue/Black base */
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black {
-	padding-right: 115px;
-	background-color: #009cde !important;
-	border: 2px solid #009cde !important;
-	color: #fff;
-	box-shadow: none;
-	text-indent: -9999px;
-	background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_white_full.svg"), #009cde !important;
-	min-width: 175px;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue.wpbc_button_gw_bccom,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black.wpbc_button_gw_bccom {
-	background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_white_full.svg"), #009cde !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_blue:hover,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black:hover {
-	background-color: #33b0e5;
-	border-color: #33b0e5;
-	box-shadow: 0 5px 10px #f0f0f8;
-	color: #fff;
-}
-
-/* Silver tweak (based on Yellow) */
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver {
-	background-color: #eee !important;
-	border: 2px solid #eee !important;
-	background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_commerce.svg"), #eee !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver.wpbc_button_gw_bccom {
-	background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_commerce.svg"), #eee !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_silver:hover {
-	background-color: #e2e2e2 !important;
-	border-color: #e2e2e2 !important;
-}
-
-/* White tweak (based on Yellow) */
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white {
-	background-color: #fff !important;
-	border: 1px solid #2C2E2F !important;
-	background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_commerce.svg"), #fff !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white.wpbc_button_gw_bccom {
-	background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_commerce.svg"), #fff !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_white:hover {
-	background-color: #fff !important;
-	border-color: #2C2E2F !important;
-}
-
-/* Black tweak (based on Blue) */
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black {
-	background-color: #2c2e2f !important;
-	border: 2px solid #2c2e2f !important;
-	background: 50% 50% / 80px auto no-repeat url("../inc/assets/paypal_white_full.svg"), #2c2e2f !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black.wpbc_button_gw_bccom {
-	background: 50% 50% / 80px auto no-repeat url("../../booking-calendar-com/inc/assets/paypal_white_full.svg"), #2c2ef !important;
-}
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black:focus,
-.wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_black:hover {
-	background-color: #565859 !important;
-	border-color: #565859 !important;
 }
 
 
@@ -1868,49 +1656,20 @@ table.wpbc_ideal_payment_table {
 	box-shadow: 0 0px 3px #3b3b3b;
 }
 
-/* Payment buttons in dark theme */
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light {
-	box-shadow: 0 1px 5px #424242;
-	border: 2px solid #525252;
-	background-color: #4d4d4d;
-	color: #fff;
+/* Dark theme: booking form text colors. Scope to form content, not Builder UI chrome. */
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_bfb_form p,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_bfb_form label,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form p,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form label {
+	color: var(--wpbc_form-label-color, #989898);
 }
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:focus,
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:hover,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:focus,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:hover {
-	box-shadow: 0 1px 5px #424242;
-	border: 2px solid #5f5f5f;
-	background-color: #5c5c5c;
-	color: #fff;
-}
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:focus,
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:hover,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:focus,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_paypal_yellow:hover {
-	box-shadow: 0 5px 10px #424242;
-}
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover {
-	background-color: #4d4d4d;
-	border-color: #4d4d4d;
-}
-
-/* Dark theme: generic text colors */
-.wpbc_theme_dark_1 p,
-.wpbc_theme_dark_1 label {
-	color: #989898;
-}
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope select,
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope textarea,
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope input,
-.wpbc_theme_dark_1.wpbc_container select,
-.wpbc_theme_dark_1.wpbc_container textarea,
-.wpbc_theme_dark_1.wpbc_container input {
-	color: #444;
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_bfb_form select,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_bfb_form textarea,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_bfb_form input,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form select,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form textarea,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form input {
+	color: var(--wpbc_form-field-text-color, #444);
 }
 
 
@@ -1927,7 +1686,10 @@ table.wpbc_ideal_payment_table {
 .capacity_hint.wpbc_chin_newline {
 	flex: 1 1 100%;
 }
-
+.bfb_element:has(.capacity_hint) {
+	align-items: center !important;
+	align-items: center !important;
+}
 .wpbc_capacity_hint_container {
 	display: flex;
 	flex-flow: column nowrap;

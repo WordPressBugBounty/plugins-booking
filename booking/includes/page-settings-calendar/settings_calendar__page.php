@@ -102,7 +102,7 @@ function wpbc_settings_calendar_enqueue_js_files( $where_to_load ) {
 				'save_failed'    => __( 'Unable to save calendar settings.', 'booking' ),
 				'preview_failed' => __( 'Unable to refresh calendar preview.', 'booking' ),
 				'loading'        => __( 'Loading', 'booking' ),
-				'premium_notice' => __( 'Range days selection is available in Booking Calendar Business Small or higher. Open the live demo to test the real behavior.', 'booking' ),
+				'premium_notice' => __( 'Advanced range rules are available in Booking Calendar Business Small or higher. Open the live demo to test the real behavior.', 'booking' ),
 				'premium_changeover_notice' => __( 'Changeover days are available in Booking Calendar Business Small or higher. Open the live demo to test the real behavior.', 'booking' ),
 				'premium_option_notice' => __( 'This option is available in Booking Calendar Business Small or higher.', 'booking' ),
 			),
@@ -130,13 +130,29 @@ function wpbc_settings_calendar_print_tooltip_js() {
 add_action( 'admin_footer', 'wpbc_settings_calendar_print_tooltip_js', 67 );
 
 /**
- * Check whether current edition supports range/change-over calendar settings.
+ * Check whether current edition supports advanced range rules and change-over settings.
  *
  * @return bool
  */
 function wpbc_settings_calendar__is_range_supported() {
 
 	return class_exists( 'wpdev_bk_biz_s' );
+}
+
+/**
+ * Get the main Range days option title for the current edition.
+ *
+ * Free and Personal expose only the unrestricted two-click range. Business
+ * Small and higher select one-click or two-click behavior in the subtype
+ * controls shown below the main option.
+ *
+ * @return string
+ */
+function wpbc_settings_calendar__get_range_days_title() {
+
+	return wpbc_settings_calendar__is_range_supported()
+		? __( 'Range days', 'booking' )
+		: __( 'Range days - 2 mouse clicks', 'booking' );
 }
 
 /**
@@ -548,6 +564,24 @@ function wpbc_settings_calendar__normalize_week_days( $value ) {
 }
 
 /**
+ * Normalize the fixed one-click range length.
+ *
+ * Existing installations may not have this option yet. Keep explicitly
+ * configured values, including one day, but use three days when it is empty
+ * or invalid.
+ *
+ * @param mixed $value Fixed range day count.
+ *
+ * @return int
+ */
+function wpbc_settings_calendar__normalize_fixed_range_days_count( $value ) {
+
+	$days_count = absint( $value );
+
+	return ( 0 < $days_count ) ? min( 180, $days_count ) : 3;
+}
+
+/**
  * Get settings response.
  *
  * @return array
@@ -560,7 +594,7 @@ function wpbc_settings_calendar__get_settings_response() {
 		'booking_calendar_allow_several_months_on_mobile' => (string) get_bk_option( 'booking_calendar_allow_several_months_on_mobile' ),
 		'booking_type_of_day_selections'                => (string) get_bk_option( 'booking_type_of_day_selections' ),
 		'booking_range_selection_type'                  => (string) get_bk_option( 'booking_range_selection_type' ),
-		'booking_range_selection_days_count'            => (string) get_bk_option( 'booking_range_selection_days_count' ),
+		'booking_range_selection_days_count'            => (string) wpbc_settings_calendar__normalize_fixed_range_days_count( get_bk_option( 'booking_range_selection_days_count' ) ),
 		'booking_range_start_day'                       => wpbc_settings_calendar__normalize_week_days( get_bk_option( 'booking_range_start_day' ) ),
 		'booking_range_selection_days_count_dynamic'    => (string) get_bk_option( 'booking_range_selection_days_count_dynamic' ),
 		'booking_range_selection_days_max_count_dynamic' => (string) get_bk_option( 'booking_range_selection_days_max_count_dynamic' ),
@@ -622,8 +656,10 @@ function wpbc_settings_calendar__get_days_selection_response( $settings = array(
 		: $current['booking_range_selection_days_specific_num_dynamic'];
 
 	return array(
-		'days_select_mode'         => ( 'range' === $current['booking_type_of_day_selections'] ) ? $current['booking_range_selection_type'] : $current['booking_type_of_day_selections'],
-		'fixed__days_num'          => max( 1, absint( $current['booking_range_selection_days_count'] ) ),
+		'days_select_mode'         => ( 'range' === $current['booking_type_of_day_selections'] )
+			? ( wpbc_settings_calendar__is_range_supported() ? $current['booking_range_selection_type'] : 'dynamic' )
+			: $current['booking_type_of_day_selections'],
+		'fixed__days_num'          => wpbc_settings_calendar__normalize_fixed_range_days_count( $current['booking_range_selection_days_count'] ),
 		'fixed__week_days__start'  => wpbc_settings_calendar__normalize_week_days( $current['booking_range_start_day'] ),
 		'dynamic__days_min'        => max( 1, absint( $current['booking_range_selection_days_count_dynamic'] ) ),
 		'dynamic__days_max'        => max( 1, absint( $current['booking_range_selection_days_max_count_dynamic'] ) ),
@@ -949,7 +985,7 @@ function wpbc_settings_calendar__validate_data( $post_data, $is_preview = false 
 	$range_type = isset( $post_data['booking_range_selection_type'] ) ? sanitize_key( wp_unslash( $post_data['booking_range_selection_type'] ) ) : $current['booking_range_selection_type'];
 	$cleaned['booking_range_selection_type'] = in_array( $range_type, array( 'fixed', 'dynamic' ), true ) ? $range_type : 'dynamic';
 
-	$cleaned['booking_range_selection_days_count'] = (string) min( 180, max( 1, absint( isset( $post_data['booking_range_selection_days_count'] ) ? wp_unslash( $post_data['booking_range_selection_days_count'] ) : $current['booking_range_selection_days_count'] ) ) );
+	$cleaned['booking_range_selection_days_count'] = (string) wpbc_settings_calendar__normalize_fixed_range_days_count( isset( $post_data['booking_range_selection_days_count'] ) ? wp_unslash( $post_data['booking_range_selection_days_count'] ) : $current['booking_range_selection_days_count'] );
 	$cleaned['booking_range_selection_days_count_dynamic'] = (string) min( 1095, max( 1, absint( isset( $post_data['booking_range_selection_days_count_dynamic'] ) ? wp_unslash( $post_data['booking_range_selection_days_count_dynamic'] ) : $current['booking_range_selection_days_count_dynamic'] ) ) );
 	$cleaned['booking_range_selection_days_max_count_dynamic'] = (string) min( 1095, max( 1, absint( isset( $post_data['booking_range_selection_days_max_count_dynamic'] ) ? wp_unslash( $post_data['booking_range_selection_days_max_count_dynamic'] ) : $current['booking_range_selection_days_max_count_dynamic'] ) ) );
 	if ( (int) $cleaned['booking_range_selection_days_max_count_dynamic'] < (int) $cleaned['booking_range_selection_days_count_dynamic'] ) {
@@ -1083,11 +1119,14 @@ function wpbc_settings_calendar__update_settings( $cleaned_data ) {
 		$free_keys[] = 'booking_legend_text_for_item_' . $legend_item;
 	}
 
+	$previous_day_mode = (string) get_bk_option( 'booking_type_of_day_selections' );
 	foreach ( $free_keys as $key ) {
-		if ( 'booking_type_of_day_selections' === $key && ! $range_supported && 'range' === $cleaned_data[ $key ] ) {
-			continue;
-		}
 		update_bk_option( $key, $cleaned_data[ $key ] );
+	}
+
+	// Keep a newly selected Free range upgrade-safe: Business Small+ must continue with the same two-click subtype.
+	if ( ! $range_supported && 'range' === $cleaned_data['booking_type_of_day_selections'] && 'range' !== $previous_day_mode ) {
+		update_bk_option( 'booking_range_selection_type', 'dynamic' );
 	}
 
 	if ( $range_supported ) {
@@ -1241,7 +1280,7 @@ function wpbc_settings_calendar__render_dismiss_button( $dismiss_id ) {
 }
 
 /**
- * Render shared Business Small+ explanation for range/changeover locked controls.
+ * Render the Business Small+ explanation for advanced range controls.
  *
  * @return void
  */
@@ -1250,8 +1289,8 @@ function wpbc_settings_calendar__render_range_upgrade_note() {
 	?>
 	<div class="wpbc_calendar_premium_note" data-wpbc-calendar-range-upgrade-note="1">
 		<div>
-			<strong><?php esc_html_e( 'Range days selection', 'booking' ); ?></strong>
-			<p><?php esc_html_e( 'Visitors select a start and end date, with optional minimum and maximum range length and allowed start weekdays. This feature is available in Booking Calendar Business Small or higher.', 'booking' ); ?></p>
+			<strong><?php esc_html_e( 'Advanced range selection rules', 'booking' ); ?></strong>
+			<p><?php esc_html_e( 'Two-click range selection is included. Fixed one-click ranges, minimum and maximum lengths, specific permitted lengths, and allowed start weekdays are available in Booking Calendar Business Small or higher.', 'booking' ); ?></p>
 		</div>
 		<div class="wpbc_calendar_premium_note_actions">
 			<a class="button button-secondary" href="<?php echo esc_url( 'https://bm.wpbookingcalendar.com/' ); ?>" target="_blank"><?php esc_html_e( 'View live demo', 'booking' ); ?></a>
@@ -1725,19 +1764,20 @@ class WPBC_Page_Settings_Calendar extends WPBC_Page_Structure {
 						'open'  => ( '' === $open_section || 'days_selection' === $open_section ),
 					),
 					function () use ( $settings, $is_premium_lock ) {
-						$selected_day_mode = ( $is_premium_lock && 'range' === $settings['booking_type_of_day_selections'] ) ? 'multiple' : $settings['booking_type_of_day_selections'];
-						$range_dismiss_id  = wpbc_settings_calendar__get_premium_option_dismiss_id( 'booking_type_of_day_selections_range' );
+						$selected_day_mode = in_array( $settings['booking_type_of_day_selections'], array( 'single', 'multiple', 'range' ), true )
+							? $settings['booking_type_of_day_selections']
+							: 'multiple';
+						$range_days_title = wpbc_settings_calendar__get_range_days_title();
 						?>
 						<div class="wpbc_calendar_radio_stack" data-wpbc-calendar-days-mode="1">
 							<label><input type="radio" name="booking_type_of_day_selections" value="single" <?php checked( 'single', $selected_day_mode ); ?> /> <span><?php esc_html_e( 'Single day', 'booking' ); ?></span></label>
 							<label><input type="radio" name="booking_type_of_day_selections" value="multiple" <?php checked( 'multiple', $selected_day_mode ); ?> /> <span><?php esc_html_e( 'Multiple days', 'booking' ); ?></span></label>
-							<?php if ( ! $is_premium_lock || wpbc_settings_calendar__is_dismissed_visible( $range_dismiss_id ) ) : ?>
-								<label id="<?php echo esc_attr( $is_premium_lock ? $range_dismiss_id : '' ); ?>" class="<?php echo $is_premium_lock ? 'is-premium' : ''; ?>"><input type="radio" name="booking_type_of_day_selections" value="range" <?php checked( 'range', $selected_day_mode ); ?> <?php echo $is_premium_lock ? 'data-wpbc-calendar-premium="1" data-wpbc-calendar-premium-range-info="1"' : ''; ?> /> <span><?php esc_html_e( 'Range days', 'booking' ); ?></span> <?php $is_premium_lock && wpbc_settings_calendar__render_premium_label( 'Business Small+', '', $range_dismiss_id ); ?></label>
-							<?php endif; ?>
+							<label><input type="radio" name="booking_type_of_day_selections" value="range" <?php checked( 'range', $selected_day_mode ); ?> /> <span><?php echo esc_html( $range_days_title ); ?></span></label>
 						</div>
 						<?php if ( $is_premium_lock ) : ?>
 							<?php wpbc_settings_calendar__render_range_upgrade_note(); ?>
 						<?php endif; ?>
+						<?php if ( ! $is_premium_lock ) : ?>
 						<div class="wpbc_calendar_subsettings" data-wpbc-calendar-range-settings="1">
 							<div class="wpbc_calendar_radio_stack">
 								<label><input type="radio" name="booking_range_selection_type" value="fixed" <?php checked( 'fixed', $settings['booking_range_selection_type'] ); ?> /> <span><?php esc_html_e( 'Select a fixed number of days with 1 mouse click', 'booking' ); ?></span></label>
@@ -1778,6 +1818,7 @@ class WPBC_Page_Settings_Calendar extends WPBC_Page_Structure {
 								</div>
 							</div>
 						</div>
+						<?php endif; ?>
 						<?php
 					}
 				);

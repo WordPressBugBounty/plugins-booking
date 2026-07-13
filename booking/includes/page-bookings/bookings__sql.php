@@ -2351,42 +2351,15 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 					return $wpbc__form_show_cache[ $cache_key ];
 				}
 
-				// ------------------------------------------------------------
-				// Legacy resolution (keep exactly as before).
-				// ------------------------------------------------------------
-				if ( ! class_exists( 'wpdev_bk_personal' ) ) {
-
-					$booking_form_show = wpbc_simple_form__get_form_show__as_shortcodes();
-					$booking_form_show = wpbc_bf__replace_custom_html_shortcodes( $booking_form_show );
-
-				} else {
-
-					$booking_form_show = get_bk_option( 'booking_form_show' );
-					$booking_form_show = wpbc_bf__replace_custom_html_shortcodes( $booking_form_show );
-
-					// BM / MU legacy forms logic.
-					if ( class_exists( 'wpdev_bk_biz_m' ) ) {
-
-						if ( '' !== $custom_booking_form_name ) {       // FixIn: 9.4.3.12.
-							$booking_form_show    = apply_bk_filter( 'wpdev_get_booking_form_content', $booking_form_show, $custom_booking_form_name );
-							$my_booking_form_name = $custom_booking_form_name;
-						} else {
-							// BM :: Get default Custom Form of Resource
-							$my_booking_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
-							if ( ( 'standard' !== $my_booking_form_name ) && ( '' !== $my_booking_form_name ) ) {
-								$booking_form_show = apply_bk_filter( 'wpdev_get_booking_form_content', $booking_form_show, $my_booking_form_name );
-							}
-						}
-
-						// MU :: if resource belongs to Regular User -> load THAT owner's form (not logged-in user).
-						$booking_form_show = apply_bk_filter( 'wpbc_multiuser_get_booking_form_show_of_regular_user', $booking_form_show, $resource_id, $my_booking_form_name ); // FixIn: 8.1.3.19.
+				if ( '' === $custom_booking_form_name ) {
+					$default_form_name = apply_bk_filter( 'wpbc_get_default_custom_form', 'standard', $resource_id );
+					if ( ! empty( $default_form_name ) ) {
+						$my_booking_form_name = $default_form_name;
 					}
 				}
 
-				// ------------------------------------------------------------
-				// NEW: BFB resolver override (must be AFTER BM/MU legacy resolution).
-				// This ensures BFB "content_form" wins and legacy doesn't clobber it.
-				// ------------------------------------------------------------
+				$booking_form_show = '';
+
 				if ( class_exists( 'WPBC_FE_Form_Source_Resolver' ) && class_exists( 'WPBC_BFB_Form_Loader' ) ) {
 
 					$req = array(
@@ -2394,7 +2367,6 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 						'form_slug'       => (string) $my_booking_form_name,
 						'form_status'     => $form_status,
 						'custom_params'   => array(),
-						'legacy_instance' => null,
 						'ctx'             => ( is_array( $ctx ) ? $ctx : array() ),
 					);
 
@@ -2424,7 +2396,6 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 						}
 
 						if ( '' !== trim( $content_form ) ) {
-							// Keep legacy behavior: custom html shortcodes.
 							$booking_form_show = wpbc_bf__replace_custom_html_shortcodes( $content_form );
 						}
 					}

@@ -20,3 +20,66 @@
 	margin-right: auto;
 	box-sizing: border-box;
 }
+
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom {
+	color: var(--wpbc_form-label-color) !important;
+}
+
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom label,
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom l,
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom .wpbc_static_text,
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom .wpdev-list-item-label,
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom .wpbc_field_description,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom label,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom l,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom .wpbc_static_text,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom .wpdev-list-item-label,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom .wpbc_field_description {
+	color: var(--wpbc_form-label-color) !important;
+}
+
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=date],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=datetime],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=datetime-local],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=email],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=month],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=number],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=password],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=range],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=search],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=tel],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=text],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=time],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=url],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=week],
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom select,
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom textarea,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=date],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=datetime],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=datetime-local],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=email],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=month],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=number],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=password],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=range],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=search],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=tel],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=text],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=time],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=url],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=week],
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom select,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom textarea {
+	background-color: var(--wpbc_form-field-background-color) !important;
+	color: var(--wpbc_form-field-text-color) !important;
+	border-color: var(--wpbc_form-field-border-color) !important;
+}
+
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=checkbox]:not(:checked):before,
+div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom input[type=radio]:not(:checked):before,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=checkbox]:not(:checked):before,
+div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom input[type=radio]:not(:checked):before {
+	background-color: var(--wpbc_form-field-background-color) !important;
+	border-color: var(--wpbc_form-field-border-color) !important;
+}

@@ -7,6 +7,7 @@
 	var cfg = w.wpbc_settings_calendar_page || {};
 	var preview_ajax = null;
 	var preview_timer = 0;
+	var is_saving = false;
 	var notice_timer = 0;
 	var calendar_load_patch_timer = 0;
 	var last_preview_signature = '';
@@ -52,7 +53,7 @@
 		var $note;
 
 		if ( is_range_info ) {
-			message = cfg.i18n && cfg.i18n.premium_notice ? cfg.i18n.premium_notice : 'Range days selection is available in Booking Calendar Business Small or higher. Open the live demo to test the real behavior.';
+			message = cfg.i18n && cfg.i18n.premium_notice ? cfg.i18n.premium_notice : 'Advanced range rules are available in Booking Calendar Business Small or higher. Open the live demo to test the real behavior.';
 		} else if ( is_changeover_info ) {
 			message = cfg.i18n && cfg.i18n.premium_changeover_notice ? cfg.i18n.premium_changeover_notice : 'Changeover days are available in Booking Calendar Business Small or higher. Open the live demo to test the real behavior.';
 		}
@@ -75,38 +76,8 @@
 		return cfg.is_range_supported === 1 || cfg.is_range_supported === '1' || cfg.is_range_supported === true;
 	}
 
-	function is_locked_range_control( field ) {
-		return ! is_range_supported() && $( field ).is( '[name="booking_type_of_day_selections"][value="range"]' );
-	}
-
 	function is_locked_changeover_control( field ) {
 		return ! is_range_supported() && $( field ).is( '[name="booking_range_selection_time_is_active"]' );
-	}
-
-	function get_saved_available_day_mode() {
-		var mode = cfg.settings && cfg.settings.booking_type_of_day_selections ? String( cfg.settings.booking_type_of_day_selections ) : '';
-
-		return ( 'single' === mode || 'multiple' === mode ) ? mode : 'multiple';
-	}
-
-	function remember_available_day_selection() {
-		var $form = get_form();
-		var mode = $form.find( '[name="booking_type_of_day_selections"]:checked' ).val() || '';
-
-		if ( 'single' === mode || 'multiple' === mode ) {
-			$form.data( 'wpbc-calendar-available-day-mode', mode );
-		}
-	}
-
-	function restore_available_day_selection() {
-		var $form = get_form();
-		var mode = $form.data( 'wpbc-calendar-available-day-mode' ) || get_saved_available_day_mode();
-
-		if ( 'single' !== mode && 'multiple' !== mode ) {
-			mode = 'multiple';
-		}
-
-		$form.find( '[name="booking_type_of_day_selections"][value="' + mode + '"]' ).prop( 'checked', true );
 	}
 
 	function switch_panel( $tab ) {
@@ -276,6 +247,9 @@
 
 		$.each( $form.serializeArray(), function ( index, item ) {
 			name = String( item.name || '' ).replace( /\[\]$/, '' );
+			if ( 0 === name.indexOf( 'wpbc_setup' ) ) {
+				return;
+			}
 			if ( data[ name ] ) {
 				if ( ! Array.isArray( data[ name ] ) ) {
 					data[ name ] = [ data[ name ] ];
@@ -337,6 +311,16 @@
 			var parsed = parseInt( item, 10 );
 			return ( '' === item || isNaN( parsed ) ) ? null : parsed;
 		} );
+	}
+
+	function normalize_fixed_range_days_count( value ) {
+		var days_count = parseInt( value, 10 );
+
+		if ( isNaN( days_count ) || days_count < 1 ) {
+			return 3;
+		}
+
+		return Math.min( 180, days_count );
 	}
 
 	function set_calendar_param( resource_id, key, value ) {
@@ -455,7 +439,7 @@
 		if ( 'fixed' === mode && typeof w.wpbc_cal_days_select__fixed === 'function' ) {
 			w.wpbc_cal_days_select__fixed(
 				resource_id,
-				parseInt( ds.fixed__days_num || 1, 10 ),
+				normalize_fixed_range_days_count( ds.fixed__days_num ),
 				fixed_week_days
 			);
 			return true;
@@ -498,7 +482,7 @@
 		set_calendar_param( resource_id, 'calendar_scroll_to', false );
 		set_calendar_param( resource_id, 'is_enabled_change_over', payload.booking_range_selection_time_is_active === 'On' );
 		set_calendar_param( resource_id, 'days_select_mode', String( ds.days_select_mode || 'multiple' ) );
-		set_calendar_param( resource_id, 'fixed__days_num', parseInt( ds.fixed__days_num || 1, 10 ) );
+		set_calendar_param( resource_id, 'fixed__days_num', normalize_fixed_range_days_count( ds.fixed__days_num ) );
 		set_calendar_param( resource_id, 'fixed__week_days__start', fixed_week_days.length ? fixed_week_days : [ -1 ] );
 		set_calendar_param( resource_id, 'dynamic__days_min', parseInt( ds.dynamic__days_min || 1, 10 ) );
 		set_calendar_param( resource_id, 'dynamic__days_max', parseInt( ds.dynamic__days_max || 1, 10 ) );
@@ -538,7 +522,9 @@
 
 	function get_days_selection_from_form() {
 		var data = collect_payload();
-		var mode = data.booking_type_of_day_selections === 'range' ? data.booking_range_selection_type : data.booking_type_of_day_selections;
+		var mode = data.booking_type_of_day_selections === 'range'
+			? ( is_range_supported() ? data.booking_range_selection_type : 'dynamic' )
+			: data.booking_type_of_day_selections;
 		var fixed_days = data.booking_range_start_day_mode === '-1' ? '-1' : ( data.booking_range_start_day_weekdays || '-1' );
 		var dynamic_days = data.booking_range_start_day_dynamic_mode === '-1' ? '-1' : ( data.booking_range_start_day_dynamic_weekdays || '-1' );
 
@@ -551,7 +537,7 @@
 
 		return {
 			days_select_mode: mode || 'multiple',
-			fixed__days_num: parseInt( data.booking_range_selection_days_count || 1, 10 ),
+			fixed__days_num: normalize_fixed_range_days_count( data.booking_range_selection_days_count ),
 			fixed__week_days__start: fixed_days || '-1',
 			dynamic__days_min: parseInt( data.booking_range_selection_days_count_dynamic || 1, 10 ),
 			dynamic__days_max: parseInt( data.booking_range_selection_days_max_count_dynamic || 1, 10 ),
@@ -576,6 +562,7 @@
 		var is_booked_tooltip = $form.find( '[name="booking_is_show_booked_data_in_tooltips"]' ).prop( 'checked' );
 
 		$( '[data-wpbc-calendar-range-settings="1"]' ).toggleClass( 'is-visible', day_mode === 'range' );
+		$( '[data-wpbc-calendar-range-upgrade-note="1"]' ).toggleClass( 'is-visible', day_mode === 'range' && ! is_range_supported() );
 		$( '[data-wpbc-calendar-range-type]' ).removeClass( 'is-visible' );
 		$( '[data-wpbc-calendar-range-type="' + range_type + '"]' ).addClass( 'is-visible' );
 		$( '[data-wpbc-calendar-weekday-checks="booking_range_start_day_weekdays"]' ).toggleClass( 'is-visible', fixed_start !== '-1' );
@@ -617,6 +604,10 @@
 	function refresh_preview() {
 		var data = collect_payload();
 		var signature;
+
+		if ( is_saving ) {
+			return;
+		}
 
 		data.action = cfg.preview_action;
 		data.nonce = cfg.nonce;
@@ -660,6 +651,9 @@
 
 	function schedule_preview_refresh( delay ) {
 		clearTimeout( preview_timer );
+		if ( is_saving ) {
+			return;
+		}
 		preview_timer = setTimeout( refresh_preview, typeof delay === 'number' ? delay : 180 );
 	}
 
@@ -715,6 +709,15 @@
 		data.action = cfg.action;
 		data.nonce = cfg.nonce;
 
+		is_saving = true;
+		clearTimeout( preview_timer );
+		if ( preview_ajax && preview_ajax.readyState !== 4 ) {
+			preview_ajax.abort();
+		}
+		preview_ajax = null;
+		last_preview_signature = '';
+		set_calendar_loading( false );
+
 		$button.addClass( 'disabled' ).attr( 'aria-disabled', 'true' );
 		$button.find( '.in-button-text' ).html( '&nbsp;&nbsp;' + trim_text( cfg.i18n && cfg.i18n.saving ? cfg.i18n.saving : 'Saving' ) + '...' );
 
@@ -723,6 +726,8 @@
 				if ( response && response.success ) {
 					show_message( response.data && response.data.message ? response.data.message : ( cfg.i18n && cfg.i18n.saved ? cfg.i18n.saved : 'Saved' ), 'success', 3000 );
 					cfg.settings = response.data && response.data.settings ? response.data.settings : cfg.settings;
+					cfg.days_selection = response.data && response.data.days_selection ? response.data.days_selection : get_days_selection_from_form();
+					schedule_calendar_settings_apply( cfg.days_selection );
 					$( document ).trigger( 'wpbc:setup-wizard:step-saved', [ 'date_selection' ] );
 					return;
 				}
@@ -733,10 +738,21 @@
 					10000
 				);
 			} )
-			.fail( function () {
-				show_message( cfg.i18n && cfg.i18n.save_failed ? cfg.i18n.save_failed : 'Unable to save calendar settings.', 'error', 10000 );
+			.fail( function ( xhr, text_status ) {
+				var message;
+
+				if ( 'abort' === text_status ) {
+					return;
+				}
+
+				message = xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message
+					? xhr.responseJSON.data.message
+					: ( cfg.i18n && cfg.i18n.save_failed ? cfg.i18n.save_failed : 'Unable to save calendar settings.' );
+
+				show_message( message, 'error', 10000 );
 			} )
 			.always( function () {
+				is_saving = false;
 				$button.removeClass( 'disabled' ).removeAttr( 'aria-disabled' ).html( original_text );
 			} );
 	}
@@ -766,9 +782,6 @@
 		$( document ).on( 'click', '[data-wpbc-calendar-premium-range-info="1"], [data-wpbc-calendar-premium-changeover-info="1"]', function ( event ) {
 			event.preventDefault();
 			event.stopImmediatePropagation();
-			if ( $( this ).is( '[data-wpbc-calendar-premium-range-info="1"]' ) ) {
-				restore_available_day_selection();
-			}
 			if ( $( this ).is( '[data-wpbc-calendar-premium-changeover-info="1"]' ) ) {
 				$( this ).prop( 'checked', false );
 			}
@@ -780,12 +793,6 @@
 			var field_name = this.name || '';
 			var preview_delay = ( 'input' === event.type && is_text_typing_field( this ) ) ? 850 : 180;
 
-			if ( is_locked_range_control( this ) ) {
-				restore_available_day_selection();
-				refresh_conditional_controls();
-				show_premium_notice( $( this ) );
-				return;
-			}
 			if ( is_locked_changeover_control( this ) ) {
 				$( this ).prop( 'checked', false );
 				refresh_conditional_controls();
@@ -794,9 +801,6 @@
 			}
 
 			refresh_conditional_controls();
-			if ( 'booking_type_of_day_selections' === field_name ) {
-				remember_available_day_selection();
-			}
 			schedule_preview_refresh( preview_delay );
 
 			if ( is_full_preview_only_field( field_name ) ) {
@@ -824,7 +828,6 @@
 
 		bind_events();
 		patch_calendar_data_loader();
-		remember_available_day_selection();
 		refresh_conditional_controls();
 		sync_left_navigation_active_section();
 		apply_open_section_from_url();

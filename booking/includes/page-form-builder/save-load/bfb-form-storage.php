@@ -16,7 +16,7 @@
  * 		owner_user_id       – nullable; owner of the form (MultiUser).
  *
  * Engine & payloads
- * 		engine              – engine key: 'bfb', 'legacy_simple', 'legacy_advanced', etc. Default 'bfb'.
+ * 		engine              – engine key: 'bfb' or 'advanced_mode'. Default 'bfb'.
  * 		engine_version      – engine version, e.g. '1.0'.
  * 		structure_json      – canonical builder structure (pages -> sections -> columns -> fields).
  * 		settings_json       – extra non-structural options (CSS classes, theme/skin, internal flags, etc.).
@@ -240,7 +240,7 @@ class WPBC_BFB_Form_Storage {
 	 *     @type int    $owner_user_id      Optional owner ID (MultiUser). Backwards-compat: 'user_id'.
 	 *     @type int    $is_default         1 if default, 0 otherwise.
 	 *
-	 *     @type string $engine             Engine key: 'bfb', 'legacy_simple', 'legacy_advanced'. Default 'bfb'.
+	 *     @type string $engine             Engine key: 'bfb' or 'advanced_mode'. Default 'bfb'.
 	 *     @type string $engine_version     Engine version. Default '1.0'.
 	 *     @type string $structure_json     Canonical JSON structure (required).
 	 *     @type string $settings_json      Optional JSON with extra settings.

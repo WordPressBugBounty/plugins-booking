@@ -28,9 +28,7 @@ function wpbc_settings_calendar_ajax_save() {
 	$cleaned_data = wpbc_settings_calendar__validate_data( $_POST ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 	wpbc_settings_calendar__update_settings( $cleaned_data );
 
-	$message = wpbc_settings_calendar__is_range_supported()
-		? __( 'Calendar settings updated.', 'booking' )
-		: __( 'Calendar settings updated. Premium-only options were previewed but not saved in this edition.', 'booking' );
+	$message = __( 'Calendar settings updated.', 'booking' );
 
 	wp_send_json_success(
 		array(

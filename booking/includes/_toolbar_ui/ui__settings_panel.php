@@ -431,7 +431,7 @@ function wpbc_ui_settings__panel__calendar( $params = array() ) {
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo $onclick; ?>" href="<?php
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $permalink; ?>"> <?php esc_html_e( 'Choose how users can select days: single day, multiple days, or a date range with minimum and maximum limits.', 'booking' ); ?>
+					echo $permalink; ?>"> <?php esc_html_e( 'Choose how users can select a single day, separate multiple days, or an unrestricted date range with two mouse clicks.', 'booking' ); ?>
 				</a>
 			</div>
 		</div><?php
@@ -619,14 +619,7 @@ function wpbc_ui_settings__panel__form( $params = array() ){
 
 		wpbc_ui_settings__panel_start();
 
-		if ( WPBC_Frontend_Settings::is_bfb_enabled( null ) ) {
-			wpbc_ui_settings_panel__card__bfb( $params );
-		} else {
-			wpbc_ui_settings_panel__card__form_fields( $params );
-			wpbc_ui_settings_panel__card__time_fields( $params );
-			wpbc_ui_settings_panel__card__time_slots_options( $params );
-			wpbc_ui_settings_panel__card__form_options( $params );
-		}
+		wpbc_ui_settings_panel__card__bfb( $params );
 
 		wpbc_ui_settings__panel_end();
 
@@ -635,43 +628,7 @@ function wpbc_ui_settings__panel__form( $params = array() ){
 }
 
 	/**
-	 * Show   == Dashboard Card  -  Booking Form Fields ==
-	 *
-	 * @return void
-	 */
-	function wpbc_ui_settings_panel__card__form_fields( $params = array() ){
-
-		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
-		$url = ' href="' . esc_url( wpbc_get_settings_url() . '&tab=form' ) . '" ';
-
-		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__form_fields">
-			<div class="wpbc_ui_settings__text_row">
-				<i class="menu_icon icon-1x wpbc_icn_dashboard"></i>
-				<h1>
-					<a onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" <?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Booking Form Fields','booking'); ?></span>
-					</a>
-				</h1>
-			</div>
-			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" <?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $url; ?>> <?php esc_html_e( 'Add, remove, or customize fields in your booking form.', 'booking' ); ?>
-				</a>
-			</div>
-		</div><?php
-
-	}
-
-
-	/**
-	 * Show   == Dashboard Card  -  Booking Form Fields ==
+	 * Show   == Dashboard Card  -  Booking Form Builder ==
 	 *
 	 * @return void
 	 */
@@ -680,7 +637,7 @@ function wpbc_ui_settings__panel__form( $params = array() ){
 		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
 		$url = ' href="' . esc_url( wpbc_get_settings_url() . '&tab=builder_booking_form' ) . '" ';
 
-		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__form_fields">
+		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__bfb">
 			<div class="wpbc_ui_settings__text_row">
 				<i class="menu_icon icon-1x wpbc_icn_dashboard"></i>
 				<h1>
@@ -703,129 +660,6 @@ function wpbc_ui_settings__panel__form( $params = array() ){
 			</div>
 		</div><?php
 
-	}
-
-	/**
-	 * Show   == Dashboard Card  -  Time Fields  ==
-	 *
-	 * @return void
-	 */
-	function wpbc_ui_settings_panel__card__time_fields( $params = array() ){
-
-		$onclick = '';//  ' onclick="' . "javascript:wpbc_navigation_click_show_section(this,'#wpbc_general_settings_calendar_metabox' );" . '" ';
-		$url = ' href="' . esc_url( wpbc_get_settings_url() . '&tab=form&field_type=timeslots' ) . '" ';
-
-		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__time_fields">
-			<div class="wpbc_ui_settings__text_row">
-				<i class="menu_icon icon-1x wpbc_icn_schedule"></i>
-				<h1>
-					<a onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" <?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $url; ?>>
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html__('Time Slot Configuration','booking'); ?></span>
-					</a>
-				</h1>
-			</div>
-			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" <?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $url; ?>> <?php esc_html_e( 'Enable and configure time selection fields in your booking form.', 'booking' ); ?>
-				</a>
-			</div>
-		</div><?php
-
-	}
-
-
-	/**
-	 * Show   == Dashboard Card  -  Form Options  ==
-	 *
-	 * @return void
-	 */
-	function wpbc_ui_settings_panel__card__form_options( $params = array() ){
-
-		$title   = esc_attr__( 'Booking Form Options', 'booking' );
-
-		if ( ! empty( $params['is_use_permalink'] ) ) {
-			$permalink = wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_form_tab';
-			$onclick   = '';
-		} else {
-			$permalink = 'javascript:void(0);';
-			$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_form_tab a' ,'#wpbc_general_settings_form_metabox', '" . $title . "' );";
-		}
-		$onclick   = '';
-		$permalink = wpbc_get_settings_url() . '&tab=form&subtab=form_options';
-
-		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__form_options">
-			<div class="wpbc_ui_settings__text_row">
-				<i class="menu_icon icon-1x wpbc-bi-toggle2-off"></i>
-				<h1>
-					<a onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" href="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $permalink; ?>">
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html( $title ); ?></span>
-					</a>
-				</h1>
-			</div>
-			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" href="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $permalink; ?>">
-					<?php esc_html_e( 'Enable CAPTCHA, auto-fill fields, and customize the form\'s color theme.', 'booking' ); ?>
-				</a>
-			</div>
-		</div><?php
-	}
-
-	/**
-	 * Show   == Dashboard Card  -  Time Slots Options  ==
-	 *
-	 * @return void
-	 */
-	function wpbc_ui_settings_panel__card__time_slots_options( $params = array() ){
-
-		$title   = esc_attr__( 'Time Slot Appearance', 'booking' );
-
-		if ( ! empty( $params['is_use_permalink'] ) ) {
-			$permalink = wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_time_slots_tab';
-			$onclick   = '';
-		} else {
-			$permalink = 'javascript:void(0);';
-			$onclick = "javascript:wpbc_ui_settings__panel__click( '#wpbc_general_settings_time_slots_tab a' ,'#wpbc_general_settings_time_slots_metabox', '" . $title . "' );";
-		}
-		$permalink = function_exists( 'wpbc_get_settings_themes_url' ) ? wpbc_get_settings_themes_url() : wpbc_get_settings_url() . '&tab=themes';
-		$onclick   = '';
-
-		?><div class="wpbc_ui_settings__card wpbc_ui_settings__card_text_small wpbc_ui_settings__card_divider_right wpbc_ui_settings_panel__card__time_slots_options">
-			<div class="wpbc_ui_settings__text_row">
-				<i class="menu_icon icon-1x wpbc_icn_more_time"></i>
-				<h1>
-					<a onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" href="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $permalink; ?>">
-						<span class="0wpbc_ui_settings__text_color__black2"><?php echo esc_html( $title ); ?></span>
-					</a>
-				</h1>
-			</div>
-			<div class="wpbc_ui_settings__text_row">
-				<a class="wpbc_ui_settings__text_color__black" onclick="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $onclick; ?>" href="<?php
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $permalink; ?>"> <?php esc_html_e( 'Choose how time slots are shown in the form: as a dropdown list or a time picker, and set a color theme.', 'booking' ); ?>
-				</a>
-			</div>
-		</div><?php
 	}
 
 // ---------------------------------------------------------------------------------------------------------------------

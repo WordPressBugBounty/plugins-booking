@@ -126,7 +126,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 							echo esc_html__( 'You can always change this later', 'booking' ) . '. ';
 							/* translators: 1: ... */
 							echo wp_kses_post( sprintf( __( 'Configure it at the %s page.', 'booking' ),
-							'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=form' ).'">Settings > Booking Form</a>',
+							'<a href="'. esc_attr( wpbc_get_settings_url() . '&tab=builder_booking_form' ).'">Settings > Booking Form Builder</a>',
 							'<a href="https://wpbookingcalendar.com/faq/no-emails/">', '</a>' ) );
 							echo ' ';
 						?>

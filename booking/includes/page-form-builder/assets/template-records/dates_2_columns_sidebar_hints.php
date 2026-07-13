@@ -359,7 +359,8 @@ WPBC_BFB_TEMPLATE_LEFT;
 
 $wpbc_dates_2_columns_sidebar_hints_advanced_form = trim(
 <<<WPBC_BFB_TEMPLATE_ADVANCED_FORM
-<div class="wpbc_bfb_form">
+<div class="wpbc_bfb_form wpbc_wizard__border_container">
+	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1">
 	<r>
 		<c style="flex-basis: 48.5%; --wpbc-bfb-col-gap: 20px; --wpbc-col-min: 0px">
 {$wpbc_dates_2_columns_sidebar_hints_left_advanced}
@@ -406,6 +407,7 @@ $wpbc_dates_2_columns_sidebar_hints_advanced_form = trim(
 			</item>
 		</c>
 	</r>
+	</div>
 </div>
 WPBC_BFB_TEMPLATE_ADVANCED_FORM
 );

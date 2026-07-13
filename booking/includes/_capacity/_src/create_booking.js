@@ -116,7 +116,7 @@ console.groupEnd();
 																'resource_id': response_data[ 'resource_id' ],
 																'url'        : response_data[ 'ajx_data' ][ 'captcha__simple' ][ 'url' ],
 																'challenge'  : response_data[ 'ajx_data' ][ 'captcha__simple' ][ 'challenge' ],
-																'message'    : response_data[ 'ajx_data' ][ 'ajx_after_action_message' ].replace( /\n/g, "<br />" )
+																		'message'    : response_data[ 'ajx_data' ][ 'ajx_after_action_message' ]
 															}
 														);
 								break;
@@ -319,7 +319,7 @@ console.groupEnd();
 		document.getElementById( 'wpdev_captcha_challenge_' + params[ 'resource_id' ] ).value = params[ 'challenge' ];
 
 		// Show warning 		After CAPTCHA Img
-		var message_id = wpbc_front_end__show_message__warning( '#captcha_input' + params[ 'resource_id' ] + ' + img', params[ 'message' ] );
+	var message_id = wpbc_front_end__show_message__warning( '#captcha_input' + params[ 'resource_id' ] + ' + img', params[ 'message' ], 'text' );
 
 		// Animate
 		jQuery( '#' + message_id + ', ' + '#captcha_input' + params[ 'resource_id' ] ).fadeOut( 350 ).fadeIn( 300 ).fadeOut( 350 ).fadeIn( 400 ).animate( {opacity: 1}, 4000 );
@@ -436,7 +436,7 @@ console.groupEnd();
 			var $form_container = jQuery( '#booking_form_div' + resource_id );
 			var loader_text     = 'Saving';
 			if ( 'undefined' !== typeof _wpbc && _wpbc.get_message ) {
-				loader_text = _wpbc.get_message( 'message_saving' ) || loader_text;
+				loader_text = _wpbc.get_message( 'message_booking_saving' ) || loader_text;
 			}
 			var loader_html     = '<div id="wpbc_booking_form_spin_loader' + resource_id + '" class="wpbc_booking_form_spin_loader wpbc_booking_form_submit_overlay" aria-live="polite" aria-hidden="false">'
 								+ '<div class="wpbc_spins_loading_container">'

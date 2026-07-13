@@ -227,7 +227,7 @@ class WPBC_Elementor_WPBC_Booking_Form_1 extends \Elementor\Widget_Base {
 				'text'      => esc_html__( 'Go to Form Fields Configuration', 'booking' ),
 				'icon'      => 'eicon-share-arrow',
 				'css_class' => 'e-btn-txt e-btn-txt-border',
-				'url'       => esc_url( wpbc_get_settings_url() . '&tab=form' ),
+				'url'       => esc_url( wpbc_get_settings_url() . '&tab=builder_booking_form' ),
 				'condition' => [
 					'wpbc_booking_shortcode' => 'booking',
 				],

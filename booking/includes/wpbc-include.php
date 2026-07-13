@@ -101,7 +101,6 @@ require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions_dates.php';                
 require_once WPBC_PLUGIN_DIR . '/core/form_parser.php';                                  // Parser for booking form              New in 9.8.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-dates.php';                                   // Dates.
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/date-hints.php';                    // Front-end date hints for Free.       // FixIn: 10.15.6.2.
-require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-settings.php';             // Front-end/BFB settings helper.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_welcome.php';                                 // Welcome Panel Functions.
 require_once WPBC_PLUGIN_DIR . '/includes/_working_time/working_time.php';               // Working Time settings and availability helpers.
 
@@ -143,6 +142,8 @@ if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations.php' ) ) {
 		require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations5.php';
 	}
 }
+
+require_once WPBC_PLUGIN_DIR . '/core/wpbc-frontend-messages.php';           // Visitor-facing form messages and multilingual overrides.
 
 require_once WPBC_PLUGIN_DIR . '/includes/publish/wpbc-create-pages.php';                // Create pages for different purposes                  // FixIn: 9.6.2.10.
 require_once WPBC_PLUGIN_DIR . '/includes/publish/wpbc-publish-shortcode.php';           // Publish  Booking Calendar shortcodes into the Pages   // FixIn: 9.8.15.5.
@@ -201,12 +202,10 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availabili
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__save.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__page.php';
 
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/class-wpbc-bfb-form-shortcode-engine.php';  // New Shortcode Parsers and Form Render. 11.0.1.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/bfb-form-render.php';
 
-if ( WPBC_NEW_FORM_BUILDER ) {
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/class-wpbc-bfb-form-shortcode-engine.php';  // New Shortcode Parsers and Form Render. 11.0.1.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/bfb-form-render.php';
-}
 
 // Elementor Addons:   https://developers.elementor.com/docs/getting-started/first-addon/.
  require_once WPBC_PLUGIN_DIR . '/includes/elementor-booking-form/wpbc-elementor.php';
@@ -227,18 +226,10 @@ require_once WPBC_PLUGIN_DIR . '/core/admin/wpbc-gutenberg.php';              //
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-// Functions from  Free form that can  be use in paid versions in Wizard Setup.
-
-require_once WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_templates.php';                                         // Booking Form  Templates // FixIn: 10.6.2.1.
-
-require_once WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__default.php';
-require_once WPBC_PLUGIN_DIR . '/includes/page-form-simple/form_simple__get_data.php';
-
 if ( file_exists( WPBC_PLUGIN_DIR . '/inc/_ps/personal.php' ) ) {
 	require_once WPBC_PLUGIN_DIR . '/inc/_ps/personal.php';
 } else {
 	require_once WPBC_PLUGIN_DIR . '/includes/page-resource-free/page-resource-free.php';        // Resource page for Free version.
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-simple/page-form-simple.php';            // Booking Form Simple.
 
 	require_once WPBC_PLUGIN_DIR . '/core/admin/page-email-new-admin.php';   // Email - New admin.
 	require_once WPBC_PLUGIN_DIR . '/core/admin/page-email-new-visitor.php'; // Email - New visitor.
@@ -253,13 +244,14 @@ if ( file_exists( WPBC_PLUGIN_DIR . '/inc/_ps/personal.php' ) ) {
 	require_once WPBC_PLUGIN_DIR . '/core/admin/page-import-gcal.php';        // Import from  Google Calendar Settings page .
 }
 
-require_once WPBC_PLUGIN_DIR . '/includes/page-settings-form-options/page-settings-form-options.php';                                     // Booking Form Opyions Settings.
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-themes/settings_themes__page.php';                                                // Appearance / Theme Settings.
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-themes/ajax/settings_themes__save.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-themes/ajax/settings_themes__preview.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-calendar/settings_calendar__page.php';                                             // Calendar Settings.
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-calendar/ajax/settings_calendar__save.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-calendar/ajax/settings_calendar__preview.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-messages/settings_messages__page.php';                                      // Visitor-facing Form Messages settings.
+require_once WPBC_PLUGIN_DIR . '/includes/page-settings-messages/ajax/settings_messages__save.php';
 
 // Booking > Setup page                                                         // FixIn: 10.2.0.1.
 // FixIn: 9.8.0.2.
@@ -281,6 +273,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-inline-css-js.php'
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-render.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-shortcodes.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-form-source-resolver.php';
+require_once WPBC_PLUGIN_DIR . '/includes/_front_end/form-style-presets.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/hooks/class-fe-bfb-settings-hooks.php';   // Apply BFB settings to rendered booking form HTML.
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-render-form-body.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_custom_forms/class-custom-forms-helper.php';        // Custom forms Helpers.
