@@ -911,6 +911,7 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 			'hided'                                     => false,
 			'subtabs'                                   => array(),
 			'folder_style'                              => 'order:93;',
+			'is_show_top_navigation'             => true,
 		);
 
 		return $tabs;

@@ -9,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! defined( 'WPBC_AVAILABILITY_TIMESLOTS_DEFAULT_DAYS_COUNT' ) ) {
+	define( 'WPBC_AVAILABILITY_TIMESLOTS_DEFAULT_DAYS_COUNT', 30 );
+}
+
 /**
  * Check whether the reusable Time Slots Availability component is rendered on current admin page.
  *
@@ -200,7 +204,7 @@ function wpbc_availability_timeslots__get_resources() {
  *
  * @return array
  */
-function wpbc_availability_timeslots__get_initial_rows( $start_ts, $days_count = 7 ) {
+function wpbc_availability_timeslots__get_initial_rows( $start_ts, $days_count = WPBC_AVAILABILITY_TIMESLOTS_DEFAULT_DAYS_COUNT ) {
 
 	$rows       = array();
 	$days_count = max( 1, intval( $days_count ) );
@@ -323,7 +327,7 @@ function wpbc_availability_timeslots__render_timeline_component( $args = array()
 		'resource_id'           => wpbc_get_default_resource(),
 		'resources'             => null,
 		'start_ts'              => strtotime( wp_date( 'Y-m-d 00:00:00' ) ),
-		'days_count'            => 7,
+		'days_count'            => WPBC_AVAILABILITY_TIMESLOTS_DEFAULT_DAYS_COUNT,
 		'visible_start_minutes' => 360,
 		'visible_end_minutes'   => 1320,
 		'slot_step'             => 15,
@@ -544,6 +548,7 @@ class WPBC_Page_TimeSlots_Availability extends WPBC_Page_Structure {
 			'hided'                                     => false,
 			'subtabs'                                   => array(),
 			'folder_style'                              => 'order:92;',
+			'is_show_top_navigation'             => true,
 		);
 
 		return $tabs;

@@ -85,6 +85,30 @@ function wpbc_ui__top_horisontal_nav( $args =array() ) {
 
 
 /**
+ * Remove New labels from titles rendered in the top horizontal navigation.
+ *
+ * @param string $title Horizontal navigation title.
+ *
+ * @return string
+ */
+function wpbc_ui__horis_menu__item_main__remove_new_label( $title ) {
+
+	if ( ! is_string( $title ) || '' === $title ) {
+		return $title;
+	}
+
+	$filtered_title = preg_replace(
+		'/<span\b[^>]*\bclass\s*=\s*(["\'])[^"\']*\bwpbc_new_label\b[^"\']*\1[^>]*>.*?<\/span>(?:\s|&nbsp;)*/is',
+		'',
+		$title
+	);
+
+	return ( null === $filtered_title ) ? $title : $filtered_title;
+}
+add_filter( 'wpbc_ui__horis_menu__item_main__title', 'wpbc_ui__horis_menu__item_main__remove_new_label', PHP_INT_MAX );
+
+
+/**
  * Show Horisontal - "Menu Item".
  *
  * @param string $menu_slug     - 'calendar_appearance'.
@@ -126,6 +150,15 @@ function wpbc_ui__horis_menu__item_main( $menu_slug, $menu_item_arr ) {
 	);
 	$menu_item_arr = wp_parse_args( $menu_item_arr, $defaults );
 
+	/**
+	 * Filter the title displayed in the top horizontal navigation.
+	 *
+	 * @param string $title         Horizontal navigation title.
+	 * @param string $menu_slug     Menu item slug.
+	 * @param array  $menu_item_arr Complete menu item configuration.
+	 */
+	$menu_item_arr['title'] = apply_filters( 'wpbc_ui__horis_menu__item_main__title', $menu_item_arr['title'], $menu_slug, $menu_item_arr );
+
 	?><div class="wpbc_ui_el__horis_nav_item wpbc_ui_el__horis_nav_item__<?php echo esc_attr( $menu_slug ); ?>  <?php echo ( ! empty( $menu_item_arr['is_active'] ) ) ? ' active ' : ''; ?>">
 		<?php
 		// Single Item.
@@ -136,7 +169,9 @@ function wpbc_ui__horis_menu__item_main( $menu_slug, $menu_item_arr ) {
 			<i 	class="wpbc_ui_el__horis_nav_icon tooltip_top menu_icon icon-1x <?php echo esc_attr( $menu_item_arr['font_icon'] ); ?>"
 				data-original-title="<?php echo esc_attr( $menu_item_arr['title'] ); ?>"></i>
 			<?php } ?>
-			<span class="wpbc_ui_el__horis_nav_title"><?php echo wp_kses_post( $menu_item_arr['title'] ); ?></span>
+			<span class="wpbc_ui_el__horis_nav_title"><?php
+				 echo wp_kses_post( $menu_item_arr['title'] );
+			?></span>
 		</a>
 	</div>
 	<?php

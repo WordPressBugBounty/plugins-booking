@@ -630,73 +630,96 @@ add_action(
 
 
 /**
- * Compatibility wrapper for older custom-form filters.
+ * Register compatibility wrappers after all Free and Pro PHP files are loaded.
  *
- * @param string $default_return_form_content Default value.
- * @param string $custom_form_name            Form slug.
- * @param mixed  $serialized_form_content     Deprecated legacy payload. Ignored.
- * @param string $what_to_return              'form' or 'content'.
- * @param bool   $is_replace_simple_html      Whether to replace custom HTML shortcodes.
- *
- * @return string
- */
-function wpbc_get_custom_booking_form( $default_return_form_content, $custom_form_name, $serialized_form_content = false, $what_to_return = 'content', $is_replace_simple_html = true ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-
-	$custom_form_name = sanitize_text_field( (string) $custom_form_name );
-	if ( '' === $custom_form_name ) {
-		return $default_return_form_content;
-	}
-
-	$pair = array();
-	if ( function_exists( 'wpbc_bfb_get_booking_form_pair' ) ) {
-		$pair = wpbc_bfb_get_booking_form_pair(
-			array(
-				'form_slug' => $custom_form_name,
-				'status'    => 'published',
-			)
-		);
-	}
-
-	$value = '';
-	if ( 'form' === $what_to_return ) {
-		$value = isset( $pair['form'] ) ? (string) $pair['form'] : '';
-	} else {
-		$value = isset( $pair['content'] ) ? (string) $pair['content'] : '';
-	}
-
-	if ( '' === trim( $value ) ) {
-		$value = (string) $default_return_form_content;
-	}
-
-	if ( $is_replace_simple_html ) {
-		$value = wpbc_bf__replace_custom_html_shortcodes( $value );
-	}
-
-	return $value;
-}
-
-
-/**
- * Compatibility toolbar wrapper used by older admin screens.
- *
- * @param array $params Optional select params.
+ * Pro versions before 11.4 declare these functions while loading their legacy
+ * custom-form module. Waiting until the end of `wpbc_loaded_php_files` lets the
+ * legacy implementation keep ownership and prevents function redeclaration
+ * fatals during mixed-version updates.
  *
  * @return void
  */
-function wpbc_toolbar_btn__form_selection( $params = array() ) {
-	WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html( $params );
+function wpbc_register_custom_form_compatibility_wrappers() {
+
+	if ( ! function_exists( 'wpbc_get_custom_booking_form' ) ) {
+		/**
+		 * Compatibility wrapper for older custom-form filters.
+		 *
+		 * @param string $default_return_form_content Default value.
+		 * @param string $custom_form_name            Form slug.
+		 * @param mixed  $serialized_form_content     Deprecated legacy payload. Ignored.
+		 * @param string $what_to_return              'form' or 'content'.
+		 * @param bool   $is_replace_simple_html      Whether to replace custom HTML shortcodes.
+		 *
+		 * @return string
+		 */
+		function wpbc_get_custom_booking_form( $default_return_form_content, $custom_form_name, $serialized_form_content = false, $what_to_return = 'content', $is_replace_simple_html = true ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+
+			$custom_form_name = sanitize_text_field( (string) $custom_form_name );
+			if ( '' === $custom_form_name ) {
+				return $default_return_form_content;
+			}
+
+			$pair = array();
+			if ( function_exists( 'wpbc_bfb_get_booking_form_pair' ) ) {
+				$pair = wpbc_bfb_get_booking_form_pair(
+					array(
+						'form_slug' => $custom_form_name,
+						'status'    => 'published',
+					)
+				);
+			}
+
+			$value = '';
+			if ( 'form' === $what_to_return ) {
+				$value = isset( $pair['form'] ) ? (string) $pair['form'] : '';
+			} else {
+				$value = isset( $pair['content'] ) ? (string) $pair['content'] : '';
+			}
+
+			if ( '' === trim( $value ) ) {
+				$value = (string) $default_return_form_content;
+			}
+
+			if ( $is_replace_simple_html ) {
+				$value = wpbc_bf__replace_custom_html_shortcodes( $value );
+			}
+
+			return $value;
+		}
+	}
+
+	if ( ! function_exists( 'wpbc_toolbar_btn__form_selection' ) ) {
+		/**
+		 * Compatibility toolbar wrapper used by older admin screens.
+		 *
+		 * @param array $params Optional select params.
+		 *
+		 * @return void
+		 */
+		function wpbc_toolbar_btn__form_selection( $params = array() ) {
+			WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html( $params );
+		}
+	}
+
+	if ( ! function_exists( 'wpbc_toolbar_btn__custom_forms_in_settings_fields' ) ) {
+		/**
+		 * Compatibility toolbar wrapper used by Advanced Cost settings.
+		 *
+		 * @param bool $is_show_add_new_custom_form Deprecated. Ignored.
+		 *
+		 * @return void
+		 */
+		function wpbc_toolbar_btn__custom_forms_in_settings_fields( $is_show_add_new_custom_form = true ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+			WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html( array( 'on_change' => 'wpbc_change_custom_booking_form_in_url__and_reload(this);' ) );
+		}
+	}
 }
 
-
-/**
- * Compatibility toolbar wrapper used by Advanced Cost settings.
- *
- * @param bool $is_show_add_new_custom_form Deprecated. Ignored.
- *
- * @return void
- */
-function wpbc_toolbar_btn__custom_forms_in_settings_fields( $is_show_add_new_custom_form = true ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-	WPBC_FE_Custom_Form_Helper::wpbc_bfb__custom_booking_forms_list__selectbox_html( array( 'on_change' => 'wpbc_change_custom_booking_form_in_url__and_reload(this);' ) );
+if ( did_action( 'wpbc_loaded_php_files' ) ) {
+	wpbc_register_custom_form_compatibility_wrappers();
+} else {
+	add_action( 'wpbc_loaded_php_files', 'wpbc_register_custom_form_compatibility_wrappers', PHP_INT_MAX );
 }
 
 

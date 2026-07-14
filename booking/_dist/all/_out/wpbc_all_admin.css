@@ -679,7 +679,7 @@ a.wpbc_ui_settings__text_pro:hover {
   --wpbc_ui_left_vert_nav__active_background-color: var(--wpbc_ui__gen__active-background-color);
   --wpbc_ui_left_vert_nav__hover_background-color: #4651601c;
   --wpbc_ui_vert_left_bar__footer_height: 55px;
-  --wpbc_ui_horis_top_nav__font-size: 16px;
+  --wpbc_ui_horis_top_nav__font-size: 13px;
   --wpbc_ui_horis_top_nav__margin: 10px 0 20px;
   --wpbc_ui_horis_top_nav__background-color: transparent;
   --wpbc_ui_horis_top_nav__a_color: var(--wpbc_ui__gen__text-color);

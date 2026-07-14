@@ -53,6 +53,7 @@ class WPBC_Page_AJX_Availability extends WPBC_Page_Structure {
 			'hided'                              => false,   // Is this tab hided: true || false.
 			'subtabs'                            => array(),
 			'folder_style'                       => 'order:91;',
+			'is_show_top_navigation'             => true,
 		);
         return $tabs;
     }

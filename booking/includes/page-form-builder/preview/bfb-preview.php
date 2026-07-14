@@ -151,7 +151,7 @@ class WPBC_BFB_Preview_Service {
 
 	public function add_noindex_to_preview_page( $robots ) {
 
-		if ( ! is_page() ) {
+		if ( ! $this->is_main_query_page() ) {
 			return $robots;
 		}
 
@@ -165,6 +165,17 @@ class WPBC_BFB_Preview_Service {
 		$robots['noarchive'] = true;
 
 		return $robots;
+	}
+
+	/**
+	 * Check the main query directly without calling a conditional query tag too early.
+	 *
+	 * @return bool
+	 */
+	protected function is_main_query_page() {
+		return isset( $GLOBALS['wp_query'] )
+			&& ( $GLOBALS['wp_query'] instanceof WP_Query )
+			&& $GLOBALS['wp_query']->is_page();
 	}
 
 	/**
@@ -618,7 +629,7 @@ class WPBC_BFB_Preview_Service {
 	 */
 	public function filter_the_content_for_preview( $content ) {
 
-		if ( ! is_page() ) {
+		if ( ! $this->is_main_query_page() ) {
 			return $content;
 		}
 

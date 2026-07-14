@@ -163,7 +163,6 @@ class WPBC_Action_Set_Unavailable_Times {
 									'id_prefix'            => 'wpbc_ts_listing_popup',
 									'wrap_class'           => 'wpbc_ts_page wpbc_ts_popup',
 									'resource_id'          => wpbc_get_default_resource(),
-									'days_count'           => 7,
 									'show_hint'            => false,
 									'show_legend'          => true,
 									'auto_init'            => false,

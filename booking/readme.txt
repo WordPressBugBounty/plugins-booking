@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.4
+Stable tag: 11.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -338,6 +338,12 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.4.1 =
+- Changes in **all** versions:
+	* **Compatibility**: Added a mixed-version update safeguard to prevent function redeclaration fatal errors when Booking Calendar Free is updated before an older Booking Calendar Pro version.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+    * **Fix**: Resolved issue of incorrectly passing check of validation email  via this shortcode: [email* other_verify_email class:same_as_email]  (11.4.1.1)
+
 = 11.4 =
 - Changes in **all** versions:
     * **New**: Added global Booking Form Styles with Light and Dark bordered, borderless, and soft-background presets, plus a fully configurable Custom style.

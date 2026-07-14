@@ -146,6 +146,29 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
 						}
 					}
 
+
+					// Validation Check --- Same Email Field.  // FixIn: 11.4.1.1.
+					if ( jQuery( el ).hasClass( 'wpdev-validates-as-email' ) && (jQuery( el )[0].className.indexOf( 'same_as_' ) !== -1) ) {
+
+						// Get  the name of Primary Email field from the "same_as_NAME" class.
+						var primary_email_name = jQuery( el )[0].className.match( /same_as_([^\s])+/gi );
+						if ( primary_email_name != null ) { // We found.
+							primary_email_name = primary_email_name[0].substr( 8 );
+
+							// Recehck if such primary email field exist in the booking form.
+							if ( jQuery( '[name="' + primary_email_name + bk_type + '"]' ).length > 0 ) {
+
+								// Recheck the values of the both emails, if they do  not equla show warning.
+								if ( jQuery( '[name="' + primary_email_name + bk_type + '"]' ).val() !== inp_value ) {
+									var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_same_email' ), 'text' );
+									fields_with_errors_arr.push( el );
+									is_error_in_field = true;    // Error.
+								}
+							}
+						}
+					}
+
+
 					// Validate For digit entering - for example for - Phone
 					// <p>Digit Field:<br />[text* dig_field class:validate_as_digit] </p>
 					// <p>Phone:<br />[text* phone class:validate_digit_8] </p>
