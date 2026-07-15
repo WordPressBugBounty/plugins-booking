@@ -14,11 +14,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $status, $page, $s;
 
-if ( is_plugin_active( 'booking-calendar-com/booking-calendar-com.php' ) ) {
-	$wpbc_deactivate_url = wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . WPBC_PRO_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PRO_PLUGIN_FILENAME . '&amp;plugin_status=' . $status . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . WPBC_PRO_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PRO_PLUGIN_FILENAME  );
-} else {
-	$wpbc_deactivate_url = wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . WPBC_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PLUGIN_FILENAME . '&amp;plugin_status=' . $status . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . WPBC_PLUGIN_DIRNAME . htmlentities('/', ENT_COMPAT) . WPBC_PLUGIN_FILENAME  );
-}
+$wpbc_plugin_basename = is_plugin_active( 'booking-calendar-com/booking-calendar-com.php' )
+	? 'booking-calendar-com/booking-calendar-com.php'
+	: WPBC_PLUGIN_DIRNAME . '/' . WPBC_PLUGIN_FILENAME;
+
+$wpbc_deactivate_url = wp_nonce_url(
+	add_query_arg(
+		array(
+			'action'        => 'deactivate',
+			'plugin'        => $wpbc_plugin_basename,
+			'plugin_status' => (string) $status,
+			'paged'         => (string) $page,
+			's'             => (string) $s,
+		),
+		self_admin_url( 'plugins.php' )
+	),
+	'deactivate-plugin_' . $wpbc_plugin_basename
+);
 
 ?>
 <div id="wpbc_deactivate-feedback-popup-wrapper">

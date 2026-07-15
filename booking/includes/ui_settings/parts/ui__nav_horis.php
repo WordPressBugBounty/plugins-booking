@@ -118,6 +118,7 @@ add_filter( 'wpbc_ui__horis_menu__item_main__title', 'wpbc_ui__horis_menu__item_
  *                                     [link] =>
  *                                     [position] =>
  *                                     [css_classes] =>
+ *                                     [folder_style] => order:93;
  *                                     [icon] =>
  *                                     [font_icon] => wpbc-bi-calendar2-range
  *                                     [default] =>
@@ -133,22 +134,24 @@ add_filter( 'wpbc_ui__horis_menu__item_main__title', 'wpbc_ui__horis_menu__item_
 function wpbc_ui__horis_menu__item_main( $menu_slug, $menu_item_arr ) {
 
 	$defaults      = array(
-		'title'       => '',
-		'page_title'  => '',
-		'hint'        => '',
-		'link'        => '',
-		'position'    => '',
-		'css_classes' => '',
-		'icon'        => '',
-		'font_icon'   => '',
-		'default'     => false,
-		'disabled'    => false,
-		'hided'       => false,
-		'is_active'   => 0,
-		'url'         => '',
-		'subtabs'     => array(),
+		'title'        => '',
+		'page_title'   => '',
+		'hint'         => '',
+		'link'         => '',
+		'position'     => '',
+		'css_classes'  => '',
+		'folder_style' => '',
+		'icon'         => '',
+		'font_icon'    => '',
+		'default'      => false,
+		'disabled'     => false,
+		'hided'        => false,
+		'is_active'    => 0,
+		'url'          => '',
+		'subtabs'      => array(),
 	);
 	$menu_item_arr = wp_parse_args( $menu_item_arr, $defaults );
+	$folder_style  = ( ! empty( $menu_item_arr['folder_style'] ) ) ? esc_attr( $menu_item_arr['folder_style'] ) : ''; // FixIn: 11.4.2.
 
 	/**
 	 * Filter the title displayed in the top horizontal navigation.
@@ -159,7 +162,8 @@ function wpbc_ui__horis_menu__item_main( $menu_slug, $menu_item_arr ) {
 	 */
 	$menu_item_arr['title'] = apply_filters( 'wpbc_ui__horis_menu__item_main__title', $menu_item_arr['title'], $menu_slug, $menu_item_arr );
 
-	?><div class="wpbc_ui_el__horis_nav_item wpbc_ui_el__horis_nav_item__<?php echo esc_attr( $menu_slug ); ?>  <?php echo ( ! empty( $menu_item_arr['is_active'] ) ) ? ' active ' : ''; ?>">
+	?><div class="wpbc_ui_el__horis_nav_item wpbc_ui_el__horis_nav_item__<?php echo esc_attr( $menu_slug ); ?>  <?php echo ( ! empty( $menu_item_arr['is_active'] ) ) ? ' active ' : ''; ?>"
+		   style="<?php echo esc_attr( $folder_style ); ?>">
 		<?php
 		// Single Item.
 		?>

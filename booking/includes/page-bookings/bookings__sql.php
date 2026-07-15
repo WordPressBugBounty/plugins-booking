@@ -1802,8 +1802,8 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 					'date_html_tag'                 => 'span',
 					'show_child_resource_in_dates'  => $show_child_resource_in_dates,
 				);
-				$short_dates_content = wpbc_get_formated_dates__short( $booking->short_dates, (boolean) $booking->approved, $booking->short_dates_child_id, $resources_arr, $dates_attr );
-				$wide_dates_content  = wpbc_get_formated_dates__wide(  $booking->dates,       (boolean) $booking->approved, $booking->child_id,             $resources_arr, $dates_attr );
+				$short_dates_content = wpbc_get_formated_dates__short( $booking->short_dates, (bool) $booking->approved, $booking->short_dates_child_id, $resources_arr, $dates_attr );
+				$wide_dates_content  = wpbc_get_formated_dates__wide(  $booking->dates,       (bool) $booking->approved, $booking->child_id,             $resources_arr, $dates_attr );
 
 				//------------------------------------------------------------------------------------------------------
 				// Payment Status
@@ -1955,6 +1955,8 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				$date_number             = 0;
 				$previous_formatted_date = '';
 				$previous_short_dates_content_sup;
+				$previous_sql_date        = '';
+				$previous_short_date_item = '';
 			    foreach ( $short_dates_arr as $dt ) {
 
 					if ( '-' === $dt ) {
@@ -1962,6 +1964,19 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 					} elseif ( ',' === $dt ) {
 						$short_dates_content_arr[] = '<span class="date_tire date_comma">, </span>';
 					} else {
+
+						// Separate recurrent time slots: previous end (...02) followed by the next start (...01).
+						$is_next_time_slot = (
+								   ( ! empty( $previous_sql_date ) )
+								&& ( '02' === substr( trim( $previous_sql_date ), -2 ) )
+								&& ( '01' === substr( trim( $dt ), -2 ) )
+						);
+						if ( $is_next_time_slot && ( ',' !== $previous_short_date_item ) ) {
+							if ( '-' === $previous_short_date_item ) {
+								array_pop( $short_dates_content_arr );
+							}
+							$short_dates_content_arr[] = '<span class="date_tire date_comma">, </span>'; // FixIn: 11.4.2.
+						}
 
 						list( $formatted_date, $formatted_time ) = wpbc_get_date_in_correct_format( $dt );
 
@@ -1984,14 +1999,17 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 							// same date (probaly  it is one date) !
 							if ( count( $short_dates_content_arr ) > 0 ) {
 								// Unset tire: '-'.
-								unset( $short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ] );
+								array_pop( $short_dates_content_arr );
 								if ( ! empty( wp_strip_all_tags( $previous_short_dates_content_sup ) ) ) {
-									$tag_closed_span_and_a = $short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ];
-									// unset time_sup
-									unset( $short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ] );
-									$short_dates_content_arr[ count( $short_dates_content_arr ) - 1 ] = $tag_closed_span_and_a;
+									$tag_closed_span_and_a = array_pop( $short_dates_content_arr );
+									array_pop( $short_dates_content_arr ); // Unset time_sup.
+									$short_dates_content_arr[] = $tag_closed_span_and_a; // FixIn: 11.4.2.
 								}
-								$short_dates_content_sup .= '<sup class="field-booking-time">' . wp_strip_all_tags( $previous_short_dates_content_sup ) . ' - ' . $formatted_time . '</sup>';
+								$short_dates_content_sup .= '<sup class="field-booking-time"> '
+								                            . trim( wp_strip_all_tags( $previous_short_dates_content_sup ) )
+								                            . ' - '
+								                            . trim( $formatted_time )
+								                            . '</sup>'; // FixIn: 11.4.2.
 							}
 						}
 
@@ -2023,7 +2041,9 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 
 						$previous_short_dates_content_sup = $short_dates_content_sup;
 						$previous_formatted_date = $formatted_date;
+						$previous_sql_date        = $dt;
 			        }
+					$previous_short_date_item = $dt;
 			        $date_number++;
 			    }
 

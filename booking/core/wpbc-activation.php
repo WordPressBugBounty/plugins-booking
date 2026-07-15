@@ -507,8 +507,9 @@ add_bk_action( 'wpbc_deactivation',  'wpbc_booking_deactivate' );
  */
 function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_options = false ) {
         
-    $is_demo = wpbc_is_this_demo();    
-    $blg_title = str_replace( array( '"', "'" ), '', get_option( 'blogname' ) );
+    $is_demo         = wpbc_is_this_demo();
+    $is_free_version = ! class_exists( 'wpdev_bk_personal' );
+    $blg_title       = str_replace( array( '"', "'" ), '', get_option( 'blogname' ) );
         
     $default_options  = array();
 
@@ -611,7 +612,9 @@ $mu_option4delete[] = 'booking_confirmation__booking_details__content';
  $mu_option4delete[]='booking_is_load_js_css_on_specific_pages';
     $default_options['booking_pages_for_load_js_css'] = '';
  $mu_option4delete[]='booking_pages_for_load_js_css';
-    $default_options['booking_type_of_day_selections'] = ( ( get_bk_option( 'booking_range_selection_is_active' ) == 'On' ) && ( ! $is_demo ) ) ?  'range' : 'multiple';
+    $default_options['booking_type_of_day_selections'] = $is_free_version
+		? 'range'
+		: ( ( get_bk_option( 'booking_range_selection_is_active' ) == 'On' ) && ( ! $is_demo ) ? 'range' : 'multiple' );
  $mu_option4delete[]='booking_type_of_day_selections';
 
  	// FixIn: 8.7.11.10.
@@ -1024,7 +1027,7 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
      $mu_option4delete[]='booking_auto_cancel_pending_unpaid_bk_is_send_email';      
         $default_options['booking_auto_cancel_pending_unpaid_bk_email_reason'] = __( 'This booking canceled because we did not receive payment and the administrator did not approve it.', 'booking' );
      $mu_option4delete[]='booking_auto_cancel_pending_unpaid_bk_email_reason';          
-        $default_options['booking_range_selection_type'] = 'fixed';
+        $default_options['booking_range_selection_type'] = $is_free_version ? 'dynamic' : 'fixed';
      $mu_option4delete[]='booking_range_selection_type';
         $default_options['booking_range_selection_days_count'] = '3';
      $mu_option4delete[]='booking_range_selection_days_count';

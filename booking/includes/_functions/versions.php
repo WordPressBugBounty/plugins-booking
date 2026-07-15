@@ -82,6 +82,67 @@ function wpbc_get_wpbc_versions_numbers() {
 }
 
 
+/**
+ * Prevent the legacy Pro Simple booking form branch from requiring a removed Free file.
+ *
+ * Pro versions before 11.4 require `page-form-simple.php` only when the legacy
+ * `booking_is_use_simple_booking_form` option is enabled. Newer Free versions no longer contain that file. Because the
+ * Pro loader runs on `wpbc_loaded_php_files`, this check must happen immediately before that action is fired; waiting
+ * until `plugins_loaded` is too late and can result in a fatal `require_once` error. Other legacy Pro configurations
+ * remain loadable for the mixed-version compatibility layer.
+ *
+ * @return bool True when an incompatible Pro loader was removed, otherwise false.
+ */
+function wpbc_prevent_incompatible_pro_version_loading() {
+
+	$pro_loader_priority = has_action( 'wpbc_loaded_php_files', 'wpbc_pro_load_php_files' );
+
+	if ( false === $pro_loader_priority ) {
+		return false;
+	}
+
+	$is_legacy_pro_version = (
+		! defined( 'WPBC_PRO_VERSION_NUM' )
+		|| version_compare( WPBC_PRO_VERSION_NUM, WP_BK_PRO_BFB_ONLY_VERSION, '<' )
+	);
+	$is_legacy_simple_form_enabled = ( 'On' === get_bk_option( 'booking_is_use_simple_booking_form' ) );
+	$is_legacy_simple_form_missing = ! file_exists( WPBC_PLUGIN_DIR . '/includes/page-form-simple/page-form-simple.php' );
+
+	if ( ! $is_legacy_pro_version || ! $is_legacy_simple_form_enabled || ! $is_legacy_simple_form_missing ) {
+		return false;
+	}
+
+	remove_action( 'wpbc_loaded_php_files', 'wpbc_pro_load_php_files', $pro_loader_priority );
+
+	if ( is_admin() ) {
+		add_action( 'admin_notices', 'wpbc_show_error__legacy_simple_form_pro_version' );
+	}
+
+	return true;
+}
+
+
+/**
+ * Show an actionable notice after the legacy Simple booking form Pro loader has been disabled.
+ *
+ * @return void
+ */
+function wpbc_show_error__legacy_simple_form_pro_version() {
+
+	$pro_version = defined( 'WPBC_PRO_VERSION_NUM' ) ? WPBC_PRO_VERSION_NUM : __( 'unknown', 'booking' );
+
+	$message = sprintf(
+		/* translators: 1: Installed Pro version, 2: Installed Free version, 3: First Pro version without legacy form pages. */
+		__( 'Booking Calendar Pro %1$s cannot load because its legacy Simple booking form option is enabled, but Booking Calendar %2$s no longer contains that legacy settings module. Pro loading was stopped to prevent a fatal error. Update Booking Calendar Pro to version %3$s or newer; using matching Free and Pro versions is recommended.', 'booking' ),
+		'<strong>' . esc_html( $pro_version ) . '</strong>',
+		'<strong>' . esc_html( WP_BK_VERSION_NUM ) . '</strong>',
+		'<strong>' . esc_html( WP_BK_PRO_BFB_ONLY_VERSION ) . '</strong>'
+	);
+
+	echo '<div class="notice notice-error"><p>' . wp_kses_post( $message ) . '</p></div>';
+}
+
+
 function wpbc_get_version_type__and_mu(){
 	$version = 'free';
 	if ( class_exists( 'wpdev_bk_personal' ) ) $version = 'personal';

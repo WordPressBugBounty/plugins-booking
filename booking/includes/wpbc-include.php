@@ -306,5 +306,7 @@ require_once WPBC_PLUGIN_DIR . '/core/wpbc-activation.php';
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-dev-api.php';                     // API for Booking Calendar integrations.
 
+wpbc_prevent_incompatible_pro_version_loading();
+
 make_bk_action( 'wpbc_loaded_php_files' );
 do_action( 'wpbc_loaded_php_files' );

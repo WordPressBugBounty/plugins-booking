@@ -45,7 +45,8 @@ $wpbc_dates_2_columns_sidebar_hints_section = function ( $id, $columns, $col_sty
 	);
 };
 
-$wpbc_dates_2_columns_sidebar_hints_is_free = ! class_exists( 'wpdev_bk_biz_m' );
+$wpbc_dates_2_columns_sidebar_hints_is_free                  = ! class_exists( 'wpdev_bk_personal' );
+$wpbc_dates_2_columns_sidebar_hints_is_below_business_medium = ! class_exists( 'wpdev_bk_biz_m' );
 
 $wpbc_dates_2_columns_sidebar_hints_calendar = $wpbc_dates_2_columns_sidebar_hints_field(
 	'calendar',
@@ -109,6 +110,47 @@ $wpbc_dates_2_columns_sidebar_hints_submit_divider = $wpbc_dates_2_columns_sideb
 $wpbc_dates_2_columns_sidebar_hints_left_items = array( $wpbc_dates_2_columns_sidebar_hints_calendar );
 
 if ( $wpbc_dates_2_columns_sidebar_hints_is_free ) {
+	$wpbc_dates_2_columns_sidebar_hints_left_items[] = $wpbc_dates_2_columns_sidebar_hints_divider;
+	$wpbc_dates_2_columns_sidebar_hints_left_items[] = $wpbc_dates_2_columns_sidebar_hints_field(
+		'check_in_date_hint',
+		'check_in_date_hint',
+		array(
+			'prefix_text'   => 'Check-in:',
+			'preview_value' => 'July 22, 2026',
+			'help'          => '',
+			'label'         => 'Check-in:',
+			'name'          => 'check_in_date_hint',
+			'html_id'       => '',
+			'cssclass'      => '',
+		)
+	);
+	$wpbc_dates_2_columns_sidebar_hints_left_items[] = $wpbc_dates_2_columns_sidebar_hints_field(
+		'check_out_date_hint',
+		'check_out_date_hint',
+		array(
+			'prefix_text'   => 'Check-out:',
+			'preview_value' => 'July 24, 2026',
+			'help'          => '',
+			'label'         => 'Check-out:',
+			'name'          => 'check_out_date_hint',
+			'html_id'       => '',
+			'cssclass'      => '',
+		)
+	);
+	$wpbc_dates_2_columns_sidebar_hints_left_items[] = $wpbc_dates_2_columns_sidebar_hints_field(
+		'days_number_hint',
+		'days_number_hint',
+		array(
+			'prefix_text'   => 'Days:',
+			'preview_value' => 3,
+			'help'          => '',
+			'label'         => 'Days:',
+			'name'          => 'days_number_hint',
+			'html_id'       => '',
+			'cssclass'      => '',
+		)
+	);
+} elseif ( $wpbc_dates_2_columns_sidebar_hints_is_below_business_medium ) {
 	$wpbc_dates_2_columns_sidebar_hints_left_items[] = $wpbc_dates_2_columns_sidebar_hints_divider;
 	$wpbc_dates_2_columns_sidebar_hints_left_items[] = $wpbc_dates_2_columns_sidebar_hints_field(
 		'selected_dates_hint',
@@ -322,8 +364,29 @@ if ( ! $wpbc_dates_2_columns_sidebar_hints_structure_json ) {
 
 $wpbc_dates_2_columns_sidebar_hints_settings_json = '{"options":{"booking_form_theme":"","booking_form_layout_width":"100%","booking_type_of_day_selections":""},"css_vars":[],"bfb_options":{"advanced_mode_source":"builder"}}';
 
-$wpbc_dates_2_columns_sidebar_hints_left_advanced = $wpbc_dates_2_columns_sidebar_hints_is_free
-	? <<<'WPBC_BFB_TEMPLATE_LEFT'
+$wpbc_dates_2_columns_sidebar_hints_left_advanced = '';
+
+if ( $wpbc_dates_2_columns_sidebar_hints_is_free ) {
+	$wpbc_dates_2_columns_sidebar_hints_left_advanced = <<<'WPBC_BFB_TEMPLATE_LEFT'
+				<item>
+					<l>Select Date</l>
+					<br>[calendar]
+				</item>
+				<item>
+					<div class="wpbc_bfb_divider_wrap" data-bfb-type="divider" data-orientation="horizontal" style="margin:2px 2px 2px 2px"><hr name="divider_horizontal" class="wpbc_bfb_divider wpbc_bfb_divider--h" style="border:none; height:0; border-top:1px solid #e0e0e0; width:100%; margin-left:auto; margin-right:auto"></div>
+				</item>
+				<item>
+					Check-in:&nbsp;<strong>[check_in_date_hint]</strong>
+				</item>
+				<item>
+					Check-out:&nbsp;<strong>[check_out_date_hint]</strong>
+				</item>
+				<item>
+					Days:&nbsp;<strong>[days_number_hint]</strong>
+				</item>
+WPBC_BFB_TEMPLATE_LEFT;
+} elseif ( $wpbc_dates_2_columns_sidebar_hints_is_below_business_medium ) {
+	$wpbc_dates_2_columns_sidebar_hints_left_advanced = <<<'WPBC_BFB_TEMPLATE_LEFT'
 				<item>
 					<l>Select Date</l>
 					<br>[calendar]
@@ -334,8 +397,9 @@ $wpbc_dates_2_columns_sidebar_hints_left_advanced = $wpbc_dates_2_columns_sideba
 				<item>
 					Dates:&nbsp;<strong>[selected_dates_hint]</strong>
 				</item>
-WPBC_BFB_TEMPLATE_LEFT
-	: <<<'WPBC_BFB_TEMPLATE_LEFT'
+WPBC_BFB_TEMPLATE_LEFT;
+} else {
+	$wpbc_dates_2_columns_sidebar_hints_left_advanced = <<<'WPBC_BFB_TEMPLATE_LEFT'
 				<item>
 					<l>Select Date</l>
 					<br>[calendar]
@@ -356,6 +420,7 @@ WPBC_BFB_TEMPLATE_LEFT
 					Total Cost:&nbsp;<strong>[cost_hint]</strong>
 				</item>
 WPBC_BFB_TEMPLATE_LEFT;
+}
 
 $wpbc_dates_2_columns_sidebar_hints_advanced_form = trim(
 <<<WPBC_BFB_TEMPLATE_ADVANCED_FORM
@@ -412,8 +477,26 @@ $wpbc_dates_2_columns_sidebar_hints_advanced_form = trim(
 WPBC_BFB_TEMPLATE_ADVANCED_FORM
 );
 
-$wpbc_dates_2_columns_sidebar_hints_content_form = $wpbc_dates_2_columns_sidebar_hints_is_free
-	? trim(
+$wpbc_dates_2_columns_sidebar_hints_content_form = '';
+
+if ( $wpbc_dates_2_columns_sidebar_hints_is_free ) {
+	$wpbc_dates_2_columns_sidebar_hints_content_form = trim(
+<<<'WPBC_BFB_TEMPLATE_CONTENT_FORM'
+<div class="standard-content-form">
+	<b>Check-in</b>: <f>[check_in_date_hint]</f><br>
+	<b>Check-out</b>: <f>[check_out_date_hint]</f><br>
+	<b>Days</b>: <f>[days_number_hint]</f><br>
+	<b>First Name</b>: <f>[firstname]</f><br>
+	<b>Last Name</b>: <f>[secondname]</f><br>
+	<b>Email</b>: <f>[email]</f><br>
+	<b>Phone</b>: <f>[phone]</f><br>
+	<b>Details</b>: <f>[details]</f><br>
+	<b>Accept Terms</b>: <f>[accept_terms]</f><br>
+</div>
+WPBC_BFB_TEMPLATE_CONTENT_FORM
+	);
+} elseif ( $wpbc_dates_2_columns_sidebar_hints_is_below_business_medium ) {
+	$wpbc_dates_2_columns_sidebar_hints_content_form = trim(
 <<<'WPBC_BFB_TEMPLATE_CONTENT_FORM'
 <div class="standard-content-form">
 	<b>Dates</b>: <f>[selected_dates_hint]</f><br>
@@ -425,8 +508,9 @@ $wpbc_dates_2_columns_sidebar_hints_content_form = $wpbc_dates_2_columns_sidebar
 	<b>Accept Terms</b>: <f>[accept_terms]</f><br>
 </div>
 WPBC_BFB_TEMPLATE_CONTENT_FORM
-	)
-	: trim(
+	);
+} else {
+	$wpbc_dates_2_columns_sidebar_hints_content_form = trim(
 <<<'WPBC_BFB_TEMPLATE_CONTENT_FORM'
 <div class="standard-content-form">
 	<b>Availability</b>: <f>[capacity_hint]</f><br>
@@ -441,6 +525,7 @@ WPBC_BFB_TEMPLATE_CONTENT_FORM
 </div>
 WPBC_BFB_TEMPLATE_CONTENT_FORM
 	);
+}
 
 return array(
 	'template_key' => 'dates_2_columns_sidebar_hints',
