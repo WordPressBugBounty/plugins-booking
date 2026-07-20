@@ -644,6 +644,27 @@ function wpbc_create_activation_custom_booking_forms() {
 			continue;
 		}
 
+		// The predefined Time Slots form must select one calendar day independently, // FixIn: 11.4.3.1
+		// from the global/default Calendar Settings day-selection mode.
+		if ( 'time_slots_booking' === $form_slug ) {
+			$form_settings = array();
+			if ( ! empty( $template_record['settings_json'] ) ) {
+				$decoded_settings = json_decode( (string) $template_record['settings_json'], true );
+				if ( is_array( $decoded_settings ) ) {
+					$form_settings = $decoded_settings;
+				}
+			}
+
+			if ( empty( $form_settings['options'] ) || ! is_array( $form_settings['options'] ) ) {
+				$form_settings['options'] = array();
+			}
+
+			$form_settings['options']['booking_type_of_day_selections'] = 'single';
+			$template_record['settings_json'] = function_exists( 'wpbc_form_config__encode_json' )
+				? wpbc_form_config__encode_json( $form_settings )
+				: wp_json_encode( $form_settings );
+		}
+
 		$template_record['form_slug']           = $form_slug;
 		$template_record['status']              = 'published';
 		$template_record['scope']               = 'global';

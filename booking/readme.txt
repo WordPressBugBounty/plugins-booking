@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.4.2
+Stable tag: 11.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -284,7 +284,7 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              93.91% [ 3621 / 3856 ], fuzzy 127, not translated 108
+- French (France)              100.00% [ 3856 / 3856 ], fuzzy 0, not translated 0
 - Danish                       66.08% [ 2548 / 3856 ], fuzzy 603, not translated 705
 - Dutch                        58.95% [ 2273 / 3856 ], fuzzy 879, not translated 704
 - Norwegian (Bokmål)           54.62% [ 2106 / 3856 ], fuzzy 636, not translated 1114
@@ -319,6 +319,7 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 - Czech                        29.80% [ 1149 / 3856 ], fuzzy 1298, not translated 1409
 - Chinese (Hong Kong)          17.63% [ 680 / 3856 ], fuzzy 578, not translated 2598
 
+
 Please recheck the status of each translation, before using plugin.
 We open for your help in new translations or correcting existing ones. You can translate to new language or update exist one, using this [tutorial of translation](https://wpbookingcalendar.com/faq/make-translation-of-wp-plugin/)
 = Tech support =
@@ -338,6 +339,13 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.4.3 =
+- Changes in **all** versions:
+	* **Fix**: Preserved complete Booking Form Builder output when legacy `[lang=LOCALE]` markers occur inside field labels or option values instead of parsing them as whole-form language sections.
+	* **Fix**: Strengthened request locale validation to prevent potential reflected cross-site scripting in frontend booking edit and cancellation forms (11.4.3.2).
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Restored the shared Booking Calendar button styles for Stripe and other payment gateways on redirected confirmation/thank-you pages.
+
 = 11.4.2 =
 - Changes in **all** versions:
 	* **Compatibility**: Prevented fatal errors during mixed-version updates when an older Pro version has the legacy Simple booking form option enabled.

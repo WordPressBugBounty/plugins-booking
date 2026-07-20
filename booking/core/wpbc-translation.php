@@ -224,6 +224,37 @@ function wpbc_load_country_list_file_php( $locale ){                            
 
 
 /**
+ * Validate a locale received from a request.
+ *
+ * Locale values are used request-wide and can later be rendered inside JavaScript and HTML attributes. Accept only
+ * ASCII locale identifiers, such as "en", "en_US", "de_DE_formal", or "en-US". Invalid values must be rejected
+ * instead of sanitized into a different value. // FixIn: 11.4.3.2.
+ *
+ * @param mixed $locale Locale value from the request.
+ *
+ * @return string|false Valid locale, or false when the value is invalid.
+ */
+function wpbc_validate_request_locale( $locale ) {
+
+	if ( ! is_string( $locale ) ) {
+		return false;
+	}
+
+	$locale = wp_unslash( $locale );
+
+	if (
+		( '' === $locale )
+		|| ( strlen( $locale ) > 32 )
+		|| ( 1 !== preg_match( '/\A[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*\z/D', $locale ) )
+	) {
+		return false;
+	}
+
+	return $locale;
+}
+
+
+/**
  * Get maybe reloaded 'booking' locale ( WPBC_LOCALE_RELOAD )   and if not defined WPBC_LOCALE_RELOAD define it.
  *
  * @return string
@@ -261,13 +292,13 @@ function wpbc_get_maybe_reloaded_booking_locale() {
 	$wpbc_ajx_locale = false;
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_REQUEST['wpdev_active_locale'] ) ) {
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.NonceVerification.Recommended
-		$wpbc_ajx_locale = sanitize_text_field( $_REQUEST['wpdev_active_locale'] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$wpbc_ajx_locale = wpbc_validate_request_locale( $_REQUEST['wpdev_active_locale'] );
 	}
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( isset( $_REQUEST['wpbc_ajx_locale'] ) ) {
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.NonceVerification.Recommended
-		$wpbc_ajx_locale = sanitize_text_field( $_REQUEST['wpbc_ajx_locale'] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$wpbc_ajx_locale = wpbc_validate_request_locale( $_REQUEST['wpbc_ajx_locale'] );
 	}
 
 	// Reload locale ONLY in AJAX, and if `isset   $_REQUEST['wpdev_active_locale']

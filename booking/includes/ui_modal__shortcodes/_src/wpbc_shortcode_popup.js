@@ -619,10 +619,10 @@ function wpbc_set_shortcode(){
 
             var ed, mce = typeof(tinymce) != 'undefined', qt = typeof(QTags) != 'undefined';
 
-            if ( !wpActiveEditor ) {
+            if ( ! window.wpActiveEditor ) {
                     if ( mce && tinymce.activeEditor ) {
                             ed = tinymce.activeEditor;
-                            wpActiveEditor = ed.id;
+                            window.wpActiveEditor = ed.id;
                     } else if ( !qt ) {
                             return false;
                     }

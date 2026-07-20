@@ -157,7 +157,7 @@ function wpbc_get_email_parts( $email ) {
             $pure_email = $matches[2];                 
         }
     } else {                                                                    // Check about correct  format  of email
-        if( preg_match( '/([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}/im', $email_to_parse, $matches ) ) {
+        if( preg_match( '/([\w\.\-_]+)?\w+@[\w\-_]+(\.\w+){1,}/im', $email_to_parse, $matches ) ) {
             $pure_email = $matches[0];
         }             
     }

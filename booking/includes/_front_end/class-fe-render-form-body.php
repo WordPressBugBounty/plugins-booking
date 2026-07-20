@@ -571,7 +571,15 @@ class WPBC_FE_Form_Source {
 
 				$render_args = array_merge( $custom_params, array( 'booking_type' => (int) $resource_id ) );
 
-				$bfb_source = wpbc_lang( $bfb_source );
+				/*
+				 * Do not pass the complete Builder form through wpbc_lang(). Builder
+				 * labels and option values may contain legacy [lang=LOCALE] markers.
+				 * Parsing one of those inline markers as a whole-form language block
+				 * truncates everything before/after the matching field and can leave an
+				 * incomplete form on the front end. BFB multilingual forms are separate
+				 * custom forms and are selected by their form slug.
+				 */
+				$bfb_source = (string) $bfb_source;
 
 				// Replace custom params in the source (legacy behavior).
 				if ( ! empty( $custom_params ) ) {

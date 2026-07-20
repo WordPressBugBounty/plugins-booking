@@ -1,12 +1,240 @@
+/**
+ * Check errors in booking form  fields, and show warnings if some errors exist.
+ * Check  errors,  like not selected dates or not filled requred form  fields, or not correct entering email or phone
+ * fields,  etc...
+ *
+ * @param resource_id  int (ID of booking resource)
+ */
+function wpbc_check_errors_in_booking_form( resource_id ) {
+	var $form                  = jQuery( '#booking_form' + resource_id );
+	var fields_with_errors_arr = [];
+	var is_error_in_field      = false;
+	var skip_element_types     = [ 'hidden', 'button' ];
 
-// Hint labels inside of input boxes.
+	if ( ! $form.length ) {
+		return false;
+	}
+
+	/**
+	 * Show a validation warning and register the related field as invalid.
+	 *
+	 * @param {HTMLElement|null} field          Field to focus after validation.
+	 * @param {HTMLElement|jQuery|string} target Warning message target.
+	 * @param {string} message                  Warning message.
+	 */
+	function add_validation_error( field, target, message ) {
+		wpbc_front_end__show_message__warning( target, message, 'text' );
+		is_error_in_field = true;
+
+		if ( field ) {
+			fields_with_errors_arr.push( field );
+		}
+	}
+
+	/**
+	 * Validate a required field.
+	 *
+	 * @param {HTMLElement} field  Form field.
+	 * @param {jQuery}     $field Cached jQuery field.
+	 * @param {string}     field_type Field type.
+	 */
+	function validate_required_field( field, $field, field_type ) {
+		var warning_target;
+
+		if ( ! $field.hasClass( 'wpdev-validates-as-required' ) ) {
+			return;
+		}
+
+		if ( 'checkbox' === field_type ) {
+			if ( ! $field.is( ':checked' ) && ! jQuery( ':checkbox[name="' + field.name + '"]', $form ).is( ':checked' ) ) {
+				warning_target = $field.parents( '.wpdev-form-control-wrap' ).last();
+
+				if ( ! warning_target.length ) {
+					warning_target = $field.parents( '.controls' ).last();
+				}
+				if ( ! warning_target.length ) {
+					warning_target = $field;
+				}
+
+				add_validation_error( field, warning_target, _wpbc.get_message( 'message_check_required_for_check_box' ) );
+			}
+			return;
+		}
+
+		if ( 'radio' === field_type ) {
+			if ( ! jQuery( ':radio[name="' + field.name + '"]', $form ).is( ':checked' ) ) {
+				add_validation_error( field, $field.parents( '.wpdev-form-control-wrap' ), _wpbc.get_message( 'message_check_required_for_radio_box' ) );
+			}
+			return;
+		}
+
+		if ( '' === wpbc_trim( $field.val() ) ) {
+			add_validation_error( field, field, _wpbc.get_message( 'message_check_required' ) );
+		}
+	}
+
+	/**
+	 * Validate an email field and return its trimmed value.
+	 *
+	 * @param {HTMLElement} field  Form field.
+	 * @param {jQuery}     $field Cached jQuery field.
+	 * @returns {string}
+	 */
+	function validate_email_field( field, $field ) {
+		var email_value = String( $field.val() || '' ).replace( /^\s+|\s+$/gm, '' );
+		var email_regex = /^([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,})$/;
+
+		if ( '' !== email_value && ! email_regex.test( email_value ) ) {
+			add_validation_error( field, field, _wpbc.get_message( 'message_check_email' ) );
+		}
+
+		return email_value;
+	}
+
+	/**
+	 * Validate a confirmation email field using its same_as_NAME class.
+	 *
+	 * @param {HTMLElement} field       Form field.
+	 * @param {string}      email_value Trimmed confirmation email value.
+	 */
+	function validate_confirmation_email_field( field, email_value ) {
+		var primary_email_match;
+		var primary_email_name;
+		var $primary_email_field;
+
+		if ( field.className.indexOf( 'same_as_' ) === -1 ) {
+			return;
+		}
+
+		primary_email_match = field.className.match( /same_as_([^\s])+/gi );
+		if ( null === primary_email_match ) {
+			return;
+		}
+
+		primary_email_name   = primary_email_match[ 0 ].substr( 8 );
+		$primary_email_field = $form.find( '[name="' + primary_email_name + resource_id + '"]' );
+
+		if ( $primary_email_field.length && $primary_email_field.val() !== email_value ) {
+			add_validation_error( field, field, _wpbc.get_message( 'message_check_same_email' ) );
+		}
+	}
+
+	/**
+	 * Validate fields using the validate_as_date, validate_as_digit, or validate_digit_N classes.
+	 *
+	 * @param {HTMLElement} field  Form field.
+	 * @param {jQuery}     $field Cached jQuery field.
+	 */
+	function validate_custom_field_classes( field, $field ) {
+		var class_list = $field.attr( 'class' );
+		var field_value;
+
+		if ( ! class_list ) {
+			return;
+		}
+
+		field_value = $field.val();
+
+		jQuery.each( class_list.split( /\s+/ ), function ( class_index, class_name ) {
+			var digits_to_check;
+			var message;
+			var validation_regex;
+
+			if ( 'validate_as_date' === class_name ) {
+				validation_regex = new RegExp( '^[0-3]?\\d{1}[\\/\\.\\-]+[0-3]?\\d{1}[\\/\\.\\-]+[0-2]+\\d{3}$' );
+				message          = _wpbc.get_message( 'message_check_valid_date' ).replace( '{date_example}', '09/25/2018' );
+
+				if ( '' !== field_value && ! validation_regex.test( field_value ) ) {
+					add_validation_error( field, field, message );
+				}
+				return;
+			}
+
+			if ( 'validate_as_digit' === class_name ) {
+				validation_regex = new RegExp( '^[0-9]+\\.?[0-9]*$' );
+
+				if ( '' !== field_value && ! validation_regex.test( field_value ) ) {
+					add_validation_error( field, field, _wpbc.get_message( 'message_check_digits_only' ) );
+				}
+				return;
+			}
+
+			if ( 'validate_digit_' !== class_name.substring( 0, 15 ) ) {
+				return;
+			}
+
+			digits_to_check = parseInt( class_name.substring( 15 ), 10 );
+			if ( isNaN( digits_to_check ) ) {
+				return;
+			}
+
+			validation_regex = new RegExp( '^\\d{' + digits_to_check + '}$' );
+			message          = _wpbc.get_message( 'message_check_digits_count' ).replace( '{digits}', digits_to_check );
+
+			if ( '' !== field_value && ! validation_regex.test( field_value ) ) {
+				add_validation_error( field, field, message );
+			}
+		} );
+	}
+
+	$form.find( ':input' ).each( function () {
+		var field      = this;
+		var $field     = jQuery( field );
+		var field_type = $field.attr( 'type' );
+		var email_value;
+
+		if ( -1 !== skip_element_types.indexOf( field_type ) ) {
+			return;
+		}
+
+		if ( '1' === String( $field.attr( 'data-wpbc-booking-submit-ignore' ) || '' ) ) {
+			return;
+		}
+
+		if (
+			( 'date_booking' + resource_id === $field.attr( 'name' ) ) &&
+			jQuery( '#calendar_booking' + resource_id ).is( ':visible' ) &&
+			( '' === $field.val() ) &&
+			( 0 === wpbc_get_arr_of_selected_additional_calendars( resource_id ).length )
+		) {
+			add_validation_error(
+				null,
+				'#booking_form_div' + resource_id + ' .bk_calendar_frame',
+				_wpbc.get_message( 'message_check_no_selected_dates' )
+			);
+		}
+
+		if ( ! $field.is( ':visible' ) ) {
+			return;
+		}
+
+		validate_required_field( field, $field, field_type );
+
+		if ( $field.hasClass( 'wpdev-validates-as-email' ) ) {
+			email_value = validate_email_field( field, $field );
+			validate_confirmation_email_field( field, email_value );
+		}
+
+		validate_custom_field_classes( field, $field );
+	} );
+
+	if ( fields_with_errors_arr.length ) {
+		jQuery( fields_with_errors_arr[ 0 ] ).trigger( 'focus' );
+	}
+
+	return is_error_in_field;
+}
+
+/**
+ * Hint labels inside of input boxes.
+ */
 jQuery( document ).ready(
 	function () {
 
 		jQuery( 'div.inside_hint' ).on(
 			'click',
 			function () {
-				jQuery( this ).css( 'visibility', 'hidden' ).siblings( '.has-inside-hint' ).trigger( 'focus' );   // FixIn: 8.7.11.12.
+				jQuery( this ).css( 'visibility', 'hidden' ).siblings( '.has-inside-hint' ).trigger( 'focus' );
 			}
 		);
 
@@ -14,13 +242,13 @@ jQuery( document ).ready(
 			'blur',
 			function () {
 				if ( '' === this.value ) {
-					jQuery( this ).siblings( '.inside_hint' ).css( 'visibility', '' );  // FixIn: 8.7.11.12.
+					jQuery( this ).siblings( '.inside_hint' ).css( 'visibility', '' );
 				}
 			}
 		).on(
 			'focus',
 			function () {
-				jQuery( this ).siblings( '.inside_hint' ).css( 'visibility', 'hidden' );  // FixIn: 8.7.11.12.
+				jQuery( this ).siblings( '.inside_hint' ).css( 'visibility', 'hidden' );
 			}
 		);
 
@@ -28,236 +256,8 @@ jQuery( document ).ready(
 	}
 );
 
+// == WIZARD ===========================================================================================================
 
-// FixIn: 8.4.0.2.
-/**
- * Check errors in booking form  fields, and show warnings if some errors exist.
- * Check  errors,  like not selected dates or not filled requred form  fields, or not correct entering email or phone
- * fields,  etc...
- *
- * @param bk_type  int (ID of booking resource)
- */
-function wpbc_check_errors_in_booking_form( bk_type ) {
-
-	var is_error_in_field = false;  // By default, all  is good - no error.
-
-	var my_form = jQuery( '#booking_form' + bk_type );
-
-    if ( my_form.length ) {
-
-        var fields_with_errors_arr = [];
-
-        // Pseudo-selector that get form elements <input , <textarea , <select, <button...
-        my_form.find( ':input' ).each( function( index, el ) {
-
-            // Skip some elements
-            var skip_elements = [ 'hidden', 'button' ];
-
-            if (  -1 == skip_elements.indexOf( jQuery( el ).attr( 'type' ) )  ){
-
-				if ( '1' === String( jQuery( el ).attr( 'data-wpbc-booking-submit-ignore' ) || '' ) ) {
-					return true;
-				}
-
-				// Check Calendar Dates Selection
-                if ( ( 'date_booking' + bk_type ) == jQuery( el ).attr( 'name' ) ) {
-
-                    // Show Warning only  if the calendar visible ( we are at step with  calendar)
-                    if (
-                            (  ( jQuery( '#calendar_booking' + bk_type ).is( ':visible' )  ) && ( '' == jQuery( el ).val() )  )
-                         && ( wpbc_get_arr_of_selected_additional_calendars( bk_type ).length == 0 )                    // FixIn: 8.5.2.26.
-                    ){            // FixIn: 8.4.4.5.
-
-                        var notice_message_id = wpbc_front_end__show_message__warning( '#booking_form_div' + bk_type + ' .bk_calendar_frame', _wpbc.get_message( 'message_check_no_selected_dates' ), 'text' );
-
-						//wpbc_do_scroll('#calendar_booking' + bk_type);            // Scroll to the calendar    		// FixIn: 8.5.1.3.
-						is_error_in_field = true;    // Error
-                    }
-                }
-
-                // Check only visible elements at this step
-                if ( jQuery( el ).is( ':visible' )  ){
-// console.log( '|id, type, val, visible|::', jQuery( el ).attr( 'name' ), '|' + jQuery( el ).attr( 'type' ) + '|', jQuery( el ).val(), jQuery( el ).is( ':visible' ) );
-
-					// Is Required
-					if ( jQuery( el ).hasClass( 'wpdev-validates-as-required' ) ){
-
-						// Checkboxes
-						if ( 'checkbox' == jQuery( el ).attr( 'type' ) ){
-
-                            if (
-                                    ( ! jQuery( el ).is( ':checked' ))
-                                 && ( ! jQuery( ':checkbox[name="' + el.name + '"]', my_form ).is( ":checked" ) )       // FixIn: 8.5.2.12.
-                            ){
-                                var checkbox_parent_element;
-
-                                if ( jQuery( el ).parents( '.wpdev-form-control-wrap' ).length > 0 ){
-
-                                    checkbox_parent_element = jQuery( el ).parents( '.wpdev-form-control-wrap' );
-
-                                } else if ( jQuery( el ).parents( '.controls' ).length > 0 ){
-
-                                    checkbox_parent_element = jQuery( el ).parents( '.controls' );
-
-                                } else {
-
-                                    checkbox_parent_element = jQuery( el );
-                                }
-                                var notice_message_id = wpbc_front_end__show_message__warning( checkbox_parent_element, _wpbc.get_message( 'message_check_required_for_check_box' ), 'text' );
-
-                                fields_with_errors_arr.push( el );
-								is_error_in_field = true;    // Error
-							}
-
-							// Radio boxes
-						} else if ( 'radio' == jQuery( el ).attr( 'type' ) ){
-
-							if ( !jQuery( ':radio[name="' + jQuery( el ).attr( 'name' ) + '"]', my_form ).is( ':checked' ) ){
-                                var notice_message_id = wpbc_front_end__show_message__warning( jQuery( el ).parents('.wpdev-form-control-wrap'), _wpbc.get_message( 'message_check_required_for_radio_box' ), 'text' );
-                                fields_with_errors_arr.push( el );
-								is_error_in_field = true;    // Error
-							}
-
-							// Other elements
-						} else {
-
-							var inp_value = jQuery( el ).val();
-
-                            if ( '' === wpbc_trim( inp_value ) ){                                                       //FixIn: 8.8.1.3        // FixIn: 8.7.11.12.
-
-                                var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_required' ), 'text' );
-
-                                fields_with_errors_arr.push( el );
-								is_error_in_field = true;    // Error
-							}
-						}
-					}
-
-					// Validate Email
-					if ( jQuery( el ).hasClass( 'wpdev-validates-as-email' ) ){
-						var inp_value = jQuery( el ).val();
-						inp_value = inp_value.replace( /^\s+|\s+$/gm, '' );                // Trim  white space //FixIn: 5.4.5
-						var reg = /^([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,})$/;
-						if ( (inp_value != '') && (reg.test( inp_value ) == false) ){
-
-                            var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_email' ), 'text' );
-                            fields_with_errors_arr.push( el );
-							is_error_in_field = true;    // Error
-						}
-					}
-
-
-					// Validation Check --- Same Email Field.  // FixIn: 11.4.1.1.
-					if ( jQuery( el ).hasClass( 'wpdev-validates-as-email' ) && (jQuery( el )[0].className.indexOf( 'same_as_' ) !== -1) ) {
-
-						// Get  the name of Primary Email field from the "same_as_NAME" class.
-						var primary_email_name = jQuery( el )[0].className.match( /same_as_([^\s])+/gi );
-						if ( primary_email_name != null ) { // We found.
-							primary_email_name = primary_email_name[0].substr( 8 );
-
-							// Recehck if such primary email field exist in the booking form.
-							if ( jQuery( '[name="' + primary_email_name + bk_type + '"]' ).length > 0 ) {
-
-								// Recheck the values of the both emails, if they do  not equla show warning.
-								if ( jQuery( '[name="' + primary_email_name + bk_type + '"]' ).val() !== inp_value ) {
-									var notice_message_id = wpbc_front_end__show_message__warning( el, _wpbc.get_message( 'message_check_same_email' ), 'text' );
-									fields_with_errors_arr.push( el );
-									is_error_in_field = true;    // Error.
-								}
-							}
-						}
-					}
-
-
-					// Validate For digit entering - for example for - Phone
-					// <p>Digit Field:<br />[text* dig_field class:validate_as_digit] </p>
-					// <p>Phone:<br />[text* phone class:validate_digit_8] </p>
-
-					var classList = jQuery( el ).attr( 'class' );
-
-					if ( classList ){
-
-						classList = classList.split( /\s+/ );
-
-                        jQuery.each( classList, function ( cl_index, cl_item ){
-
-                            ////////////////////////////////////////////////////////////////////////////////////////////
-
-                            // Validate field value as "Date"   [CSS class - 'validate_as_digit']
-                            if ( 'validate_as_date' === cl_item ) {
-
-                                // Valid values: 09-25-2018, 09/25/2018, 09-25-2018,  31-9-1918  ---   m/d/Y, m.d.Y, m-d-Y, d/m/Y, d.m.Y, d-m-Y
-                                var regex = new RegExp( '^[0-3]?\\d{1}[\\/\\.\\-]+[0-3]?\\d{1}[\\/\\.\\-]+[0-2]+\\d{3}$' );       // Check for Date 09/25/2018
-								var message_verif_phone = _wpbc.get_message( 'message_check_valid_date' ).replace( '{date_example}', '09/25/2018' );
-                                var inp_value = jQuery( el ).val();
-
-                                if (  ( inp_value != '' ) && ( regex.test( inp_value ) == false )  ){
-                                    wpbc_front_end__show_message__warning( el, message_verif_phone, 'text' );
-                                    fields_with_errors_arr.push( el );
-                                    is_error_in_field = true;    // Error
-                                }
-                            }
-
-                            ////////////////////////////////////////////////////////////////////////////////////////////
-
-                            // Validate field value as "DIGIT"   [CSS class - 'validate_as_digit']
-                            if ( 'validate_as_digit' === cl_item ) {
-
-                                var regex = new RegExp( '^[0-9]+\\.?[0-9]*$' );       // Check for digits
-								var message_verif_phone = _wpbc.get_message( 'message_check_digits_only' );
-                                var inp_value = jQuery( el ).val();
-
-                                if (  ( inp_value != '' ) && ( regex.test( inp_value ) == false )  ){
-                                    wpbc_front_end__show_message__warning( el, message_verif_phone, 'text' );
-                                    fields_with_errors_arr.push( el );
-                                    is_error_in_field = true;    // Error
-                                }
-                            }
-
-                            ////////////////////////////////////////////////////////////////////////////////////////////
-
-                            // Validate field value as "Phone" number or any other valid number wth specific number of digits [CSS class - 'validate_digit_8' || 'validate_digit_10' ]
-                            var is_validate_digit = cl_item.substring( 0, 15 );
-
-                            // Check  if class start  with 'validate_digit_'
-                            if ( 'validate_digit_' === is_validate_digit ){
-
-                                // Get  number of digit in class: validate_digit_8 => 8 or validate_digit_10 => 10
-                                var digits_to_check = parseInt( cl_item.substring( 15 ) );
-
-                                // Check  about any errors in
-                                if ( !isNaN( digits_to_check ) ){
-
-                                    var regex = new RegExp( '^\\d{' + digits_to_check + '}$' );       // We was valid it as parseInt - only integer variable - digits_to_check
-									var message_verif_phone = _wpbc.get_message( 'message_check_digits_count' ).replace( '{digits}', digits_to_check );
-                                    var inp_value = jQuery( el ).val();
-
-									if (  ( inp_value != '' ) && ( regex.test( inp_value ) == false )  ){
-                                        wpbc_front_end__show_message__warning( el, message_verif_phone, 'text' );
-                                        fields_with_errors_arr.push( el );
-                                        is_error_in_field = true;    // Error
-                                    }
-                                }
-                            }
-
-                            ////////////////////////////////////////////////////////////////////////////////////////////
-
-                        });
-    				}
-                }
-			}
-        } );
-
-        if ( fields_with_errors_arr.length > 0 ){
-            jQuery( fields_with_errors_arr[ 0 ] ).trigger( 'focus' );    // FixIn: 9.3.1.9.
-        }
-	}
-
-    return is_error_in_field;
-}
-
-
-// FixIn: 8.6.1.15.
 /**
  * Go to next  specific step in Wizard style booking form, with
  * check all required elements specific step, otherwise show warning message!
@@ -267,6 +267,7 @@ function wpbc_check_errors_in_booking_form( bk_type ) {
  * @returns {boolean}
  */
 function wpbc_wizard_step(el, step_num, step_from) {
+
 	var br_id = jQuery( el ).closest( 'form' ).find( 'input[name^="bk_type"]' ).val();
 
 	// FixIn: 8.8.1.5.
@@ -286,7 +287,8 @@ function wpbc_wizard_step(el, step_num, step_from) {
 	}
 
 	if ( br_id != undefined ) {
-		jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" ).css( { "display": "none" } ).removeClass( 'wpbc_wizard_step_hidden' );
+		jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" ).css( { "display": "none" } )
+		                                                        .removeClass( 'wpbc_wizard_step_hidden' );
 		jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num ).css( { "display": "block" } );
 		return jQuery( "#booking_form" + br_id + " .wpbc_wizard_step" + step_num );
 	}
@@ -333,55 +335,60 @@ function wpbc_hook__init_booking_form_wizard_buttons() {
 	);
 }
 
-// FixIn: 10.1.3.2.
-jQuery( document ).ready( function (){
-    wpbc_hook__init_booking_form_wizard_buttons();
-} );
 
-
-// FixIn: 8.6.1.15.
 /**
  * Check if at least  one element from  array  of  elements names in booking form  visible  or not.
  * Usage Example:   if ( wpbc_is_some_elements_visible( br_id, ['rangetime', 'durationtime', 'starttime', 'endtime'] )
  * ){ ... }
  *
- * @param bk_type
+ * @param resource_id
  * @param elements_names
  * @returns {boolean}
  */
-function wpbc_is_some_elements_visible( bk_type, elements_names ){
+function wpbc_is_some_elements_visible(resource_id, elements_names) {
 
-    var is_some_elements_visible = false;
+	var my_form = jQuery( '#booking_form' + resource_id );
 
-    var my_form = jQuery( '#booking_form' + bk_type );
+	if ( ! my_form.length ) {
+		return  false;
+	}
 
-    if ( my_form.length ){
+	var is_some_elements_visible = false;
+	// Pseudo-selector that get form elements <input , <textarea , <select, <button...
+	my_form.find( ':input' ).each(
+		function (index, el) {
 
-        // Pseudo-selector that get form elements <input , <textarea , <select, <button...
-        my_form.find( ':input' ).each( function ( index, el ){
+			// Skip some elements.
+			var skip_elements = [ 'hidden', 'button' ];
 
-            // Skip some elements
-            var skip_elements = ['hidden', 'button'];
+			if ( -1 == skip_elements.indexOf( jQuery( el ).attr( 'type' ) ) ) {
 
-            if ( -1 == skip_elements.indexOf( jQuery( el ).attr( 'type' ) ) ){
+				for ( var ei = 0; ei < (elements_names.length - 1); ei++ ) {
 
-                for ( var ei = 0; ei < ( elements_names.length - 1) ; ei++ ){
+					// Check Calendar Dates Selection.
+					if ( (elements_names[ei] + resource_id) == jQuery( el ).attr( 'name' ) ) {
 
-                    // Check Calendar Dates Selection
-                    if ( (elements_names[ ei ] + bk_type) == jQuery( el ).attr( 'name' ) ){
+						if ( jQuery( el ).is( ':visible' ) ) {
+							is_some_elements_visible = true;
+						}
+					}
+				}
+			}
+		}
+	);
 
-                        if ( jQuery( el ).is( ':visible' ) ){
-                            is_some_elements_visible = true;
-                        }
-                    }
-                }
-            }
-        } );
-    }
-    return is_some_elements_visible;
+	return is_some_elements_visible;
 }
 
-// == Days Selections - support functions ==============================================================================
+
+jQuery( document ).ready(
+	function () {
+		wpbc_hook__init_booking_form_wizard_buttons();
+	}
+);
+
+
+// == DAYS_SELECTIONS ==================================================================================================
 
 /**
  * Get first day of selection
@@ -421,7 +428,13 @@ function get_first_day_of_selection(dates) {
     return dates;                                                               //20.12.2013
 }
 
-// Get last day of selection
+
+/**
+ * Get last day of selection.
+ *
+ * @param dates
+ * @returns {*|string}
+ */
 function get_last_day_of_selection(dates) {
 
     // Multiple days selections
@@ -471,8 +484,6 @@ function wpbc_get_arr_of_selected_additional_calendars( bk_type ){              
         var id_additional_str = document.getElementById( 'additional_calendars' + bk_type ).value;
         var id_additional_arr = id_additional_str.split( ',' );
 
-        var is_all_additional_days_unselected = true;
-
         for ( var ia = 0; ia < id_additional_arr.length; ia++ ){
             if ( document.getElementById( 'date_booking' + id_additional_arr[ ia ] ).value != '' ){
                 selected_additionl_calendars.push( id_additional_arr[ ia ] );
@@ -482,9 +493,9 @@ function wpbc_get_arr_of_selected_additional_calendars( bk_type ){              
     return selected_additionl_calendars;
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Elementor Ready Widget Update.
-// ---------------------------------------------------------------------------------------------------------------------
+
+// == ELEMENTOR Ready Widget Update ====================================================================================
+
 jQuery( function ($) {
 	// FixIn: 10.14.15.1.
 	if ( (window.elementorFrontend) && ('undefined' !== typeof (elementorFrontend.hooks)) ) {
@@ -502,23 +513,24 @@ jQuery( function ($) {
 } );
 
 // Elementor widget  reinit. So  we need to reinit all "jQuery( document ).ready( ...) " again with custom 'wpbc_elementor_ready' event.
-jQuery( document ).on( 'wpbc_elementor_ready', function () {
+jQuery( document ).on(
+	'wpbc_elementor_ready',
+	function () {
 
-	wpbc_hook__init_booking_form_wizard_buttons();
+		wpbc_hook__init_booking_form_wizard_buttons();
 
-	if ( 'function' === typeof (wpbc_hook__init_timeselector) ) {
-		wpbc_hook__init_timeselector();
+		if ( 'function' === typeof (wpbc_hook__init_timeselector) ) {
+			wpbc_hook__init_timeselector();
+		}
+
+		if ( 'function' === typeof (wpbc_update_capacity_hint) ) {
+			jQuery( '.booking_form_div' ).on(
+				'wpbc_booking_date_or_option_selected',
+				function (event, resource_id) {
+					wpbc_update_capacity_hint( resource_id );
+				}
+			);
+		}
+
 	}
-
-	if ( 'function' === typeof (wpbc_update_capacity_hint) ) {
-		jQuery( '.booking_form_div' ).on( 'wpbc_booking_date_or_option_selected', function (event, resource_id) {
-			wpbc_update_capacity_hint( resource_id );
-		} );
-	}
-
-	// TODO:
-	// <?php if ('wpbc_theme_dark_1' === get_bk_option( 'booking_form_theme' ) ){  ?>
-	// 	jQuery( '.wpbc_widget_preview_booking_form .wpbc_center_preview,.wpbc_widget_preview_booking_form .wpbc_container.wpbc_container_booking_form,.wpbc_widget_preview_booking_form .wpbc_widget_content' ).addClass( 'wpbc_theme_dark_1' );
-	// <?php } ?>
-
-} );
+);

@@ -297,7 +297,13 @@ function wpbc_do_shortcode__booking_confirm( $attr ){
 		$json_arr['ajx_confirmation'] = $confirmation_arr;
 		$json_arr['resource_id']      = $resource_id;
 
-		$return_str =  '<div class="wpbc_container ">'
+		/*
+		 * Keep redirected confirmation/payment output in the same styling scope
+		 * as payment forms shown directly after an AJAX booking. Gateway buttons
+		 * use the shared .wpbc_button_light styles scoped by
+		 * .wpbc_container_booking_form.
+		 */
+		$return_str =  '<div class="wpbc_container wpbc_container_booking_form">'
 		                  . '<div id="booking_form' . $resource_id . '"></div>'
 		                  . '<script type="text/javascript"> ' . wpbc_jq_ready_start()                                  // FixIn: 10.1.3.7.
 		                    . ' wpbc_show_thank_you_message_after_booking(' .wp_json_encode( $json_arr ) . '); '

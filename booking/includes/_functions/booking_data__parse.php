@@ -368,8 +368,8 @@ function wpbc_get__booking_form_fields__configuration( $resource_id = 1, $form_n
 
 	$pair = wpbc_get__bfb_booking_form_pair__for_field_names_listing( $resource_id, $form_name, wpbc_get_request_form_context() );
 
-	// Language
-	$booking_form_configuration = isset( $pair['form'] ) ? wpbc_lang( (string) $pair['form'] ) : '';
+	// Keep the complete BFB source intact. Languages use separate custom forms.
+	$booking_form_configuration = isset( $pair['form'] ) ? (string) $pair['form'] : '';
 
 	return $booking_form_configuration;
 }
@@ -476,9 +476,7 @@ function wpbc_get__booking_form_data_configuration( $resource_id = 1, $form_data
 
 	$booking_form_show = WPBC_BFB_Booking_Data_Content_Resolver::maybe_override_booking_form_show_by_bfb( '', $resource_id, $my_booking_form_name, $form_data, $ctx );
 
-	// Language.
-	$booking_form_show = wpbc_lang( $booking_form_show );
-
+	// Keep the complete BFB content template intact. Languages use separate custom forms.
 	return $booking_form_show;
 }
 
@@ -738,10 +736,7 @@ function wpbc_get__booking_form_pair__for_field_names_listing( $resource_id = 1,
 	$pair['form']    = wpbc_bf__replace_custom_html_shortcodes( (string) $pair['form'] );
 	$pair['content'] = wpbc_bf__replace_custom_html_shortcodes( (string) $pair['content'] );
 
-	$pair['form']    = wpbc_lang( (string) $pair['form'] );
-	$pair['content'] = wpbc_lang( (string) $pair['content'] );
-
-
+	// Do not interpret inline [lang=LOCALE] markers as whole-form language blocks.
 	return $pair;
 }
 
