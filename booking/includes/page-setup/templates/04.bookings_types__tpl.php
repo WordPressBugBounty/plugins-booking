@@ -35,21 +35,66 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 
 function wpbc_stp_wiz__template__bookings_types(){
+	$is_mode_selection_enabled = function_exists( 'wpbc_booking_modes_get_setup_mode_choices' );
+	$setup_mode_choices        = $is_mode_selection_enabled ? wpbc_booking_modes_get_setup_mode_choices() : array();
+	$selected_mode_id          = function_exists( 'wpbc_setup_wizard__get_selected_mode_id' ) ? wpbc_setup_wizard__get_selected_mode_id() : 'classic';
+	$selected_booking_type     = function_exists( 'wpbc_setup_wizard__get_selected_booking_type' ) ? wpbc_setup_wizard__get_selected_booking_type() : 'full_days_bookings';
 
  ?><script type="text/html" id="tmpl-wpbc_stp_wiz__template__bookings_types">
 	<div class="wpbc_page_main_section    wpbc_container    wpbc_form    wpbc_container_booking_form">
 		<div class="wpbc__form__div wpbc_swp_section wpbc_swp_section__bookings_types">
 			<div class="wpbc__row">
 				<div class="wpbc__field">
-					<h1 class="wpbc_swp_section_header" ><?php esc_html_e( 'Select Your Booking Type', 'booking' ); ?></h1>
-					<p class="wpbc_swp_section_header_description"><?php esc_html_e('This will help customize your experience.','booking'); ?></p>
+					<h1 class="wpbc_swp_section_header" ><?php echo esc_html( $is_mode_selection_enabled ? __( 'How do you accept bookings?', 'booking' ) : __( 'Select Your Booking Type', 'booking' ) ); ?></h1>
+					<p class="wpbc_swp_section_header_description"><?php echo esc_html( $is_mode_selection_enabled ? __( 'Choose familiar terminology and a guided setup. You can switch modes later without changing booking data.', 'booking' ) : __( 'This will help customize your experience.', 'booking' ) ); ?></p>
 				</div>
 			</div>
+			<?php if ( $is_mode_selection_enabled && ! empty( $setup_mode_choices ) ) { ?>
+			<div class="wpbc__row">
+				<div class="wpbc__field">
+					<div class="wpbc_ui_radio_section wpbc_ui_radio_section_as_row wpbc_setup_mode_choices">
+						<?php foreach ( $setup_mode_choices as $mode_id => $mode_choice ) {
+							$default_booking_type = (
+								$selected_mode_id === $mode_id
+								&& in_array( $selected_booking_type, $mode_choice['allowed_booking_types'], true )
+							) ? $selected_booking_type : $mode_choice['default_booking_type'];
+							?>
+							<div class="wpbc_setup_mode_choice"
+								 data-wpbc-setup-mode-id="<?php echo esc_attr( $mode_id ); ?>"
+								 data-wpbc-setup-preference-title="<?php echo esc_attr( $mode_choice['preference_title'] ); ?>"
+								 data-wpbc-setup-booking-types="<?php echo esc_attr( implode( ',', $mode_choice['allowed_booking_types'] ) ); ?>"
+								 data-wpbc-setup-default-booking-type="<?php echo esc_attr( $default_booking_type ); ?>"
+								 data-wpbc-setup-fixed-appointment-type="<?php echo esc_attr( $mode_choice['fixed_appointment_type'] ); ?>">
+								<?php
+								wpbc_flex_radio_container(
+									array(
+										'id'               => 'wpbc_swp_booking_mode__' . $mode_id,
+										'name'             => 'wpbc_swp_booking_mode',
+										'value'            => $mode_id,
+										'label'            => array( 'title' => $mode_choice['title'] ),
+										'text_description' => $mode_choice['description'],
+										'selected'         => ( $selected_mode_id === $mode_id ),
+									)
+								);
+								?>
+							</div>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+			<div class="wpbc__row wpbc_setup_preferences_heading_row">
+				<div class="wpbc__field">
+					<h2 class="wpbc_swp_section_header wpbc_setup_preferences_heading"><?php esc_html_e( 'Choose booking behavior', 'booking' ); ?></h2>
+					<p class="wpbc_swp_section_header_description"><?php esc_html_e( 'This will help customize your experience.', 'booking' ); ?></p>
+				</div>
+			</div>
+			<?php } ?>
 			<div class="wpbc__row">
 				<div class="wpbc__field">
 
-					<div class="wpbc_ui_radio_section wpbc_ui_radio_section_as_row">
+					<div class="wpbc_ui_radio_section wpbc_ui_radio_section_as_row wpbc_setup_booking_type_choices">
 						<?php
+							?><div class="wpbc_setup_booking_type_choice" data-wpbc-setup-booking-type="full_days_bookings"><?php
 							$params_radio = array(
 								  'id'       => 'wpbc_swp_booking_types__full_days_bookings' 				// HTML ID  of element
 								, 'name'     => 'wpbc_swp_booking_types'
@@ -69,6 +114,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 							);
 							wpbc_flex_radio_container( $params_radio );
 
+							?></div><div class="wpbc_setup_booking_type_choice" data-wpbc-setup-booking-type="time_slots_appointments"><?php
 							$params_radio = array(
 								  'id'       => 'wpbc_swp_booking_types__time_slots_appointments' 				// HTML ID  of element
 								, 'name'     => 'wpbc_swp_booking_types'
@@ -92,6 +138,7 @@ function wpbc_stp_wiz__template__bookings_types(){
 							);
 							wpbc_flex_radio_container( $params_radio );
 
+							?></div><div class="wpbc_setup_booking_type_choice" data-wpbc-setup-booking-type="changeover_multi_dates_bookings"><?php
 							$params_radio = array(
 								  'id'       => 'wpbc_swp_booking_types__changeover_multi_dates_bookings' 				// HTML ID  of element
 								, 'name'     => 'wpbc_swp_booking_types'
@@ -114,7 +161,22 @@ function wpbc_stp_wiz__template__bookings_types(){
 											.'</div>'
 							);
 							wpbc_flex_radio_container( $params_radio );
+							?></div><?php
 						?>
+					</div>
+					<div class="wpbc_setup_appointment_mode_configuration" style="display: none;">
+						<div class="wpbc_setup_appointment_summary_plate">
+							<div class="wpbc_setup_appointment_summary_copy">
+								<strong><?php esc_html_e( 'Appointment scheduling', 'booking' ); ?></strong>
+								<p><?php esc_html_e( 'Appointments use Service duration and available start times.', 'booking' ); ?></p>
+							</div>
+							<?php
+							echo wpbc_stp_wiz__ui__bookings_types__timeslot_picker_selectbox__get(
+								'wpbc_swp_booking_timeslot_picker_appointment',
+								__( 'Show start times as', 'booking' )
+							); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Generated from static, escaped Setup Wizard values.
+							?>
+						</div>
 					</div>
 					<?php
 
@@ -156,17 +218,22 @@ function wpbc_stp_wiz__template__bookings_types(){
 
 			<div class="wpbc__form__div">
 				<hr>
-				<div class="wpbc__row">
-					<?php /** ?>
-					<div class="wpbc__field">
-						<input type="button" value="<?php esc_attr_e('Reset Wizard and Start from Beginning','booking'); ?>"
-							   class="wpbc_button_light wpbc_button_danger tooltip_top "  style=""
-							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params(  { 'do_action': 'make_reset' }  ); ">
+				<div class="wpbc__row wpbc_setup_wizard_navigation_row">
+					<div class="wpbc__field wpbc_setup_wizard_navigation_links">
+						<p class="wpbc_exit_link_small">
+							<a href="javascript:void(0)"
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
+							   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
+							><?php esc_html_e('Exit and skip the setup wizard','booking'); ?></a>
+							<a href="javascript:void(0)" class="wpbc_button_danger"
+							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
+							   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
+							><?php esc_html_e('Reset Wizard','booking'); ?></a>
+						</p>
 					</div>
-					<?php /**/ ?>
-					<div class="wpbc__field">
+					<div class="wpbc__field wpbc_setup_wizard_navigation_actions">
 						<#  if ( '' != priorStep ) { #>
-						<a     class="wpbc_button_light"  style="margin-left:auto;margin-right:10px;" tabindex="0"
+						<a     class="button button-secondary"  style="margin-left:auto;margin-right:10px;" tabindex="0"
 							   id="btn__toolbar__buttons_prior"
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
 																									'current_step': '{{priorStep}}',
@@ -179,14 +246,15 @@ function wpbc_stp_wiz__template__bookings_types(){
 						<# } else { #>
 							<span style="margin-left:auto;"></span>
 						<# } #>
-						<a	   class="wpbc_button_light button-primary" tabindex="0"
+						<a	   class="button button-primary" tabindex="0"
 							   id="btn__toolbar__buttons_next"
 							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
 																									'current_step': '{{nextStep}}',
 																									   'do_action': '{{doAction}}',
 																									'ui_clicked_element_id': 'btn__toolbar__buttons_next',
-																									   'step_data':{
-																												'wpbc_swp_booking_types': jQuery( '[name=\'wpbc_swp_booking_types\']:checked').val(),
+																		   'step_data':{
+																				'wpbc_swp_booking_mode': jQuery( '[name=\'wpbc_swp_booking_mode\']:checked').val(),
+																				'wpbc_swp_booking_types': jQuery( '[name=\'wpbc_swp_booking_types\']:checked').val(),
 																												'wpbc_swp_booking_timeslot_picker': jQuery( '[name=\'wpbc_swp_booking_timeslot_picker\']').val(),
 																												'wpbc_swp_booking_appointments_type': jQuery( '[name=\'wpbc_swp_booking_appointments_type\']:checked').val(),
 																												'wpbc_swp_booking_change_over_days_triangles': jQuery( '[name=\'wpbc_swp_booking_change_over_days_triangles\']').val()
@@ -198,25 +266,6 @@ function wpbc_stp_wiz__template__bookings_types(){
 										wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 					</div>
 				</div>
-				<div class="wpbc__row">
-					<div class="wpbc__field">
-						<p class="wpbc_exit_link_small">
-							<a href="javascript:void(0)" tabindex="-1"
-							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
-							   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
-							><?php
-								esc_html_e('Exit and skip the setup wizard','booking');
-							?></a>
-							<?php  ?>
-							<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;" tabindex="-1"
-							   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
-							   title="<?php esc_attr_e('Start Setup from Beginning','booking'); ?>"
-							><?php
-								esc_html_e('Reset Wizard','booking');
-							?></a>
-						</p>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -226,7 +275,6 @@ function wpbc_stp_wiz__template__bookings_types(){
 	// -----------------------------------------------------------------------------------------------------------------
 	?>
 	<style type="text/css">
-		.wpbc_setup_wizard_page_container .wpbc_swp_section__bookings_types {max-width: 440px}
 		.wpbc_ajx_page__container .wpbc_ajx_page__section_footer:not(.wpbc_ajx_page__section_footer__internal){ display: none;}
 	</style>
 	</script><?php
@@ -236,16 +284,27 @@ function wpbc_stp_wiz__template__bookings_types(){
 
 
 /**
- * Get toggle  On | Off  Selector  for 'Time picker for time slots'
+ * Get the Setup Wizard selector for presenting available booking times.
+ *
+ * The Classic workflow uses the historical field name and label. Appointment
+ * mode supplies a separate presentation-only field that JavaScript keeps in
+ * sync with the canonical saved value.
+ *
+ * @param string $field_name Selector field name.
+ * @param string $label_text Selector label. An empty value uses the historical
+ *                           Classic-mode label.
+ *
+ * @return string Escaped selector markup.
  */
-function wpbc_stp_wiz__ui__bookings_types__timeslot_picker_selectbox__get() {
+function wpbc_stp_wiz__ui__bookings_types__timeslot_picker_selectbox__get( $field_name = 'wpbc_swp_booking_timeslot_picker', $label_text = '' ) {
 
 	$booking_timeslot_picker = get_bk_option('booking_timeslot_picker');
+	$label_text              = ( '' === $label_text ) ? __( 'Show time slots as', 'booking' ) : $label_text;
 
 	ob_start();
 	?><div class="booking_timeslot_picker__get_on_off" style="max-width: 90%;margin: 0 auto;padding-bottom: 16px;">
-		<label style="margin: 0 0 8px;"><?php esc_html_e('Show time slots as','booking'); ?></label>
-		<select name="wpbc_swp_booking_timeslot_picker" >
+		<label style="margin: 0 0 8px;"><?php echo esc_html( $label_text ); ?></label>
+		<select name="<?php echo esc_attr( $field_name ); ?>" >
 			<option <?php selected($booking_timeslot_picker,'On'); ?> value="On"><?php esc_html_e('Time Picker','booking'); ?></option>
 			<option <?php selected($booking_timeslot_picker,'Off'); ?> value="Off"><?php esc_html_e('Drop-down list','booking'); ?></option>
 		</select>

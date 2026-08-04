@@ -56,7 +56,19 @@ class WPBC_Admin_Menus {
         if ( isset( $param['menu_title_second'] ) ) $this->menu_title_second = $param['menu_title_second'];        
         if ( isset( $param['page_header'] ) )       $this->page_header      = $param['page_header'];        
         if ( isset( $param['browser_header'] ) )    $this->browser_header   = $param['browser_header'];        
-        if ( isset( $param['in_menu'] ) )           $this->in_menu          = $param['in_menu'];                        
+        if ( isset( $param['in_menu'] ) )           $this->in_menu          = $param['in_menu'];
+
+		/**
+		 * Filter the parent slug used to register a Booking Calendar admin page.
+		 *
+		 * Returning false registers the controller as a hidden WordPress plugin
+		 * page. Its direct URL and capability check remain active, while WordPress
+		 * does not add the page to a native submenu.
+		 *
+		 * @param string|false $parent_menu_slug Parent menu slug, or false for a hidden page.
+		 * @param string       $menu_slug        Booking Calendar admin page slug.
+		 */
+		$this->in_menu = apply_filters( 'wpbc_admin_menu_parent_slug', $this->in_menu, $this->menu_tag );
         if ( isset( $param['position'] ) )          $this->root_position    = $param['position'];                        
         else                                        $this->root_position    = null;    
         
@@ -80,6 +92,28 @@ class WPBC_Admin_Menus {
     public function load_css() {
         do_action( 'wpbc_load_css_on_admin_page' );
     }
+
+
+	/**
+	 * Restore the browser title for a registered hidden plugin page.
+	 *
+	 * WordPress cannot always resolve a title for submenu pages registered with
+	 * a false parent slug. The load-hook runs before admin-header.php and keeps
+	 * PHP 8.1+ from passing null into strip_tags() while retaining the hidden
+	 * page's normal screen hook, assets, controller, and capability check.
+	 *
+	 * @return void
+	 */
+	public function set_hidden_page_title() {
+		global $title;
+
+		$page_title = ! empty( $this->browser_header ) ? $this->browser_header : $this->page_header;
+		if ( empty( $page_title ) ) {
+			$page_title = $this->menu_title;
+		}
+
+		$title = wp_strip_all_tags( (string) $page_title );
+	}
                     
     
     /**
@@ -110,6 +144,10 @@ class WPBC_Admin_Menus {
                                                , array( $this, 'content' )                  // Function for output content of page
                                              );
         }
+
+		if ( false === $this->in_menu && false !== $page ) {
+			add_action( 'load-' . $page, array( $this, 'set_hidden_page_title' ) );
+		}
         
         //do_action('wpbc_define_settings_pages', $this->menu_tag );              // Define sub classes, like: page-settings-general.php      $this->menu_tag - 'wpbc-settings' - its 'page' parameter in URL               
         

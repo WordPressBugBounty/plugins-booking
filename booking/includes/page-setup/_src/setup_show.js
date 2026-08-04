@@ -155,6 +155,103 @@ function wpbc_setup_wizard_page__is_all_steps_completed(){
 	return status;
 }
 
+/**
+ * Show the configuration controls belonging to the selected booking behavior.
+ *
+ * @return {void}
+ */
+function wpbc_setup_wizard_page__refresh_booking_type_details() {
+
+	var booking_type           = jQuery( '[name="wpbc_swp_booking_types"]:checked' ).val() || '';
+	var fixed_appointment_type = jQuery( '[name="wpbc_swp_booking_mode"]:checked' )
+		.closest( '.wpbc_setup_mode_choice' )
+		.attr( 'data-wpbc-setup-fixed-appointment-type' ) || '';
+	var is_fixed_appointment_mode = 'durationtime' === fixed_appointment_type;
+	var $canonical_times_picker   = jQuery( '[name="wpbc_swp_booking_timeslot_picker"]' );
+	var $appointment_times_picker = jQuery( '[name="wpbc_swp_booking_timeslot_picker_appointment"]' );
+
+	jQuery( '.wpbc_in_radio_container_selectbox' ).hide();
+	jQuery( '.wpbc_setup_appointment_mode_configuration' ).hide();
+
+	if ( is_fixed_appointment_mode ) {
+		if ( $canonical_times_picker.length && $appointment_times_picker.length ) {
+			$appointment_times_picker.val( $canonical_times_picker.val() );
+		}
+		jQuery( '.wpbc_setup_appointment_mode_configuration' ).show();
+	} else if ( 'time_slots_appointments' === booking_type ) {
+		jQuery( '.wpbc_ui_booking_timeslot_picker__get_on_off__div' ).show();
+	} else if ( 'changeover_multi_dates_bookings' === booking_type ) {
+		jQuery( '.wpbc_ui_booking_change_over__get_on_off__div' ).show();
+	}
+}
+
+/**
+ * Apply the selected presentation mode to the Step 4 behavior choices.
+ *
+ * The presentation mode and booking behavior are intentionally independent
+ * values. This function limits the visible behaviors to valid combinations
+ * without coupling mode switching to any QuickStart content mutation.
+ *
+ * @return {void}
+ */
+function wpbc_setup_wizard_page__refresh_booking_mode_choices() {
+
+	var $mode_input = jQuery( '[name="wpbc_swp_booking_mode"]:checked' ).first();
+	var $mode_choice;
+	var allowed_booking_types;
+	var default_booking_type;
+	var fixed_appointment_type;
+	var is_fixed_appointment_mode;
+	var $selected_booking_type;
+
+	if ( ! $mode_input.length ) {
+		$mode_input = jQuery( '[name="wpbc_swp_booking_mode"]' ).first().prop( 'checked', true );
+	}
+
+	$mode_choice = $mode_input.closest( '.wpbc_setup_mode_choice' );
+	if ( ! $mode_choice.length ) {
+		wpbc_setup_wizard_page__refresh_booking_type_details();
+		return;
+	}
+
+	allowed_booking_types = String( $mode_choice.attr( 'data-wpbc-setup-booking-types' ) || '' ).split( ',' );
+	default_booking_type = String( $mode_choice.attr( 'data-wpbc-setup-default-booking-type' ) || '' );
+	fixed_appointment_type = String( $mode_choice.attr( 'data-wpbc-setup-fixed-appointment-type' ) || '' );
+	is_fixed_appointment_mode = 'durationtime' === fixed_appointment_type;
+
+	jQuery( '.wpbc_setup_preferences_heading' ).text( $mode_choice.attr( 'data-wpbc-setup-preference-title' ) || '' );
+	jQuery( '.wpbc_setup_booking_type_choice' ).each( function() {
+		var booking_type = String( jQuery( this ).attr( 'data-wpbc-setup-booking-type' ) || '' );
+		jQuery( this ).toggle( -1 !== jQuery.inArray( booking_type, allowed_booking_types ) );
+	} );
+
+	$selected_booking_type = jQuery( '[name="wpbc_swp_booking_types"]:checked' );
+	if (
+		! $selected_booking_type.length
+		|| -1 === jQuery.inArray( String( $selected_booking_type.val() || '' ), allowed_booking_types )
+		|| $selected_booking_type.is( ':disabled' )
+	) {
+		$selected_booking_type = jQuery( '[name="wpbc_swp_booking_types"][value="' + default_booking_type + '"]:not(:disabled)' ).first();
+		if ( ! $selected_booking_type.length ) {
+			$selected_booking_type = jQuery( '.wpbc_setup_booking_type_choice:visible [name="wpbc_swp_booking_types"]:not(:disabled)' ).first();
+		}
+		$selected_booking_type.prop( 'checked', true );
+	}
+
+	if ( is_fixed_appointment_mode ) {
+		jQuery( '[name="wpbc_swp_booking_appointments_type"][value="' + fixed_appointment_type + '"]' ).prop( 'checked', true );
+	}
+
+	jQuery( '.wpbc_setup_preferences_heading_row' ).toggle( ! is_fixed_appointment_mode );
+	jQuery( '.wpbc_setup_booking_type_choices' ).toggle( ! is_fixed_appointment_mode );
+
+	jQuery( '[name="wpbc_swp_booking_mode"], [name="wpbc_swp_booking_types"]' ).each( function() {
+		wpbc_ui_el__radio_container_selection( this );
+	} );
+
+	wpbc_setup_wizard_page__refresh_booking_type_details();
+}
+
 
 /**
  * Define UI hooks for elements, after showing in Ajax.
@@ -187,6 +284,21 @@ function wpbc_setup_wizard_page__define_ui_hooks(){
 	jQuery( '.wpbc_ui_radio_container' ).on( 'click', function( event ){
 		wpbc_ui_el__radio_container_click( this );
 	} );
+
+	jQuery( '[name="wpbc_swp_booking_mode"]' ).on( 'change', function() {
+		wpbc_setup_wizard_page__refresh_booking_mode_choices();
+	} );
+
+	jQuery( '[name="wpbc_swp_booking_types"]' ).on( 'change', function() {
+		wpbc_setup_wizard_page__refresh_booking_type_details();
+	} );
+
+	// Save the Appointment-only presentation control through the historical canonical field.
+	jQuery( '[name="wpbc_swp_booking_timeslot_picker_appointment"]' ).on( 'change', function() {
+		jQuery( '[name="wpbc_swp_booking_timeslot_picker"]' ).val( jQuery( this ).val() );
+	} );
+
+	wpbc_setup_wizard_page__refresh_booking_mode_choices();
 
 	// -----------------------------------------------------------------------------------------------------------------
 

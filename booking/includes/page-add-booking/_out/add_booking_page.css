@@ -1,0 +1,293 @@
+.wpbc_add_booking_page {
+  box-sizing: border-box;
+  max-width: 1180px
+}
+.wpbc_add_booking__canvas {
+  background: #fff;
+  border: 1px solid #dcdcde;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  box-sizing: border-box;
+  min-height: 460px;
+  padding: 28px
+}
+.wpbc_add_booking__form_content {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 1040px;
+  width: 100%
+}
+.wpbc_add_booking__inspector_body {
+  box-sizing: border-box;
+  padding: 0 0 18px
+}
+.wpbc_add_booking__inspector_body .group__fields > .btn-group,
+.wpbc_add_booking__inspector_body .group__fields > .control-group {
+  box-sizing: border-box;
+  float: none;
+  margin: 0;
+  max-width: 100%;
+  width: 100%
+}
+.wpbc_add_booking__inspector_body .group__fields > .btn-group + .control-group,
+.wpbc_add_booking__inspector_body .group__fields > .control-group + .btn-group,
+.wpbc_add_booking__inspector_body .group__fields > .control-group + .control-group {
+  margin-top: 14px
+}
+.wpbc_add_booking__inspector_body .input-group,
+.wpbc_add_booking__inspector_body .wpbc_bs_input_group {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 100%;
+  width: 100%
+}
+.wpbc_add_booking__inspector_body .input-group-addon,
+.wpbc_add_booking__inspector_body .wpbc_ui__addon {
+  background: 0 0;
+  border: 0;
+  box-sizing: border-box;
+  color: #1d2327;
+  font-weight: 600;
+  height: auto;
+  line-height: 1.4;
+  padding: 0;
+  text-align: left;
+  white-space: normal;
+  width: auto
+}
+.wpbc_add_booking__inspector_body input[type=number],
+.wpbc_add_booking__inspector_body input[type=text],
+.wpbc_add_booking__inspector_body select {
+  box-sizing: border-box;
+  max-width: 100%;
+  width: 100%
+}
+.wpbc_add_booking__setting_row {
+  border-bottom: 1px solid #e2e4e7;
+  display: grid;
+  gap: 7px;
+  padding: 13px 0
+}
+.wpbc_add_booking__setting_row:first-child {
+  padding-top: 2px
+}
+.wpbc_add_booking__setting_row p {
+  color: #646970;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0
+}
+.wpbc_add_booking__empty_setup {
+  background: #f6f7f7;
+  border-radius: 4px;
+  color: #50575e;
+  line-height: 1.5;
+  margin: 0;
+  padding: 11px 12px
+}
+.wpbc_add_booking__resource_upgrade_row {
+  -ms-flex-align: start;
+  align-items: flex-start
+}
+.wpbc_add_booking__resource_upgrade_row .inspector__control:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--wp-admin-theme-color,#2271b1);
+  outline-offset: 3px
+}
+.wpbc_add_booking__resource_upgrade_hint {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  color: #646970;
+  display: grid;
+  font-size: 12px;
+  gap: 4px 7px;
+  grid-template-columns: auto minmax(0,1fr);
+  line-height: 1.45
+}
+.wpbc_add_booking__resource_upgrade_hint .wpbc_pro_label {
+  grid-column: 1;
+  white-space: nowrap
+}
+.wpbc_add_booking__premium_dismiss {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  grid-column: 2;
+  line-height: 1
+}
+.wpbc_add_booking__premium_dismiss .wpbc_x_dismiss_btn {
+  color: #787c82;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px
+}
+.wpbc_add_booking__premium_dismiss .wpbc_x_dismiss_btn:hover {
+  color: #1d2327
+}
+.wpbc_add_booking__resource_upgrade_description {
+  grid-column: 1/-1
+}
+.wpbc_add_booking__setting_row .btn-group,
+.wpbc_add_booking__setting_row .wpbc_ui__toggle {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  float: none;
+  margin: 0;
+  min-height: 26px;
+  position: static
+}
+.wpbc_add_booking__help_actions,
+.wpbc_add_booking__panel_actions {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px
+}
+.wpbc_add_booking__panel_actions > .control-group {
+  float: none;
+  margin: 0
+}
+.wpbc_add_booking__top_actions {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0
+}
+.wpbc_add_booking__top_actions .button {
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0!important;
+  min-width: 0
+}
+.wpbc_add_booking__setup_summary {
+  background: #f6f7f7;
+  border-bottom: 1px solid #dcdcde;
+  border-top: 1px solid #dcdcde;
+  display: grid;
+  gap: 8px
+}
+.wpbc_add_booking__setup_summary_item {
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.25fr);
+  line-height: 1.4
+}
+.wpbc_add_booking__setup_summary_label {
+  color: #646970;
+  font-size: 12px
+}
+.wpbc_add_booking__setup_summary_item strong,
+.wpbc_add_booking__setup_summary_link {
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-align: right
+}
+.wpbc_add_booking__setup_summary_link {
+  text-decoration: none
+}
+.wpbc_add_booking__setup_summary_link:focus-visible,
+.wpbc_add_booking__setup_summary_link:hover {
+  text-decoration: underline
+}
+.wpbc_add_booking__edit_form_link {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 5px;
+  margin-top: 8px;
+  text-decoration: none
+}
+.wpbc_add_booking__edit_form_link .menu_icon {
+  font-size: 15px
+}
+.wpbc_add_booking__days_radio_stack {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 12px
+}
+.wpbc_add_booking__days_radio_stack label {
+  -ms-flex-align: center;
+  align-items: center;
+  cursor: pointer;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  gap: 7px;
+  line-height: 1.35;
+  margin: 0
+}
+.wpbc_add_booking__days_radio_stack input[type=radio] {
+  margin-top: 1px
+}
+.wpbc_add_booking__help_body {
+  display: grid;
+  gap: 18px
+}
+.wpbc_add_booking__hint {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  background: #f0f6fc;
+  border: 1px solid #c5d9ed;
+  border-radius: 6px;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  padding: 12px
+}
+.wpbc_add_booking__hint > span {
+  color: #2271b1;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  font-size: 18px;
+  line-height: 1.35
+}
+.wpbc_add_booking__help_section p,
+.wpbc_add_booking__hint p {
+  line-height: 1.55;
+  margin: 0
+}
+.wpbc_add_booking__help_section h4 {
+  font-size: 13px;
+  margin: 0 0 8px
+}
+.wpbc_add_booking__help_section ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px
+}
+@media (max-width:782px) {
+  .wpbc_add_booking__canvas {
+    border-radius: 4px;
+    padding: 16px
+  }
+}

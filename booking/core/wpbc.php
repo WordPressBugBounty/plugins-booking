@@ -263,6 +263,19 @@ public function define_admin_menu(){
                                                 );
 	}
 
+	if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+		self::$instance->admin_menu['services'] = new WPBC_Admin_Menus(
+			'wpbc-services',
+			array(
+				'in_menu'        => 'wpbc',
+				'menu_title'     => __( 'Services', 'booking' ),
+				'page_header'    => __( 'Services', 'booking' ),
+				'browser_header' => __( 'Services', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+				'user_role'      => get_bk_option( 'booking_user_role_settings' ),
+			)
+		);
+	}
+
 
     self::$instance->admin_menu['settings'] = new WPBC_Admin_Menus(
                                                     'wpbc-settings' , array (

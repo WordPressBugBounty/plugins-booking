@@ -268,7 +268,10 @@
 	 * Booking Data exporter callback for "durationtime".
 	 *
 	 * Default behavior:
-	 *   <b>Label</b>: <f>[durationtime]</f><br>
+	 *   <b>Label</b>: <f>[durationtime_val] / [durationtime]</f><br>
+	 *
+	 * An explicitly empty field label is preserved so Appointment flows can omit
+	 * the title while legacy structures without a label property retain a fallback.
 	 *
 	 * The exported token name is kept fully in sync with the Booking Form exporter
 	 * via Exp.compute_name('durationtime', field).
@@ -290,14 +293,14 @@
 			var name = Exp.compute_name( 'durationtime', field );
 			if ( ! name ) { return; }
 
-			var raw_label = ( typeof field.label === 'string' ) ? field.label : '';
-			var label     = raw_label.trim() || name;
+			var has_label = typeof field.label === 'string';
+			var label     = has_label ? field.label.trim() : name;
 
 			// Build a combined token: [name] / [name_val]
 			// emit_line_bold_field will wrap it as: <f>[{token}]</f>
 			var token = name + '_val] / [' + name;
 
-			// Result: <b>Label</b>: <f>[durationtime_val] / [durationtime]</f><br>
+			// The shared formatter omits the title and separator when label is empty.
 			C.emit_line_bold_field( emit, label, token, cfg );
 		} );
 	}

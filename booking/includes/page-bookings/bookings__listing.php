@@ -74,7 +74,7 @@ class WPBC_AJX_Bookings {
 		$in_footer = true;
 
 		wp_enqueue_script( 'wpbc-booking_ajx_listing', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js', array( 'wpbc_all', 'wp-util' ), WP_BK_VERSION_NUM, $in_footer );
-		wp_enqueue_script( 'wpbc-booking_ajx_toolbar_hooks', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
+		wp_enqueue_script( 'wpbc-booking_ajx_toolbar_hooks', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js', array( 'wpbc-booking_ajx_listing', 'wpbc-ui-chosen-filter' ), WP_BK_VERSION_NUM, $in_footer );
 		wp_enqueue_script( 'wpbc-booking_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
 		wp_enqueue_script( 'wpbc-boo_listing_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/boo_listing__actions.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
 	}

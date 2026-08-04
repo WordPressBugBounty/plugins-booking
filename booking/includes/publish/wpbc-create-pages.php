@@ -29,6 +29,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  */
 function wpbc_create_page( $page_params = array() ){                                                                    // FixIn: 9.6.2.10.
 
+	/* Live demos must never create WordPress content through Booking Calendar. */
+	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
+		return false;
+	}
+
 	global $wp_rewrite;
 	if ( is_null( $wp_rewrite ) ) {     // FixIn: 9.7.1.1.
 		return false;
@@ -553,9 +558,14 @@ function wpbc_get_activation_booking_form_page_configs() {
 			'template_key' => 'time_appointments_3_steps_review_with_hints',
 			'form_slug'    => 'time_appointments_booking',
 			'form_title'   => esc_html__( 'Time Appointments Booking Form', 'booking' ),
-			'page_slug'    => 'wp-booking-calendar-time-appointments',
-			'page_title'   => esc_html__( 'Time Appointments Booking', 'booking' ),
-			'button_title' => esc_html__( 'Time appointments booking form', 'booking' ),
+			'create_page'  => false,
+		),
+		'appointment_services_booking' => array(
+			'template_key'                          => 'appointments_services_flow',
+			'form_slug'                             => 'appointment_services_booking',
+			'form_title'                            => esc_html__( 'Appointment Services Booking Form', 'booking' ),
+			'create_page'                           => false,
+			'assign_to_default_appointment_service' => true,
 		),
 		'contact_form' => array(
 			'template_key' => 'contact_form_simple',
@@ -566,6 +576,59 @@ function wpbc_get_activation_booking_form_page_configs() {
 			'button_title' => esc_html__( 'Contact form', 'booking' ),
 		),
 	);
+}
+
+
+/**
+ * Get starter page definitions created during plugin activation.
+ *
+	 * Legacy starter pages keep using their dedicated custom booking forms. The
+	 * old Time Appointments form and the dedicated Appointment Service form are
+	 * form-only fixtures because the Appointment workflow has one canonical page.
+ *
+ * @return array Starter page definitions keyed by stable purpose.
+ */
+function wpbc_get_activation_booking_page_configs() {
+
+	$page_configs = wpbc_get_activation_booking_form_page_configs();
+
+	foreach ( $page_configs as $page_key => $page_config ) {
+		if ( isset( $page_config['create_page'] ) && false === (bool) $page_config['create_page'] ) {
+			unset( $page_configs[ $page_key ] );
+			continue;
+		}
+
+		$form_slug = '';
+		if ( isset( $page_config['form_slug'] ) ) {
+			$form_slug = sanitize_text_field( (string) $page_config['form_slug'] );
+		}
+
+		if ( '' === $form_slug ) {
+			unset( $page_configs[ $page_key ] );
+			continue;
+		}
+
+		$shortcode = "[booking resource_id=1 form_type='{$form_slug}']";
+		$page_configs[ $page_key ]['shortcode'] = $shortcode;
+		$page_configs[ $page_key ]['shortcode_checks'] = array(
+			$shortcode,
+			'[booking resource_id=1 form_type="' . $form_slug . '"]',
+		);
+		$page_configs[ $page_key ]['resource_id'] = 1;
+	}
+
+	if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+		$page_configs['appointment_booking'] = array(
+			'page_slug'        => 'wpbc-appointment-booking',
+			'page_title'       => esc_html__( 'Book an Appointment', 'booking' ),
+			'button_title'     => esc_html__( 'Appointment booking form', 'booking' ),
+			'shortcode'        => '[booking_appointment]',
+			'shortcode_checks' => array( '[booking_appointment]', '[booking_appointment ' ),
+			'resource_id'      => 0,
+		);
+	}
+
+	return $page_configs;
 }
 
 
@@ -730,7 +793,17 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 
 	wpbc_create_activation_custom_booking_forms();
 
-	$configs = wpbc_get_activation_booking_form_page_configs();
+	/**
+	 * Fires after activation starter custom forms are available.
+	 *
+	 * Appointment Services uses this boundary to finish its pending starter
+	 * Service seed with the newly created form ID.
+	 *
+	 * @since 11.5.0
+	 */
+	do_action( 'wpbc_activation_custom_booking_forms_created' );
+
+	$configs = wpbc_get_activation_booking_page_configs();
 	if ( empty( $configs ) || ! is_array( $configs ) ) {
 		return;
 	}
@@ -739,8 +812,16 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 
 	foreach ( $configs as $config ) {
 
-		$form_slug = sanitize_text_field( (string) $config['form_slug'] );
-		$shortcode = "[booking resource_id=1 form_type='{$form_slug}']";
+		$shortcode       = isset( $config['shortcode'] ) ? trim( (string) $config['shortcode'] ) : '';
+		$shortcode_checks = isset( $config['shortcode_checks'] ) && is_array( $config['shortcode_checks'] )
+			? $config['shortcode_checks']
+			: array( $shortcode );
+		$resource_id     = isset( $config['resource_id'] ) ? absint( $config['resource_id'] ) : 0;
+
+		if ( '' === $shortcode ) {
+			continue;
+		}
+
 		$content   = wpbc_get_activation_booking_page_content( $shortcode );
 
 		$result_arr = wpbc_add_shortcode_into_page(
@@ -748,11 +829,8 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 				'page_post_name'        => $config['page_slug'],
 				'post_title'            => $config['page_title'],
 				'shortcode'             => $content,
-				'check_exist_shortcode' => array(
-					$shortcode,
-					'[booking resource_id=1 form_type="' . $form_slug . '"]',
-				),
-				'resource_id'           => 1,
+				'check_exist_shortcode' => $shortcode_checks,
+				'resource_id'           => $resource_id,
 			)
 		);
 
@@ -781,7 +859,7 @@ add_action( 'wpbc_bfb_activation__form_structures_table__table_already_exists', 
 function wpbc_get_published_activation_booking_pages() {
 
 	$pages   = array();
-	$configs = wpbc_get_activation_booking_form_page_configs();
+	$configs = wpbc_get_activation_booking_page_configs();
 
 	if ( empty( $configs ) || ! is_array( $configs ) ) {
 		return $pages;
@@ -794,14 +872,23 @@ function wpbc_get_published_activation_booking_pages() {
 			continue;
 		}
 
-		$form_slug = sanitize_text_field( (string) $config['form_slug'] );
-		$shortcode_single_quote = "[booking resource_id=1 form_type='{$form_slug}']";
-		$shortcode_double_quote = '[booking resource_id=1 form_type="' . $form_slug . '"]';
+		$shortcode_checks = isset( $config['shortcode_checks'] ) && is_array( $config['shortcode_checks'] )
+			? $config['shortcode_checks']
+			: array();
+		$is_shortcode_found = false;
 
-		if (
-			! wpbc_is_shortcode_exist_in_page_with_id( $wp_post->ID, $shortcode_single_quote ) &&
-			! wpbc_is_shortcode_exist_in_page_with_id( $wp_post->ID, $shortcode_double_quote )
-		) {
+		foreach ( $shortcode_checks as $shortcode_check ) {
+			if ( '' === (string) $shortcode_check ) {
+				continue;
+			}
+
+			if ( wpbc_is_shortcode_exist_in_page_with_id( $wp_post->ID, $shortcode_check ) ) {
+				$is_shortcode_found = true;
+				break;
+			}
+		}
+
+		if ( ! $is_shortcode_found ) {
 			continue;
 		}
 

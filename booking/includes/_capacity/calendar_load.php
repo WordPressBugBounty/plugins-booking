@@ -259,7 +259,13 @@ function wpbc__calendar__load( $params = array() ) {
 
 	if ( ! empty( $params['calendar_request_overrides'] ) && is_array( $params['calendar_request_overrides'] ) ) {
 		foreach ( $params['calendar_request_overrides'] as $override_key => $override_value ) {
-			if ( 0 === strpos( (string) $override_key, 'wpbc_settings_calendar_preview' ) ) {
+			if (
+				'allow_past' === $override_key
+				&& function_exists( 'wpbc_is_11_5_features_enabled' )
+				&& wpbc_is_11_5_features_enabled()
+			) {
+				$params_for_request['allow_past'] = ! empty( $override_value ) ? 1 : 0;
+			} elseif ( 0 === strpos( (string) $override_key, 'wpbc_settings_calendar_preview' ) ) {
 				$params_for_request[ $override_key ] = $override_value;
 			}
 		}
@@ -358,6 +364,7 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 	                                'booking_hash'   => array( 'validate' => 's', 'default' => '' ),
 	                                'request_uri'    => array( 'validate' => 's', 'default' => '' ),
 									'custom_form'    => array( 'validate' => 's', 'default' => 'standard' ),
+									'allow_past'     => array( 'validate' => 'd', 'default' => 0 ),
 									'aggregate_resource_id_str' => array( 'validate' => 'digit_or_csd', 'default' => '' ),        // Comma separated string of resource ID,  which was used in 'aggregate' parameter.
 									'aggregate_type'            => array( 'validate' => 's', 'default' => 'all' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
 									'dates_to_check'            => array( 'validate' => 'array', 'default' => '' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
@@ -400,6 +407,12 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 					);
 	$request_prefix = 'calendar_request_params';
 	$request_params = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  );		 		    // NOT Direct: 	$_REQUEST['search_params']['resource_id']
+	$can_allow_past = (
+		! empty( $request_params['allow_past'] )
+		&& function_exists( 'wpbc_is_11_5_features_enabled' )
+		&& wpbc_is_11_5_features_enabled()
+	);
+	$request_params['allow_past'] = $can_allow_past ? 1 : 0;
 
 	if ( ! empty( $request_params['skip_general_availability'] ) ) {
 		$can_skip_general_availability = (
@@ -435,7 +448,8 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 											'max_days_count'  => $max_days_count,
 											'skip_booking_id' => $skip_booking_id,
 											'request_uri'     => $request_params['request_uri'],                        // It different in Ajax requests than $server_request_uri . It's used for change-over days to detect for exception at specific pages
-											'custom_form'     => $request_params['custom_form']
+											'custom_form'     => $request_params['custom_form'],
+											'allow_past'      => ! empty( $request_params['allow_past'] )
 											, 'additional_bk_types' => $aggregate_resource_id_arr                       // It is array  of booking resources from aggregate parameter()                                 // arrays | CSD | int       // OPTIONAL
 											, 'aggregate_type' => $request_params['aggregate_type']                     // It is string: 'all' | 'bookings_only'                     // OPTIONAL
 											, 'skip_general_availability' => $request_params['skip_general_availability']

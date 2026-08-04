@@ -280,7 +280,7 @@
 	transition: all .3s;
 	box-shadow: 0 5px 10px #dfdfdf;
 	cursor: pointer;
-	border: 2px solid #eeeeeeb5;
+	border: 2px solid #cacacab5;
 	line-height: 1;
 	text-decoration: none;
 	outline: 0;
@@ -322,6 +322,9 @@
 	margin: 0 0 0px 3px;
   	padding: 8px 5px 8px 12px;
 	cursor:pointer;
+}
+.wpbc_ui_el__vert_nav_item__uninstall a {
+  /*color: #d63638;*/
 }
 .wpbc_ui_el__vert_nav_item button:not(:hover){
 	background-color: transparent;

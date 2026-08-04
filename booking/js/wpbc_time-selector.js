@@ -110,12 +110,25 @@
 
 
 /**
- *  Init  time selector
+ * Initialize the visual time-slot selectors when the WPBC runtime is ready.
+ *
+ * The readiness check prevents a JavaScript error when a third-party optimizer
+ * delays wpbc_all.js, which creates window._wpbc, beyond document ready.
+ *
+ * @return {boolean} True when initialization is complete or not required;
+ *                   otherwise false when the WPBC runtime is not ready yet.
  */
 function wpbc_hook__init_timeselector(){
 
-	if ( true !== _wpbc.get_other_param( 'is_enabled_booking_timeslot_picker' ) ) {
+	if (
+		( 'object' !== typeof window._wpbc )
+		|| ( 'function' !== typeof window._wpbc.get_other_param )
+	) {
 		return false;
+	}
+
+	if ( true !== window._wpbc.get_other_param( 'is_enabled_booking_timeslot_picker' ) ) {
+		return true;
 	}
 
 	// Load after page loaded
@@ -131,10 +144,34 @@ function wpbc_hook__init_timeselector(){
 		jQuery( '#booking_form_div' + bk_type + ' select[name^="endtime"]' ).wpbc_timeselector();
 		jQuery( '#booking_form_div' + bk_type + ' select[name^="durationtime"]' ).wpbc_timeselector();
 	} );
+
+	return true;
 }
+
+
+/**
+ * Initialize the time selector now or after the WPBC core signals readiness.
+ *
+ * @return {void}
+ */
+function wpbc_init_timeselector_when_wpbc_ready(){
+
+	if ( wpbc_hook__init_timeselector() ) {
+		return;
+	}
+
+	var wpbc_timeselector_ready_handler = function (){
+		if ( wpbc_hook__init_timeselector() ) {
+			document.removeEventListener( 'wpbc-ready', wpbc_timeselector_ready_handler );
+		}
+	};
+
+	document.addEventListener( 'wpbc-ready', wpbc_timeselector_ready_handler );
+}
+
 
 jQuery(document).ready(function(){
 //	 setTimeout( function ( ) {					// Need to  have some delay  for loading of all  times in Garbage
-	wpbc_hook__init_timeselector();
+	wpbc_init_timeselector_when_wpbc_ready();
 //	}, 1000 );
 });

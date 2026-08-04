@@ -137,6 +137,36 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 /**
+ * Parse a duration field value into numeric hours and minutes.
+ *
+ * Duration values come from serialized front-end form data. Placeholder or
+ * otherwise malformed values must not reach arithmetic because PHP 8 throws
+ * a TypeError when a non-numeric string is multiplied by an integer.
+ *
+ * @param string $duration_time_value Duration in `HH:MM` format.
+ *
+ * @return array|false Numeric hours and minutes, or false for an invalid duration.
+ */
+function wpbc_parse_duration_time_value( $duration_time_value ) {
+
+	$duration_time_value = trim( (string) $duration_time_value );
+
+	if ( ! preg_match( '/^([0-9]+):([0-9]{1,2})$/', $duration_time_value, $duration_time_matches ) ) {
+		return false;
+	}
+
+	$duration_hours   = intval( $duration_time_matches[1] );
+	$duration_minutes = intval( $duration_time_matches[2] );
+
+	if ( 59 < $duration_minutes ) {
+		return false;
+	}
+
+	return array( $duration_hours, $duration_minutes );
+}
+
+
+/**
 	 * Get Times from booking Form, if these times fields exist
  * 
  * @param type $booking_form_data
@@ -241,23 +271,25 @@ function wpbc_get_times_in_form( $booking_form_data, $booking_type ){
 		    if ( $pos2 === false ) {
 			    $pos2 = strlen( $booking_form_data );
 		    }
-		    $pos2     = $pos2 - $pos1;
-		    $end_time = substr( $booking_form_data, $pos1, $pos2 );
+		    $pos2               = $pos2 - $pos1;
+		    $duration_time_value = substr( $booking_form_data, $pos1, $pos2 );
+		    $duration_time_parts = wpbc_parse_duration_time_value( $duration_time_value );
 
-		    $is_time_exist = true;
+		    if ( false !== $duration_time_parts ) {
+			    $is_time_exist = true;
 
-		    $end_time = explode( ':', $end_time );
+			    // Get the selected start time and add the validated duration to calculate the end time.
+			    $new_end_time  = mktime( intval( $start_time[0] ), intval( $start_time[1] ) );
+			    $new_end_time += $duration_time_parts[0] * 60 * 60;
+			    $new_end_time += $duration_time_parts[1] * 60;
+			    $end_time = gmdate( 'H:i', $new_end_time );
 
-		    // Here we are get start time and add duration for end time
-		    $new_end_time = mktime( intval( $start_time[0] ), intval( $start_time[1] ) );
-		    $new_end_time = $new_end_time + $end_time[0] * 60 * 60 + $end_time[1] * 60;
-		    $end_time     = gmdate( 'H:i', $new_end_time );
-
-		    if ( $end_time == '00:00' ) {
-			    $end_time = '23:59';
+			    if ( '00:00' === $end_time ) {
+				    $end_time = '23:59';
+			    }
+			    $end_time    = explode( ':', $end_time );
+			    $end_time[2] = '02';
 		    }
-		    $end_time    = explode( ':', $end_time );
-		    $end_time[2] = '02';
 	    }
 
     }
@@ -665,6 +697,46 @@ function wpbc_is_date_in_past( $some_day ) {
 	} else {
 		return false;
 	}
+}
+
+
+/**
+ * Check whether a booking can still be changed by a visitor.
+ *
+ * Visitor edit and cancellation actions must fail closed when the booking does
+ * not exist, is in the trash, has no dates, or its final booked date has
+ * already passed. The comparison deliberately uses wpbc_is_date_in_past() so
+ * the rule remains compatible with the established date-based front-end edit
+ * restriction and does not unexpectedly expire time-slot bookings mid-day.
+ *
+ * @param int $booking_id Booking ID resolved from a verified visitor hash.
+ *
+ * @return bool True when at least one booked date is current or future.
+ */
+function wpbc_is_visitor_booking_action_allowed( $booking_id ) {
+	global $wpdb;
+
+	$booking_id = absint( $booking_id );
+	if ( empty( $booking_id ) ) {
+		return false;
+	}
+
+	$last_booking_date = $wpdb->get_var(
+		$wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT MAX(dt.booking_date)
+			 FROM {$wpdb->prefix}bookingdates AS dt
+			 INNER JOIN {$wpdb->prefix}booking AS bk ON bk.booking_id = dt.booking_id
+			 WHERE bk.booking_id = %d AND bk.trash = 0",
+			$booking_id
+		)
+	); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+	if ( empty( $last_booking_date ) || ! is_string( $last_booking_date ) ) {
+		return false;
+	}
+
+	return ! wpbc_is_date_in_past( $last_booking_date );
 }
 
 

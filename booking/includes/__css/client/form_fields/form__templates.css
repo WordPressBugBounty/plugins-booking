@@ -61,7 +61,7 @@
 }
 .wpbc_theme_dark_1 .wpbc_wizard__border_container {
 	border: var(--wpbc-bfb-form-border-width, 1px) solid var(--wpbc-bfb-form-border-color, rgb(0, 0, 0));
-	background: var(--wpbc-bfb-form-background, #626262);
+	background: var(--wpbc-bfb-form-background, #383a3d);
 	color: var(--wpbc_form-label-color, #bbb);
 	box-shadow: var(--wpbc-bfb-form-box-shadow, 0 0px 3px #3b3b3b);
 }
@@ -84,13 +84,14 @@ div.wpbc_container.wpbc_form .wpdev-list-item-label {
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 p,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 l,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 label,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpdev_hint_with_text .block_text,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpbc_field_description,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpbc_static_text,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpdev-list-item-label {
 	color: var(--wpbc_form-label-color, #bbb);
 }
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 {
-	--wpbc-bfb-form-background: #626262;
+	--wpbc-bfb-form-background: #383a3d;
 	--wpbc-bfb-form-border-color: #000000;
 	--wpbc-bfb-form-box-shadow: 0 0px 3px #3b3b3b;
 	--wpbc_form-field-background-color: #3f454f;
@@ -104,22 +105,29 @@ div.wpbc_container.wpbc_form.wpbc_theme_dark_1 {
 	--wpbc_form-label-color: #f4f6f8;
 	--wpbc_form-label-sublabel-color: rgba(255, 255, 255, 0.72);
 	--wpbc_form-label-error-color: #ff8a8a;
-	--wpbc_form-button-background-color: #4d4d4d;
-	--wpbc_form-button-background-color-alt: #4d4d4d;
+	--wpbc_form-button-background-color: #1b1d22;
+	--wpbc_form-button-background-color-alt: #1b1d22;
 	--wpbc_form-button-border-color: #5f5f5f;
+	--wpbc_form-button-primary-border-style: solid;
 	--wpbc_form-button-text-color: #ffffff;
 	--wpbc_form-button-text-color-alt: #ffffff;
+	--wpbc_form-button-hover-background-color: #1b1d22;
+	--wpbc_form-button-hover-border-color: #5b8bff;
+	--wpbc_form-button-hover-text-color: #ffffff;
 	--wpbc_form-choice-checked-border-color: #5b8bff;
 	--wpbc_form-choice-checked-color: #f4f6f8;
 	--wpbc_form-choice-focus-color: #5b8bff;
-	--wpbc_form-button-light-background-color: #2C2E2F;
-	--wpbc_form-button-light-border-color: #2C2E2F;
+	--wpbc_form-button-light-background-color: #3f454f;
+	--wpbc_form-button-light-border-color: #525252;
 	--wpbc_form-button-light-text-color: #ffffff;
 	--wpbc_form-button-light-box-shadow: 0 0 0 #424242;
-	--wpbc_form-button-light-hover-background-color: #2C2E2F;
-	--wpbc_form-button-light-hover-border-color: #2C2E2F;
+	--wpbc_form-button-light-hover-background-color: #3f454f;
+	--wpbc_form-button-light-hover-border-color: #5b8bff;
 	--wpbc_form-button-light-hover-text-color: #ffffff;
 	--wpbc_form-button-light-hover-box-shadow: 0 0 0 #424242;
-	--wpbc_form-button-primary-hover-border-color: #ffffff;
+	--wpbc-appointment-provider-avatar-background: #2C2E2F;
+	--wpbc-appointment-provider-avatar-border-color: #525252;
+	--wpbc-appointment-provider-avatar-text-color: #ffffff;
+	--wpbc_form-button-primary-hover-border-color: #5b8bff;
 	--wpbc_form-page-break-color: #5f9ee7;
 }

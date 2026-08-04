@@ -65,54 +65,38 @@ class WPBC_JS extends WPBC_JS_CSS {
 
 
 	/**
-	 * Remove `async` and `defer`  ( check more here https://javascript.info/script-async-defer )
-	 * for scripts registered or enqueued, that required for correct  working of plugin,  like
-	 * jquery and all Booking Calendar scripts
+	 * Preserve the required execution order for Booking Calendar scripts.
+	 *
+	 * Removes asynchronous loading attributes and excludes the scripts from
+	 * Cloudflare Rocket Loader. The filter runs at a very late priority so these
+	 * protections remain present after other script-tag optimization filters.
 	 *
 	 * @param string $tag    The script tag.
-	 * @param string $handle The script handle.
+	 * @param string $handle The registered script handle.
+	 * @param string $src    The script source URL.
 	 *
-	 * @return string Script HTML string.
-	 *
+	 * @return string Filtered script HTML string.
 	 */
 	public function filter_script_loader_tag( $tag, $handle, $src ) {
-
-		$script_handles_prevent_defer = array(
-			  'jquery-core'         // exact value
-			, 'jquery-migrate'
-			//, 'wpbc-'             //starting from  'wpbc-'  it's not the exact value
-			//, 'wpdevelop-'
-		);
-
-
-		// Remove defer and async attribute from  the src.
-		if (
+		$is_required_script = (
 			   ( 'jquery-core' === $handle )
 			|| ( 'jquery-migrate' === $handle )
 			|| ( false !== strpos( $handle, 'wpbc_' ) )                 // Booking Calendar script wpbc_all.js          // FixIn: 10.1.2.3.
 			|| ( false !== strpos( $handle, 'wpbc-' ) )                 // Booking Calendar scripts
 			|| ( false !== strpos( $handle, 'wpdevelop-' ) )
 			|| ( false !== strpos( $handle, 'wpbm-' ) )
-		) {
+		);
 
+		if ( $is_required_script ) {
 			foreach ( array( 'async', 'defer' ) as $attr ) {
+				// Match only a standalone attribute, not the "async" part of data-cfasync.
+				$pattern = '/\s+' . $attr . '(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+))?/i';
+				$tag     = preg_replace( $pattern, '', $tag );
+			}
 
-				if ( preg_match( ":\s$attr(=|>|\s):", $tag ) ) {
-					$tag = str_replace($attr, '', $tag);
-					$tag = str_replace('=""', '', $tag);
-					$tag = str_replace("=''", '', $tag);
-
-					/*
-					 * Test  here https://regex101.com/
-					 *
-					 * Expression:   \s+defer(\s*=\s*["']defer["'])?\s?
-					 * Test  string: <script type='text/javascript' defer = 'defer'  defer="defer" src='http://beta/wp-content/plugins/booking-manager/js/wpbm_vars.js?ver=1.1' id='wpbm-global-vars-js'></script>
-					 *
-					 */
-					$pattern = ":\s+{$attr}(\s*=\s*[\"']{$attr}[\"'])?\s?:mi";
-					$replacement = ' ';
-					$tag = preg_replace($pattern, $replacement, $tag);
-				}
+			// Rocket Loader can otherwise execute dependent scripts before wpbc_all.js defines _wpbc.
+			if ( false === strpos( $tag, 'data-cfasync=' ) ) {
+				$tag = preg_replace( '/<script\b/i', '<script data-cfasync="false"', $tag, 1 );
 			}
 		}
 

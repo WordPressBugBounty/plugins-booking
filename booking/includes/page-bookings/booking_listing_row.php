@@ -96,6 +96,7 @@ function wpbc_template__booking_listing_row() {
 							<div class="wpbc_a_col  wpbc_a_col__cost"><?php wpbc_template__booking_listing_row__section_col__cost(); ?></div>
 							<div class="wpbc_a_col  wpbc_a_col__action"><?php wpbc_template__booking_listing_row__section_col__action_button(); ?></div>
 						</div>
+						<?php wpbc_template__booking_listing_row__section_col__appointment_details(); ?>
 						<div class="wpbc_a_row wpbc_a_row__notes">
 							<div class="wpbc_a_col"><?php wpbc_template__booking_listing_row__section_col__note_readonly(); ?></div>
 						</div>
@@ -228,6 +229,45 @@ function wpbc_template__booking_listing_row__section_col__booking_data(){
 	<?php
 }
 
+/**
+ * Render immutable Appointment information in the expanded Booking row.
+ *
+ * The complete row is emitted only for the 11.5 feature set and only for a
+ * booking that has an Appointment snapshot in its parsed listing fields.
+ *
+ * @return void
+ */
+function wpbc_template__booking_listing_row__section_col__appointment_details() {
+	if ( ! function_exists( 'wpbc_is_11_5_features_enabled' ) || ! wpbc_is_11_5_features_enabled() ) {
+		return;
+	}
+	?>
+	<# if ( undefined != data.parsed_fields.appointment_service_title && '' != data.parsed_fields.appointment_service_title ) { #>
+	<div class="wpbc_a_row wpbc_a_row__appointment">
+		<div class="wpbc_a_col">
+			<div class="wpbc_listing_col wpbc_col_appointment_details">
+				<div class="content_text">
+					<div class="wpbc_appointment_booking_details">
+						<strong><?php echo esc_js( __( 'Appointment details', 'booking' ) ); ?></strong>
+						<span><?php echo esc_js( __( 'Service', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_service_title}}</strong></span>
+						<span><?php echo esc_js( __( 'Provider', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_provider_title}}</strong></span>
+						<# if ( undefined != data.parsed_fields.appointment_service_cost_formatted && '' != data.parsed_fields.appointment_service_cost_formatted ) { #>
+						<span><?php echo esc_js( __( 'Service price', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_service_cost_formatted}}</strong></span>
+						<# } #>
+						<# if ( undefined != data.parsed_fields.appointment_time_label ) { #>
+						<span><?php echo esc_js( __( 'Appointment time', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_time_label}}</strong></span>
+						<span><?php echo esc_js( __( 'Buffer before / after', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_buffer_before_minutes}} / {{data.parsed_fields.appointment_buffer_after_minutes}} <?php echo esc_js( __( 'min', 'booking' ) ); ?></strong></span>
+						<span><?php echo esc_js( __( 'Provider reserved', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_reserved_time_label}}</strong></span>
+						<# } #>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<# } #>
+	<?php
+}
+
 function wpbc_template__booking_listing_row__section_col__labels(){
 
     ?>
@@ -257,6 +297,12 @@ function wpbc_template__booking_listing_row__section_col__labels(){
 					{{{data.templates.payment_label_template}}}
 				</a><#
 			}
+
+			<?php if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) { ?>
+			if ( undefined != data.parsed_fields.appointment_service_title && '' != data.parsed_fields.appointment_service_title ) {
+				#><span class="wpbc_label wpbc_label_appointment_service">{{data.parsed_fields.appointment_service_title}} <span aria-hidden="true">&middot;</span> {{data.parsed_fields.appointment_duration_minutes}} <?php echo esc_js( __( 'min', 'booking' ) ); ?></span><#
+			}
+			<?php } ?>
 
 			if ( '' != data.parsed_fields.sync_gid ) {
 				#><span class="wpbc_label wpbc_label_imported"><i class="menu_icon icon-1x wpbc_icn_cloud_download system_update_alt"></i><?php echo esc_js(__( 'Imported', 'booking' )); ?></span><#
@@ -370,6 +416,15 @@ function wpbc_template__booking_listing_row__section_col__sys_info(){
 				<span class="sysinfo_id"><?php echo esc_js(__( 'Booking ID', 'booking' )); ?>: <strong>{{data['parsed_fields']['booking_id']}}</strong></span><div class="wpbc_ui_el__vetical_line sysinfo_id"></div>
 				<span class="sysinfo_edited"><?php echo esc_js(__( 'Edited', 'booking' )); ?>: <strong>{{data['parsed_fields']['modification_date']}}</strong></span><div class="wpbc_ui_el__vetical_line sysinfo_edited"></div>
 				<span class="sysinfo_created"><?php echo esc_js(__( 'Created', 'booking' )); ?>: <strong>{{data['parsed_fields']['creation_date']}}</strong></span><div class="wpbc_ui_el__vetical_line sysinfo_created"></div>
+				<?php if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) { ?>
+				<# if (
+					undefined != data.parsed_fields.appointment_reserved_time_label
+					&& ( Number( data.parsed_fields.appointment_buffer_before_minutes || 0 ) > 0 || Number( data.parsed_fields.appointment_buffer_after_minutes || 0 ) > 0 )
+				) { #>
+				<span class="sysinfo_appointment_buffer"><?php echo esc_js( __( 'Buffer', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_buffer_before_minutes}} / {{data.parsed_fields.appointment_buffer_after_minutes}} <?php echo esc_js( __( 'min', 'booking' ) ); ?></strong></span><div class="wpbc_ui_el__vetical_line sysinfo_appointment_buffer"></div>
+				<span class="sysinfo_appointment_reserved"><?php echo esc_js( __( 'Blocked', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_reserved_time_label}}</strong></span><div class="wpbc_ui_el__vetical_line sysinfo_appointment_reserved"></div>
+				<# } #>
+				<?php } ?>
 				<span class="sysinfo_hash"><?php echo esc_js(__( 'Hash', 'booking' )); ?>: <strong>{{data['parsed_fields']['hash']}}</strong></span><div class="wpbc_ui_el__vetical_line sysinfo_hash"></div>
 				<span class="sysinfo_sync_id"><?php echo esc_js(__( 'Sync ID', 'booking' )); ?>: <strong>{{data['parsed_fields']['sync_id']}}</strong></span>
 			</div>

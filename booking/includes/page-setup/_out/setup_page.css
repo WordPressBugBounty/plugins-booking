@@ -131,23 +131,194 @@
 .wpbc__container_place__footer_buttons .wpbc__form__div {
   width: 100%
 }
-.wpbc_setup_wizard_page__section_footer .wpbc_container .wpbc_button_light,
-.wpbc_setup_wizard_page__section_footer .wpbc_container.wpbc_container_booking_form .wpbc_button_light {
-  padding: 0 1em;
-  line-height: 2.21;
-  -ms-flex-align: first baseline;
-  align-items: first baseline
+.wpbc_setup_wizard_page__section_footer .wpbc_container .button {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center
 }
-.wpbc_setup_wizard_page__section_footer .wpbc_container .wpbc_button_light .wpbc_spin {
+.wpbc_setup_wizard_page__section_footer .wpbc_container .button .wpbc_spin {
   line-height: 50%;
   -ms-flex-item-align: center;
   align-self: center
+}
+body.wpbc_admin_full_screen .wpbc_ajx_page__container {
+  padding-bottom: 50px
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer {
+  position: fixed;
+  z-index: 100001;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: auto;
+  margin: 0;
+  padding: 12px 7.5vw;
+  background: #fff;
+  border-top: 1px solid #dcdcde;
+  box-shadow: 0 -3px 10px rgba(0,0,0,.08)
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer .wpbc__container_place__footer_buttons {
+  margin-top: 0
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer .wpbc__form__div > hr {
+  display: none
+}
+.wpbc__row.wpbc_setup_wizard_page__section_footer .wpbc_container {
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -ms-flex-item-align: center;
+  align-self: center
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer div.wpbc__field {
+  margin: 0
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_row {
+  width: 100%;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 16px
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_links {
+  -ms-flex: 1 1 280px;
+  flex: 1 1 280px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_actions {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  margin-left: auto
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_links .wpbc_exit_link_small {
+  margin: 0;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 6px 18px
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_links .wpbc_exit_link_small a {
+  margin: 0;
+  font-size: 12px
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer .button {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 2.71428571
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer #btn__toolbar__buttons_prior {
+  margin-left: auto!important;
+  margin-right: 10px!important
+}
+body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer #btn__toolbar__buttons_next {
+  margin: 0!important
 }
 @media screen and (max-width:782px) {
   .wpbc__container_place__footer_buttons.wpbc_container.wpbc_container_booking_form {
     -ms-flex: 1 1 100%;
     flex: 1 1 100%
   }
+  body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer {
+    max-height: 45vh;
+    overflow-y: auto;
+    padding: 10px 12px max(10px,env(safe-area-inset-bottom))
+  }
+  body.wpbc_admin_full_screen .wpbc_setup_wizard_page__section_footer .button {
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 13px
+  }
+  body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_row {
+    gap: 8px
+  }
+  body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_actions,
+  body.wpbc_admin_full_screen .wpbc_setup_wizard_navigation_links {
+    -ms-flex: 1 1 100%;
+    flex: 1 1 100%
+  }
+}
+.wpbc_setup_wizard_page_note {
+  font-size: 11px;
+  line-height: 2
+}
+.wpbc__row.wpbc_setup_wizard_accept_send_row {
+  max-width: 100%;
+  -ms-flex-align: start;
+  align-items: flex-start
+}
+.wpbc__row.wpbc_setup_wizard_accept_send_row .wpbc__field.wpbc_setup_wizard_accept_send_actions .wpbc_exit_link_small a {
+  font-size: 11px
+}
+.wpbc_setup_wizard_accept_send_row > .wpbc__field:first-child {
+  -ms-flex: 1 1 440px;
+  flex: 1 1 440px
+}
+.wpbc_setup_wizard_accept_send_row .wpbc_setup_wizard_accept_send_actions {
+  -ms-flex: 1 1 50%!important;
+  flex: 1 1 50%!important;
+  margin: 0
+}
+.wpbc_setup_wizard_accept_send_row .wpbc_setup_wizard_accept_send_actions .wpbc_exit_link_small {
+  margin: 0;
+  padding: 0;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 10px;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -ms-flex-align: start;
+  align-items: flex-start
+}
+.wpbc_setup_wizard_page_container .wpbc_container_booking_form .wpbc__field .wpbc_ui_radio_choice label:not(.wpbc_static_text):hover {
+  display: inline
+}
+.wpbc_setup_wizard_accept_send_row .wpdev-list-item {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+  align-items: flex-start
+}
+.wpbc_setup_wizard_accept_send_row .wpdev-checkbox {
+  margin-top: 3px!important
+}
+div.wpbc_container.wpbc_form .wpbc_setup_wizard_accept_send_row .wpdev-list-item {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start
+}
+div.wpbc_container.wpbc_form .wpbc_setup_wizard_accept_send_row .wpdev-list-item > input[type=checkbox] + .wpdev-list-item-label,
+div.wpbc_container.wpbc_form .wpbc_setup_wizard_accept_send_row label.wpdev-list-item-label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 2
 }
 .wpbc_exit_link_small {
   width: 100%;
@@ -157,8 +328,8 @@
   flex-flow: column wrap;
   -ms-flex-pack: center;
   justify-content: center;
-  -ms-flex-align: center;
-  align-items: center
+  -ms-flex-align: start;
+  align-items: flex-start
 }
 .wpbc_exit_link_small a {
   font-size: 14px;
@@ -193,6 +364,11 @@
 }
 div.wpbc_container.wpbc_form .wpbc_swp_section label {
   margin: 15px 0 8px
+}
+.wpbc_swp_section__welcome .wpbc_container_booking_form .wpbc__field label:not(.wpbc_static_text),
+.wpbc_swp_section__welcome .wpbc_container_booking_form .wpbc__field label:not(.wpbc_static_text):hover {
+  display: -ms-inline-flexbox;
+  display: inline-flex
 }
 .wpbc_widgets {
   width: 100%;
@@ -294,6 +470,82 @@ div.wpbc_container.wpbc_form .wpbc_swp_section label {
   box-shadow: 0 1px 3px #313131;
   border: 0;
   border-left: 4px solid #9580aa
+}
+.wpbc_swp_section__bookings_types {
+  width: 100%
+}
+.wpbc_setup_wizard_page_container .wpbc_swp_section__bookings_types {
+  max-width: 960px
+}
+.wpbc_setup_mode_choices {
+  gap: 16px
+}
+.wpbc_setup_mode_choice {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 260px;
+  flex: 1 1 260px;
+  max-width: 300px
+}
+.wpbc_setup_mode_choice > .wpbc_ui_radio_container {
+  width: 100%;
+  max-width: none;
+  margin: 10px 0
+}
+.wpbc_setup_preferences_heading_row {
+  margin-top: 28px
+}
+.wpbc_swp_section h2.wpbc_setup_preferences_heading {
+  width: 100%;
+  margin-bottom: 0;
+  font-size: 24px;
+  font-weight: 600
+}
+.wpbc_setup_booking_type_choices {
+  gap: 16px
+}
+.wpbc_setup_booking_type_choice {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 420px;
+  flex: 1 1 420px;
+  max-width: 440px
+}
+.wpbc_setup_booking_type_choice > .wpbc_ui_radio_container {
+  width: 100%;
+  max-width: none;
+  margin: 10px 0
+}
+.wpbc_setup_appointment_mode_configuration {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%
+}
+.wpbc_setup_appointment_summary_plate {
+  width: 100%;
+  max-width: 440px;
+  margin: 10px 0;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px var(--wp-admin-theme-color,#007cba)
+}
+.wpbc_setup_appointment_summary_copy {
+  padding: 16px
+}
+.wpbc_setup_appointment_summary_copy strong {
+  font-size: 15px
+}
+.wpbc_setup_appointment_summary_copy p {
+  margin: 8px 0 0
+}
+.wpbc_setup_appointment_summary_plate .booking_timeslot_picker__get_on_off {
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8
+}
+.wpbc_setup_appointment_summary_plate .booking_timeslot_picker__get_on_off select {
+  width: 100%
 }
 .wpbc_container_booking_form .wpbc__field .wpbc_ui_booking_timeslot_picker__get_on_off__div {
   padding-left: 15px

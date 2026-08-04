@@ -4,6 +4,187 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * What's New section for Booking Calendar 11.5.
+ *
+ * @param object $obj Welcome-page renderer.
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_5( $obj ) {
+	$section_param_arr = array( 'version_num' => '11.5', 'show_expand' => false );
+	// Keep empty image slots out of the markup until final 11.5 screenshots are available.
+	$image_urls        = array(
+		'appointment_booking'  => '',
+		'appointment_admin'    => '',
+		'add_booking'          => '',
+		'form_appearance'      => '',
+		'compatibility'        => '',
+	);
+
+	$obj->expand_section_start( $section_param_arr );
+
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section">
+			<h2><?php esc_html_e( 'Services and the New Appointment Booking Flow', 'booking' ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/wp_booking_calendar__services_and_appointments_2.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **NEW Services catalogue**: Create Services with a picture, description, duration, buffers, price, status, Booking Form, and compatible Providers.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **Clear Provider overview**: Search and sort Services, review assigned Providers and weekly availability, and open the relevant availability settings directly.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/booking_calendar__appointment_flow_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+				<div style="text-align: center;font-style: italic;font-size: 0.9em;">This video demonstrates features available in the Business Small and higher editions, including multiple providers, payments, and booking costs.</div>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **NEW [booking_appointment] shortcode**: Customers choose a Service and compatible Provider before the native calendar and Booking Form load on the same page with AJAX.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; A new **Start Over** field in the Booking Form Builder lets customers restart the Appointment flow without reloading the page.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; A new **Appointments and Services Flow** template and **Weekday Start Time** field provide an Appointment-ready Form Builder starting point.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **Reliable scheduling**: Service duration, buffers, and Provider-specific overrides are checked on the server before an Appointment is saved.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<h2><?php esc_html_e( 'Administration Modes and QuickStart', 'booking' ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/wp_booking_calendar__booking_modes_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;">
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Choose **Classic**, **Appointments**, or **Rentals** to use familiar terminology and focused navigation without changing existing bookings, resources, availability, or page URLs.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Mode selection is stored for the active Booking Calendar owner, including supported MultiUser owner contexts.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Explicit **Appointment QuickStart** and **Rental QuickStart** actions can reuse or prepare the minimum booking page setup and remain safe to run again.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; The **mode-aware Setup Wizard** follows the selected booking profile through the relevant Service, Provider, form, availability, appearance, publish, and test-page steps.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<h2><?php esc_html_e( 'Resource-first Booking Flow', 'booking' ); ?> ( Pro Versions)</h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/wp_booking_calendar__resources_selector_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+								<div style="text-align: center;font-style: italic;font-size: 0.9em;">This video demonstrates features available in the Pro versions, including payments, and booking costs in BS+ versions.</div>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; The new **[booking_resource_selector] shortcode** lets visitors choose a permitted Booking Resource before its native calendar and Booking Form load on the same page.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Restrict, preselect, or optionally auto-open Resources from the shortcode popup or WordPress block, while retaining Start Over and the established availability, pricing, payment, and booking engines.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap:1%">
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h3><?php esc_html_e( 'Appointment Administration', 'booking' ); ?></h3>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding:5px;">
+					<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/wp_booking_calendar__appointment_administration_3.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				</div>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<?php if ( ! empty( $image_urls['appointment_admin'] ) ) { ?>
+						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+						<img src="<?php echo esc_url( $image_urls['appointment_admin'] ); ?>" alt="<?php esc_attr_e( 'Appointment administration', 'booking' ); ?>" style="margin:10px 0;width:98%;" />
+					<?php } ?>
+				</div>
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **NEW Add Appointment page**: Create an Appointment through the same Service-first flow from a focused admin canvas with contextual inspector panels.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Filter the Booking Listing by **Services and Providers** using reusable searchable multi-select controls.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Appointment details, Service and Provider snapshots, duration, buffers, and blocked time are available in administration details and supported outputs.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Providers remain existing **Booking Resources**, preserving established availability, permissions, and ownership behavior.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 48%;">
+				<h3><?php esc_html_e( 'Redesigned Add Booking Page', 'booking' ); ?></h3>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding:5px;">
+					<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/wp_booking_calendar__add_booking_page_3.png' ) ); ?>" style="margin:10px 0;width:98%;" />
+				</div>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<?php if ( ! empty( $image_urls['add_booking'] ) ) { ?>
+						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+						<img src="<?php echo esc_url( $image_urls['add_booking'] ); ?>" alt="<?php esc_attr_e( 'Redesigned Add Booking administration page', 'booking' ); ?>" style="margin:10px 0;width:98%;" />
+					<?php } ?>
+				</div>
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **Focused booking canvas**: The standard Booking Form remains in the main workspace while setup and actions move into a consistent right-side inspector.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **Important actions stay visible**: Add Booking and Auto-fill Form are placed together with a concise summary of the selected Booking Resource, Booking Form, email notifications, and past-date behavior.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **Temporary Date selection override**: Administrators can switch between Single day, Multiple days, and Range days immediately without reloading the page or changing saved front-end settings.', 'booking' ) ) ); ?></li>
+				</ul>
+
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section">
+
+			<h2><?php esc_html_e( 'Consistent Form Styles and Accent Colors', 'booking' ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.5/wp_booking_calendar__theme_and_accent_colors_01.gif' ) ); ?>" style="margin:10px 0;width:98%;" />
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php if ( ! empty( $image_urls['form_appearance'] ) ) { ?>
+					<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+					<img src="<?php echo esc_url( $image_urls['form_appearance'] ); ?>" alt="<?php esc_attr_e( 'Form Styles and accent colors', 'booking' ); ?>" style="margin:10px 0;width:98%;" />
+				<?php } ?>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Choose an optional **Custom accent color** for primary buttons, secondary-button hover borders, focused fields, selected choices, navigation, and compatible time slots.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Use **Apply accent to form elements** to copy the accent into supported editable components, with global time-picker display and style controls available in Time field inspectors.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; The new **Automatic - Match Booking Form** time-slot style follows the selected Form Style while existing time-picker skins keep their own colors.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Custom button controls and unified primary, secondary, submit, and wizard styles provide consistent dimensions, borders, hover behavior, dark-theme colors, and accessible keyboard focus.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+
+		</div>
+
+		<div class="wpbc_wn_section">
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;">
+				<h3><?php esc_html_e( 'Compatibility and Extensibility', 'booking' ); ?></h3>
+
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<?php if ( ! empty( $image_urls['compatibility'] ) ) { ?>
+						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
+						<img src="<?php echo esc_url( $image_urls['compatibility'] ); ?>" alt="<?php esc_attr_e( 'Booking Calendar compatibility and extensibility', 'booking' ); ?>" style="margin:10px 0;width:98%;" />
+					<?php } ?>
+				</div>
+
+				<ul>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Existing **Booking Resources, availability, Booking Forms, pricing, payments, and bookings remain authoritative**; the Appointment experience builds on them instead of replacing them.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; Appointment information is included in supported confirmations, emails, Booking Listing details, print views, and CSV exports.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; **Safer customer access**: Public Timeline links are scoped to the exact authorized booking and Resource; Personal and higher editions use one-time email verification for customer booking lists.', 'booking' ) ) ); ?></li>
+					<li><?php echo wp_kses_post( wpbc_replace_to_strong_symbols( __( '&bull; New filters and hooks allow commercial editions and extensions to adapt capabilities, Service and Provider catalogues, and Appointment form routing.', 'booking' ) ) ); ?></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<?php
+	$obj->expand_section_end( $section_param_arr );
+}
+
+/**
  * What's New section for Booking Calendar 11.4
  *
  * @param object $obj
@@ -12,7 +193,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 function wpbc_welcome_section_11_4( $obj ) {
 
-	$section_param_arr = array( 'version_num' => '11.4', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.4', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
@@ -100,11 +281,7 @@ function wpbc_welcome_section_11_4( $obj ) {
  */
 function wpbc_welcome_section_11_3( $obj ) {
 
-	?>
-	<hr/>
-	<?php
-
-	$section_param_arr = array( 'version_num' => '11.3', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.3', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
@@ -193,11 +370,8 @@ function wpbc_welcome_section_11_3( $obj ) {
  */
 function wpbc_welcome_section_11_2( $obj ) {
 
-	?>
-	<hr/>
-	<?php
 
-	$section_param_arr = array( 'version_num' => '11.2', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.2', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
@@ -303,11 +477,8 @@ function wpbc_welcome_section_11_2( $obj ) {
  */
 function wpbc_welcome_section_11_1( $obj ) {
 
-	?>
-	<hr/>
-	<?php
 
-	$section_param_arr = array( 'version_num' => '11.1', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.1', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
@@ -350,11 +521,8 @@ function wpbc_welcome_section_11_1( $obj ) {
  */
 function wpbc_welcome_section_11_0( $obj ) {
 
-	?>
-	<hr/>
-	<?php
 
-	$section_param_arr = array( 'version_num' => '11.0', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.0', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
  	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
@@ -464,11 +632,8 @@ function wpbc_welcome_section_11_0( $obj ) {
 
 function wpbc_welcome_section_10_15( $obj ) {
 
-	?>
-	<hr/>
-	<?php
 
-	$section_param_arr = array( 'version_num' => '10.15', 'show_expand' => ! true );
+	$section_param_arr = array( 'version_num' => '10.15', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 

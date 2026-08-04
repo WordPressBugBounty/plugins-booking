@@ -131,6 +131,14 @@ function wpbc_stp_wiz__template__date_time_formats(){
 			</div>
 
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:40px;margin-bottom:5px;border-bottom:1px solid #ccc;"></div>
+			<div class="wpbc__row wpbc_setup_wizard_page_note_row">
+				<div class="wpbc__field">
+					<span class="wpbc_setup_wizard_page_note"><?php esc_html_e( 'You can always change this later', 'booking' ); ?>
+						- <a href="<?php echo esc_url( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_datestimes_tab' ); ?>"><?php
+								echo esc_html__( 'Settings', 'booking' ) . ' > ' . esc_html__( 'Date / Time Formats', 'booking' );
+					  ?></a></span>
+				</div>
+			</div>
 			<#
 				var currentStep = data.current_step || '';
 				var currentStepData = ( data.steps && data.steps[ currentStep ] ) ? data.steps[ currentStep ] : {};
@@ -138,15 +146,21 @@ function wpbc_stp_wiz__template__date_time_formats(){
 				var nextStep = currentStepData.next || '';
 				var doAction = currentStepData.do_action || 'none';
 			#>
-			<div class="wpbc__row wpbc_setup_wizard_page__section_footer">
-				<div class="wpbc__field">
-					<span style="font-size:11px;"><?php esc_html_e( 'You can always change this later', 'booking' ); ?>
-						- <a href="<?php echo esc_url( wpbc_get_settings_url() . '&scroll_to_section=wpbc_general_settings_datestimes_tab' ); ?>"><?php
-								echo esc_html__( 'Settings', 'booking' ) . ' > ' . esc_html__( 'Date / Time Formats', 'booking' );
-				  ?></a></span>
+			<div class="wpbc__row wpbc_setup_wizard_page__section_footer wpbc_setup_wizard_navigation_row">
+				<div class="wpbc__field wpbc_setup_wizard_navigation_links">
+					<p class="wpbc_exit_link_small">
+						<a href="javascript:void(0)"
+						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
+						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
+						><?php esc_html_e('Exit and skip the setup wizard','booking'); ?></a>
+						<a href="javascript:void(0)" class="wpbc_button_danger"
+						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
+						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
+						><?php esc_html_e('Reset Wizard','booking'); ?></a>
+					</p>
 				</div>
-				<div class="wpbc__field wpbc_container wpbc_container_booking_form">
-					<a     class="wpbc_button_light"  style="margin-left:auto;margin-right:10px;" tabindex="0"
+				<div class="wpbc__field wpbc_container wpbc_container_booking_form wpbc_setup_wizard_navigation_actions">
+					<a     class="button button-secondary"  style="margin-left:auto;margin-right:10px;" tabindex="0"
 						   id="btn__toolbar__buttons_prior"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
 																								'current_step': '{{priorStep}}',
@@ -156,7 +170,7 @@ function wpbc_stp_wiz__template__date_time_formats(){
 									wpbc_button_enable_loading_icon( this );
 									wpbc_admin_show_message_processing( '' );" ><i class="menu_icon icon-1x wpbc_icn_arrow_back_ios"></i><span>&nbsp;&nbsp;&nbsp;<?php esc_html_e('Go Back','booking'); ?></span></a>
 					<a	  style=""
-						   class="wpbc_button_light button-primary"
+						   class="button button-primary"
 						   id="btn__toolbar__buttons_next"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
 																								'current_step': '{{nextStep}}',
@@ -173,28 +187,6 @@ function wpbc_stp_wiz__template__date_time_formats(){
 									wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 				</div>
 			</div>
-			<?php /**/ ?>
-			<div class="wpbc__row">
-				<div class="wpbc__field">
-					<p class="wpbc_exit_link_small">
-						<a href="javascript:void(0)"
-						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
-						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
-						><?php
-							esc_html_e('Exit and skip the setup wizard','booking');
-						?></a>
-						<?php  ?>
-						<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;"
-						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
-						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
-						><?php
-							esc_html_e('Reset Wizard','booking');
-						?></a>
-						<?php  ?>
-					</p>
-				</div>
-			</div>
-			<?php /**/ ?>
 
 
 		</div>

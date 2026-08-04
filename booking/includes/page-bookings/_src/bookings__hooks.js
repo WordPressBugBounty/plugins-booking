@@ -143,18 +143,27 @@ function wpbc_ajx_booking_define_ui_hooks_once(){
 	} );
 
 	//------------------------------------------------------------------------------------------------------------------
-	// Booking resources
+	// Reusable Chosen listing filters, such as Booking resources/Providers and Appointment Services.
 	//------------------------------------------------------------------------------------------------------------------
-	jQuery( '#wh_booking_type' ).on( 'change', function( event ){
+	jQuery( 'select[data-wpbc-listing-filter-param]' ).on( 'change', function(){
 
-		var changed_value =  jQuery( '#wh_booking_type' ).val();		// it's get as array
-		if ( ( Array.isArray( changed_value ) ) && ( 0 === changed_value.length ) ){
-			changed_value = ['-1'];
+		var listing_filter_param = jQuery( this ).attr( 'data-wpbc-listing-filter-param' );
+		var changed_value;
+		var request_updates;
+
+		if ( ! listing_filter_param ) {
+			return;
 		}
-		wpbc_ajx_booking_send_search_request_with_params( {
-															'wh_booking_type' : changed_value,
-															'page_num': 1
-														} );
+
+		changed_value = ( 'function' === typeof window.wpbc_ui_chosen_filter_get_request_value )
+			? window.wpbc_ui_chosen_filter_get_request_value( this )
+			: jQuery( this ).val();
+		request_updates = {
+			'page_num': 1
+		};
+		request_updates[ listing_filter_param ] = changed_value;
+
+		wpbc_ajx_booking_send_search_request_with_params( request_updates );
 	} );
 
 

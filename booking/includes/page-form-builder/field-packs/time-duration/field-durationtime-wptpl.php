@@ -278,40 +278,10 @@ function wpbc_bfb_field_durationtime_wptpl_print_templates( $page ) {
 						</div><!-- .ui_container -->
 					</div><!-- .actions -->
 
-					<?php if ( ! function_exists( 'wpbc_is_mu_user_can_be_here' ) || wpbc_is_mu_user_can_be_here( 'only_super_admin' ) ) { ?>
-					<div class="wpbc_ui__collapsible_group" style="width: 99%;">
-						<div class="inspector__row row__bordered" style="background:#f8f8f8;border:0;justify-content: space-between;">
-							<label class="inspector__label"><?php echo esc_html__( 'Show as time picker', 'booking' ); ?></label>
-							<div class="inspector__control" style="flex: 0 1 auto;">
-								<input type="checkbox" class="inspector__checkbox js-toggle-timeslot-picker">
-								<p class="wpbc_bfb__help" style="margin-top:6px;">
-									<?php echo esc_html__( 'Toggle between selectbox and clickable time slots.', 'booking' ); ?>
-								</p>
-							</div>
-							<?php
-							$opt_name     = 'booking_timeslot_picker';
-							$nonce_action = 'wpbc_nonce_' . $opt_name;
-							?>
-							<a  href="javascript:void(0);"
-								class="button button-secondary"
-								onclick="wpbc_save_option_from_element(this);"
-								data-wpbc-u-save-name="<?php echo esc_attr( $opt_name ); ?>"
-								data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
-								data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ) ; ?>"
-								data-wpbc-u-save-value-from=".wpbc_bfb__inspector_timepicker .js-toggle-timeslot-picker"
-								data-wpbc-u-autosave-on-form-save="1"
-								data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving', 'booking' ); ?>...">
-								<?php esc_html_e( 'Save Toggle', 'booking' ); ?>
-							</a>
-						</div>
-					</div>
-					<?php } ?>
-
 				</div><!-- .header_container -->
 			</div><!-- .wpbc_bfb__inspector__head -->
 
 			<div class="wpbc_bfb__inspector__body">
-
 				<section class="wpbc_bfb__inspector__group wpbc_ui__collapsible_group" data-group="basic">
 					<button type="button" class="group__header">
 						<h3><?php echo esc_html__( 'Basic', 'booking' ); ?></h3>
@@ -541,6 +511,7 @@ function wpbc_bfb_field_durationtime_wptpl_print_templates( $page ) {
 						<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
 					</button>
 					<div class="group__fields">
+						<?php wpbc_bfb_time_picker__print_inspector_group(); ?>
 
 						<div class="inspector__row">
 							<label class="inspector__label"><?php echo esc_html__( 'CSS class', 'booking' ); ?></label>

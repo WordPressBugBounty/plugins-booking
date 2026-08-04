@@ -121,6 +121,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/accept-t
 // =====================================================================================================================
 // == Times Packs ==
 // =====================================================================================================================
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-picker-appearance.php';                   // -- Shared Time Picker Appearance --.
 // require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-range/time-range.php';                  // -- Time Range --
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-range/field-rangetime-wptpl.php';          // -- Time Range 2 --
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-start/field-starttime-wptpl.php';
@@ -128,6 +129,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-end
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-duration/field-durationtime-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-duration-service/field-durationtime-service-preset.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/weekday-rangetime/field-weekday-rangetime-wptpl.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/weekday-starttime/field-weekday-starttime-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/season-rangetime/field-season-rangetime-wptpl.php';
 // require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/time-grid/time-grid.php';                    // -- TODO: Time Grid  --.
 
@@ -163,12 +165,18 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-bal
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-coupon_discount_hint/field-coupon-discount-hint-wptpl.php';
 
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-resource_title_hint/field-resource-title-hint-wptpl.php';
+if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-service_title_hint/field-service-title-hint-wptpl.php';
+}
 
 
 // =====================================================================================================================
 // == Structure Packs ==
 // =====================================================================================================================
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/wizard-nav/wizard-nav.php';                     // -- Wizard Nav. --
+if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/appointment-start-over/appointment-start-over.php'; // -- Appointment Start Over. --
+}
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/divider/divider.php';                           // -- Divider --
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/steps-timeline/field-steps-timeline.php';       // -- Steps Timeline in Wizards --
 

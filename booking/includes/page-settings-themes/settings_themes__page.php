@@ -99,6 +99,7 @@ function wpbc_settings_themes_enqueue_css_files( $where_to_load ) {
 		array( 'wpbc-calendar', 'wpbc-all-admin' ),
 		WP_BK_VERSION_NUM
 	);
+	wp_enqueue_style( 'coloris', wpbc_plugin_url( '/vendors/coloris/dist/coloris.min.css' ), array(), WP_BK_VERSION_NUM );
 }
 add_action( 'wpbc_enqueue_css_files', 'wpbc_settings_themes_enqueue_css_files', 66 );
 
@@ -120,9 +121,17 @@ function wpbc_settings_themes_enqueue_js_files( $where_to_load ) {
 	}
 
 	wp_enqueue_script(
+		'coloris',
+		wpbc_plugin_url( '/vendors/coloris/dist/coloris.min.js' ),
+		array(),
+		WP_BK_VERSION_NUM,
+		array( 'in_footer' => WPBC_JS_IN_FOOTER )
+	);
+
+	wp_enqueue_script(
 		'wpbc-settings-themes-page',
 		trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/settings_themes_page.js',
-		array( 'jquery', 'wpbc_all' ),
+		array( 'jquery', 'wpbc_all', 'coloris' ),
 		WP_BK_VERSION_NUM,
 		array( 'in_footer' => WPBC_JS_IN_FOOTER )
 	);
@@ -140,6 +149,7 @@ function wpbc_settings_themes_enqueue_js_files( $where_to_load ) {
 			'form_style_presets' => wpbc_bfb_settings__get_form_style_presets(),
 			'form_style_css_var_names' => wpbc_bfb_settings__get_form_style_css_var_names(),
 			'custom_form_style_defaults' => wpbc_bfb_settings__get_default_custom_form_style_options(),
+			'form_accent_defaults' => wpbc_bfb_settings__get_default_form_accent_options(),
 			'days_selection' => wpbc_settings_themes__get_days_selection_response(),
 			'i18n'           => array(
 				'saving'                     => __( 'Saving', 'booking' ),
@@ -403,7 +413,7 @@ function wpbc_settings_themes__sanitize_preview_mode( $preview_mode ) {
 
 	$preview_mode = sanitize_key( (string) $preview_mode );
 
-	return array_key_exists( $preview_mode, wpbc_settings_themes__get_preview_mode_options() ) ? $preview_mode : 'calendar';
+	return array_key_exists( $preview_mode, wpbc_settings_themes__get_preview_mode_options() ) ? $preview_mode : 'form';
 }
 
 /**
@@ -414,7 +424,7 @@ function wpbc_settings_themes__sanitize_preview_mode( $preview_mode ) {
 function wpbc_settings_themes__get_preview_mode() {
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$preview_mode = isset( $_REQUEST['preview_mode'] ) ? sanitize_key( wp_unslash( $_REQUEST['preview_mode'] ) ) : 'calendar';
+	$preview_mode = isset( $_REQUEST['preview_mode'] ) ? sanitize_key( wp_unslash( $_REQUEST['preview_mode'] ) ) : 'form';
 
 	return wpbc_settings_themes__sanitize_preview_mode( $preview_mode );
 }
@@ -582,6 +592,7 @@ function wpbc_settings_themes__map_form_style_to_options( $style, $current_theme
  */
 function wpbc_settings_themes__get_time_picker_skin_options() {
 
+	$automatic_skin                = '/css/time_picker_skins/form_style.css';
 	$timeslot_picker_skins_options = array();
 	$upload_dir                    = wp_upload_dir();
 
@@ -599,9 +610,35 @@ function wpbc_settings_themes__get_time_picker_skin_options() {
 		}
 	}
 
+	// Keep the integrated option first and give bundled skins readable labels.
+	if ( file_exists( WPBC_PLUGIN_DIR . $automatic_skin ) ) {
+		unset( $timeslot_picker_skins_options[ $automatic_skin ] );
+		$timeslot_picker_skins_options = array_merge(
+			array(
+				$automatic_skin => __( 'Automatic — Match Booking Form', 'booking' ),
+			),
+			$timeslot_picker_skins_options
+		);
+	}
+
+	$bundled_skin_titles = array(
+		'/css/time_picker_skins/light__24_8.css' => __( 'Light', 'booking' ),
+		'/css/time_picker_skins/grey.css'        => __( 'Grey', 'booking' ),
+		'/css/time_picker_skins/black.css'       => __( 'Black', 'booking' ),
+		'/css/time_picker_skins/blue.css'        => __( 'Blue', 'booking' ),
+		'/css/time_picker_skins/green.css'       => __( 'Green', 'booking' ),
+		'/css/time_picker_skins/orange.css'      => __( 'Orange', 'booking' ),
+		'/css/time_picker_skins/marine.css'      => __( 'Marine', 'booking' ),
+	);
+	foreach ( $bundled_skin_titles as $skin_path => $skin_title ) {
+		if ( isset( $timeslot_picker_skins_options[ $skin_path ] ) ) {
+			$timeslot_picker_skins_options[ $skin_path ] = $skin_title;
+		}
+	}
+
 	if ( empty( $timeslot_picker_skins_options ) ) {
 		$default_options_values = wpbc_get_default_options();
-		$default_skin           = isset( $default_options_values['booking_timeslot_picker_skin'] ) ? $default_options_values['booking_timeslot_picker_skin'] : '/css/time_picker_skins/grey.css';
+		$default_skin           = isset( $default_options_values['booking_timeslot_picker_skin'] ) ? $default_options_values['booking_timeslot_picker_skin'] : $automatic_skin;
 		$timeslot_picker_skins_options[ $default_skin ] = __( 'Default', 'booking' );
 	}
 
@@ -699,6 +736,7 @@ function wpbc_settings_themes__get_settings_response() {
 	$form_style        = wpbc_bfb_settings__get_current_form_style();
 	$transition_values = wpbc_settings_themes__map_form_style_to_options( $form_style, '' );
 	$custom_values     = wpbc_bfb_settings__get_custom_form_style_options();
+	$accent_values     = wpbc_bfb_settings__get_form_accent_options();
 
 	return array_merge(
 		array(
@@ -714,7 +752,8 @@ function wpbc_settings_themes__get_settings_response() {
 		'booking_timeslot_picker_skin'         => get_bk_option( 'booking_timeslot_picker_skin' ),
 		'booking_timeslot_picker'              => get_bk_option( 'booking_timeslot_picker' ),
 		),
-		$custom_values
+		$custom_values,
+		$accent_values
 	);
 }
 
@@ -753,6 +792,8 @@ function wpbc_settings_themes__get_preview_option_overrides( $current_settings )
 
 	$option_names = array(
 		'booking_form_style',
+		'booking_form_accent_enabled',
+		'booking_form_accent_color',
 		'booking_form_custom_background_color',
 		'booking_form_custom_border_color',
 		'booking_form_custom_border_width',
@@ -775,6 +816,8 @@ function wpbc_settings_themes__get_preview_option_overrides( $current_settings )
 		'booking_form_custom_secondary_button_hover_background_color',
 		'booking_form_custom_secondary_button_hover_text_color',
 		'booking_form_custom_secondary_button_hover_border_color',
+		'booking_form_custom_button_border_width',
+		'booking_form_custom_button_border_radius',
 		'booking_skin',
 		'booking_timeslot_picker_skin',
 		'booking_timeslot_picker',
@@ -814,6 +857,7 @@ function wpbc_settings_themes__validate_data( $post_data ) {
 	$calendar_skin_options  = wpbc_settings_themes__get_calendar_skin_options_for_select();
 	$time_skin_options      = wpbc_settings_themes__get_time_picker_skin_options();
 	$custom_values          = wpbc_bfb_settings__get_custom_form_style_options();
+	$accent_values          = wpbc_bfb_settings__get_form_accent_options();
 
 	$cleaned = array_merge(
 		array(
@@ -822,11 +866,17 @@ function wpbc_settings_themes__validate_data( $post_data ) {
 		'booking_timeslot_picker_skin'         => isset( $default_options_values['booking_timeslot_picker_skin'] ) ? $default_options_values['booking_timeslot_picker_skin'] : '',
 		'booking_timeslot_picker'              => isset( $default_options_values['booking_timeslot_picker'] ) ? $default_options_values['booking_timeslot_picker'] : 'Off',
 		),
-		$custom_values
+		$custom_values,
+		$accent_values
 	);
 
 	if ( isset( $post_data['booking_form_style'] ) ) {
 		$cleaned['booking_form_style'] = wpbc_bfb_settings__sanitize_form_style( wp_unslash( $post_data['booking_form_style'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	}
+
+	$cleaned['booking_form_accent_enabled'] = ( isset( $post_data['booking_form_accent_enabled'] ) && 'On' === sanitize_text_field( wp_unslash( $post_data['booking_form_accent_enabled'] ) ) ) ? 'On' : 'Off';
+	if ( isset( $post_data['booking_form_accent_color'] ) ) {
+		$cleaned['booking_form_accent_color'] = wpbc_bfb_settings__sanitize_form_accent_color( sanitize_text_field( wp_unslash( $post_data['booking_form_accent_color'] ) ), WPBC_DEFAULT_FORM_ACCENT_COLOR );
 	}
 
 	$sanitize_color = function ( $value, $fallback ) {
@@ -838,7 +888,7 @@ function wpbc_settings_themes__validate_data( $post_data ) {
 	};
 	$sanitize_length = function ( $value, $fallback ) {
 		$value = trim( sanitize_text_field( wp_unslash( $value ) ) );
-		if ( preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
+		if ( preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
 			return $value;
 		}
 		return $fallback;
@@ -853,7 +903,7 @@ function wpbc_settings_themes__validate_data( $post_data ) {
 			return $fallback;
 		}
 		foreach ( $parts as $part ) {
-			if ( ! preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $part ) ) {
+			if ( ! preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $part ) ) {
 				return $fallback;
 			}
 		}
@@ -927,6 +977,12 @@ function wpbc_settings_themes__validate_data( $post_data ) {
 		if ( isset( $post_data['booking_form_custom_secondary_button_hover_border_color'] ) ) {
 			$cleaned['booking_form_custom_secondary_button_hover_border_color'] = $sanitize_color( $post_data['booking_form_custom_secondary_button_hover_border_color'], '#4d91cd' );
 		}
+		if ( isset( $post_data['booking_form_custom_button_border_width'] ) ) {
+			$cleaned['booking_form_custom_button_border_width'] = $sanitize_length( $post_data['booking_form_custom_button_border_width'], '1px' );
+		}
+		if ( isset( $post_data['booking_form_custom_button_border_radius'] ) ) {
+			$cleaned['booking_form_custom_button_border_radius'] = $sanitize_length( $post_data['booking_form_custom_button_border_radius'], '3px' );
+		}
 	}
 
 	if ( isset( $post_data['booking_skin'] ) ) {
@@ -960,6 +1016,8 @@ function wpbc_settings_themes__validate_data( $post_data ) {
 function wpbc_settings_themes__update_settings( $cleaned_data ) {
 
 	update_bk_option( 'booking_form_style', $cleaned_data['booking_form_style'] );
+	update_bk_option( 'booking_form_accent_enabled', $cleaned_data['booking_form_accent_enabled'] );
+	update_bk_option( 'booking_form_accent_color', $cleaned_data['booking_form_accent_color'] );
 	update_bk_option( 'booking_form_custom_background_color', $cleaned_data['booking_form_custom_background_color'] );
 	update_bk_option( 'booking_form_custom_border_color', $cleaned_data['booking_form_custom_border_color'] );
 	update_bk_option( 'booking_form_custom_border_width', $cleaned_data['booking_form_custom_border_width'] );
@@ -982,6 +1040,8 @@ function wpbc_settings_themes__update_settings( $cleaned_data ) {
 	update_bk_option( 'booking_form_custom_secondary_button_hover_background_color', $cleaned_data['booking_form_custom_secondary_button_hover_background_color'] );
 	update_bk_option( 'booking_form_custom_secondary_button_hover_text_color', $cleaned_data['booking_form_custom_secondary_button_hover_text_color'] );
 	update_bk_option( 'booking_form_custom_secondary_button_hover_border_color', $cleaned_data['booking_form_custom_secondary_button_hover_border_color'] );
+	update_bk_option( 'booking_form_custom_button_border_width', $cleaned_data['booking_form_custom_button_border_width'] );
+	update_bk_option( 'booking_form_custom_button_border_radius', $cleaned_data['booking_form_custom_button_border_radius'] );
 	update_bk_option( 'booking_skin', $cleaned_data['booking_skin'] );
 	update_bk_option( 'booking_timeslot_picker_skin', $cleaned_data['booking_timeslot_picker_skin'] );
 	update_bk_option( 'booking_timeslot_picker', $cleaned_data['booking_timeslot_picker'] );
@@ -1079,7 +1139,7 @@ function wpbc_settings_themes__render_select( $name, $options, $selected, $args 
  *
  * @return void
  */
-function wpbc_settings_themes__render_calendar_preview( $resource_id, $months_count, $preview_settings = array(), $preview_mode = 'calendar', $custom_booking_form = 'standard' ) {
+function wpbc_settings_themes__render_calendar_preview( $resource_id, $months_count, $preview_settings = array(), $preview_mode = 'form', $custom_booking_form = 'standard' ) {
 
 	global $wpbc_settings_themes__preview_options;
 
@@ -1358,6 +1418,7 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 		$calendar_skin_options = wpbc_settings_themes__get_calendar_skin_options_for_select();
 		$time_skin_options     = wpbc_settings_themes__get_time_picker_skin_options();
 		$current_form_style    = wpbc_bfb_settings__sanitize_form_style( $current_settings['booking_form_style'] );
+		$current_form_accent   = wpbc_bfb_settings__get_form_accent_options( $current_settings );
 		$transition_values     = wpbc_settings_themes__map_form_style_to_options( $current_form_style, '' );
 
 		WPBC_UI_Sidebar_Panels::render_inspector_header( __( 'Appearance', 'booking' ) . ' / ' . __( 'Theme', 'booking' ), __( 'Visual settings for the booking form and calendar preview.', 'booking' ) );
@@ -1374,7 +1435,7 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 						'title' => __( 'Form Style', 'booking' ),
 						'open'  => true,
 					),
-					function () use ( $form_style_options, $current_form_style, $transition_values ) {
+					function () use ( $form_style_options, $current_form_style, $current_form_accent, $transition_values ) {
 						$is_custom = ( 'custom' === (string) $current_form_style );
 						$builder_url = add_query_arg(
 							array(
@@ -1386,9 +1447,38 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 							),
 							admin_url( 'admin.php' )
 						);
+						$accent_builder_url = add_query_arg(
+							array(
+								'page'           => 'wpbc-settings',
+								'tab'            => 'builder_booking_form',
+								'wpbc_bfb_panel' => 'form_settings',
+								'wpbc_bfb_group' => 'settings-appearance',
+								'wpbc_bfb_focus' => 'booking_form_accent_apply_to_components',
+							),
+							admin_url( 'admin.php' )
+						);
 						?>
 						<input type="hidden" id="booking_form_theme" value="<?php echo esc_attr( $transition_values['booking_form_theme'] ); ?>" />
 						<input type="hidden" id="booking_form_appearance_preset" value="<?php echo esc_attr( $transition_values['booking_form_appearance_preset'] ); ?>" data-wpbc-theme-appearance-control="1" />
+						<div class="wpbc_theme_field_row wpbc_theme_accent_toggle_row">
+							<label class="wpbc_theme_switch">
+								<input type="checkbox" id="booking_form_accent_enabled" name="booking_form_accent_enabled" value="On" <?php checked( 'On', $current_form_accent['booking_form_accent_enabled'] ); ?> data-wpbc-theme-accent-toggle="1" aria-describedby="booking_form_accent_enabled_description" />
+								<span class="wpbc_theme_switch_control" aria-hidden="true"><span class="wpbc_theme_switch_knob"></span></span>
+								<span class="wpbc_theme_switch_label"><?php esc_html_e( 'Custom accent color', 'booking' ); ?></span>
+							</label>
+							<p class="wpbc_theme_description" id="booking_form_accent_enabled_description"><?php esc_html_e( 'Use one accent for preset-style primary buttons, secondary-button hover borders, focus, selected choices, and navigation accents. Custom style keeps its explicitly configured button colors. Time slots use it only with the Automatic time-slot style.', 'booking' ); ?></p>
+						</div>
+						<div class="wpbc_theme_field_row wpbc_theme_accent_color_row" data-wpbc-theme-accent-color-row="1" data-wpbc-theme-accent-dependent="1" <?php echo ( 'On' === $current_form_accent['booking_form_accent_enabled'] ) ? '' : 'style="display:none;"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+							<label class="wpbc_theme_field_label" for="booking_form_accent_color"><?php esc_html_e( 'Accent color', 'booking' ); ?></label>
+							<input type="text" id="booking_form_accent_color" name="booking_form_accent_color" value="<?php echo esc_attr( $current_form_accent['booking_form_accent_color'] ); ?>" class="wpbc_theme_coloris" data-coloris autocomplete="off" pattern="^#[0-9A-Fa-f]{6}$" data-wpbc-theme-appearance-control="1" />
+							<p class="wpbc_theme_description"><?php esc_html_e( 'Preset styles calculate readable primary button text and hover colors automatically. Custom style uses its explicit button settings.', 'booking' ); ?></p>
+						</div>
+						<div class="wpbc_theme_field_row wpbc_theme_accent_components_row" data-wpbc-theme-accent-dependent="1" <?php echo ( 'On' === $current_form_accent['booking_form_accent_enabled'] ) ? '' : 'style="display:none;"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+							<a class="button button-secondary" href="<?php echo esc_url( $accent_builder_url ); ?>">
+								<?php esc_html_e( 'Apply accent to form elements…', 'booking' ); ?>
+							</a>
+							<p class="wpbc_theme_description"><?php esc_html_e( 'Open Forms Builder to copy the accent into editable component colors and switch time slots to Automatic — Match Booking Form.', 'booking' ); ?></p>
+						</div>
 						<div class="wpbc_theme_choice_grid wpbc_theme_style_choice_grid">
 							<?php foreach ( $form_style_options as $style_value => $style_title ) : ?>
 								<label class="wpbc_theme_choice <?php echo ( (string) $current_form_style === (string) $style_value ) ? 'is-selected' : ''; ?>">
@@ -1477,7 +1567,7 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 					function () use ( $time_skin_options, $current_settings ) {
 						?>
 						<div class="wpbc_theme_field_row">
-							<label class="wpbc_theme_field_label" for="booking_timeslot_picker_skin"><?php esc_html_e( 'Time Picker Skin', 'booking' ); ?></label>
+							<label class="wpbc_theme_field_label" for="booking_timeslot_picker_skin"><?php esc_html_e( 'Time Slot Style', 'booking' ); ?></label>
 							<?php
 							wpbc_settings_themes__render_select(
 								'booking_timeslot_picker_skin',
@@ -1492,6 +1582,7 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 								)
 							);
 							?>
+							<p class="description"><?php esc_html_e( 'Automatic matches time slots to the active Booking Form Style and accent color. Existing skins remain available for fixed color schemes.', 'booking' ); ?></p>
 						</div>
 						<label class="wpbc_theme_switch wpbc_theme_switch_card">
 							<input type="checkbox" name="booking_timeslot_picker" value="On" data-wpbc-theme-preview-notice="form" <?php checked( $current_settings['booking_timeslot_picker'], 'On' ); ?> />

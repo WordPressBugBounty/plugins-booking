@@ -127,7 +127,9 @@ class WPBC_BFB_Bootstrap {
 		$wpbc_bfb_form_style         = wpbc_bfb_settings__get_current_form_style();
 		$wpbc_bfb_form_style_preset  = wpbc_bfb_settings__get_form_style_preset( $wpbc_bfb_form_style );
 		$wpbc_bfb_custom_form_style  = wpbc_bfb_settings__get_custom_form_style_options();
-		$wpbc_bfb_form_style_vars    = wpbc_bfb_settings__get_form_style_css_vars( $wpbc_bfb_form_style, $wpbc_bfb_custom_form_style );
+		$wpbc_bfb_form_accent        = wpbc_bfb_settings__get_form_accent_options();
+		$wpbc_bfb_style_options      = array_merge( $wpbc_bfb_custom_form_style, $wpbc_bfb_form_accent );
+		$wpbc_bfb_form_style_vars    = wpbc_bfb_settings__get_form_style_css_vars( $wpbc_bfb_form_style, $wpbc_bfb_style_options );
 		$wpbc_bfb_container_style    = isset( $wpbc_bfb_form_style_preset['container_style'] ) ? (string) $wpbc_bfb_form_style_preset['container_style'] : 'bordered';
 		$wpbc_bfb_theme_class        = isset( $wpbc_bfb_form_style_preset['theme_class'] ) ? (string) $wpbc_bfb_form_style_preset['theme_class'] : '';
 		$wpbc_bfb_legacy_appearance  = array(
@@ -154,14 +156,24 @@ class WPBC_BFB_Bootstrap {
 						'container_style'    => $wpbc_bfb_container_style,
 						'css_vars'           => $wpbc_bfb_form_style_vars,
 					),
-					$wpbc_bfb_custom_form_style
+					$wpbc_bfb_style_options
 				),
 				'form_style_options'         => wpbc_bfb_settings__get_form_style_options(),
 				'form_style_presets'         => wpbc_bfb_settings__get_form_style_presets(),
 				'form_style_css_var_names'   => wpbc_bfb_settings__get_form_style_css_var_names(),
 				'form_style_option_keys'     => wpbc_bfb_settings__get_form_json_style_option_keys(),
 				'custom_form_style_defaults' => wpbc_bfb_settings__get_default_custom_form_style_options(),
+				'form_accent_defaults'       => wpbc_bfb_settings__get_default_form_accent_options(),
 				'global_appearance'          => $wpbc_bfb_legacy_appearance,
+				'i18n'                       => array(
+					'accent_enable_first'       => __( 'Enable Custom accent color first.', 'booking' ),
+					'accent_applied_one'        => __( 'Accent applied to one form element. Save Form to keep the change.', 'booking' ),
+					'accent_applied_many'       => __( 'Accent applied to %d form elements. Save Form to keep the changes.', 'booking' ),
+					'accent_already_applied'    => __( 'All supported form elements already have the current accent color.', 'booking' ),
+					'accent_no_elements'        => __( 'No accent-capable form elements were found.', 'booking' ),
+					'accent_applied_announcement' => __( 'Form accent applied.', 'booking' ),
+					'accent_time_picker_automatic' => __( 'Time slots now use Automatic — Match Booking Form.', 'booking' ),
+				),
 			)
 		);
 

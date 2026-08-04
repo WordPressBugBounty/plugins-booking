@@ -266,7 +266,7 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 				$is_reseted = $user_request->user_request_params__db_delete();											// Delete from DB
 
-				wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+				wpbc_setup_wizard__set_full_screen_mode_for_current_user( true );
 
 				$cleaned_request_params['do_action'] = $is_reseted ? 'reset_done' : 'reset_error';
 
@@ -337,6 +337,16 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 					wpbc_setup__update__bookings_types( $cleaned_data );
 					$booking_wizard_data_arr['save_and_continue__bookings_types'] = $cleaned_data;
 					update_bk_option( 'booking_wizard_data', $booking_wizard_data_arr );
+
+					/**
+					 * Fires after the validated Booking Type configuration is applied and saved.
+					 *
+					 * Optional modules can synchronize presentation state from the selected
+					 * workflow without entering the Setup Wizard validation or mutation engine.
+					 *
+					 * @param array $cleaned_data Validated Setup Wizard booking-type data.
+					 */
+					do_action( 'wpbc_setup_wizard_booking_type_saved', $cleaned_data );
 					$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 
 					// FixIn: 10.7.1.3. // FixIn: 10.15.1.1.

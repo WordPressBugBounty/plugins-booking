@@ -384,12 +384,84 @@
 		return true;
 	}
 
+	/**
+	 * Open one collapsible Add Fields palette group.
+	 *
+	 * The setup-wizard deep link uses this helper to reveal a field pack without
+	 * inserting or otherwise changing the current booking form.
+	 *
+	 * @param {string} group_key Palette group key from its data-group attribute.
+	 * @returns {boolean} Whether the requested palette group was found and opened.
+	 */
+	function open_palette_group(group_key) {
+		const panel = d.getElementById( 'wpbc_bfb__palette_add_new' ) || d;
+		const group = panel.querySelector( '.wpbc_bfb__inspector__group[data-group="' + esc_attr_selector_value( group_key ) + '"]' );
+		if ( ! group ) {
+			return false;
+		}
+
+		const header = group.querySelector( '.group__header' );
+		const fields = group.querySelector( '.group__fields' );
+
+		group.classList.add( 'is-open' );
+		if ( header ) {
+			header.setAttribute( 'aria-expanded', 'true' );
+		}
+		if ( fields ) {
+			fields.removeAttribute( 'hidden' );
+			fields.setAttribute( 'aria-hidden', 'false' );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Focus and visually highlight one Add Fields palette item.
+	 *
+	 * @param {string} field_type Registered Form Builder field type.
+	 * @returns {boolean} Whether the requested field pack palette item was found.
+	 */
+	function focus_palette_field(field_type) {
+		const panel = d.getElementById( 'wpbc_bfb__palette_add_new' ) || d;
+		const field = panel.querySelector( '.wpbc_bfb__field[data-type="' + esc_attr_selector_value( field_type ) + '"]' );
+		if ( ! field ) {
+			return false;
+		}
+
+		try {
+			field.scrollIntoView( { behavior: 'smooth', block: 'center', inline: 'nearest' } );
+		} catch ( _e ) {
+			field.scrollIntoView( true );
+		}
+
+		field.classList.remove( 'wpbc_bfb__scroll-pulse', 'wpbc_bfb__highlight-pulse' );
+		void field.offsetWidth;
+		field.classList.add( 'wpbc_bfb__scroll-pulse', 'wpbc_bfb__highlight-pulse' );
+		field.setAttribute( 'tabindex', '-1' );
+
+		setTimeout( () => {
+			field.classList.remove( 'wpbc_bfb__scroll-pulse', 'wpbc_bfb__highlight-pulse' );
+		}, 2200 );
+		setTimeout( () => {
+			try {
+				field.focus( { preventScroll: true } );
+			} catch ( _e ) {
+				field.focus();
+			}
+		}, 250 );
+
+		return true;
+	}
+
 	let deep_link_done = false;
 	let deep_link_ajax_listener_bound = false;
 
 	function has_initial_deep_link() {
 		const params = get_url_params();
-		return !! ( params && 'form_settings' === params.get( 'wpbc_bfb_panel' ) );
+		return !! (
+			params
+			&& -1 !== [ 'form_settings', 'add_fields' ].indexOf( params.get( 'wpbc_bfb_panel' ) )
+		);
 	}
 
 	function handle_initial_deep_link(tabs, attempt = 0) {
@@ -398,12 +470,13 @@
 		}
 
 		const params = get_url_params();
-		if ( ! params || 'form_settings' !== params.get( 'wpbc_bfb_panel' ) ) {
+		if ( ! params || -1 === [ 'form_settings', 'add_fields' ].indexOf( params.get( 'wpbc_bfb_panel' ) ) ) {
 			return;
 		}
 
-		const panel_id = 'wpbc_bfb__inspector_form_settings';
-		const tab = d.getElementById( 'wpbc_tab_form' );
+		const panel_mode = params.get( 'wpbc_bfb_panel' );
+		const panel_id = 'add_fields' === panel_mode ? 'wpbc_bfb__palette_add_new' : 'wpbc_bfb__inspector_form_settings';
+		const tab = d.getElementById( 'add_fields' === panel_mode ? 'wpbc_tab_library' : 'wpbc_tab_form' );
 		const panel = d.getElementById( panel_id );
 		if ( ! tab || ! panel ) {
 			if ( attempt < 25 ) {
@@ -416,8 +489,12 @@
 
 		const group_key = params.get( 'wpbc_bfb_group' );
 		const row_key = params.get( 'wpbc_bfb_focus' );
-		const group_ok = group_key ? open_settings_group( group_key ) : true;
-		const row_ok = row_key ? focus_settings_row( row_key ) : true;
+		const group_ok = group_key
+			? ( 'add_fields' === panel_mode ? open_palette_group( group_key ) : open_settings_group( group_key ) )
+			: true;
+		const row_ok = row_key
+			? ( 'add_fields' === panel_mode ? focus_palette_field( row_key ) : focus_settings_row( row_key ) )
+			: true;
 
 		if ( ( ! group_ok || ! row_ok ) && attempt < 25 ) {
 			setTimeout( () => handle_initial_deep_link( tabs, attempt + 1 ), 80 );

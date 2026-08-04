@@ -319,11 +319,31 @@
 	width: 100%;
 }
 
+.wpbc_theme_accent_color_row .clr-field,
+.wpbc_theme_accent_color_row .clr-field input {
+	box-sizing: border-box;
+	max-width: 100%;
+	width: 100%;
+}
+
 .wpbc_theme_description {
 	color: var(--wpbc-theme-muted);
 	font-size: 12px;
 	line-height: 1.5;
 	margin: 8px 0 0;
+}
+
+.wpbc_theme_accent_toggle_row {
+	gap: 2px;
+}
+
+.wpbc_theme_accent_toggle_row .wpbc_theme_switch {
+	min-height: 28px;
+	padding: 2px 0;
+}
+
+.wpbc_theme_accent_toggle_row .wpbc_theme_description {
+	margin-top: 2px;
 }
 
 .wpbc_theme_choice_grid {

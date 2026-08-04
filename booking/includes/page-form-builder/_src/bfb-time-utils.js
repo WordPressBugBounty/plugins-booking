@@ -313,6 +313,13 @@
 		var chk = panel.querySelector('.js-toggle-timeslot-picker');
 		if (chk) chk.checked = !!enabled;
 
+		var skin_row = panel.querySelector('.js-time-picker-skin-row');
+		if (skin_row) {
+			skin_row.hidden = !enabled;
+			skin_row.style.display = enabled ? '' : 'none';
+			skin_row.setAttribute( 'aria-hidden', enabled ? 'false' : 'true' );
+		}
+
 		var phRow = panel.querySelector('.js-placeholder-row');
 		if (phRow) {
 			if (enabled) { phRow.style.display = 'none'; phRow.hidden = true; }
@@ -330,6 +337,95 @@
 			Time.ui_set_picker_toggle_for_panel( panel, enabled );
 		} );
 	};
+
+	/**
+	 * Apply a time-picker skin URL directly to the Builder document.
+	 *
+	 * Updating the existing link avoids a no-styles interval. If another
+	 * integration omitted the link, create it so Inspector changes still
+	 * produce an immediate Canvas preview.
+	 *
+	 * @param {string} skin_url Public time-picker skin URL.
+	 * @return {boolean} Whether a stylesheet URL was applied.
+	 */
+	Time.apply_picker_skin_url = function (skin_url) {
+		if ( ! skin_url ) return false;
+
+		var stylesheet = d.getElementById( 'wpbc-time_picker-skin-css' );
+		if ( ! stylesheet ) {
+			stylesheet = d.createElement( 'link' );
+			stylesheet.id = 'wpbc-time_picker-skin-css';
+			stylesheet.rel = 'stylesheet';
+			stylesheet.type = 'text/css';
+			stylesheet.media = 'screen';
+			( d.head || d.getElementsByTagName( 'head' )[0] ).appendChild( stylesheet );
+		}
+
+		stylesheet.setAttribute( 'href', String( skin_url ) );
+		if ( Time.read_picker_enabled() ) {
+			Time.set_picker_enabled( true );
+			Time.schedule_init_timeselector();
+		}
+
+		return true;
+	};
+
+	/**
+	 * Apply a selected time-picker skin to the Builder preview stylesheet.
+	 *
+	 * @param {HTMLSelectElement} select_control Skin selectbox.
+	 * @return {void}
+	 */
+	Time.apply_picker_skin_from_select = function (select_control) {
+		if ( ! select_control ) return;
+		var selected_option = select_control.options && select_control.selectedIndex >= 0
+			? select_control.options[ select_control.selectedIndex ]
+			: null;
+		var skin_url = selected_option ? String( selected_option.getAttribute( 'data-wpbc-time-picker-skin-url' ) || '' ) : '';
+
+		Time.apply_picker_skin_url( skin_url );
+
+		// The style row is available only while the global picker is enabled.
+		// Reconcile the runtime flag as well, so an older Builder session can
+		// immediately construct its Canvas choices without a page reload.
+		var panel = select_control.closest ? select_control.closest( '.wpbc_bfb__inspector_timepicker' ) : null;
+		var picker_toggle = panel ? panel.querySelector( '.js-toggle-timeslot-picker' ) : null;
+		if ( picker_toggle && picker_toggle.checked ) {
+			Time.set_picker_enabled( true );
+			Time.schedule_init_timeselector();
+		}
+	};
+
+	/**
+	 * Synchronize all open time-field skin controls to a saved global value.
+	 *
+	 * @param {string} skin_value Relative time-picker skin path.
+	 * @return {void}
+	 */
+	Time.ui_set_picker_skin_value = function (skin_value) {
+		d.querySelectorAll( '.js-wpbc-bfb-time-picker-skin' ).forEach( function (select_control) {
+			select_control.value = String( skin_value || '' );
+		} );
+	};
+
+	/**
+	 * Synchronize other controls after a global time-picker skin is saved.
+	 *
+	 * @return {void}
+	 */
+	Time.on_picker_skin_saved = function () {
+		var select_control = d.querySelector( '.js-wpbc-bfb-time-picker-skin' );
+		var skin_value = select_control ? String( select_control.value || '' ) : '';
+		var accent_button = d.querySelector( '[data-wpbc-bfb-apply-accent-components="1"]' );
+
+		Time.ui_set_picker_skin_value( skin_value );
+		if ( accent_button ) {
+			accent_button.setAttribute( 'data-wpbc-time-picker-skin-current', skin_value );
+		}
+	};
+
+	// The generic protected option saver resolves successful callbacks by global function name.
+	w.wpbc_bfb_time_picker_skin_control_saved = Time.on_picker_skin_saved;
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Debounced init for external time selector (canvas preview)
@@ -488,14 +584,30 @@
 			};
 		} catch (e) {}
 
-		// 3) Checkbox handler (delegated)
+		// 3) Checkbox handler (delegated).
+		// Skin changes use jQuery below because the previous/next selectbox
+		// controls dispatch jQuery's synthetic `change` event.
 		d.addEventListener('change', function (ev) {
 			var t = ev.target;
-			if (!t || !t.classList || !t.classList.contains('js-toggle-timeslot-picker')) return;
+			if (!t || !t.classList) return;
+
+			if (t.classList.contains('js-wpbc-bfb-time-picker-skin')) {
+				if ( ! w.jQuery ) Time.apply_picker_skin_from_select(t);
+				return;
+			}
+			if (!t.classList.contains('js-toggle-timeslot-picker')) return;
 
 			var enabled = !!t.checked;
 			Time.set_global_timeslot_picker( enabled, { source: 'inspector' } );
 		});
+
+		if ( w.jQuery ) {
+			w.jQuery( d )
+				.off( 'change.wpbcBfbTimePickerSkin', '.js-wpbc-bfb-time-picker-skin' )
+				.on( 'change.wpbcBfbTimePickerSkin', '.js-wpbc-bfb-time-picker-skin', function () {
+					Time.apply_picker_skin_from_select( this );
+				} );
+		}
 	};
 
 	// Auto-bind on script load.

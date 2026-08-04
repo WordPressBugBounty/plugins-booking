@@ -165,7 +165,21 @@ class WPBC_Settings_Page_Parts {
 			<div id="<?php echo esc_attr( $this->active_page ); ?>-admin-page" class="wrap wpbc_page wpbc_page_tab__<?php echo esc_attr( $this->active_tab ); ?> wpbc_page_subtab__<?php echo esc_attr( $this->active_subtab ); ?>">
 				<div class="wpbc_admin_message"></div>
 				<div class="wpbc_admin_page">
-					<div id="ajax_working"></div>
+					<div id="ajax_working">
+						<?php
+						/**
+						 * Fires inside the Booking Calendar floating admin-message container.
+						 *
+						 * Persistent or actionable messages rendered here use the same fixed
+						 * top-right presentation as transient Booking Calendar AJAX notices.
+						 *
+						 * @param string $active_page   Current Booking Calendar page slug.
+						 * @param string $active_tab    Current active tab slug.
+						 * @param string $active_subtab Current active subtab slug.
+						 */
+						do_action( 'wpbc_inside_ui__admin_messages', $this->active_page, $this->active_tab, $this->active_subtab );
+						?>
+					</div>
 					<div class="clear wpbc_header_margin" style="height:0px;"></div>
 					<div id="ajax_respond" class="ajax_respond" style="display:none;"></div>
 					<div class="clear"></div>

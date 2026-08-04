@@ -48,7 +48,7 @@ function wpbc_ui__get_root_menu_arr() {
 	if ( class_exists('wpdev_bk_personal') ) {
 		$pages_arr['wpbc-resources'] = array(
 			'type'      => 'menu',
-			'title'     => __( 'Resources', 'booking' )  . ' / ' . __( 'unique calendars', 'booking' ),
+			'title'     => __( 'Resources', 'booking' ),//  . ' / ' . __( 'unique calendars', 'booking' ),
 			'font_icon' => 'wpbc-bi-list',
 		);
 	} else {
@@ -99,6 +99,10 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 
 	// Available Main Menu - slug => titles.
 	$root_menu_arr = wpbc_ui__get_root_menu_arr();
+
+	if ( function_exists( 'wpbc_booking_modes_resolve_root_navigation' ) ) {
+		$root_menu_arr = wpbc_booking_modes_resolve_root_navigation( $root_menu_arr, $args['page_nav_tabs'] );
+	}
 
 	echo '  <div class="wpbc_ui_el__vert_left_bar__content">';
 
@@ -157,7 +161,6 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		}
 
 		foreach ( $page_item_arr as $main_menu_slug => $menu_item_arr ) {
-
 			$folder_style = ( ! empty( $menu_item_arr['folder_style'] ) ) ? esc_attr( $menu_item_arr['folder_style'] ) : '';
 
 			$folder_css = '';
@@ -864,6 +867,17 @@ function wpbc_ui__right_vertical_sidebar( $args =array() ) {
 
 	echo '   </div><!-- wpbc_ui_el__vert_right_bar__root_sections_container -->';
 	echo '   </div><!-- wpbc_ui_el__vert_right_bar__content -->';
+
+	/**
+	 * Render an optional page-specific footer outside the scrollable inspector.
+	 *
+	 * Callbacks should render the complete footer element and use the native
+	 * `wpbc_ui_el__vert_right_bar__footer_section` class for positioning.
+	 *
+	 * @param array $active_page_arr Active page, tab, and subtab identifiers.
+	 */
+	do_action( 'wpbc_ui__right_vertical_sidebar_footer', $active_page_arr );
+
 	echo '</div><!-- wpbc_ui_el__vert_right_bar__wrapper -->';
 
 	wpbc_start_element_scrollable__with_simplebar( '.wpbc_ui_el__vert_right_bar__wrapper .wpbc_ui_el__vert_right_bar__content' );

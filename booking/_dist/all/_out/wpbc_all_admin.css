@@ -114,14 +114,13 @@
 /*! ------------------------------------------------------------------------------------------------------------------ !*/
 .wpbc_admin_full_screen {
   background: #f6f7f7;
-  color: #50575e;
   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif
 }
 .wpbc_admin_full_screen #wpwrap {
   top: 0
 }
 .wpbc_admin_full_screen #wpbody-content {
-  min-height: 100vh!important;
+  min-height: calc(100vh - var(--wpbc_ui_top_nav__height,48px))!important;
   padding: 0!important
 }
 .wpbc_admin_full_screen #adminmenumain,
@@ -539,7 +538,7 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container input.wpbc_button_light:hover {
   font-size: 1.18em;
   font-weight: 600;
-  border: 2px solid rgba(238,238,238,.7098039216);
+  border: 2px solid rgba(202,202,202,.7098039216);
   box-shadow: 0 2px 10px 2px rgba(255,255,255,.3294117647);
   background: #fdfdfd;
   color: rgba(68,68,68,.8784313725);
@@ -585,7 +584,7 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:disabled:focus,
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:disabled:hover {
   color: #ccc;
-  border: 2px solid rgba(238,238,238,.7098039216);
+  border: 2px solid rgba(202,202,202,.7098039216);
   cursor: not-allowed
 }
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light.wpbc_button_danger {
@@ -2100,7 +2099,7 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
   transition: .3s;
   box-shadow: 0 5px 10px #dfdfdf;
   cursor: pointer;
-  border: 2px solid rgba(238,238,238,.7098039216);
+  border: 2px solid rgba(202,202,202,.7098039216);
   line-height: 1;
   text-decoration: none;
   outline: 0
@@ -3078,6 +3077,78 @@ div.wpbc_ajx_toolbar {
 .wpbc_rightbar_palette .wpbc_ts_inspector_body {
   padding: 0
 }
+.wpbc_rightbar_palette .wpbc_bfb__inspector__body.wpbc_bfb__inspector__body--content,
+.wpbc_rightbar_palette .wpbc_bfb__inspector__section--content {
+  box-sizing: border-box;
+  padding: var(--wpbc-inspector-content-padding,18px)
+}
+.wpbc_rightbar_palette .inspector__row {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 10px;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  width: 100%
+}
+.wpbc_rightbar_palette .inspector__control,
+.wpbc_rightbar_palette .inspector__label {
+  box-sizing: border-box;
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%
+}
+.wpbc_rightbar_palette .inspector__label {
+  color: var(--wpbc-palette-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.75;
+  margin: 0
+}
+.wpbc_rightbar_palette .inspector__control > input:not([type=checkbox]):not([type=radio]):not([type=submit]),
+.wpbc_rightbar_palette .inspector__control > select,
+.wpbc_rightbar_palette .inspector__control > textarea,
+.wpbc_rightbar_palette .inspector__input {
+  box-sizing: border-box;
+  line-height: 2.4;
+  max-width: 100%;
+  width: 100%
+}
+.wpbc_rightbar_palette .inspector__control--inline {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  gap: 8px
+}
+.wpbc_rightbar_palette .inspector__control--inline .inspector__input--unit {
+  -ms-flex: 0 0 72px;
+  flex: 0 0 72px;
+  width: 72px
+}
+.wpbc_rightbar_palette .inspector__row--toggle .wpbc_ui__toggle {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  float: none;
+  margin: 0;
+  min-height: 26px;
+  position: static
+}
+.wpbc_rightbar_palette .inspector__help {
+  color: var(--wpbc-palette-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 7px 0 0
+}
 .wpbc_rightbar_palette .wpbc_ts_inspector_row,
 .wpbc_rightbar_palette__row {
   -ms-flex-align: start;
@@ -3735,9 +3806,13 @@ div .wpbc_listing_usual_row {
     -ms-flex-pack: end;
     justify-content: flex-end
   }
+  .wpbc_row_wrap.max_height_a .wpbc_a_row__appointment,
   .wpbc_row_wrap.max_height_a .wpbc_a_row__notes,
   .wpbc_row_wrap.max_height_a .wpbc_a_row__system {
     display: none
+  }
+  .wpbc_a_row__appointment .wpbc_col_appointment_details {
+    margin: 5px 10px
   }
   .wpbc_a_row__system .wpbc_col_sys_info {
     margin-left: 10px
@@ -4132,4 +4207,23 @@ div .wpbc_listing_usual_row {
 }
 .wpbc_ui_toolbar.wpbc_ui_toolbar__bo_listing {
   margin: var(--wpbc_ui_horis_top_nav__margin)
+}
+.wpbc_appointment_booking_details {
+  border: 1px dashed #777;
+  border-radius: 4px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 4px 18px;
+  line-height: 1.6;
+  padding: 8px 10px;
+  margin: 0 20px 0 15px
+}
+.wpbc_appointment_booking_details > strong {
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%
+}
+.wpbc_appointment_booking_details > span {
+  overflow-wrap: anywhere
 }

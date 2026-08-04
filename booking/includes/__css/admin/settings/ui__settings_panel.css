@@ -291,7 +291,7 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:hover{
   font-size: 1.18em;
 	font-weight: 600;
-  border: 2px solid #eeeeeeb5;
+  border: 2px solid #cacacab5;
   box-shadow: 0 2px 10px 2px #ffffff54;
   background: #fdfdfd;
   color: #444444e0;
@@ -338,7 +338,7 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:disabled:hover,
 .wp-core-ui .wpbc_page .wpbc_ui_settings__flex_container .wpbc_button_light:disabled:focus {
     color: #ccc;
-    border:2px solid #eeeeeeb5;
+    border:2px solid #cacacab5;
     cursor: not-allowed;
     /*pointer-events: none;*/
 }

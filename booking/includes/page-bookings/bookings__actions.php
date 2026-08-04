@@ -1174,6 +1174,14 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 			foreach ( $work_booking_id_arr as $selected_booking_id ) {
 
+				if ( 'On' !== get_bk_option('booking_change_resource_skip_checking') ) {
+					$resource_change_check = apply_filters( 'wpbc_booking_validate_resource_change', true, $selected_booking_id, $selected_resource_id );
+					if ( is_wp_error( $resource_change_check ) ) {
+						$after_action_result  = false;
+						$after_action_message = $resource_change_check->get_error_message();
+						continue;
+					}
+				}
 				//    SQL    ---------------------------------------------------------------------------------------------------
 				list( $after_action_result, $after_action_message, $formdata_new ) = wpbc__sql__change_booking_resource_for_booking( $selected_booking_id, $selected_resource_id );
 
@@ -1618,6 +1626,15 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 												// 'sync_gid' 				=> ''
 												// 'is_approve_booking'   	=> 0
 										);
+				if ( function_exists( 'wpbc_appointment_services_get_booking_service_id' ) ) {
+					$duplicated_service_id = wpbc_appointment_services_get_booking_service_id( $booking_id );
+					if ( $duplicated_service_id ) {
+						$request_save_params['service_id'] = $duplicated_service_id;
+						if ( function_exists( 'wpbc_booking_appointment_encode_submission_context' ) ) {
+							$request_save_params['appointment_context_token'] = wpbc_booking_appointment_encode_submission_context( array(), $duplicated_service_id, $resource_id );
+						}
+					}
+				}
 				$booking_save_arr = wpbc_booking_save( $request_save_params );
 
 				if ( 'ok' === $booking_save_arr['ajx_data']['status'] ) {												// Everything Cool :) - booking has been duplicated

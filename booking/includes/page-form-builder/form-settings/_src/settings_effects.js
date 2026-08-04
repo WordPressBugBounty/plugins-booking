@@ -371,9 +371,37 @@ function wpbc_bfb_form_appearance__sanitize_optional_color(value) {
 	return wpbc_bfb_form_appearance__sanitize_color( value, '' );
 }
 
+/**
+ * Resolve an opaque accent color with the PHP-localized installation default.
+ *
+ * The Form Style effects live outside the registration IIFE, so the default is
+ * deliberately read from the shared localized payload at the point of use.
+ * Invalid requested and localized values return an empty string, allowing the
+ * caller to skip the accent overlay without throwing or producing invalid CSS.
+ *
+ * @param {*} value Requested accent color.
+ * @return {string} Valid three- or six-digit hexadecimal color, or an empty string.
+ */
+function wpbc_bfb_global_form_style__sanitize_accent_color(value) {
+	const requested_color = String( value == null ? '' : value ).trim();
+	if ( /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( requested_color ) ) {
+		return requested_color;
+	}
+
+	const settings_vars = window.wpbc_bfb_settings_vars && typeof window.wpbc_bfb_settings_vars === 'object'
+		? window.wpbc_bfb_settings_vars
+		: {};
+	const accent_defaults = settings_vars.form_accent_defaults && typeof settings_vars.form_accent_defaults === 'object'
+		? settings_vars.form_accent_defaults
+		: {};
+	const default_color = String( accent_defaults.booking_form_accent_color || '' ).trim();
+
+	return /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( default_color ) ? default_color : '';
+}
+
 function wpbc_bfb_form_appearance__sanitize_length(value, fallback) {
 	const v = String( value == null ? '' : value ).trim();
-	if ( /^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( v ) ) {
+	if ( /^\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( v ) ) {
 		return v;
 	}
 	return fallback;
@@ -386,7 +414,7 @@ function wpbc_bfb_form_appearance__sanitize_spacing(value, fallback) {
 		return fallback;
 	}
 	for ( let i = 0; i < parts.length; i++ ) {
-		if ( ! /^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( parts[i] ) ) {
+		if ( ! /^\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( parts[i] ) ) {
 			return fallback;
 		}
 	}
@@ -396,8 +424,8 @@ function wpbc_bfb_form_appearance__sanitize_spacing(value, fallback) {
 function wpbc_bfb_form_appearance__normalize_spacing_numbers(vertical, horizontal) {
 	const v = String( vertical == null ? '' : vertical ).trim();
 	const h = String( horizontal == null ? '' : horizontal ).trim();
-	const vertical_num = /^-?\d+(?:\.\d+)?$/.test( v ) ? v : '0';
-	const horizontal_num = /^-?\d+(?:\.\d+)?$/.test( h ) ? h : vertical_num;
+	const vertical_num = /^\d+(?:\.\d+)?$/.test( v ) ? v : '0';
+	const horizontal_num = /^\d+(?:\.\d+)?$/.test( h ) ? h : vertical_num;
 
 	return vertical_num + 'px ' + horizontal_num + 'px';
 }
@@ -738,7 +766,9 @@ function wpbc_bfb_global_form_style__get_custom_keys() {
 		'booking_form_custom_secondary_button_border_color',
 		'booking_form_custom_secondary_button_hover_background_color',
 		'booking_form_custom_secondary_button_hover_text_color',
-		'booking_form_custom_secondary_button_hover_border_color'
+		'booking_form_custom_secondary_button_hover_border_color',
+		'booking_form_custom_button_border_width',
+		'booking_form_custom_button_border_radius'
 	];
 }
 
@@ -770,7 +800,9 @@ function wpbc_bfb_global_form_style__get_custom_defaults() {
 		booking_form_custom_secondary_button_border_color: '#eeeeee',
 		booking_form_custom_secondary_button_hover_background_color: '#fdfdfd',
 		booking_form_custom_secondary_button_hover_text_color: '#444444',
-		booking_form_custom_secondary_button_hover_border_color: '#4d91cd'
+		booking_form_custom_secondary_button_hover_border_color: '#4d91cd',
+		booking_form_custom_button_border_width      : '1px',
+		booking_form_custom_button_border_radius     : '3px'
 	}, localized );
 }
 
@@ -797,6 +829,103 @@ function wpbc_bfb_global_form_style__get_current_options(ctx, key, value) {
 	return options;
 }
 
+function wpbc_bfb_global_form_style__mix_colors(color, target, amount) {
+	let source = wpbc_bfb_global_form_style__sanitize_accent_color( color ).replace( '#', '' );
+	const destination = wpbc_bfb_form_appearance__sanitize_color( target, '#000000' ).replace( '#', '' );
+	const channels = [];
+	if ( ! source ) {
+		return '';
+	}
+	if ( source.length === 3 ) {
+		source = source.replace( /./g, function (value) { return value + value; } );
+	}
+	for ( let index = 0; index < 3; index++ ) {
+		const source_channel = parseInt( source.substr( index * 2, 2 ), 16 );
+		const target_channel = parseInt( destination.substr( index * 2, 2 ), 16 );
+		channels.push( Math.round( source_channel + ( ( target_channel - source_channel ) * amount ) ) );
+	}
+	return '#' + channels.map( function (channel) { return ( '0' + channel.toString( 16 ) ).slice( -2 ); } ).join( '' );
+}
+
+function wpbc_bfb_global_form_style__get_luminance(color) {
+	let hex = wpbc_bfb_global_form_style__sanitize_accent_color( color ).replace( '#', '' );
+	if ( ! hex ) {
+		return 0;
+	}
+	if ( hex.length === 3 ) {
+		hex = hex.replace( /./g, function (value) { return value + value; } );
+	}
+	const channels = [ 0, 1, 2 ].map( function (index) {
+		const channel = parseInt( hex.substr( index * 2, 2 ), 16 ) / 255;
+		return channel <= 0.03928 ? channel / 12.92 : Math.pow( ( channel + 0.055 ) / 1.055, 2.4 );
+	} );
+	return ( 0.2126 * channels[0] ) + ( 0.7152 * channels[1] ) + ( 0.0722 * channels[2] );
+}
+
+/**
+ * Apply shared accent variables without masking explicit Custom button controls.
+ *
+ * @param {Object}  css_vars                      Resolved base style variables.
+ * @param {Object}  options                       Current global style options.
+ * @param {boolean} preserve_custom_button_colors Whether Custom button variables remain authoritative.
+ * @return {Object} Resolved variables with the optional accent overlay.
+ */
+function wpbc_bfb_global_form_style__apply_accent(css_vars, options, preserve_custom_button_colors) {
+	if ( String( options.booking_form_accent_enabled || 'Off' ) !== 'On' ) {
+		return css_vars;
+	}
+	const accent = wpbc_bfb_global_form_style__sanitize_accent_color( options.booking_form_accent_color );
+	if ( ! accent ) {
+		return css_vars;
+	}
+	const luminance = wpbc_bfb_global_form_style__get_luminance( accent );
+	const contrast = luminance > 0.18 ? '#000000' : '#ffffff';
+	const hover_target = '#ffffff' === contrast ? '#000000' : '#ffffff';
+	const hover = wpbc_bfb_global_form_style__mix_colors( accent, hover_target, 0.10 );
+	const hover_contrast = contrast;
+
+	const accent_overlay = {
+		'--wpbc_form-accent-color': accent,
+		'--wpbc_form-accent-hover-color': hover,
+		'--wpbc_form-accent-contrast-color': contrast,
+		'--wpbc_form-field-focus-border-color': accent,
+		'--wpbc_form-field-focus-shadow-color': accent,
+		'--wpbc_form-choice-checked-border-color': accent,
+		'--wpbc_form-choice-checked-color': accent,
+		'--wpbc_form-choice-focus-color': accent,
+		'--wpbc_form-button-background-color': accent,
+		'--wpbc_form-button-background-color-alt': accent,
+		'--wpbc_form-button-border-color': accent,
+		'--wpbc_form-button-text-color': contrast,
+		'--wpbc_form-button-text-color-alt': contrast,
+		'--wpbc_form-button-hover-background-color': hover,
+		'--wpbc_form-button-hover-border-color': hover,
+		'--wpbc_form-button-hover-text-color': hover_contrast,
+		'--wpbc_form-button-light-hover-border-color': accent,
+		'--wpbc_form-button-primary-hover-border-color': hover,
+		'--wpbc_form-page-break-color': accent
+	};
+
+	if ( preserve_custom_button_colors ) {
+		[
+			'--wpbc_form-button-background-color',
+			'--wpbc_form-button-background-color-alt',
+			'--wpbc_form-button-border-color',
+			'--wpbc_form-button-text-color',
+			'--wpbc_form-button-text-color-alt',
+			'--wpbc_form-button-hover-background-color',
+			'--wpbc_form-button-hover-border-color',
+			'--wpbc_form-button-hover-text-color',
+			'--wpbc_form-button-light-hover-border-color',
+			'--wpbc_form-button-primary-hover-border-color'
+		].forEach( function (css_var_name) {
+			delete accent_overlay[css_var_name];
+		} );
+	}
+
+	return Object.assign( {}, css_vars, accent_overlay );
+}
+
 function wpbc_bfb_global_form_style__resolve_css_vars(options) {
 	options = options && typeof options === 'object' ? options : {};
 	const style = String( options.booking_form_style || 'light_bordered' );
@@ -805,10 +934,10 @@ function wpbc_bfb_global_form_style__resolve_css_vars(options) {
 	const defaults = wpbc_bfb_global_form_style__get_custom_defaults();
 
 	if ( 'custom' !== style ) {
-		return preset.css_vars && typeof preset.css_vars === 'object' ? Object.assign( {}, preset.css_vars ) : {};
+		return wpbc_bfb_global_form_style__apply_accent( preset.css_vars && typeof preset.css_vars === 'object' ? Object.assign( {}, preset.css_vars ) : {}, options );
 	}
 
-	return {
+	const css_vars = {
 		'--wpbc-bfb-form-background'          : wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_background_color, defaults.booking_form_custom_background_color ),
 		'--wpbc-bfb-form-border-color'        : wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_border_color, defaults.booking_form_custom_border_color ),
 		'--wpbc-bfb-form-border-width'        : wpbc_bfb_form_appearance__sanitize_length( options.booking_form_custom_border_width, defaults.booking_form_custom_border_width ),
@@ -826,6 +955,9 @@ function wpbc_bfb_global_form_style__resolve_css_vars(options) {
 		'--wpbc_form-field-focus-border-color': '#066aab',
 		'--wpbc_form-field-focus-shadow-color': '#066aab',
 		'--wpbc_form-field-disabled-color'    : 'rgba(0, 0, 0, 0.2)',
+		'--wpbc_form-button-border-radius'    : wpbc_bfb_form_appearance__sanitize_length( options.booking_form_custom_button_border_radius, defaults.booking_form_custom_button_border_radius ),
+		'--wpbc_form-button-border-style'     : 'solid',
+		'--wpbc_form-button-border-size'      : wpbc_bfb_form_appearance__sanitize_length( options.booking_form_custom_button_border_width, defaults.booking_form_custom_button_border_width ),
 		'--wpbc_form-button-background-color' : wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_button_background_color, defaults.booking_form_custom_button_background_color ),
 		'--wpbc_form-button-background-color-alt': wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_button_background_color, defaults.booking_form_custom_button_background_color ),
 		'--wpbc_form-button-border-color'     : wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_button_border_color, defaults.booking_form_custom_button_border_color ),
@@ -839,6 +971,7 @@ function wpbc_bfb_global_form_style__resolve_css_vars(options) {
 		'--wpbc_form-choice-focus-color'      : '#066aab',
 		'--wpbc_form-button-light-background-color': wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_secondary_button_background_color, defaults.booking_form_custom_secondary_button_background_color ),
 		'--wpbc_form-button-light-border-color': wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_secondary_button_border_color, defaults.booking_form_custom_secondary_button_border_color ),
+		'--wpbc_form-button-light-border-size': wpbc_bfb_form_appearance__sanitize_length( options.booking_form_custom_button_border_width, defaults.booking_form_custom_button_border_width ),
 		'--wpbc_form-button-light-text-color' : wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_secondary_button_text_color, defaults.booking_form_custom_secondary_button_text_color ),
 		'--wpbc_form-button-light-box-shadow' : '0 2px 10px 2px #ffffff54',
 		'--wpbc_form-button-light-hover-background-color': wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_secondary_button_hover_background_color, defaults.booking_form_custom_secondary_button_hover_background_color ),
@@ -848,6 +981,8 @@ function wpbc_bfb_global_form_style__resolve_css_vars(options) {
 		'--wpbc_form-button-primary-hover-border-color': wpbc_bfb_form_appearance__sanitize_color( options.booking_form_custom_button_hover_border_color, defaults.booking_form_custom_button_hover_border_color ),
 		'--wpbc_form-page-break-color'        : '#066aab'
 	};
+
+	return wpbc_bfb_global_form_style__apply_accent( css_vars, options, true );
 }
 
 function wpbc_bfb_global_form_style__get_css_var_keys(options) {
@@ -882,6 +1017,7 @@ function wpbc_bfb_global_form_style__get_css_var_keys(options) {
 
 function wpbc_bfb_global_form_style__sync_controls(options) {
 	const is_custom = 'custom' === String( options && options.booking_form_style ? options.booking_form_style : '' );
+	const accent_enabled = 'On' === String( options && options.booking_form_accent_enabled ? options.booking_form_accent_enabled : 'Off' );
 	const reset_row = document.querySelector( '[data-wpbc-bfb-custom-appearance-reset-row]' );
 
 	wpbc_bfb_form_appearance__set_radio_control( 'booking_form_style', options.booking_form_style || 'light_bordered' );
@@ -890,6 +1026,12 @@ function wpbc_bfb_global_form_style__sync_controls(options) {
 		row.hidden = ! is_custom;
 		row.setAttribute( 'aria-hidden', is_custom ? 'false' : 'true' );
 		row.classList.toggle( 'is-hidden', ! is_custom );
+	} );
+
+	document.querySelectorAll( '.wpbc_bfb__form_setting_global_accent_dependent' ).forEach( function (row) {
+		row.hidden = ! accent_enabled;
+		row.setAttribute( 'aria-hidden', accent_enabled ? 'false' : 'true' );
+		row.classList.toggle( 'is-hidden', ! accent_enabled );
 	} );
 
 	if ( reset_row ) {
@@ -905,7 +1047,10 @@ function wpbc_bfb_global_form_style__apply(value, ctx) {
 	const presets = wpbc_bfb_global_form_style__get_presets();
 	const preset = presets[style] || presets.light_bordered || {};
 	const css_vars = wpbc_bfb_global_form_style__resolve_css_vars( options );
-	const root = ( ctx && ctx.canvas ) || document.getElementById( 'wpbc_bfb__theme_scope' ) || document;
+	// Form Style is global. Always start at the complete Builder theme scope so
+	// inline Custom tokens on an outer wrapper cannot leak into a preset when a
+	// field-level update provides only the inner canvas in ctx.canvas.
+	const root = document.getElementById( 'wpbc_bfb__theme_scope' ) || ( ctx && ctx.canvas ) || document;
 	const theme_classes = [];
 	const css_var_keys = wpbc_bfb_global_form_style__get_css_var_keys( options );
 
@@ -954,6 +1099,8 @@ function wpbc_bfb_global_form_style__apply(value, ctx) {
 
 [
 	'booking_form_style',
+	'booking_form_accent_enabled',
+	'booking_form_accent_color',
 	'booking_form_custom_background_color',
 	'booking_form_custom_border_color',
 	'booking_form_custom_border_width',
@@ -975,7 +1122,9 @@ function wpbc_bfb_global_form_style__apply(value, ctx) {
 	'booking_form_custom_secondary_button_border_color',
 	'booking_form_custom_secondary_button_hover_background_color',
 	'booking_form_custom_secondary_button_hover_text_color',
-	'booking_form_custom_secondary_button_hover_border_color'
+	'booking_form_custom_secondary_button_hover_border_color',
+	'booking_form_custom_button_border_width',
+	'booking_form_custom_button_border_radius'
 ].forEach( function (key) {
 	WPBC_BFB_Settings_Effects.register( key, function (value, ctx) {
 		wpbc_bfb_global_form_style__apply( value, Object.assign( {}, ctx || {}, { key: key } ) );
@@ -1059,7 +1208,7 @@ WPBC_BFB_Settings_Effects.register( 'booking_form_layout_width', function (value
 	const v = String( value == null ? '' : value ).trim();
 
 	// allow only "number + unit".
-	if ( v && ! /^-?\d+(?:\.\d+)?(?:%|px|rem|em|vw|vh)$/.test( v ) ) {
+	if ( v && ! /^\d+(?:\.\d+)?(?:%|px|rem|em|vw|vh)$/.test( v ) ) {
 		return;
 	}
 

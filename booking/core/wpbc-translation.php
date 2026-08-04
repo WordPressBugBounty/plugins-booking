@@ -410,9 +410,9 @@ function wpbc_filter_load_custom_plugin_translation_file( $mofile, $domain ) {
 /**
  * Translate content. Check for language sections -- [lang=xx_XX] shortcode.                                            // FixIn: 10.0.0.46.
  *
- * @param $content_orig
+ * @param mixed $content_orig Content containing optional language sections.
  *
- * @return string
+ * @return string Translated content, or an empty string for unsupported values.
  */
 function wpbc_lang( $content_orig ) {
 	return wpdev_check_for_active_language( $content_orig );
@@ -422,21 +422,29 @@ function wpbc_lang( $content_orig ) {
 /**
  * Check plugin text for active language section -- [lang=xx_XX] shortcode
  *
- * @param string $content_orig
- * @return string
+ * @param mixed $content_orig Content containing optional language sections.
+ * @return string Translated content, or an empty string for unsupported values.
  * Usage:
  * $text = wpbc_lang(  $text );
  */
 function wpdev_check_for_active_language( $content_orig ) {  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 
-    $content = $content_orig;
+	if ( is_string( $content_orig ) ) {
+		$content = $content_orig;
+	} elseif ( is_scalar( $content_orig ) ) {
+		$content = (string) $content_orig;
+	} elseif ( is_object( $content_orig ) && method_exists( $content_orig, '__toString' ) ) {
+		$content = (string) $content_orig;
+	} else {
+		return '';
+	}
 
-    $languages = array();
-    $content_ex = explode('[lang',$content);
+	$languages  = array();
+	$content_ex = explode( '[lang', $content );
 
 	foreach ( $content_ex as $value ) {
 
-		if ( '=' == substr( $value, 0, 1 ) ) {
+		if ( '=' === substr( $value, 0, 1 ) ) {
 
 			$pos_s             = strpos( $value, '=' );
 			$pos_f             = strpos( $value, ']' );
@@ -449,7 +457,7 @@ function wpdev_check_for_active_language( $content_orig ) {  // phpcs:ignore Wor
 		}
 	}
 
-    $locale = wpbc_get_maybe_reloaded_booking_locale(); 						// $locale = 'fr_FR';
+	$locale = wpbc_get_maybe_reloaded_booking_locale(); // $locale = 'fr_FR'.
 
 	if ( isset( $languages[ $locale ] ) ) {
 		$return_text = $languages[ $locale ];

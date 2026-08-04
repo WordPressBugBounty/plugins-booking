@@ -90,6 +90,7 @@ class WPBC_Add_Booking_Modal {
 						<div class="modal-footer">
 							<div class="wpbc_modal__add_booking__footer_time_override" data-wpbc-add-booking-time-override-footer="1"></div>
 							<?php self::print_modal_send_emails_toggle(); ?>
+							<?php self::print_add_appointment_entry(); ?>
 							<a href="javascript:void(0)" id="wpbc_modal__add_booking__button_send" class="button button-primary" onclick="wpbc_boo_listing__submit__add_booking_modal();">
 								<?php esc_html_e( 'Add booking', 'booking' ); ?>
 							</a>
@@ -101,6 +102,36 @@ class WPBC_Add_Booking_Modal {
 				</div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 		</span>
+		<?php
+	}
+
+
+	/**
+	 * Print a feature-gated route to the Service-first administrator workflow.
+	 *
+	 * The standard Add Booking form remains the popup's primary action. This
+	 * secondary route is hidden by the modal client whenever an existing booking
+	 * is being edited.
+	 *
+	 * @return void
+	 */
+	private static function print_add_appointment_entry() {
+		if (
+			! function_exists( 'wpbc_is_11_5_features_enabled' )
+			|| ! wpbc_is_11_5_features_enabled()
+			|| ! function_exists( 'wpbc_add_appointment_page_get_url' )
+			|| ! WPBC_Add_Booking_Component::current_user_can_add_booking()
+		) {
+			return;
+		}
+		?>
+		<a href="<?php echo esc_url( wpbc_add_appointment_page_get_url() ); ?>"
+		   class="button button-secondary wpbc_modal__add_booking__appointment_entry"
+		   data-wpbc-add-appointment-entry="1"
+		   title="<?php esc_attr_e( 'Choose a Service and Provider before creating the booking', 'booking' ); ?>">
+			<i class="menu_icon icon-1x wpbc-bi-calendar-plus" aria-hidden="true"></i>
+			<?php esc_html_e( 'Add Appointment', 'booking' ); ?>
+		</a>
 		<?php
 	}
 

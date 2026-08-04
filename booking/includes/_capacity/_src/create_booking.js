@@ -161,20 +161,16 @@ console.groupEnd();
 									var ajx_after_booking_message = response_data[ 'ajx_data' ][ 'ajx_after_action_message' ].replace( /\n/g, "<br />" );
 
 									console.log( ajx_after_booking_message );
-
-									/**
-									 * // Show Message
-										var ajx_after_action_message_id = wpbc_front_end__show_message( ajx_after_booking_message,
+									wpbc_front_end__show_message( ajx_after_booking_message,
 																	{
 																		'type' : ('undefined' !== typeof (response_data[ 'ajx_data' ][ 'ajx_after_action_message_status' ]))
-																				? response_data[ 'ajx_data' ][ 'ajx_after_action_message_status' ] : 'info',
-																		'delay'    : 10000,
+																				? response_data[ 'ajx_data' ][ 'ajx_after_action_message_status' ] : 'warning',
+																		'delay'    : 0,
 																		'show_here': {
-																						'jq_node': jq_node,
-																						'where'  : 'after'
-																					 }
+																					'jq_node': jq_node,
+																					'where'  : 'after'
+																				 }
 																	} );
-									 */
 								}
 								// </editor-fold>
 						}

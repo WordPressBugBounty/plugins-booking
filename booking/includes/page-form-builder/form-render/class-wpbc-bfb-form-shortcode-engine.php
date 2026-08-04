@@ -256,7 +256,7 @@ class WPBC_BFB_FormShortcodeEngine {
 		// Legacy class:... + named class="..."
 		$class_legacy = $this->collect_classes( $options );
 		$class_named  = isset( $named_raw['class'] ) ? trim( $named_raw['class'] ) : '';
-		$btn_classes  = trim( 'wpbc_button_light ' . $class_legacy . ' ' . $class_named );
+		$btn_classes  = trim( 'wpbc_button wpbc_button_primary ' . $class_legacy . ' ' . $class_named );
 		$atts         .= ' class="' . esc_attr( $btn_classes ) . '"';
 
 		// Add safe named attributes (title, aria-*, data-*, style if allowed, etc.)

@@ -225,7 +225,7 @@ class WPBC_Page_Resource_Capacity extends WPBC_Page_Structure {
 				'disabled'                           => false,
 				'hided'                              => false,
 				'subtabs'                            => array(),
-				'folder_style'                       => 'order:15;',
+				'folder_style'                       => 'order:115;',
 			),
 		);
 	}

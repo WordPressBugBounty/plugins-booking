@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 11.4.3
+Version: 11.5
 License: GPLv2 or later
 */
 
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '11.4.3' );
+	define( 'WP_BK_VERSION_NUM', '11.5' );
 }
 if ( ! defined( 'WP_BK_PRO_BFB_ONLY_VERSION' ) ) {
 	define( 'WP_BK_PRO_BFB_ONLY_VERSION', '11.4' );                                                                    // First Pro version that no longer loads legacy Booking Form settings pages.
@@ -43,6 +43,31 @@ if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
 	define( 'WP_BK_MINOR_UPDATE', true );
 }
 
+/**
+ * Default Form Style accent color for new Booking Calendar installations.
+ *
+ * Existing saved settings are intentionally preserved when this value changes.
+ *
+ * @since 11.5.0
+ * @var string
+ */
+if ( ! defined( 'WPBC_DEFAULT_FORM_ACCENT_COLOR' ) ) {
+	define( 'WPBC_DEFAULT_FORM_ACCENT_COLOR', '#4765d5' );  //  '#4765d5' -> default blue  '#465160'; -> black	 // '#3858e9'; -> light blue   // '#3849e8' -> light Woo.
+}
+
+/**
+ * Master release gate for unfinished Booking Calendar 11.5 functionality.
+ *
+ * Keep this disabled in 11.4.x maintenance releases. Define it as true before
+ * Booking Calendar loads when testing 11.5, and change the default only when
+ * Services and the Appointment flow are release-ready.
+ */
+if ( ! defined( 'WPBC_ENABLE_11_5_FEATURES' ) ) {
+	define( 'WPBC_ENABLE_11_5_FEATURES', true );
+	if ( WPBC_ENABLE_11_5_FEATURES ) {
+		define( 'WPBC_ENABLE_APPOINTMENT_TESTS', false );
+	}
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // PRIMARY URL CONSTANTS

@@ -560,9 +560,13 @@
 		justify-content: flex-end;
 	}
 	/* -- Notes and Sys Information -- */
+	.wpbc_row_wrap.max_height_a .wpbc_a_row__appointment,
 	.wpbc_row_wrap.max_height_a .wpbc_a_row__notes,
 	.wpbc_row_wrap.max_height_a .wpbc_a_row__system {
 		display:none;
+	}
+	.wpbc_a_row__appointment .wpbc_col_appointment_details {
+		margin: 5px 10px;
 	}
 	.wpbc_a_row__system .wpbc_col_sys_info{
 		margin-left:10px;
@@ -978,4 +982,22 @@
 /* ================================================================================================================== */
 .wpbc_ui_toolbar.wpbc_ui_toolbar__bo_listing {
 	margin: var(--wpbc_ui_horis_top_nav__margin);
+}
+
+/* 11.5 Appointment snapshot details shown only in feature-gated row markup. */
+.wpbc_appointment_booking_details {
+	border: 1px dashed #777;
+	border-radius: 4px;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 4px 18px;
+	line-height: 1.6;
+	padding: 8px 10px;
+	margin: 0 20px 0 15px;
+}
+.wpbc_appointment_booking_details > strong {
+	flex: 1 1 100%;
+}
+.wpbc_appointment_booking_details > span {
+	overflow-wrap: anywhere;
 }

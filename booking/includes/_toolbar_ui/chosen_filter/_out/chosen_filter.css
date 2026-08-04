@@ -1,0 +1,26 @@
+.wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_ui_el__choosen_reset_button {
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-item-align: stretch;
+  align-self: stretch;
+  background: 0 0;
+  border: 0;
+  border-left: 0 solid #bebebe;
+  box-shadow: none;
+  box-sizing: content-box;
+  color: inherit;
+  cursor: pointer;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0;
+  min-height: 0;
+  padding: 0 9px
+}
+.wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_ui_el__choosen_reset_button:focus-visible {
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px #fff,0 0 0 3px var(--wpbc_admin-theme-color,#2271b1);
+  outline: transparent solid 2px;
+  outline-offset: 0
+}

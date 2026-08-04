@@ -135,6 +135,30 @@ function wpbc_frontend_messages__get_registry() {
 			'description' => __( 'Short progress text shown while the booking is being submitted.', 'booking' ),
 			'group' => 'submission', 'severity' => 'info', 'optional' => false, 'placeholders' => array(),
 		),
+		'message_resource_selector_summary_label' => array(
+			'default' => __( 'Booking Resource', 'booking' ),
+			'title' => __( 'Selected Booking Resource label', 'booking' ),
+			'description' => __( 'Shown above the selected Booking Resource title on the booking form step.', 'booking' ),
+			'group' => 'booking_summaries', 'severity' => 'info', 'optional' => false, 'placeholders' => array(),
+		),
+		'message_resource_selector_start_over' => array(
+			'default' => __( 'Start over', 'booking' ),
+			'title' => __( 'Booking Resource Start over button', 'booking' ),
+			'description' => __( 'Button text that returns a visitor to Booking Resource selection.', 'booking' ),
+			'group' => 'booking_summaries', 'severity' => 'info', 'optional' => false, 'placeholders' => array(),
+		),
+		'message_appointment_summary_label' => array(
+			'default' => __( 'Your appointment', 'booking' ),
+			'title' => __( 'Appointment summary label', 'booking' ),
+			'description' => __( 'Shown above the selected Service title on the Appointment booking form step.', 'booking' ),
+			'group' => 'booking_summaries', 'severity' => 'info', 'optional' => false, 'placeholders' => array(),
+		),
+		'message_appointment_start_over' => array(
+			'default' => __( 'Start over', 'booking' ),
+			'title' => __( 'Appointment Start over button', 'booking' ),
+			'description' => __( 'Button text that returns a visitor to Service selection.', 'booking' ),
+			'group' => 'booking_summaries', 'severity' => 'info', 'optional' => false, 'placeholders' => array(),
+		),
 		'message_captcha_incorrect' => array(
 			'default' => __( 'The code you entered is incorrect', 'booking' ),
 			'title' => __( 'Incorrect CAPTCHA', 'booking' ),

@@ -46,6 +46,18 @@ function wpbc_shortcode_config__navigation_panel(){
 				<span><?php esc_html_e( 'Availability Calendar / Days Not Selectable', 'booking' ); ?></span>
 			</a>
 		</div>
+		<?php if ( wpbc_is_11_5_features_enabled() ) : ?>
+			<div id="wpbc_shortcode_config__nav_tab__booking_appointment" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
+				<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_booking_appointment', 'booking_appointment' );" href="javascript:void(0);">
+					<span><?php esc_html_e( 'Appointment Booking', 'booking' ); ?></span>
+				</a>
+			</div>
+			<div id="wpbc_shortcode_config__nav_tab__booking_resource_selector" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
+				<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_booking_resource_selector', 'booking_resource_selector' );" href="javascript:void(0);">
+					<span><?php esc_html_e( 'Booking Resource Selector', 'booking' ); ?></span>
+				</a>
+			</div>
+		<?php endif; ?>
 		<div id="wpbc_shortcode_config__nav_tab__bookingselect" class="wpbc_settings_navigation_item wpbc_dismiss__booking_select <?php  echo ( ! class_exists( 'wpdev_bk_personal' ) ) ? ' wpbc_settings_navigation_item_disabled ' : '';  ?>">
 			<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_bookingselect', 'bookingselect' );" href="javascript:void(0);">
 				<span><?php esc_html_e( 'Resource Selection', 'booking' ); ?></span><?php
@@ -117,7 +129,7 @@ function wpbc_shortcode_config__content__booking() {
 
 	$shortcode_name = 'booking';
 
-	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>"><?php
+	?><div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?> wpbc_sc_container__shortcode_is_active"><?php
 
 		wpbc_shortcode_config__booking__top_tabs();
 
@@ -1806,3 +1818,623 @@ function wpbc_shortcode_config__content__booking() {
 
 	}
 
+
+// =====================================================================================================================
+//  Shared fields for modern workflow shortcodes.
+// =====================================================================================================================
+
+/**
+ * Return Booking Resources in the established shortcode-popup option format.
+ *
+ * Personal and higher editions already expose the hierarchy-aware resource
+ * list used by the legacy shortcode controls. The fallback keeps the default
+ * resource selectable in editions where that list is intentionally empty.
+ *
+ * @param bool   $include_empty Whether to prepend an empty automatic choice.
+ * @param string $empty_title   Label for the empty choice.
+ *
+ * @return array<int|string,array<string,mixed>|string> Booking Resource options.
+ */
+function wpbc_shortcode_config__workflow_resource_options( $include_empty = false, $empty_title = '' ) {
+	$options = array();
+	if ( $include_empty ) {
+		$options[''] = array(
+			'title' => $empty_title ? $empty_title : __( 'No preselection', 'booking' ),
+			'attr'  => array( 'class' => 'wpbc_single_resource' ),
+		);
+	}
+
+	$resource_options = function_exists( 'wpbc_get_all_booking_resources_list' )
+		? (array) wpbc_get_all_booking_resources_list()
+		: array();
+	if ( empty( $resource_options ) && function_exists( 'wpbc_booking_resource_selector_get_catalog' ) ) {
+		foreach ( (array) wpbc_booking_resource_selector_get_catalog( array() ) as $resource_id => $resource ) {
+			$resource_options[ absint( $resource_id ) ] = array(
+				'title' => ! empty( $resource['title'] ) ? $resource['title'] : sprintf( __( 'Booking Resource #%d', 'booking' ), absint( $resource_id ) ),
+				'attr'  => array( 'class' => 'wpbc_single_resource' ),
+			);
+		}
+	}
+	if ( empty( $resource_options ) && function_exists( 'wpbc_appointment_services_get_provider_options' ) ) {
+		foreach ( (array) wpbc_appointment_services_get_provider_options() as $resource_id => $resource_title ) {
+			$resource_options[ absint( $resource_id ) ] = array(
+				'title' => $resource_title,
+				'attr'  => array( 'class' => 'wpbc_single_resource' ),
+			);
+		}
+	}
+
+	return $options + $resource_options;
+}
+
+/**
+ * Return the automatic, standard, and published Booking Form choices.
+ *
+ * The empty option is important for both workflow shortcodes: it preserves
+ * their automatic Service/Resource form resolution instead of silently
+ * forcing the Standard form merely by opening the popup.
+ *
+ * @return array<string,array<string,mixed>> Booking Form options keyed by public form slug.
+ */
+function wpbc_shortcode_config__workflow_form_options() {
+	$options = array(
+		''         => array( 'title' => __( 'Automatic (Service or Resource default)', 'booking' ), 'attr' => array() ),
+		'standard' => array( 'title' => __( 'Standard', 'booking' ), 'attr' => array() ),
+	);
+
+	if ( ! class_exists( 'WPBC_FE_Custom_Form_Helper' ) ) {
+		return $options;
+	}
+
+	$is_allowed = apply_bk_filter( 'multiuser_is_user_can_be_here', true, 'only_super_admin' );
+	if ( ! $is_allowed && 'On' !== get_bk_option( 'booking_is_custom_forms_for_regular_users' ) ) {
+		return $options;
+	}
+
+	$owner_user_id = WPBC_FE_Custom_Form_Helper::wpbc_mu__get_current__owner_user_id();
+	$custom_forms  = WPBC_FE_Custom_Form_Helper::get_custom_booking_forms_list(
+		array(
+			'include_standard' => false,
+			'owner_user_id'    => $owner_user_id,
+			'statuses'         => array( 'published' ),
+			'list_mode'        => 'auto',
+		)
+	);
+	if ( empty( $custom_forms ) ) {
+		return $options;
+	}
+
+	$options['wpbc_workflow_forms_start'] = array(
+		'optgroup' => true,
+		'close'    => false,
+		'title'    => '&nbsp;' . __( 'Custom Forms', 'booking' ),
+	);
+	foreach ( $custom_forms as $form_key => $custom_form ) {
+		$form_slug = ! empty( $custom_form['name'] ) ? (string) $custom_form['name'] : (string) $form_key;
+		if ( '' === $form_slug ) {
+			continue;
+		}
+		$options[ $form_slug ] = array(
+			'title' => ! empty( $custom_form['title'] ) ? wpbc_lang( $custom_form['title'] ) : wpbc_lang( $form_slug ),
+			'attr'  => array(),
+		);
+	}
+	$options['wpbc_workflow_forms_end'] = array( 'optgroup' => true, 'close' => true );
+
+	return $options;
+}
+
+/**
+ * Render one modern workflow shortcode parameter using the established settings-row controls.
+ *
+ * Data attributes on the control provide one serializer contract. Display-text
+ * defaults are placed in the input so clearing a value intentionally generates
+ * an empty attribute instead of silently restoring the frontend default.
+ *
+ * @param string              $shortcode_name Shortcode name without brackets.
+ * @param string              $parameter_name Public shortcode parameter name.
+ * @param array<string,mixed> $field          Field label, description, type, default, and validation metadata.
+ *
+ * @return void
+ */
+function wpbc_shortcode_config__workflow_field( $shortcode_name, $parameter_name, $field ) {
+	$field = wp_parse_args(
+		$field,
+		array(
+			'title'       => $parameter_name,
+			'description' => '',
+			'type'        => 'text',
+			'value_type'  => 'text',
+			'default'     => '',
+			'placeholder' => '',
+			'options'     => array(),
+			'attr'        => array(),
+			'css'         => 'width:100%;max-width:32em;',
+			'class'       => '',
+		)
+	);
+
+	$field_id   = $shortcode_name . '_wpbc_' . $parameter_name;
+	$field_attr = array_merge(
+		(array) $field['attr'],
+		array(
+			'data-wpbc-shortcode-parameter'  => $parameter_name,
+			'data-wpbc-shortcode-default'    => is_bool( $field['default'] ) ? ( $field['default'] ? 'on' : 'off' ) : (string) $field['default'],
+			'data-wpbc-shortcode-value-type' => $field['value_type'],
+		)
+	);
+	$description = sprintf(
+		/* translators: %s: Shortcode parameter name. */
+		__( 'Shortcode parameter: %s', 'booking' ),
+		'<code>' . esc_html( $parameter_name ) . '</code>'
+	);
+	if ( '' !== $field['description'] ) {
+		$description .= '<br>' . $field['description'];
+	}
+
+	$common_args = array(
+		'title'           => $field['title'],
+		'description'     => $description,
+		'description_tag' => 'span',
+		'group'           => $shortcode_name,
+		'tr_class'        => $shortcode_name . '_standard_section',
+		'class'           => trim( 'wpbc_shortcode_config__workflow_parameter ' . $field['class'] ),
+		'css'             => $field['css'],
+		'only_field'      => false,
+		'attr'            => $field_attr,
+	);
+
+	if ( 'checkbox' === $field['type'] ) {
+		WPBC_Settings_API::field_checkbox_row_static(
+			$field_id,
+			array_merge(
+				$common_args,
+				array(
+					'label' => $field['title'],
+					'value' => $field['default'] ? 'On' : 'Off',
+					'css'   => '',
+				)
+			)
+		);
+		return;
+	}
+
+	if ( in_array( $field['type'], array( 'select', 'multiselect' ), true ) ) {
+		WPBC_Settings_API::field_select_row_static(
+			$field_id,
+			array_merge(
+				$common_args,
+				array(
+					'value'    => (string) $field['default'],
+					'options'  => (array) $field['options'],
+					'multiple' => 'multiselect' === $field['type'],
+				)
+			)
+		);
+		return;
+	}
+
+	WPBC_Settings_API::field_text_row_static(
+		$field_id,
+		array_merge(
+			$common_args,
+			array(
+				'type'        => 'number' === $field['type'] ? 'number' : 'text',
+				'value'       => (string) $field['default'],
+				'placeholder' => $field['placeholder'],
+			)
+		)
+	);
+}
+
+/**
+ * Render top tabs for one modern workflow shortcode configuration.
+ *
+ * @param string                                  $shortcode_name Shortcode name without brackets.
+ * @param array<string,array<string,string|bool>> $tabs           Tab definitions keyed by section ID.
+ *
+ * @return void
+ */
+function wpbc_shortcode_config__workflow_tabs( $shortcode_name, $tabs ) {
+	wpbc_bs_toolbar_tabs_html_container_start();
+
+	$tab_script = "jQuery(this).parents( '.wpbc_sc_container__shortcode' ).find( '.nav-tab' ).removeClass('nav-tab-active');"
+		. "jQuery(this).addClass('nav-tab-active');"
+		. "jQuery('.nav-tab i.icon-white').removeClass('icon-white');"
+		. "jQuery('.nav-tab-active i').addClass('icon-white');"
+		. "jQuery('.wpbc_sc_container__shortcode_" . $shortcode_name . " .wpbc_sc_container__shortcode_section').hide();";
+
+	foreach ( $tabs as $section_id => $tab ) {
+		wpbc_bs_display_tab(
+			array(
+				'title'     => $tab['title'],
+				'onclick'   => $tab_script . "jQuery('.wpbc_sc_container__shortcode_" . $shortcode_name . ' .wpbc_sc_container__shortcode_section__' . $section_id . "').show();",
+				'font_icon' => $tab['icon'],
+				'default'   => ! empty( $tab['default'] ),
+			)
+		);
+	}
+
+	wpbc_bs_toolbar_tabs_html_container_end();
+}
+
+/**
+ * Render the standard previous/next controls used by shortcode popup sections.
+ *
+ * @return void
+ */
+function wpbc_shortcode_config__workflow_pager() {
+	?>
+	<div class="wpbc_shortcode_config_content_toolbar__next_prior">
+		<a href="javascript:void(0)" onclick="javascript:wpbc_shortcode_config_content_toolbar__next_prior(this,'prior');" class="button">
+			<span class="in-button-text">&lsaquo;</span>
+		</a>
+		<a href="javascript:void(0)" onclick="javascript:wpbc_shortcode_config_content_toolbar__next_prior(this,'next');" class="button">
+			<span class="in-button-text">&rsaquo;</span>
+		</a>
+	</div>
+	<?php
+}
+
+/**
+ * Render a complete parameter reference including compatibility-only aliases.
+ *
+ * @param array<string,string> $parameters Parameter descriptions keyed by accepted shortcode name.
+ *
+ * @return void
+ */
+function wpbc_shortcode_config__workflow_parameter_reference( $parameters ) {
+	?>
+	<table class="widefat striped wpbc_shortcode_config__parameter_reference">
+		<thead>
+			<tr>
+				<th scope="col"><?php esc_html_e( 'Parameter', 'booking' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'Accepted value and behavior', 'booking' ); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ( $parameters as $parameter_name => $description ) : ?>
+				<tr>
+					<th scope="row"><code><?php echo esc_html( $parameter_name ); ?></code></th>
+					<td><?php echo wp_kses_post( $description ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+	<?php
+}
+
+
+// =====================================================================================================================
+//  Shortcode [booking_appointment ...].
+// =====================================================================================================================
+
+/**
+ * Get the popup field contract for the Appointment shortcode.
+ *
+ * The keys intentionally match the public parser-backed attribute names. The
+ * compatibility aliases are reference-only so newly generated shortcodes use
+ * the normalized progress_item_N_* form.
+ *
+ * @return array<string,array<string,mixed>> Appointment parameter fields.
+ */
+function wpbc_shortcode_config__booking_appointment_parameters() {
+	$month_options = array_combine( range( 1, 24 ), range( 1, 24 ) );
+
+	return array(
+		'service_id' => array(
+			'section' => 'general', 'title' => __( 'Preselected Service', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'description' => __( 'Preselect and restrict the flow to one positive Service ID.', 'booking' ), 'attr' => array( 'min' => 1, 'step' => 1 ),
+		),
+		'provider_id' => array(
+			'section' => 'general', 'title' => __( 'Preselected Provider', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_resource_options( true, __( 'No Provider preselected', 'booking' ) ),
+			'description' => __( 'Preselect and restrict the flow to one Provider Booking Resource.', 'booking' ),
+		),
+		'services' => array(
+			'section' => 'general', 'title' => __( 'Allowed Services', 'booking' ), 'value_type' => 'id_list', 'default' => '', 'placeholder' => '12,15',
+			'description' => __( 'Comma-, semicolon-, or whitespace-separated positive Service IDs, retained in the requested order.', 'booking' ),
+		),
+		'providers' => array(
+			'section' => 'general', 'title' => __( 'Allowed Providers', 'booking' ), 'type' => 'multiselect', 'value_type' => 'id_list', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_resource_options(), 'css' => 'width:100%;max-width:32em;height:12em;',
+			'description' => __( 'Select the Provider Booking Resources allowed in this Appointment flow. Leave every option unselected to allow all compatible Providers.', 'booking' ),
+		),
+		'auto_select_provider' => array(
+			'section' => 'general', 'title' => __( 'Auto-select the only Provider', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
+			'description' => __( 'Skip Provider selection only when exactly one compatible Provider exists.', 'booking' ),
+		),
+		'nummonths' => array(
+			'section' => 'calendar', 'title' => __( 'Visible months', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => 1, 'options' => $month_options,
+			'description' => __( 'Number of calendar months from 1 through 24.', 'booking' ),
+		),
+		'startmonth' => array(
+			'section' => 'calendar', 'title' => __( 'Start month', 'booking' ), 'value_type' => 'month', 'default' => '', 'placeholder' => '2026-08',
+			'description' => __( 'Initial calendar month in YYYY-MM, YYYY/MM, or YYYYMM format.', 'booking' ),
+		),
+		'calendar_dates_start' => array(
+			'section' => 'calendar', 'title' => __( 'First calendar date', 'booking' ), 'value_type' => 'date', 'default' => '', 'placeholder' => '2026-08-01',
+			'description' => __( 'Inclusive first displayed date in YYYY-MM-DD format.', 'booking' ),
+		),
+		'calendar_dates_end' => array(
+			'section' => 'calendar', 'title' => __( 'Last calendar date', 'booking' ), 'value_type' => 'date', 'default' => '', 'placeholder' => '2026-12-31',
+			'description' => __( 'Inclusive last displayed date in YYYY-MM-DD format.', 'booking' ),
+		),
+		'options' => array(
+			'section' => 'calendar', 'title' => __( 'Calendar options', 'booking' ), 'value_type' => 'text', 'default' => '',
+			'description' => __( 'Native Booking Calendar options string passed to the resolved calendar and form.', 'booking' ),
+		),
+		'form_type' => array(
+			'section' => 'calendar', 'title' => __( 'Booking Form', 'booking' ), 'type' => 'select', 'value_type' => 'text', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_form_options(),
+			'description' => __( 'Select a published Booking Form override. Automatic uses the Service form and then the Standard form.', 'booking' ),
+		),
+		'allow_past' => array(
+			'section' => 'calendar', 'title' => __( 'Allow past bookings', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
+			'description' => __( 'Permit any visitor to select and submit past dates inside the signed shortcode range.', 'booking' ),
+		),
+		'show_progress' => array(
+			'section' => 'progress', 'title' => __( 'Show progress', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the complete numbered Appointment progress line.', 'booking' ),
+		),
+		'progress_item_1_title' => array(
+			'section' => 'progress', 'title' => __( 'First progress title', 'booking' ), 'default' => __( 'Service', 'booking' ),
+			'description' => __( 'Title below the first progress number. Clear it to hide the title.', 'booking' ),
+		),
+		'progress_item_1_number' => array(
+			'section' => 'progress', 'title' => __( 'First progress number', 'booking' ), 'default' => '1',
+			'description' => __( 'First displayed progress number. Clear it to hide the number.', 'booking' ),
+		),
+		'progress_item_2_title' => array(
+			'section' => 'progress', 'title' => __( 'Second progress title', 'booking' ), 'default' => __( 'Provider', 'booking' ),
+			'description' => __( 'Title below the second progress number. Clear it to hide the title.', 'booking' ),
+		),
+		'progress_item_2_number' => array(
+			'section' => 'progress', 'title' => __( 'Second progress number', 'booking' ), 'default' => '2',
+			'description' => __( 'Second displayed progress number. Clear it to hide the number.', 'booking' ),
+		),
+		'progress_item_3_title' => array(
+			'section' => 'progress', 'title' => __( 'Third progress title', 'booking' ), 'default' => __( 'Date & Details', 'booking' ),
+			'description' => __( 'Title below the third progress number. Clear it to hide the title.', 'booking' ),
+		),
+		'progress_item_3_number' => array(
+			'section' => 'progress', 'title' => __( 'Third progress number', 'booking' ), 'default' => '3',
+			'description' => __( 'Third displayed progress number. Clear it to hide the number.', 'booking' ),
+		),
+		'screen_1_title' => array(
+			'section' => 'text', 'title' => __( 'Service screen title', 'booking' ), 'default' => __( 'Choose a Service', 'booking' ),
+			'description' => __( 'Heading on the Service selection screen. Clear it to hide the heading.', 'booking' ),
+		),
+		'screen_1_description' => array(
+			'section' => 'text', 'title' => __( 'Service screen description', 'booking' ), 'default' => __( 'Select what you would like to book.', 'booking' ),
+			'description' => __( 'Description on the Service selection screen. Clear it to hide the description.', 'booking' ),
+		),
+		'screen_2_title' => array(
+			'section' => 'text', 'title' => __( 'Provider screen title', 'booking' ), 'default' => __( 'Choose a Provider', 'booking' ),
+			'description' => __( 'Heading on the Provider selection screen. Clear it to hide the heading.', 'booking' ),
+		),
+		'screen_2_description' => array(
+			'section' => 'text', 'title' => __( 'Provider screen description', 'booking' ), 'default' => __( 'Select who will provide this Service.', 'booking' ),
+			'description' => __( 'Description on the Provider selection screen. Clear it to hide the description.', 'booking' ),
+		),
+	);
+}
+
+/**
+ * Get every accepted public Appointment shortcode parameter for the reference tab.
+ *
+ * @return array<string,string> Parameter descriptions keyed by public attribute.
+ */
+function wpbc_shortcode_config__booking_appointment_parameter_reference() {
+	$reference = array();
+	foreach ( wpbc_shortcode_config__booking_appointment_parameters() as $parameter_name => $field ) {
+		$reference[ $parameter_name ] = $field['description'];
+	}
+
+	$reference['progress_service_title'] = __( 'Compatibility alias for progress_item_1_title.', 'booking' );
+	$reference['progress_service_number'] = __( 'Compatibility alias for progress_item_1_number.', 'booking' );
+	$reference['progress_provider_title'] = __( 'Compatibility alias for progress_item_2_title.', 'booking' );
+	$reference['progress_provider_number'] = __( 'Compatibility alias for progress_item_2_number.', 'booking' );
+	$reference['progress_details_title'] = __( 'Compatibility alias for progress_item_3_title.', 'booking' );
+	$reference['progress_details_number'] = __( 'Compatibility alias for progress_item_3_number.', 'booking' );
+
+	return $reference;
+}
+
+/**
+ * Render the [booking_appointment] configuration section in the shortcode popup.
+ *
+ * @return void
+ */
+function wpbc_shortcode_config__content__booking_appointment() {
+	$shortcode_name = 'booking_appointment';
+	$tabs = array(
+		'general'   => array( 'title' => __( 'Service & Provider', 'booking' ), 'icon' => 'wpbc-bi-person-check', 'default' => true ),
+		'calendar'  => array( 'title' => __( 'Calendar & Form', 'booking' ), 'icon' => 'wpbc-bi-calendar3', 'default' => false ),
+		'progress'  => array( 'title' => __( 'Progress', 'booking' ), 'icon' => 'wpbc-bi-list-ol', 'default' => false ),
+		'text'      => array( 'title' => __( 'Screen Text', 'booking' ), 'icon' => 'wpbc-bi-card-text', 'default' => false ),
+		'reference' => array( 'title' => __( 'Parameters', 'booking' ), 'icon' => 'wpbc-bi-code-square', 'default' => false ),
+	);
+	$parameters = wpbc_shortcode_config__booking_appointment_parameters();
+	?>
+	<div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>">
+		<?php wpbc_shortcode_config__workflow_tabs( $shortcode_name, $tabs ); ?>
+		<?php foreach ( array_keys( $tabs ) as $section_id ) : ?>
+			<div class="wpbc_sc_container__shortcode_section wpbc_sc_container__shortcode_section__<?php echo esc_attr( $section_id ); ?>">
+				<?php if ( 'reference' === $section_id ) : ?>
+					<?php wpbc_shortcode_config__workflow_parameter_reference( wpbc_shortcode_config__booking_appointment_parameter_reference() ); ?>
+				<?php else : ?>
+					<table class="form-table"><tbody>
+						<?php foreach ( $parameters as $parameter_name => $field ) : ?>
+							<?php if ( $section_id === $field['section'] ) : ?>
+								<?php wpbc_shortcode_config__workflow_field( $shortcode_name, $parameter_name, $field ); ?>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</tbody></table>
+				<?php endif; ?>
+			</div>
+		<?php endforeach; ?>
+		<?php wpbc_shortcode_config__workflow_pager(); ?>
+	</div>
+	<?php
+	wpbc_clear_div();
+}
+
+
+// =====================================================================================================================
+//  Shortcode [booking_resource_selector ...].
+// =====================================================================================================================
+
+/**
+ * Get the popup field contract for the Booking Resource Selector shortcode.
+ *
+ * Compatibility aliases remain visible in the reference tab, while newly
+ * generated shortcodes use the normalized public parameter names.
+ *
+ * @return array<string,array<string,mixed>> Resource Selector parameter fields.
+ */
+function wpbc_shortcode_config__booking_resource_selector_parameters() {
+	$month_options = array_combine( range( 1, 24 ), range( 1, 24 ) );
+
+	return array(
+		'resource_id' => array(
+			'section' => 'general', 'title' => __( 'Preselected Booking Resource', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_resource_options( true, __( 'No Booking Resource preselected', 'booking' ) ),
+			'description' => __( 'Check one Booking Resource by default without skipping the selection stage.', 'booking' ),
+		),
+		'resources' => array(
+			'section' => 'general', 'title' => __( 'Allowed Booking Resources', 'booking' ), 'type' => 'multiselect', 'value_type' => 'id_list', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_resource_options(), 'css' => 'width:100%;max-width:32em;height:12em;',
+			'description' => __( 'Select the Booking Resources shown by this workflow. Leave every option unselected to allow all available Resources.', 'booking' ),
+		),
+		'aggregate' => array(
+			'section' => 'general', 'title' => __( 'Aggregate Booking Resources', 'booking' ), 'type' => 'multiselect', 'value_type' => 'id_list', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_resource_options(), 'css' => 'width:100%;max-width:32em;height:12em;',
+			'description' => __( 'Select Booking Resources whose bookings should also block availability in the selected primary Resource.', 'booking' ),
+		),
+		'auto_select_resource' => array(
+			'section' => 'general', 'title' => __( 'Auto-select Booking Resource', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
+			'description' => __( 'Open the preselected Resource immediately, or skip selection when exactly one Resource is available.', 'booking' ),
+		),
+		'nummonths' => array(
+			'section' => 'calendar', 'title' => __( 'Visible months', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => 1, 'options' => $month_options,
+			'description' => __( 'Number of calendar months from 1 through 24.', 'booking' ),
+		),
+		'startmonth' => array(
+			'section' => 'calendar', 'title' => __( 'Start month', 'booking' ), 'value_type' => 'month', 'default' => '', 'placeholder' => '2026-08',
+			'description' => __( 'Initial calendar month in YYYY-MM, YYYY/MM, or YYYYMM format.', 'booking' ),
+		),
+		'calendar_dates_start' => array(
+			'section' => 'calendar', 'title' => __( 'First calendar date', 'booking' ), 'value_type' => 'date', 'default' => '', 'placeholder' => '2026-08-01',
+			'description' => __( 'Inclusive first displayed date in YYYY-MM-DD format.', 'booking' ),
+		),
+		'calendar_dates_end' => array(
+			'section' => 'calendar', 'title' => __( 'Last calendar date', 'booking' ), 'value_type' => 'date', 'default' => '', 'placeholder' => '2026-12-31',
+			'description' => __( 'Inclusive last displayed date in YYYY-MM-DD format.', 'booking' ),
+		),
+		'selected_dates' => array(
+			'section' => 'calendar', 'title' => __( 'Preselected dates', 'booking' ), 'value_type' => 'text', 'default' => '', 'placeholder' => '01.08.2026',
+			'description' => __( 'Native Booking Calendar preselected-date expression.', 'booking' ),
+		),
+		'options' => array(
+			'section' => 'calendar', 'title' => __( 'Calendar options', 'booking' ), 'value_type' => 'text', 'default' => '',
+			'description' => __( 'Native Booking Calendar options string passed to the selected calendar and form.', 'booking' ),
+		),
+		'form_type' => array(
+			'section' => 'calendar', 'title' => __( 'Booking Form', 'booking' ), 'type' => 'select', 'value_type' => 'text', 'default' => '',
+			'options' => wpbc_shortcode_config__workflow_form_options(),
+			'description' => __( 'Select a published Booking Form override. Automatic uses the Resource form and then the Standard form.', 'booking' ),
+		),
+		'allow_past' => array(
+			'section' => 'calendar', 'title' => __( 'Allow past bookings', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
+			'description' => __( 'Permit any visitor to select and submit past dates inside the signed shortcode range.', 'booking' ),
+		),
+		'show_progress' => array(
+			'section' => 'progress', 'title' => __( 'Show progress', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the complete two-step Resource selection progress line.', 'booking' ),
+		),
+		'progress_item_1_title' => array(
+			'section' => 'progress', 'title' => __( 'First progress title', 'booking' ), 'default' => __( 'Resource', 'booking' ),
+			'description' => __( 'Title below the first progress number. Clear it to hide the title.', 'booking' ),
+		),
+		'progress_item_1_number' => array(
+			'section' => 'progress', 'title' => __( 'First progress number', 'booking' ), 'default' => '1',
+			'description' => __( 'First displayed progress number. Clear it to hide the number.', 'booking' ),
+		),
+		'progress_item_2_title' => array(
+			'section' => 'progress', 'title' => __( 'Second progress title', 'booking' ), 'default' => __( 'Date & Details', 'booking' ),
+			'description' => __( 'Title below the second progress number. Clear it to hide the title.', 'booking' ),
+		),
+		'progress_item_2_number' => array(
+			'section' => 'progress', 'title' => __( 'Second progress number', 'booking' ), 'default' => '2',
+			'description' => __( 'Second displayed progress number. Clear it to hide the number.', 'booking' ),
+		),
+		'screen_1_title' => array(
+			'section' => 'text', 'title' => __( 'Resource screen title', 'booking' ), 'default' => __( 'Choose a Booking Resource', 'booking' ),
+			'description' => __( 'Heading on the Booking Resource selection screen. Clear it to hide the heading.', 'booking' ),
+		),
+		'screen_1_description' => array(
+			'section' => 'text', 'title' => __( 'Resource screen description', 'booking' ), 'default' => __( 'Select what you would like to book.', 'booking' ),
+			'description' => __( 'Description on the Booking Resource selection screen. Clear it to hide the description.', 'booking' ),
+		),
+	);
+}
+
+/**
+ * Get every accepted public Resource Selector shortcode parameter for the reference tab.
+ *
+ * @return array<string,string> Parameter descriptions keyed by public attribute.
+ */
+function wpbc_shortcode_config__booking_resource_selector_parameter_reference() {
+	$parameters = wpbc_shortcode_config__booking_resource_selector_parameters();
+	$reference  = array();
+	foreach ( $parameters as $parameter_name => $field ) {
+		$reference[ $parameter_name ] = $field['description'];
+	}
+
+	$reference['type'] = __( 'Compatibility alias for resources. The resources parameter wins when both are present.', 'booking' );
+	$reference['selected_resource_id'] = __( 'Compatibility fallback that checks one Resource without skipping selection. resource_id wins when both are present.', 'booking' );
+	$reference['selected_type'] = __( 'Compatibility alias for selected_resource_id.', 'booking' );
+	$reference['label'] = __( 'Compatibility alias for screen_1_title.', 'booking' );
+
+	return $reference;
+}
+
+/**
+ * Render the [booking_resource_selector] configuration section in the shortcode popup.
+ *
+ * @return void
+ */
+function wpbc_shortcode_config__content__booking_resource_selector() {
+	$shortcode_name = 'booking_resource_selector';
+	$tabs = array(
+		'general'   => array( 'title' => __( 'Resource Selection', 'booking' ), 'icon' => 'wpbc-bi-card-checklist', 'default' => true ),
+		'calendar'  => array( 'title' => __( 'Calendar & Form', 'booking' ), 'icon' => 'wpbc-bi-calendar3', 'default' => false ),
+		'progress'  => array( 'title' => __( 'Progress', 'booking' ), 'icon' => 'wpbc-bi-list-ol', 'default' => false ),
+		'text'      => array( 'title' => __( 'Screen Text', 'booking' ), 'icon' => 'wpbc-bi-card-text', 'default' => false ),
+		'reference' => array( 'title' => __( 'Parameters', 'booking' ), 'icon' => 'wpbc-bi-code-square', 'default' => false ),
+	);
+	$parameters = wpbc_shortcode_config__booking_resource_selector_parameters();
+	?>
+	<div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>">
+		<?php wpbc_shortcode_config__workflow_tabs( $shortcode_name, $tabs ); ?>
+		<?php foreach ( array_keys( $tabs ) as $section_id ) : ?>
+			<div class="wpbc_sc_container__shortcode_section wpbc_sc_container__shortcode_section__<?php echo esc_attr( $section_id ); ?>">
+				<?php if ( 'reference' === $section_id ) : ?>
+					<?php wpbc_shortcode_config__workflow_parameter_reference( wpbc_shortcode_config__booking_resource_selector_parameter_reference() ); ?>
+				<?php else : ?>
+					<table class="form-table"><tbody>
+						<?php foreach ( $parameters as $parameter_name => $field ) : ?>
+							<?php if ( $section_id === $field['section'] ) : ?>
+								<?php wpbc_shortcode_config__workflow_field( $shortcode_name, $parameter_name, $field ); ?>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</tbody></table>
+				<?php endif; ?>
+			</div>
+		<?php endforeach; ?>
+		<?php wpbc_shortcode_config__workflow_pager(); ?>
+	</div>
+	<?php
+	wpbc_clear_div();
+}

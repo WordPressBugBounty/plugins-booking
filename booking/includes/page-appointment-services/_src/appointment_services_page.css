@@ -1,0 +1,848 @@
+.wpbc_appointment_services_page {
+	padding: 20px;
+}
+.wpbc_appointment_services__filters {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin-bottom: 16px;
+}
+.wpbc_appointment_services__status_filters {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+}
+.wpbc_appointment_services__status_filter {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-left-width: 0;
+	color: #50575e;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	gap: 7px;
+	min-height: 36px;
+	padding: 6px 12px;
+}
+.wpbc_appointment_services__status_filter:first-child {
+	border-left-width: 1px;
+	border-radius: 4px 0 0 4px;
+}
+.wpbc_appointment_services__status_filter:nth-of-type(4) {
+	border-radius: 0 4px 4px 0;
+}
+.wpbc_appointment_services__status_filter strong,
+.wpbc_appointment_services__provider_total strong {
+	background: #f0f0f1;
+	border-radius: 10px;
+	color: #50575e;
+	font-size: 11px;
+	line-height: 18px;
+	min-width: 18px;
+	padding: 0 5px;
+	text-align: center;
+}
+.wpbc_appointment_services__status_filter:hover,
+.wpbc_appointment_services__status_filter:focus {
+	border-color: #8c8f94;
+	box-shadow: none;
+	color: #1d2327;
+	outline: none;
+	position: relative;
+	z-index: 1;
+}
+.wpbc_appointment_services__status_filter.is-active {
+	background: #f0f6fc;
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	color: var(--wpbc_admin-theme-color, #2271b1);
+	font-weight: 600;
+	position: relative;
+	z-index: 2;
+	border-left-width:1px;
+}
+.wpbc_appointment_services__status_filter.is-active strong {
+	background: var(--wpbc_admin-theme-color, #2271b1);
+	color: #fff;
+}
+.wpbc_appointment_services__filter_divider {
+	background: #dcdcde;
+	height: 28px;
+	margin: 0 14px;
+	width: 1px;
+}
+.wpbc_appointment_services__provider_total {
+	align-items: center;
+	color: #50575e;
+	display: inline-flex;
+	gap: 7px;
+	min-height: 36px;
+}
+.wpbc_appointment_services__filter_controls {
+	display: grid;
+	grid-template-columns: minmax(240px, 480px) minmax(170px, 230px);
+	gap: 10px;
+}
+.wpbc_appointment_services__filter_controls input,
+.wpbc_appointment_services__filter_controls select {
+	box-sizing: border-box;
+	min-height: 38px;
+	max-width: none;
+	width: 100%;
+}
+.wpbc_appointment_services__search {
+	position: relative;
+}
+.wpbc_appointment_services__search > span {
+	color: #8c8f94;
+	font-size: 16px;
+	left: 10px;
+	position: absolute;
+	top: 5px;
+}
+.wpbc_appointment_services__search input {
+	padding-left: 38px;
+}
+.wpbc_appointment_services__content {
+	min-height: 360px;
+	position: relative;
+}
+.wpbc_appointment_services__loading {
+	align-items: center;
+	background: rgba(255, 255, 255, .8);
+	border-radius: 4px;
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+	transition: opacity .2s ease-in-out;
+	z-index: 10;
+}
+.wpbc_appointment_services__loading.is-visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+.wpbc_appointment_services__list {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.wpbc_appointment_services__table_wrap {
+	overflow-x: auto;
+	overflow-y: hidden;
+	overscroll-behavior-inline: contain;
+	scrollbar-width: thin;
+	-webkit-overflow-scrolling: touch;
+}
+.wpbc_appointment_services__table {
+	border-collapse: collapse;
+	color: #2c3338;
+	min-width: 920px;
+	table-layout: fixed;
+	width: 100%;
+}
+.wpbc_appointment_services__table th,
+.wpbc_appointment_services__table td {
+	border-bottom: 1px solid #e5e5e5;
+	box-sizing: border-box;
+	padding: 13px 12px;
+	text-align: left;
+	vertical-align: middle;
+}
+.wpbc_appointment_services__table th {
+	background: #fafafb;
+	color: #50575e;
+	font-size: 14px;
+	font-weight: 600;
+	height: 58px;
+}
+.wpbc_appointment_services__table .column-service {
+	width: 29%;
+}
+.wpbc_appointment_services__table .column-duration {
+	width: 120px;
+}
+.wpbc_appointment_services__table .column-price {
+	width: 80px;
+}
+.wpbc_appointment_services__table .column-providers {
+	width: 125px;
+}
+.wpbc_appointment_services__table .column-status {
+	width: 125px;
+}
+.wpbc_appointment_services__table .column-actions {
+	width: 70px;
+}
+.wpbc_appointment_services__table thead .column-weekdays {
+	padding: 8px 4px 6px;
+	text-align: center;
+	width: 155px;
+}
+.wpbc_appointment_services__weekday_labels {
+	display: flex;
+  font-size: 9px;
+  font-weight: 400;
+  gap: 6px;
+  margin: 4px auto 0;
+  padding: 0;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-around;
+}
+.wpbc_appointment_services__weekday_labels i {
+	font-style: normal;
+}
+.wpbc_appointment_services__status_header,
+.wpbc_appointment_services__status_identity {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 2px;
+	justify-content: center;
+	width: 100%;
+}
+.wpbc_appointment_services__status_header .wpbc_ui_listing__sort_link {
+	padding-left: 0;
+	padding-right: 0;
+}
+.wpbc_appointment_services__id_sort {
+	font-size: 12px;
+}
+.wpbc_appointment_services__table tbody .column-weekdays {
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: center;
+}
+.wpbc_appointment_services__item {
+	background: #fff;
+	cursor: pointer;
+	transition: background-color .12s ease-in-out;
+}
+.wpbc_appointment_services__item:hover,
+.wpbc_appointment_services__item:focus {
+	background: #f0f6fc;
+	outline: none;
+}
+.wpbc_appointment_services__item.is-selected {
+	background: #f0f6fc;
+	box-shadow: inset 3px 0 var(--wpbc_admin-theme-color, #2271b1);
+}
+.wpbc_appointment_services__item:last-child td {
+	border-bottom: 0;
+}
+.wpbc_appointment_services__service_identity {
+	align-items: center;
+	display: flex;
+	gap: 10px;
+	min-width: 0;
+}
+.wpbc_appointment_services__service_thumbnail {
+	align-items: center;
+	background: #f0f0f1;
+	box-sizing: border-box;
+	color: #8c8f94;
+	display: inline-flex;
+	flex: 0 0 40px;
+	height: 40px;
+	justify-content: center;
+	overflow: hidden;
+	width: 40px;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	outline: 1px solid #d4d4d7;
+}
+.wpbc_appointment_services__service_thumbnail img {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+.wpbc_appointment_services__service_thumbnail:focus-visible {
+	outline: 2px solid var(--wpbc_admin-theme-color, #2271b1);
+	outline-offset: 2px;
+}
+.wpbc_appointment_services__service_copy {
+	display: block;
+	min-width: 0;
+}
+.wpbc_appointment_services__item .wpbc_appointment_services__service_copy strong,
+.wpbc_appointment_services__item .wpbc_appointment_services__service_copy > span {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.wpbc_appointment_services__item .wpbc_appointment_services__service_copy strong {
+	color: #1d2327;
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+.wpbc_appointment_services__item .wpbc_appointment_services__service_copy > span {
+	color: #646970;
+	font-size: 11px;
+}
+.wpbc_appointment_services__item .column-duration,
+.wpbc_appointment_services__item .column-price {
+	font-size: 13px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+.wpbc_appointment_services__duration_details {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+.wpbc_appointment_services__duration_value {
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+.wpbc_appointment_services__buffers_summary {
+	color: #646970;
+	font-size: 10px;
+	font-weight: 400;
+	line-height: 1.3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.wpbc_appointment_services__provider_stack {
+	align-items: center;
+	display: flex;
+	min-width: 90px;
+}
+.wpbc_appointment_services__provider_avatar,
+.wpbc_appointment_services__provider_more {
+	align-items: center;
+	background: #e7ecfb;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-sizing: border-box;
+	color: #2943a8;
+	display: inline-flex;
+	font-size: 9px;
+	font-weight: 700;
+	height: 30px;
+	justify-content: center;
+	margin-left: -7px;
+	overflow: hidden;
+	width: 30px;
+}
+.wpbc_appointment_services__provider_avatar:first-child {
+	margin-left: 0;
+}
+a.wpbc_appointment_services__provider_avatar {
+	text-decoration: none;
+}
+a.wpbc_appointment_services__provider_avatar:hover,
+a.wpbc_appointment_services__provider_avatar:focus-visible {
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	color: var(--wpbc_admin-theme-color, #2271b1);
+	outline: 2px solid transparent;
+	position: relative;
+	z-index: 1;
+}
+.wpbc_appointment_services__provider_avatar img {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+.wpbc_appointment_services__provider_avatar.has-no-availability {
+	background: #f0f0f1;
+	border-color: #dcdcde;
+	color: #8c8f94;
+	filter: grayscale(1);
+	opacity: .75;
+}
+.wpbc_appointment_services__provider_more {
+	background: #f0f0f1;
+	color: #50575e;
+}
+.wpbc_appointment_services__no_provider {
+	color: #8c8f94;
+	font-size: 11px;
+}
+.wpbc_appointment_services__availability {
+	background: #dcdcde;
+	border-radius: 50%;
+	display: inline-block;
+	flex: 0 0 10px;
+	height: 10px;
+	width: 10px;
+}
+.wpbc_appointment_services__availability.is-available {
+	background: #00a32a;
+}
+.wpbc_appointment_services__availability_week {
+	align-items: center;
+	display: flex;
+	gap: 0px;
+	justify-content: space-around;
+}
+.wpbc_appointment_services__availability_links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+	justify-content: center;
+	margin-top: 6px;
+}
+.wpbc_appointment_services__availability_link {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	color: var(--wpbc_admin-theme-color, #2271b1);
+	font-size: 9px;
+	font-weight: 600;
+	line-height: 16px;
+	min-width: 18px;
+	padding: 0 3px;
+	text-align: center;
+	text-decoration: none;
+	display:none;
+}
+.wpbc_appointment_services__availability_link:hover,
+.wpbc_appointment_services__availability_link:focus-visible {
+	background: #f0f6fc;
+	border-color: var(--wpbc_admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 1px var(--wpbc_admin-theme-color, #2271b1);
+	color: var(--wpbc_admin-theme-color, #2271b1);
+	outline: 2px solid transparent;
+}
+.wpbc_appointment_services__availability_empty {
+	color: #b32d2e;
+	display: block;
+	font-size: 10px;
+	line-height: 1.25;
+	margin-top: 5px;
+}
+.wpbc_appointment_services__status {
+	background: #f0f0f1;
+	border-radius: 12px;
+	color: #50575e;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 22px;
+	padding: 1px 14px;
+	white-space: nowrap;
+}
+.wpbc_appointment_services__id {
+	font-size: 9px;
+	font-weight: 600;
+	padding: 0 10px;
+	white-space: nowrap;
+}
+.wpbc_appointment_services__status.status-active {
+	background: #f7f7f6;
+	color: #218534;
+}
+.wpbc_appointment_services__status.status-inactive {
+	background: #fff7e6;
+	color: #8a5700;
+}
+.wpbc_appointment_services__status.status-archived {
+	background: #f0f0f1;
+	color: #646970;
+}
+.wpbc_appointment_services__item .column-actions {
+	white-space: nowrap;
+}
+.wpbc_appointment_services__item .column-actions button {
+	color: #646970;
+	font-size: 15px;
+	margin-right: 12px;
+	text-decoration: none;
+}
+.wpbc_appointment_services__item .column-actions button:hover,
+.wpbc_appointment_services__item .column-actions button:focus {
+	color: var(--wpbc_admin-theme-color, #2271b1);
+	outline: none;
+}
+.wpbc_appointment_services__list_footer {
+	align-items: center;
+	background: #fafafb;
+	border-top: 1px solid #dcdcde;
+	color: #646970;
+	display: flex;
+	font-size: 12px;
+	justify-content: space-between;
+	min-height: 48px;
+	padding: 6px 12px;
+}
+.wpbc_appointment_services__list_footer[hidden] {
+	display: none;
+}
+.wpbc_appointment_services__pagination {
+	align-items: center;
+	display: flex;
+	gap: 8px;
+}
+.wpbc_appointment_services__pagination .button {
+	align-items: center;
+	display: inline-flex;
+	height: 30px;
+	justify-content: center;
+	min-height: 30px;
+	padding: 0;
+	width: 32px;
+}
+.wpbc_appointment_services__page_label {
+	min-width: 82px;
+	text-align: center;
+}
+.wpbc_appointment_services__empty {
+	color: #646970;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 8px;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	min-height: 150px;
+	text-align: center;
+}
+.wpbc_appointment_services__empty[hidden],
+.wpbc_appointment_services__list[hidden] {
+	display: none;
+}
+.wpbc_appointment_services__empty > span {
+	color: #8c8f94;
+	font-size: 38px;
+}
+.wpbc_appointment_services__empty h2,
+.wpbc_appointment_services__empty p {
+	margin: 0;
+}
+.wpbc_appointment_services__empty.is-storage-notice {
+	background: #fff;
+	border: 1px dashed #c3c4c7;
+	border-radius: 4px;
+	box-sizing: border-box;
+	min-height: 240px;
+	padding: 30px;
+}
+.wpbc_appointment_services__rightbar .inspector__control,
+.wpbc_appointment_services__rightbar .inspector__input {
+	box-sizing: border-box;
+	max-width: none;
+	width: 100%;
+}
+.wpbc_appointment_services__footer_actions {
+	align-items: stretch;
+	box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 8px 18px;
+	width: 100%;
+}
+.wpbc_appointment_services__footer_actions .button {
+	align-items: center;
+	box-sizing: border-box;
+	display: flex;
+	flex: 1 1 auto;
+	gap: 6px;
+	justify-content: center;
+	margin: 0;
+	min-width: 0;
+}
+.wpbc_appointment_services__footer_actions .button[hidden] {
+	display: none;
+}
+.wpbc_appointment_services__footer_actions[hidden] {
+	display: none;
+}
+.wpbc_appointment_services__right_sidebar_footer[hidden] {
+	display: none;
+}
+@keyframes wpbc_appointment_services__focus_pulse {
+	0% {
+		box-shadow: 0 0 0 4px rgba(34, 113, 177, .3);
+	}
+	100% {
+		box-shadow: 0 0 0 0 transparent;
+	}
+}
+.wpbc_appointment_services__focus_pulse {
+	animation: wpbc_appointment_services__focus_pulse .8s ease-out;
+	position: relative;
+}
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_appointment_services__focus_pulse {
+		animation: none;
+		outline: 2px solid var(--wpbc_admin-theme-color, #2271b1);
+		outline-offset: -2px;
+	}
+}
+.wpbc_appointment_services__status_options {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.wpbc_appointment_services__status_options label {
+	align-items: center;
+	cursor: pointer;
+	display: flex;
+	gap: 7px;
+	line-height: 1.35;
+	margin: 0;
+}
+.wpbc_appointment_services__status_options input[type="radio"] {
+	margin: 0;
+}
+.wpbc_appointment_services__number_control {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+}
+.wpbc_appointment_services__number_slider {
+	box-sizing: border-box;
+	cursor: pointer;
+	margin: 0;
+	min-height: 20px;
+	padding: 0;
+	width: 100%;
+}
+.wpbc_appointment_services__number_slider:disabled {
+	cursor: default;
+	opacity: .55;
+}
+.wpbc_appointment_services__media {
+	margin-bottom: 8px;
+	display: flex;
+	align-items: flex-start;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	gap: 10px;
+}
+.wpbc_appointment_services__media_preview {
+	align-items: center;
+	appearance: none;
+	background: #fcfcfc;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-sizing: border-box;
+	color: #507593;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	margin: 0 0 12px;
+	overflow: hidden;
+	padding: 4px;
+	width: 100%;
+	flex: 1 1 100%;
+	height: 140px;
+}
+.wpbc_appointment_services__media_preview:focus-visible {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: 2px solid transparent;
+}
+.wpbc_appointment_services__media_preview:disabled {
+	cursor: default;
+	opacity: .65;
+}
+.wpbc_appointment_services__media_image {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+.wpbc_appointment_services__media_image[hidden],
+.wpbc_appointment_services__media_placeholder[hidden] {
+	display: none;
+}
+.wpbc_appointment_services__media_placeholder::before {
+	font-size: 50px;
+}
+.wpbc_appointment_services__media_actions {
+	justify-content: center;
+	width: 100%;
+	flex: 1 1 auto;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+	justify-content: flex-start;
+	gap: 8px;
+}
+.wpbc_appointment_services__picture_row .wpbc_bfb__help {
+	margin-bottom: 0;
+}
+.wpbc_appointment_services__placeholder {
+	background: #f6f7f7;
+	border: 1px dashed #c3c4c7;
+	color: #646970;
+	padding: 12px;
+}
+.wpbc_appointment_services__help {
+	padding: 0 16px 16px;
+}
+.wpbc_appointment_services__help h4 {
+	margin: 18px 0 6px;
+}
+.wpbc_appointment_services__help ol,
+.wpbc_appointment_services__help ul {
+	margin: 8px 0 0 20px;
+}
+.wpbc_appointment_services__help li {
+	line-height: 1.6;
+	margin-bottom: 5px;
+}
+.wpbc_appointment_services_page.is-busy {
+	opacity: .72;
+	pointer-events: none;
+}
+.wpbc_appointment_services__provider_notice {
+	align-items: center;
+	background: #fff8e5;
+	border: 1px solid #dba617;
+	border-radius: 4px;
+	box-sizing: border-box;
+	display: flex;
+	gap: 12px;
+	margin-bottom: 14px;
+	padding: 12px 14px;
+}
+.wpbc_appointment_services__provider_notice[hidden] {
+	display: none;
+}
+.wpbc_appointment_services__provider_notice > span {
+	color: #996800;
+	font-size: 20px;
+}
+.wpbc_appointment_services__provider_notice > div {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 2px;
+}
+.wpbc_appointment_services__provider_notice > div > span {
+	color: #646970;
+}
+.wpbc_appointment_services__provider_notice .button {
+	flex: 0 0 auto;
+}
+@media (max-width: 782px) {
+	.wpbc_appointment_services__filter_controls {
+		grid-template-columns: 1fr;
+	}
+	.wpbc_appointment_services__filter_divider {
+		display: none;
+	}
+	.wpbc_appointment_services__provider_total {
+		margin-left: 10px;
+	}
+	.wpbc_appointment_services__list_footer {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 8px;
+	}
+	.wpbc_appointment_services__provider_notice {
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+	.wpbc_appointment_services__provider_notice .button {
+		margin-left: 32px;
+	}
+	.wpbc_appointment_services__table_wrap,
+	.wpbc_appointment_services__table,
+	.wpbc_appointment_services__table tbody {
+		display: block;
+		overflow: visible;
+		width: 100%;
+	}
+	.wpbc_appointment_services__table {
+		min-width: 0;
+	}
+	.wpbc_appointment_services__table thead {
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+	.wpbc_appointment_services__item {
+		box-sizing: border-box;
+		display: flex;
+		flex-wrap: wrap;
+		padding: 10px 8px;
+		position: relative;
+		width: 100%;
+	}
+	.wpbc_appointment_services__item:not(:last-child) {
+		border-bottom: 1px solid #dcdcde;
+	}
+	.wpbc_appointment_services__table tbody td {
+		align-items: center;
+		border-bottom: 0;
+		display: flex;
+		flex: 1 1 50%;
+		padding: 7px 8px;
+		width: 50%;
+	}
+	.wpbc_appointment_services__table tbody td::before {
+		color: #646970;
+		content: attr(data-label);
+		flex: 0 0 104px;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 1.3;
+		padding-right: 8px;
+		text-align: left;
+	}
+	.wpbc_appointment_services__table tbody .column-service {
+		flex-basis: 100%;
+		padding-right: 76px;
+		width: 100%;
+	}
+	.wpbc_appointment_services__table tbody .column-service::before,
+	.wpbc_appointment_services__table tbody .column-actions::before {
+		display: none;
+	}
+	.wpbc_appointment_services__table tbody .column-providers,
+	.wpbc_appointment_services__table tbody .column-weekdays,
+	.wpbc_appointment_services__table tbody .column-status {
+		flex-basis: 100%;
+		width: 100%;
+	}
+	.wpbc_appointment_services__table tbody .column-weekdays {
+		align-items: flex-start;
+		flex-wrap: wrap;
+		text-align: left;
+	}
+	.wpbc_appointment_services__provider_stack,
+	.wpbc_appointment_services__availability_week {
+		flex: 1 1 auto;
+	}
+	.wpbc_appointment_services__availability_week {
+		min-width: 140px;
+	}
+	.wpbc_appointment_services__availability_links,
+	.wpbc_appointment_services__availability_empty {
+		box-sizing: border-box;
+		flex: 0 0 calc(100% - 104px);
+		margin-left: 104px;
+	}
+	.wpbc_appointment_services__table tbody .column-actions {
+		border: 0;
+		padding: 0;
+		position: absolute;
+		right: 12px;
+		top: 20px;
+		width: auto;
+	}
+}
+@media (max-width: 480px) {
+	.wpbc_appointment_services__table tbody .column-duration,
+	.wpbc_appointment_services__table tbody .column-price {
+		flex-basis: 100%;
+		width: 100%;
+	}
+}

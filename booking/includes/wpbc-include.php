@@ -24,6 +24,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-debug.php';                       // Debug                                            = Package: WPBC =.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-core.php';                        // Core.
+require_once WPBC_PLUGIN_DIR . '/includes/_functions/feature-flags.php';      // Release gates for functionality under development.
+
+if ( wpbc_is_11_5_features_enabled() ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/booking_modes/booking_modes.php';  // Administration presentation modes.
+}
+
+// Explicit diagnostics can prove that the disabled master gate leaves the Booking Modes runtime unloaded.
+if ( defined( 'WPBC_ENABLE_BOOKING_MODES_TESTS' ) && true === WPBC_ENABLE_BOOKING_MODES_TESTS && ! wpbc_is_11_5_features_enabled() ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/booking_modes/tests/disabled-gate-test-page.php';
+}
+
+// Explicit test panels can verify that the disabled 11.5 gate leaves feature modules unloaded.
+if ( defined( 'WPBC_ENABLE_APPOINTMENT_TESTS' ) && true === WPBC_ENABLE_APPOINTMENT_TESTS && ! wpbc_is_11_5_features_enabled() ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/booking-appointment/tests/http-test-page.php';
+}
 
 require_once WPBC_PLUGIN_DIR . '/core/any/class-css-js.php';                 // Abstract. Loading CSS & JS files                 = Package: Any =.
 require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-settings-api.php';     // Abstract. Settings API.
@@ -32,6 +47,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-settings-page-parts.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-menu-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2025-02-09.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-page-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2024-12-23.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-sidebar-panels.php';                                       // Common right sidebar panels and collapsible groups.
+require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-listing.php';                                              // Shared AJAX-ready administration listing shell.
 
 // -----------------------------------------------------------------------------------------------------------------
 // Booking Listing templates.
@@ -173,6 +189,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_news/wpbc_news.php';
 
 // UI Elements.
 require_once WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/flex_ui_elements.php';
+require_once WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/chosen_filter/chosen_filter.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/ui__settings_panel.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/toolbar_ui.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_toolbar_ui/ui__form_steps_timeline.php';  // FixIn: 10.9.6.6.
@@ -201,6 +218,21 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/avail
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__activate.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/ajax/availability_timeslots__save.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-availability-timeslots/availability_timeslots__page.php';
+
+if ( wpbc_is_11_5_features_enabled() ) {
+	// WP Booking Calendar > Services and Appointment details.
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/appointment_services__activate.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/appointment_services__functions.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/repository/appointment_services__repository.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/appointment_services__booking.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/appointment_services__ui.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/ajax/appointment_services__list.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/ajax/appointment_services__load.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/ajax/appointment_services__save.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/ajax/appointment_services__duplicate.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/ajax/appointment_services__archive.php';
+	require_once WPBC_PLUGIN_DIR . '/includes/page-appointment-services/appointment_services__page.php';
+}
 
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/bfb-include.php';                                       // Booking Form Builder - @since: 11.0.0.
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/class-wpbc-bfb-form-shortcode-engine.php';  // New Shortcode Parsers and Form Render. 11.0.1.
@@ -277,6 +309,15 @@ require_once WPBC_PLUGIN_DIR . '/includes/_front_end/form-style-presets.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/hooks/class-fe-bfb-settings-hooks.php';   // Apply BFB settings to rendered booking form HTML.
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-render-form-body.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_custom_forms/class-custom-forms-helper.php';        // Custom forms Helpers.
+
+if ( wpbc_is_11_5_features_enabled() ) {
+	// Service-first, AJAX Appointment booking shortcode built on the existing resource-bound renderer.
+	require_once WPBC_PLUGIN_DIR . '/includes/booking-appointment/booking-appointment.php';
+	// Resource-first, AJAX booking shortcode built on the same native resource-bound renderer.
+	require_once WPBC_PLUGIN_DIR . '/includes/booking-resource-selector/booking-resource-selector.php';
+	// Dedicated administrator workflow built on the same Appointment controller.
+	require_once WPBC_PLUGIN_DIR . '/includes/page-add-appointment/add_appointment__page.php';
+}
 
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpdev-booking-class.php';             // C L A S S    B o o k i n g.
 require_once WPBC_PLUGIN_DIR . '/core/lib/wpbc-booking-new.php';                // N e w.

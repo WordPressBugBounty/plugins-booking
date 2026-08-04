@@ -31,35 +31,77 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * 		jQuery( '.content' ).html( template__var( { 'test_key' => '<strong>Data</strong>' } ) );
  *
- * @return void
+ * @param array $post_data Untrusted Setup Wizard booking-type request values.
+ *
+ * @return array Validated booking-type configuration with safe defaults.
  */
 
 
 function wpbc_template__bookings_types__action_validate_data( $post_data ){
 
 	$escaped_data = array(
+		'wpbc_swp_booking_mode'             => '',          // Can be: 'classic' | 'appointment' | 'rental'.
 		'wpbc_swp_booking_types'            => '',          // Can be: 'full_days_bookings' | 'time_slots_appointments' | 'changeover_multi_dates_bookings'
 		'wpbc_swp_booking_timeslot_picker'  => get_bk_option('booking_timeslot_picker'),
 		'wpbc_swp_booking_appointments_type'  => 'rangetime',
 		'wpbc_swp_booking_change_over_days_triangles'  => get_bk_option('booking_change_over_days_triangles')
 	);
 
+	$key = 'wpbc_swp_booking_mode';
+	if ( isset( $post_data[ $key ] ) && is_scalar( $post_data[ $key ] ) && '' !== (string) $post_data[ $key ] ) {
+		$booking_mode = sanitize_key( wp_unslash( $post_data[ $key ] ) );
+		$allowed_mode_ids = function_exists( 'wpbc_booking_modes_get_allowed_mode_ids' )
+			? wpbc_booking_modes_get_allowed_mode_ids()
+			: array( 'classic' );
+
+		if ( in_array( $booking_mode, $allowed_mode_ids, true ) ) {
+			$escaped_data[ $key ] = $booking_mode;
+		}
+	}
+
 	$key = 'wpbc_swp_booking_types';
-	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+	if ( isset( $post_data[ $key ] ) && is_scalar( $post_data[ $key ] ) && '' !== (string) $post_data[ $key ] ) {
+		$booking_type = sanitize_key( wp_unslash( $post_data[ $key ] ) );
+		if ( in_array( $booking_type, array( 'full_days_bookings', 'time_slots_appointments', 'changeover_multi_dates_bookings' ), true ) ) {
+			$escaped_data[ $key ] = $booking_type;
+		}
 	}
 	$key = 'wpbc_swp_booking_timeslot_picker';
-	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+	if ( isset( $post_data[ $key ] ) && is_scalar( $post_data[ $key ] ) && '' !== (string) $post_data[ $key ] ) {
+		$timeslot_picker = sanitize_text_field( wp_unslash( $post_data[ $key ] ) );
+		if ( in_array( $timeslot_picker, array( 'On', 'Off' ), true ) ) {
+			$escaped_data[ $key ] = $timeslot_picker;
+		}
 	}
 	$key = 'wpbc_swp_booking_appointments_type';
-	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+	if ( isset( $post_data[ $key ] ) && is_scalar( $post_data[ $key ] ) && '' !== (string) $post_data[ $key ] ) {
+		$appointments_type = sanitize_key( wp_unslash( $post_data[ $key ] ) );
+		if ( in_array( $appointments_type, array( 'rangetime', 'durationtime' ), true ) ) {
+			$escaped_data[ $key ] = $appointments_type;
+		}
 	}
 	$key = 'wpbc_swp_booking_change_over_days_triangles';
-	if ( ( isset( $post_data[ $key ] ) ) && ( ! empty( ( $post_data[ $key ] ) ) ) ) {
-			$escaped_data[ $key ] = wpbc_clean_text_value( $post_data[ $key ] );
+	if ( isset( $post_data[ $key ] ) && is_scalar( $post_data[ $key ] ) && '' !== (string) $post_data[ $key ] ) {
+		$changeover_triangles = sanitize_text_field( wp_unslash( $post_data[ $key ] ) );
+		if ( in_array( $changeover_triangles, array( 'On', 'Off' ), true ) ) {
+			$escaped_data[ $key ] = $changeover_triangles;
+		}
 	}
+
+	if ( 'appointment' === $escaped_data['wpbc_swp_booking_mode'] ) {
+		$escaped_data['wpbc_swp_booking_types'] = 'time_slots_appointments';
+		$escaped_data['wpbc_swp_booking_appointments_type'] = 'durationtime';
+	} elseif (
+		'rental' === $escaped_data['wpbc_swp_booking_mode']
+		&& ! in_array( $escaped_data['wpbc_swp_booking_types'], array( 'full_days_bookings', 'changeover_multi_dates_bookings' ), true )
+	) {
+		$escaped_data['wpbc_swp_booking_types'] = 'full_days_bookings';
+	}
+
+	if ( 'changeover_multi_dates_bookings' === $escaped_data['wpbc_swp_booking_types'] && ! class_exists( 'wpdev_bk_biz_s' ) ) {
+		$escaped_data['wpbc_swp_booking_types'] = 'full_days_bookings';
+	}
+
 	return $escaped_data;
 }
 
@@ -92,6 +134,104 @@ function wpbc_setup__save_standard_bfb_form( $advanced_form, $content_form, $vis
 	);
 }
 
+/**
+ * Replace the current owner's Standard form with a bundled BFB template.
+ *
+ * Setup Wizard booking-type choices historically replace the Standard form.
+ * This helper preserves that explicit behavior while copying the complete BFB
+ * structure and settings instead of rebuilding the form from Advanced markup.
+ *
+ * @param string $template_key Stable bundled template key.
+ *
+ * @return bool True when the Standard form was saved; otherwise false.
+ */
+function wpbc_setup__save_standard_bfb_form_from_template( $template_key ) {
+
+	if (
+		! class_exists( 'WPBC_BFB_Form_Storage' )
+		|| ! function_exists( 'wpbc_get_bfb_template_record_by_key' )
+		|| ( function_exists( 'wpbc_is_table_exists' ) && ! wpbc_is_table_exists( 'booking_form_structures' ) )
+	) {
+		return false;
+	}
+
+	$template_record = wpbc_get_bfb_template_record_by_key( sanitize_key( (string) $template_key ) );
+	if (
+		empty( $template_record )
+		|| ! is_array( $template_record )
+		|| empty( $template_record['structure_json'] )
+		|| 'bfb' !== (string) $template_record['engine']
+	) {
+		return false;
+	}
+
+	$owner_user_id = class_exists( 'WPBC_FE_Custom_Form_Helper' )
+		? WPBC_FE_Custom_Form_Helper::wpbc_mu__get_current__owner_user_id()
+		: 0;
+
+	unset(
+		$template_record['booking_form_id'],
+		$template_record['created_at'],
+		$template_record['created_by'],
+		$template_record['updated_at'],
+		$template_record['updated_by']
+	);
+
+	$template_record['form_slug']           = 'standard';
+	$template_record['status']              = 'published';
+	$template_record['scope']               = $owner_user_id ? 'user' : 'global';
+	$template_record['owner_user_id']       = absint( $owner_user_id );
+	$template_record['booking_resource_id'] = null;
+	$template_record['is_default']          = 1;
+	$template_record['title']               = __( 'Standard', 'booking' );
+	$template_record['description']         = '';
+
+	return (bool) WPBC_BFB_Form_Storage::save_form( $template_record );
+}
+
+
+/**
+ * Disable Working Time when the selected workflow does not book times.
+ *
+ * Full-day and changeover workflows in Rental or Classic mode must not retain
+ * a time-based availability restriction. Existing weekday intervals and
+ * resource overrides are preserved so they can be reused later.
+ *
+ * @param array $cleaned_data Validated Setup Wizard booking-type data.
+ *
+ * @return void
+ */
+function wpbc_setup__disable_working_time_for_day_based_workflow( $cleaned_data ) {
+
+	if ( ! is_array( $cleaned_data ) ) {
+		return;
+	}
+
+	$mode_id      = isset( $cleaned_data['wpbc_swp_booking_mode'] ) ? sanitize_key( (string) $cleaned_data['wpbc_swp_booking_mode'] ) : '';
+	$booking_type = isset( $cleaned_data['wpbc_swp_booking_types'] ) ? sanitize_key( (string) $cleaned_data['wpbc_swp_booking_types'] ) : '';
+
+	if (
+		! in_array( $mode_id, array( 'classic', 'rental' ), true )
+		|| ! in_array( $booking_type, array( 'full_days_bookings', 'changeover_multi_dates_bookings' ), true )
+	) {
+		return;
+	}
+
+	if ( function_exists( 'wpbc_working_time__get_settings' ) && function_exists( 'wpbc_working_time__update_settings' ) ) {
+		$working_time_settings            = wpbc_working_time__get_settings();
+		$working_time_settings['enabled'] = 'Off';
+		wpbc_working_time__update_settings( $working_time_settings );
+		return;
+	}
+
+	$working_time_settings = maybe_unserialize( get_bk_option( 'booking_working_time_rules', array() ) );
+	if ( is_array( $working_time_settings ) ) {
+		$working_time_settings['enabled'] = 'Off';
+		update_bk_option( 'booking_working_time_rules', $working_time_settings );
+	}
+	update_bk_option( 'booking_working_time_enabled', 'Off' );
+}
+
 
 
 /**
@@ -114,6 +254,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 		// Show calendar legend by  default
 		update_bk_option( 'booking_is_show_legend', 'On' );
+		wpbc_setup__disable_working_time_for_day_based_workflow( $cleaned_data );
 
 		switch ( $cleaned_data['wpbc_swp_booking_types'] ) {
 
@@ -176,7 +317,12 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 
 			    update_bk_option( 'booking_timeslot_picker', ( 'On' === $cleaned_data['wpbc_swp_booking_timeslot_picker'] ) ? 'On' : 'Off' );
 
-			    if ( class_exists( 'wpdev_bk_personal' ) ) {
+				$is_appointment_flow = isset( $cleaned_data['wpbc_swp_booking_mode'] ) && 'appointment' === $cleaned_data['wpbc_swp_booking_mode'];
+				$is_appointment_form_saved = $is_appointment_flow
+					? wpbc_setup__save_standard_bfb_form_from_template( 'appointments_services_flow' )
+					: false;
+
+			    if ( ! $is_appointment_form_saved && class_exists( 'wpdev_bk_personal' ) ) {
 
 					// FixIn: 10.7.1.4.
 					if ( 'rangetime' === $cleaned_data['wpbc_swp_booking_appointments_type'] ){
@@ -192,7 +338,7 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 						);
 					}
 
-			    } else {
+			    } elseif ( ! $is_appointment_form_saved ) {
 				    // Free.
 
 				    // Structure.

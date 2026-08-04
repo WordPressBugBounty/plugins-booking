@@ -20,7 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Show Top Horisontal Navigation Bar
  *
- * @param array $args - parameters.
+ * @param array $args Navigation parameters. An active tab can set
+ *                    top_navigation_use_subtabs to render its subtabs in this
+ *                    bar instead of every top-level tab on the page.
  *
  * @return void
  */
@@ -64,10 +66,27 @@ function wpbc_ui__top_horisontal_nav( $args =array() ) {
 			continue;
 		}
 		$page_item_arr = $args['page_nav_tabs'][ $main_page_slug ];
+		$active_tab    = isset( $page_item_arr[ $active_page_arr['active_tab'] ] ) && is_array( $page_item_arr[ $active_page_arr['active_tab'] ] )
+			? $page_item_arr[ $active_page_arr['active_tab'] ]
+			: array();
+
+		// Some focused settings pages use their subtabs as the horizontal page-level navigation.
+		if (
+			! empty( $active_tab['top_navigation_use_subtabs'] )
+			&& ! empty( $active_tab['subtabs'] )
+			&& is_array( $active_tab['subtabs'] )
+		) {
+			$page_item_arr = $active_tab['subtabs'];
+		}
 
 		do_action( 'hook__wpbc_ui__top_horisontal_nav__start', $active_page_arr['active_page'], $active_page_arr['active_tab'] );  // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		foreach ( $page_item_arr as $main_menu_slug => $menu_item_arr ) {
+			// Legacy hided/disabled flags control other navigation surfaces; the top bar uses its own explicit flag.
+			if ( ! empty( $menu_item_arr['top_navigation_hidden'] ) ) {
+				continue;
+			}
+
 			do_action( 'hook__wpbc_ui__top_horisontal_nav__item_start', $active_page_arr['active_page'], $active_page_arr['active_tab'], $main_menu_slug );   // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 			wpbc_ui__horis_menu__item_main( $main_menu_slug, $menu_item_arr );
@@ -124,6 +143,7 @@ add_filter( 'wpbc_ui__horis_menu__item_main__title', 'wpbc_ui__horis_menu__item_
  *                                     [default] =>
  *                                     [disabled] =>
  *                                     [hided] =>
+ *                                     [top_navigation_hidden] =>
  *                                     [is_active] => 1
  *                                     [url] => http://beta/wp-admin/admin.php?page=wpbc-settings&#038;tab=calendar_appearance
  *                                     [subtabs] => [....]
@@ -134,21 +154,22 @@ add_filter( 'wpbc_ui__horis_menu__item_main__title', 'wpbc_ui__horis_menu__item_
 function wpbc_ui__horis_menu__item_main( $menu_slug, $menu_item_arr ) {
 
 	$defaults      = array(
-		'title'        => '',
-		'page_title'   => '',
-		'hint'         => '',
-		'link'         => '',
-		'position'     => '',
-		'css_classes'  => '',
-		'folder_style' => '',
-		'icon'         => '',
-		'font_icon'    => '',
-		'default'      => false,
-		'disabled'     => false,
-		'hided'        => false,
-		'is_active'    => 0,
-		'url'          => '',
-		'subtabs'      => array(),
+		'title'                 => '',
+		'page_title'            => '',
+		'hint'                  => '',
+		'link'                  => '',
+		'position'              => '',
+		'css_classes'           => '',
+		'folder_style'          => '',
+		'icon'                  => '',
+		'font_icon'             => '',
+		'default'               => false,
+		'disabled'              => false,
+		'hided'                 => false,
+		'top_navigation_hidden' => false,
+		'is_active'             => 0,
+		'url'                   => '',
+		'subtabs'               => array(),
 	);
 	$menu_item_arr = wp_parse_args( $menu_item_arr, $defaults );
 	$folder_style  = ( ! empty( $menu_item_arr['folder_style'] ) ) ? esc_attr( $menu_item_arr['folder_style'] ) : ''; // FixIn: 11.4.2.

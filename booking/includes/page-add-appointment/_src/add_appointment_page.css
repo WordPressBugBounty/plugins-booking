@@ -1,0 +1,253 @@
+/** Add Appointment page-only layout. The workflow itself uses the shared Appointment styles. */
+.wpbc_add_appointment_page {
+	box-sizing: border-box;
+	max-width: 1180px;
+}
+
+.wpbc_add_appointment__canvas {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.04 );
+	box-sizing: border-box;
+	min-height: 460px;
+	padding: 28px;
+}
+
+.wpbc_add_appointment__canvas > .wpbc_booking_appointment {
+	margin: 0 auto;
+	max-width: 980px;
+}
+
+/*
+ * The legacy admin Bootstrap scope applies `.wpdevelop label` to every label
+ * in the page. Restore the Appointment choice-card contract without changing
+ * labels in the native booking form or anywhere else in the admin panel.
+ */
+.wpbc_add_appointment__canvas .wpbc_booking_appointment__choice {
+	display: flex;
+	font-weight: 400;
+	margin-bottom: 0;
+	max-width: none;
+}
+
+.wpbc_add_appointment__canvas .wpbc_booking_appointment__choice > input[type="radio"] {
+	margin: 0;
+}
+
+.wpbc_add_appointment__inspector_body {
+	box-sizing: border-box;
+	padding: 0 16px 18px;
+}
+
+.wpbc_add_appointment__steps {
+	display: grid;
+	gap: 12px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.wpbc_add_appointment__steps li {
+	align-items: center;
+	display: flex;
+	gap: 10px;
+}
+
+.wpbc_add_appointment__steps li > span {
+	align-items: center;
+	background: #f0f0f1;
+	border-radius: 50%;
+	display: inline-flex;
+	flex: 0 0 28px;
+	height: 28px;
+	justify-content: center;
+}
+
+.wpbc_add_appointment__panel_actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.wpbc_add_appointment__settings_form {
+	display: grid;
+	gap: 0;
+}
+
+.wpbc_add_appointment__setting_row {
+	border-bottom: 1px solid #e2e4e7;
+	display: grid;
+	gap: 7px;
+	padding: 13px 0;
+}
+
+.wpbc_add_appointment__setting_row:first-child {
+	padding-top: 2px;
+}
+
+.wpbc_add_appointment__setting_row select {
+	box-sizing: border-box;
+	max-width: 100%;
+	width: 100%;
+}
+
+.wpbc_add_appointment__setting_row p,
+.wpbc_add_appointment__settings_notice,
+.wpbc_add_appointment__tool_help {
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.5;
+	margin: 0;
+}
+
+.wpbc_add_appointment__setting_row--toggle .wpbc_ui__toggle {
+	align-items: center;
+	display: flex;
+	min-height: 26px;
+}
+
+.wpbc_add_appointment__settings_form .wpbc_add_appointment__apply_settings {
+	justify-self: start;
+	margin-top: 14px;
+}
+
+.wpbc_add_appointment__settings_notice {
+	margin-top: 7px;
+}
+
+.wpbc_add_appointment__tool_actions {
+	margin: 12px 0 8px;
+}
+
+.wpbc_add_appointment__summary {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	display: grid;
+	margin: 0 0 14px;
+	overflow: hidden;
+}
+
+.wpbc_add_appointment__summary > div {
+	align-items: start;
+	border-bottom: 1px solid #e8eaed;
+	display: grid;
+	gap: 12px;
+	grid-template-columns: minmax( 92px, 0.8fr ) minmax( 0, 1.2fr );
+	padding: 10px 12px;
+}
+
+.wpbc_add_appointment__summary > div:last-child {
+	border-bottom: 0;
+}
+
+.wpbc_add_appointment__summary dt {
+	color: #646970;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.45;
+	text-transform: uppercase;
+}
+
+.wpbc_add_appointment__summary dd {
+	font-weight: 600;
+	line-height: 1.45;
+	margin: 0;
+	overflow-wrap: anywhere;
+	text-align: right;
+}
+
+.wpbc_add_appointment__summary dd.is-empty {
+	color: #8c8f94;
+	font-weight: 400;
+}
+
+.wpbc_add_appointment__summary_status {
+	background: #f6f7f7;
+}
+
+.wpbc_add_appointment__summary_status dd {
+	color: #2271b1;
+}
+
+.wpbc_add_appointment__summary_link {
+	border-bottom: 1px dotted currentColor;
+	color: #2271b1;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.wpbc_add_appointment__summary_link.is-empty {
+	color: #8c8f94;
+	font-weight: 400;
+}
+
+.wpbc_add_appointment__summary_link:hover,
+.wpbc_add_appointment__summary_link:focus-visible {
+	border-bottom-style: solid;
+	color: #135e96;
+	text-decoration: none;
+}
+
+.wpbc_add_appointment__summary_link:focus-visible {
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px #fff, 0 0 0 3px #2271b1;
+	outline: 0;
+}
+
+.wpbc_add_appointment__hint {
+	align-items: flex-start;
+	background: #f0f6fc;
+	border: 1px solid #c5d9ed;
+	border-radius: 6px;
+	box-sizing: border-box;
+	color: #1d2327;
+	display: flex;
+	gap: 10px;
+	margin: 0;
+	padding: 12px;
+}
+
+.wpbc_add_appointment__hint > span {
+	color: #2271b1;
+	flex: 0 0 auto;
+	font-size: 18px;
+	line-height: 1.35;
+}
+
+.wpbc_add_appointment__hint p {
+	line-height: 1.55;
+	margin: 0;
+}
+
+.wpbc_add_appointment__help_body {
+	display: grid;
+	gap: 18px;
+}
+
+.wpbc_add_appointment__help_section h4 {
+	font-size: 13px;
+	margin: 0 0 7px;
+}
+
+.wpbc_add_appointment__help_section p {
+	color: #50575e;
+	line-height: 1.6;
+	margin: 0;
+}
+
+.wpbc_add_appointment__help_section .wpbc_add_appointment__steps {
+	margin-top: 10px;
+}
+
+.wpbc_add_appointment__help_action {
+	justify-self: start;
+}
+
+@media ( max-width: 782px ) {
+	.wpbc_add_appointment__canvas {
+		border-radius: 4px;
+		padding: 16px;
+	}
+}

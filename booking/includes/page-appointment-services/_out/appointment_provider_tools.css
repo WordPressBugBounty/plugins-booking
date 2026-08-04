@@ -1,0 +1,53 @@
+.wpbc_appointment_provider_tools__actions {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 15px
+}
+.wpbc_appointment_provider_tools {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 16px;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  margin: 0 0 16px;
+  padding: 14px 16px
+}
+.wpbc_appointment_provider_tools__copy {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 3px
+}
+.wpbc_appointment_provider_tools__copy > strong {
+  font-size: 15px;
+  line-height: 2.1em
+}
+.wpbc_appointment_provider_tools__copy span {
+  color: #646970
+}
+.wpbc_appointment_provider_links {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  -ms-flex: 0 1 50%;
+  flex: 0 1 50%;
+  -ms-flex-pack: center;
+  justify-content: center
+}
+.wpbc_appointment_provider_links .button {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 5px
+}

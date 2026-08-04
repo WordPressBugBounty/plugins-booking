@@ -114,15 +114,11 @@ function wpbc_render_booking_form_shortcodes( $form, $args = array(), $req = arr
 	$is_add_booking_admin_context = ( function_exists( 'wpbc_is_new_booking_page_url' ) && wpbc_is_new_booking_page_url( $server_request_uri ) );
 
 	if ( ( strpos( $server_request_uri, $admin_uri ) === false ) && ! $is_add_booking_admin_context ) {            // Only in front-end side.
-		if ( false !== $req['current_edit_booking_id'] ) {
-			foreach ( $engine->current_edit_booking['dates'] as $b_date ) {
-				if ( wpbc_is_date_in_past( $b_date ) ) {
-					$html = '<div class="wpdevelop"><div class="alert alert-warning alert-danger">' .
-							__( 'The booked dates already in the past', 'booking' ) .
-							'</div></div>' .
-							'<script type="text/javascript">setTimeout( function(){ jQuery( ".hasDatepick" ).hide(); }, 500 );</script>';
-				}
-			}
+		if ( ( false !== $req['current_edit_booking_id'] ) && ! wpbc_is_visitor_booking_action_allowed( $req['current_edit_booking_id'] ) ) {
+			$html = '<div class="wpdevelop"><div class="alert alert-warning alert-danger">' .
+					__( 'The booked dates already in the past', 'booking' ) .
+					'</div></div>' .
+					'<script type="text/javascript">setTimeout( function(){ jQuery( ".hasDatepick" ).hide(); }, 500 );</script>';
 		}
 	}
 

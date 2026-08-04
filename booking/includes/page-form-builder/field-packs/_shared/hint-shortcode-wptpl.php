@@ -215,12 +215,6 @@ function wpbc_bfb_hint_shortcode_print_templates( $page, $cfg ) {
 	$shortcode_display = $cfg['shortcode_display'];
 	$template_id       = 'wpbc-bfb-field-' . $token;
 	$inspector_id      = 'wpbc-bfb-inspector-' . $token;
-	$exported          = sprintf(
-		/* translators: 1: Field prefix text. 2: Shortcode text. */
-		__( 'Exported output: %1$s <strong>[%2$s]</strong>', 'booking' ),
-		$cfg['prefix'],
-		$shortcode_display
-	);
 
 	?>
 	<script type="text/html" id="tmpl-<?php echo esc_attr( $template_id ); ?>">
@@ -306,7 +300,7 @@ function wpbc_bfb_hint_shortcode_print_templates( $page, $cfg ) {
 							<input type="text"
 								   class="inspector__input"
 								   data-inspector-key="prefix_text"
-								   value="{{ data.prefix_text || '<?php echo esc_js( $cfg['prefix'] ); ?>' }}">
+								   value="{{ ( typeof data.prefix_text !== 'undefined' && data.prefix_text !== null ) ? data.prefix_text : '<?php echo esc_js( $cfg['prefix'] ); ?>' }}">
 						</div>
 					</div>
 
@@ -346,7 +340,13 @@ function wpbc_bfb_hint_shortcode_print_templates( $page, $cfg ) {
 					</div>
 
 					<div class="wpbc_bfb__inspector__note">
-						<?php echo esc_html( $exported ); ?>
+						<?php echo esc_html__( 'Exported output:', 'booking' ); ?>
+						<#
+							var exported_prefix_text = ( typeof data.prefix_text === 'string' )
+								? data.prefix_text.trim()
+								: '<?php echo esc_js( $cfg['prefix'] ); ?>';
+						#>
+						<# if ( exported_prefix_text ) { #>{{ exported_prefix_text }}&nbsp;<# } #><strong>[<?php echo esc_html( $shortcode_display ); ?>]</strong>
 					</div>
 
 					<?php if ( ! empty( $cfg['upgrade_text'] ) ) { ?>

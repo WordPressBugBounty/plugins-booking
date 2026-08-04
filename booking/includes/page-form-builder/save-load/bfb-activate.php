@@ -276,6 +276,11 @@ function wpbc_bfb_preview__force_safe_template( $page_id ) {
  */
 function wpbc_bfb_activation__create_preview_page_raw() {
 
+	/* Reuse an existing preview page on demos, but never auto-create one. */
+	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
+		return false;
+	}
+
 	$page_data = array(
 		'post_title'     => __( 'Booking Form Preview', 'booking' ),
 		'post_content'   => '', // Content will be injected dynamically at preview time  by bfb-preview.php.
@@ -783,6 +788,14 @@ function wpbc_bfb_live_demo__provision_all_standard_forms() {
 	// Write directly to the global option so the result is deterministic even
 	// when finalization runs from a regular MultiUser administrator session.
 	update_option( 'booking_form_style', wpbc_bfb_live_demo__get_form_style() );
+
+	// Live demos intentionally showcase the shared accent experience. Customer
+	// installations keep the backward-compatible disabled default.
+	$form_accent_defaults = function_exists( 'wpbc_bfb_settings__get_default_form_accent_options' )
+		? wpbc_bfb_settings__get_default_form_accent_options()
+		: array( 'booking_form_accent_color' => WPBC_DEFAULT_FORM_ACCENT_COLOR );
+	update_option( 'booking_form_accent_enabled', 'On' );
+	update_option( 'booking_form_accent_color', $form_accent_defaults['booking_form_accent_color'] );
 
 	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
 		foreach ( wpbc_bfb_live_demo__get_multiuser_owner_template_map() as $owner_user_id => $template_key ) {

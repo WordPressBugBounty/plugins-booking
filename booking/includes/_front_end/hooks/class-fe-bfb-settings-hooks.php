@@ -66,7 +66,7 @@ function wpbc_booking_form__body_html__before_postprocess__apply_bfb_vars( $form
 			return '';
 		}
 		// Allow only: number + unit.
-		return preg_match( '/^-?\d+(?:\.\d+)?(?:%|px|rem|em|vw|vh)$/', $v ) ? $v : '';
+		return preg_match( '/^\d+(?:\.\d+)?(?:%|px|rem|em|vw|vh)$/', $v ) ? $v : '';
 	};
 
 	$width             = '';
@@ -193,7 +193,7 @@ function wpbc_bfb_settings__sanitize_form_appearance_values( $values ) {
 
 	$sanitize_length = function ( $value, $fallback ) {
 		$value = trim( (string) $value );
-		if ( preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
+		if ( preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
 			return $value;
 		}
 		return $fallback;
@@ -209,7 +209,7 @@ function wpbc_bfb_settings__sanitize_form_appearance_values( $values ) {
 			return $fallback;
 		}
 		foreach ( $parts as $part ) {
-			if ( ! preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $part ) ) {
+			if ( ! preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $part ) ) {
 				return $fallback;
 			}
 		}

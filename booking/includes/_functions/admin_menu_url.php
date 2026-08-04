@@ -542,6 +542,7 @@ function wpbc_is_admin_page_with_frontend_booking_preview() {
 		|| wpbc_is_settings_messages_page()
 		|| wpbc_is_setup_wizard_page()
 		|| wpbc_is_builder_booking_form_page()
+		|| ( function_exists( 'wpbc_add_appointment_page_is_active' ) && wpbc_add_appointment_page_is_active() )
 		|| ( function_exists( 'wpbc_is_add_booking_modal_on_booking_listing_page' ) && wpbc_is_add_booking_modal_on_booking_listing_page() )
 	);
 }

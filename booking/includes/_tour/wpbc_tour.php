@@ -192,13 +192,27 @@ class WPBC_Tour_01 {
 
 
 /**
- * Just for loading CSS and  JavaScript files   and  define Ajax hook
+ * Initialize Setup Wizard tour assets after WordPress bootstrap is ready.
+ *
+ * The tour eligibility check reads Setup Wizard route state and, in MultiUser,
+ * the current WordPress user. Running it while this file is included is too
+ * early because pluggable current-user functions and just-in-time translation
+ * loading are not guaranteed until `init`.
+ *
+ * @return void
  */
-if (
-	( ! wpbc_is_this_demo() ) &&
-	( wpbc_setup_wizard_page__is_need_start() ) &&
-	( wpbc_is_user_can_access_wizard_page() )
-) {
-	$wpbc_js_css_loading = new WPBC_Tour_01;
+function wpbc_tour_maybe_initialize_setup_wizard_tour() {
+
+	if (
+		! is_admin()
+		|| wpbc_is_this_demo()
+		|| ! wpbc_setup_wizard_page__is_need_start()
+		|| ! wpbc_is_user_can_access_wizard_page()
+	) {
+		return;
+	}
+
+	$wpbc_js_css_loading = new WPBC_Tour_01();
 	$wpbc_js_css_loading->init_load_css_js();
 }
+add_action( 'init', 'wpbc_tour_maybe_initialize_setup_wizard_tour', 20 );

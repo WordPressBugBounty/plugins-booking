@@ -214,7 +214,7 @@ class WPBC_TinyMCE_Buttons {
     public function modal_content() {
         
         ?><span class="wpdevelop wpbc_page"><div class="visibility_container clearfix-height" style="display:block;"><?php
-        ?><div id="wpbc_tiny_modal" class="modal wpbc_popup_modal wpbc_tiny_modal" tabindex="-1" role="dialog">
+		?><div id="wpbc_tiny_modal" class="modal wpbc_popup_modal wpbc_tiny_modal wpbc_shortcode_config__scroll_mode" tabindex="-1" role="dialog">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">   
@@ -243,6 +243,14 @@ class WPBC_TinyMCE_Buttons {
 
 									// [bookingcalendar ... ] ----------------------------------------------------------
 									wpbc_shortcode_config__content__bookingcalendar();
+
+									if ( wpbc_is_11_5_features_enabled() ) {
+										// [booking_appointment ... ] --------------------------------------------------
+										wpbc_shortcode_config__content__booking_appointment();
+
+										// [booking_resource_selector ... ] --------------------------------------------
+										wpbc_shortcode_config__content__booking_resource_selector();
+									}
 
 									// [bookingselect ... ] ------------------------------------------------------------
 									wpbc_shortcode_config__content__bookingselect();

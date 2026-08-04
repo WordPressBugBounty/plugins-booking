@@ -45,11 +45,11 @@ class wpdev_booking {
     // <editor-fold defaultstate="collapsed" desc="   S H O R T    C O D E S ">
 
 	// FixIn: 8.1.3.5.
-	/** Listing customners bookings in timeline view
+	/** Render verified customer access and the customer's booking list.
 	 *
-	 * @param $attr	- The same parameters as for bookingtimeline shortcode (function)
+	 * @param array $attr Shortcode attributes.
 	 *
-	 * @return mixed|string|void
+	 * @return string Customer verification or booking-listing HTML.
 	 */
 	function bookingcustomerlisting_shortcode( $attr ){
 
@@ -62,65 +62,13 @@ class wpdev_booking {
 	    }
 
 		$attr = wpbc_escape_shortcode_params( $attr );          //FixIn: 9.7.3.6.1
+		$attr = is_array( $attr ) ? $attr : array();
 
-		// FixIn: 8.4.5.11.
-		if (! is_array($attr)) {
-			$attr = array();
+		if ( ! function_exists( 'wpbc_customer_bookings_render_shortcode' ) ) {
+			return '<strong>' . esc_html__( 'Customer booking access is temporarily unavailable.', 'booking' ) . '</strong>';
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-		if ( ( isset( $_GET['booking_hash'] ) ) || ( isset( $attr['booking_hash'] ) ) ) {
 
-
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-			if ( isset( $_GET['booking_hash'] ) ) {
-				$get_booking_hash = ( ( isset( $_GET['booking_hash'] ) ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' );  /* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */ /* FixIn: sanitize_unslash */
-				$my_booking_id_type = wpbc_hash__get_booking_id__resource_id( $get_booking_hash );
-
-				$attr['booking_hash'] = $get_booking_hash;
-			} else {
-				$my_booking_id_type = wpbc_hash__get_booking_id__resource_id( $attr['booking_hash'] );
-			}
-
-			if ( $my_booking_id_type !== false ) {
-
-				if ( ! isset( $attr['type' ] ) ) {																		// 8.1.3.5.2
-
-					$br_list = wpbc_get_all_booking_resources_list();
-					$br_list = array_keys( $br_list );
-					$br_list = implode(',',$br_list);
-					$attr['type' ] = $br_list;		//wpbc_get_default_resource();
-				}
-				if ( ! isset( $attr['view_days_num' ] ) ) {
-					$attr['view_days_num' ] = 30;
-				}
-				if ( ! isset( $attr['scroll_start_date' ] ) ) {
-					$attr['scroll_start_date' ] = '';
-				}
-				if ( ! isset( $attr['scroll_day' ] ) ) {
-					$attr['scroll_day' ] = 0;
-				}
-				if ( ! isset( $attr['scroll_month' ] ) ) {
-					$attr['scroll_month' ] = 0;
-				}
-				if ( ! isset( $attr['header_title' ] ) ) {
-					$attr['header_title' ] = __( 'My bookings' , 'booking');
-				}
-
-				$timeline_results = $this->bookingtimeline_shortcode( $attr );
-
-				return $timeline_results ;
-
-			} else {
-				return '<div class="wpbc_after_booking_thank_you_section"><div class="wpbc_ty__container"><div class="wpbc_ty__header"><strong>' . esc_html__('Oops!' ,'booking') . '</strong> ' . esc_html__('We could not find your booking. The link you used may be incorrect or has expired. If you need assistance, please contact our support team.' ,'booking') . '</div></div></div>';
-			}
-
-		} else {
-			return __( 'This page can only be accessed through links in emails related to your booking.', 'booking' )
-			       . ' <br/><em>'
-			       /* translators: 1: ... */
-			       . sprintf( __( 'Please check more about configuration at  %1$sthis page%2$s', 'booking' ), '<a href="https://wpbookingcalendar.com/faq/configure-editing-cancel-payment-bookings-for-visitors/" target="_blank">', '</a>.' )
-			       . '</em>';
-		}
+		return wpbc_customer_bookings_render_shortcode( $attr );
 	}
 
 	/**

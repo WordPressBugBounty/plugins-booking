@@ -727,6 +727,7 @@ function wpbc_boo_listing__sync_add_booking_modal_controls( $modal, data, mode )
 	var $form_edit_link   = $modal.find( '.wpbc_modal__add_booking__edit_form_link' );
 	var $allow_past_control = $modal.find( '.wpbc_modal__add_booking__allow_past_control' );
 	var $allow_past_toggle  = $modal.find( '[data-wpbc-add-booking-allow-past]' ).first();
+	var $appointment_entry  = $modal.find( '[data-wpbc-add-appointment-entry]' );
 	var current_mode        = mode || data.mode || 'add';
 
 	if ( 'edit' === current_mode ) {
@@ -736,6 +737,8 @@ function wpbc_boo_listing__sync_add_booking_modal_controls( $modal, data, mode )
 		$resource_control.show();
 		$allow_past_control.show();
 	}
+
+	$appointment_entry.toggle( 'add' === current_mode );
 
 	if ( data.resource_id && $resource_select.length ) {
 		$resource_select.val( String( data.resource_id ) );

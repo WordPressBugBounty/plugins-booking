@@ -237,7 +237,7 @@ function wpbc_get_time_picker_skin_url() {
 
 	// Just  default value,  if previously  was not saved any options.
 	if ( empty( get_bk_option( 'booking_timeslot_picker_skin' ) ) ) {
-		update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/light__24_8.css' );                   // FixIn: 10.4.0.1.
+		update_bk_option( 'booking_timeslot_picker_skin', '/css/time_picker_skins/form_style.css' );                  // FixIn: 11.4.4.
 	}
 
 	// Check if this skin exist in the plugin  folder.

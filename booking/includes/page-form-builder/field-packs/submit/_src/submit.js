@@ -79,7 +79,7 @@
 			// Attribute fragments.
 			const id_attr   = html_id ? ` id="${eh( html_id )}"` : '';
 			const name_attr = name_val ? ` name="${eh( name_val )}"` : '';
-			const cls_attr  = ` class="wpbc_button_light ${css_next ? eh( css_next ) : ''}"`;
+			const cls_attr  = ` class="wpbc_button wpbc_button_primary ${css_next ? eh( css_next ) : ''}"`;
 
 			// Optional help text below the button.
 			const help_html = d.help ? `<div class="wpbc_bfb__help">${eh( d.help )}</div>` : '';

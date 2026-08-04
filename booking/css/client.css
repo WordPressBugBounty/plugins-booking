@@ -9,13 +9,6 @@
  */
 
 /* ========================================================================== */
-/*  CSS Variables — shared tokens                                             */
-/* ========================================================================== */
-:root {
-	--wpbc_form-button-light-size-height: 43px;
-}
-
-/* ========================================================================== */
 /*  Booking Form: global structure + variants                                 */
 /*  What: layout scaffolding for form/calendar blocks and simple themes       */
 /* ========================================================================== */
@@ -193,13 +186,6 @@ form.booking_form {
 	width: 50px;
 }
 
-/* Buttons alignment */
-.booking_form input[type="button"],
-.booking_form input[type="submit"] {
-	width: auto;
-	vertical-align: middle;
-}
-
 /* Checkbox/Radio list spacing */
 .booking_form .wpdev-checkbox .wpdev-list-item,
 .booking_form .wpdev-radio .wpdev-list-item {
@@ -247,61 +233,6 @@ form.booking_form {
 	float: none;
 	padding: 2px 8px;
 	min-width: 4em;
-}
-
-
-/* ========================================================================== */
-/*  Buttons (front-end + payment form)                                        */
-/*  What: generic button look; keep WordPress-like defaults                   */
-/* ========================================================================== */
-.wpbc-payment-form .btn,
-.wpbc-payment-form .button,
-.booking_form_div .btn,
-.booking_form_div .button,
-.booking_form_div .submit,
-.booking_form_div .button-secondary {
-	background: #f7f7f7 none repeat scroll 0 0;
-	border-color: #ccc;
-	box-shadow: 0 1px 0 #eee;
-	color: #555;
-	vertical-align: top;
-	white-space: normal;
-}
-
-.booking_form_div .submit,
-.booking_form_div .button,
-.booking_form_div .button-primary,
-.booking_form_div .button-secondary,
-.booking_form_div .button-highlighted,
-.booking_form_div #postcustomstuff .submit input {
-	border-style: solid;
-	border-width: 1px;
-	cursor: pointer;
-	font-size: 11px !important;
-	line-height: 16px;
-	padding: 2px 8px;
-	text-decoration: none;
-	font-weight: 600;
-	margin: 10px 0;
-	float: right;
-	border-radius: 11px;
-	-moz-box-sizing: content-box;
-}
-
-/* Fix overwrite issues by themes */
-.booking_form_div input.btn-primary:hover {
-	background: #0044CC !important;
-}
-
-/* Pointer and disabled states */
-.booking_form_div input[type="button"]:hover,
-.wpbc-payment-form input[type="button"]:hover {
-	cursor: pointer !important;
-}
-
-.booking_form_div input[type="button"]:disabled:hover,
-.wpbc-payment-form input[type="button"]:disabled:hover {
-	cursor: not-allowed !important;
 }
 
 
@@ -1043,7 +974,8 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-list-item input[typ
 /* Overall container width & top spacing */
 .wpbc_container_booking_form {
 	width: calc(100% - 10px);
-	margin: 5px;
+	width: 100%;
+	margin: 5px 0;
 }
 
 /* Unified row: flex layout with small gap */
@@ -1296,7 +1228,7 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 	max-width: Min(900px, 100%);
 	font-size: 16px;
 	font-weight: 400;
-	padding: 0 10px;
+	/*padding: 0 10px;*/
 }
 
 /* Narrow screens: table and field widths */
@@ -1336,12 +1268,6 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 .add_booking_page_content p {
 	font-size: 15px;
 	/*line-height: 2;*/
-}
-
-#wpbc-admin-page.wpbc_page_tab__add-booking .wpbc_container.wpbc_form input.wpbc_button_light {
-	font-size: 1.15em;
-	line-height: 100%;
-	min-height: var(--wpbc_form-button-light-size-height);
 }
 
 /* Datepicker fine text */
@@ -1533,7 +1459,7 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 
 
 /* ========================================================================== */
-/*  Payment Gateways — layout & per-gateway buttons                           */
+/*  Payment Gateways — layout                                                 */
 /*  What: gateway cards, iDEAL table, and payment layout                      */
 /* ========================================================================== */
 .wpbc_ty__content_gateways .wpbc_ty__gateway {
@@ -1563,15 +1489,6 @@ div.wpbc_container.wpbc_form  .wpbc__field label.wpbc_inline_checkbox * {
 	justify-content: flex-start;
 	align-items: center;
 }
-.wpbc_ty__content_gateways .wpbc_ty__gateway .wpbc-payment-form .wpbc_button_gw {
-	flex: 1 1 100%;
-	display: flex;
-	flex-flow: column wrap;
-	justify-content: flex-start;
-	align-items: center;
-	width: 100%;
-}
-
 /* Small footnote under PayPal button */
 .wpbc_paypal_fee {
 	font-size: 0.68em;
@@ -1613,7 +1530,7 @@ table.wpbc_ideal_payment_table {
 
 
 /* ========================================================================== */
-/*  Dark Theme 1 — dark skins for messages, buttons, and containers           */
+/*  Dark Theme 1 — dark skins for messages and containers                     */
 /* ========================================================================== */
 
 .wpbc_theme_dark_1 .wpbc_front_end__message {
@@ -1651,7 +1568,7 @@ table.wpbc_ideal_payment_table {
 
 .wpbc_theme_dark_1 .wpbc_after_booking_thank_you_section .wpbc_ty__container {
 	border: 1px solid rgb(0, 0, 0);
-	background: #626262;
+	background: #383a3d;
 	color: #5f5f5f;
 	box-shadow: 0 0px 3px #3b3b3b;
 }

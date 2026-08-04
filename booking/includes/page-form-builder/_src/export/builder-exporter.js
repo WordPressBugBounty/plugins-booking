@@ -218,8 +218,10 @@
 			const section_col_styles = parse_col_styles_json( sec && sec.col_styles );
 
 			return {
-				id     : sec?.id,
-				columns: (sec?.columns || []).map( (col, col_index) => {
+				id       : sec?.id,
+				html_id  : sec?.html_id || '',
+				cssclass : sec?.cssclass || '',
+				columns  : (sec?.columns || []).map( (col, col_index) => {
 					const items = Array.isArray( col?.items )
 						? col.items
 						: [
@@ -463,8 +465,9 @@
 			// Row is active if ANY column carries styles.
 			var row_is_active = cols.some( function (col) { return has_non_default_col_styles( col && col.col_styles ); } );
 			var row_attr_active = row_is_active ? ' data-colstyles-active="1"' : '';
+			var row_custom_attrs = WPBC_BFB_Exporter.item_wrapper_attrs( section, ctx );
 
-			open( `<r${row_attr_active}>` );
+			open( `<r${row_custom_attrs}${row_attr_active}>` );
 
 			const bases    = compute_effective_bases( cols, cfg.gapPercent );
 			const esc_attr = core.WPBC_BFB_Sanitize.escape_html;
@@ -512,16 +515,16 @@
 
 
 		/**
-		 * Build attribute string for the <item> wrapper.
-		 * Currently only used for CAPTCHA: pushes css classes and html_id to the wrapper.
+		 * Build a sanitized custom CSS class and HTML ID attribute string for an exported wrapper.
+		 * Used by section row wrappers and fields whose attributes belong on the <item> wrapper.
 		 * Also ensures uniqueness of the html_id across the export (uses ctx.usedIds).
 		 *
-		 * @param {Object} field
+		 * @param {Object} wrapper_data Object containing optional cssclass and html_id properties.
 		 * @param {{usedIds:Set<string>}} ctx
 		 * @returns {string} e.g. ' class="x y" id="myId"'
 		 */
-		static item_wrapper_attrs(field, ctx) {
-			if ( ! field ) {
+		static item_wrapper_attrs(wrapper_data, ctx) {
+			if ( ! wrapper_data ) {
 				return '';
 			}
 			const esc_html  = core.WPBC_BFB_Sanitize.escape_html;
@@ -530,9 +533,9 @@
 
 			let out = '';
 
-			const cls_raw = String( field.cssclass_extra || field.cssclass || field.class || '' );
+			const cls_raw = String( wrapper_data.cssclass_extra || wrapper_data.cssclass || wrapper_data.class || '' );
 			const cls     = cls_sanit( cls_raw );
-			let html_id   = field.html_id ? sid( String( field.html_id ) ) : '';
+			let html_id   = wrapper_data.html_id ? sid( String( wrapper_data.html_id ) ) : '';
 			if ( html_id && ctx?.usedIds ) {
 				let unique = html_id, i = 2;
 				while ( ctx.usedIds.has( unique ) ) {

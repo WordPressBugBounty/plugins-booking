@@ -1,0 +1,83 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Automatic time picker skin: inherit colors from the active Booking Form Style.                                    */
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*
+ * Keep the established time-picker selectors and geometry as the compatibility
+ * base. The declarations below only map their public variables to the semantic
+ * Booking Form Style variables inherited by each individual form.
+ */
+@import url("light__24_8.css");
+
+.wpbc_container.wpbc_form .wpbc_times_selector,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector {
+	--wpbc_timepicker-font-size: var(--wpbc_form-button-size-font-size, 15px);
+
+	--wpbc_timepicker-bg-color: var(--wpbc_form-field-background-color, #ffffff);
+	--wpbc_timepicker-text-color: var(--wpbc_form-field-text-color, #3c434a);
+	--wpbc_timepicker-border-color: var(--wpbc_form-field-border-color, #cccccc);
+	--wpbc_timepicker-bg-color-opacity: 100%;
+
+	--wpbc_timepicker-hover-bg-color: var(--wpbc_form-field-background-color, #ffffff);
+	--wpbc_timepicker-hover-text-color: var(--wpbc_form-field-text-color, #3c434a);
+	--wpbc_timepicker-hover-border-color: var(--wpbc_form-accent-color, var(--wpbc_form-field-focus-border-color, #066aab));
+	--wpbc_timepicker-hover-bg-color-opacity: 100%;
+
+	--wpbc_timepicker-selected-bg-color: var(--wpbc_form-accent-color, var(--wpbc_form-button-background-color, #066aab));
+	--wpbc_timepicker-selected-text-color: var(--wpbc_form-accent-contrast-color, var(--wpbc_form-button-text-color, #ffffff));
+	--wpbc_timepicker-selected-border-color: var(--wpbc_form-accent-color, var(--wpbc_form-button-border-color, #066aab));
+	--wpbc_timepicker-selected-bg-color-opacity: 100%;
+
+	--wpbc_timepicker-border-width: var(--wpbc_form-button-border-size, 1px);
+	--wpbc_timepicker-border-radius: var(--wpbc_form-button-border-radius, 4px);
+}
+
+/* Neutralize theme-provided outlines, then use the same two-ring focus treatment as booking-form buttons. */
+.wpbc_container.wpbc_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled),
+.wpbc_booking_ui_theme_scope .wpbc_times_selector div:not(.wpbc_time_picker_disabled) {
+	background: var(--wpbc_timepicker-bg-color);
+	border-color: var(--wpbc_timepicker-border-color);
+	color: var(--wpbc_timepicker-text-color);
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+	transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.wpbc_container.wpbc_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled):hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled):hover,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector div:not(.wpbc_time_picker_disabled):hover,
+.wpbc_container.wpbc_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled):not(.wpbc_time_selected):focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled):not(.wpbc_time_selected):focus,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector div:not(.wpbc_time_picker_disabled):not(.wpbc_time_selected):focus {
+	background: var(--wpbc_timepicker-hover-bg-color);
+	border-color: var(--wpbc_timepicker-hover-border-color);
+	color: var(--wpbc_timepicker-hover-text-color);
+}
+
+.wpbc_container.wpbc_form .wpbc_times_selector div.wpbc_time_selected,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector div.wpbc_time_selected,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector div.wpbc_time_selected,
+.wpbc_container.wpbc_form .wpbc_times_selector div.wpbc_time_selected:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector div.wpbc_time_selected:hover,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector div.wpbc_time_selected:hover{
+	background: var(--wpbc_timepicker-selected-bg-color);
+	border-color: var(--wpbc_timepicker-selected-border-color);
+	color: var(--wpbc_timepicker-selected-text-color);
+}
+
+.wpbc_container.wpbc_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled):focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector div:not(.wpbc_time_picker_disabled):focus,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector div:not(.wpbc_time_picker_disabled):focus {
+	box-shadow: 0 0 0 2px var(--wpbc_form-button-focus-inner-color, var(--wpbc_form-field-background-color, #ffffff));
+	outline-color: var(--wpbc_form-choice-focus-color, var(--wpbc_form-field-focus-border-color, #066aab));
+}
+
+/* Match the empty result notice to the same form surface instead of forcing a light-only palette. */
+.wpbc_container.wpbc_form .wpbc_times_selector span.wpbc_no_time_pickers,
+.wpbc_container.wpbc_container_booking_form .wpbc_times_selector span.wpbc_no_time_pickers,
+.wpbc_booking_ui_theme_scope .wpbc_times_selector span.wpbc_no_time_pickers {
+	background: var(--wpbc_form-field-background-color, #f6f6f6);
+	border-color: var(--wpbc_form-field-border-color, #dcdcdc);
+	color: var(--wpbc_form-field-disabled-color, #959595);
+}

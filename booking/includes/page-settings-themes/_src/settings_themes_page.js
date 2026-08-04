@@ -5,6 +5,12 @@
 	'use strict';
 
 	var cfg = w.wpbc_settings_themes_page || {};
+	var localized_default_form_accent_color = String( cfg.form_accent_defaults && cfg.form_accent_defaults.booking_form_accent_color || '' ).trim();
+
+	/** @type {string} Default accent supplied by the PHP configuration constant. */
+	var default_form_accent_color = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( localized_default_form_accent_color )
+		? localized_default_form_accent_color
+		: '';
 	var preview_ajax = null;
 	var preview_timer = 0;
 	var preview_notice_timer = 0;
@@ -101,9 +107,10 @@
 		} );
 
 		data.booking_timeslot_picker = $form.find( '[name="booking_timeslot_picker"]' ).prop( 'checked' ) ? 'On' : 'Off';
+		data.booking_form_accent_enabled = $form.find( '[name="booking_form_accent_enabled"]' ).prop( 'checked' ) ? 'On' : 'Off';
 		data.resource_id = $( '#wpbc_theme_resource_id' ).val() || '';
 		data.months_count = $( '#wpbc_theme_months_count' ).val() || '';
-		data.preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'calendar';
+		data.preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'form';
 		data.custom_booking_form = $( '#wpbc_theme_custom_form' ).val() || 'standard';
 
 		return data;
@@ -256,7 +263,7 @@
 
 	function sanitize_theme_length( value, fallback ) {
 		var v = String( value || '' ).trim();
-		return /^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( v ) ? v : fallback;
+		return /^\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( v ) ? v : fallback;
 	}
 
 	function sanitize_theme_spacing( value, fallback ) {
@@ -268,11 +275,109 @@
 			return fallback;
 		}
 		for ( i = 0; i < parts.length; i++ ) {
-			if ( ! /^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( parts[i] ) ) {
+			if ( ! /^\d+(?:\.\d+)?(?:px|rem|em|%)$/i.test( parts[i] ) ) {
 				return fallback;
 			}
 		}
 		return parts.join( ' ' );
+	}
+
+	function mix_theme_colors( color, target, amount ) {
+		var source = sanitize_theme_color( color, default_form_accent_color ).replace( '#', '' );
+		var destination = sanitize_theme_color( target, '#000000' ).replace( '#', '' );
+		var channels = [];
+		var index;
+
+		if ( 3 === source.length ) {
+			source = source.replace( /./g, function ( value ) { return value + value; } );
+		}
+		for ( index = 0; index < 3; index++ ) {
+			channels.push( Math.round( parseInt( source.substr( index * 2, 2 ), 16 ) + ( ( parseInt( destination.substr( index * 2, 2 ), 16 ) - parseInt( source.substr( index * 2, 2 ), 16 ) ) * amount ) ) );
+		}
+
+		return '#' + channels.map( function ( channel ) { return ( '0' + channel.toString( 16 ) ).slice( -2 ); } ).join( '' );
+	}
+
+	function get_theme_color_luminance( color ) {
+		var hex = sanitize_theme_color( color, default_form_accent_color ).replace( '#', '' );
+		var channels;
+		if ( 3 === hex.length ) {
+			hex = hex.replace( /./g, function ( value ) { return value + value; } );
+		}
+		channels = [ 0, 1, 2 ].map( function ( index ) {
+			var channel = parseInt( hex.substr( index * 2, 2 ), 16 ) / 255;
+			return channel <= 0.03928 ? channel / 12.92 : Math.pow( ( channel + 0.055 ) / 1.055, 2.4 );
+		} );
+		return ( 0.2126 * channels[0] ) + ( 0.7152 * channels[1] ) + ( 0.0722 * channels[2] );
+	}
+
+	/**
+	 * Apply the accent to preview variables while respecting Custom button controls.
+	 *
+	 * @param {Object}  css_vars                      Resolved preview variables.
+	 * @param {boolean} preserve_custom_button_colors Whether Custom button variables remain authoritative.
+	 * @return {Object} Preview variables with the optional accent overlay.
+	 */
+	function apply_form_accent_css_vars( css_vars, preserve_custom_button_colors ) {
+		var enabled = get_form().find( '[name="booking_form_accent_enabled"]' ).prop( 'checked' );
+		var accent_raw = String( get_form().find( '[name="booking_form_accent_color"]' ).val() || '' ).trim();
+		var accent = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( accent_raw ) ? accent_raw : default_form_accent_color;
+		var luminance;
+		var hover;
+		var contrast;
+		var hover_contrast;
+
+		if ( ! enabled ) {
+			return css_vars;
+		}
+		if ( ! /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( accent ) ) {
+			return css_vars;
+		}
+		luminance = get_theme_color_luminance( accent );
+		contrast = luminance > 0.18 ? '#000000' : '#ffffff';
+		hover = mix_theme_colors( accent, '#ffffff' === contrast ? '#000000' : '#ffffff', 0.10 );
+		hover_contrast = contrast;
+
+		var accent_overlay = {
+			'--wpbc_form-accent-color': accent,
+			'--wpbc_form-accent-hover-color': hover,
+			'--wpbc_form-accent-contrast-color': contrast,
+			'--wpbc_form-field-focus-border-color': accent,
+			'--wpbc_form-field-focus-shadow-color': accent,
+			'--wpbc_form-choice-checked-border-color': accent,
+			'--wpbc_form-choice-checked-color': accent,
+			'--wpbc_form-choice-focus-color': accent,
+			'--wpbc_form-button-background-color': accent,
+			'--wpbc_form-button-background-color-alt': accent,
+			'--wpbc_form-button-border-color': accent,
+			'--wpbc_form-button-text-color': contrast,
+			'--wpbc_form-button-text-color-alt': contrast,
+			'--wpbc_form-button-hover-background-color': hover,
+			'--wpbc_form-button-hover-border-color': hover,
+			'--wpbc_form-button-hover-text-color': hover_contrast,
+			'--wpbc_form-button-light-hover-border-color': accent,
+			'--wpbc_form-button-primary-hover-border-color': hover,
+			'--wpbc_form-page-break-color': accent
+		};
+
+		if ( preserve_custom_button_colors ) {
+			[
+				'--wpbc_form-button-background-color',
+				'--wpbc_form-button-background-color-alt',
+				'--wpbc_form-button-border-color',
+				'--wpbc_form-button-text-color',
+				'--wpbc_form-button-text-color-alt',
+				'--wpbc_form-button-hover-background-color',
+				'--wpbc_form-button-hover-border-color',
+				'--wpbc_form-button-hover-text-color',
+				'--wpbc_form-button-light-hover-border-color',
+				'--wpbc_form-button-primary-hover-border-color'
+			].forEach( function ( css_var_name ) {
+				delete accent_overlay[ css_var_name ];
+			} );
+		}
+
+		return $.extend( {}, css_vars, accent_overlay );
 	}
 
 	function get_form_style_presets() {
@@ -307,7 +412,9 @@
 			booking_form_custom_secondary_button_border_color: '#eeeeee',
 			booking_form_custom_secondary_button_hover_background_color: '#fdfdfd',
 			booking_form_custom_secondary_button_hover_text_color: '#444444',
-			booking_form_custom_secondary_button_hover_border_color: '#4d91cd'
+			booking_form_custom_secondary_button_hover_border_color: '#4d91cd',
+			booking_form_custom_button_border_width: '1px',
+			booking_form_custom_button_border_radius: '3px'
 		}, cfg.custom_form_style_defaults && 'object' === typeof cfg.custom_form_style_defaults ? cfg.custom_form_style_defaults : {} );
 	}
 
@@ -333,6 +440,9 @@
 			'--wpbc_form-field-focus-border-color': '#066aab',
 			'--wpbc_form-field-focus-shadow-color': '#066aab',
 			'--wpbc_form-field-disabled-color'    : 'rgba(0, 0, 0, 0.2)',
+			'--wpbc_form-button-border-radius'    : sanitize_theme_length( values.booking_form_custom_button_border_radius, defaults.booking_form_custom_button_border_radius ),
+			'--wpbc_form-button-border-style'     : 'solid',
+			'--wpbc_form-button-border-size'      : sanitize_theme_length( values.booking_form_custom_button_border_width, defaults.booking_form_custom_button_border_width ),
 			'--wpbc_form-button-background-color' : sanitize_theme_color( values.booking_form_custom_button_background_color, defaults.booking_form_custom_button_background_color ),
 			'--wpbc_form-button-background-color-alt': sanitize_theme_color( values.booking_form_custom_button_background_color, defaults.booking_form_custom_button_background_color ),
 			'--wpbc_form-button-border-color'     : sanitize_theme_color( values.booking_form_custom_button_border_color, defaults.booking_form_custom_button_border_color ),
@@ -346,6 +456,7 @@
 			'--wpbc_form-choice-focus-color'      : '#066aab',
 			'--wpbc_form-button-light-background-color': sanitize_theme_color( values.booking_form_custom_secondary_button_background_color, defaults.booking_form_custom_secondary_button_background_color ),
 			'--wpbc_form-button-light-border-color': sanitize_theme_color( values.booking_form_custom_secondary_button_border_color, defaults.booking_form_custom_secondary_button_border_color ),
+			'--wpbc_form-button-light-border-size': sanitize_theme_length( values.booking_form_custom_button_border_width, defaults.booking_form_custom_button_border_width ),
 			'--wpbc_form-button-light-text-color' : sanitize_theme_color( values.booking_form_custom_secondary_button_text_color, defaults.booking_form_custom_secondary_button_text_color ),
 			'--wpbc_form-button-light-box-shadow' : '0 2px 10px 2px #ffffff54',
 			'--wpbc_form-button-light-hover-background-color': sanitize_theme_color( values.booking_form_custom_secondary_button_hover_background_color, defaults.booking_form_custom_secondary_button_hover_background_color ),
@@ -390,10 +501,10 @@
 		var preset = presets[ style ] || presets.light_bordered || {};
 
 		if ( 'custom' === style || preset.custom ) {
-			return get_custom_form_style_css_vars();
+			return apply_form_accent_css_vars( get_custom_form_style_css_vars(), true );
 		}
 
-		return preset.css_vars && 'object' === typeof preset.css_vars ? preset.css_vars : {};
+		return apply_form_accent_css_vars( preset.css_vars && 'object' === typeof preset.css_vars ? preset.css_vars : {} );
 	}
 
 	function apply_form_style_to_preview() {
@@ -539,7 +650,7 @@
 
 	function ensure_calendar_only_days_selection() {
 		var $preview = $( '[data-wpbc-theme-preview="1"]' ).first();
-		var preview_mode = $preview.attr( 'data-preview-mode' ) || $( '#wpbc_theme_preview_mode' ).val() || 'calendar';
+		var preview_mode = $preview.attr( 'data-preview-mode' ) || $( '#wpbc_theme_preview_mode' ).val() || 'form';
 		var resource_id = parseInt( $preview.attr( 'data-resource-id' ) || 0, 10 );
 		var expected = cfg.days_selection || {};
 		var expected_mode = String( expected.days_select_mode || 'multiple' );
@@ -568,7 +679,7 @@
 
 	function apply_related_skins_for_theme( theme ) {
 		var calendar_skin = theme ? '/css/skins/24_9__dark_1.css' : '/css/skins/25_5__square_1.css';
-		var time_skin = theme ? '/css/time_picker_skins/black.css' : '/css/time_picker_skins/light__24_8.css';
+		var time_skin = '/css/time_picker_skins/form_style.css';
 
 		select_if_option_exists( $( '[data-wpbc-theme-calendar-skin="1"]' ), calendar_skin );
 		select_if_option_exists( $( '[data-wpbc-theme-time-skin="1"]' ), time_skin );
@@ -597,7 +708,7 @@
 
 	function maybe_show_preview_notice( $source ) {
 		var notice_type = $source.attr( 'data-wpbc-theme-preview-notice' ) || '';
-		var preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'calendar';
+		var preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'form';
 		var message = get_preview_notice_message( notice_type );
 		var $control = $( '.wpbc_theme_control_preview_mode' ).first();
 
@@ -619,7 +730,7 @@
 	}
 
 	function show_calendar_only_theme_notice() {
-		var preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'calendar';
+		var preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'form';
 
 		if ( 'calendar' !== preview_mode ) {
 			return;
@@ -654,7 +765,7 @@
 	}
 
 	function refresh_preview_mode_controls() {
-		var preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'calendar';
+		var preview_mode = $( '#wpbc_theme_preview_mode' ).val() || 'form';
 		$( '[data-wpbc-theme-form-control="1"]' ).toggleClass( 'is-visible', 'form' === preview_mode );
 	}
 
@@ -803,8 +914,14 @@
 		} );
 
 		$( document ).on( 'input change', '[data-wpbc-theme-appearance-control]', function () {
+			// Coloris emits continuous input events. Accent and appearance values are
+			// CSS-only, so update the existing preview without rebuilding it by AJAX.
 			apply_form_appearance();
-			schedule_preview_refresh();
+		} );
+
+		$( document ).on( 'change', '[data-wpbc-theme-accent-toggle="1"]', function () {
+			$( '[data-wpbc-theme-accent-dependent="1"]' ).toggle( $( this ).prop( 'checked' ) );
+			apply_form_appearance();
 		} );
 
 		$( document ).on( 'change', '[data-wpbc-theme-calendar-skin="1"]', function () {
@@ -840,6 +957,14 @@
 		}
 
 		bind_events();
+		if ( w.Coloris ) {
+			w.Coloris( {
+				el: '.wpbc_theme_coloris',
+				alpha: false,
+				format: 'hex',
+				themeMode: 'auto'
+			} );
+		}
 		refresh_preview_mode_controls();
 		apply_form_theme();
 		apply_form_appearance();

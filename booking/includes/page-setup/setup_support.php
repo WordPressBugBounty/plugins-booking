@@ -56,6 +56,85 @@ function wpbc_setup_wizard_page__is_all_steps_completed() {
 	return $is_all_steps_completed;
 }
 
+
+/**
+ * Check whether the Setup Wizard has started and is not yet complete.
+ *
+ * Explicit Setup Wizard requests count as active before the first step has
+ * been saved. Persisted completed steps keep the wizard active while the user
+ * visits another Booking Calendar administration page. A completed or skipped
+ * wizard is not considered in progress.
+ *
+ * @return bool True while an unfinished Setup Wizard is in progress.
+ */
+function wpbc_setup_wizard_page__is_in_progress() {
+
+	if ( wpbc_setup_wizard_page__is_all_steps_completed() ) {
+		return false;
+	}
+
+	if ( function_exists( 'wpbc_is_setup_wizard_page' ) && wpbc_is_setup_wizard_page() ) {
+		return true;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+	$setup_context = isset( $_GET['wpbc_setup'] ) && is_scalar( $_GET['wpbc_setup'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+		? sanitize_text_field( wp_unslash( $_GET['wpbc_setup'] ) )
+		: '';
+
+	if ( '1' === $setup_context ) {
+		return true;
+	}
+
+	$steps_is_done = get_bk_option( 'booking_setup_wizard_page_steps_is_done' );
+
+	if ( ! is_array( $steps_is_done ) ) {
+		return false;
+	}
+
+	foreach ( $steps_is_done as $is_step_done ) {
+		if ( ! empty( $is_step_done ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+/**
+ * Check whether the current request is one explicit external Setup Wizard step.
+ *
+ * The setup context flag prevents ordinary visits to the same administration
+ * page from receiving wizard-only defaults.
+ *
+ * @param string $step_name Expected Setup Wizard step identifier.
+ *
+ * @return bool True when the unfinished wizard explicitly requested the step.
+ */
+function wpbc_setup_wizard_page__is_active_step( $step_name ) {
+
+	$step_name = sanitize_key( (string) $step_name );
+
+	if ( '' === $step_name || ! wpbc_setup_wizard_page__is_in_progress() ) {
+		return false;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+	$setup_context = isset( $_GET['wpbc_setup'] ) && is_scalar( $_GET['wpbc_setup'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+		? sanitize_text_field( wp_unslash( $_GET['wpbc_setup'] ) )
+		: '';
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+	$request_step = isset( $_GET['wpbc_setup_step'] ) && is_scalar( $_GET['wpbc_setup_step'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+		? sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) )
+		: '';
+
+	return '1' === $setup_context && $step_name === $request_step;
+}
+
 /**
  * Is user  can  access Wizard Setup  page ?
  * @return bool

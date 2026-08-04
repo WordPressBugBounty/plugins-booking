@@ -55,6 +55,7 @@ function wpbc_settings_messages__get_groups() {
 		'form_validation' => array( 'title' => __( 'Form Validation', 'booking' ), 'icon' => 'wpbc-bi-ui-checks' ),
 		'time_validation' => array( 'title' => __( 'Time Validation', 'booking' ), 'icon' => 'wpbc-bi-clock' ),
 		'submission'      => array( 'title' => __( 'Booking Submission', 'booking' ), 'icon' => 'wpbc-bi-send' ),
+		'booking_summaries' => array( 'title' => __( 'Booking Summaries', 'booking' ), 'icon' => 'wpbc-bi-card-text' ),
 		'captcha'         => array( 'title' => __( 'CAPTCHA', 'booking' ), 'icon' => 'wpbc-bi-shield-check' ),
 	);
 }

@@ -47,6 +47,96 @@
 	padding: 0;
 }
 
+/**
+ * Content-only inspector body.
+ *
+ * Use this modifier for Help, information, and other panels whose direct
+ * children are normal content instead of collapsible groups. Collapsible
+ * inspectors keep the unpadded base body and own their spacing per group.
+ */
+.wpbc_rightbar_palette .wpbc_bfb__inspector__body.wpbc_bfb__inspector__body--content {
+	box-sizing: border-box;
+	padding: var(--wpbc-inspector-content-padding, 18px);
+}
+
+/**
+ * Content section inside an otherwise unpadded or collapsible inspector body.
+ *
+ * Use this for a standalone action row, notice, summary, or text block placed
+ * beside collapsible groups. Use the body modifier when the entire panel is
+ * normal content.
+ */
+.wpbc_rightbar_palette .wpbc_bfb__inspector__section--content {
+	box-sizing: border-box;
+	padding: var(--wpbc-inspector-content-padding, 18px);
+}
+
+/**
+ * Standard Builder-style field rows shared by all right-palette inspectors.
+ */
+.wpbc_rightbar_palette .inspector__row {
+	align-items: flex-start;
+	box-sizing: border-box;
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+	gap: 10px;
+	justify-content: flex-start;
+	width: 100%;
+}
+
+.wpbc_rightbar_palette .inspector__label,
+.wpbc_rightbar_palette .inspector__control {
+	box-sizing: border-box;
+	flex: 1 1 100%;
+}
+
+.wpbc_rightbar_palette .inspector__label {
+	color: var(--wpbc-palette-text);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.75;
+	margin: 0;
+}
+
+.wpbc_rightbar_palette .inspector__control > input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+.wpbc_rightbar_palette .inspector__control > select,
+.wpbc_rightbar_palette .inspector__control > textarea,
+.wpbc_rightbar_palette .inspector__input {
+	box-sizing: border-box;
+	line-height: 2.4;
+	max-width: 100%;
+	width: 100%;
+}
+
+.wpbc_rightbar_palette .inspector__control--inline {
+	align-items: stretch;
+	display: flex;
+	flex-flow: row nowrap;
+	gap: 8px;
+}
+
+.wpbc_rightbar_palette .inspector__control--inline .inspector__input--unit {
+	flex: 0 0 72px;
+	width: 72px;
+}
+
+.wpbc_rightbar_palette .inspector__row--toggle .wpbc_ui__toggle {
+	align-items: center;
+	display: flex;
+	float: none;
+	margin: 0;
+	min-height: 26px;
+	position: static;
+}
+
+.wpbc_rightbar_palette .inspector__help {
+	color: var(--wpbc-palette-muted);
+	font-size: 12px;
+	line-height: 1.5;
+	margin: 7px 0 0;
+}
+
 .wpbc_rightbar_palette__row,
 .wpbc_rightbar_palette .wpbc_ts_inspector_row {
 	align-items: flex-start;

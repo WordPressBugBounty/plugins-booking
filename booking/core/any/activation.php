@@ -107,7 +107,7 @@ abstract class WPBC_Install {
 
             if ($is_delete_if_deactive == 'On') { ?>
                 <div class="plugin-update-tr">
-                    <div class="update-message notice inline notice-warning notice-altNO" style="font-size: 1em;line-height: 2em;margin:0 5px 10px;border-left: 3px solid #dd7000;"><?php
+                    <div class="update-message notice inline notice-error" style="line-height: 2.2em;border-left: 3px solid #cc1818;margin-left: 0;color: #cc1818;background: #fff6f4;"><?php
 	                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	                    echo $this->init_option['message-delete_data']; ?></div>
 				</div>

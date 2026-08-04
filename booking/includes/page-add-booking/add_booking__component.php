@@ -228,7 +228,7 @@ class WPBC_Add_Booking_Component {
 	 *
 	 * @return array
 	 */
-	private static function get_allow_past_min_date_arr( $args ) {
+	public static function get_allow_past_min_date_arr( $args ) {
 
 		if ( empty( $args['allow_past'] ) && empty( $args['booking_hash'] ) ) {
 			return array();
@@ -383,6 +383,21 @@ class WPBC_Add_Booking_Component {
 	 */
 	public static function get_saved_user_calendar_options() {
 
+		return self::format_calendar_options( self::get_saved_user_calendar_settings() );
+	}
+
+
+	/**
+	 * Get the raw per-user Add Booking calendar settings.
+	 *
+	 * The inspector needs the individual saved fields, while
+	 * get_saved_user_calendar_options() preserves the renderer-formatted public
+	 * result used by the Booking Form component.
+	 *
+	 * @return array<string,mixed> Raw saved calendar settings.
+	 */
+	public static function get_saved_user_calendar_settings() {
+
 		$user_calendar_options = get_user_option( 'booking_custom_' . 'add_booking_calendar_options', wpbc_get_current_user_id() );
 
 		if ( false === $user_calendar_options ) {
@@ -391,7 +406,7 @@ class WPBC_Add_Booking_Component {
 			$user_calendar_options = maybe_unserialize( $user_calendar_options );
 		}
 
-		return self::format_calendar_options( $user_calendar_options );
+		return is_array( $user_calendar_options ) ? $user_calendar_options : array();
 	}
 
 

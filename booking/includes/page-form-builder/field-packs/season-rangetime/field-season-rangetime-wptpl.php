@@ -380,6 +380,7 @@ function wpbc_bfb_field_season_rangetime_wptpl_print_templates( $page ) {
 						<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i>
 					</button>
 					<div class="group__fields">
+						<?php wpbc_bfb_time_picker__print_inspector_group(); ?>
 						<div class="inspector__row">
 							<label class="inspector__label"><?php echo esc_html__( 'CSS class', 'booking' ); ?></label>
 							<div class="inspector__control">

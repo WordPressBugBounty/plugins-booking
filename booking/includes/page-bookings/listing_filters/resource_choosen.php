@@ -27,121 +27,55 @@ class WPBC_Listing_Actions__Resource_Choosen{
 			return '';
 		}
 
-		ob_start();
-
-
+		$is_provider_mode   = function_exists( 'wpbc_appointment_services_is_appointment_listing_mode' ) && wpbc_appointment_services_is_appointment_listing_mode();
+		$placeholder        = $is_provider_mode ? __( 'Select Providers', 'booking' ) : __( 'Select booking resources', 'booking' );
+		$clear_title        = $is_provider_mode ? __( 'Clear Provider selection', 'booking' ) : __( 'Clear booking resources selection', 'booking' );
+		$selection_message  = $is_provider_mode
+			? __( 'When All Providers is selected, clear that selection before choosing individual Providers.', 'booking' )
+			: __( 'When All resources is selected, clear that selection before choosing individual booking resources.', 'booking' );
 		$select_box_options = self::get_booking_resources_arr();
+		$element_id         = 'wh_booking_type';
+		$selected_resources = isset( $escaped_search_request_params[ $element_id ] )
+			? $escaped_search_request_params[ $element_id ]
+			: $defaults[ $element_id ];
 
-		$el_id         = 'wh_booking_type';
-		$params_select = array(
-			'id'               => $el_id,                        // HTML ID  of element.
-			'name'             => $el_id,
-			'label'            => '',
-			'style'            => 'display:none;',               // CSS of select element.
-			'class'            => 'chzn-select wpbc_ui_el__choosen_select',                 // CSS Class of select element.
-			'multiple'         => true,
-			'attr'             => array( 'data-placeholder' => __( 'Select booking resources', 'booking' ) ),  // Any additional attributes, if this radio | checkbox element.
-			'disabled'         => false,
-			'disabled_options' => array(),                       // If some options disabled, then it has to list here.
-			'options'          => $select_box_options,
-			'value'            => isset( $escaped_search_request_params[ $el_id ] ) ? $escaped_search_request_params[ $el_id ] : $defaults[ $el_id ],  // Some Value from options array that selected by default.
-			// 'onfocus' =>  "console.log( 'ON FOCUS:', jQuery( this ).val(), 'in element:' , jQuery( this ) );",       // JavaScript code.
-			// 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).val(), 'in element:' , jQuery( this ) );",      // JavaScript code.
+		wpbc_ui_chosen_filter_enqueue_assets();
+
+		return wpbc_ui_chosen_filter_get_html(
+			array(
+				'id'                    => $element_id,
+				'name'                  => $element_id,
+				'options'               => $select_box_options,
+				'selected_values'       => $selected_resources,
+				'multiple'              => true,
+				'placeholder'           => $placeholder,
+				'clear_label'           => $clear_title,
+				'listing_param'         => $element_id,
+				'listing_value_type'    => 'digit_or_csd_array',
+				// Preserve the historical empty-selection request used to show bookings whose resource was deleted.
+				'empty_request_value'   => array( '-1' ),
+				'clear_selected_values' => array(),
+				'exclusive_values'      => array( '0' ),
+				'exclusive_message'     => $selection_message,
+			)
 		);
-
-		?><div class="wpbc_ui_el wpbc_ui_el__choosen wpbc_ui_el__choosen_<?php echo esc_attr( $el_id ); ?>"><?php
-			wpbc_flex_select( $params_select );
-			?>
-			<div class="wpbc_ui_el__choosen_reset_buttons">
-				<input type="hidden" name="blank_field__this_field_only_for_formatting_buttons" value="">
-				<a data-original-title="<?php esc_attr_e( 'Clear booking resources selection', 'booking' ); ?>"
-				   rel="tooltip"
-				   class="tooltip_top my_class4"
-				   onclick="javascript:wpbc_bo_listing__choozen__remove_all_options('#<?php echo esc_attr( $el_id ); ?>');"
-				><i class="wpbc_icn_close"></i></a>
-			</div>
-			<?php
-
-		?></div><?php
-
-		self::js_for_choosen( $el_id  );
-
-		$html = ob_get_clean();
-
-		return $html;
 	}
 
+	/**
+	 * Preserve the historical public initializer while the shared component owns JavaScript behavior.
+	 *
+	 * @param string $el_id Select element identifier retained for backward compatibility.
+	 *
+	 * @return void
+	 */
 	public static function js_for_choosen( $el_id ) {
-		?>
-		<script type="text/javascript">
-            function wpbc_bo_listing__choozen__remove_all_options( selectbox_id ){
-				jQuery( selectbox_id + ' option' ).prop( 'selected', false );    										// Disable selection in the real selectbox
-				jQuery( selectbox_id ).trigger( 'chosen:updated' );            											// Remove all fields from the Choozen field	// FixIn: 8.7.9.9.
-				jQuery( selectbox_id ).trigger( 'change' );
-            }
-			<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo wpbc_jq_ready_start();
-			?>
-			if ( 'function' === typeof( jQuery("#<?php echo esc_attr( $el_id ); ?>").chosen ) ) {
-
-				// Init Choozen
-				jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).chosen( { no_results_text: "No results matched" } );
-
-				// Show remove button(s).
-				if ( jQuery( '#<?php echo esc_attr( $el_id ); ?>_chosen' ).length ) {
-					jQuery( '.wpbc_ui_el__choosen_<?php echo esc_attr( $el_id ); ?> .wpbc_ui_el__choosen_reset_buttons').css('display','flex');
-					jQuery( "#<?php echo esc_attr( $el_id ); ?>_chosen" ).attr( "tabindex", "0" );
-				}
-
-				// Catch any selections in the Choozen.
-				jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).chosen().on( 'change', function (va) {
-
-					if ( jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).val() != null ) {
-						//So we are having aready values
-						jQuery.each( jQuery( "#<?php echo esc_attr( $el_id ); ?>" ).val(), function (index, value) {
-							// Ok we are have array with  all booking resources ID.
-							if ( (value.indexOf( ',' ) > 0) || ('0' === value) ) {
-
-								// Disable selection in the real selectbox
-								jQuery( '#<?php echo esc_attr( $el_id ); ?>' + ' option' ).removeAttr( 'selected' );
-
-								// Select "All resources" option in real selectbox
-								jQuery( '#<?php echo esc_attr( $el_id ); ?>' + ' option:first-child' ).prop( "selected", true );
-
-								// Highlight options in chosen, before removing.
-								jQuery('#<?php echo esc_attr( $el_id ); ?>_chosen li.search-choice:not(:contains(' + '<?php
-									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-									echo html_entity_decode( esc_js( __( 'All resources', 'booking' ) ) ); ?>' + '))')
-									.fadeOut(350).fadeIn(300)
-									.fadeOut(350).fadeIn(400)
-									.fadeOut(350).fadeIn(300)
-									.fadeOut(350).fadeIn(400)
-									.animate({opacity: 1}, 4000);
-
-								// Update chosen LI choices, relative selected options in selectbox
-								var all_resources_timer = setTimeout( function (){
-									jQuery( '#<?php echo esc_attr( $el_id ); ?>' ).trigger( 'chosen:updated' );            			// Remove all fields from the Choozen field
-								}, 2000 );
-								var my_message = '<?php echo esc_js( __( 'Please note, its not possible to add new resources, if "All resources" option is selected. Please clear the selection, then add new resources.', 'booking' ) ); ?>';
-								wpbc_admin_show_message( my_message, 'warning', 10000 );
-							}
-						} );
-					}
-				});
-
-			} else {
-				alert( 'WPBC Error. JavaScript library "chosen" was not defined.' );
-			}
-			<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo wpbc_jq_ready_end();
-			?>
-		</script>
-		<?php
+		unset( $el_id );
+		wpbc_ui_chosen_filter_enqueue_assets();
 	}
 
 	public static function get_booking_resources_arr() {
+		$is_provider_mode    = function_exists( 'wpbc_appointment_services_is_appointment_listing_mode' ) && wpbc_appointment_services_is_appointment_listing_mode();
+		$all_resources_label = $is_provider_mode ? __( 'All Providers', 'booking' ) : __( 'All resources', 'booking' );
 
 		/**
 		 * $resources_sql_arr:
@@ -203,8 +137,8 @@ class WPBC_Listing_Actions__Resource_Choosen{
 
 				/* implode( ',', $resources_id_arr ) */
 				$select_box_options[0] = array(
-					'title' => __( 'All resources', 'booking' ),
-					'attr'  => array( 'title' => '<strong>' . esc_html__( 'All resources', 'booking' ) . '</strong>' ),
+					'title' => $all_resources_label,
+					'attr'  => array( 'title' => '<strong>' . esc_html( $all_resources_label ) . '</strong>' ),
 					'style' => 'font-weight:600;',
 				);
 			}

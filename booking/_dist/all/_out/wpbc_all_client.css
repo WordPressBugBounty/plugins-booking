@@ -249,6 +249,8 @@ div div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divide
   --wpbc_form-button-border-radius: 3px;
   --wpbc_form-button-border-style: none;
   --wpbc_form-button-border-size: 1px;
+  --wpbc_form-button-light-border-style: solid;
+  --wpbc_form-button-light-border-size: var(--wpbc_form-button-border-size, 1px);
   --wpbc_form-button-background-color: #066aab;
   --wpbc_form-button-background-color-alt: #066aab;
   --wpbc_form-button-border-color: #066aab;
@@ -283,14 +285,13 @@ div div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divide
   --wpbc_form-label-size-line-height: 19px;
   --wpbc_form-label-size-sublabel-font-size: 14px;
   --wpbc_form-label-size-sublabel-line-height: 17px;
-  --wpbc_form-button-size-font-size: 17px;
+  --wpbc_form-button-size-font-size: 16px;
   --wpbc_form-button-size-height: 41px;
   --wpbc_form-button-size-padding-h: 15px;
   --wpbc_form-button-size-margin-top: 10px;
   --wpbc_form-container-shadow-size-box-shadow: none;
   --wpbc_form-marging-between-several-checkbox-radio: 30px;
-  --wpbc_form-padding-between-label-checkbox-radio: 8px;
-  --wpbc_form-button-light-size-height: 43px
+  --wpbc_form-padding-between-label-checkbox-radio: 8px
 }
 /*! --------------------------------------------------------------------------------------------------------------------
  *  General Fields
@@ -826,154 +827,168 @@ div.wpbc_container.wpbc_form.wpbc_container_booking_form input[type=radio].wpbc_
  * buttons only; admin buttons stay in the admin CSS sources.
  */
 /*! --------------------------------------------------------------------------------------------------------------------
- *  Submit buttons
+ *  Shared Booking Calendar button component
+ *
+ *  New public UI should use `.wpbc_button` plus a semantic modifier. The
+ *  `.wpbc_button_light` and unclassed submit selectors are compatibility
+ *  adapters for old custom form templates. All standard buttons deliberately
+ *  share one fixed outer geometry. Secondary buttons may use a visible border,
+ *  but border-box sizing keeps their outer height and alignment identical.
+ *  An explicit `.wpbc_button_secondary` modifier always wins over the legacy
+ *  rule that treats otherwise unclassified submit controls as primary.
  * ------------------------------------------------------------------------------------------------------------------ */
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light),
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light),
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light),
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light) {
-  height: var(--wpbc_form-button-size-height);
-  background-color: var(--wpbc_form-button-background-color-alt,var(--wpbc_form-button-background-color));
-  border-radius: var(--wpbc_form-button-border-radius);
-  border-style: var(--wpbc_form-button-border-style);
-  border-color: var(--wpbc_form-button-border-color);
-  border-width: var(--wpbc_form-button-border-size);
-  box-shadow: none;
-  color: var(--wpbc_form-button-text-color);
-  padding: 0 var(--wpbc_form-button-size-padding-h);
-  font-family: inherit;
-  font-weight: 500;
-  font-size: var(--wpbc_form-button-size-font-size);
-  line-height: 100%;
-  cursor: pointer;
-  transition: .15s ease-in-out;
-  position: relative;
-  text-decoration: none
-}
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(:hover):not(:active),
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(:hover):not(:active),
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(:hover):not(:active),
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(:hover):not(:active) {
-  background-color: var(--wpbc_form-button-background-color-alt,var(--wpbc_form-button-background-color));
-  color: var(--wpbc_form-button-text-color)
-}
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):active,
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):focus,
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):hover,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):active,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):focus,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):hover,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):active,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):focus,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):hover,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):active,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):focus,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):hover {
-  background: var(--wpbc_form-button-hover-background-color,linear-gradient(0deg,rgba(0,0,0,.2),rgba(0,0,0,.2)),var(--wpbc_form-button-background-color-alt,var(--wpbc_form-button-background-color)));
-  border-color: var(--wpbc_form-button-hover-border-color,var(--wpbc_form-button-border-color));
-  color: var(--wpbc_form-button-hover-text-color,var(--wpbc_form-button-text-color))
-}
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):focus,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):focus,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):focus,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):focus {
-  outline: 0
-}
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):focus:after,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):focus:after,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):focus:after,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):focus:after {
-  content: "";
-  position: absolute;
-  border: 2px solid var(--wpbc_form-button-background-color);
-  border-radius: calc(var(--wpbc_form-button-border-radius) + 2px);
-  top: calc(-4px - var(--wpbc_form-button-border-size,1px));
-  right: calc(-4px - var(--wpbc_form-button-border-size,1px));
-  bottom: calc(-4px - var(--wpbc_form-button-border-size,1px));
-  left: calc(-4px - var(--wpbc_form-button-border-size,1px))
-}
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):disabled,
-.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):disabled:hover,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled,
-.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled:hover,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):disabled,
-div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):disabled:hover,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled,
-div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled:hover {
-  background-color: var(--wpbc_form-button-background-color-alt,var(--wpbc_form-button-background-color));
-  cursor: default
-}
-/*! --------------------------------------------------------------------------------------------------------------------
- *  Lightweight buttons
- * ------------------------------------------------------------------------------------------------------------------ */
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light,
-.wpbc_container.wpbc_form .wpbc_button_light,
-.wpbc_container.wpbc_form input.wpbc_button_light {
-  font-size: clamp(1em,1em + (1vw - .2em) * .208,1.125em);
-  border: 2px solid var(--wpbc_form-button-light-border-color,rgba(238,238,238,.7098039216));
-  box-shadow: var(--wpbc_form-button-light-box-shadow,0 2px 10px 2px rgba(255,255,255,.3294117647));
-  background: var(--wpbc_form-button-light-background-color,#fdfdfd);
-  color: var(--wpbc_form-button-light-text-color,rgba(68,68,68,.8784313725));
-  border-radius: .375em;
-  padding: 0 2.2em;
-  line-height: calc(var(--wpbc_form-button-light-size-height) - 3px);
-  text-decoration: none;
-  cursor: pointer;
-  outline: 0;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap;
-  -ms-flex-pack: center;
-  justify-content: center;
+.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary),
+.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary),
+.wpbc_booking_ui_theme_scope .wpbc_button,
+.wpbc_container.wpbc_container_booking_form .wpbc_button,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_gw),
+.wpbc_container.wpbc_form .wpbc_button,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_gw),
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary),
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary) {
   -ms-flex-align: center;
   align-items: center;
-  margin: 0;
-  height: auto;
+  appearance: none;
+  border-radius: var(--wpbc_form-button-border-radius,4px);
+  border-style: var(--wpbc_form-button-border-style,solid);
+  border-width: var(--wpbc_form-button-border-size,1px);
   box-sizing: border-box;
+  cursor: pointer;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: var(--wpbc_form-button-size-font-size,16px);
+  font-weight: 500;
+  height: var(--wpbc_form-button-size-height,41px);
+  -ms-flex-pack: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  max-width: 100%;
+  min-width: 100px;
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+  padding: 0 var(--wpbc_form-button-size-padding-h,24px);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
   text-shadow: none;
   text-overflow: ellipsis;
   overflow: hidden;
   overflow-wrap: normal;
-  white-space: normal;
   -ms-hyphens: auto;
-  hyphens: auto
+  hyphens: auto;
+  transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,color .15s ease-in-out;
+  vertical-align: middle;
+  white-space: normal;
+  width: auto
 }
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:hover,
-.wpbc_container.wpbc_form .wpbc_button_light:focus,
-.wpbc_container.wpbc_form .wpbc_button_light:hover,
-.wpbc_container.wpbc_form input.wpbc_button_light:focus,
-.wpbc_container.wpbc_form input.wpbc_button_light:hover {
-  border: 2px solid var(--wpbc_form-button-light-hover-border-color,#4d91cd);
+/*! --------------------------------------------------------------------------------------------------------------------
+ *  Secondary buttons and legacy `.wpbc_button_light` compatibility
+ * ------------------------------------------------------------------------------------------------------------------ */
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_secondary,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_secondary,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary),
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_secondary,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary) {
+  border-color: var(--wpbc_form-button-light-border-color,rgba(202,202,202,.7098039216));
+  border-style: var(--wpbc_form-button-light-border-style,solid);
+  border-width: var(--wpbc_form-button-light-border-size,var(--wpbc_form-button-border-size,1px));
+  box-shadow: var(--wpbc_form-button-light-box-shadow,0 2px 10px 2px rgba(255,255,255,.3294117647));
+  background: var(--wpbc_form-button-light-background-color,#fdfdfd);
+  color: var(--wpbc_form-button-light-text-color,rgba(68,68,68,.8784313725))
+}
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_secondary:focus,
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_secondary:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_secondary:focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_secondary:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):hover,
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_secondary:focus,
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_secondary:hover,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):hover {
+  border-color: var(--wpbc_form-button-light-hover-border-color,#4d91cd);
   box-shadow: var(--wpbc_form-button-light-hover-box-shadow,var(--wpbc_form-button-light-box-shadow,0 2px 10px 2px rgba(255,255,255,.3294117647)));
   background-color: var(--wpbc_form-button-light-hover-background-color,var(--wpbc_form-button-light-background-color,#fdfdfd));
   color: var(--wpbc_form-button-light-hover-text-color,var(--wpbc_form-button-light-text-color,rgba(68,68,68,.8784313725)))
 }
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary {
-  background: var(--wpbc_form-button-background-color,#066aab);
+/*! --------------------------------------------------------------------------------------------------------------------
+ *  Primary buttons
+ *
+ *  `.wpbc_button_light.button-primary` remains as a legacy alias. Do not use
+ *  WordPress' generic `.button-primary` class in new public-facing markup.
+ * ------------------------------------------------------------------------------------------------------------------ */
+.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary),
+.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary),
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_primary,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_primary,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary,
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_primary,
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary),
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary) {
+  background: var(--wpbc_form-button-background-color-alt,var(--wpbc_form-button-background-color,#066aab));
+  border-color: var(--wpbc_form-button-border-color,#066aab);
+  border-style: var(--wpbc_form-button-primary-border-style,var(--wpbc_form-button-border-style,solid));
+  box-shadow: none;
   color: var(--wpbc_form-button-text-color,#fff)
 }
+.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):active,
+.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus,
+.wp-core-ui div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):hover,
+.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):active,
+.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus,
+.wp-core-ui div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):hover,
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_primary:active,
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_primary:focus,
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_primary:hover,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_primary:active,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_primary:focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_primary:hover,
 .wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:active,
 .wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:hover {
-  background: var(--wpbc_form-button-hover-background-color,var(--wpbc_form-button-background-color,#066aab));
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:hover,
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_primary:active,
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_primary:focus,
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_primary:hover,
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):active,
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus,
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):hover,
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):active,
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus,
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):hover {
+  background: var(--wpbc_form-button-hover-background-color,linear-gradient(0deg,rgba(0,0,0,.2),rgba(0,0,0,.2)),var(--wpbc_form-button-background-color-alt,var(--wpbc_form-button-background-color,#066aab)));
   color: var(--wpbc_form-button-hover-text-color,var(--wpbc_form-button-text-color,#fff));
-  border-color: var(--wpbc_form-button-hover-border-color,var(--wpbc_form-button-primary-hover-border-color,#fff));
-  box-shadow: 0 0 0 2px var(--wpbc_form-button-background-color,#066aab)
+  border-color: var(--wpbc_form-button-hover-border-color,var(--wpbc_form-button-primary-hover-border-color,#fff))
 }
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:active:not(:disabled) {
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):active:not(:disabled) {
   background-color: var(--wpbc_form-button-light-hover-background-color,var(--wpbc_form-button-light-background-color,#fdfdfd));
-  border: 2px solid var(--wpbc_form-button-light-hover-border-color,var(--wpbc_form-button-light-border-color,rgba(238,238,238,.7098039216)));
+  border-color: var(--wpbc_form-button-light-hover-border-color,var(--wpbc_form-button-light-border-color,rgba(202,202,202,.7098039216)));
   color: var(--wpbc_form-button-light-hover-text-color,var(--wpbc_form-button-light-text-color,rgba(68,68,68,.8784313725)));
   cursor: pointer
 }
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:focus,
-.wpbc_container.wpbc_container_booking_form .wpbc_button_light:disabled:hover {
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):disabled,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):disabled:focus,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):disabled:hover,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):disabled,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):disabled:focus,
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):disabled:hover {
   color: #ccc;
-  border: 2px solid rgba(238,238,238,.7098039216);
-  cursor: not-allowed
+  border-color: var(--wpbc_form-button-light-border-color,rgba(202,202,202,.7098039216));
+  cursor: not-allowed;
+  opacity: .6
+}
+.wpbc_booking_ui_theme_scope .wpbc_button:disabled,
+.wpbc_container.wpbc_container_booking_form .wpbc_button:disabled,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:disabled,
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_primary:disabled,
+.wpbc_container.wpbc_form .wpbc_button:disabled,
+.wpbc_container.wpbc_form .wpbc_button_light.button-primary:disabled,
+.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_primary:disabled,
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):disabled,
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):disabled {
+  cursor: not-allowed;
+  opacity: .6
 }
 .wpbc_container.wpbc_container_booking_form .wpbc_button_light.wpbc_button_danger {
   background: #de605c;
@@ -992,6 +1007,14 @@ div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled
  *  Payment gateway buttons
  * ------------------------------------------------------------------------------------------------------------------ */
 .wpbc_container .wpbc_button_light.wpbc_button_gw {
+  font-size: var(--wpbc_form-button-size-font-size,16px);
+  border-style: solid;
+  border-width: 2px;
+  border-radius: .375em;
+  padding: 0 2.2em;
+  line-height: calc(var(--wpbc_form-button-light-size-height,43px) - 3px);
+  text-decoration: none;
+  cursor: pointer;
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
   display: -ms-flexbox;
@@ -1002,6 +1025,18 @@ div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled
   justify-content: flex-start;
   -ms-flex-align: center;
   align-items: center;
+  margin: 0;
+  height: auto;
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+  box-sizing: border-box;
+  text-shadow: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  overflow-wrap: normal;
+  white-space: normal;
+  -ms-hyphens: auto;
+  hyphens: auto;
   width: 100%
 }
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe,
@@ -1019,13 +1054,22 @@ div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled
   background-image: url(../../../../booking-calendar-com/inc/assets/stripe.svg);
   background-color: #2c2e2f;
   color: #fff;
-  border-color: #2c2e2f
+  border-color: #2c2e2f;
+  background-position: 90% 50%;
+  background-size: 80px auto;
+  background-repeat: no-repeat;
+  padding-right: 130px
 }
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe.wpbc_button_gw_bccom:focus,
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe.wpbc_button_gw_bccom:hover {
   filter: brightness(1.3);
-  border: 2px solid var(--wpbc_form-button-light-hover-border-color,#4d91cd);
-  box-shadow: var(--wpbc_form-button-light-hover-box-shadow,var(--wpbc_form-button-light-box-shadow,0 2px 10px 2px rgba(255,255,255,.3294117647)))
+  border: 1px solid var(--wpbc_form-button-light-hover-border-color,#4d91cd);
+  border-width: var(--wpbc_form-button-light-border-size,var(--wpbc_form-button-border-size,1px));
+  box-shadow: var(--wpbc_form-button-light-hover-box-shadow,var(--wpbc_form-button-light-box-shadow,0 2px 10px 2px rgba(255,255,255,.3294117647)));
+  box-shadow: none;
+  outline-offset: 0;
+  outline-color: var(--wpbc_form-button-light-hover-border-color,#4d91cd);
+  outline-width: 1px
 }
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe,
 .wpbc_container .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe * {
@@ -1142,26 +1186,22 @@ div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled
 /*! --------------------------------------------------------------------------------------------------------------------
  *  Dark style button overrides
  * ------------------------------------------------------------------------------------------------------------------ */
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light {
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary),
+.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary) {
   box-shadow: var(--wpbc_form-button-light-box-shadow,0 0 0 #424242);
-  border: 2px solid var(--wpbc_form-button-light-border-color,#2c2e2f);
-  background-color: var(--wpbc_form-button-light-background-color,#2c2e2f);
+  border-color: var(--wpbc_form-button-light-border-color,#525252);
+  background-color: var(--wpbc_form-button-light-background-color,#3f454f);
   color: var(--wpbc_form-button-light-text-color,#fff);
   filter: none
 }
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:focus,
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:hover,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:focus,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:hover {
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus,
+.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):hover,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus,
+.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):hover {
   box-shadow: var(--wpbc_form-button-light-hover-box-shadow,0 0 0 #424242);
-  border: 2px solid var(--wpbc_form-button-light-hover-border-color,var(--wpbc_form-button-light-border-color,#2c2e2f));
-  background-color: var(--wpbc_form-button-light-hover-background-color,var(--wpbc_form-button-light-background-color,#2c2e2f));
+  border-color: var(--wpbc_form-button-light-hover-border-color,var(--wpbc_form-button-light-border-color,#525252));
+  background-color: var(--wpbc_form-button-light-hover-background-color,var(--wpbc_form-button-light-background-color,#3f454f));
   color: var(--wpbc_form-button-light-hover-text-color,#fff)
-}
-.wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light:hover,
-.wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light:hover {
-  filter: brightness(1.2)
 }
 .wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light[class*=wpbc_button_gw_paypal_]:hover,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light[class*=wpbc_button_gw_paypal_]:hover {
@@ -1177,8 +1217,45 @@ div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):disabled
 .wpbc_theme_dark_1.wpbc_bfb__theme_scope .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:focus,
 .wpbc_theme_dark_1.wpbc_container.wpbc_form .wpbc_button_light.wpbc_button_gw.wpbc_button_gw_stripe:hover {
-  background-color: var(--wpbc_form-button-light-background-color,#2c2e2f);
-  border-color: var(--wpbc_form-button-light-border-color,#2c2e2f)
+  background-color: var(--wpbc_form-button-light-background-color,#3f454f);
+  border-color: var(--wpbc_form-button-light-border-color,#525252)
+}
+/*! --------------------------------------------------------------------------------------------------------------------
+ *  Final focus contract
+ *
+ *  Keep this after legacy, gateway, and dark-theme rules. The inner box-shadow
+ *  plus the outer outline create a stable two-layer focus ring without
+ *  changing button geometry.
+ * ------------------------------------------------------------------------------------------------------------------ */
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_secondary:focus-visible:not(:disabled),
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_secondary:focus:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_secondary:focus-visible:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_secondary:focus:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus-visible:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus:not(:disabled),
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_secondary:focus-visible:not(:disabled),
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_secondary:focus:not(:disabled),
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus-visible:not(:disabled),
+.wpbc_container.wpbc_form .wpbc_button_light:not(.wpbc_button_primary):not(.button-primary):focus:not(:disabled) {
+  box-shadow: 0 0 0 2px var(--wpbc_form-button-focus-inner-color,var(--wpbc-bfb-form-background,var(--wpbc_form-field-background-color,#fff)));
+  outline: 2px solid var(--wpbc_form-button-focus-outline-color,var(--wpbc_form-button-light-hover-border-color,#4d91cd));
+  outline-offset: 2px
+}
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_primary:focus-visible:not(:disabled),
+.wpbc_booking_ui_theme_scope .wpbc_button.wpbc_button_primary:focus:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_primary:focus-visible:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button.wpbc_button_primary:focus:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:focus-visible:not(:disabled),
+.wpbc_container.wpbc_container_booking_form .wpbc_button_light.button-primary:focus:not(:disabled),
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_primary:focus-visible:not(:disabled),
+.wpbc_container.wpbc_form .wpbc_button.wpbc_button_primary:focus:not(:disabled),
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus-visible:not(:disabled),
+div.wpbc_container.wpbc_form button[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus:not(:disabled),
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus-visible:not(:disabled),
+div.wpbc_container.wpbc_form input[type=submit]:not(.wpbc_button_light):not(.wpbc_button_secondary):focus:not(:disabled) {
+  box-shadow: 0 0 0 2px var(--wpbc_form-button-focus-inner-color,var(--wpbc-bfb-form-background,var(--wpbc_form-field-background-color,#fff)));
+  outline: 2px solid var(--wpbc_form-button-focus-outline-color,var(--wpbc_form-field-focus-border-color,var(--wpbc_form-button-background-color,#066aab)));
+  outline-offset: 2px
 }
 .wpdev-form-control-wrap .wpdev-checkbox.group_inline,
 .wpdev-form-control-wrap .wpdev-radio.group_inline,
@@ -1400,7 +1477,7 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap .wpdev-radio > .wpdev-list
 }
 .wpbc_theme_dark_1 .wpbc_wizard__border_container {
   border: var(--wpbc-bfb-form-border-width,1px) solid var(--wpbc-bfb-form-border-color,#000);
-  background: var(--wpbc-bfb-form-background,#626262);
+  background: var(--wpbc-bfb-form-background,#383a3d);
   color: var(--wpbc_form-label-color,#bbb);
   box-shadow: var(--wpbc-bfb-form-box-shadow,0 0 3px #3b3b3b)
 }
@@ -1421,13 +1498,14 @@ div.wpbc_container.wpbc_form p {
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpbc_field_description,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpbc_static_text,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpdev-list-item-label,
+div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpdev_hint_with_text .block_text,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 l,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 label,
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 p {
   color: var(--wpbc_form-label-color,#bbb)
 }
 div.wpbc_container.wpbc_form.wpbc_theme_dark_1 {
-  --wpbc-bfb-form-background: #626262;
+  --wpbc-bfb-form-background: #383a3d;
   --wpbc-bfb-form-border-color: #000000;
   --wpbc-bfb-form-box-shadow: 0 0px 3px #3b3b3b;
   --wpbc_form-field-background-color: #3f454f;
@@ -1441,23 +1519,30 @@ div.wpbc_container.wpbc_form.wpbc_theme_dark_1 {
   --wpbc_form-label-color: #f4f6f8;
   --wpbc_form-label-sublabel-color: rgba(255, 255, 255, 0.72);
   --wpbc_form-label-error-color: #ff8a8a;
-  --wpbc_form-button-background-color: #4d4d4d;
-  --wpbc_form-button-background-color-alt: #4d4d4d;
+  --wpbc_form-button-background-color: #1b1d22;
+  --wpbc_form-button-background-color-alt: #1b1d22;
   --wpbc_form-button-border-color: #5f5f5f;
+  --wpbc_form-button-primary-border-style: solid;
   --wpbc_form-button-text-color: #ffffff;
   --wpbc_form-button-text-color-alt: #ffffff;
+  --wpbc_form-button-hover-background-color: #1b1d22;
+  --wpbc_form-button-hover-border-color: #5b8bff;
+  --wpbc_form-button-hover-text-color: #ffffff;
   --wpbc_form-choice-checked-border-color: #5b8bff;
   --wpbc_form-choice-checked-color: #f4f6f8;
   --wpbc_form-choice-focus-color: #5b8bff;
-  --wpbc_form-button-light-background-color: #2C2E2F;
-  --wpbc_form-button-light-border-color: #2C2E2F;
+  --wpbc_form-button-light-background-color: #3f454f;
+  --wpbc_form-button-light-border-color: #525252;
   --wpbc_form-button-light-text-color: #ffffff;
   --wpbc_form-button-light-box-shadow: 0 0 0 #424242;
-  --wpbc_form-button-light-hover-background-color: #2C2E2F;
-  --wpbc_form-button-light-hover-border-color: #2C2E2F;
+  --wpbc_form-button-light-hover-background-color: #3f454f;
+  --wpbc_form-button-light-hover-border-color: #5b8bff;
   --wpbc_form-button-light-hover-text-color: #ffffff;
   --wpbc_form-button-light-hover-box-shadow: 0 0 0 #424242;
-  --wpbc_form-button-primary-hover-border-color: #ffffff;
+  --wpbc-appointment-provider-avatar-background: #2C2E2F;
+  --wpbc-appointment-provider-avatar-border-color: #525252;
+  --wpbc-appointment-provider-avatar-text-color: #ffffff;
+  --wpbc_form-button-primary-hover-border-color: #5b8bff;
   --wpbc_form-page-break-color: #5f9ee7
 }
 .wpbc_cal_powered_by,

@@ -171,6 +171,9 @@
 				checked = d.querySelector( 'input[type="radio"][name="' + control.name + '"]:checked' );
 				return checked ? String( checked.value || '' ) : null;
 			}
+			if ( control.matches && control.matches( 'input[type="checkbox"]' ) ) {
+				return control.checked ? 'On' : 'Off';
+			}
 
 			if ( typeof control.value !== 'undefined' ) {
 				return String( control.value == null ? '' : control.value );
@@ -187,6 +190,8 @@
 		get_current_form_style_settings() {
 			var style_keys = [
 				'booking_form_style',
+				'booking_form_accent_enabled',
+				'booking_form_accent_color',
 				'booking_form_custom_background_color',
 				'booking_form_custom_border_color',
 				'booking_form_custom_border_width',

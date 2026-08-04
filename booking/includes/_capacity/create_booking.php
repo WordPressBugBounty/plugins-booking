@@ -36,13 +36,24 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 	$local_params['is_from_admin_panel'] = ( false !== strpos( $server_http_referer_uri, $admin_uri ) );                                                            // true | false
 	$local_params['user_id']             = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) ) ? intval( $_REQUEST['wpbc_ajx_user_id'] ) : wpbc_get_current_user_id();       // 1
 
-	// Request parameters
+	// Request parameters.
+	$experimental_request_rules = array();
+	if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+		$experimental_request_rules = array(
+			'service_id'                  => array( 'validate' => 'd', 'default' => 0 ),
+			'appointment_service_required' => array( 'validate' => 'd', 'default' => 0 ),
+			'appointment_context_token'   => array( 'validate' => 'strong', 'default' => '' ),
+			'resource_selector_required'  => array( 'validate' => 'd', 'default' => 0 ),
+			'resource_selector_context_token' => array( 'validate' => 'strong', 'default' => '' ),
+		);
+	}
+
 	$user_request = new WPBC_AJX__REQUEST( array(                                                                       // Using this class here only  for escaping variables
-													'db_option_name'          => 'booking__wpbc_booking_create__request_params',    // Not necessary,  because we not save request, only sanitize it
-													'user_id'                 => $local_params['user_id'],                          // Not necessary,  because we not save request, only sanitize it
-													'request_rules_structure' => array(
+												'db_option_name'          => 'booking__wpbc_booking_create__request_params',    // Not necessary,  because we not save request, only sanitize it
+												'user_id'                 => $local_params['user_id'],                          // Not necessary,  because we not save request, only sanitize it
+												'request_rules_structure' => array_merge( array(
 																					'resource_id'               => array( 'validate' => 'd', 'default' => 1 ),    // 'digit_or_csd'.
-																					'aggregate_resource_id_arr' => array( 'validate' => 'digit_or_csd', 'default'  => '' ),
+																										'aggregate_resource_id_arr' => array( 'validate' => 'digit_or_csd', 'default'  => '' ),
 																					'dates_ddmmyy_csv'          => array( 'validate' => 'csv_dates', 'default'  => '' ), // FixIn: 9.9.1.1.
 																					'formdata'                  => array( 'validate' => 'strong', 'default'  => '' ),
 																					'booking_hash'              => array( 'validate' => 'strong', 'default'  => '' ),
@@ -61,8 +72,8 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 																					'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
 																					'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
 																					'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
-																				)
-												));
+																									), $experimental_request_rules )
+										));
 
 	// Escape of request params   in Ajax Post.         We use prefix 'calendar_request_params', if Ajax sent - $_REQUEST['calendar_request_params']['resource_id'], ...
 	$request_prefix = 'calendar_request_params';
@@ -119,6 +130,13 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 		'wpbc_time_override_start'   => $request_params['wpbc_time_override_start'],
 		'wpbc_time_override_end'     => $request_params['wpbc_time_override_end'],
 	);
+	if ( wpbc_is_11_5_features_enabled() ) {
+		$request_save_params['service_id']                  = $request_params['service_id'];
+		$request_save_params['appointment_service_required'] = $request_params['appointment_service_required'];
+		$request_save_params['appointment_context_token']   = $request_params['appointment_context_token'];
+		$request_save_params['resource_selector_required']  = $request_params['resource_selector_required'];
+		$request_save_params['resource_selector_context_token'] = $request_params['resource_selector_context_token'];
+	}
 	$booking_save_arr = wpbc_booking_save( $request_save_params );
 
 	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  BOOKING "  >
@@ -283,7 +301,62 @@ function wpbc_booking_save( $request_params ){
 								'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
 								'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
 						);
+	if ( wpbc_is_11_5_features_enabled() ) {
+		$validate_arr_rules['service_id']                  = array( 'validate' => 'd', 'default' => 0 );
+		$validate_arr_rules['appointment_service_required'] = array( 'validate' => 'd', 'default' => 0 );
+		$validate_arr_rules['appointment_context_token']   = array( 'validate' => 'strong', 'default' => '' );
+		$validate_arr_rules['resource_selector_required']      = array( 'validate' => 'd', 'default' => 0 );
+		$validate_arr_rules['resource_selector_context_token'] = array( 'validate' => 'strong', 'default' => '' );
+	}
 	$re_cleaned_params = wpbc_sanitize_params_in_arr( $request_params, $validate_arr_rules );
+	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['appointment_service_required'] ) && empty( $re_cleaned_params['service_id'] ) ) {
+		$ajx_data_arr['status']                          = 'error';
+		$ajx_data_arr['status_error']                    = 'appointment_service_required';
+		$ajx_data_arr['ajx_after_action_message']        = __( 'Please select a Service.', 'booking' );
+		$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+		return array( 'ajx_data' => $ajx_data_arr );
+	}
+	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['service_id'] ) ) {
+		if ( ! function_exists( 'wpbc_booking_appointment_validate_submission_context' ) ) {
+			$appointment_context_check = new WP_Error( 'appointment_context_unavailable', __( 'The Appointment selection cannot be verified. Please reload the page and try again.', 'booking' ) );
+		} else {
+			$appointment_context_check = wpbc_booking_appointment_validate_submission_context(
+				$re_cleaned_params['appointment_context_token'],
+				$re_cleaned_params['service_id'],
+				$re_cleaned_params['resource_id']
+			);
+		}
+		if ( is_wp_error( $appointment_context_check ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = $appointment_context_check->get_error_code();
+			$ajx_data_arr['ajx_after_action_message']        = $appointment_context_check->get_error_message();
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+
+		// A client value cannot enable past Appointment creation; trust only the site-authored signed context.
+		$re_cleaned_params['allow_past'] = wpbc_booking_appointment_is_past_booking_enabled( $appointment_context_check ) ? 1 : 0;
+	}
+	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['resource_selector_required'] ) ) {
+		if ( ! function_exists( 'wpbc_booking_resource_selector_validate_submission_context' ) ) {
+			$resource_selector_context_check = new WP_Error( 'resource_selector_context_unavailable', __( 'The Booking Resource selection cannot be verified. Please reload the page and try again.', 'booking' ) );
+		} else {
+			$resource_selector_context_check = wpbc_booking_resource_selector_validate_submission_context(
+				$re_cleaned_params['resource_selector_context_token'],
+				$re_cleaned_params['resource_id']
+			);
+		}
+		if ( is_wp_error( $resource_selector_context_check ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = $resource_selector_context_check->get_error_code();
+			$ajx_data_arr['ajx_after_action_message']        = $resource_selector_context_check->get_error_message();
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+
+		// Trust only the site-authored signed selector context for public past bookings.
+		$re_cleaned_params['allow_past'] = wpbc_booking_resource_selector_is_past_booking_enabled( $resource_selector_context_check ) ? 1 : 0;
+	}
 
 	$admin_uri = ltrim( str_replace( get_site_url( null, '', 'admin' ), '', admin_url( 'admin.php?' ) ), '/' );         // wp-admin/admin.php?
 
@@ -343,6 +416,67 @@ function wpbc_booking_save( $request_params ){
 	}
 	//  Important! : [ 64800, 72000 ]
 	$local_params['time_as_seconds_arr'] = wpbc_get_in_booking_form__time_to_book_as_seconds_arr( $local_params['structured_booking_data_arr'] );
+	$local_params['appointment_service'] = array();
+	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['service_id'] ) && function_exists( 'wpbc_appointment_services_repository' ) ) {
+		$range_time_value = isset( $local_params['structured_booking_data_arr']['rangetime'] ) ? $local_params['structured_booking_data_arr']['rangetime'] : '';
+		$start_time_value = isset( $local_params['structured_booking_data_arr']['starttime'] ) ? $local_params['structured_booking_data_arr']['starttime'] : '';
+		$range_time_value = is_array( $range_time_value ) ? implode( '', $range_time_value ) : $range_time_value;
+		$start_time_value = is_array( $start_time_value ) ? implode( '', $start_time_value ) : $start_time_value;
+		$has_appointment_time = ! empty( $local_params['time_override_arr'] )
+			|| '' !== trim( (string) $range_time_value )
+			|| '' !== trim( (string) $start_time_value );
+		if ( ! $has_appointment_time ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = 'appointment_service_time_required';
+			$ajx_data_arr['ajx_after_action_message']        = __( 'A Service appointment requires a start time. Add a time field to the Booking Form and select a time.', 'booking' );
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+		$appointment_service = wpbc_appointment_services_repository()->find_active_for_resource( $re_cleaned_params['service_id'], $re_cleaned_params['resource_id'] );
+		if ( is_wp_error( $appointment_service ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = 'appointment_service_unavailable';
+			$ajx_data_arr['ajx_after_action_message']        = $appointment_service->get_error_message();
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+		if ( count( $local_params['time_as_seconds_arr'] ) < 2 || ! function_exists( 'wpbc_appointment_services_resolve_end_seconds' ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = 'appointment_service_duration_invalid';
+			$ajx_data_arr['ajx_after_action_message']        = __( 'The selected Service duration is invalid. Please contact the website administrator.', 'booking' );
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+		$maximum_duration_minutes = absint( apply_filters( 'wpbc_booking_appointment_maximum_duration_minutes', 24 * 60, array() ) );
+		$service_end_second       = wpbc_appointment_services_resolve_end_seconds( $appointment_service, $local_params['time_as_seconds_arr'][0], $maximum_duration_minutes );
+		if ( is_wp_error( $service_end_second ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = $service_end_second->get_error_code();
+			$ajx_data_arr['ajx_after_action_message']        = $service_end_second->get_error_message();
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+		$local_params['time_as_seconds_arr'][1] = $service_end_second;
+		$local_params['appointment_service']    = $appointment_service;
+		$service_start_time = wpbc_transform__seconds__in__24_hours_his( $local_params['time_as_seconds_arr'][0] );
+		$service_end_time   = wpbc_transform__seconds__in__24_hours_his( $local_params['time_as_seconds_arr'][1] );
+		unset( $local_params['structured_booking_data_arr']['rangetime'], $local_params['structured_booking_data_arr']['durationtime'] );
+		$local_params['structured_booking_data_arr']['starttime'] = $service_start_time;
+		$local_params['structured_booking_data_arr']['endtime']   = $service_end_time;
+		unset( $local_params['all_booking_data_arr']['rangetime'], $local_params['all_booking_data_arr']['durationtime'] );
+		$local_params['all_booking_data_arr']['starttime'] = array( 'type' => 'text', 'original_name' => 'starttime' . $re_cleaned_params['resource_id'], 'name' => 'starttime', 'value' => $service_start_time );
+		$local_params['all_booking_data_arr']['endtime']   = array( 'type' => 'text', 'original_name' => 'endtime' . $re_cleaned_params['resource_id'], 'name' => 'endtime', 'value' => $service_end_time );
+	}
+	if ( function_exists( 'wpbc_appointment_services_sync_service_hint_booking_data' ) ) {
+		$service_hint_booking_data = wpbc_appointment_services_sync_service_hint_booking_data(
+			$local_params['structured_booking_data_arr'],
+			$local_params['all_booking_data_arr'],
+			$local_params['appointment_service'],
+			$re_cleaned_params['resource_id']
+		);
+		$local_params['structured_booking_data_arr'] = $service_hint_booking_data['structured_booking_data'];
+		$local_params['all_booking_data_arr']        = $service_hint_booking_data['all_booking_data'];
+	}
 				 // [ "18:00:00", "20:00:00" ]
 				 $time_as_seconds_arr    = $local_params['time_as_seconds_arr'];
  				 $time_as_seconds_arr[0] = ( 0 != $time_as_seconds_arr[0] ) ? $time_as_seconds_arr[0] + 1 : $time_as_seconds_arr[0];                        // set check  in time with  ended 1 second
@@ -392,6 +526,31 @@ function wpbc_booking_save( $request_params ){
 		){
 			$local_params['is_duplicate_booking'] = 1;
 		}
+	}
+
+	$request_action = isset( $_REQUEST['action'] ) && is_scalar( $_REQUEST['action'] )
+		? sanitize_key( (string) wp_unslash( $_REQUEST['action'] ) )
+		: ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$is_frontend_ajax_edit = defined( 'DOING_AJAX' )
+		&& DOING_AJAX
+		&& 'wpbc_ajx_booking__create' === strtolower( $request_action )
+		&& 0 !== $local_params['is_edit_booking'];
+	$is_authorized_admin_edit = $local_params['is_from_admin_panel']
+		&& is_user_logged_in()
+		&& class_exists( 'WPBC_Add_Booking_Component' )
+		&& WPBC_Add_Booking_Component::current_user_can_add_booking()
+		&& wpbc_is_mu_user_can_be_here( 'activated_user' );
+
+	if (
+		$is_frontend_ajax_edit
+		&& ! $is_authorized_admin_edit
+		&& ! wpbc_is_visitor_booking_action_allowed( $local_params['is_edit_booking'] )
+	) {
+		$ajx_data_arr['status']                          = 'error';
+		$ajx_data_arr['status_error']                    = 'visitor_booking_dates_in_past';
+		$ajx_data_arr['ajx_after_action_message']        = __( 'This booking can no longer be edited because its dates have already passed.', 'booking' );
+		$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+		return array( 'ajx_data' => $ajx_data_arr );
 	}
 	// It can be request resource ID     or   if we edit booking,  it can  be 'edit resource' - (e.g. child resource)
 	$local_params['initial_resource_id'] = ( ! empty( $local_params['edit_resource_id'] ) ) ? $local_params['edit_resource_id'] : $re_cleaned_params['resource_id'];
@@ -470,6 +629,23 @@ function wpbc_booking_save( $request_params ){
 																														// </editor-fold>
 	}
 
+	if ( wpbc_is_11_5_features_enabled() && ! empty( $local_params['appointment_service'] ) && function_exists( 'wpbc_appointment_services_check_buffer_conflicts' ) ) {
+		$buffer_check = wpbc_appointment_services_check_buffer_conflicts(
+			$local_params['appointment_service'],
+			$where_to_save_booking['main__resource_id'],
+			array_keys( $where_to_save_booking['resources_in_dates'] ),
+			$local_params['time_as_seconds_arr'],
+			$local_params['skip_booking_id']
+		);
+		if ( is_wp_error( $buffer_check ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = 'appointment_service_buffer_conflict';
+			$ajx_data_arr['ajx_after_action_message']        = $buffer_check->get_error_message();
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+	}
+
 
 	// Get parameters, from  REQUEST
 	$create_params                   = $local_params;
@@ -511,6 +687,7 @@ function wpbc_booking_save( $request_params ){
 									'how_many_items_to_book'        => $create_params['how_many_items_to_book'],
 									'is_use_booking_recurrent_time' => $create_params['is_use_booking_recurrent_time']     // true | false
 								);
+	if ( ! empty( $create_params['appointment_service'] ) ) { $create_booking_params['appointment_service'] = $create_params['appointment_service']; }
 	if ( ! empty( $create_params['sync_gid'] ) ) { $create_booking_params['sync_gid'] = $create_params['sync_gid']; }
 
 	$booking_new_arr = wpbc_db__booking_save( $create_booking_params, $where_to_save_booking );
@@ -524,6 +701,8 @@ function wpbc_booking_save( $request_params ){
 		return array( 'ajx_data' => $ajx_data_arr );
 	}
 	// </editor-fold>
+
+	do_action( 'wpbc_booking_after_save', $booking_new_arr['booking_id'], $create_booking_params, $where_to_save_booking );
 
 	// FixIn: 9.9.0.36.
 	if (
@@ -554,6 +733,9 @@ function wpbc_booking_save( $request_params ){
 	$payment_params['str_dates__dd_mm_yyyy'] = implode( ',', $str_dates__dd_mm_yyyy );                                  // REQUIRED --    '14.11.2023, 15.11.2023, 16.11.2023, 17.11.2023'
 	$payment_params['booking_id']            = $booking_new_arr['booking_id'];                                          // REQUIRED --    '2'
 	$payment_params['resource_id']           = $create_params['resource_id'];                                           // REQUIRED --    '2'  can be child resource (changed in wpbc_where_to_save() )
+	if ( wpbc_is_11_5_features_enabled() ) {
+		$payment_params['service_id'] = ! empty( $create_params['appointment_service']['service_id'] ) ? absint( $create_params['appointment_service']['service_id'] ) : 0;
+	}
 	$payment_params['initial_resource_id']   = $local_params['initial_resource_id'];                                    // REQUIRED --    '2'  initial calendar - parent resource
 	$payment_params['form_data']             = $booking_new_arr['form_data'];      // we re-save it,  because here can be sync_guid and custom form new data from  wpbc_db__booking_save(..)    // REQUIRED --    'text^selected_short_timedates_hint4^06/11/2018 14:00...'
 	$payment_params['times_array']           = array(

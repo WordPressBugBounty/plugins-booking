@@ -152,8 +152,9 @@
 								// href      : 'javascript:void(0)',													//FixIn: 8.7.3.17	href: '#!'
 							    href         : '#!',
 								data_block_id: cid,
-							    popup_tab_index: 0						// Will be index for active tab in popup dialog
-							   , key: 'configure_' + cid																// FixIn: 8.7.3.18.
+							    popup_tab_index: 0,						// Will be index for active tab in popup dialog
+							    popup_shortcode_id: '',
+							    key: 'configure_' + cid																// FixIn: 8.7.3.18.
 							},
 						__( 'Configure Booking Calendar Block' )
 						)
@@ -249,7 +250,8 @@
 			jQuery( 'div[data-block="' + _id + '"]' ).removeClass( 'is-selected' );										// FixIn: 8.8.2.10.
 
 			// Get num. of popup active tab to  set
-			var popup_tab_index = $( this ).attr( 'popup_tab_index' );
+			var popup_tab_index    = $( this ).attr( 'popup_tab_index' );
+			var popup_shortcode_id = $( this ).attr( 'popup_shortcode_id' );
 
 			var wpbc_tag = '';
 
@@ -257,8 +259,13 @@
 
 			jQuery( "#wpbc_text_gettenberg_section_id" ).val( _id );
 
-			// Select specific TAB in poup dialog
-			jQuery( "#wpbc_tiny_modal .wpdvlp-top-tabs a.nav-tab" ).eq( popup_tab_index ).trigger( 'click' );			// FixIn: 8.7.11.12.
+			// Select the matching shortcode section for modern workflow previews.
+			if ( popup_shortcode_id && jQuery( '#wpbc_shortcode_config__nav_tab__' + popup_shortcode_id + ' a' ).length ) {
+				jQuery( '#wpbc_shortcode_config__nav_tab__' + popup_shortcode_id + ' a' ).first().trigger( 'click' );
+			} else {
+				// Select specific TAB in popup dialog for legacy shortcode previews.
+				jQuery( "#wpbc_tiny_modal .wpdvlp-top-tabs a.nav-tab" ).eq( popup_tab_index ).trigger( 'click' );		// FixIn: 8.7.11.12.
+			}
 
 
 //console.log( 'WPBC-Gb :: Popup window for configuration Booking Calendar shortcode. Section #', _id );
@@ -365,6 +372,8 @@
 
 		var wpbc_shortcode_type_arr = [   'booking'
 										, 'bookingcalendar'
+										, 'booking_appointment'
+										, 'booking_resource_selector'
 										, 'bookingtimeline'
 										, 'bookingselect'
 										, 'bookingform'
@@ -406,6 +415,22 @@
 																									, 'cid_key': wpbc_shortcode_type+ '_' + cid
 																						} );
 						children[ (children.length - 1) ].props.popup_tab_index = 2;									// Set index of Active tab in popup dialog
+						break;
+
+					case 'booking_appointment':
+						block_preview_el = wpbc_gt_get_visual_block_for_booking_appointment( shortcode_obj.shortcode, {
+																									'shortcode_in_text': shortcode_in_text
+																									, 'cid_key': wpbc_shortcode_type+ '_' + cid
+																						} );
+						children[ (children.length - 1) ].props.popup_shortcode_id = 'booking_appointment';
+						break;
+
+					case 'booking_resource_selector':
+						block_preview_el = wpbc_gt_get_visual_block_for_booking_resource_selector( shortcode_obj.shortcode, {
+																									'shortcode_in_text': shortcode_in_text
+																									, 'cid_key': wpbc_shortcode_type+ '_' + cid
+																						} );
+						children[ (children.length - 1) ].props.popup_shortcode_id = 'booking_resource_selector';
 						break;
 
 					case 'bookingtimeline':
@@ -585,6 +610,169 @@
 						, inner_footer
 				);
 		//FixIn: 8.7.3.18 End
+	}
+
+
+	/**
+	 * Generate one configuration-box preview for a workflow shortcode.
+	 *
+	 * @param shortcode_obj Parsed WordPress shortcode object.
+	 * @param params        Preview instance parameters.
+	 * @param configuration Header, description, CSS class, and parameter labels.
+	 * @returns React preview element.
+	 */
+	function wpbc_gt_get_visual_block_for_workflow( shortcode_obj, params, configuration ){
+
+		var props = shortcode_obj.attrs && shortcode_obj.attrs.named ? shortcode_obj.attrs.named : {};
+		var rows_in_content = [
+			{ block_text: configuration.description }
+		];
+
+		for ( var parameter_index = 0; parameter_index < configuration.parameters.length; parameter_index++ ) {
+			var parameter = configuration.parameters[ parameter_index ];
+			if ( ! Object.prototype.hasOwnProperty.call( props, parameter.key ) ) {
+				continue;
+			}
+
+			var parameter_value = props[ parameter.key ];
+			if ( '' === parameter_value ) {
+				parameter_value = wp.i18n.__( '(empty)' );
+			} else if ( parameter.prefix ) {
+				parameter_value = parameter.prefix + parameter_value;
+			}
+			rows_in_content.push( { name: parameter.label, value: parameter_value } );
+		}
+
+		var el = wp.element.createElement;
+		var inner_header = el( 'div', {
+										className: 'wpbc_gb_block_preview_inner_header',
+										key: 'header_' + params[ 'cid_key' ]
+									},
+									wpbc_gb_tpl_header( { header: configuration.header, cid_key: 'header_' + params[ 'cid_key' ] } )
+							);
+		var inner_body = el( 'div', {
+										className: 'wpbc_gb_block_preview_inner_body',
+										key: 'body_' + params[ 'cid_key' ]
+									},
+									wpbc_gb_tpl_shortcode_parameters( rows_in_content, { cid_key: 'body_' + params[ 'cid_key' ] } )
+							);
+		var inner_footer = el( 'div', {
+										className: 'wpbc_gb_block_preview_inner_footer',
+										key: 'footer_' + params[ 'cid_key' ]
+									},
+									wpbc_gb_tpl_footer( { shortcode_in_text: params[ 'shortcode_in_text' ], cid_key: 'footer_' + params[ 'cid_key' ] } )
+							);
+
+		return el( 'div', {
+								className: 'wpbc_gb_block_shortcode_preview_wrapper ' + configuration.class_name,
+								key: 'preview_wrapper_' + params[ 'cid_key' ]
+							},
+						el( 'div', {
+											className: 'wpbc_gb_block_shortcode_preview_content',
+											key: 'preview_content_' + params[ 'cid_key' ]
+										},
+									[ inner_header, inner_body ]
+							),
+						inner_footer
+				);
+	}
+
+
+	/**
+	 * Generate the [booking_appointment] Gutenberg configuration preview.
+	 *
+	 * @param shortcode_obj Parsed shortcode.
+	 * @param params        Preview instance parameters.
+	 * @returns React preview element.
+	 */
+	function wpbc_gt_get_visual_block_for_booking_appointment( shortcode_obj, params ){
+
+		return wpbc_gt_get_visual_block_for_workflow(
+			shortcode_obj,
+			params,
+			{
+				header: wp.i18n.__( 'Appointment Booking' ),
+				description: wp.i18n.__( 'Service-first appointment booking: visitors choose a Service and compatible Provider before selecting dates and entering booking details.' ),
+				class_name: 'wpbc_gb_block_preview_booking_appointment',
+				parameters: [
+					{ key: 'service_id', label: wp.i18n.__( 'Preselected Service' ), prefix: 'ID = ' },
+					{ key: 'provider_id', label: wp.i18n.__( 'Preselected Provider' ), prefix: 'ID = ' },
+					{ key: 'services', label: wp.i18n.__( 'Allowed Services' ), prefix: 'ID = ' },
+					{ key: 'providers', label: wp.i18n.__( 'Allowed Providers' ), prefix: 'ID = ' },
+					{ key: 'auto_select_provider', label: wp.i18n.__( 'Auto-select the only Provider' ) },
+					{ key: 'form_type', label: wp.i18n.__( 'Booking Form' ) },
+					{ key: 'nummonths', label: wp.i18n.__( 'Visible months number' ) },
+					{ key: 'startmonth', label: wp.i18n.__( 'Start month' ) },
+					{ key: 'calendar_dates_start', label: wp.i18n.__( 'First calendar date' ) },
+					{ key: 'calendar_dates_end', label: wp.i18n.__( 'Last calendar date' ) },
+					{ key: 'allow_past', label: wp.i18n.__( 'Allow past bookings' ) },
+					{ key: 'show_progress', label: wp.i18n.__( 'Show progress' ) },
+					{ key: 'progress_item_1_number', label: wp.i18n.__( 'Step 1 number' ) },
+					{ key: 'progress_item_1_title', label: wp.i18n.__( 'Step 1 title' ) },
+					{ key: 'progress_item_2_number', label: wp.i18n.__( 'Step 2 number' ) },
+					{ key: 'progress_item_2_title', label: wp.i18n.__( 'Step 2 title' ) },
+					{ key: 'progress_item_3_number', label: wp.i18n.__( 'Step 3 number' ) },
+					{ key: 'progress_item_3_title', label: wp.i18n.__( 'Step 3 title' ) },
+					{ key: 'progress_service_number', label: wp.i18n.__( 'Step 1 number (compatibility)' ) },
+					{ key: 'progress_service_title', label: wp.i18n.__( 'Step 1 title (compatibility)' ) },
+					{ key: 'progress_provider_number', label: wp.i18n.__( 'Step 2 number (compatibility)' ) },
+					{ key: 'progress_provider_title', label: wp.i18n.__( 'Step 2 title (compatibility)' ) },
+					{ key: 'progress_details_number', label: wp.i18n.__( 'Step 3 number (compatibility)' ) },
+					{ key: 'progress_details_title', label: wp.i18n.__( 'Step 3 title (compatibility)' ) },
+					{ key: 'screen_1_title', label: wp.i18n.__( 'Service screen title' ) },
+					{ key: 'screen_1_description', label: wp.i18n.__( 'Service screen description' ) },
+					{ key: 'screen_2_title', label: wp.i18n.__( 'Provider screen title' ) },
+					{ key: 'screen_2_description', label: wp.i18n.__( 'Provider screen description' ) },
+					{ key: 'options', label: wp.i18n.__( 'Options' ) }
+				]
+			}
+		);
+	}
+
+
+	/**
+	 * Generate the [booking_resource_selector] Gutenberg configuration preview.
+	 *
+	 * @param shortcode_obj Parsed shortcode.
+	 * @param params        Preview instance parameters.
+	 * @returns React preview element.
+	 */
+	function wpbc_gt_get_visual_block_for_booking_resource_selector( shortcode_obj, params ){
+
+		return wpbc_gt_get_visual_block_for_workflow(
+			shortcode_obj,
+			params,
+			{
+				header: wp.i18n.__( 'Booking Resource Selector' ),
+				description: wp.i18n.__( 'Resource-first booking: visitors choose a Booking Resource before selecting dates and completing its Booking Form.' ),
+				class_name: 'wpbc_gb_block_preview_booking_resource_selector',
+				parameters: [
+					{ key: 'resource_id', label: wp.i18n.__( 'Preselected Booking Resource' ), prefix: 'ID = ' },
+					{ key: 'resources', label: wp.i18n.__( 'Allowed Booking Resources' ), prefix: 'ID = ' },
+					{ key: 'type', label: wp.i18n.__( 'Allowed Booking Resources (compatibility)' ), prefix: 'ID = ' },
+					{ key: 'selected_resource_id', label: wp.i18n.__( 'Preselected Booking Resource (compatibility)' ), prefix: 'ID = ' },
+					{ key: 'selected_type', label: wp.i18n.__( 'Preselected Booking Resource (legacy)' ), prefix: 'ID = ' },
+					{ key: 'aggregate', label: wp.i18n.__( 'Aggregate Booking Resources' ), prefix: 'ID = ' },
+					{ key: 'auto_select_resource', label: wp.i18n.__( 'Auto-select Booking Resource' ) },
+					{ key: 'form_type', label: wp.i18n.__( 'Booking Form' ) },
+					{ key: 'nummonths', label: wp.i18n.__( 'Visible months number' ) },
+					{ key: 'startmonth', label: wp.i18n.__( 'Start month' ) },
+					{ key: 'calendar_dates_start', label: wp.i18n.__( 'First calendar date' ) },
+					{ key: 'calendar_dates_end', label: wp.i18n.__( 'Last calendar date' ) },
+					{ key: 'selected_dates', label: wp.i18n.__( 'Preselected dates' ) },
+					{ key: 'allow_past', label: wp.i18n.__( 'Allow past bookings' ) },
+					{ key: 'show_progress', label: wp.i18n.__( 'Show progress' ) },
+					{ key: 'progress_item_1_number', label: wp.i18n.__( 'Step 1 number' ) },
+					{ key: 'progress_item_1_title', label: wp.i18n.__( 'Step 1 title' ) },
+					{ key: 'progress_item_2_number', label: wp.i18n.__( 'Step 2 number' ) },
+					{ key: 'progress_item_2_title', label: wp.i18n.__( 'Step 2 title' ) },
+					{ key: 'screen_1_title', label: wp.i18n.__( 'Resource screen title' ) },
+					{ key: 'screen_1_description', label: wp.i18n.__( 'Resource screen description' ) },
+					{ key: 'label', label: wp.i18n.__( 'Resource screen title (compatibility)' ) },
+					{ key: 'options', label: wp.i18n.__( 'Options' ) }
+				]
+			}
+		);
 	}
 
 

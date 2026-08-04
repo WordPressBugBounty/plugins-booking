@@ -1,0 +1,134 @@
+/**
+ * Shared administration listing shell.
+ *
+ * Catalog-specific styles should target their additional classes instead of
+ * changing these structural rules.
+ */
+.wpbc_ui_listing {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.wpbc_ui_listing__table_wrap {
+	overflow-x: auto;
+}
+.wpbc_ui_listing__table {
+	border-collapse: collapse;
+	width: 100%;
+}
+.wpbc_ui_listing__sort_link {
+	align-items: first baseline;
+	color: inherit;
+	display: inline-flex;
+	gap: 5px;
+	text-decoration: none;
+	padding: 5px;
+}
+.wpbc_ui_listing__sort_link.is-active,
+.wpbc_ui_listing__sort_link:hover{
+	color: #2271b1;
+	color: var(--wp-admin-theme-color-darker-20);
+}
+.wpbc_ui_listing__sort_link:focus {
+	border-radius: 2px;
+	box-shadow: 0 0 0 0 var(--wpbc_admin-theme-color, #2271b1);
+	outline: transparent solid 2px;
+	outline-offset: 2px;
+
+}
+.wpbc_ui_listing__sort_link:focus-visible {
+	border-radius: 2px;
+	box-shadow: 0 0 0 1.2px var(--wpbc_admin-theme-color, #2271b1);
+	outline: transparent solid 2px;
+	outline-offset: 2px;
+}
+.wpbc_ui_listing__sort_icon {
+	font-size: 11px;
+	line-height: 1;
+	opacity: .45;
+}
+.wpbc_ui_listing__sort_link.is-active .wpbc_ui_listing__sort_icon {
+	opacity: 1;
+}
+.wpbc_ui_listing__footer {
+	align-items: center;
+	background: #fafafb;
+	border-top: 1px solid #dcdcde;
+	box-sizing: border-box;
+	color: #646970;
+	display: flex;
+	font-size: 12px;
+	gap: 12px;
+	justify-content: space-between;
+	min-height: 48px;
+	padding: 6px 12px;
+}
+.wpbc_ui_listing__footer[hidden] {
+	display: none;
+}
+.wpbc_ui_listing__footer_controls,
+.wpbc_ui_listing__items_per_page,
+.wpbc_ui_listing__pagination {
+	align-items: center;
+	display: flex;
+}
+.wpbc_ui_listing__footer_controls {
+	flex-flow: row wrap;
+	gap: 18px;
+	justify-content: flex-end;
+}
+.wpbc_ui_listing__items_per_page,
+.wpbc_ui_listing__pagination {
+	gap: 8px;
+}
+.wpbc_ui_listing__page_label {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
+	justify-content: center;
+}
+.wpbc_ui_listing__page_number,
+.wp-core-ui input.wpbc_ui_listing__page_number,
+.wp-core-ui select.wpbc_ui_listing__page_number {
+	font-size: 12px;
+	height: 30px;
+	min-height: 30px;
+	padding: 0 4px;
+	text-align: center;
+	width: 54px;
+}
+.wpbc_ui_listing__items_per_page select {
+	font-size: 12px;
+	min-height: 30px;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+.wpbc_ui_listing__pagination .button {
+	align-items: center;
+	display: inline-flex;
+	height: 30px;
+	justify-content: center;
+	min-height: 30px;
+	padding: 0;
+	width: 32px;
+}
+.wpbc_ui_listing__page_label {
+	min-width: 82px;
+	text-align: center;
+}
+@media screen and (max-width: 782px) {
+	.wpbc_ui_listing__footer {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+	.wpbc_ui_listing__footer_controls {
+		justify-content: space-between;
+		width: 100%;
+	}
+	.wpbc_ui_listing__items_per_page select,
+	.wpbc_ui_listing__page_number,
+	.wpbc_ui_listing__pagination .button {
+		min-height: 40px;
+	}
+}

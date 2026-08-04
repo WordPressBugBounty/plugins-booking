@@ -144,8 +144,16 @@ function wpbc_update_bookingform_content__steps_timeline( $form_content, $resour
 		$new_html .= wpbc_ui__steps_timeline__get_html( $steps_count, $step_number );
 		$new_html .= '</span>';
 		if ( isset( $shortcode_params_arr['params']['color'] ) ) {
-			$color = esc_attr( $shortcode_params_arr['params']['color'] );
-			$new_html .= '<style type="text/css"> .booking_form_div .wpbc_steps_for_timeline__'.esc_attr($shortcode_text_to_replace).' .wpbc_steps_for_timeline_container { --wpbc_steps_for_timeline_active_color: ' . $color . '; } </style>';
+			$raw_color = sanitize_text_field( (string) $shortcode_params_arr['params']['color'] );
+			// Read compatibility for forms exported by early 11.5 development builds.
+			if ( 'accent' === $raw_color ) {
+				$color = 'var(--wpbc_form-accent-color, var(--wpbc_timepicker-selected-bg-color, #6b96ce))';
+			} else {
+				$color = sanitize_hex_color( $raw_color );
+			}
+			if ( $color ) {
+				$new_html .= '<style type="text/css"> .booking_form_div .wpbc_steps_for_timeline__' . esc_attr( $shortcode_text_to_replace ) . ' .wpbc_steps_for_timeline_container { --wpbc_steps_for_timeline_active_color: ' . esc_html( $color ) . '; } </style>';
+			}
 		}
 		$string = str_replace( '[' . $shortcode_text_to_replace . ']', $new_html, $string );
 	}

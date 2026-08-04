@@ -165,6 +165,13 @@ function wpbc_bfb_activation__get_templates_registry() {
 		);
 	}
 
+	/*
+	 * Template cards are listed newest-first, with the row ID as the final
+	 * tie-breaker. Seed the preferred Appointment flow after every other bundled
+	 * template so it is the first matching card after a clean activation.
+	 */
+	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/appointments_services_flow.php';
+
 	foreach ( $template_files as $template_file ) {
 		if ( file_exists( $template_file ) ) {
 			$template_config = require $template_file;

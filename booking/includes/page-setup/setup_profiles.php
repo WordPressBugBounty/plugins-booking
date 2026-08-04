@@ -11,11 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
  *
  * The top navigation fullscreen button stores this value through WPBC_User_Custom_Data_Saver as
  * "booking_custom_is_full_screen" => array( 'value' => 'On|Off' ). Setup routing happens before redirects, so the
- * wizard updates the same preference server-side when it moves between internal and external setup screens.
+ * wizard updates the same preference and its immediate browser cookie when it moves between internal and external
+ * setup screens. Synchronizing both values prevents an older cookie from overriding the active wizard state.
+ * This sends a response cookie when headers remain available and always updates the cookie value for the current
+ * request.
  *
  * @param bool $is_full_screen Whether WPBC admin pages should open in fullscreen mode.
  *
- * @return bool
+ * @return bool True when the saved user option changed; otherwise false.
  */
 function wpbc_setup_wizard__set_full_screen_mode_for_current_user( $is_full_screen ) {
 
@@ -25,10 +28,29 @@ function wpbc_setup_wizard__set_full_screen_mode_for_current_user( $is_full_scre
 		return false;
 	}
 
+	$full_screen_value = $is_full_screen ? 'On' : 'Off';
+	$cookie_path       = ( defined( 'COOKIEPATH' ) && COOKIEPATH ) ? COOKIEPATH : '/';
+	$cookie_domain     = defined( 'COOKIE_DOMAIN' ) ? COOKIE_DOMAIN : '';
+
+	if ( ! headers_sent() ) {
+		setcookie(
+			'wpbc_admin_full_screen',
+			$full_screen_value,
+			time() + YEAR_IN_SECONDS,
+			$cookie_path,
+			$cookie_domain,
+			is_ssl(),
+			false
+		);
+	}
+
+	// Keep cookie-aware page rendering deterministic during the current request.
+	$_COOKIE['wpbc_admin_full_screen'] = $full_screen_value;
+
 	return update_user_option(
 		$user_id,
 		'booking_custom_is_full_screen',
-		array( 'value' => $is_full_screen ? 'On' : 'Off' )
+		array( 'value' => $full_screen_value )
 	);
 }
 
@@ -88,6 +110,11 @@ function wpbc_setup_wizard__get_selected_appointments_type( $wizard_data = null 
 		$wizard_data = wpbc_setup_wizard__get_booking_wizard_data();
 	}
 
+	// Appointment mode always uses the Service duration and start-time flow.
+	if ( 'appointment' === wpbc_setup_wizard__get_selected_mode_id( $wizard_data ) ) {
+		return 'durationtime';
+	}
+
 	if (
 		isset( $wizard_data['save_and_continue__bookings_types']['wpbc_swp_booking_appointments_type'] )
 		&& ( ! empty( $wizard_data['save_and_continue__bookings_types']['wpbc_swp_booking_appointments_type'] ) )
@@ -96,6 +123,60 @@ function wpbc_setup_wizard__get_selected_appointments_type( $wizard_data = null 
 	}
 
 	return 'rangetime';
+}
+
+/**
+ * Check whether Booking Modes can resolve the current owner safely.
+ *
+ * Setup progress can be inspected while active plugins are still loading.
+ * Before `init`, WordPress has not guaranteed that current-user pluggable
+ * functions or just-in-time translation loading are ready. Mode registries
+ * must therefore remain untouched until this boundary is reached.
+ *
+ * @return bool True when current-user and translation-dependent mode APIs can
+ *              be used safely.
+ */
+function wpbc_setup_wizard__is_booking_modes_runtime_ready() {
+
+	return did_action( 'init' ) && function_exists( 'wp_get_current_user' );
+}
+
+/**
+ * Get the presentation mode selected in wizard history or owner settings.
+ *
+ * Missing historical mode data is expected on upgrades. In that case the
+ * owner-scoped Booking Modes setting remains authoritative, with Classic as a
+ * compatibility fallback when the feature module is unavailable.
+ *
+ * @param array|null $wizard_data Wizard data.
+ *
+ * @return string Allowed Booking Modes identifier.
+ */
+function wpbc_setup_wizard__get_selected_mode_id( $wizard_data = null ) {
+
+	if ( null === $wizard_data ) {
+		$wizard_data = wpbc_setup_wizard__get_booking_wizard_data();
+	}
+
+	$saved_mode_id = isset( $wizard_data['save_and_continue__bookings_types']['wpbc_swp_booking_mode'] )
+		? sanitize_key( (string) $wizard_data['save_and_continue__bookings_types']['wpbc_swp_booking_mode'] )
+		: '';
+	$standard_mode_ids = array( 'classic', 'appointment', 'rental' );
+
+	if ( ! wpbc_setup_wizard__is_booking_modes_runtime_ready() ) {
+		return in_array( $saved_mode_id, $standard_mode_ids, true ) ? $saved_mode_id : 'classic';
+	}
+
+	if ( function_exists( 'wpbc_booking_modes_get_allowed_mode_ids' ) ) {
+		$allowed_mode_ids = wpbc_booking_modes_get_allowed_mode_ids();
+		if ( in_array( $saved_mode_id, $allowed_mode_ids, true ) ) {
+			return $saved_mode_id;
+		}
+
+		return wpbc_booking_modes_get_selected_mode_id();
+	}
+
+	return 'classic';
 }
 
 /**
@@ -168,8 +249,9 @@ function wpbc_setup_wizard__get_intro_route() {
 /**
  * Get profile-specific setup route matrix after "Booking Type".
  *
- * Steps 1-4 stay inside the setup wizard. Every route below starts with the shared Booking Form and Date Selection
- * configuration, then branches only where the selected booking profile needs different existing WPBC admin pages.
+ * Steps 1-4 stay inside the setup wizard. These compatibility routes remain
+ * behavior-based; `wpbc_setup_wizard__get_profile_route()` can replace their
+ * order for a presentation mode while reusing the same canonical controllers.
  *
  * @return array
  */
@@ -222,15 +304,35 @@ function wpbc_setup_wizard__get_profile_route_map() {
  */
 function wpbc_setup_wizard__get_profile_route( $profile = null, $is_bfb_enabled = null ) {
 
-	$profile    = ( null === $profile ) ? wpbc_setup_wizard__get_selected_profile() : $profile;
-	$route_map  = wpbc_setup_wizard__get_profile_route_map();
-	$route      = isset( $route_map[ $profile ] ) ? $route_map[ $profile ] : $route_map['full_day'];
+	$profile   = ( null === $profile ) ? wpbc_setup_wizard__get_selected_profile() : $profile;
+	$mode_id   = wpbc_setup_wizard__get_selected_mode_id();
+	$route_map = wpbc_setup_wizard__get_profile_route_map();
 
-	if ( wpbc_is_this_demo() && 'changeover' !== $profile ) {
-		$route = array_values( array_diff( $route, array( 'wizard_publish' ) ) );
+	if ( 'appointment' === $mode_id ) {
+		$route = array(
+			'service_provider',
+			'working_time',
+			'date_availability',
+			'time_slots_availability',
+			'form_structure',
+			'color_theme',
+			'wizard_publish',
+			'get_started',
+		);
+	} else {
+		$route = isset( $route_map[ $profile ] ) ? $route_map[ $profile ] : $route_map['full_day'];
 	}
 
-	return $route;
+	/**
+	 * Filter the mode-aware Setup Wizard route after Step 4.
+	 *
+	 * @param array  $route   Ordered external setup steps.
+	 * @param string $mode_id Active Booking Modes identifier.
+	 * @param string $profile Booking behavior profile.
+	 */
+	$route = apply_filters( 'wpbc_setup_wizard_profile_route', $route, $mode_id, $profile );
+
+	return is_array( $route ) ? array_values( $route ) : array();
 }
 
 /**
@@ -282,6 +384,12 @@ function wpbc_setup_wizard__detect_step_from_admin_request() {
 	$wpbc_ag_open = isset( $_GET['wpbc_ag_open'] ) ? sanitize_key( wp_unslash( $_GET['wpbc_ag_open'] ) ) : '';
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$wpbc_calendar_section = isset( $_GET['wpbc_calendar_section'] ) ? sanitize_key( wp_unslash( $_GET['wpbc_calendar_section'] ) ) : '';
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$wpbc_setup_step = isset( $_GET['wpbc_setup_step'] ) ? sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) ) : '';
+
+	if ( '' !== $wpbc_setup_step ) {
+		return $wpbc_setup_step;
+	}
 
 	if ( 'wpbc-settings' === $page ) {
 		if ( 'builder_booking_form' === $tab ) {
@@ -322,6 +430,10 @@ function wpbc_setup_wizard__detect_step_from_admin_request() {
 
 	if ( 'wpbc-resources' === $page ) {
 		return 'wizard_publish';
+	}
+
+	if ( 'wpbc-services' === $page && 'appointment_services' === $tab ) {
+		return 'service_provider';
 	}
 
 	return '';
@@ -353,6 +465,11 @@ function wpbc_setup_wizard__detect_step_from_admin_url( $url ) {
 	$scroll_to_section     = isset( $query_args['scroll_to_section'] ) ? sanitize_key( $query_args['scroll_to_section'] ) : '';
 	$wpbc_ag_open          = isset( $query_args['wpbc_ag_open'] ) ? sanitize_key( $query_args['wpbc_ag_open'] ) : '';
 	$wpbc_calendar_section = isset( $query_args['wpbc_calendar_section'] ) ? sanitize_key( $query_args['wpbc_calendar_section'] ) : '';
+	$wpbc_setup_step        = isset( $query_args['wpbc_setup_step'] ) ? sanitize_key( $query_args['wpbc_setup_step'] ) : '';
+
+	if ( '' !== $wpbc_setup_step ) {
+		return $wpbc_setup_step;
+	}
 
 	if ( 'wpbc-settings' === $page ) {
 		if ( 'builder_booking_form' === $tab ) {
@@ -395,6 +512,10 @@ function wpbc_setup_wizard__detect_step_from_admin_url( $url ) {
 		return 'wizard_publish';
 	}
 
+	if ( 'wpbc-services' === $page && 'appointment_services' === $tab ) {
+		return 'service_provider';
+	}
+
 	return '';
 }
 
@@ -406,12 +527,26 @@ function wpbc_setup_wizard__detect_step_from_admin_url( $url ) {
  * @return string
  */
 function wpbc_setup_wizard__get_step_title( $step_name ) {
+	$mode_id = wpbc_setup_wizard__get_selected_mode_id();
+
+	if ( 'wizard_publish' === $step_name && 'appointment' === $mode_id ) {
+		return __( 'Appointment Page', 'booking' );
+	}
+
+	if ( 'wizard_publish' === $step_name && 'rental' === $mode_id ) {
+		return __( 'Rental Page', 'booking' );
+	}
+
+	if ( 'date_availability' === $step_name && 'appointment' === $mode_id ) {
+		return __( 'Days Off', 'booking' );
+	}
 
 	$step_titles = array(
 		'welcome'                 => __( 'Welcome', 'booking' ),
 		'general_info'            => __( 'General Info', 'booking' ),
 		'date_time_formats'       => __( 'Dates and Times', 'booking' ),
 		'bookings_types'          => __( 'Booking Type', 'booking' ),
+		'service_provider'        => __( 'Service and Provider', 'booking' ),
 		'date_selection'          => __( 'Date Selection', 'booking' ),
 		'changeover_days'         => __( 'Changeover Days', 'booking' ),
 		'working_time'            => __( 'Working Time', 'booking' ),
@@ -434,12 +569,26 @@ function wpbc_setup_wizard__get_step_title( $step_name ) {
  * @return string
  */
 function wpbc_setup_wizard__get_step_heading( $step_name ) {
+	$mode_id = wpbc_setup_wizard__get_selected_mode_id();
+
+	if ( 'wizard_publish' === $step_name && 'appointment' === $mode_id ) {
+		return __( 'Review and test the Appointment page', 'booking' );
+	}
+
+	if ( 'wizard_publish' === $step_name && 'rental' === $mode_id ) {
+		return __( 'Review and test the Rental page', 'booking' );
+	}
+
+	if ( 'date_availability' === $step_name && 'appointment' === $mode_id ) {
+		return __( 'Block Provider days off and exceptions', 'booking' );
+	}
 
 	$step_headings = array(
 		'welcome'                 => __( 'Start the initial setup', 'booking' ),
 		'general_info'            => __( 'Confirm your business details', 'booking' ),
 		'date_time_formats'       => __( 'Choose date and time formats', 'booking' ),
 		'bookings_types'          => __( 'Choose the main booking workflow', 'booking' ),
+		'service_provider'        => __( 'Review your first Service and Provider', 'booking' ),
 		'form_structure'          => __( 'Select and save the booking form template', 'booking' ),
 		'date_selection'          => __( 'Set how visitors select dates', 'booking' ),
 		'changeover_days'         => __( 'Configure changeover days', 'booking' ),
@@ -462,12 +611,26 @@ function wpbc_setup_wizard__get_step_heading( $step_name ) {
  * @return string
  */
 function wpbc_setup_wizard__get_step_description( $step_name ) {
+	$mode_id = wpbc_setup_wizard__get_selected_mode_id();
+
+	if ( 'wizard_publish' === $step_name && 'appointment' === $mode_id ) {
+		return __( 'Open a published Appointment page to test the Service, Provider, date, and time flow. If no page is listed, run Appointment QuickStart or publish the shortcode first.', 'booking' );
+	}
+
+	if ( 'wizard_publish' === $step_name && 'rental' === $mode_id ) {
+		return __( 'Open a published Property booking page to test the Rental flow. If no page is listed, run Rental QuickStart or publish the booking form first.', 'booking' );
+	}
+
+	if ( 'date_availability' === $step_name && 'appointment' === $mode_id ) {
+		return __( 'Use the canonical Days Availability calendar to block holidays, leave, and other Provider-specific exceptions.', 'booking' );
+	}
 
 	$step_descriptions = array(
 		'welcome'                 => __( 'Begin the guided setup. You can leave the wizard at any time and continue later from the setup bar.', 'booking' ),
 		'general_info'            => __( 'Review the business name, contact details, and basic information used while preparing the booking configuration.', 'booking' ),
 		'date_time_formats'       => __( 'Pick the date and time display formats that should be used in the admin panel, booking form, and customer-facing messages.', 'booking' ),
 		'bookings_types'          => __( 'Select whether bookings use full days, appointment time slots, or changeover-style date ranges. This choice controls the next configuration steps.', 'booking' ),
+		'service_provider'        => __( 'QuickStart created a starter Service assigned to an existing booking resource. Review its duration, buffers, price, Booking Form, and Provider assignment.', 'booking' ),
 		'form_structure'          => __( 'Open the form template chooser, select the template that matches your booking type, and save the Booking Form page before continuing.', 'booking' ),
 		'date_selection'          => __( 'Choose whether visitors can select one day, multiple individual days, or an available date range in the calendar. Save the General Settings page after changing this option.', 'booking' ),
 		'changeover_days'         => __( 'Enable and review check-in/check-out changeover days, including diagonal or vertical markings and related changeover options.', 'booking' ),
@@ -493,8 +656,62 @@ function wpbc_setup_wizard__get_step_description( $step_name ) {
  * @return array
  */
 function wpbc_setup_wizard__get_step_ui_matrix() {
+	$publish_step_ui = array(
+		'save_behavior'      => 'link_only',
+		'target_selector'    => '.ui_group__publish_btn, .wpbc_resource_field__publish, .wpbc_resource_publish, .wpbc_publish_resources, [data-wpbc-resource-publish]',
+		'scroll_selector'    => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, [data-wpbc-resource-publish]:visible',
+		'highlight_selector' => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, [data-wpbc-resource-publish]:visible',
+		'highlight_all'      => '1',
+		'open_action'        => 'publish_area',
+	);
+	$time_slots_step_ui = array(
+		'save_behavior'      => 'link_only',
+		'target_selector'    => '.wpbc_admin_page__tab__time_slots_availability, .wpbc_ts_page',
+		'scroll_selector'    => '.wpbc_admin_page__tab__time_slots_availability:visible, .wpbc_ts_page:visible',
+		'highlight_disabled' => '1',
+	);
+	$date_availability_step_ui = array(
+		'save_behavior'      => 'link_only',
+		'target_selector'    => '.wpbc_admin_page__tab__availability, .wpbc_ajx_availability_container',
+		'scroll_selector'    => '.wpbc_ajx_availability_container:visible, .wpbc_admin_page__tab__availability:visible',
+		'highlight_disabled' => '1',
+	);
+
+	if ( 'rental' === wpbc_setup_wizard__get_selected_mode_id() ) {
+		$date_availability_step_ui = array(
+			'save_behavior'      => 'manual_save_required',
+			'target_selector'    => '.wpbc_admin_page__tab__general_availability, [data-wpbc-ag-settings-form="1"]',
+			'scroll_selector'    => '[data-wpbc-ag-settings-form="1"]:visible, .wpbc_admin_page__tab__general_availability:visible',
+			'highlight_disabled' => '1',
+			'form_selector'      => '[data-wpbc-ag-settings-form="1"]',
+			'save_selector'      => '[data-wpbc-ag-save="1"]',
+			'save_ajax_action'   => 'WPBC_AJX_AVAILABILITY_GENERAL_SAVE',
+			'save_events'        => 'wpbc:availability-general:settings-saved,wpbc:setup-wizard:step-saved',
+		);
+	}
+
+	if ( 'appointment' === wpbc_setup_wizard__get_selected_mode_id() ) {
+		$form_builder_url = wpbc_get_settings_url() . '&tab=builder_booking_form';
+		$form_builder_url = add_query_arg(
+			array(
+				'wpbc_bfb_panel' => 'add_fields',
+				'wpbc_bfb_group' => 'fields-times',
+				'wpbc_bfb_focus' => 'weekday_starttime',
+			),
+			$form_builder_url
+		);
+
+		$time_slots_step_ui['secondary_action_url']   = wpbc_setup_wizard__add_setup_context_to_url( $form_builder_url, 'time_slots_availability' );
+		$time_slots_step_ui['secondary_action_label'] = __( 'Adjust slot-specific availability rules', 'booking' );
+	}
 
 	return array(
+		'service_provider'        => array(
+			'save_behavior'      => 'link_only',
+			'target_selector'    => '.wpbc_appointment_services_page',
+			'scroll_selector'    => '.wpbc_appointment_services_page:visible',
+			'highlight_disabled' => '1',
+		),
 		'form_structure'          => array(
 			'save_behavior'      => 'manual_save_required',
 			'target_selector'    => '.wpbc_admin_page__tab__builder_booking_form, #wpbc_form_field_free',
@@ -535,23 +752,8 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'save_events'        => 'wpbc:availability-general:settings-saved,wpbc:setup-wizard:step-saved',
 			'open_action'        => 'availability_section',
 		),
-		'time_slots_availability' => array(
-			'save_behavior'      => 'link_only',
-			'target_selector'    => '.wpbc_admin_page__tab__time_slots_availability, .wpbc_ts_page',
-			'scroll_selector'    => '.wpbc_admin_page__tab__time_slots_availability:visible, .wpbc_ts_page:visible',
-			'highlight_disabled' => '1',
-		),
-		'date_availability'       => array(
-			'save_behavior'      => 'manual_save_required',
-			'target_selector'    => '[data-group="general-availability-weekdays"], .wpbc_admin_page__tab__general_availability, [data-wpbc-ag-settings-form="1"]',
-			'scroll_selector'    => '[data-group="general-availability-weekdays"]:visible, [data-wpbc-ag-settings-form="1"]:visible',
-			'highlight_selector' => '[data-group="general-availability-weekdays"]:visible, [data-wpbc-ag-settings-form="1"]:visible',
-			'form_selector'      => '[data-wpbc-ag-settings-form="1"]',
-			'save_selector'      => '[data-wpbc-ag-save="1"]',
-			'save_ajax_action'   => 'WPBC_AJX_AVAILABILITY_GENERAL_SAVE',
-			'save_events'        => 'wpbc:availability-general:settings-saved,wpbc:setup-wizard:step-saved',
-			'open_action'        => 'availability_section',
-		),
+		'time_slots_availability' => $time_slots_step_ui,
+		'date_availability'       => $date_availability_step_ui,
 		'color_theme'             => array(
 			'save_behavior'      => 'manual_save_required',
 			'target_selector'    => '.wpbc_admin_page__tab__themes, [data-wpbc-theme-page="1"]',
@@ -562,13 +764,7 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'save_ajax_action'   => 'WPBC_AJX_SETTINGS_THEMES_SAVE',
 			'save_events'        => 'wpbc:setup-wizard:step-saved',
 		),
-		'wizard_publish'          => array(
-			'save_behavior'      => 'link_only',
-			'target_selector'    => '.ui_group__publish_btn, .wpbc_resource_field__publish, .wpbc_resource_publish, .wpbc_publish_resources, .wpbc_resource_shortcode, [data-wpbc-resource-publish], #wpbc_booking_resource_table, .wpbc_admin_page',
-			'scroll_selector'    => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, .wpbc_resource_shortcode:visible, [data-wpbc-resource-publish]:visible, #wpbc_booking_resource_table:visible',
-			'highlight_selector' => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, .wpbc_resource_shortcode:visible, [data-wpbc-resource-publish]:visible, #wpbc_booking_resource_table:visible',
-			'open_action'        => 'publish_area',
-		),
+		'wizard_publish'          => $publish_step_ui,
 		'get_started'             => array(
 			'save_behavior'      => 'complete',
 			'target_selector'    => '.wpbc_admin_page',
@@ -797,6 +993,12 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 	}
 
 	switch ( $step_name ) {
+		case 'service_provider':
+			$url = function_exists( 'wpbc_booking_modes_get_canonical_page_url' )
+				? wpbc_booking_modes_get_canonical_page_url( 'wpbc-services__appointment_services' )
+				: admin_url( 'admin.php?page=wpbc-services&tab=appointment_services' );
+			break;
+
 		case 'date_selection':
 			$url = function_exists( 'wpbc_get_settings_calendar_url' )
 				? wpbc_get_settings_calendar_url()
@@ -825,10 +1027,17 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 			break;
 
 		case 'date_availability':
-			$url = function_exists( 'wpbc_get_general_availability_url' )
-				? wpbc_get_general_availability_url()
-				: admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' );
-			$url = add_query_arg( 'wpbc_ag_open', 'weekdays', $url );
+			if ( 'rental' === wpbc_setup_wizard__get_selected_mode_id() ) {
+				$url = function_exists( 'wpbc_get_general_availability_url' )
+					? wpbc_get_general_availability_url()
+					: admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' );
+				break;
+			}
+
+			$canonical_url = function_exists( 'wpbc_booking_modes_get_canonical_page_url' )
+				? wpbc_booking_modes_get_canonical_page_url( 'wpbc-availability__availability' )
+				: '';
+			$url = ! empty( $canonical_url ) ? $canonical_url : admin_url( 'admin.php?page=wpbc-availability&tab=availability' );
 			break;
 
 		case 'form_structure':
@@ -847,7 +1056,13 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 			break;
 
 		case 'wizard_publish':
-			$url = wpbc_get_resources_url() . '#wpbc_booking_resource_table';
+			$url = function_exists( 'wpbc_booking_modes_get_canonical_page_url' )
+				? wpbc_booking_modes_get_canonical_page_url( 'wpbc-resources__resources' )
+				: '';
+			if ( empty( $url ) ) {
+				$url = add_query_arg( 'tab', 'resources', wpbc_get_resources_url() );
+			}
+			$url .= '#wpbc_booking_resource_table';
 			break;
 
 		case 'get_started':
@@ -911,6 +1126,8 @@ function wpbc_setup_wizard__get_step_route_metadata( $step_name ) {
 		'save_ajax_action' => wpbc_setup_wizard__get_step_save_ajax_action( $step_name ),
 		'save_events'     => wpbc_setup_wizard__get_step_save_events( $step_name ),
 		'open_action'     => wpbc_setup_wizard__get_step_open_action( $step_name ),
+		'secondary_action_url' => wpbc_setup_wizard__get_step_ui_matrix_value( $step_name, 'secondary_action_url' ),
+		'secondary_action_label' => wpbc_setup_wizard__get_step_ui_matrix_value( $step_name, 'secondary_action_label' ),
 	);
 }
 

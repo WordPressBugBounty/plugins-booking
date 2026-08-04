@@ -1,0 +1,28 @@
+/**
+ * Reusable Chosen filter additions.
+ *
+ * The main Chosen appearance remains in the shared Booking Calendar admin CSS.
+ */
+.wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_ui_el__choosen_reset_button {
+	align-items: center;
+	align-self: stretch;
+	background: transparent;
+	border: 0;
+	border-left: 0px solid #bebebe;
+	box-shadow: none;
+	box-sizing: content-box;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	justify-content: center;
+	margin: 0;
+	min-height: 0;
+	padding: 0 9px;
+}
+
+.wpbc_ui_el__choosen .wpbc_ui_el__choosen_reset_buttons .wpbc_ui_el__choosen_reset_button:focus-visible {
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--wpbc_admin-theme-color, #2271b1);
+	outline: 2px solid transparent;
+	outline-offset: 0;
+}

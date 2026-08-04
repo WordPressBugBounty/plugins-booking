@@ -313,7 +313,7 @@ function wpbc_setup_wizard_page__force_in_get() {
 		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 		$setup_steps->db__set_all_steps_as( false );
 		update_bk_option( 'booking_wizard_data', array() );
-		wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+		wpbc_setup_wizard__set_full_screen_mode_for_current_user( true );
 
 		return true;
 	}
@@ -326,6 +326,11 @@ function wpbc_setup_wizard_page__force_in_get() {
 		wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
 		return true;
 	}
+
+	if ( wpbc_is_setup_wizard_page() ) {
+		wpbc_setup_wizard__set_full_screen_mode_for_current_user( true );
+	}
+
 	$is_external_setup_flow_started = $setup_steps->db__is_step_completed( 'bookings_types' );
 
 	// Persist the real setup step when the user lands on an external WPBC admin page.

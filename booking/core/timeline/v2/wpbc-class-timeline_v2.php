@@ -36,9 +36,17 @@ class WPBC_TimelineFlex {
 
 	private $data_in_previous_cell;	// FixIn: 8.5.2.6.
 
+	/**
+	 * Exact booking scope resolved from a public booking hash.
+	 *
+	 * @var array|false
+	 */
+	private $booking_hash_scope;
+
     public function __construct(){// $bookings, $booking_types ) {
 
-    	$this->reset_data_in_previous_cell();
+		$this->reset_data_in_previous_cell();
+		$this->booking_hash_scope = false;
 
         $this->options = array();                                               // FixIn: 7.0.1.50.
         
@@ -116,6 +124,76 @@ class WPBC_TimelineFlex {
         
         
     }
+
+	/**
+	 * Apply an exact booking and resource authorization scope to timeline SQL arguments.
+	 *
+	 * A booking hash is a bearer credential for one booking. It must never be
+	 * converted into a customer-data keyword or used to broaden the query. Invalid
+	 * hashes deliberately select an impossible booking ID so processing fails closed.
+	 *
+	 * @param array  $query_args   Clean timeline query arguments.
+	 * @param string $booking_hash Public booking hash supplied by the timeline request.
+	 * @return array Query arguments restricted to the authorized booking, when applicable.
+	 */
+	private function wpbc_apply_booking_hash_scope_to_query_args( $query_args, $booking_hash ) {
+		$this->booking_hash_scope = false;
+		$booking_hash             = sanitize_text_field( (string) $booking_hash );
+
+		if ( empty( $booking_hash ) ) {
+			return $query_args;
+		}
+
+		$this->request_args['only_booked_resources'] = 1;
+		$booking_scope = wpbc_hash__get_booking_id__resource_id( $booking_hash );
+
+		if ( empty( $booking_scope ) || count( $booking_scope ) < 2 ) {
+			$query_args['wh_booking_id'] = '-1';
+			return $query_args;
+		}
+
+		$booking_id  = absint( $booking_scope[0] );
+		$resource_id = absint( $booking_scope[1] );
+		$booking_row = wpbc_db_get_booking_details( $booking_id );
+
+		if ( empty( $booking_id ) || empty( $resource_id ) || empty( $booking_row ) || $resource_id !== absint( $booking_row->booking_type ) ) {
+			$query_args['wh_booking_id'] = '-1';
+			return $query_args;
+		}
+
+		$this->booking_hash_scope = array(
+			'booking_id'  => $booking_id,
+			'resource_id' => $resource_id,
+		);
+		$query_args['wh_booking_id']   = (string) $booking_id;
+		$query_args['wh_booking_type'] = (string) $resource_id;
+
+		return $query_args;
+	}
+
+	/**
+	 * Verify that a returned booking remains inside the resolved hash scope.
+	 *
+	 * This rendering-layer check is intentionally independent of the SQL restriction
+	 * so a future query regression cannot expose another booking's popover data.
+	 * Timelines without a booking hash retain their configured public presentation.
+	 *
+	 * @param int   $booking_id Booking ID about to be rendered.
+	 * @param array $bookings   Booking objects keyed by booking ID.
+	 * @return bool True when popover rendering is authorized for this row.
+	 */
+	private function wpbc_is_booking_authorized_for_hash( $booking_id, $bookings ) {
+		if ( empty( $this->request_args['booking_hash'] ) ) {
+			return true;
+		}
+
+		$booking_id = absint( $booking_id );
+		if ( empty( $this->booking_hash_scope ) || $booking_id !== $this->booking_hash_scope['booking_id'] || empty( $bookings[ $booking_id ] ) ) {
+			return false;
+		}
+
+		return $this->booking_hash_scope['resource_id'] === absint( $bookings[ $booking_id ]->booking_type );
+	}
 
 
 	/**
@@ -198,32 +276,8 @@ class WPBC_TimelineFlex {
         $args = $this->wpbc_get_clean_paramas_from_request_for_timeline();
 
 
-		// FixIn: 8.1.3.5.
-		/**	Client - Page first load
-		 *
-		 * If provided valid request_args['booking_hash']
-		 *		- Firstly  defined in constructor in $_REQUEST['booking_hash']
-		 * 		- or overwrited in 		define_request_view_params_from_params		from  parameters in shortcode 'booking_hash'
-		 * then check, if exist booking for this hash.
-		 * If exist, get Email of this booking,  and
-		 * filter getting all  other bookings by email keyword.
-		 * Addtionly set param ['only_booked_resources'] for showing only booking resources with  exist bookings.
-		 */
-		if ( isset( $this->request_args['booking_hash'] ) ) {
-
-			// Get booking details by HASH,  and then  return Email (or other data of booking,  or false if error
-			$booking_details_email = wpbc_get__booking_data_field__by_booking_hash( $this->request_args['booking_hash'] , 'email' );
-
-			if ( ! empty( $booking_details_email ) ) {
-
-				// Do  not show booking resources with  no bookings
-				$this->request_args['only_booked_resources'] = 1;
-
-				//Set keyword for showing bookings ony  relative to this email
-				$args['wh_keyword'] = $booking_details_email;															// 'jo@wpbookingcalendar.com';
-			}
-		}
-		//FixIn: 8.1.3.5 	-	End
+		// A public booking hash authorizes only its exact booking and resource.
+		$args = $this->wpbc_apply_booking_hash_scope_to_query_args( $args, $this->request_args['booking_hash'] );
 
 
         // Get booking data
@@ -461,33 +515,9 @@ class WPBC_TimelineFlex {
         $args = $this->wpbc_get_clean_paramas_from_request_for_timeline();
 
 
-		// FixIn: 8.1.3.5.
-	    /**
-	     * If provided valid ['booking_hash'] in timeline_obj in JavaScript param during Ajax request,
-	     * then check, if exist booking for this hash. If exist, get Email of this booking,  and
-	     * filter getting all  other bookings by email keyword.
-		 * Addtionly set param ['only_booked_resources'] for showing only booking resources with  exist bookings
-	     */
-		if ( isset( $attr['booking_hash'] ) ) {
-
-			// Get booking details by HASH,  and then  return Email (or other data of booking,  or false if error
-			$booking_details_email = wpbc_get__booking_data_field__by_booking_hash( $attr['booking_hash'] , 'email' );
-//debuge($attr, $booking_details_email);
-			if ( ! empty( $booking_details_email ) ) {
-
-				// Do  not show booking resources with  no bookings
-				$this->request_args['only_booked_resources'] = 1;
-
-				//Set keyword for showing bookings ony  relative to this email
-				$args['wh_keyword'] = $booking_details_email;															// 'jo@wpbookingcalendar.com';
-			}
-			if ( ( empty( $booking_details_email ) ) && ( ! empty( $attr['booking_hash'] ) ) ) {						 // FixIn: 8.4.6.1.
-				// FixIn: 8.4.5.13.
-				$this->request_args['only_booked_resources'] = 1;
-				$args['wh_keyword'] = '``^`````^^````^`````````';
-			}
-		}
-		//FixIn: 8.1.3.5 	-	End
+		// Apply the same exact-booking scope to every unauthenticated navigation request.
+		$booking_hash = isset( $attr['booking_hash'] ) ? $attr['booking_hash'] : '';
+		$args         = $this->wpbc_apply_booking_hash_scope_to_query_args( $args, $booking_hash );
 
 
         // Get booking data
@@ -1898,6 +1928,10 @@ if(1)
 
 			$bk_title .= " \n" . wp_strip_all_tags( wpbc_get_short_dates_formated_to_show( $row_settings['bookings'][ $booking_id ]->dates_short ) )  ;
 
+			if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+				$bk_title = apply_filters( 'wpbc_timeline_booking_pipeline_title', $bk_title, $booking_id, $row_settings['bookings'] );
+			}
+
 			?><a  href="javascript:void(0)"
 				  class="in_cell_date_booking_pipeline_a"
 				  title="<?php echo esc_attr(  $bk_title ); ?>"
@@ -1929,7 +1963,8 @@ if(1)
 
 				$title_in_day =  $title =  $title_hint = '';
 
-				if ( $is_show_popover_in_timeline ) {
+				$can_show_booking_popover = $is_show_popover_in_timeline && $this->wpbc_is_booking_authorized_for_hash( $booking_id, $row_settings['bookings'] );
+				if ( $can_show_booking_popover ) {
 					$popup_content       = $this->wpbc_get_booking_info_4_popover( $booking_id, $row_settings['bookings'], $row_settings['booking_types'] );
 
 
@@ -1968,13 +2003,13 @@ if(1)
 			?><a href="javascript:void(0)"
 			 	 class="<?php  echo esc_attr( implode(' ', array(
 									'in_cell_date_booking_title',
-									( $is_show_popover_in_timeline ) ? 'popover_bottom' : '',
-									( $is_show_popover_in_timeline ) ? 'popover_click' : '',
+									( ! empty( $popup_content_arr ) ) ? 'popover_bottom' : '',
+									( ! empty( $popup_content_arr ) ) ? 'popover_click' : '',
 					 				( count( $bookings_in_cell ) > 1 ) ? 'several_bookings_in_cell' : ''
 						 ))); ?>"
 				 <?php
 					// FixIn: 8.9.3.3.
-					if ( $is_show_popover_in_timeline ) { ?>
+					if ( ! empty( $popup_content_arr ) ) { ?>
 					 data-content="<?php echo esc_html( str_replace( '"', "", $popup_content_arr ) ); ?>"
 					 data-original-title="<?php echo esc_html( str_replace( '"', "", $popup_title_arr ) ); ?>"
 				 <?php } ?>
@@ -3002,6 +3037,13 @@ if(1)
      */
     public function wpbc_get_booking_info_4_popover( $bk_id, $bookings, $booking_types ){
 
+		if ( ! $this->wpbc_is_booking_authorized_for_hash( $bk_id, $bookings ) ) {
+			return array(
+				'title'   => '',
+				'content' => '',
+			);
+		}
+
 		if ( isset( $bookings[ $bk_id ] ) ) {
 			//$bookings[ $bk_id ]->form_show = str_replace( "&amp;", '&', $bookings[ $bk_id ]->form_show );				// FixIn: 7.1.2.12.
 			// We escaping at other place: wpbc__legacy__get_form_content_arr()
@@ -3269,10 +3311,16 @@ if(1)
 
         $content_text .= '</div>';	// Main Container: 'flex-popover-content-data'
 
-	    return array(
+	    $popover = array(
 		    'title'   => $header_title,
 		    'content' => $content_text
 	    );
+
+	    if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+		    $popover = apply_filters( 'wpbc_timeline_booking_popover', $popover, $bk_id, $bookings, $this->is_frontend );
+	    }
+
+	    return $popover;
     }
 
 }
@@ -3295,13 +3343,61 @@ function wpbc_ajax_flex_timeline() {
                 )
      */
 
-	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	foreach ( $_POST['timeline_obj'] as $tl_key => $tl_value ) {
-		$_POST['timeline_obj'][ $tl_key ] = wpbc_clean_text_value( $tl_value );  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	// Public timeline navigation accepts only one flat scalar attribute map.
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( ! isset( $_POST['timeline_obj'] ) || ! is_array( $_POST['timeline_obj'] ) ) {
+		status_header( 400 );
+		wp_die( '' );
 	}
 
-	$attr             = $_POST['timeline_obj'];                                                                         // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-	$attr['nav_step'] = wpbc_clean_text_value( $_POST['nav_step'] );                                                    // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+	$attr                  = array();
+	$allowed_timeline_keys = array_fill_keys(
+		array(
+			'is_frontend',
+			'html_client_id',
+			'wh_booking_type',
+			'is_matrix',
+			'view_days_num',
+			'scroll_start_date',
+			'scroll_day',
+			'scroll_month',
+			'header_column1',
+			'header_column2',
+			'header_title',
+			'wh_trash',
+			'limit_hours',
+			'only_booked_resources',
+			'options',
+			'booking_hash',
+		),
+		true
+	);
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing
+	foreach ( $_POST['timeline_obj'] as $tl_key => $tl_value ) {
+		if ( ! is_scalar( $tl_key ) || ! is_scalar( $tl_value ) ) {
+			status_header( 400 );
+			wp_die( '' );
+		}
+
+		$clean_key = sanitize_key( wp_unslash( (string) $tl_key ) );
+		if ( '' === $clean_key || ! isset( $allowed_timeline_keys[ $clean_key ] ) ) {
+			continue;
+		}
+		$attr[ $clean_key ] = wpbc_clean_text_value( wp_unslash( (string) $tl_value ) );
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( isset( $_POST['nav_step'] ) && ! is_scalar( $_POST['nav_step'] ) ) {
+		status_header( 400 );
+		wp_die( '' );
+	}
+
+	$attr['nav_step']   = isset( $_POST['nav_step'] ) ? wpbc_clean_text_value( wp_unslash( (string) $_POST['nav_step'] ) ) : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$attr['is_frontend'] = isset( $attr['is_frontend'] ) ? $attr['is_frontend'] : '1';
+	if ( empty( $attr['html_client_id'] ) ) {
+		status_header( 400 );
+		wp_die( '' );
+	}
 
 	// FixIn: 9.9.0.18.
 	$server_zone = date_default_timezone_get();                                                                         // If in 'Theme' or 'other plugin' set  default timezone other than UTC. Save it.

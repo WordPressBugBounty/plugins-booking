@@ -303,6 +303,15 @@ abstract class WPBC_Menu_Structure {
 	}
 
 	public function get_nav_tabs() {
+
+		if (
+			function_exists( 'wpbc_booking_modes_is_navigation_boundary_enabled' )
+			&& wpbc_booking_modes_is_navigation_boundary_enabled()
+			&& function_exists( 'wpbc_booking_modes_resolve_navigation' )
+		) {
+			return wpbc_booking_modes_resolve_navigation( self::$nav_tabs );
+		}
+
 		return self::$nav_tabs;
 	}
 
@@ -355,11 +364,27 @@ abstract class WPBC_Menu_Structure {
 			$this_subtab_tag = 0;
 			$this_subtab     = array( 'default' => false );
 
-			if ( isset( $this_tab['subtabs'] ) ) {
+			if (
+				isset( $request_arr['subtab'] )
+				&& isset( $this_tab['subtabs'] )
+				&& is_array( $this_tab['subtabs'] )
+				&& isset( $this_tab['subtabs'][ $request_arr['subtab'] ] )
+				&& is_array( $this_tab['subtabs'][ $request_arr['subtab'] ] )
+				&& isset( $this_tab['subtabs'][ $request_arr['subtab'] ]['type'] )
+				&& 'subtab' === $this_tab['subtabs'][ $request_arr['subtab'] ]['type']
+			) {
+				// Resolve the explicitly requested subtab, even when it is not the first one declared by this page class.
+				$this_subtab_tag = $request_arr['subtab'];
+				$this_subtab     = $this_tab['subtabs'][ $request_arr['subtab'] ];
+			} elseif ( isset( $this_tab['subtabs'] ) && is_array( $this_tab['subtabs'] ) ) {
 				foreach ( $this_tab['subtabs'] as $temp_this_subtab_tag => $temp_this_subtab ) {
 
 					// Get First Subtab element from  subtabs array.
-					if ( 'subtab' === $temp_this_subtab['type'] ) {
+					if (
+						is_array( $temp_this_subtab )
+						&& isset( $temp_this_subtab['type'] )
+						&& 'subtab' === $temp_this_subtab['type']
+					) {
 						$this_subtab_tag = $temp_this_subtab_tag;
 						$this_subtab     = $temp_this_subtab;
 						break;

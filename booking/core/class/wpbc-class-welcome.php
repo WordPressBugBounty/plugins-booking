@@ -322,6 +322,9 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
+		if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
+			wpbc_welcome_section_11_5( $this );
+		}
 		wpbc_welcome_section_11_4( $this );
 		wpbc_welcome_section_11_3( $this );
 		wpbc_welcome_section_11_2( $this );

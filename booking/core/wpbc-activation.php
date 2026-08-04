@@ -188,6 +188,11 @@ function wpbc_booking_activate() {
 
 	wpbc_load_translation();
 
+	$is_new_install = (
+		false === get_option( 'booking_version_num', false )
+		&& ! wpbc_is_table_exists( 'booking' )
+	);
+
     make_bk_action( 'wpbc_before_activation' );
     
 
@@ -199,6 +204,10 @@ function wpbc_booking_activate() {
     // Options
 	// -----------------------------------------------------------------------------------------------------------------
     $default_options_to_add = wpbc_get_default_options();
+	// Existing installations retain their saved value; add_bk_option() never overwrites it during upgrades.
+	if ( $is_new_install ) {
+		$default_options_to_add['booking_form_accent_enabled'] = 'On';
+	}
 	// TODO: for Import / Export options,  we can  use this function to get all option_names and then just  get  the real  values from  the wp_options table.
     make_bk_action( 'wpbc_before_activation__add_options', $default_options_to_add );           // FixIn: 9.6.2.11.
 
@@ -441,6 +450,91 @@ function wpbc_booking_activate() {
 add_bk_action( 'wpbc_activation',  'wpbc_booking_activate' );
 
 
+/**
+ * Determine whether the commercial registration data must survive full data removal.
+ *
+ * Demo sites need to retain the validated commercial registration payload so that
+ * resetting demo booking data does not expose the order-number registration form.
+ * Requiring both the established demo check and the official domain prevents this
+ * exception from changing cleanup behavior on customer, local, or beta websites.
+ *
+ * @return bool True when registration data must be preserved; otherwise false.
+ */
+function wpbc_deactivation__should_preserve_registration_data() {
+
+	if ( ! function_exists( 'wpbc_is_this_demo' ) || ! wpbc_is_this_demo() ) {
+		return false;
+	}
+
+	$site_host = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+
+	if ( ! is_string( $site_host ) || '' === $site_host ) {
+		return false;
+	}
+
+	$site_host            = strtolower( rtrim( $site_host, '.' ) );
+	$official_demo_host   = 'wpbookingcalendar.com';
+	$official_demo_suffix = '.' . $official_demo_host;
+
+	if ( $official_demo_host === $site_host ) {
+		return true;
+	}
+
+	return strlen( $site_host ) > strlen( $official_demo_suffix )
+		&& $official_demo_suffix === substr( $site_host, -strlen( $official_demo_suffix ) );
+}
+
+
+/**
+ * Delete every site option and transient owned by Booking Calendar.
+ *
+ * The historical deactivation path deletes options returned by
+ * wpbc_get_default_options(). Runtime modules also create version markers,
+ * setup state, caches, and transients outside that registry. This final pass
+ * runs after all module callbacks so those callbacks can still read their
+ * settings while removing tables and other data.
+ *
+ * @return void
+ */
+function wpbc_deactivation__delete_all_plugin_options() {
+
+	global $wpdb;
+
+	$option_name_patterns = array(
+		$wpdb->esc_like( 'booking_' ) . '%',
+		$wpdb->esc_like( 'wpbc_' ) . '%',
+		$wpdb->esc_like( '_transient_' ) . '%' . $wpdb->esc_like( 'booking_' ) . '%',
+		$wpdb->esc_like( '_transient_' ) . '%' . $wpdb->esc_like( 'wpbc_' ) . '%',
+		$wpdb->esc_like( '_site_transient_' ) . '%' . $wpdb->esc_like( 'booking_' ) . '%',
+		$wpdb->esc_like( '_site_transient_' ) . '%' . $wpdb->esc_like( 'wpbc_' ) . '%',
+	);
+
+	$sql = $wpdb->prepare(
+		"SELECT option_name
+		 FROM {$wpdb->options}
+		 WHERE option_name LIKE %s
+			OR option_name LIKE %s
+			OR option_name LIKE %s
+			OR option_name LIKE %s
+			OR option_name LIKE %s
+			OR option_name LIKE %s",
+		$option_name_patterns
+	);
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+	$option_names = $wpdb->get_col( $sql );
+	$option_names = is_array( $option_names ) ? array_unique( $option_names ) : array();
+
+	if ( ! wpbc_deactivation__should_preserve_registration_data() ) {
+		$option_names[] = 'bk_version_data';
+	}
+
+	foreach ( $option_names as $option_name ) {
+		delete_option( $option_name );
+	}
+}
+
+
 
 // Deactivate.
 function wpbc_booking_deactivate() {
@@ -472,9 +566,16 @@ function wpbc_booking_deactivate() {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.SchemaChange
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}bookingdates" );
 
-    // Delete all users booking windows states.
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter,
-	if ( false === $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '%booking_%'" ) ) {
+    // Delete all Booking Calendar user options, listing state, and dismissed notices.
+	$booking_meta_pattern = '%' . $wpdb->esc_like( 'booking_' ) . '%';
+	$wpbc_meta_pattern    = '%' . $wpdb->esc_like( 'wpbc_' ) . '%';
+	$user_meta_delete_sql = $wpdb->prepare(
+		"DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s OR meta_key LIKE %s",
+		$booking_meta_pattern,
+		$wpbc_meta_pattern
+	);
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+	if ( false === $wpdb->query( $user_meta_delete_sql ) ) {
         debuge_error('Error during deleting user meta at DB',__FILE__,__LINE__);
         die();
     }
@@ -492,6 +593,8 @@ function wpbc_booking_deactivate() {
 	// Other versions Deactivation
 	////////////////////////////////////////////////////////////////////////////
 	make_bk_action( 'wpbc_other_versions_deactivation' );
+
+	wpbc_deactivation__delete_all_plugin_options();
 }
 add_bk_action( 'wpbc_deactivation',  'wpbc_booking_deactivate' );
 
@@ -620,7 +723,7 @@ $mu_option4delete[] = 'booking_confirmation__booking_details__content';
  	// FixIn: 8.7.11.10.
 	$default_options['booking_timeslot_picker'] = 'On';
 $mu_option4delete[]= 'booking_timeslot_picker';
-	$default_options['booking_timeslot_picker_skin'] = '/css/time_picker_skins/light__24_8.css';
+	$default_options['booking_timeslot_picker_skin'] = '/css/time_picker_skins/form_style.css';
 $mu_option4delete[]= 'booking_timeslot_picker_skin';
 
 	$default_options['booking_disable_timeslots_in_tooltip'] = 'Off';													//FixIn: 9.5.0.2.2
@@ -773,6 +876,10 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
  $mu_option4delete[]='booking_form_theme';
     $default_options['booking_form_style'] = 'light_bordered';
  $mu_option4delete[]='booking_form_style';
+    $default_options['booking_form_accent_enabled'] = 'Off';
+ $mu_option4delete[]='booking_form_accent_enabled';
+    $default_options['booking_form_accent_color'] = WPBC_DEFAULT_FORM_ACCENT_COLOR;
+ $mu_option4delete[]='booking_form_accent_color';
     $default_options['booking_form_appearance_preset'] = 'bordered';
  $mu_option4delete[]='booking_form_appearance_preset';
     $default_options['booking_form_appearance_background_color'] = '#ffffff';
@@ -829,6 +936,10 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
  $mu_option4delete[]='booking_form_custom_secondary_button_hover_text_color';
     $default_options['booking_form_custom_secondary_button_hover_border_color'] = '#4d91cd';
  $mu_option4delete[]='booking_form_custom_secondary_button_hover_border_color';
+	$default_options['booking_form_custom_button_border_width'] = '1px';
+ $mu_option4delete[]='booking_form_custom_button_border_width';
+	$default_options['booking_form_custom_button_border_radius'] = '3px';
+ $mu_option4delete[]='booking_form_custom_button_border_radius';
 	$default_options['booking_is_use_captcha'] = 'Off';
  $mu_option4delete[]='booking_is_use_captcha';
 	$default_options['booking_frontend_messages'] = array( 'version' => 1, 'messages' => array(), 'enabled' => array() );
@@ -881,6 +992,8 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
     $emails_init = array_merge( $emails_init, wpbc_import6_email__trash__get_fields_array_for_activation() );
     if ( class_exists( 'wpdev_bk_personal' ) ) 
         $emails_init = array_merge( $emails_init, wpbc_import6_email__modification__get_fields_array_for_activation() );
+    if ( class_exists( 'wpdev_bk_personal' ) && function_exists( 'wpbc_customer_verification_email_get_initial_values' ) )
+        $emails_init = array_merge( $emails_init, wpbc_customer_verification_email_get_initial_values() );
     if ( class_exists( 'wpdev_bk_biz_s' ) ) 
         $emails_init = array_merge( $emails_init, wpbc_import6_email__payment_request__get_fields_array_for_activation() );    
     foreach ( $emails_init as $email_key_name => $email_values ) {
@@ -1027,7 +1140,9 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
      $mu_option4delete[]='booking_auto_cancel_pending_unpaid_bk_is_send_email';      
         $default_options['booking_auto_cancel_pending_unpaid_bk_email_reason'] = __( 'This booking canceled because we did not receive payment and the administrator did not approve it.', 'booking' );
      $mu_option4delete[]='booking_auto_cancel_pending_unpaid_bk_email_reason';          
-        $default_options['booking_range_selection_type'] = $is_free_version ? 'dynamic' : 'fixed';
+		// Start every edition with the unrestricted two-click range.
+		// Business Small+ users can opt into a fixed one-click range later.
+		$default_options['booking_range_selection_type'] = 'dynamic';
      $mu_option4delete[]='booking_range_selection_type';
         $default_options['booking_range_selection_days_count'] = '3';
      $mu_option4delete[]='booking_range_selection_days_count';

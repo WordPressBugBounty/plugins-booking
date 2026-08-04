@@ -90,6 +90,37 @@ class WPBC_FE_Render {
 		// ---------------------------------------------------------------------
 		make_bk_action( 'check_multiuser_params_for_client_side', $params_arr['resource_id'] );
 
+		// Render a focused cancellation confirmation instead of loading the complete booking form and calendar.
+		if ( WPBC_GET_Request::has_get( 'booking_cancel' ) && function_exists( 'wpbc_customer_access_render_cancellation_confirmation' ) ) {
+			$booking_hash = sanitize_text_field( wp_unslash( (string) $params_arr['booking_hash'] ) );
+			if ( '' === $booking_hash ) {
+				$booking_hash = WPBC_GET_Request::get_sanitized( 'booking_hash' );
+			}
+
+			$cancellation_html = wpbc_customer_access_render_cancellation_confirmation( $booking_hash, $params_arr['resource_id'] );
+
+			/**
+			 * Filters the complete visitor cancellation confirmation markup.
+			 *
+			 * @param string $cancellation_html Rendered confirmation markup.
+			 * @param int    $resource_id       Resource ID used by the front-end form container.
+			 * @param string $booking_hash      Sanitized booking credential from the cancellation URL.
+			 */
+			$cancellation_html = apply_filters(
+				'wpbc_customer_booking_cancellation_confirmation_html',
+				$cancellation_html,
+				absint( $params_arr['resource_id'] ),
+				$booking_hash
+			);
+
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			$my_result = apply_filters( 'wpdev_booking_form', ' ' . $cancellation_html . ' ', $params_arr['resource_id'] );
+
+			make_bk_action( 'finish_check_multiuser_params_for_client_side', $params_arr['resource_id'] );
+
+			return self::echo_or_return( $my_result, $is_echo );
+		}
+
 		// ---------------------------------------------------------------------
 		// Normalize calendar_dates_start/end.
 		// ---------------------------------------------------------------------

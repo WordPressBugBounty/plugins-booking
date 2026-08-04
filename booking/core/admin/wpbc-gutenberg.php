@@ -20,8 +20,14 @@ function wpbc_gutenberg_block_booking() {
 
 	if ( function_exists( 'register_block_type' ) ) {
 
-		$script_params = array( 'wp-blocks', 'wp-element', 'wpbc-modal' );
-		wp_register_script( 'gutenberg-wpbc-booking', wpbc_plugin_url( '/js/wpbc-gutenberg.js' ), $script_params, '1.0', array( 'in_footer' => WPBC_JS_IN_FOOTER ) );
+		$script_params = array( 'wp-blocks', 'wp-element', 'wp-i18n', 'wp-shortcode', 'underscore', 'jquery', 'wpbc-modal' );
+		wp_register_script(
+			'gutenberg-wpbc-booking',
+			wpbc_plugin_url( '/js/wpbc-gutenberg.js' ),
+			$script_params,
+			filemtime( plugin_dir_path( __FILE__ ) . '../../js/wpbc-gutenberg.js' ),
+			array( 'in_footer' => WPBC_JS_IN_FOOTER )
+		);
 	    wp_register_style( 'gutenberg-wpbc-editor', wpbc_plugin_url( '/css/wpbc-gutenberg.css' ),
 		    array( 'wp-edit-blocks' ),
 	        filemtime( plugin_dir_path( __FILE__ ) . '../../css/wpbc-gutenberg.css' )

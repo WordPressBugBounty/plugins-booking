@@ -1,4 +1,105 @@
 /**
+ * Normalize a user-entered list of positive IDs for a workflow shortcode.
+ *
+ * @param {string} raw_value Comma-, semicolon-, or whitespace-delimited IDs.
+ * @returns {string} Unique comma-delimited positive IDs.
+ */
+function wpbc_shortcode_config__normalize_workflow_id_list( raw_value ) {
+    var normalized_ids = [];
+    String( raw_value || '' ).split( /[;,\s]+/ ).forEach( function ( raw_id ) {
+        var normalized_id = parseInt( raw_id, 10 );
+        if ( normalized_id > 0 && -1 === normalized_ids.indexOf( normalized_id ) ) {
+            normalized_ids.push( normalized_id );
+        }
+    } );
+
+    return normalized_ids.join( ',' );
+}
+
+/**
+ * Normalize one workflow shortcode field according to its declared value type.
+ *
+ * @param {jQuery} $field Parameter control.
+ * @returns {string} Safe value for the generated shortcode.
+ */
+function wpbc_shortcode_config__get_workflow_field_value( $field ) {
+    var value_type = String( $field.data( 'wpbc-shortcode-value-type' ) || 'text' );
+    var raw_value = $field.is( ':checkbox' ) ? ( $field.is( ':checked' ) ? 'on' : 'off' ) : $field.val();
+    var field_value = Array.isArray( raw_value ) ? raw_value.join( ',' ) : String( raw_value || '' ).trim();
+    var is_valid = true;
+    var month_match;
+
+    if ( 'positive_integer' === value_type ) {
+        field_value = '' === field_value ? '' : String( parseInt( field_value, 10 ) );
+        is_valid = '' === field_value || ( ! isNaN( parseInt( field_value, 10 ) ) && parseInt( field_value, 10 ) > 0 );
+    } else if ( 'id_list' === value_type ) {
+        field_value = wpbc_shortcode_config__normalize_workflow_id_list( field_value );
+    } else if ( 'date' === value_type ) {
+        is_valid = '' === field_value || /^\d{4}-\d{2}-\d{2}$/.test( field_value );
+    } else if ( 'month' === value_type ) {
+        month_match = /^(\d{4})(?:-?(\d{1,2})|\/(\d{1,2}))$/.exec( field_value );
+        is_valid = '' === field_value || ( month_match && parseInt( month_match[ 2 ] || month_match[ 3 ], 10 ) >= 1
+            && parseInt( month_match[ 2 ] || month_match[ 3 ], 10 ) <= 12 );
+    }
+
+    if ( ! is_valid ) {
+        if ( 'function' === typeof wpbc_field_highlight ) {
+            wpbc_field_highlight( '#' + $field.attr( 'id' ) );
+        }
+        return '';
+    }
+
+    return field_value.replace( /'/g, '' );
+}
+
+/**
+ * Build one modern workflow shortcode from declarative popup controls.
+ *
+ * @param {string} shortcode_id booking_appointment or booking_resource_selector.
+ * @returns {string} Complete shortcode text.
+ */
+function wpbc_shortcode_config__build_workflow_shortcode( shortcode_id ) {
+    var shortcode_text = '[' + shortcode_id;
+    var $container = jQuery( '#wpbc_sc_container__shortcode_' + shortcode_id );
+
+    $container.find( '[data-wpbc-shortcode-parameter]' ).each( function () {
+        var $field = jQuery( this );
+        var parameter_name = String( $field.data( 'wpbc-shortcode-parameter' ) || '' );
+        var default_value = String( $field.data( 'wpbc-shortcode-default' ) );
+        var field_value = wpbc_shortcode_config__get_workflow_field_value( $field );
+
+        if ( parameter_name && field_value !== default_value ) {
+            shortcode_text += ' ' + parameter_name + '=\'' + field_value + '\'';
+        }
+    } );
+
+    return shortcode_text + ']';
+}
+
+/**
+ * Restore one workflow shortcode section to its parser-backed UI defaults.
+ *
+ * @param {string} shortcode_id booking_appointment or booking_resource_selector.
+ * @returns {void}
+ */
+function wpbc_shortcode_config__reset_workflow( shortcode_id ) {
+    var $container = jQuery( '#wpbc_sc_container__shortcode_' + shortcode_id );
+
+    $container.find( '[data-wpbc-shortcode-parameter]' ).each( function () {
+        var $field = jQuery( this );
+        var default_value = String( $field.data( 'wpbc-shortcode-default' ) );
+
+        if ( $field.is( ':checkbox' ) ) {
+            $field.prop( 'checked', 'on' === default_value );
+        } else {
+            $field.val( default_value );
+        }
+    } );
+
+    wpbc_set_shortcode();
+}
+
+/**
  * Shortcode Config - Main Loop
  */
 function wpbc_set_shortcode(){
@@ -10,6 +111,12 @@ function wpbc_set_shortcode(){
 
     var wpbc_shortcode = '[';
     var shortcode_id = jQuery( '#wpbc_shortcode_type' ).val().trim();
+
+    if ( 'booking_appointment' === shortcode_id || 'booking_resource_selector' === shortcode_id ) {
+        jQuery( '#wpbc_text_put_in_shortcode' ).val( wpbc_shortcode_config__build_workflow_shortcode( shortcode_id ) );
+        return;
+    }
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // [booking]  | [bookingcalendar] | ...
@@ -717,6 +824,11 @@ function wpbc_set_shortcode(){
 
     /* R E S E T */
     function wpbc_shortcode_config__reset(shortcode_val){
+        if ( 'booking_appointment' === shortcode_val || 'booking_resource_selector' === shortcode_val ) {
+            wpbc_shortcode_config__reset_workflow( shortcode_val );
+            return;
+        }
+
         jQuery( '#' + shortcode_val + '_wpbc_startmonth_active' ).prop( 'checked', false ).trigger('change');
         jQuery( '#' + shortcode_val + '_wpbc_calendar_dates_start_active' ).prop( 'checked', false ).trigger('change');
         jQuery( '#' + shortcode_val + '_wpbc_calendar_dates_end_active' ).prop( 'checked', false ).trigger('change');
@@ -798,22 +910,31 @@ function wpbc_set_shortcode(){
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 /**
- * When click on menu item in "Left Vertical Navigation" panel  in shortcode config popup
+ * Show the selected shortcode configuration from the popup navigation.
+ *
+ * Every shortcode uses the same constrained content layout so its tab bar,
+ * generated shortcode, and popup actions remain fixed while only the selected
+ * configuration section scrolls.
+ *
+ * @param {HTMLElement} _this              Clicked navigation link.
+ * @param {string}      section_id_to_show Selector for the shortcode container.
+ * @param {string}      shortcode_name     Shortcode name without brackets.
+ * @return {void}
  */
 function wpbc_shortcode_config_click_show_section( _this, section_id_to_show, shortcode_name ){
+
+    var shortcode_container = jQuery( section_id_to_show );
 
     // Menu
     jQuery( _this ).parents( '.wpbc_settings_flex_container' ).find( '.wpbc_settings_navigation_item_active' ).removeClass( 'wpbc_settings_navigation_item_active' );
     jQuery( _this ).parents( '.wpbc_settings_navigation_item' ).addClass( 'wpbc_settings_navigation_item_active' );
 
     // Content
-    jQuery( _this ).parents( '.wpbc_settings_flex_container' ).find( '.wpbc_sc_container__shortcode' ).hide();
-    jQuery( section_id_to_show ).show();
+    jQuery( _this ).parents( '.wpbc_settings_flex_container' ).find( '.wpbc_sc_container__shortcode' ).removeClass( 'wpbc_sc_container__shortcode_is_active' ).hide();
+    shortcode_container.show().addClass( 'wpbc_sc_container__shortcode_is_active' );
 
-    // Scroll
-    if ( 'function' === typeof (wpbc_scroll_to) ){
-        wpbc_scroll_to( section_id_to_show );
-    }
+    // Start each selected configuration at the beginning of its visible section.
+    shortcode_container.find( '.wpbc_sc_container__shortcode_section:visible' ).scrollTop( 0 );
     // Set - Shortcode Type
     jQuery( '#wpbc_shortcode_type').val( shortcode_name );
 
@@ -1166,7 +1287,7 @@ jQuery( document ).ready( function (){
     // -----------------------------------------------------------------------------------------------------
     // [booking ... ]
 
-    var shortcode_arr = ['booking', 'bookingcalendar', 'bookingselect', 'bookingtimeline', 'bookingform', 'bookingsearch', 'bookingother', 'booking_import_ics' , 'booking_listing_ics'];
+    var shortcode_arr = ['booking', 'bookingcalendar', 'bookingselect', 'bookingtimeline', 'bookingform', 'bookingsearch', 'bookingother', 'booking_import_ics' , 'booking_listing_ics', 'booking_appointment', 'booking_resource_selector'];
 
     for ( var shortcde_key in shortcode_arr ){
 
@@ -1300,4 +1421,8 @@ jQuery( document ).ready( function (){
     }
     // -----------------------------------------------------------------------------------------------------
     wpbc_set_shortcode();
+
+    jQuery( '.wpbc_shortcode_config__workflow_parameter' ).on( 'change input', function () {
+        wpbc_set_shortcode();
+    } );
 });

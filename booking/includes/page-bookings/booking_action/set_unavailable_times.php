@@ -82,15 +82,26 @@ class WPBC_Action_Set_Unavailable_Times {
 			return false;
 		}
 
+		/**
+		 * Filter whether the Booking Listing availability toolbar button shows text.
+		 *
+		 * Presentation layers can request the compact icon-only variant without
+		 * coupling this booking action controller to their runtime state.
+		 *
+		 * @param bool $show_button_text Whether to render the visible button text.
+		 */
+		$show_button_text = (bool) apply_filters( 'wpbc_booking_listing_show_set_unavailable_times_button_text', true );
+
 		?>
 		<div class="wpbc_ui_el__buttons_group wpbc_booking_listing__top_toolbar_group">
 			<a  href="javascript:void(0);"
 				id="wpbc_booking_listing_set_unavailable_times_button"
 				class="button button-secondary"
 				onclick="wpbc_boo_listing__click__set_unavailable_times( '', '', '', '' );"
-				title="<?php esc_attr_e( 'Set times availability', 'booking' ); ?>">
-				<i class="menu_icon icon-1x wpbc-bi-clock-history"></i>&nbsp;
-				<?php esc_html_e( 'Set Times Availability', 'booking' ); ?>
+				title="<?php esc_attr_e( 'Set times availability', 'booking' ); ?>"
+				aria-label="<?php esc_attr_e( 'Set times availability', 'booking' ); ?>">
+				<i class="menu_icon icon-1x wpbc-bi-clock-history" aria-hidden="true"></i><?php if ( $show_button_text ) : ?>&nbsp;
+					<?php esc_html_e( 'Set Times Availability', 'booking' ); ?><?php endif; ?>
 			</a>
 		</div>
 		<?php

@@ -200,7 +200,6 @@ function wpbc_stp_wiz__template__general_info(){
 						   value="<?php echo   esc_attr( get_option( 'admin_email' ) ); ?>"
 						   placeholder="<?php echo esc_attr( __( 'Example', 'booking' ) ) . ': ' . esc_attr( get_option( 'admin_email' ) ); ?>"
 					/>
-					<span style="font-size:12px;"><?php esc_html_e('You can always change this later','booking'); ?>!</span>
 				</div>
 			</div>
 			<!--div class="wpbc__row">
@@ -208,34 +207,57 @@ function wpbc_stp_wiz__template__general_info(){
 					<span class="wpbc_wrap_textarea wpdev-form-control-wrap details4"><textarea name="details4" autocomplete="details"></textarea></span> </div>
 			</div-->
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:40px;margin-bottom:5px;border-bottom:1px solid #ccc;"></div>
-			<#
-				var currentStep = data.current_step || '';
-				var currentStepData = ( data.steps && data.steps[ currentStep ] ) ? data.steps[ currentStep ] : {};
-				var nextStep = currentStepData.next || '';
-				var doAction = currentStepData.do_action || 'none';
-			#>
-			<div class="wpbc__row wpbc_setup_wizard_page__section_footer">
+			<div class="wpbc__row wpbc_setup_wizard_accept_send_row">
 				<div class="wpbc__field">
 					<span class="wpdev-list-item">
 						<input 	type="checkbox"
-								style="margin-top: 0px;"
-							   	class="wpdev-validates-as-required wpdev-checkbox"
+								class="wpdev-validates-as-required wpdev-checkbox"
 							   	id="wpbc_swp_accept_send"
 							   	name="wpbc_swp_accept_send"
 							   	checked="checked"
 							   	value="I accept sending data"
 							    onclick=" if (jQuery(this ).is( ':checked' )) { jQuery( '#btn__toolbar__buttons_next').text( '<?php esc_attr_e( 'Save and Continue', 'booking' ); ?>' ); } else { jQuery( '#btn__toolbar__buttons_next').text( '<?php esc_attr_e( 'Skip', 'booking' ); ?>' );  } "
 						/>
-						<label for="wpbc_swp_accept_send"
-							   class="wpdev-list-item-label"
-							   style="font-size: 12px;font-weight: 400;">
+						<label for="wpbc_swp_accept_send" class="wpdev-list-item-label">
 							<?php esc_html_e('By checking this box, I agree to share data from this page to personalize my setup experience, receive more relevant content, and help improve WP Booking Calendar for all users.', 'booking'); ?>
 						</label>
 					</span>
 				</div>
-				<div class="wpbc__field wpbc_container wpbc_container_booking_form">
+				<div class="wpbc__field wpbc_setup_wizard_accept_send_actions">
+					<p class="wpbc_exit_link_small">
+						<a href="javascript:void(0)"
+						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
+						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
+						><?php esc_html_e('Exit and skip the setup wizard','booking'); ?></a>
+						<a href="javascript:void(0)" class="wpbc_button_danger"
+						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
+						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
+						><?php esc_html_e('Reset Wizard','booking'); ?></a>
+					</p>
+				</div>
+			</div>
+			<#
+				var currentStep = data.current_step || '';
+				var currentStepData = ( data.steps && data.steps[ currentStep ] ) ? data.steps[ currentStep ] : {};
+				var nextStep = currentStepData.next || '';
+				var doAction = currentStepData.do_action || 'none';
+			#>
+			<div class="wpbc__row wpbc_setup_wizard_page__section_footer wpbc_setup_wizard_navigation_row">
+				<div class="wpbc__field wpbc_setup_wizard_navigation_links">
+					<p class="wpbc_exit_link_small">
+						<a href="javascript:void(0)"
+						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
+						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
+						><?php esc_html_e('Exit and skip the setup wizard','booking'); ?></a>
+						<a href="javascript:void(0)" class="wpbc_button_danger"
+						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
+						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
+						><?php esc_html_e('Reset Wizard','booking'); ?></a>
+					</p>
+				</div>
+				<div class="wpbc__field wpbc_container wpbc_container_booking_form wpbc_setup_wizard_navigation_actions">
 					<a	  style="margin-left: auto;"
-						   class="wpbc_button_light button-primary"
+						   class="button button-primary"
 						   id="btn__toolbar__buttons_next"
 						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( {
 																								'current_step': '{{nextStep}}',
@@ -253,30 +275,6 @@ function wpbc_stp_wiz__template__general_info(){
 									wpbc_admin_show_message_processing( '' );" ><span><?php esc_html_e('Save and Continue','booking'); ?>&nbsp;&nbsp;&nbsp;</span><i class="menu_icon icon-1x wpbc_icn_arrow_forward_ios"></i></a>
 				</div>
 			</div>
-			<?php /**/ ?>
-			<div class="wpbc__row">
-				<div class="wpbc__field">
-					<p class="wpbc_exit_link_small">
-						<a href="javascript:void(0)"
-						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'skip_wizard' } ); "
-						   title="<?php esc_attr_e('Exit and skip the setup wizard','booking'); ?>"
-						><?php
-							esc_html_e('Exit and skip the setup wizard','booking');
-						?></a>
-						<?php /* ?>
-						<a href="javascript:void(0)" class="wpbc_button_danger" style="margin: 25px 0 0;  font-size: 12px;"
-						   onclick=" wpbc_ajx__setup_wizard_page__send_request_with_params( { 'do_action': 'make_reset' } ); "
-						   title="<?php esc_attr_e('Reset the Setup Wizard and start from beginning','booking'); ?>"
-						><?php
-							esc_html_e('Reset Wizard','booking');
-						?></a>
-						<?php */ ?>
-					</p>
-				</div>
-			</div>
-			<?php /**/ ?>
-
-
 		</div>
 		<style type="text/css">
 			.wpbc_ajx_page__container .wpbc_ajx_page__section_footer:not(.wpbc__row){ display: none;}

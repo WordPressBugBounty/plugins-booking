@@ -807,12 +807,14 @@ class WPBC_BFB_Preview_Service {
 		$style = wpbc_bfb_settings__sanitize_form_style( $style );
 
 		$custom_options = wpbc_bfb_settings__get_custom_form_style_options( $this->current_preview_data['form_style'] );
+		$accent_options = wpbc_bfb_settings__get_form_accent_options( $this->current_preview_data['form_style'] );
 
 		return array_merge(
 			array(
 				'booking_form_style' => $style,
 			),
-			$custom_options
+			$custom_options,
+			$accent_options
 		);
 	}
 
@@ -960,11 +962,13 @@ class WPBC_BFB_Preview_Service {
 			$style_key          = isset( $form_style['booking_form_style'] ) ? $form_style['booking_form_style'] : '';
 			$sanitized_style    = wpbc_bfb_settings__sanitize_form_style( $style_key );
 			$custom_style       = wpbc_bfb_settings__get_custom_form_style_options( $form_style );
+			$accent_style       = wpbc_bfb_settings__get_form_accent_options( $form_style );
 			$form_style         = array_merge(
 				array(
 					'booking_form_style' => $sanitized_style,
 				),
-				$custom_style
+				$custom_style,
+				$accent_style
 			);
 		}
 		if ( $preview_form_id <= 0 ) {

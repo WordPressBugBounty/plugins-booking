@@ -33,6 +33,10 @@ function wpbc_bfb_ui__settings_options__print() {
 
 	$wpbc_bfb_current_form_style  = function_exists( 'wpbc_bfb_settings__get_current_form_style' ) ? wpbc_bfb_settings__get_current_form_style() : 'light_bordered';
 	$wpbc_bfb_custom_style_values = function_exists( 'wpbc_bfb_settings__get_custom_form_style_options' ) ? wpbc_bfb_settings__get_custom_form_style_options() : array();
+	$wpbc_bfb_accent_values       = function_exists( 'wpbc_bfb_settings__get_form_accent_options' ) ? wpbc_bfb_settings__get_form_accent_options() : array(
+		'booking_form_accent_enabled' => 'Off',
+		'booking_form_accent_color'   => WPBC_DEFAULT_FORM_ACCENT_COLOR,
+	);
 
 	// ======================================================================
 	// == Group: Basic
@@ -132,6 +136,72 @@ function wpbc_bfb_ui__settings_options__print() {
 			);
 
 
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'toggle',
+					'key'                   => 'booking_form_accent_enabled',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => $wpbc_bfb_accent_values['booking_form_accent_enabled'],
+					'label'                 => __( 'Custom accent color', 'booking' ),
+					'help'                  => __( 'Use one accent for preset-style primary buttons, secondary-button hover borders, focused fields, selected choices, and navigation accents. Custom style keeps its explicitly configured button colors. Time slots use the accent only with the Automatic time-slot style.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_accent_enabled',
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'color',
+					'key'                   => 'booking_form_accent_color',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => $wpbc_bfb_accent_values['booking_form_accent_color'],
+					'label'                 => __( 'Accent color', 'booking' ),
+					'help'                  => __( 'Choose the shared interactive color. Preset styles calculate readable primary button text and hover colors automatically; Custom style uses its explicit button settings.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_accent_color',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_accent_color wpbc_bfb__form_setting_global_accent_dependent',
+					'row_hidden'            => ( 'On' !== $wpbc_bfb_accent_values['booking_form_accent_enabled'] ),
+					'input_attrs'           => array(
+						'pattern' => '^#[0-9A-Fa-f]{6}$',
+					),
+				)
+			);
+
+			?>
+			<div class="wpbc_bfb__form_setting wpbc-setting wpbc_bfb__form_setting_global_accent_components wpbc_bfb__form_setting_global_accent_dependent"
+			     id="booking_form_accent_apply_to_components"
+			     data-scope="ui"
+			     data-key="booking_form_accent_apply_to_components"
+				<?php echo ( 'On' === $wpbc_bfb_accent_values['booking_form_accent_enabled'] ) ? '' : ' hidden aria-hidden="true"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> >
+				<div class="inspector__row" style="justify-content:flex-start;">
+					<div class="inspector__control" style="flex:1 1 auto;">
+						<button type="button"
+							class="button button-secondary"
+							data-wpbc-bfb-apply-accent-components="1"
+							data-wpbc-u-save-name="booking_timeslot_picker_skin"
+							data-wpbc-u-save-action="wpbc_bfb_save_time_picker_skin"
+							data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( 'wpbc_bfb_save_time_picker_skin' ) ); ?>"
+							data-wpbc-u-save-value="/css/time_picker_skins/form_style.css"
+							data-wpbc-u-save-callback="wpbc_bfb_time_picker_skin_saved"
+							data-wpbc-time-picker-skin-current="<?php echo esc_attr( get_bk_option( 'booking_timeslot_picker_skin' ) ); ?>"
+							data-wpbc-time-picker-skin-url="<?php echo esc_url( wpbc_plugin_url( '/css/time_picker_skins/form_style.css' ) ); ?>">
+							<?php esc_html_e( 'Apply accent to form elements', 'booking' ); ?>
+						</button>
+						<p class="wpbc_bfb__help" style="margin:6px 0 0 0;">
+							<?php esc_html_e( 'Copy the current accent color into supported elements, such as Steps Timeline, and switch time slots to Automatic — Match Booking Form. Element colors remain editable afterward. Save the form to keep element changes.', 'booking' ); ?>
+						</p>
+						<p class="wpbc_bfb__help" role="status" aria-live="polite" data-wpbc-bfb-accent-components-status="1" style="margin:6px 0 0 0;"></p>
+					</div>
+				</div>
+			</div>
+			<?php
+
 			// Combined global style selector. It uses the same option as Settings > Theme.
 			WPBC_BFB_Setting_Options::print_option(
 				array(
@@ -146,8 +216,8 @@ function wpbc_bfb_ui__settings_options__print() {
 					'attr'                  => array(
 						'id' => 'booking_form_style',
 					),
-					'radio_layout' => 'choice_grid',
-					'options'      => function_exists( 'wpbc_bfb_settings__get_form_style_options' ) ? wpbc_bfb_settings__get_form_style_options() : array(
+					'radio_layout'          => 'choice_grid',
+					'options'               => function_exists( 'wpbc_bfb_settings__get_form_style_options' ) ? wpbc_bfb_settings__get_form_style_options() : array(
 						'light_bordered' => __( 'Light bordered', 'booking' ),
 						'custom'         => __( 'Custom', 'booking' ),
 					),
@@ -561,6 +631,68 @@ function wpbc_bfb_ui__settings_options__print() {
 					)
 				);
 			}
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'length',
+					'key'                   => 'booking_form_custom_button_border_width',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_border_width'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_border_width'] : '1px',
+					'label'                 => __( 'Button border width', 'booking' ),
+					'help'                  => __( 'Used by primary and secondary buttons when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_border_width',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'length'                => array(
+						'default_unit' => 'px',
+						'units'        => array(
+							'px'  => 'px',
+							'rem' => 'rem',
+							'em'  => 'em',
+						),
+						'bounds_map'   => array(
+							'px'  => array( 'min' => 0, 'max' => 20, 'step' => 1 ),
+							'rem' => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+							'em'  => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+						),
+					),
+				)
+			);
+
+			WPBC_BFB_Setting_Options::print_option(
+				array(
+					'type'                  => 'length',
+					'key'                   => 'booking_form_custom_button_border_radius',
+					'scope'                 => 'global',
+					'save_ui'               => 'when_changed',
+					'autosave_on_form_save' => true,
+					'default'               => isset( $wpbc_bfb_custom_style_values['booking_form_custom_button_border_radius'] ) ? $wpbc_bfb_custom_style_values['booking_form_custom_button_border_radius'] : '3px',
+					'label'                 => __( 'Button corner radius', 'booking' ),
+					'help'                  => __( 'Used by primary and secondary buttons when Form style is Custom.', 'booking' ),
+					'attr'                  => array(
+						'id' => 'booking_form_custom_button_border_radius',
+					),
+					'row_class'             => 'wpbc_bfb__form_setting_global_custom_style',
+					'row_hidden'            => true,
+					'length'                => array(
+						'default_unit' => 'px',
+						'units'        => array(
+							'px'  => 'px',
+							'rem' => 'rem',
+							'em'  => 'em',
+						),
+						'bounds_map'   => array(
+							'px'  => array( 'min' => 0, 'max' => 40, 'step' => 1 ),
+							'rem' => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+							'em'  => array( 'min' => 0, 'max' => 5,  'step' => 0.1 ),
+						),
+					),
+				)
+			);
 
 			?>
 			<div class="wpbc_bfb__form_setting wpbc_bfb__form_setting_custom_appearance_reset" data-wpbc-bfb-custom-appearance-reset-row="1" hidden aria-hidden="true" style="border: 1.5px dashed #dd4e4e;">

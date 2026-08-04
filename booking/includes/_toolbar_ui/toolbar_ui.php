@@ -51,6 +51,14 @@ function wpbc_ajx_bookings_toolbar( $escaped_search_request_params ) {
 
 					wpbc_ajx__ui__booking_resources( $escaped_search_request_params, $default_param_values );
 
+					/**
+					 * Render extension filters after the Booking Resource selector.
+					 *
+					 * @param array<string,mixed> $escaped_search_request_params Sanitized current filter values.
+					 * @param array<string,mixed> $default_param_values          Default filter values.
+					 */
+					do_action( 'wpbc_booking_listing_toolbar_after_resources', $escaped_search_request_params, $default_param_values );
+
 					wpbc_ajx_toolbar_keyword_search( $escaped_search_request_params, $default_param_values );
 
 					wpbc_ajx_toolbar_clear_keyword_search( $escaped_search_request_params, $default_param_values );		// FixIn: 9.7.2.3.

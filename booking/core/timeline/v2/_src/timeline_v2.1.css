@@ -1323,4 +1323,12 @@ hr.wpbc_tl_popover_booking_separator {
 .wp-core-ui .wpbc_page .wpbc_calendar_overview__navigation .wpbc_button_no_background {
   line-height: 2.5;
 }
+
+/* 11.5 immutable Appointment and Provider-reserved interval summary. */
+.wpbc_timeline_appointment_details {
+	border-top: 1px solid var(--wpbc_timeline-gen__border-color, #dcdcde);
+	line-height: 1.6;
+	margin-top: 8px;
+	padding-top: 8px;
+}
 /*  ================================================================================================================= */

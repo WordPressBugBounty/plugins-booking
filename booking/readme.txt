@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, booking form, reservations, contact
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.0
-Stable tag: 11.4.3
+Stable tag: 11.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -284,40 +284,40 @@ And **much more**... Check ton of features in [premium versions](https://wpbooki
 = Support Languages (local) =
 
 - English
-- French (France)              100.00% [ 3856 / 3856 ], fuzzy 0, not translated 0
-- Danish                       66.08% [ 2548 / 3856 ], fuzzy 603, not translated 705
-- Dutch                        58.95% [ 2273 / 3856 ], fuzzy 879, not translated 704
-- Norwegian (Bokmål)           54.62% [ 2106 / 3856 ], fuzzy 636, not translated 1114
-- German                       54.62% [ 2106 / 3856 ], fuzzy 986, not translated 764
-- Hungarian                    50.47% [ 1946 / 3856 ], fuzzy 1060, not translated 850
-- Korean                       50.44% [ 1945 / 3856 ], fuzzy 1057, not translated 854
-- Spanish (Spain)              46.40% [ 1789 / 3856 ], fuzzy 1075, not translated 992
-- Portuguese (Brazil)          43.80% [ 1689 / 3856 ], fuzzy 1181, not translated 986
-- Greek                        43.52% [ 1678 / 3856 ], fuzzy 1190, not translated 988
-- Turkish                      42.95% [ 1656 / 3856 ], fuzzy 1205, not translated 995
-- Italian                      41.86% [ 1614 / 3856 ], fuzzy 1107, not translated 1135
-- Spanish (Mexico)             40.22% [ 1551 / 3856 ], fuzzy 1257, not translated 1048
-- Finnish                      39.99% [ 1542 / 3856 ], fuzzy 1266, not translated 1048
-- Polish                       39.94% [ 1540 / 3856 ], fuzzy 1253, not translated 1063
-- Romanian                     39.60% [ 1527 / 3856 ], fuzzy 1267, not translated 1062
-- Swedish                      39.39% [ 1519 / 3856 ], fuzzy 1275, not translated 1062
-- Arabic                       39.00% [ 1504 / 3856 ], fuzzy 1294, not translated 1058
-- Russian                      38.93% [ 1501 / 3856 ], fuzzy 1523, not translated 832
-- Bulgarian                    37.79% [ 1457 / 3856 ], fuzzy 1308, not translated 1091
-- Slovenian                    37.68% [ 1453 / 3856 ], fuzzy 1311, not translated 1092
-- Chinese (Taiwan)             36.67% [ 1414 / 3856 ], fuzzy 1351, not translated 1091
-- Portuguese (Portugal)        36.38% [ 1403 / 3856 ], fuzzy 1336, not translated 1117
-- Japanese                     35.89% [ 1384 / 3856 ], fuzzy 818, not translated 1654
-- Chinese (China)              35.22% [ 1358 / 3856 ], fuzzy 1336, not translated 1162
-- Ukrainian                    34.96% [ 1348 / 3856 ], fuzzy 1346, not translated 1162
-- Catalan                      34.36% [ 1325 / 3856 ], fuzzy 1271, not translated 1260
-- Thai                         34.28% [ 1322 / 3856 ], fuzzy 1383, not translated 1151
-- Hebrew                       34.10% [ 1315 / 3856 ], fuzzy 1370, not translated 1171
-- Galician                     33.20% [ 1280 / 3856 ], fuzzy 1423, not translated 1153
-- Slovak                       30.89% [ 1191 / 3856 ], fuzzy 1332, not translated 1333
-- Croatian                     29.90% [ 1153 / 3856 ], fuzzy 1349, not translated 1354
-- Czech                        29.80% [ 1149 / 3856 ], fuzzy 1298, not translated 1409
-- Chinese (Hong Kong)          17.63% [ 680 / 3856 ], fuzzy 578, not translated 2598
+- French (France)              85.32% [ 3852 / 4515 ], fuzzy 307, not translated 356
+- Danish                       56.43% [ 2548 / 4515 ], fuzzy 891, not translated 1076
+- Dutch                        50.34% [ 2273 / 4515 ], fuzzy 1167, not translated 1075
+- Norwegian (Bokmål)           46.64% [ 2106 / 4515 ], fuzzy 916, not translated 1493
+- German                       46.64% [ 2106 / 4515 ], fuzzy 1272, not translated 1137
+- Hungarian                    43.10% [ 1946 / 4515 ], fuzzy 1343, not translated 1226
+- Korean                       43.08% [ 1945 / 4515 ], fuzzy 1340, not translated 1230
+- Spanish (Spain)              39.62% [ 1789 / 4515 ], fuzzy 1357, not translated 1369
+- Portuguese (Brazil)          37.41% [ 1689 / 4515 ], fuzzy 1463, not translated 1363
+- Greek                        37.17% [ 1678 / 4515 ], fuzzy 1471, not translated 1366
+- Turkish                      36.68% [ 1656 / 4515 ], fuzzy 1486, not translated 1373
+- Italian                      35.75% [ 1614 / 4515 ], fuzzy 1384, not translated 1517
+- Spanish (Mexico)             34.35% [ 1551 / 4515 ], fuzzy 1539, not translated 1425
+- Finnish                      34.15% [ 1542 / 4515 ], fuzzy 1548, not translated 1425
+- Polish                       34.11% [ 1540 / 4515 ], fuzzy 1532, not translated 1443
+- Romanian                     33.82% [ 1527 / 4515 ], fuzzy 1548, not translated 1440
+- Swedish                      33.64% [ 1519 / 4515 ], fuzzy 1557, not translated 1439
+- Arabic                       33.31% [ 1504 / 4515 ], fuzzy 1575, not translated 1436
+- Russian                      33.24% [ 1501 / 4515 ], fuzzy 1806, not translated 1208
+- Bulgarian                    32.27% [ 1457 / 4515 ], fuzzy 1587, not translated 1471
+- Slovenian                    32.18% [ 1453 / 4515 ], fuzzy 1589, not translated 1473
+- Chinese (Taiwan)             31.32% [ 1414 / 4515 ], fuzzy 1630, not translated 1471
+- Portuguese (Portugal)        31.07% [ 1403 / 4515 ], fuzzy 1614, not translated 1498
+- Japanese                     30.65% [ 1384 / 4515 ], fuzzy 1089, not translated 2042
+- Chinese (China)              30.08% [ 1358 / 4515 ], fuzzy 1616, not translated 1541
+- Ukrainian                    29.86% [ 1348 / 4515 ], fuzzy 1623, not translated 1544
+- Catalan                      29.35% [ 1325 / 4515 ], fuzzy 1549, not translated 1641
+- Thai                         29.28% [ 1322 / 4515 ], fuzzy 1660, not translated 1533
+- Hebrew                       29.13% [ 1315 / 4515 ], fuzzy 1647, not translated 1553
+- Galician                     28.35% [ 1280 / 4515 ], fuzzy 1700, not translated 1535
+- Slovak                       26.38% [ 1191 / 4515 ], fuzzy 1608, not translated 1716
+- Croatian                     25.54% [ 1153 / 4515 ], fuzzy 1625, not translated 1737
+- Czech                        25.45% [ 1149 / 4515 ], fuzzy 1569, not translated 1797
+- Chinese (Hong Kong)          15.06% [ 680 / 4515 ], fuzzy 814, not translated 3021
 
 
 Please recheck the status of each translation, before using plugin.
@@ -339,6 +339,38 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 10. **Contact Form**. Easy to create **contact form**, **request forms**, **inquiry forms** ... where the calendar is optional.
 
 == Changelog ==
+= 11.5 =
+- Changes in **all** versions:
+	* **New**: Added an AJAX-powered **Services** page for creating and managing Services, Provider assignments, duration, buffers, status, price references, and Booking Form references, with compact filters, Provider avatars, and weekly availability indicators.
+	* **New**: Added an Appointment data model that reuses existing booking resources as Providers and existing bookings as Appointments, while storing Service assignments and historical Appointment snapshots separately.
+	* **New**: Added the `[booking_appointment]` shortcode with a same-page AJAX flow for selecting a Service and compatible Provider before loading the native Booking Calendar form.
+	* **New**: Added `[booking_resource_selector]`, a resource-first AJAX workflow that lets visitors select a permitted Booking Resource before loading its native calendar and Booking Form, with preselection, optional auto-advance, Start Over, and shortcode/block configuration.
+	* **New**: Added a dedicated **Add Appointment** administration page and an entry from the Booking Listing popup, while preserving the standard Add Booking workflow.
+	* **New**: Added owner-scoped **Classic**, **Appointments**, and **Rentals** administration modes that adapt navigation and terminology while preserving existing controllers, URLs, permissions, and booking data.
+	* **New**: Added repeat-safe Appointment and Rental **QuickStart** guidance for preparing the first compatible Service or Property booking page without duplicating existing content or overwriting later configuration changes.
+	* **Improvement**: Reworked the **Setup Wizard** into mode-aware Classic, Appointment, and Rental profiles that open the relevant existing settings pages, apply compatible defaults and form templates, and provide direct publish and test-page links.
+	* **Improvement**: Added reusable searchable multi-select filters. The Appointment listing now uses them for Services and, where multiple booking resources are available, Providers, with selection plates, clear actions, owner-aware choices, historical inactive/archived Services, and OR matching across selected Services. Added familiar Provider setup links for Working Hours, Days Off, and Service Assignments, plus guided empty states for incomplete Appointment setups.
+	* **Improvement**: Appointment bookings now use Provider-specific duration overrides, enforce Service duration and buffers on the server, preserve immutable Service/Provider snapshots, and expose Appointment details in confirmations, emails, Booking Listing, print, and CSV data.
+	* **New**: Added an Appointment **Start Over** field to the Booking Form Builder, allowing customers to restart the AJAX appointment flow without reloading the page.
+	* **New**: Added an **Appointments and Services Flow** Form Builder template and a **Weekday Start Time** field for Service-duration Appointment forms.
+	* **Improvement**: Appointment selection, progress, wizard navigation, and Start Over behavior now work consistently with standard Booking Forms, time and cost hints, responsive layouts, and the selected global Form Style.
+	* **Improvement**: Added extensible hooks for Service and Provider catalogues, Appointment capabilities, and Booking Form routing.
+	* **New**: Added an optional global **Custom accent color** with Coloris pickers in **Appearance / Color Theme** and the **Forms Builder**, applying a consistent accent to buttons, focused fields, selected choices, navigation, and time slots using the Automatic time-slot style.
+	* **New**: Added **Apply accent to form elements**, which copies the accent into supported editable component colors and switches time slots to **Automatic — Match Booking Form**.
+	* **Improvement**: Added an **Automatic — Match Booking Form** time-slot style that inherits form fields, buttons, focus, and accent colors while preserving all existing time-picker skins.
+	* **Improvement**: Added global time-picker display and style controls to Time field inspectors in the Forms Builder, and made **Booking form** the default Color Theme preview.
+	* **New**: Expanded Custom Form Style controls for primary and secondary button colors, hover states, border width, and corner radius.
+	* **Improvement**: Unified primary, secondary, submit, and wizard button styling for consistent dimensions, borders, hover states, dark-theme colors, and accessible keyboard focus indicators.
+	* **Improvement**: Redesigned the **Add Booking** admin page with the Booking Form in a focused central canvas and a consistent right-side inspector for primary actions, current setup, resource and form selection, booking options, calendar view, and contextual help.
+	* **New**: Added a temporary **Date selection** override to Add Booking, allowing administrators to switch immediately between Single day, Multiple days, and Range days without reloading the page or changing saved Calendar and Booking Form settings. Existing advanced range rules are preserved where available.
+	* **Fix**: Improved Form Style consistency across front-end forms, Form Builder Canvas and Preview, Appearance previews, time selectors, and legacy button markup.
+	* **Fix**: Prevented Cloudflare Rocket Loader from delaying the core Booking Calendar script ahead of dependent scripts, and made the time-slot selector wait safely for the Booking Calendar runtime.
+	* **Security**: Restricted public Timeline booking-hash access to the exact authorized booking and resource, preventing unrelated booking details from being returned through Timeline navigation requests.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: Updated payment-button styling so Stripe follows the selected Form Style while PayPal preserves its required branding.
+	* **Improvement**: Added a dedicated **Customer Verification** email template with configurable sender, subject, content, formatting, and one-time-code shortcodes for customer booking-list access.
+	* **Security**: Replaced email keyword-based customer Timeline access with one-time email verification, temporary customer sessions, exact email indexing, and a scoped booking-card listing with booking-specific edit and cancellation links.
+
 = 11.4.3 =
 - Changes in **all** versions:
 	* **Fix**: Preserved complete Booking Form Builder output when legacy `[lang=LOCALE]` markers occur inside field labels or option values instead of parsing them as whole-form language sections.
@@ -573,6 +605,12 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.5 =
+Introduces Services, Appointment and resource-first booking flows, Classic/Appointment/Rental administration modes, a mode-aware Setup Wizard, repeat-safe QuickStart guidance, dedicated Add Appointment administration, and the redesigned Add Booking inspector. Existing bookings and Booking Resources remain authoritative.
+
+= 11.4.4 =
+Added custom accent colors and matching time-slot/form styles, redesigned Add Booking with temporary date-selection controls, and strengthened Timeline and customer booking-list access.
+
 = 11.4 =
 Added global Booking Form Styles, two-click date-range selection in Free and higher editions, centralized multilingual Form Messages, and a streamlined Booking Form Builder migration and setup workflow.
 

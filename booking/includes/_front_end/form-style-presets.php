@@ -23,6 +23,22 @@ function wpbc_bfb_settings__get_default_form_style() {
 }
 
 /**
+ * Get default values for the optional global accent overlay.
+ *
+ * The overlay is disabled by default so upgrading does not change the visual
+ * output of an existing booking form.
+ *
+ * @return array
+ */
+function wpbc_bfb_settings__get_default_form_accent_options() {
+
+	return array(
+		'booking_form_accent_enabled' => 'Off',
+		'booking_form_accent_color'   => WPBC_DEFAULT_FORM_ACCENT_COLOR,
+	);
+}
+
+/**
  * Get default values for the global custom form style.
  *
  * @return array
@@ -52,6 +68,8 @@ function wpbc_bfb_settings__get_default_custom_form_style_options() {
 		'booking_form_custom_secondary_button_hover_background_color' => '#fdfdfd',
 		'booking_form_custom_secondary_button_hover_text_color' => '#444444',
 		'booking_form_custom_secondary_button_hover_border_color' => '#4d91cd',
+		'booking_form_custom_button_border_width'      => '1px',
+		'booking_form_custom_button_border_radius'     => '3px',
 	);
 }
 
@@ -85,9 +103,13 @@ function wpbc_bfb_settings__get_form_style_css_var_names() {
 		'--wpbc_form-choice-checked-border-color',
 		'--wpbc_form-choice-checked-color',
 		'--wpbc_form-choice-focus-color',
+		'--wpbc_form-button-border-radius',
+		'--wpbc_form-button-border-style',
+		'--wpbc_form-button-border-size',
 		'--wpbc_form-button-background-color',
 		'--wpbc_form-button-background-color-alt',
 		'--wpbc_form-button-border-color',
+		'--wpbc_form-button-primary-border-style',
 		'--wpbc_form-button-text-color',
 		'--wpbc_form-button-text-color-alt',
 		'--wpbc_form-button-hover-background-color',
@@ -95,14 +117,26 @@ function wpbc_bfb_settings__get_form_style_css_var_names() {
 		'--wpbc_form-button-hover-text-color',
 		'--wpbc_form-button-light-background-color',
 		'--wpbc_form-button-light-border-color',
+		'--wpbc_form-button-light-border-style',
+		'--wpbc_form-button-light-border-size',
 		'--wpbc_form-button-light-text-color',
 		'--wpbc_form-button-light-box-shadow',
 		'--wpbc_form-button-light-hover-background-color',
 		'--wpbc_form-button-light-hover-border-color',
 		'--wpbc_form-button-light-hover-text-color',
 		'--wpbc_form-button-light-hover-box-shadow',
+		'--wpbc-appointment-provider-avatar-background',
+		'--wpbc-appointment-provider-avatar-border-color',
+		'--wpbc-appointment-provider-avatar-text-color',
 		'--wpbc_form-button-primary-hover-border-color',
 		'--wpbc_form-page-break-color',
+		'--wpbc_form-accent-color',
+		'--wpbc_form-accent-hover-color',
+		'--wpbc_form-accent-contrast-color',
+		'--wpbc_timepicker-hover-border-color',
+		'--wpbc_timepicker-selected-bg-color',
+		'--wpbc_timepicker-selected-text-color',
+		'--wpbc_timepicker-selected-border-color',
 	);
 }
 
@@ -116,7 +150,16 @@ function wpbc_bfb_settings__get_form_style_css_var_names() {
  */
 function wpbc_bfb_settings__get_form_style_presets() {
 
-	return array(
+	$default_button_geometry = array(
+		'--wpbc_form-button-border-radius'       => '3px',
+		'--wpbc_form-button-border-style'        => 'none',
+		'--wpbc_form-button-border-size'         => '1px',
+		'--wpbc_form-button-primary-border-style' => 'none',
+		'--wpbc_form-button-light-border-style'  => 'solid',
+		'--wpbc_form-button-light-border-size'   => '1px',
+	);
+
+	$presets = array(
 		'light_bordered' => array(
 			'title'           => __( 'Light bordered', 'booking' ),
 			'theme_class'     => '',
@@ -149,7 +192,7 @@ function wpbc_bfb_settings__get_form_style_presets() {
 				'--wpbc_form-choice-checked-color'           => '#066aab',
 				'--wpbc_form-choice-focus-color'             => '#066aab',
 				'--wpbc_form-button-light-background-color'  => '#fdfdfd',
-				'--wpbc_form-button-light-border-color'      => '#eeeeeeb5',
+				'--wpbc_form-button-light-border-color'      => '#cacacab5',
 				'--wpbc_form-button-light-text-color'        => '#444444e0',
 				'--wpbc_form-button-light-box-shadow'        => '0 2px 10px 2px #ffffff54',
 				'--wpbc_form-button-light-hover-background-color' => '#fdfdfd',
@@ -192,7 +235,7 @@ function wpbc_bfb_settings__get_form_style_presets() {
 				'--wpbc_form-choice-checked-color'           => '#066aab',
 				'--wpbc_form-choice-focus-color'             => '#066aab',
 				'--wpbc_form-button-light-background-color'  => '#fdfdfd',
-				'--wpbc_form-button-light-border-color'      => '#eeeeeeb5',
+				'--wpbc_form-button-light-border-color'      => '#cacacab5',
 				'--wpbc_form-button-light-text-color'        => '#444444e0',
 				'--wpbc_form-button-light-box-shadow'        => '0 2px 10px 2px #ffffff54',
 				'--wpbc_form-button-light-hover-background-color' => '#fdfdfd',
@@ -235,7 +278,7 @@ function wpbc_bfb_settings__get_form_style_presets() {
 				'--wpbc_form-choice-checked-color'           => '#066aab',
 				'--wpbc_form-choice-focus-color'             => '#066aab',
 				'--wpbc_form-button-light-background-color'  => '#fdfdfd',
-				'--wpbc_form-button-light-border-color'      => '#eeeeeeb5',
+				'--wpbc_form-button-light-border-color'      => '#cacacab5',
 				'--wpbc_form-button-light-text-color'        => '#444444e0',
 				'--wpbc_form-button-light-box-shadow'        => '0 2px 10px 2px #ffffff54',
 				'--wpbc_form-button-light-hover-background-color' => '#fdfdfd',
@@ -252,7 +295,7 @@ function wpbc_bfb_settings__get_form_style_presets() {
 			'container_style' => 'bordered',
 			'custom'          => false,
 			'css_vars'        => array(
-				'--wpbc-bfb-form-background'                 => '#626262',
+				'--wpbc-bfb-form-background'                 => '#383a3d',
 				'--wpbc-bfb-form-border-color'               => '#000000',
 				'--wpbc-bfb-form-border-width'               => '1px',
 				'--wpbc-bfb-form-border-radius'              => '2px',
@@ -269,23 +312,30 @@ function wpbc_bfb_settings__get_form_style_presets() {
 				'--wpbc_form-field-text-color'               => '#f4f6f8',
 				'--wpbc_form-field-disabled-color'           => 'rgba(255, 255, 255, 0.35)',
 				'--wpbc_form-field-menu-color'               => '#303640',
-				'--wpbc_form-button-background-color'        => '#4d4d4d',
-				'--wpbc_form-button-background-color-alt'    => '#4d4d4d',
+				'--wpbc_form-button-background-color'        => '#1b1d22',
+				'--wpbc_form-button-background-color-alt'    => '#1b1d22',
 				'--wpbc_form-button-border-color'            => '#5f5f5f',
+				'--wpbc_form-button-primary-border-style'    => 'solid',
 				'--wpbc_form-button-text-color'              => '#ffffff',
 				'--wpbc_form-button-text-color-alt'          => '#ffffff',
+				'--wpbc_form-button-hover-background-color'  => '#1b1d22',
+				'--wpbc_form-button-hover-border-color'      => '#5b8bff',
+				'--wpbc_form-button-hover-text-color'        => '#ffffff',
 				'--wpbc_form-choice-checked-border-color'    => '#5b8bff',
 				'--wpbc_form-choice-checked-color'           => '#f4f6f8',
 				'--wpbc_form-choice-focus-color'             => '#5b8bff',
-				'--wpbc_form-button-light-background-color'  => '#2C2E2F',
-				'--wpbc_form-button-light-border-color'      => '#2C2E2F',
+				'--wpbc_form-button-light-background-color'  => '#3f454f',
+				'--wpbc_form-button-light-border-color'      => '#525252',
 				'--wpbc_form-button-light-text-color'        => '#ffffff',
 				'--wpbc_form-button-light-box-shadow'        => '0 0 0 #424242',
-				'--wpbc_form-button-light-hover-background-color' => '#2C2E2F',
-				'--wpbc_form-button-light-hover-border-color' => '#2C2E2F',
+				'--wpbc_form-button-light-hover-background-color' => '#3f454f',
+				'--wpbc_form-button-light-hover-border-color' => '#5b8bff',
 				'--wpbc_form-button-light-hover-text-color'  => '#ffffff',
 				'--wpbc_form-button-light-hover-box-shadow'  => '0 0 0 #424242',
-				'--wpbc_form-button-primary-hover-border-color' => '#ffffff',
+				'--wpbc-appointment-provider-avatar-background' => '#2C2E2F',
+				'--wpbc-appointment-provider-avatar-border-color' => '#525252',
+				'--wpbc-appointment-provider-avatar-text-color' => '#ffffff',
+				'--wpbc_form-button-primary-hover-border-color' => '#5b8bff',
 				'--wpbc_form-page-break-color'               => '#5f9ee7',
 			),
 		),
@@ -312,23 +362,30 @@ function wpbc_bfb_settings__get_form_style_presets() {
 				'--wpbc_form-field-text-color'               => '#f4f6f8',
 				'--wpbc_form-field-disabled-color'           => 'rgba(255, 255, 255, 0.35)',
 				'--wpbc_form-field-menu-color'               => '#303640',
-				'--wpbc_form-button-background-color'        => '#4d4d4d',
-				'--wpbc_form-button-background-color-alt'    => '#4d4d4d',
+				'--wpbc_form-button-background-color'        => '#1b1d22',
+				'--wpbc_form-button-background-color-alt'    => '#1b1d22',
 				'--wpbc_form-button-border-color'            => '#5f5f5f',
+				'--wpbc_form-button-primary-border-style'    => 'solid',
 				'--wpbc_form-button-text-color'              => '#ffffff',
 				'--wpbc_form-button-text-color-alt'          => '#ffffff',
+				'--wpbc_form-button-hover-background-color'  => '#1b1d22',
+				'--wpbc_form-button-hover-border-color'      => '#5b8bff',
+				'--wpbc_form-button-hover-text-color'        => '#ffffff',
 				'--wpbc_form-choice-checked-border-color'    => '#5b8bff',
 				'--wpbc_form-choice-checked-color'           => '#f4f6f8',
 				'--wpbc_form-choice-focus-color'             => '#5b8bff',
-				'--wpbc_form-button-light-background-color'  => '#2C2E2F',
-				'--wpbc_form-button-light-border-color'      => '#2C2E2F',
+				'--wpbc_form-button-light-background-color'  => '#3f454f',
+				'--wpbc_form-button-light-border-color'      => '#525252',
 				'--wpbc_form-button-light-text-color'        => '#ffffff',
 				'--wpbc_form-button-light-box-shadow'        => '0 0 0 #424242',
-				'--wpbc_form-button-light-hover-background-color' => '#2C2E2F',
-				'--wpbc_form-button-light-hover-border-color' => '#2C2E2F',
+				'--wpbc_form-button-light-hover-background-color' => '#3f454f',
+				'--wpbc_form-button-light-hover-border-color' => '#5b8bff',
 				'--wpbc_form-button-light-hover-text-color'  => '#ffffff',
 				'--wpbc_form-button-light-hover-box-shadow'  => '0 0 0 #424242',
-				'--wpbc_form-button-primary-hover-border-color' => '#ffffff',
+				'--wpbc-appointment-provider-avatar-background' => '#2C2E2F',
+				'--wpbc-appointment-provider-avatar-border-color' => '#525252',
+				'--wpbc-appointment-provider-avatar-text-color' => '#ffffff',
+				'--wpbc_form-button-primary-hover-border-color' => '#5b8bff',
 				'--wpbc_form-page-break-color'               => '#5f9ee7',
 			),
 		),
@@ -355,23 +412,30 @@ function wpbc_bfb_settings__get_form_style_presets() {
 				'--wpbc_form-field-text-color'               => '#f4f6f8',
 				'--wpbc_form-field-disabled-color'           => 'rgba(255, 255, 255, 0.35)',
 				'--wpbc_form-field-menu-color'               => '#303640',
-				'--wpbc_form-button-background-color'        => '#4d4d4d',
-				'--wpbc_form-button-background-color-alt'    => '#4d4d4d',
+				'--wpbc_form-button-background-color'        => '#1b1d22',
+				'--wpbc_form-button-background-color-alt'    => '#1b1d22',
 				'--wpbc_form-button-border-color'            => '#5f5f5f',
+				'--wpbc_form-button-primary-border-style'    => 'solid',
 				'--wpbc_form-button-text-color'              => '#ffffff',
 				'--wpbc_form-button-text-color-alt'          => '#ffffff',
+				'--wpbc_form-button-hover-background-color'  => '#1b1d22',
+				'--wpbc_form-button-hover-border-color'      => '#5b8bff',
+				'--wpbc_form-button-hover-text-color'        => '#ffffff',
 				'--wpbc_form-choice-checked-border-color'    => '#5b8bff',
 				'--wpbc_form-choice-checked-color'           => '#f4f6f8',
 				'--wpbc_form-choice-focus-color'             => '#5b8bff',
-				'--wpbc_form-button-light-background-color'  => '#2C2E2F',
-				'--wpbc_form-button-light-border-color'      => '#2C2E2F',
+				'--wpbc_form-button-light-background-color'  => '#3f454f',
+				'--wpbc_form-button-light-border-color'      => '#525252',
 				'--wpbc_form-button-light-text-color'        => '#ffffff',
 				'--wpbc_form-button-light-box-shadow'        => '0 0 0 #424242',
-				'--wpbc_form-button-light-hover-background-color' => '#2C2E2F',
-				'--wpbc_form-button-light-hover-border-color' => '#2C2E2F',
+				'--wpbc_form-button-light-hover-background-color' => '#3f454f',
+				'--wpbc_form-button-light-hover-border-color' => '#5b8bff',
 				'--wpbc_form-button-light-hover-text-color'  => '#ffffff',
 				'--wpbc_form-button-light-hover-box-shadow'  => '0 0 0 #424242',
-				'--wpbc_form-button-primary-hover-border-color' => '#ffffff',
+				'--wpbc-appointment-provider-avatar-background' => '#2C2E2F',
+				'--wpbc-appointment-provider-avatar-border-color' => '#525252',
+				'--wpbc-appointment-provider-avatar-text-color' => '#ffffff',
+				'--wpbc_form-button-primary-hover-border-color' => '#5b8bff',
 				'--wpbc_form-page-break-color'               => '#5f9ee7',
 			),
 		),
@@ -383,6 +447,19 @@ function wpbc_bfb_settings__get_form_style_presets() {
 			'css_vars'        => array(),
 		),
 	);
+
+	// Presets must explicitly reset geometry left by a previously selected
+	// Custom style. This also keeps the live Builder canvas equal to a clean
+	// front-end render, where the root defaults are 1px borders and 3px radius.
+	foreach ( $presets as $preset_key => $preset ) {
+		if ( 'custom' === $preset_key || empty( $preset['css_vars'] ) ) {
+			continue;
+		}
+
+		$presets[ $preset_key ]['css_vars'] = array_merge( $default_button_geometry, $preset['css_vars'] );
+	}
+
+	return $presets;
 }
 
 /**
@@ -475,6 +552,178 @@ function wpbc_bfb_settings__sanitize_form_style_color( $value, $fallback ) {
 }
 
 /**
+ * Sanitize an opaque hexadecimal accent color.
+ *
+ * Unlike container colors, an accent cannot be transparent because it is
+ * used to calculate hover and readable foreground colors.
+ *
+ * @param string $value    Raw value.
+ * @param string $fallback Fallback value.
+ * @return string
+ */
+function wpbc_bfb_settings__sanitize_form_accent_color( $value, $fallback = WPBC_DEFAULT_FORM_ACCENT_COLOR ) {
+
+	$value = trim( (string) $value );
+
+	return preg_match( '/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i', $value ) ? $value : $fallback;
+}
+
+/**
+ * Get sanitized global accent settings.
+ *
+ * @param array $options Optional raw override values.
+ * @return array
+ */
+function wpbc_bfb_settings__get_form_accent_options( $options = array() ) {
+
+	$defaults = wpbc_bfb_settings__get_default_form_accent_options();
+	$options  = is_array( $options ) ? $options : array();
+	$values   = array();
+
+	foreach ( $defaults as $key => $fallback ) {
+		if ( array_key_exists( $key, $options ) ) {
+			$values[ $key ] = $options[ $key ];
+		} elseif ( function_exists( 'get_bk_option' ) ) {
+			$values[ $key ] = get_bk_option( $key );
+		} else {
+			$values[ $key ] = $fallback;
+		}
+	}
+
+	return array(
+		'booking_form_accent_enabled' => ( 'On' === (string) $values['booking_form_accent_enabled'] ) ? 'On' : 'Off',
+		'booking_form_accent_color'   => wpbc_bfb_settings__sanitize_form_accent_color( $values['booking_form_accent_color'], $defaults['booking_form_accent_color'] ),
+	);
+}
+
+/**
+ * Mix a hexadecimal color with black or white.
+ *
+ * @param string $hex        Six-digit hexadecimal color.
+ * @param string $mix_hex    Six-digit hexadecimal target color.
+ * @param float  $percentage Mix amount from 0 through 1.
+ * @return string
+ */
+function wpbc_bfb_settings__mix_form_style_colors( $hex, $mix_hex, $percentage ) {
+
+	$hex        = ltrim( wpbc_bfb_settings__sanitize_form_accent_color( $hex, WPBC_DEFAULT_FORM_ACCENT_COLOR ), '#' );
+	$mix_hex    = ltrim( wpbc_bfb_settings__sanitize_form_accent_color( $mix_hex, '#000000' ), '#' );
+	$percentage = max( 0, min( 1, (float) $percentage ) );
+
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+	if ( 3 === strlen( $mix_hex ) ) {
+		$mix_hex = $mix_hex[0] . $mix_hex[0] . $mix_hex[1] . $mix_hex[1] . $mix_hex[2] . $mix_hex[2];
+	}
+
+	$channels = array();
+	for ( $index = 0; $index < 3; $index++ ) {
+		$source     = hexdec( substr( $hex, $index * 2, 2 ) );
+		$target     = hexdec( substr( $mix_hex, $index * 2, 2 ) );
+		$channels[] = (int) round( $source + ( ( $target - $source ) * $percentage ) );
+	}
+
+	return sprintf( '#%02x%02x%02x', $channels[0], $channels[1], $channels[2] );
+}
+
+/**
+ * Calculate relative luminance for a hexadecimal color.
+ *
+ * @param string $hex Hexadecimal color.
+ * @return float
+ */
+function wpbc_bfb_settings__get_form_style_color_luminance( $hex ) {
+
+	$hex = ltrim( wpbc_bfb_settings__sanitize_form_accent_color( $hex, WPBC_DEFAULT_FORM_ACCENT_COLOR ), '#' );
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+
+	$linear = array();
+	for ( $index = 0; $index < 3; $index++ ) {
+		$channel  = hexdec( substr( $hex, $index * 2, 2 ) ) / 255;
+		$linear[] = ( $channel <= 0.03928 ) ? ( $channel / 12.92 ) : pow( ( $channel + 0.055 ) / 1.055, 2.4 );
+	}
+
+	return ( 0.2126 * $linear[0] ) + ( 0.7152 * $linear[1] ) + ( 0.0722 * $linear[2] );
+}
+
+/**
+ * Apply the optional accent overlay to resolved Form Style CSS variables.
+ *
+ * @param array $css_vars                       CSS variables resolved from the selected preset.
+ * @param array $options                        Optional raw accent settings.
+ * @param bool  $preserve_custom_button_colors Keep explicit Custom-style button colors.
+ * @return array
+ */
+function wpbc_bfb_settings__apply_form_accent_css_vars( $css_vars, $options = array(), $preserve_custom_button_colors = false ) {
+
+	$accent_options = wpbc_bfb_settings__get_form_accent_options( $options );
+	if ( 'On' !== $accent_options['booking_form_accent_enabled'] ) {
+		return $css_vars;
+	}
+
+	$accent         = $accent_options['booking_form_accent_color'];
+	$luminance      = wpbc_bfb_settings__get_form_style_color_luminance( $accent );
+	$contrast       = ( $luminance > 0.18 ) ? '#000000' : '#ffffff';
+	$hover_target   = ( '#ffffff' === $contrast ) ? '#000000' : '#ffffff';
+	$hover          = wpbc_bfb_settings__mix_form_style_colors( $accent, $hover_target, 0.10 );
+	$hover_contrast = $contrast;
+	$accent_overlay = array(
+		'--wpbc_form-accent-color'              => $accent,
+		'--wpbc_form-accent-hover-color'        => $hover,
+		'--wpbc_form-accent-contrast-color'     => $contrast,
+		'--wpbc_form-field-focus-border-color'  => $accent,
+		'--wpbc_form-field-focus-shadow-color'  => $accent,
+		'--wpbc_form-choice-checked-border-color' => $accent,
+		'--wpbc_form-choice-checked-color'      => $accent,
+		'--wpbc_form-choice-focus-color'        => $accent,
+		'--wpbc_form-button-background-color'   => $accent,
+		'--wpbc_form-button-background-color-alt' => $accent,
+		'--wpbc_form-button-border-color'       => $accent,
+		'--wpbc_form-button-text-color'         => $contrast,
+		'--wpbc_form-button-text-color-alt'     => $contrast,
+		'--wpbc_form-button-hover-background-color' => $hover,
+		'--wpbc_form-button-hover-border-color' => $hover,
+		'--wpbc_form-button-hover-text-color'   => $hover_contrast,
+		'--wpbc_form-button-light-hover-border-color' => $accent,
+		'--wpbc_form-button-primary-hover-border-color' => $hover,
+		'--wpbc_form-page-break-color'          => $accent,
+	);
+
+	if ( $preserve_custom_button_colors ) {
+		$custom_button_css_vars = array(
+			'--wpbc_form-button-background-color',
+			'--wpbc_form-button-background-color-alt',
+			'--wpbc_form-button-border-color',
+			'--wpbc_form-button-text-color',
+			'--wpbc_form-button-text-color-alt',
+			'--wpbc_form-button-hover-background-color',
+			'--wpbc_form-button-hover-border-color',
+			'--wpbc_form-button-hover-text-color',
+			'--wpbc_form-button-light-hover-border-color',
+			'--wpbc_form-button-primary-hover-border-color',
+		);
+		foreach ( $custom_button_css_vars as $css_var_name ) {
+			unset( $accent_overlay[ $css_var_name ] );
+		}
+	}
+
+	/**
+	 * Filter the CSS variables supplied by the global accent overlay.
+	 *
+	 * @param array $accent_overlay Accent CSS variables.
+	 * @param array $accent_options Sanitized accent settings.
+	 * @param array $css_vars                       Base Form Style CSS variables.
+	 * @param bool  $preserve_custom_button_colors Whether Custom button controls take precedence.
+	 */
+	$accent_overlay = apply_filters( 'wpbc_bfb_form_style_accent_css_vars', $accent_overlay, $accent_options, $css_vars, $preserve_custom_button_colors );
+
+	return array_merge( $css_vars, is_array( $accent_overlay ) ? $accent_overlay : array() );
+}
+
+/**
  * Sanitize CSS length values used by global form style options.
  *
  * @param string $value    Raw value.
@@ -485,7 +734,7 @@ function wpbc_bfb_settings__sanitize_form_style_length( $value, $fallback ) {
 
 	$value = trim( (string) $value );
 
-	if ( preg_match( '/^-?\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
+	if ( preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/i', $value ) ) {
 		return $value;
 	}
 
@@ -537,6 +786,8 @@ function wpbc_bfb_settings__get_custom_form_style_options( $options = array() ) 
 		'booking_form_custom_secondary_button_hover_background_color' => wpbc_bfb_settings__sanitize_form_style_color( $values['booking_form_custom_secondary_button_hover_background_color'], $defaults['booking_form_custom_secondary_button_hover_background_color'] ),
 		'booking_form_custom_secondary_button_hover_text_color' => wpbc_bfb_settings__sanitize_form_style_color( $values['booking_form_custom_secondary_button_hover_text_color'], $defaults['booking_form_custom_secondary_button_hover_text_color'] ),
 		'booking_form_custom_secondary_button_hover_border_color' => wpbc_bfb_settings__sanitize_form_style_color( $values['booking_form_custom_secondary_button_hover_border_color'], $defaults['booking_form_custom_secondary_button_hover_border_color'] ),
+		'booking_form_custom_button_border_width'      => wpbc_bfb_settings__sanitize_form_style_length( $values['booking_form_custom_button_border_width'], $defaults['booking_form_custom_button_border_width'] ),
+		'booking_form_custom_button_border_radius'     => wpbc_bfb_settings__sanitize_form_style_length( $values['booking_form_custom_button_border_radius'], $defaults['booking_form_custom_button_border_radius'] ),
 	);
 }
 
@@ -553,12 +804,14 @@ function wpbc_bfb_settings__get_form_style_css_vars( $style = '', $custom_option
 	$preset = wpbc_bfb_settings__get_form_style_preset( $style );
 
 	if ( empty( $preset['custom'] ) ) {
-		return isset( $preset['css_vars'] ) && is_array( $preset['css_vars'] ) ? $preset['css_vars'] : array();
+		$css_vars = isset( $preset['css_vars'] ) && is_array( $preset['css_vars'] ) ? $preset['css_vars'] : array();
+
+		return wpbc_bfb_settings__apply_form_accent_css_vars( $css_vars, $custom_options );
 	}
 
 	$custom = wpbc_bfb_settings__get_custom_form_style_options( $custom_options );
 
-	return array(
+	$css_vars = array(
 		'--wpbc-bfb-form-background'           => $custom['booking_form_custom_background_color'],
 		'--wpbc-bfb-form-border-color'         => $custom['booking_form_custom_border_color'],
 		'--wpbc-bfb-form-border-width'         => $custom['booking_form_custom_border_width'],
@@ -576,6 +829,9 @@ function wpbc_bfb_settings__get_form_style_css_vars( $style = '', $custom_option
 		'--wpbc_form-field-focus-border-color' => '#066aab',
 		'--wpbc_form-field-focus-shadow-color' => '#066aab',
 		'--wpbc_form-field-disabled-color'     => 'rgba(0, 0, 0, 0.2)',
+		'--wpbc_form-button-border-radius'     => $custom['booking_form_custom_button_border_radius'],
+		'--wpbc_form-button-border-style'      => 'solid',
+		'--wpbc_form-button-border-size'       => $custom['booking_form_custom_button_border_width'],
 		'--wpbc_form-button-background-color'  => $custom['booking_form_custom_button_background_color'],
 		'--wpbc_form-button-background-color-alt' => $custom['booking_form_custom_button_background_color'],
 		'--wpbc_form-button-border-color'      => $custom['booking_form_custom_button_border_color'],
@@ -589,6 +845,7 @@ function wpbc_bfb_settings__get_form_style_css_vars( $style = '', $custom_option
 		'--wpbc_form-choice-focus-color'       => '#066aab',
 		'--wpbc_form-button-light-background-color' => $custom['booking_form_custom_secondary_button_background_color'],
 		'--wpbc_form-button-light-border-color' => $custom['booking_form_custom_secondary_button_border_color'],
+		'--wpbc_form-button-light-border-size' => $custom['booking_form_custom_button_border_width'],
 		'--wpbc_form-button-light-text-color'  => $custom['booking_form_custom_secondary_button_text_color'],
 		'--wpbc_form-button-light-box-shadow'  => '0 2px 10px 2px #ffffff54',
 		'--wpbc_form-button-light-hover-background-color' => $custom['booking_form_custom_secondary_button_hover_background_color'],
@@ -598,6 +855,8 @@ function wpbc_bfb_settings__get_form_style_css_vars( $style = '', $custom_option
 		'--wpbc_form-button-primary-hover-border-color' => $custom['booking_form_custom_button_hover_border_color'],
 		'--wpbc_form-page-break-color'         => '#066aab',
 	);
+
+	return wpbc_bfb_settings__apply_form_accent_css_vars( $css_vars, $custom_options, true );
 }
 
 /**
@@ -613,6 +872,8 @@ function wpbc_bfb_settings__get_form_json_style_option_keys() {
 	return array(
 		// New global Form Style model.
 		'booking_form_style',
+		'booking_form_accent_enabled',
+		'booking_form_accent_color',
 		'booking_form_custom_background_color',
 		'booking_form_custom_border_color',
 		'booking_form_custom_border_width',
@@ -635,6 +896,8 @@ function wpbc_bfb_settings__get_form_json_style_option_keys() {
 		'booking_form_custom_secondary_button_hover_background_color',
 		'booking_form_custom_secondary_button_hover_text_color',
 		'booking_form_custom_secondary_button_hover_border_color',
+		'booking_form_custom_button_border_width',
+		'booking_form_custom_button_border_radius',
 
 		// Retired per-form appearance model from the unreleased 11.4 work.
 		'booking_form_theme',

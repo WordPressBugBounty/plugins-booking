@@ -16,6 +16,17 @@
 	height: 260px;
 }
 
+/*  Block Preview  == Modern workflow shortcodes  == */
+.wpbc_gb_block_preview_booking_appointment,
+.wpbc_gb_block_preview_booking_resource_selector {
+	width: 100%;
+}
+.wpbc_gb_block_preview_booking_appointment .wpbc_gb_block_preview_inner_shortcode,
+.wpbc_gb_block_preview_booking_resource_selector .wpbc_gb_block_preview_inner_shortcode {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
 /*  Block Preview  == Booking Form,  Availability Calendar  == */
 .wpbc_gb_block_preview_booking,
 .wpbc_gb_block_preview_bookingcalendar {

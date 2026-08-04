@@ -238,6 +238,15 @@ function wpbc_bfb_sanitize_form_text( $form_value ) {
 		$allowed_tags[ $tag ]['aria-orientation'] = true;
 	}
 
+	// Appointment Form Builder control: permit only its declarative action.
+	if ( ! isset( $allowed_tags['button'] ) ) {
+		$allowed_tags['button'] = array();
+	}
+	$allowed_tags['button']['type']                         = true;
+	$allowed_tags['button']['class']                        = true;
+	$allowed_tags['button']['id']                           = true;
+	$allowed_tags['button']['data-wpbc-appointment-action'] = true;
+
 	// Temporarily allow extra inline style properties for BFB.
 	add_filter( 'safe_style_css', 'wpbc_bfb_safe_style_props_filter', 10, 1 );
 
@@ -465,12 +474,16 @@ function wpbc_bfb__normalize_preview_form_style( $preview_form_style ) {
 	$custom_options = function_exists( 'wpbc_bfb_settings__get_custom_form_style_options' )
 		? wpbc_bfb_settings__get_custom_form_style_options( $preview_form_style )
 		: array();
+	$accent_options = function_exists( 'wpbc_bfb_settings__get_form_accent_options' )
+		? wpbc_bfb_settings__get_form_accent_options( $preview_form_style )
+		: array();
 
 	return array_merge(
 		array(
 			'booking_form_style' => $style,
 		),
-		$custom_options
+		$custom_options,
+		$accent_options
 	);
 }
 

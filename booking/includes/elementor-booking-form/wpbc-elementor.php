@@ -236,7 +236,7 @@ function wpbc_elementor_warn_text_widget_shortcodes( $widget_content, $widget ) 
 	}
 
 	// Detect Booking Calendar shortcodes in the raw editor content.
-	if ( ! preg_match( '/\[(booking|booking_popup|bookingcalendar|bookingform|bookingselect|bookingtimeline)\b/i', $raw ) ) {
+	if ( ! preg_match( '/\[(booking|booking_popup|bookingcalendar|bookingform|bookingselect|booking_appointment|booking_resource_selector|bookingtimeline)\b/i', $raw ) ) {
 		return $widget_content;
 	}
 

@@ -13,6 +13,8 @@
 	 * - re-apply after Builder STRUCTURE_LOADED (timing hook only)
 	 */
 	const api = (w.WPBC_BFB_FormSettings = w.WPBC_BFB_FormSettings || {});
+	let pending_time_picker_skin_button = null;
+	let previous_time_picker_skin_url = '';
 
 	// Last received settings pack (from AJAX).
 	let last_settings_pack = null;
@@ -23,6 +25,8 @@
 	const retry_max = 20;
 	const fallback_form_style_option_keys = [
 		'booking_form_style',
+		'booking_form_accent_enabled',
+		'booking_form_accent_color',
 		'booking_form_custom_background_color',
 		'booking_form_custom_border_color',
 		'booking_form_custom_border_width',
@@ -45,6 +49,8 @@
 		'booking_form_custom_secondary_button_hover_background_color',
 		'booking_form_custom_secondary_button_hover_text_color',
 		'booking_form_custom_secondary_button_hover_border_color',
+		'booking_form_custom_button_border_width',
+		'booking_form_custom_button_border_radius',
 		'booking_form_theme',
 		'booking_form_container_style',
 		'booking_form_background_color',
@@ -147,11 +153,15 @@
 	}
 
 	function get_default_custom_appearance_settings() {
-		const localized = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.custom_form_style_defaults
+		const localized_custom_style = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.custom_form_style_defaults
 			? w.wpbc_bfb_settings_vars.custom_form_style_defaults
+			: {};
+		const localized_form_accent = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.form_accent_defaults
+			? w.wpbc_bfb_settings_vars.form_accent_defaults
 			: {};
 
 		return Object.assign( {
+			booking_form_accent_enabled: 'Off',
 			booking_form_custom_background_color       : '#ffffff',
 			booking_form_custom_border_color           : '#cccccc',
 			booking_form_custom_border_width           : '1px',
@@ -173,8 +183,10 @@
 			booking_form_custom_secondary_button_border_color: '#eeeeee',
 			booking_form_custom_secondary_button_hover_background_color: '#fdfdfd',
 			booking_form_custom_secondary_button_hover_text_color: '#444444',
-			booking_form_custom_secondary_button_hover_border_color: '#4d91cd'
-		}, localized );
+			booking_form_custom_secondary_button_hover_border_color: '#4d91cd',
+			booking_form_custom_button_border_width      : '1px',
+			booking_form_custom_button_border_radius     : '3px'
+		}, localized_custom_style, localized_form_accent );
 	}
 
 	function get_form_style_option_keys() {
@@ -548,6 +560,178 @@
 
 		e.preventDefault();
 		api.reset_custom_appearance();
+	}, false );
+
+	/**
+	 * Switch the global time-picker skin to the form-aware Automatic skin.
+	 *
+	 * The option is saved through the existing nonce-protected option saver.
+	 * Legacy skins are changed only by this explicit user action.
+	 *
+	 * @param {HTMLButtonElement} button Accent action button.
+	 * @returns {boolean} Whether an AJAX option save was started.
+	 */
+	function switch_time_picker_to_automatic(button) {
+		const automatic_skin = '/css/time_picker_skins/form_style.css';
+		const current_skin = button ? String( button.getAttribute( 'data-wpbc-time-picker-skin-current' ) || '' ) : '';
+		const automatic_url = button ? String( button.getAttribute( 'data-wpbc-time-picker-skin-url' ) || '' ) : '';
+
+		if ( ! button || current_skin.slice( -automatic_skin.length ) === automatic_skin ) {
+			return false;
+		}
+		if ( typeof w.wpbc_save_option_from_element !== 'function' ) {
+			return false;
+		}
+
+		const time_api = w.WPBC_BFB_Core && w.WPBC_BFB_Core.Time ? w.WPBC_BFB_Core.Time : null;
+		if ( automatic_url ) {
+			previous_time_picker_skin_url = d.getElementById( 'wpbc-time_picker-skin-css' )
+				? String( d.getElementById( 'wpbc-time_picker-skin-css' ).getAttribute( 'href' ) || '' )
+				: '';
+			if ( time_api && typeof time_api.apply_picker_skin_url === 'function' ) {
+				time_api.apply_picker_skin_url( automatic_url );
+			} else if ( typeof w.wpbc__css__change_skin === 'function' && d.getElementById( 'wpbc-time_picker-skin-css' ) ) {
+				w.wpbc__css__change_skin( automatic_url, 'wpbc-time_picker-skin-css' );
+			}
+		}
+
+		pending_time_picker_skin_button = button;
+		button.setAttribute( 'data-wpbc-u-save-value', automatic_skin );
+		w.wpbc_save_option_from_element( button );
+
+		return true;
+	}
+
+	/**
+	 * Mark the Automatic skin as current after the option saver confirms it.
+	 *
+	 * @returns {void}
+	 */
+	w.wpbc_bfb_time_picker_skin_saved = function () {
+		if ( pending_time_picker_skin_button ) {
+			pending_time_picker_skin_button.setAttribute( 'data-wpbc-time-picker-skin-current', '/css/time_picker_skins/form_style.css' );
+		}
+		if ( w.WPBC_BFB_Core && w.WPBC_BFB_Core.Time && typeof w.WPBC_BFB_Core.Time.ui_set_picker_skin_value === 'function' ) {
+			w.WPBC_BFB_Core.Time.ui_set_picker_skin_value( '/css/time_picker_skins/form_style.css' );
+		}
+		pending_time_picker_skin_button = null;
+		previous_time_picker_skin_url = '';
+	};
+
+	if ( w.jQuery ) {
+		w.jQuery( d ).on( 'wpbc:option:afterSave.wpbcBfbTimePickerSkin', function (event, response) {
+			if ( ! pending_time_picker_skin_button || ( response && response.success ) ) {
+				return;
+			}
+			const previous_skin = String( pending_time_picker_skin_button.getAttribute( 'data-wpbc-time-picker-skin-current' ) || '' );
+
+			const time_api = w.WPBC_BFB_Core && w.WPBC_BFB_Core.Time ? w.WPBC_BFB_Core.Time : null;
+			if ( previous_time_picker_skin_url && time_api && typeof time_api.apply_picker_skin_url === 'function' ) {
+				time_api.apply_picker_skin_url( previous_time_picker_skin_url );
+			} else if ( previous_time_picker_skin_url && typeof w.wpbc__css__change_skin === 'function' ) {
+				w.wpbc__css__change_skin( previous_time_picker_skin_url, 'wpbc-time_picker-skin-css' );
+			}
+			if ( w.WPBC_BFB_Core && w.WPBC_BFB_Core.Time && typeof w.WPBC_BFB_Core.Time.ui_set_picker_skin_value === 'function' ) {
+				w.WPBC_BFB_Core.Time.ui_set_picker_skin_value( previous_skin );
+			}
+			pending_time_picker_skin_button = null;
+			previous_time_picker_skin_url = '';
+		} );
+	}
+
+	/**
+	 * Ask accent-capable field packs to copy the current accent into their
+	 * existing editable color properties. Field packs update the counters.
+	 *
+	 * @param {HTMLButtonElement} button Action button.
+	 * @returns {void}
+	 */
+	api.apply_accent_to_components = function (button) {
+		const toggle = d.getElementById( 'booking_form_accent_enabled' );
+		const color_control = d.getElementById( 'booking_form_accent_color' );
+		const status = d.querySelector( '[data-wpbc-bfb-accent-components-status="1"]' );
+		const i18n = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.i18n ? w.wpbc_bfb_settings_vars.i18n : {};
+		const default_appearance = get_default_custom_appearance_settings();
+		const accent_color = color_control && /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( String( color_control.value || '' ).trim() )
+			? String( color_control.value ).trim()
+			: String( default_appearance.booking_form_accent_color || '' ).trim();
+
+		if ( ! toggle || ! toggle.checked ) {
+			if ( status ) {
+				status.textContent = i18n.accent_enable_first || 'Enable Custom accent color first.';
+			}
+			return;
+		}
+
+		if ( button ) {
+			button.disabled = true;
+		}
+
+		const apply_to_builder = function (builder) {
+			const detail = {
+				accent_color: accent_color,
+				builder     : builder || w.wpbc_bfb || null,
+				matched     : 0,
+				updated     : 0
+			};
+
+			try {
+				d.dispatchEvent( new CustomEvent( 'wpbc:bfb:apply-accent-to-components', {
+					bubbles: true,
+					detail : detail
+				} ) );
+			} catch ( _e ) {}
+
+			const time_picker_save_started = switch_time_picker_to_automatic( button );
+
+			if ( status ) {
+				if ( detail.updated > 0 ) {
+					status.textContent = ( 1 === detail.updated )
+						? ( i18n.accent_applied_one || 'Accent applied to one form element. Save Form to keep the change.' )
+						: String( i18n.accent_applied_many || 'Accent applied to %d form elements. Save Form to keep the changes.' ).replace( '%d', String( detail.updated ) );
+				} else if ( detail.matched > 0 ) {
+					status.textContent = i18n.accent_already_applied || 'All supported form elements already have the current accent color.';
+				} else {
+					status.textContent = i18n.accent_no_elements || 'No accent-capable form elements were found.';
+				}
+				if ( time_picker_save_started ) {
+					status.textContent += ' ' + ( i18n.accent_time_picker_automatic || 'Time slots now use Automatic — Match Booking Form.' );
+				}
+			}
+
+			if ( detail.updated > 0 ) {
+				try {
+					d.dispatchEvent( new CustomEvent( 'wpbc:bfb:structure:change', {
+						bubbles: true,
+						detail : { source: 'apply-accent-to-components', updated: detail.updated }
+					} ) );
+				} catch ( _e2 ) {}
+			}
+
+			if ( detail.builder && typeof detail.builder._announce === 'function' ) {
+				detail.builder._announce( status ? status.textContent : ( i18n.accent_applied_announcement || 'Form accent applied.' ) );
+			}
+			if ( button && ! time_picker_save_started ) {
+				button.disabled = false;
+			}
+		};
+
+		if ( w.wpbc_bfb_api && w.wpbc_bfb_api.ready && typeof w.wpbc_bfb_api.ready.then === 'function' ) {
+			w.wpbc_bfb_api.ready.then( apply_to_builder );
+			return;
+		}
+
+		apply_to_builder( w.wpbc_bfb || null );
+	};
+
+	d.addEventListener( 'click', function (e) {
+		const btn = e && e.target && e.target.closest ? e.target.closest( '[data-wpbc-bfb-apply-accent-components="1"]' ) : null;
+		if ( ! btn ) {
+			return;
+		}
+
+		e.preventDefault();
+		api.apply_accent_to_components( btn );
 	}, false );
 
 	function schedule_apply_retry() {

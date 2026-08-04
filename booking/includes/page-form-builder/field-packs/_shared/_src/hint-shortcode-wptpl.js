@@ -2,6 +2,13 @@
 (function ( w, d ) {
 	'use strict';
 
+	/**
+	 * Register one shortcode-backed hint field.
+	 *
+	 * @param {Object}  cfg                        Hint field configuration.
+	 * @param {boolean} cfg.export_to_booking_data Whether the Content exporter should include this hint.
+	 * @return {void}
+	 */
 	w.WPBC_BFB_RegisterShortcodeHintPack = function ( cfg ) {
 		cfg = cfg || {};
 
@@ -11,6 +18,7 @@
 		var L = String( cfg.label || T );
 		var B = String( cfg.boot || '' );
 		var F = String( cfg.fallback || '' );
+		var export_to_booking_data = true === cfg.export_to_booking_data;
 		var Core = w.WPBC_BFB_Core || {};
 		var Registry = Core.WPBC_BFB_Field_Renderer_Registry;
 		var Base = Core.WPBC_BFB_Field_Base;
@@ -145,16 +153,19 @@
 			content_exporter.register( T, function ( field, emit, extras ) {
 				extras = extras || {};
 				var cfg_export = extras.cfg || {};
-				var raw_label = ( field && typeof field.prefix_text === 'string' ) ? field.prefix_text.trim() : '';
-				var label = raw_label.replace( /\s*:\s*$/, '' ) || L;
+				var has_prefix_text = field && typeof field.prefix_text === 'string';
+				var raw_label = has_prefix_text ? field.prefix_text.trim() : '';
+				var label = has_prefix_text ? raw_label.replace( /\s*:\s*$/, '' ) : L;
 
-				if ( typeof content_exporter.emit_line_bold_field === 'function' ) {
-					// Intentionally stop exporting hints into the "Content of booking fields data" form!
-					// content_exporter.emit_line_bold_field( emit, label, S, cfg_export );
+				if ( ! export_to_booking_data ) {
 					return;
 				}
-				// Intentionally stop exporting hints into the "Content of booking fields data" form!
-				// emit( '<b>' + label + '</b>: <f>[' + S + ']</f><br>' );
+
+				if ( typeof content_exporter.emit_line_bold_field === 'function' ) {
+					content_exporter.emit_line_bold_field( emit, label, S, cfg_export );
+					return;
+				}
+				emit( ( label ? '<b>' + label + '</b>: ' : '' ) + '<f>[' + S + ']</f><br>' );
 			} );
 		}
 

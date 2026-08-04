@@ -95,6 +95,17 @@ function wpbc_ajx_get__request_params__names_default( $structure_type = 'validat
 
 	);
 
+	/**
+	 * Filter the Booking Listing request schema before values are sanitized.
+	 *
+	 * Extensions may add narrowly scoped listing filters without duplicating the
+	 * saved-user-request or AJAX sanitization pipeline.
+	 *
+	 * @param array<string,array<string,mixed>> $params_for_cleaning Request validation and default definitions.
+	 * @param string                            $structure_type      Requested schema representation.
+	 */
+	$params_for_cleaning = apply_filters( 'wpbc_booking_listing_request_params_schema', $params_for_cleaning, $structure_type );
+
 	if ( 'validate_and_default' == $structure_type ) {
 		return $params_for_cleaning;
 	}
@@ -921,6 +932,30 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 			}
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			/**
+			 * Filter the prepared Booking Listing WHERE fragment and its placeholders.
+			 *
+			 * The base query has already applied dates, resources, MultiUser ownership,
+			 * status, cost, and keyword rules. Additions must return the same two keys.
+			 *
+			 * @param array{where:string,args:array<int,mixed>} $query_parts    WHERE SQL and prepare arguments.
+			 * @param array<string,mixed>                      $request_params Sanitized listing request.
+			 * @param array<string,mixed>                      $params         Request merged with defaults.
+			 */
+			$query_parts = apply_filters(
+				'wpbc_booking_listing_sql_query_parts',
+				array(
+					'where' => $sql['where'],
+					'args'  => $sql_args,
+				),
+				$request_params,
+				$params
+			);
+			if ( is_array( $query_parts ) && isset( $query_parts['where'], $query_parts['args'] ) && is_string( $query_parts['where'] ) && is_array( $query_parts['args'] ) ) {
+				$sql['where'] = $query_parts['where'];
+				$sql_args     = $query_parts['args'];
+			}
 
 
 			switch ( $params['wh_sort'] ) {
@@ -1900,6 +1935,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 					? apply_bk_filter( 'wpdev_booking_set_booking_edit_link_at_email', '[visitorbookingpayurl]', $booking_id )
 					: '';
 				// =====================================================================================================
+				$booking_data_arr = apply_filters( 'wpbc_booking_listing_parsed_fields', $booking_data_arr, $booking_id, $booking );
 				$bookings_arr[ $booking_id ]->parsed_fields = $booking_data_arr;
 
 

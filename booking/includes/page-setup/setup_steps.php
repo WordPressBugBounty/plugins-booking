@@ -117,7 +117,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 			}
 		}
 
-		foreach ( array( 'date_selection', 'changeover_days', 'working_time', 'time_slots_availability', 'date_availability', 'form_structure', 'color_theme', 'wizard_publish' ) as $continue_step_name ) {
+		foreach ( array( 'service_provider', 'date_selection', 'changeover_days', 'working_time', 'time_slots_availability', 'date_availability', 'form_structure', 'color_theme', 'wizard_publish' ) as $continue_step_name ) {
 			if ( isset( $steps_arr[ $continue_step_name ] ) ) {
 				$steps_arr[ $continue_step_name ]['next_title'] = $is_i18n_ready ? __( 'Continue', 'booking' ) : 'Continue';
 			}
@@ -848,11 +848,14 @@ class WPBC_SETUP_WIZARD_STEPS {
 			$scroll_selector = $this->get_step_meta_value( $current_step, 'scroll_selector' );
 			$highlight_selector = $this->get_step_meta_value( $current_step, 'highlight_selector' );
 			$highlight_disabled = $this->get_step_meta_value( $current_step, 'highlight_disabled' );
+			$highlight_all      = $this->get_step_meta_value( $current_step, 'highlight_all' );
 			$form_selector   = $this->get_step_meta_value( $current_step, 'form_selector' );
 			$save_selector   = $this->get_step_meta_value( $current_step, 'save_selector' );
 			$save_ajax_action = $this->get_step_meta_value( $current_step, 'save_ajax_action' );
 			$save_events     = $this->get_step_meta_value( $current_step, 'save_events' );
 			$open_action     = $this->get_step_meta_value( $current_step, 'open_action' );
+			$secondary_action_url   = $this->get_step_meta_value( $current_step, 'secondary_action_url' );
+			$secondary_action_label = $this->get_step_meta_value( $current_step, 'secondary_action_label' );
 			$can_save_from_bar  = ( 'manual_save_required' === $save_behavior && ! empty( $save_selector ) );
 			$continue_title     = ( 'complete' === $save_behavior ) ? __( 'Finish Setup', 'booking' ) : __( 'Continue', 'booking' );
 			if ( $can_save_from_bar ) {
@@ -871,6 +874,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 				__( 'Save changes on the %s page before continuing.', 'booking' ),
 				'<a href="' . esc_url( $step_target_url ) . '">' . esc_html( $step_save_page_title ) . '</a>'
 			);
+			$test_page_links = (
+				'wizard_publish' === $current_step
+				&& function_exists( 'wpbc_booking_modes_get_setup_test_page_links' )
+			) ? wpbc_booking_modes_get_setup_test_page_links() : array();
 
 			// FixIn: 10.12.1.1.
 			?><style type="text/css">
@@ -1012,6 +1019,40 @@ class WPBC_SETUP_WIZARD_STEPS {
 				.wpbc_page_top__wizard_button_actions .button.button-secondary {
 					background-color: #e4e4e4;
 				}
+				.wpbc_setup_wizard_test_page_actions {
+					display: flex;
+					flex-flow: row wrap;
+					align-items: center;
+					gap: 8px;
+					font-size: 11px;
+					font-weight: 400;
+					line-height: 1.35;
+				}
+				.wpbc_page_top__wizard_button[data-wpbc-setup-step="wizard_publish"] .wpbc_page_top__wizard_button_actions {
+					flex-flow: row wrap;
+				}
+				.wpbc_page_top__wizard_button_actions .button.wpbc_setup_wizard_test_page_button,
+				.wpbc_page_top__wizard_button_actions .button.wpbc_setup_wizard_test_page_button:hover,
+				.wpbc_page_top__wizard_button_actions .button.wpbc_setup_wizard_test_page_button:focus {
+					margin: 20px 0;
+					background: #71a501;
+					border-color: #71a501;
+					color: #f0ffce;
+				}
+				.wpbc_page_top__wizard_button_actions .button.wpbc_setup_wizard_test_page_button:first-child {
+					margin-right: auto;
+					margin-left: 0;
+				}
+				.wpbc_page_top__wizard_button[data-wpbc-setup-step="wizard_publish"] .wpbc_page_top__wizard_button_actions.wpbc_page_top__wizard_button_links {
+					margin: 0;
+					gap: 10px 15px;
+					justify-content: flex-start;
+				}
+				.wpbc_page_top__wizard_button_actions.wpbc_page_top__wizard_button_links .button.wpbc_setup_wizard_test_page_button:first-child,
+				.wpbc_page_top__wizard_button[data-wpbc-setup-step="wizard_publish"] .wpbc_page_top__wizard_button_actions.wpbc_page_top__wizard_button_links a {
+					margin: 0;
+					flex: 0 1 auto;
+				}
 				.wpbc_page_top__wizard_button_actions .button.disabled,
 				.wpbc_page_top__wizard_button_actions .button[aria-disabled="true"] {
 					cursor: not-allowed;
@@ -1114,6 +1155,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 				 data-wpbc-setup-scroll-selector="<?php echo esc_attr( $scroll_selector ); ?>"
 				 data-wpbc-setup-highlight-selector="<?php echo esc_attr( $highlight_selector ); ?>"
 				 data-wpbc-setup-highlight-disabled="<?php echo esc_attr( $highlight_disabled ); ?>"
+				 data-wpbc-setup-highlight-all="<?php echo esc_attr( $highlight_all ); ?>"
 				 data-wpbc-setup-form-selector="<?php echo esc_attr( $form_selector ); ?>"
 				 data-wpbc-setup-save-selector="<?php echo esc_attr( $save_selector ); ?>"
 				 data-wpbc-setup-save-ajax-action="<?php echo esc_attr( $save_ajax_action ); ?>"
@@ -1186,7 +1228,30 @@ class WPBC_SETUP_WIZARD_STEPS {
 								?>
 							</div>
 						<?php } ?>
+						<?php if ( 'wizard_publish' === $current_step && empty( $test_page_links ) ) { ?>
+							<div class="wpbc_setup_wizard_test_page_actions wpbc_setup_wizard_bar_expandable">
+								<span><?php esc_html_e( 'No published booking page was found yet. Use QuickStart or the page publishing controls, then return to this step.', 'booking' ); ?></span>
+							</div>
+						<?php } ?>
+						<?php if ( 'wizard_publish' === $current_step && ! empty( $test_page_links ) ) { ?>
+							<div class="wpbc_page_top__wizard_button_actions wpbc_setup_wizard_bar_expandable wpbc_page_top__wizard_button_links">
+								<?php foreach ( $test_page_links as $test_page_link ) {
+									if ( empty( $test_page_link['url'] ) || empty( $test_page_link['label'] ) ) {
+										continue;
+									}
+									?>
+									<a class="button button-primary secondary wpbc_setup_wizard_test_page_button"
+									   href="<?php echo esc_url( $test_page_link['url'] ); ?>"
+									   target="_blank"
+									   rel="noopener noreferrer"><?php echo esc_html( $test_page_link['label'] ); ?></a>
+								<?php } ?>
+							</div>
+						<?php } ?>
 						<div class="wpbc_page_top__wizard_button_actions wpbc_setup_wizard_bar_expandable">
+							<?php if ( ! empty( $secondary_action_url ) && ! empty( $secondary_action_label ) ) { ?>
+								<a class="button button-secondary wpbc_setup_wizard_secondary_action"
+								   href="<?php echo esc_url( $secondary_action_url ); ?>"><?php echo esc_html( $secondary_action_label ); ?></a>
+							<?php } ?>
 							<?php if ( ! empty( $prior_url ) ) { ?>
 								<a href="<?php echo esc_url( $prior_url ); ?>" class="button button-secondary"><?php esc_html_e( 'Back', 'booking' ); ?></a>
 							<?php } ?>
@@ -1218,6 +1283,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 					var scrollSelector = $bar.attr( 'data-wpbc-setup-scroll-selector' ) || selector;
 					var highlightSelector = $bar.attr( 'data-wpbc-setup-highlight-selector' ) || selector;
 					var highlightDisabled = ( '1' === ( $bar.attr( 'data-wpbc-setup-highlight-disabled' ) || '' ) );
+					var highlightAll = ( '1' === ( $bar.attr( 'data-wpbc-setup-highlight-all' ) || '' ) );
 					var formSelector = $bar.attr( 'data-wpbc-setup-form-selector' ) || '';
 					var saveSelector = $bar.attr( 'data-wpbc-setup-save-selector' ) || '';
 					var saveAjaxAction = $bar.attr( 'data-wpbc-setup-save-ajax-action' ) || '';
@@ -1241,6 +1307,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 					var collapseLabel = <?php echo wp_json_encode( __( 'Collapse setup bar', 'booking' ) ); ?>;
 					var expandLabel = <?php echo wp_json_encode( __( 'Expand setup bar', 'booking' ) ); ?>;
 					var $target;
+					var $highlightTargets = jQuery();
 					var saveClicked = false;
 					var saveAndContinueRequested = false;
 					var saveAndContinueRedirecting = false;
@@ -1323,7 +1390,8 @@ class WPBC_SETUP_WIZARD_STEPS {
 							'date_selection',
 							'changeover_days',
 							'working_time',
-							'time_slots_availability'
+							'time_slots_availability',
+							'date_availability'
 						] );
 					}
 
@@ -1370,7 +1438,11 @@ class WPBC_SETUP_WIZARD_STEPS {
 							return;
 						}
 
+						// Clear any visible inspector while retaining the minimum offset used by the Days Availability page.
 						rightOffset = wpbcSetupWizardGetRightSidebarOffset();
+						if ( 'date_availability' === step ) {
+							rightOffset = Math.max( rightOffset, 60 );
+						}
 						maxRight = Math.max( 15, jQuery( window ).width() - barWidth - 10 );
 
 						if ( wpbcSetupWizardShouldUseTopDefault() ) {
@@ -1413,6 +1485,9 @@ class WPBC_SETUP_WIZARD_STEPS {
 
 					function wpbcSetupWizardApplySavedPosition() {
 						var savedPosition = wpbcSetupWizardStorageGet( positionStorageKey );
+						var rightSidebarOffset;
+						var barRect;
+						var sidebarLeft;
 
 						if ( ! savedPosition ) {
 							wpbcSetupWizardApplyDefaultPosition();
@@ -1424,6 +1499,17 @@ class WPBC_SETUP_WIZARD_STEPS {
 						} catch ( _e ) {
 							wpbcSetupWizardStorageRemove( positionStorageKey );
 							wpbcSetupWizardApplyDefaultPosition();
+							return;
+						}
+
+						rightSidebarOffset = wpbcSetupWizardGetRightSidebarOffset();
+						if ( 'service_provider' === step && rightSidebarOffset > 15 ) {
+							barRect = $bar[0].getBoundingClientRect();
+							sidebarLeft = jQuery( window ).width() - rightSidebarOffset + 15;
+
+							if ( barRect.right > ( sidebarLeft - 10 ) ) {
+								wpbcSetupWizardApplyDefaultPosition();
+							}
 						}
 					}
 
@@ -1497,6 +1583,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 					setTimeout( wpbcSetupWizardApplySavedPosition, 400 );
 					setTimeout( wpbcSetupWizardApplySavedPosition, 1000 );
 					jQuery( window ).on( 'resize.wpbc_setup_wizard_bar', wpbcSetupWizardApplySavedPosition );
+					jQuery( document ).on( 'wpbc_setup_wizard_layout_changed.wpbc_setup_wizard_bar', wpbcSetupWizardApplySavedPosition );
 
 					function wpbcSetupWizardOpenPublishArea() {
 						var isResourcesPage = -1 !== window.location.href.indexOf( 'page=wpbc-resources' );
@@ -1519,13 +1606,12 @@ class WPBC_SETUP_WIZARD_STEPS {
 						].join( ',' );
 						var publishTargetSelector = [
 							'.wpbc_resources_table .ui_group__publish_btn:visible',
+							'#wpbc_booking_resource_table .ui_group__publish_btn:visible',
 							'.wpbc_resource_field__switchable.wpbc_resource_field__publish:visible',
 							'.wpbc_resource_field__publish:visible',
 							'.wpbc_resource_publish:visible',
 							'.wpbc_publish_resources:visible',
-							'.wpbc_resource_shortcode:visible',
-							'[data-wpbc-resource-publish]:visible',
-							'#wpbc_booking_resource_table:visible'
+							'[data-wpbc-resource-publish]:visible'
 						].join( ',' );
 						var $publishTab;
 						var $publishToggle;
@@ -2058,10 +2144,22 @@ class WPBC_SETUP_WIZARD_STEPS {
 						return;
 					}
 
-					$target = highlightDisabled ? jQuery() : wpbcSetupWizardGetFirstElement( highlightSelector || selector );
-					if ( ! highlightDisabled && $target.length ) {
-						wpbcSetupWizardHighlightElement( $target );
+					if ( ! highlightDisabled && highlightAll ) {
+						try {
+							$highlightTargets = jQuery( highlightSelector || selector ).filter( ':visible' );
+						} catch ( _e ) {
+							$highlightTargets = jQuery();
+						}
+
+						$highlightTargets.each( function() {
+							wpbcSetupWizardHighlightElement( jQuery( this ) );
+						} );
+					} else if ( ! highlightDisabled ) {
+						$highlightTargets = wpbcSetupWizardGetFirstElement( highlightSelector || selector );
+						wpbcSetupWizardHighlightElement( $highlightTargets );
 					}
+
+					$target = $highlightTargets.first();
 
 					setTimeout( function() {
 						var $scrollTarget = wpbcSetupWizardGetFirstElement( scrollSelector || ( highlightDisabled ? selector : highlightSelector ) || selector );

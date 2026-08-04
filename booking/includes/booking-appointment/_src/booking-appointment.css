@@ -1,0 +1,339 @@
+.wpbc_booking_appointment {
+	box-sizing: border-box;
+	margin: 0 auto;
+	max-width: 860px;
+	position: relative;
+}
+.wpbc_booking_ui_theme_scope, .wpbc_booking_appointment__loading {
+	--wpbc-appointment-accent: var(--wpbc_form-choice-checked-border-color, #465160);
+	--wpbc-appointment-accent-text: var(--wpbc_form-accent-contrast-color, var(--wpbc_form-button-text-color, #fff));
+	--wpbc-appointment-border: var(--wpbc_form-field-border-color, #dcdcde);
+	--wpbc-appointment-error: var(--wpbc_form-label-error-color, #d63638);
+	--wpbc-appointment-focus: var(--wpbc_form-choice-focus-color, var(--wpbc_form-field-focus-border-color, #465160));
+	--wpbc-appointment-focus-shadow: var(--wpbc_form-field-focus-shadow-color, var(--wpbc-appointment-focus));
+	--wpbc-appointment-muted: var(--wpbc_form-label-sublabel-color, #646970);
+	--wpbc-appointment-surface: var(--wpbc_form-field-background-color, #fff);
+	--wpbc-appointment-surface-text: var(--wpbc_form-field-text-color, #1d2327);
+	--wpbc-appointment-text: var(--wpbc_form-label-color, #1d2327);
+	color: var(--wpbc-appointment-text);
+}
+.wpbc_booking_appointment *, .wpbc_booking_appointment *::before, .wpbc_booking_appointment *::after {
+	box-sizing: border-box;
+}
+.wpbc_booking_appointment:not([data-appointment-stage="booking"]) > .wpbc_booking_appointment__stage {
+	background: var(--wpbc-bfb-form-background, #fff);
+	border: var(--wpbc-bfb-form-border-width, 1px) solid var(--wpbc-bfb-form-border-color, #ccc);
+	border-radius: var(--wpbc-bfb-form-border-radius, 2px);
+	box-shadow: var(--wpbc-bfb-form-box-shadow, rgba(0, 0, 0, .05) 0 2px 6px 0);
+	padding: var(--wpbc-bfb-form-padding, 10px 30px);
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress {
+	align-items: start;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	list-style: none;
+	margin: 0 0 28px;
+	padding: 0;
+	width: 100%;
+}
+.wpbc_booking_appointment[data-appointment-stage="booking"] > .wpbc_booking_appointment__stage > .wpbc_booking_appointment__progress {
+	background: var(--wpbc-bfb-form-background, #fff);
+	border: var(--wpbc-bfb-form-border-width, 1px) solid var(--wpbc-bfb-form-border-color, #ccc);
+	border-radius: var(--wpbc-bfb-form-border-radius, 2px);
+	box-shadow: var(--wpbc-bfb-form-box-shadow, rgba(0, 0, 0, .05) 0 2px 6px 0);
+	padding: var(--wpbc-bfb-form-padding, 10px 30px);
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_step {
+	align-items: center;
+	color: var(--wpbc-appointment-muted);
+	display: flex;
+	flex-direction: column;
+	font-size: 13px;
+	gap: 7px;
+	line-height: 1.35;
+	min-width: 0;
+	position: relative;
+	text-align: center;
+	margin:0;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_step:not(:last-child)::after {
+	background: var(--wpbc-appointment-border);
+	content: "";
+	height: 1px;
+	left: calc(50% + 15px);
+	position: absolute;
+	right: calc(-50% + 15px);
+	top: 15px;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_step.is-complete::after {
+	background: var(--wpbc-appointment-accent);
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_number {
+	align-items: center;
+	background: var(--wpbc-appointment-surface);
+	border: 1px solid var(--wpbc-appointment-border);
+	border-radius: 50%;
+	color: var(--wpbc-appointment-surface-text);
+	display: inline-flex;
+	flex: 0 0 30px;
+	font-weight: 600;
+	height: 30px;
+	justify-content: center;
+	line-height: 1;
+	position: relative;
+	width: 30px;
+	z-index: 1;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_label {
+	display: block;
+	max-width: 100%;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_step.is-active {
+	color: var(--wpbc-appointment-text);
+	font-weight: 600;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__progress_step.is-active .wpbc_booking_appointment__progress_number, .wpbc_booking_appointment .wpbc_booking_appointment__progress_step.is-complete .wpbc_booking_appointment__progress_number {
+	background: var(--wpbc-appointment-accent);
+	border-color: var(--wpbc-appointment-accent);
+	color: var(--wpbc-appointment-accent-text);
+}
+.wpbc_booking_appointment__heading {
+	margin: 0 0 18px;
+}
+.wpbc_booking_appointment__heading h3 {
+	color: var(--wpbc-appointment-text);
+	font-size: 24px;
+	line-height: 1.25;
+	margin: 0 0 5px;
+}
+.wpbc_booking_appointment__heading h3:focus{
+  border-radius: var(--wpbc_form-field-border-radius,8px);
+  box-shadow: 0 0 0 2px var(--wpbc_form-button-focus-inner-color,var(--wpbc-bfb-form-background,var(--wpbc_form-field-background-color,#fff)));
+  outline: 0px dashed var(--wpbc_form-button-focus-outline-color,var(--wpbc_form-field-focus-border-color,var(--wpbc_form-button-background-color,#066aab)));
+  outline-offset: 2px;
+}
+.wpbc_booking_appointment__heading p {
+	color: var(--wpbc-appointment-muted);
+	margin: 0;
+}
+.wpbc_booking_appointment__choices {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.wpbc_booking_appointment__choice {
+	align-items: center;
+	background: var(--wpbc-appointment-surface);
+	border: 1px solid var(--wpbc-appointment-border);
+	border-radius: var(--wpbc_form-field-border-radius, 8px);
+	color: var(--wpbc-appointment-surface-text);
+	cursor: pointer;
+	display: flex;
+	gap: 12px;
+	min-height: 86px;
+	padding: 15px 16px;
+	position: relative;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.wpbc_booking_appointment__choice:hover {
+	border-color: var(--wpbc_form-field-focus-border-color, var(--wpbc-appointment-focus));
+}
+.wpbc_booking_appointment__choice:focus-within {
+	box-shadow: 0 0 0 2px var(--wpbc-appointment-focus-shadow);
+	outline: none;
+}
+.wpbc_booking_appointment__choice > input {
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+}
+.wpbc_booking_appointment__choice:has(input:checked), .wpbc_booking_appointment__choice.is-selected {
+	border-color: var(--wpbc-appointment-accent);
+	box-shadow: inset 3px 0 0 var(--wpbc-appointment-accent);
+}
+.wpbc_booking_appointment__choice_body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+}
+.wpbc_booking_appointment__choice_body strong {
+	color: var(--wpbc-appointment-surface-text);
+	font-size: 16px;
+	line-height: 1.3;
+}
+.wpbc_booking_appointment__choice_meta, .wpbc_booking_appointment__choice_description {
+	color: var(--wpbc-appointment-muted);
+	font-size: 13px;
+	line-height: 1.4;
+	margin-top: 3px;
+}
+.wpbc_booking_appointment__choice_mark {
+	border: 2px solid var(--wpbc-appointment-border);
+	border-radius: 50%;
+	flex: 0 0 auto;
+	height: 18px;
+	width: 18px;
+}
+.wpbc_booking_appointment__choice input:checked ~ .wpbc_booking_appointment__choice_mark {
+	border: 5px solid var(--wpbc-appointment-accent);
+}
+.wpbc_booking_appointment__service_image {
+	background: var(--wpbc_form-field-background-color, var(--wpbc-appointment-surface));
+	box-sizing: border-box;
+	display: block;
+	flex: 0 0 54px;
+	height: 54px;
+	overflow: hidden;
+	width: 54px;
+	border-radius: 50%;
+	border: 2px solid var(--wpbc_form-field-background-color, var(--wpbc-appointment-surface));
+	outline: 1px solid var(--wpbc-appointment-border);
+}
+.wpbc_booking_appointment__service_image img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+.wpbc_booking_appointment__provider_avatar {
+	align-items: center;
+	background: var(--wpbc-appointment-provider-avatar-background, var(--wpbc_form-button-light-background-color, #eef0ff));
+	border: 1px solid var(--wpbc-appointment-provider-avatar-border-color, var(--wpbc_form-button-light-border-color, var(--wpbc-appointment-border)));
+	border-radius: 50%;
+	color: var(--wpbc-appointment-provider-avatar-text-color, var(--wpbc_form-button-light-text-color, #3044a5));
+	display: inline-flex;
+	flex: 0 0 44px;
+	font-weight: 600;
+	height: 44px;
+	justify-content: center;
+	overflow: hidden;
+	width: 44px;
+}
+.wpbc_booking_appointment__provider_avatar img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+.wpbc_booking_appointment__actions {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+.wpbc_booking_appointment__selected, .wpbc_booking_appointment__booking_header {
+	background: var(--wpbc-appointment-surface);
+	background-color: color-mix(in srgb, var(--wpbc-bfb-form-background) 90%, transparent);
+	border: 1px solid var(--wpbc-appointment-border);
+	border-radius: var(--wpbc-bfb-form-border-radius, 7px);
+	color: var(--wpbc-appointment-surface-text);
+	display: flex;
+	margin-bottom: 22px;
+	padding: 13px 16px;
+}
+.wpbc_booking_appointment__selected {
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 7px 12px;
+}
+.wpbc_booking_appointment__selected > span, .wpbc_booking_appointment__booking_header span {
+	color: var(--wpbc-appointment-muted);
+	font-size: 12px;
+	text-transform: uppercase;
+}
+.wpbc_booking_appointment__selected small, .wpbc_booking_appointment__booking_header small {
+	color: var(--wpbc-appointment-muted);
+}
+.wpbc_booking_appointment__booking_header {
+	align-items: center;
+	justify-content: space-between;
+}
+.wpbc_booking_appointment__booking_header > div {
+	display: flex;
+	flex-direction: column;
+}
+.wpbc_booking_appointment__selected strong, .wpbc_booking_appointment__booking_header strong {
+	color: var(--wpbc-appointment-surface-text);
+}
+.wpbc_booking_appointment__booking_header strong {
+	font-size: 18px;
+	margin: 2px 0;
+}
+.wpbc_booking_appointment__notice, .wpbc_booking_appointment__ajax_notice {
+	background: var(--wpbc-appointment-surface);
+	border: 1px solid var(--wpbc-appointment-error);
+	border-left-width: 4px;
+	border-radius: var(--wpbc_form-field-border-radius, 4px);
+	color: var(--wpbc-appointment-error);
+	padding: 12px 14px;
+}
+.wpbc_booking_appointment__notice--empty {
+	border-color: var(--wpbc-appointment-focus);
+	color: var(--wpbc-appointment-text);
+}
+.wpbc_booking_appointment__ajax_notice {
+	margin-top: 12px;
+}
+.wpbc_booking_appointment__notice_action {
+	color: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.wpbc_booking_appointment__notice_action:focus,
+.wpbc_booking_appointment__notice_action:hover {
+	color: inherit;
+	text-decoration-thickness: 2px;
+}
+.wpbc_booking_appointment__loading {
+	align-items: center;
+	background: var(--wpbc-appointment-surface);
+	background-color: color-mix(in srgb, var(--wpbc-appointment-surface) 98%, transparent);
+	color: var(--wpbc-appointment-surface-text);
+	inset: 0;
+	justify-content: center;
+	position: absolute;
+	z-index: 9999;
+}
+.wpbc_booking_appointment__loading:not([hidden]) {
+	display: flex;
+}
+.wpbc_booking_appointment__spinner {
+	animation: wpbc-appointment-spin .8s linear infinite;
+	border: 2px solid var(--wpbc-appointment-border);
+	border-radius: 50%;
+	border-top-color: var(--wpbc-appointment-accent);
+	height: 22px;
+	margin-right: 9px;
+	width: 22px;
+}
+.wpbc_booking_appointment__fixed_duration_field {
+	display: none !important;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__time_notice {
+	display: flex;
+	gap: 7px;
+	margin: 10px 0 0;
+	max-width: 100%;
+}
+.wpbc_booking_appointment .wpbc_booking_appointment__time_notice .menu_icon {
+	flex: 0 0 auto;
+}
+@keyframes wpbc-appointment-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@media (max-width: 600px) {
+	.wpbc_booking_appointment .wpbc_booking_appointment__progress {
+		margin-bottom: 22px;
+	}
+	.wpbc_booking_appointment .wpbc_booking_appointment__progress_step {
+		font-size: 12px;
+		gap: 5px;
+	}
+	.wpbc_booking_appointment__choices {
+		grid-template-columns: 1fr;
+	}
+}

@@ -412,7 +412,7 @@ function wpbc_get_email_help_shortcodes( $skip_shortcodes = array() , $email_exa
     $fields[] = sprintf(__( 'Example #2: "%s" - English and French translation of some message' ,'booking'),'<code>Thank you for your booking.[lang=fr_FR]Je vous remercie de votre reservation.</code>');
 
 
-    return $fields;
+    return (array) apply_filters( 'wpbc_email_help_shortcodes', $fields, $skip_shortcodes, $email_example );
 }
 
 

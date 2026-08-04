@@ -1118,10 +1118,15 @@ function wpbc_get_sql_for_booking_listing( $args ){
 	    }
 
     	else if ( strpos( $wh_booking_id, ',' ) !== false ) {
-		    $sql_where = " WHERE bk.booking_id IN (" . $wh_booking_id . ") ";
+		    $booking_ids = array_filter( array_map( 'absint', explode( ',', $wh_booking_id ) ) );
+		    $booking_ids = array_values( array_unique( $booking_ids ) );
+		    $sql_where   = empty( $booking_ids )
+			    ? ' WHERE bk.booking_id = -1 '
+			    : ' WHERE bk.booking_id IN (' . implode( ',', $booking_ids ) . ') ';
 
 	    } else {
-		    $sql_where = " WHERE bk.booking_id = " . $wh_booking_id . " ";
+		    $booking_id = ( '-1' === (string) $wh_booking_id ) ? -1 : absint( $wh_booking_id );
+		    $sql_where  = ' WHERE bk.booking_id = ' . $booking_id . ' ';
 	    }
 
         // Check  if searching booking is belonging to specific user in  Booking Calendar MultiUser version 

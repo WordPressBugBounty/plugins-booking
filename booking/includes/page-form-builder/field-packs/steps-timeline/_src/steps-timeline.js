@@ -5,6 +5,15 @@
 	var Core     = w.WPBC_BFB_Core || {};
 	var registry = Core.WPBC_BFB_Field_Renderer_Registry;
 	var Base     = Core.WPBC_BFB_Field_Base;
+	var localized_form_accent_defaults = w.wpbc_bfb_settings_vars && w.wpbc_bfb_settings_vars.form_accent_defaults
+		? w.wpbc_bfb_settings_vars.form_accent_defaults
+		: {};
+	var localized_default_form_accent_color = String( localized_form_accent_defaults.booking_form_accent_color || '' ).trim();
+
+	/** @type {string} Default accent supplied by the PHP configuration constant. */
+	var default_form_accent_color = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test( localized_default_form_accent_color )
+		? localized_default_form_accent_color
+		: '';
 
 	if ( ! registry || typeof registry.register !== 'function' || ! Base ) {
 		_wpbc?.dev?.error?.( 'wpbc_bfb_field_steps_timeline', 'Core registry/base missing' );
@@ -160,6 +169,9 @@
 			if ( String( el.dataset.steps_count ) !== String( steps_count ) ) { el.dataset.steps_count = String( steps_count ); }
 			if ( String( el.dataset.active_step ) !== String( active_step ) ) { el.dataset.active_step = String( active_step ); }
 			if ( el.dataset.color !== color_val ) { el.dataset.color = color_val; }
+			// Remove the short-lived synchronization flag from development builds.
+			// Timeline color is now always an explicit, editable field property.
+			if ( el.hasAttribute( 'data-use_form_accent' ) ) { el.removeAttribute( 'data-use_form_accent' ); }
 			if ( el.dataset.cssclass_extra !== cls_extra ) { el.dataset.cssclass_extra = cls_extra; }
 			if ( el.dataset.html_id !== html_id ) { el.dataset.html_id = html_id; }
 			if ( el.dataset.name !== name_val ) { el.dataset.name = name_val; }
@@ -226,6 +238,53 @@
 		registry.register( 'steps_timeline', wpbc_bfb_field_steps_timeline );
 	} catch (e) { _wpbc?.dev?.error?.( 'wpbc_bfb_field_steps_timeline.register', e ); }
 
+	/**
+	 * Copy the current Form Style accent into every Steps Timeline color field.
+	 * This is a one-time value update: the resulting color remains independently
+	 * editable and does not stay synchronized with the global accent option.
+	 *
+	 * @param {CustomEvent} event Accent application request.
+	 * @returns {void}
+	 */
+	function apply_form_accent_to_steps_timeline( event ) {
+		var detail = event && event.detail && typeof event.detail === 'object' ? event.detail : null;
+		var builder = detail && detail.builder ? detail.builder : w.wpbc_bfb;
+		var root = builder && builder.pages_container ? builder.pages_container : null;
+		var accent_color = detail
+			? Core.WPBC_BFB_Sanitize.sanitize_hex_color( detail.accent_color, default_form_accent_color )
+			: default_form_accent_color;
+		var selected = null;
+
+		if ( ! detail || ! root ) {
+			return;
+		}
+
+		root.querySelectorAll( '.wpbc_bfb__field[data-type="steps_timeline"]' ).forEach( function ( field_el ) {
+			var current_color = Core.WPBC_BFB_Sanitize.sanitize_hex_color( field_el.dataset.color, '#619d40' );
+
+			detail.matched = ( parseInt( detail.matched, 10 ) || 0 ) + 1;
+			if ( current_color.toLowerCase() === accent_color.toLowerCase() && ! field_el.hasAttribute( 'data-use_form_accent' ) ) {
+				return;
+			}
+
+			field_el.dataset.color = accent_color;
+			field_el.removeAttribute( 'data-use_form_accent' );
+			detail.updated = ( parseInt( detail.updated, 10 ) || 0 ) + 1;
+			if ( field_el.classList.contains( 'is-selected' ) ) {
+				selected = field_el;
+			}
+			if ( builder.preview_mode && typeof builder.render_preview === 'function' ) {
+				builder.render_preview( field_el );
+			}
+		} );
+
+		if ( selected && typeof builder.select_field === 'function' ) {
+			builder.select_field( selected );
+		}
+	}
+
+	d.addEventListener( 'wpbc:bfb:apply-accent-to-components', apply_form_accent_to_steps_timeline, false );
+
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Export for "Booking Form" (Advanced Form shortcode)
@@ -285,7 +344,7 @@
 			if ( as < 1 ) { as = 1; }
 			if ( as > sc ) { as = sc; }
 
-			// Sanitize color with default.
+			// Sanitize the editable field color with its legacy default.
 			var col = sanitizeHex( field && field.color, '#619d40' );
 
 			// Sanitize id/class for outer <span>.
