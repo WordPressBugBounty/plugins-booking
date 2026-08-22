@@ -1153,11 +1153,14 @@ a.wpbc_ui_settings__text_pro:hover {
 .wp-core-ui .wpbc_page input[type=week]:focus,
 .wp-core-ui .wpbc_page select:focus,
 .wp-core-ui .wpbc_page textarea:focus {
+  outline: 0;
   border-width: var(--wpbc_form-field-border-size);
   border-style: solid;
   border-color: var(--wpbc_form-button-background-color);
-  box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color),0 1px 2px rgba(0,0,0,.15);
-  outline: 0
+  box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color),0 1px 2px rgba(0,0,0,.15)
+}
+.wp-core-ui .wpbc_page input[type=range]:focus {
+  box-shadow: 0 0 0 1px var(--wpbc_form-button-background-color),0 1px 2px rgba(0,0,0,.15)
 }
 .chzn-container * {
   box-sizing: border-box
@@ -1780,7 +1783,7 @@ only screen and (min-resolution:1.5dppx) {
 }
 body[class*=page_wpbc] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
   padding: 0;
-  margin: 2px 20px 2px 25px
+  margin: 2px 30px
 }
 .wpbc_settings_page_content .wpbc_settings_path {
   margin: 0 0 5px;
@@ -2056,6 +2059,24 @@ div.wpbc_settings_page_wrapper.compact_right .hide_in_max_mode_right {
     max-width: calc(100% - 25px);
     -ms-flex: 1 1 100%;
     flex: 1 1 100%
+  }
+  .wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper {
+    -ms-flex: 0 0 40px;
+    flex: 0 0 40px;
+    min-width: 40px;
+    width: 40px;
+    max-width: 40px;
+    overflow: hidden
+  }
+  .wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item .wpbc_ui_el__vert_nav_icon {
+    display: none
+  }
+  .wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item {
+    -ms-writing-mode: tb-lr;
+    writing-mode: vertical-lr
+  }
+  .wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item .wpbc_ui_el__vert_nav_item__a {
+    padding: 20px
   }
   .wpbc_settings_page_wrapper.max .wpbc_settings_page_content .wpbc_page {
     display: none
@@ -2926,8 +2947,7 @@ a > .wpbc_ui_el__section_header {
 }
 .wpbc_ajx_toolbar .wpbc_ui_el__choosen {
   -ms-flex-align: center;
-  align-items: center;
-  margin-right: 20px
+  align-items: center
 }
 .wpbc_ajx_toolbar .wpbc_ui_el__choosen .chzn-container {
   -ms-flex-item-align: initial;
@@ -2972,6 +2992,9 @@ div.wpbc_ajx_toolbar {
 }
 .wpbc_ui__collapsible_group.is-open {
   padding-bottom: 25px
+}
+.wpbc_ui__collapsible_group:last-child {
+  padding-bottom: 100px
 }
 .wpbc_ui__collapsible_group.is-open .group__header {
   border-left-color: #1e7bc7;

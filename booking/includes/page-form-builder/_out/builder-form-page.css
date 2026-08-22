@@ -1743,7 +1743,8 @@ html[data-wpbc-bfb-live-source=builder] .wp-admin .modal-backdrop {
   object-fit: cover;
   border-radius: 3px;
   border: 0;
-  background: #fff
+  background: #fff;
+  object-position: 0 30%
 }
 .wpbc_bfb__load_form_item_text {
   -ms-flex: 1 1 auto;

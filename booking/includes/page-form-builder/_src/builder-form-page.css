@@ -1693,7 +1693,8 @@ html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
 			object-fit: cover;
 			border-radius: 3px;
 			border: 0;
-			background: #fff
+			background: #fff;
+			object-position: 0% 30%;
 		}
 		.wpbc_bfb__load_form_item_text {
 			flex: 1 1 auto;

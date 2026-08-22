@@ -11,6 +11,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Sanitize a space-separated list of font-icon CSS classes.
+ *
+ * Navigation icons can contain a primary glyph class and one or more modifier
+ * classes. Sanitizing every token separately preserves that established format
+ * while preventing mode metadata from injecting arbitrary attributes or markup.
+ *
+ * @param mixed $font_icon_classes Raw font-icon class value.
+ *
+ * @return string Sanitized, de-duplicated CSS classes separated by one space.
+ */
+function wpbc_booking_modes_sanitize_font_icon_classes( $font_icon_classes ) {
+
+	if ( ! is_scalar( $font_icon_classes ) ) {
+		return '';
+	}
+
+	$font_icon_classes = trim( (string) $font_icon_classes );
+
+	if ( '' === $font_icon_classes ) {
+		return '';
+	}
+
+	$class_tokens = preg_split( '/\s+/', $font_icon_classes );
+	$class_names  = array();
+
+	foreach ( (array) $class_tokens as $class_token ) {
+		$class_name = sanitize_html_class( $class_token );
+
+		if ( '' !== $class_name && ! in_array( $class_name, $class_names, true ) ) {
+			$class_names[] = $class_name;
+		}
+	}
+
+	return implode( ' ', $class_names );
+}
+
+/**
  * Resolve the legacy administration navigation tree once for presentation.
  *
  * Existing page controllers continue using the original tree for activation,
@@ -291,10 +328,33 @@ final class WPBC_Booking_Mode_Navigation {
 					$page_placement
 				);
 			} else {
-				$resolved_navigation[ $page_tag ][ $tab_tag ] = $this->apply_item_presentation(
+				$navigation_item = $this->apply_item_presentation(
 					$resolved_navigation[ $page_tag ][ $tab_tag ],
 					$page_placement
 				);
+				$target_group    = isset( $page_placement['group'] ) && is_scalar( $page_placement['group'] )
+					? sanitize_key( (string) $page_placement['group'] )
+					: $page_tag;
+				// A presentation key lets routes with the same tab slug share one target group.
+				$navigation_key  = isset( $page_placement['navigation_key'] ) && is_scalar( $page_placement['navigation_key'] )
+					? sanitize_key( (string) $page_placement['navigation_key'] )
+					: $tab_tag;
+
+				if ( '' === $navigation_key ) {
+					$navigation_key = $tab_tag;
+				}
+
+				if (
+					$page_tag !== $target_group
+					&& isset( $resolved_navigation[ $target_group ] )
+					&& is_array( $resolved_navigation[ $target_group ] )
+					&& ! isset( $resolved_navigation[ $target_group ][ $navigation_key ] )
+				) {
+					unset( $resolved_navigation[ $page_tag ][ $tab_tag ] );
+					$resolved_navigation[ $target_group ][ $navigation_key ] = $navigation_item;
+				} else {
+					$resolved_navigation[ $page_tag ][ $tab_tag ] = $navigation_item;
+				}
 			}
 		}
 
@@ -316,7 +376,7 @@ final class WPBC_Booking_Mode_Navigation {
 	}
 
 	/**
-	 * Apply safe title and ordering metadata to one navigation item.
+	 * Apply safe title, icon, and ordering metadata to one navigation item.
 	 *
 	 * @param array $navigation_item Existing legacy navigation item.
 	 * @param array $page_placement Mode-specific presentation values.
@@ -327,6 +387,12 @@ final class WPBC_Booking_Mode_Navigation {
 
 		if ( ! empty( $page_placement['title'] ) && is_scalar( $page_placement['title'] ) ) {
 			$navigation_item['title'] = wp_strip_all_tags( (string) $page_placement['title'] );
+		}
+
+		foreach ( array( 'font_icon', 'font_icon_right' ) as $font_icon_key ) {
+			if ( array_key_exists( $font_icon_key, $page_placement ) ) {
+				$navigation_item[ $font_icon_key ] = wpbc_booking_modes_sanitize_font_icon_classes( $page_placement[ $font_icon_key ] );
+			}
 		}
 
 		$navigation_item['_wpbc_mode_position'] = isset( $page_placement['position'] ) ? absint( $page_placement['position'] ) : 1000;

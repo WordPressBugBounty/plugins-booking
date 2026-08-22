@@ -104,6 +104,41 @@ function wpbc_setup_wizard_page__is_in_progress() {
 
 
 /**
+ * Check whether the current request explicitly targets one Setup Wizard step.
+ *
+ * This read-only request check is intentionally independent from saved wizard
+ * completion state. It lets an authorized user follow an explicit external
+ * setup URL without causing ordinary administration-page visits to reopen the
+ * completed wizard.
+ *
+ * @param string $step_name Expected Setup Wizard step identifier.
+ *
+ * @return bool True when the current URL explicitly requests the step.
+ */
+function wpbc_setup_wizard_page__has_explicit_step_context( $step_name ) {
+
+	$step_name = sanitize_key( (string) $step_name );
+
+	if ( '' === $step_name ) {
+		return false;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+	$setup_context = isset( $_GET['wpbc_setup'] ) && is_scalar( $_GET['wpbc_setup'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+		? sanitize_text_field( wp_unslash( $_GET['wpbc_setup'] ) )
+		: '';
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+	$request_step = isset( $_GET['wpbc_setup_step'] ) && is_scalar( $_GET['wpbc_setup_step'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
+		? sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) )
+		: '';
+
+	return '1' === $setup_context && $step_name === $request_step;
+}
+
+
+/**
  * Check whether the current request is one explicit external Setup Wizard step.
  *
  * The setup context flag prevents ordinary visits to the same administration
@@ -121,18 +156,7 @@ function wpbc_setup_wizard_page__is_active_step( $step_name ) {
 		return false;
 	}
 
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
-	$setup_context = isset( $_GET['wpbc_setup'] ) && is_scalar( $_GET['wpbc_setup'] )
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
-		? sanitize_text_field( wp_unslash( $_GET['wpbc_setup'] ) )
-		: '';
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
-	$request_step = isset( $_GET['wpbc_setup_step'] ) && is_scalar( $_GET['wpbc_setup_step'] )
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI context.
-		? sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) )
-		: '';
-
-	return '1' === $setup_context && $step_name === $request_step;
+	return wpbc_setup_wizard_page__has_explicit_step_context( $step_name );
 }
 
 /**

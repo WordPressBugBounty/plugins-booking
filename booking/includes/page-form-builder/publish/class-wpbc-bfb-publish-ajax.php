@@ -521,7 +521,7 @@ class WPBC_BFB_Publish_Ajax {
 
 		check_ajax_referer( self::NONCE_ACTION, 'nonce' );
 
-		if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
+		if ( wpbc_is_booking_form_publishing_restricted() ) {
 			self::send_error( __( 'This operation is restricted in the demo version.', 'booking' ) );
 		}
 

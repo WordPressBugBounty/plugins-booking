@@ -656,14 +656,7 @@ function wpbc_setup_wizard__get_step_description( $step_name ) {
  * @return array
  */
 function wpbc_setup_wizard__get_step_ui_matrix() {
-	$publish_step_ui = array(
-		'save_behavior'      => 'link_only',
-		'target_selector'    => '.ui_group__publish_btn, .wpbc_resource_field__publish, .wpbc_resource_publish, .wpbc_publish_resources, [data-wpbc-resource-publish]',
-		'scroll_selector'    => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, [data-wpbc-resource-publish]:visible',
-		'highlight_selector' => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, [data-wpbc-resource-publish]:visible',
-		'highlight_all'      => '1',
-		'open_action'        => 'publish_area',
-	);
+	$publish_step_ui = wpbc_setup_wizard__get_publish_step_ui();
 	$time_slots_step_ui = array(
 		'save_behavior'      => 'link_only',
 		'target_selector'    => '.wpbc_admin_page__tab__time_slots_availability, .wpbc_ts_page',
@@ -771,6 +764,56 @@ function wpbc_setup_wizard__get_step_ui_matrix() {
 			'scroll_selector'    => '.wpbc_admin_page:visible',
 			'highlight_disabled' => '1',
 		),
+	);
+}
+
+/**
+ * Determine whether Setup Wizard publishing should use the shared Resource catalog.
+ *
+ * The compatibility resolver remains authoritative so an older paid edition,
+ * the temporary legacy preference, or the support rollback constant keeps the
+ * wizard connected to the released legacy Resources renderer.
+ *
+ * @return bool True when the new Resource catalog is the effective renderer.
+ */
+function wpbc_setup_wizard__uses_new_resources_catalog() {
+	return function_exists( 'wpbc_booking_resources_catalog_should_use_new_renderer' )
+		&& wpbc_booking_resources_catalog_should_use_new_renderer();
+}
+
+/**
+ * Get the renderer-aware Setup Wizard publishing integration.
+ *
+ * The new catalog is opened through its domain action event after the initial
+ * AJAX response. The legacy selectors are intentionally retained unchanged
+ * while the compatibility renderer remains available in Booking Calendar 11.6.
+ *
+ * @param bool|null $use_new_catalog Optional renderer override for deterministic tests. Null uses the effective compatibility resolver.
+ *
+ * @return array<string,string> Setup bar selector and action configuration.
+ */
+function wpbc_setup_wizard__get_publish_step_ui( $use_new_catalog = null ) {
+	if ( null === $use_new_catalog ) {
+		$use_new_catalog = wpbc_setup_wizard__uses_new_resources_catalog();
+	}
+
+	if ( true === $use_new_catalog ) {
+		return array(
+			'save_behavior'      => 'link_only',
+			'target_selector'    => '#wpbc_catalog_booking_resources',
+			'scroll_selector'    => '#wpbc_catalog_booking_resources:visible',
+			'highlight_disabled' => '1',
+			'open_action'        => 'catalog_publish',
+		);
+	}
+
+	return array(
+		'save_behavior'      => 'link_only',
+		'target_selector'    => '.ui_group__publish_btn, .wpbc_resource_field__publish, .wpbc_resource_publish, .wpbc_publish_resources, [data-wpbc-resource-publish]',
+		'scroll_selector'    => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, [data-wpbc-resource-publish]:visible',
+		'highlight_selector' => '.ui_group__publish_btn:visible, .wpbc_resource_field__publish:visible, .wpbc_resource_publish:visible, .wpbc_publish_resources:visible, [data-wpbc-resource-publish]:visible',
+		'highlight_all'      => '1',
+		'open_action'        => 'publish_area',
 	);
 }
 
@@ -987,6 +1030,7 @@ function wpbc_setup_wizard__get_bfb_template_search_key() {
  * @return string
  */
 function wpbc_setup_wizard__get_step_target_url( $step_name ) {
+	$target_fragment = '';
 
 	if ( wpbc_setup_wizard__is_internal_step( $step_name ) ) {
 		return add_query_arg( 'current_step', $step_name, wpbc_get_setup_wizard_page_url() );
@@ -1060,9 +1104,12 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 				? wpbc_booking_modes_get_canonical_page_url( 'wpbc-resources__resources' )
 				: '';
 			if ( empty( $url ) ) {
-				$url = add_query_arg( 'tab', 'resources', wpbc_get_resources_url() );
+				$url = wpbc_get_resources_url();
 			}
-			$url .= '#wpbc_booking_resource_table';
+			$url             = add_query_arg( 'tab', 'resources', $url );
+			$target_fragment = wpbc_setup_wizard__uses_new_resources_catalog()
+				? 'wpbc_catalog_booking_resources'
+				: 'wpbc_booking_resource_table';
 			break;
 
 		case 'get_started':
@@ -1074,7 +1121,13 @@ function wpbc_setup_wizard__get_step_target_url( $step_name ) {
 			break;
 	}
 
-	return wpbc_setup_wizard__add_setup_context_to_url( $url, $step_name );
+	$url = wpbc_setup_wizard__add_setup_context_to_url( $url, $step_name );
+
+	if ( ! empty( $target_fragment ) ) {
+		$url .= '#' . $target_fragment;
+	}
+
+	return $url;
 }
 
 /**

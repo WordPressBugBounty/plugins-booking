@@ -556,6 +556,22 @@ function wpbc_bfb_activation__set_standard_form_default_days_selection( $templat
 }
 
 /**
+ * Get the bundled template key used for a brand-new Standard form.
+ *
+ * Booking Calendar Free starts with the compact single-column form whose date
+ * hints remain visible immediately below the calendar. Paid editions retain
+ * their existing edition-aware two-column starter form.
+ *
+ * @return string Stable bundled template key for the active edition.
+ */
+function wpbc_bfb_activation__get_initial_standard_template_key() {
+
+	return class_exists( 'wpdev_bk_personal' )
+		? 'dates_2_columns_sidebar_hints'
+		: 'dates_form_with_inline_hints';
+}
+
+/**
  * Maybe create the initial standard BFB form from a bundled template.
  *
  * Used only during brand new plugin activation, before booking_version_num
@@ -574,9 +590,14 @@ function wpbc_bfb_maybe_create_initial_standard_form_from_template() {
 	}
 
 	if ( function_exists( 'wpbc_get_bfb_template_record_by_key' ) ) {
-		// Default Booking Form Template - Just  after Booking Calendar activation!
-		// $template_record = wpbc_get_bfb_template_record_by_key( 'time_appointments_3_steps_review_with_hints' );     // Time appointments.
-		$template_record = wpbc_get_bfb_template_record_by_key( 'dates_2_columns_sidebar_hints' );                      // Full  Days - 2 Columns - with  dates hints.
+		$template_key    = wpbc_bfb_activation__get_initial_standard_template_key();
+		$template_record = wpbc_get_bfb_template_record_by_key( $template_key );
+
+		// Preserve a usable first-install form if a registry filter removes the
+		// new Free starter template.
+		if ( empty( $template_record ) && 'dates_2_columns_sidebar_hints' !== $template_key ) {
+			$template_record = wpbc_get_bfb_template_record_by_key( 'dates_2_columns_sidebar_hints' );
+		}
 	} else {
 		$template_record = array();
 	}

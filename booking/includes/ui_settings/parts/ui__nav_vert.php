@@ -30,11 +30,19 @@ function wpbc_ui__get_root_menu_arr() {
 		'wpbc-divider-1'    => array(
 			'type' => 'divider',
 		),
-		'wpbc-availability' => array(
+	);
+
+	$pages_arr['wpbc-resources'] = array(
+		'type'      => 'menu',
+		'title'     => __( 'Resources', 'booking' ),
+		'font_icon' => 'wpbc-bi-list',
+	);
+
+
+	$pages_arr['wpbc-availability'] = array(
 			'type'      => 'menu',
 			'title'     => __( 'Availability', 'booking' ),
 			'font_icon' => 'wpbc-bi-calendar-week',
-		),
 	);
 
 	if ( class_exists('wpdev_bk_biz_m') ) {
@@ -45,19 +53,7 @@ function wpbc_ui__get_root_menu_arr() {
 		);
 	}
 
-	if ( class_exists('wpdev_bk_personal') ) {
-		$pages_arr['wpbc-resources'] = array(
-			'type'      => 'menu',
-			'title'     => __( 'Resources', 'booking' ),//  . ' / ' . __( 'unique calendars', 'booking' ),
-			'font_icon' => 'wpbc-bi-list',
-		);
-	} else {
-		$pages_arr['wpbc-resources'] = array(
-			'type'      => 'menu',
-			'title'     => __( 'Resource', 'booking' ) . ' / ' . __( 'Publish', 'booking' ),
-			'font_icon' => 'wpbc-bi-list',
-		);
-	}
+
 	$pages_arr['wpbc-divider-2'] = array(
 		'type' => 'divider',
 	);
@@ -104,6 +100,20 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		$root_menu_arr = wpbc_booking_modes_resolve_root_navigation( $root_menu_arr, $args['page_nav_tabs'] );
 	}
 
+	// A mode may display an existing controller route below a different presentation group.
+	foreach ( $args['page_nav_tabs'] as $presentation_page_slug => $presentation_tabs ) {
+		if ( ! is_array( $presentation_tabs ) ) {
+			continue;
+		}
+
+		foreach ( $presentation_tabs as $presentation_tab ) {
+			if ( is_array( $presentation_tab ) && ! empty( $presentation_tab['is_active'] ) ) {
+				$active_page_arr['active_page'] = $presentation_page_slug;
+				break 2;
+			}
+		}
+	}
+
 	echo '  <div class="wpbc_ui_el__vert_left_bar__content">';
 
 	$is_show_all_menus = true;
@@ -134,7 +144,8 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		if ( $is_show_all_menus ) {
 			echo '  <div class="wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . esc_attr( $main_page_slug ) . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
 
-			wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title );
+			$mode_font_icon = isset( $root_menu_options_arr['mode_font_icon'] ) ? $root_menu_options_arr['mode_font_icon'] : '';
+			wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title, $mode_font_icon );
 		}
 
 		echo '  <div class="wpbc_ui_el__vert_left_bar__section wpbc_ui_el__vert_left_bar__section_' .
@@ -462,13 +473,13 @@ function wpbc_ui__vert_left_bar__section__root_menu( $pages_arr ) {
 /**
  * Show Root Header
  *
- * @param string $main_page_slug - slug of all sub menu section.
- * @param string $page_title - title of header.
- * @param bool $is_expanded - Is expanded or not.
+ * @param string $main_page_slug Slug of the submenu section.
+ * @param string $page_title     Section title.
+ * @param string $font_icon      Optional sanitized font-icon CSS classes supplied by the selected mode.
  *
  * @return void
  */
-function wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title) {
+function wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title, $font_icon = '' ) {
 
 	$css_section = '.root_section_element_' . $main_page_slug;
 
@@ -478,6 +489,10 @@ function wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_ti
 	><?php
 
 		?><i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i><?php
+
+		if ( '' !== $font_icon ) {
+			?><i class="wpbc_ui_el__vert_menu_root_section_font_icon menu_icon icon-1x <?php echo esc_attr( $font_icon ); ?>" aria-hidden="true"></i><?php
+		}
 
 		wpbc_ui__vert_menu__show_section_header( $page_title );
 

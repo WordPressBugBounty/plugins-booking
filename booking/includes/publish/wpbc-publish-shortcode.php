@@ -64,7 +64,7 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
 	if ( ( isset( $_POST['action'] ) ) && ( 'wpbc_page_resource_publish' === $_POST['action'] ) ) {
 
-		if ( wpbc_is_this_demo() ) {
+		if ( wpbc_is_booking_form_publishing_restricted() ) {
 			wpbc_show_notice__for_page_resource_publish( 'This operation is restricted in the demo version.', 'warning' );
 			return;
 		}
@@ -193,10 +193,25 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 }
 add_action( 'wpbc_hook_settings_page_before_content_table', 'wpbc_check_for_submit__page_resource_publish' ,10, 1);
 
-
+/**
+ * Render feedback from the Booking Resource publishing workflow.
+ *
+ * The shared publisher is also used outside the Resources catalog, so catalog
+ * spacing is applied only while the new catalog renderer owns the request.
+ *
+ * @param string $message      Escaped or deliberately prepared notice markup.
+ * @param string $message_type Notice type used by the Booking Calendar notice styles.
+ *
+ * @return void
+ */
 function wpbc_show_notice__for_page_resource_publish( $message, $message_type = 'success' ) {
+	$notice_style = 'text-align:left;font-size:1rem;margin-top:20px;';
+
+	if ( function_exists( 'wpbc_catalog_booking_resources_is_page' ) && wpbc_catalog_booking_resources_is_page() ) {
+		$notice_style = 'text-align:left;font-size:1rem;margin:0 0 40px;';
+	}
 	?>
-	<div class="wpbc-settings-notice notice-<?php echo esc_attr( $message_type ); ?>" style="text-align:left;font-size: 1rem;margin-top:20px;">
+	<div class="wpbc-settings-notice notice-<?php echo esc_attr( $message_type ); ?>" style="<?php echo esc_attr( $notice_style ); ?>">
 		<strong><?php
 		if ( ( 'error' == $message_type ) ) {
 				echo esc_html__( 'Error', 'booking' ) . '! ';
@@ -282,7 +297,7 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 				<div class="modal-body">
 					<div id="wpbc_content_for_js_resource_publish">
 						<?php
-						if ( wpbc_is_this_demo() ) {
+						if ( wpbc_is_booking_form_publishing_restricted() ) {
 							wpbc_show_notice__for_page_resource_publish( 'In the demo versions such operation is not allowed.', 'warning' );
 						} else {
 						?>

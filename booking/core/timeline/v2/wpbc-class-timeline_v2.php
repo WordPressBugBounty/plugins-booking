@@ -1928,9 +1928,7 @@ if(1)
 
 			$bk_title .= " \n" . wp_strip_all_tags( wpbc_get_short_dates_formated_to_show( $row_settings['bookings'][ $booking_id ]->dates_short ) )  ;
 
-			if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-				$bk_title = apply_filters( 'wpbc_timeline_booking_pipeline_title', $bk_title, $booking_id, $row_settings['bookings'] );
-			}
+			$bk_title = apply_filters( 'wpbc_timeline_booking_pipeline_title', $bk_title, $booking_id, $row_settings['bookings'] );
 
 			?><a  href="javascript:void(0)"
 				  class="in_cell_date_booking_pipeline_a"
@@ -3316,9 +3314,7 @@ if(1)
 		    'content' => $content_text
 	    );
 
-	    if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-		    $popover = apply_filters( 'wpbc_timeline_booking_popover', $popover, $bk_id, $bookings, $this->is_frontend );
-	    }
+	    $popover = apply_filters( 'wpbc_timeline_booking_popover', $popover, $bk_id, $bookings, $this->is_frontend );
 
 	    return $popover;
     }

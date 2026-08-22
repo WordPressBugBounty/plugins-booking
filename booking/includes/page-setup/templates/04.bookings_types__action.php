@@ -232,6 +232,52 @@ function wpbc_setup__disable_working_time_for_day_based_workflow( $cleaned_data 
 	update_bk_option( 'booking_working_time_enabled', 'Off' );
 }
 
+/**
+ * Apply the selected workflow's starter picture to an unconfigured Resource.
+ *
+ * Setup Wizard may supply a useful visual identity for Appointment Providers
+ * and Rental Properties. Existing pictures, including an explicitly removed
+ * picture, remain authoritative and are never overwritten.
+ *
+ * @param array<string,mixed> $cleaned_data Validated Setup Wizard booking-type data.
+ *
+ * @return true|WP_Error True when applied, already configured, or not applicable; otherwise a storage error.
+ */
+function wpbc_setup__assign_starter_resource_picture( $cleaned_data ) {
+	if (
+		! is_array( $cleaned_data )
+		|| ! function_exists( 'wpbc_booking_resource_content_repository' )
+		|| ! function_exists( 'wpbc_get_starter_asset_url' )
+	) {
+		return true;
+	}
+
+	$mode_id             = isset( $cleaned_data['wpbc_swp_booking_mode'] )
+		? sanitize_key( (string) $cleaned_data['wpbc_swp_booking_mode'] )
+		: '';
+	$relative_image_path = '';
+
+	if ( 'appointment' === $mode_id ) {
+		$relative_image_path = 'img/resources/professional-services-demo_provider-alex-morgan.png';
+	} elseif ( 'rental' === $mode_id ) {
+		$relative_image_path = 'img/resources/property_a01.jpg';
+	}
+
+	if ( '' === $relative_image_path ) {
+		return true;
+	}
+
+	$resource_id = function_exists( 'wpbc_get_default_resource' ) ? absint( wpbc_get_default_resource() ) : 1;
+	if ( ! $resource_id ) {
+		$resource_id = 1;
+	}
+
+	return wpbc_booking_resource_content_repository()->save_starter_picture_if_unconfigured(
+		$resource_id,
+		wpbc_get_starter_asset_url( $relative_image_path )
+	);
+}
+
 
 
 /**
@@ -427,9 +473,11 @@ function wpbc_setup__update__bookings_types( $cleaned_data ){
 				update_bk_option( 'booking_form_theme', '' );
 
 		        break;
-		    default:
+		default:
 		       // Default
 		}
+
+		wpbc_setup__assign_starter_resource_picture( $cleaned_data );
 
         // Update Email Data
         //update_bk_option( $email_option_name, $email_data );

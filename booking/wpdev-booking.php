@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 11.5
+Version: 11.6
 License: GPLv2 or later
 */
 
@@ -34,13 +34,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '11.5' );
+	define( 'WP_BK_VERSION_NUM', '11.6' );
 }
 if ( ! defined( 'WP_BK_PRO_BFB_ONLY_VERSION' ) ) {
-	define( 'WP_BK_PRO_BFB_ONLY_VERSION', '11.4' );                                                                    // First Pro version that no longer loads legacy Booking Form settings pages.
+	define( 'WP_BK_PRO_BFB_ONLY_VERSION', '11.4' );                                                                     // First Pro version that no longer loads legacy Booking Form settings pages.
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
-	define( 'WP_BK_MINOR_UPDATE', true );
+	define( 'WP_BK_MINOR_UPDATE', ! true );
 }
 
 /**
@@ -56,17 +56,43 @@ if ( ! defined( 'WPBC_DEFAULT_FORM_ACCENT_COLOR' ) ) {
 }
 
 /**
- * Master release gate for unfinished Booking Calendar 11.5 functionality.
+ * Master release gate for unfinished Booking Calendar 11.6 functionality.
  *
- * Keep this disabled in 11.4.x maintenance releases. Define it as true before
- * Booking Calendar loads when testing 11.5, and change the default only when
- * Services and the Appointment flow are release-ready.
+ * This gate keeps the new Booking Resources manager disabled independently
+ * from the released Services and Appointment functionality.
+ *
+ * @since 11.6.0
  */
-if ( ! defined( 'WPBC_ENABLE_11_5_FEATURES' ) ) {
-	define( 'WPBC_ENABLE_11_5_FEATURES', true );
-	if ( WPBC_ENABLE_11_5_FEATURES ) {
-		define( 'WPBC_ENABLE_APPOINTMENT_TESTS', false );
-	}
+if ( ! defined( 'WPBC_ENABLE_11_6_FEATURES' ) ) {
+	define( 'WPBC_ENABLE_11_6_FEATURES', true );
+}
+
+/**
+ * Internal availability gate for the 11.6 Booking Resources catalog.
+ *
+ * The released 11.6 default is enabled. Support rollback should use
+ * `WPBC_BOOKING_RESOURCES_CATALOG_MODE` so the independent catalog runtime
+ * remains available while only the canonical page renderer changes. This
+ * lower-level gate remains available for disabled-runtime testing.
+ *
+ * @since 11.6.0
+ */
+if ( ! defined( 'WPBC_ENABLE_11_6_CATALOG_V2' ) ) {
+	define( 'WPBC_ENABLE_11_6_CATALOG_V2', true );
+}
+
+/**
+ * Select the source used for bundled starter images.
+ *
+ * Set this constant to `remote` before Booking Calendar loads to resolve
+ * starter images from the Booking Calendar website. Every other value keeps
+ * the default, update-safe local plugin asset source.
+ *
+ * @since 11.6.0
+ * @var string Supported values are `local` and `remote`.
+ */
+if ( ! defined( 'WPBC_STARTER_ASSETS_SOURCE' ) ) {
+	define( 'WPBC_STARTER_ASSETS_SOURCE', 'remote' );
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

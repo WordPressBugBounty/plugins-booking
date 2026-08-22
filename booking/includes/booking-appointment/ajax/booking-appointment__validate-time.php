@@ -137,10 +137,6 @@ function wpbc_booking_appointment_validate_one_start_time( $service, $dates, $st
  * @return void Terminates with a JSON response.
  */
 function wpbc_booking_appointment_ajax_validate_time() {
-	if ( ! function_exists( 'wpbc_is_11_5_features_enabled' ) || ! wpbc_is_11_5_features_enabled() ) {
-		wp_send_json_error( array( 'message' => __( 'Appointment booking is not enabled.', 'booking' ) ), 404 );
-	}
-
 	if ( false === check_ajax_referer( 'wpbc_booking_appointment_ajax', 'nonce', false ) ) {
 		wp_send_json_error( array( 'message' => __( 'Security check failed. Reload the page and try again.', 'booking' ) ), 403 );
 	}

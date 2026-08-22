@@ -7,21 +7,19 @@ if ( ! defined( 'WPBC_APPOINTMENT_SERVICES_DB_VERSION' ) ) {
 }
 
 /**
- * Return the canonical starter Service used during activation and upgrades.
+ * Return the canonical starter Services used by a new installation.
  *
- * Keeping one definition prevents newly upgraded sites and Setup Wizard sites
- * from receiving different starter data. The Provider remains an existing
- * Booking Resource and is never created or renamed here.
+ * Both Services share the existing default Provider and Booking Form. Their
+ * pictures use the configured starter-asset source, so distributions may use
+ * bundled files or the corresponding Booking Calendar website directory.
  *
  * @param int $provider_id     Existing Booking Resource used as the Provider.
- * @param int $booking_form_id Optional published Booking Form assigned to the Service.
+ * @param int $booking_form_id Optional published Booking Form assigned to the Services.
  *
- * @return array<string,mixed> Normalized values accepted by the Service repository.
+ * @return array<int,array<string,mixed>> Normalized values accepted by the Service repository.
  */
-function wpbc_appointment_services_get_starter_service_values( $provider_id, $booking_form_id = 0 ) {
-	return array(
-		'title'                 => __( 'Consultation', 'booking' ),
-		'description'           => __( 'A 30-minute consultation.', 'booking' ),
+function wpbc_appointment_services_get_starter_services_values( $provider_id, $booking_form_id = 0 ) {
+	$common_values = array(
 		'duration_minutes'      => 30,
 		'buffer_before_minutes' => 0,
 		'buffer_after_minutes'  => 0,
@@ -29,11 +27,52 @@ function wpbc_appointment_services_get_starter_service_values( $provider_id, $bo
 		'booking_form_id'       => absint( $booking_form_id ),
 		'status'                => 'active',
 		'resource_ids'          => array( absint( $provider_id ) ),
-		'metadata'              => array(
-			'quickstart_key' => 'appointment_starter',
-			'schema_version' => 1,
+	);
+
+	return array(
+		array_merge(
+			$common_values,
+			array(
+				'title'       => __( 'Initial Consultation', 'booking' ),
+				'description' => __( 'A focused first meeting to understand your needs and recommend the right next step.', 'booking' ),
+				'metadata'    => array(
+					'picture_url'    => wpbc_get_starter_asset_url( 'img/services/professional-services-demo_service-initial-consultation.png' ),
+					'quickstart_key' => 'appointment_starter',
+					'schema_version' => 1,
+				),
+			)
+		),
+		array_merge(
+			$common_values,
+			array(
+				'title'       => __( 'One-to-One Session', 'booking' ),
+				'description' => __( 'Personalized support tailored to your goals, questions, and schedule.', 'booking' ),
+				'metadata'    => array(
+					'picture_url'    => wpbc_get_starter_asset_url( 'img/services/professional-services-demo_service-one-to-one-session.png' ),
+					'quickstart_key' => 'appointment_starter_one_to_one',
+					'schema_version' => 1,
+				),
+			)
 		),
 	);
+}
+
+/**
+ * Return the primary starter Service used by Appointment QuickStart.
+ *
+ * QuickStart creates at most one dedicated Service, while fresh activation
+ * seeds the complete starter set returned by
+ * `wpbc_appointment_services_get_starter_services_values()`.
+ *
+ * @param int $provider_id     Existing Booking Resource used as the Provider.
+ * @param int $booking_form_id Optional published Booking Form assigned to the Service.
+ *
+ * @return array<string,mixed> Normalized values accepted by the Service repository.
+ */
+function wpbc_appointment_services_get_starter_service_values( $provider_id, $booking_form_id = 0 ) {
+	$starter_services = wpbc_appointment_services_get_starter_services_values( $provider_id, $booking_form_id );
+
+	return reset( $starter_services );
 }
 
 /**
@@ -111,13 +150,13 @@ function wpbc_appointment_services_tables_exist() {
 }
 
 /**
- * Create the starter Service after its database tables are installed.
+ * Create the starter Services after their database tables are installed.
  *
  * This runs only for a newly created Services table, or when an earlier seed
  * attempt was marked for retry. It deliberately does not inspect an existing
  * empty catalog because administrators may intentionally remove every Service.
  *
- * @return bool True when the starter Service was created successfully.
+ * @return bool True when every starter Service was created successfully.
  */
 function wpbc_activation__appointment_services__seed_default_service() {
 	global $wpdb;
@@ -136,55 +175,74 @@ function wpbc_activation__appointment_services__seed_default_service() {
 		return false;
 	}
 
-	$starter_service = wpbc_appointment_services_get_starter_service_values( $provider_id, $booking_form_id );
-	$metadata        = wp_json_encode( $starter_service['metadata'] );
-	$now             = current_time( 'mysql' );
-	$current_user_id = get_current_user_id();
-	$owner_user_id   = function_exists( 'wpbc_appointment_services_get_owner_user_id' )
+	$starter_services    = wpbc_appointment_services_get_starter_services_values( $provider_id, $booking_form_id );
+	$now                 = current_time( 'mysql' );
+	$current_user_id     = get_current_user_id();
+	$owner_user_id       = function_exists( 'wpbc_appointment_services_get_owner_user_id' )
 		? absint( wpbc_appointment_services_get_owner_user_id() )
 		: 0;
+	$created_service_ids = array();
+	$assignment_inserted = true;
 
-	$service_inserted = $wpdb->insert(
-		wpbc_appointment_services_table_name( 'services' ),
-		array(
-			'owner_user_id'         => $owner_user_id,
-			'title'                 => $starter_service['title'],
-			'description'           => $starter_service['description'],
-			'duration_minutes'      => $starter_service['duration_minutes'],
-			'buffer_before_minutes' => $starter_service['buffer_before_minutes'],
-			'buffer_after_minutes'  => $starter_service['buffer_after_minutes'],
-			'base_cost'             => $starter_service['base_cost'],
-			'booking_form_id'       => $starter_service['booking_form_id'],
-			'status'                => $starter_service['status'],
-			'metadata'              => false === $metadata ? '{}' : $metadata,
-			'created_by'            => $current_user_id,
-			'modified_by'           => $current_user_id,
-			'creation_date'         => $now,
-			'modification_date'     => $now,
-		),
-		array( '%d', '%s', '%s', '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%d', '%d', '%s', '%s' )
-	); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-	$service_id      = absint( $wpdb->insert_id );
-	if ( false === $service_inserted || ! $service_id ) {
-		return false;
+	foreach ( $starter_services as $starter_service ) {
+		$metadata         = wp_json_encode( $starter_service['metadata'] );
+		$service_inserted = $wpdb->insert(
+			wpbc_appointment_services_table_name( 'services' ),
+			array(
+				'owner_user_id'         => $owner_user_id,
+				'title'                 => $starter_service['title'],
+				'description'           => $starter_service['description'],
+				'duration_minutes'      => $starter_service['duration_minutes'],
+				'buffer_before_minutes' => $starter_service['buffer_before_minutes'],
+				'buffer_after_minutes'  => $starter_service['buffer_after_minutes'],
+				'base_cost'             => $starter_service['base_cost'],
+				'booking_form_id'       => $starter_service['booking_form_id'],
+				'status'                => $starter_service['status'],
+				'metadata'              => false === $metadata ? '{}' : $metadata,
+				'created_by'            => $current_user_id,
+				'modified_by'           => $current_user_id,
+				'creation_date'         => $now,
+				'modification_date'     => $now,
+			),
+			array( '%d', '%s', '%s', '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%d', '%d', '%s', '%s' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$service_id      = absint( $wpdb->insert_id );
+
+		if ( false === $service_inserted || ! $service_id ) {
+			break;
+		}
+
+		$created_service_ids[] = $service_id;
+		$assignment_inserted   = $wpdb->insert(
+			wpbc_appointment_services_table_name( 'service_resources' ),
+			array(
+				'service_id'  => $service_id,
+				'resource_id' => $provider_id,
+				'priority'    => 0,
+				'status'      => 'active',
+			),
+			array( '%d', '%d', '%d', '%s' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( false === $assignment_inserted ) {
+			break;
+		}
 	}
 
-	$assignment_inserted = $wpdb->insert(
-		wpbc_appointment_services_table_name( 'service_resources' ),
-		array(
-			'service_id' => $service_id,
-			'resource_id' => $provider_id,
-			'priority'    => 0,
-			'status'      => 'active',
-		),
-		array( '%d', '%d', '%d', '%s' )
-	); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-	if ( false === $assignment_inserted ) {
-		$wpdb->delete(
-			wpbc_appointment_services_table_name( 'services' ),
-			array( 'service_id' => $service_id ),
-			array( '%d' )
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+	if ( count( $created_service_ids ) !== count( $starter_services ) || false === $assignment_inserted ) {
+		foreach ( $created_service_ids as $created_service_id ) {
+			$wpdb->delete(
+				wpbc_appointment_services_table_name( 'service_resources' ),
+				array( 'service_id' => $created_service_id ),
+				array( '%d' )
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$wpdb->delete(
+				wpbc_appointment_services_table_name( 'services' ),
+				array( 'service_id' => $created_service_id ),
+				array( '%d' )
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		}
+
 		return false;
 	}
 

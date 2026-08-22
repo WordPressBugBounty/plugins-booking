@@ -135,6 +135,12 @@ function wpbc_frontend_messages__get_registry() {
 			'description' => __( 'Short progress text shown while the booking is being submitted.', 'booking' ),
 			'group' => 'submission', 'severity' => 'info', 'optional' => false, 'placeholders' => array(),
 		),
+		'message_unexpected_server_response' => array(
+			'default' => __( 'The server returned an unexpected response. Please reload the page and try again. If the problem continues, contact the website administrator.', 'booking' ),
+			'title' => __( 'Unexpected server response', 'booking' ),
+			'description' => __( 'Shown when calendar loading or booking submission does not return valid Booking Calendar data.', 'booking' ),
+			'group' => 'submission', 'severity' => 'error', 'optional' => false, 'placeholders' => array(),
+		),
 		'message_resource_selector_summary_label' => array(
 			'default' => __( 'Booking Resource', 'booking' ),
 			'title' => __( 'Selected Booking Resource label', 'booking' ),

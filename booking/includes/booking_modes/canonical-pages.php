@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-return array(
+$wpbc_booking_mode_canonical_pages = array(
 	'wpbc__vm_booking_listing' => array(
 		'page'  => 'wpbc',
 		'tab'   => 'vm_booking_listing',
@@ -83,12 +83,6 @@ return array(
 		'tab'        => 'searchable_resources',
 		'title'      => __( 'Searchable Resources', 'booking' ),
 		'edition_id' => 'business_large',
-	),
-	'wpbc-resources__users' => array(
-		'page'       => 'wpbc-resources',
-		'tab'        => 'users',
-		'title'      => __( 'Resource Users', 'booking' ),
-		'edition_id' => 'multiuser',
 	),
 	'wpbc-prices__cost' => array(
 		'page'       => 'wpbc-prices',
@@ -179,3 +173,5 @@ return array(
 		'title' => __( 'Setup', 'booking' ),
 	),
 );
+
+return $wpbc_booking_mode_canonical_pages;

@@ -118,8 +118,8 @@ function wpbc_booking_modes_set_selected_mode_id( $mode_id, $owner_user_id = 0 )
 /**
  * Check whether the shared navigation consumer boundary is activated.
  *
- * The boundary is active with the 11.5 master feature gate. Defining the
- * dedicated constant as strict false provides an emergency presentation-only
+ * The released boundary loads unconditionally. Defining the dedicated constant
+ * as strict false provides an emergency presentation-only
  * rollback without disabling the mode registry and stored preference.
  *
  * @return bool True when the internal navigation getter should use the resolver.

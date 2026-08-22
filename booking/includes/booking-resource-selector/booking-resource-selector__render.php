@@ -166,27 +166,49 @@ function wpbc_booking_resource_selector_render_resources( $catalog, $config_toke
 	$html                 = wpbc_booking_resource_selector_render_progress( 1, $config );
 	$html                .= wpbc_booking_resource_selector_render_screen_heading( $config, __( 'Choose a Booking Resource', 'booking' ), __( 'Select what you would like to book.', 'booking' ) );
 	$html                .= '<form class="wpbc_booking_resource_selector__selection_form" method="get" action="' . esc_url( wpbc_booking_resource_selector_get_fallback_url( $config ) ) . '">';
-	$html                .= '<div class="wpbc_booking_resource_selector__choices" role="radiogroup" aria-label="' . esc_attr__( 'Booking Resources', 'booking' ) . '">';
-	foreach ( $catalog as $resource ) {
-		$resource_id = absint( $resource['resource_id'] );
-		$input_id    = 'wpbc_resource_selector_' . $resource_id . '_' . wp_rand( 1000, 9999 );
-		$is_selected = $resource_id === $selected_resource_id;
-		$html       .= '<label class="wpbc_booking_resource_selector__choice' . ( $is_selected ? ' is-selected' : '' ) . '" for="' . esc_attr( $input_id ) . '">';
-		$html       .= '<input id="' . esc_attr( $input_id ) . '" type="radio" name="wpbc_resource_selector_resource" value="' . $resource_id . '"' . checked( $is_selected, true, false ) . ' required>';
-		$html       .= '<span class="wpbc_booking_resource_selector__resource_icon" aria-hidden="true">';
-		if ( ! empty( $resource['image_url'] ) ) {
-			$html .= '<img src="' . esc_url( $resource['image_url'] ) . '" alt="" loading="lazy" decoding="async">';
-		} else {
-			$html .= esc_html( wpbc_booking_resource_selector_get_resource_initials( $resource['title'] ) );
+	if ( function_exists( 'wpbc_booking_resource_catalog_presenter' ) ) {
+		$html .= wpbc_booking_resource_catalog_presenter()->render_selectable_catalog(
+			$catalog,
+			array(
+				'layout'                => $config['catalog_layout'],
+				'show_filters'          => $config['show_resource_filters'],
+				'show_image'            => $config['show_resource_image'],
+				'show_title'            => $config['show_resource_title'],
+				'show_description'      => $config['show_resource_description'],
+				'item_width'            => $config['catalog_item_width'],
+				'item_max_width'        => $config['catalog_item_max_width'],
+				'grid_items_per_row'    => $config['catalog_grid_items_per_row'],
+				'list_items_per_row'    => $config['catalog_list_items_per_row'],
+				'show_hierarchy'        => $config['show_resource_hierarchy'],
+				'show_availability'     => $config['show_availability'],
+				'show_price'            => $config['show_starting_price'],
+				'selected_resource_id'  => $selected_resource_id,
+			)
+		);
+	} else {
+		$html .= '<div class="wpbc_booking_resource_selector__choices" role="radiogroup" aria-label="' . esc_attr__( 'Booking Resources', 'booking' ) . '">';
+		foreach ( $catalog as $resource ) {
+			$resource_id = absint( $resource['resource_id'] );
+			$input_id    = 'wpbc_resource_selector_' . $resource_id . '_' . wp_rand( 1000, 9999 );
+			$is_selected = $resource_id === $selected_resource_id;
+			$html       .= '<label class="wpbc_booking_resource_selector__choice' . ( $is_selected ? ' is-selected' : '' ) . '" for="' . esc_attr( $input_id ) . '">';
+			$html       .= '<input id="' . esc_attr( $input_id ) . '" type="radio" name="wpbc_resource_selector_resource" value="' . $resource_id . '"' . checked( $is_selected, true, false ) . ' required>';
+			$html       .= '<span class="wpbc_booking_resource_selector__resource_icon" aria-hidden="true">';
+			if ( ! empty( $resource['image_url'] ) ) {
+				$html .= '<img src="' . esc_url( $resource['image_url'] ) . '" alt="" loading="lazy" decoding="async">';
+			} else {
+				$html .= esc_html( wpbc_booking_resource_selector_get_resource_initials( $resource['title'] ) );
+			}
+			$html .= '</span>';
+			$html       .= '<span class="wpbc_booking_resource_selector__choice_body"><strong>' . esc_html( $resource['title'] ) . '</strong>';
+			if ( ! empty( $resource['description'] ) ) {
+				$html .= '<span class="wpbc_booking_resource_selector__choice_description">' . esc_html( $resource['description'] ) . '</span>';
+			}
+			$html .= '</span><span class="wpbc_booking_resource_selector__choice_mark" aria-hidden="true"></span></label>';
 		}
-		$html .= '</span>';
-		$html       .= '<span class="wpbc_booking_resource_selector__choice_body"><strong>' . esc_html( $resource['title'] ) . '</strong>';
-		if ( ! empty( $resource['description'] ) ) {
-			$html .= '<span class="wpbc_booking_resource_selector__choice_description">' . esc_html( $resource['description'] ) . '</span>';
-		}
-		$html .= '</span><span class="wpbc_booking_resource_selector__choice_mark" aria-hidden="true"></span></label>';
+		$html .= '</div>';
 	}
-	$html .= '</div><input type="hidden" name="wpbc_resource_selector_config" value="' . esc_attr( $config_token ) . '">';
+	$html .= '<input type="hidden" name="wpbc_resource_selector_config" value="' . esc_attr( $config_token ) . '">';
 	$html .= '<div class="wpbc_booking_resource_selector__actions"><button type="submit" class="wpbc_button wpbc_button_primary wpbc_booking_resource_selector__continue">' . esc_html__( 'Continue', 'booking' ) . '</button></div></form>';
 
 	return $html;

@@ -125,6 +125,22 @@ class WPBC_FE_Render {
 		// Normalize calendar_dates_start/end.
 		// ---------------------------------------------------------------------
 		$calendar_dates_range = WPBC_FE_Attr_Postprocessor::normalize_calendar_dates_range( $params_arr['calendar_dates_start'], $params_arr['calendar_dates_end'] );
+		$classic_booking_context_token = '';
+		if (
+			function_exists( 'wpbc_classic_booking_context_encode' )
+			&& '' !== $calendar_dates_range['start']
+			&& '' !== $calendar_dates_range['end']
+		) {
+			$classic_booking_context_token = wpbc_classic_booking_context_encode(
+				array(
+					'resource_id'            => $params_arr['resource_id'],
+					'calendar_dates_start'   => $calendar_dates_range['start'],
+					'calendar_dates_end'     => $calendar_dates_range['end'],
+					'custom_form'            => $params_arr['custom_booking_form'],
+					'aggregate_resource_ids' => $aggregate_resource_id_arr,
+				)
+			);
+		}
 
 		// ---------------------------------------------------------------------
 		// Calendar load params (keep identical keys).
@@ -139,6 +155,7 @@ class WPBC_FE_Render {
 			'custom_form'                     => $params_arr['custom_booking_form'],
 			'calendar_dates_start'            => $calendar_dates_range['start'],
 			'calendar_dates_end'              => $calendar_dates_range['end'],
+			'classic_booking_context_token'   => $classic_booking_context_token,
 			'calendar_request_overrides'      => $params_arr['calendar_request_overrides'],
 		);
 

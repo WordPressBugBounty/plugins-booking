@@ -47,9 +47,11 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 	// Set Start / End Date in Calendar (JSON encode => safe quotes).
 	$params['calendar_dates_start'] = ( empty( $params['calendar_dates_start'] ) ) ? '' : (string) $params['calendar_dates_start'];
 	$params['calendar_dates_end']   = ( empty( $params['calendar_dates_end'] ) ) ? '' : (string) $params['calendar_dates_end'];
+	$params['classic_booking_context_token'] = empty( $params['classic_booking_context_token'] ) ? '' : (string) $params['classic_booking_context_token'];
 
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'calendar_dates_start' , " . wp_json_encode( $params['calendar_dates_start'] ) . " ); ";
 	$start_script_code .= " _wpbc.calendar__set_param_value( " . $resource_id . " , 'calendar_dates_end'   , " . wp_json_encode( $params['calendar_dates_end'] ) . " ); ";
+	$start_script_code .= " _wpbc.booking__set_param_value( " . $resource_id . " , 'classic_booking_context_token' , " . wp_json_encode( $params['classic_booking_context_token'] ) . " ); ";
 
 	if ( ( '' !== $params['calendar_dates_start'] ) || ( '' !== $params['calendar_dates_end'] ) ) {
 		$start_script_code .= wpbc_get_localized_js__time_local( $params['calendar_dates_start'] );
@@ -195,6 +197,7 @@ function wpbc__calendar__load( $params = array() ) {
 		'custom_form'                     => 'standard',
 		'calendar_dates_start'            => '',
 		'calendar_dates_end'              => '',
+		'classic_booking_context_token'   => '',
 		'skip_general_availability'       => 0,
 		'calendar_request_overrides'      => array(),
 	);
@@ -255,15 +258,12 @@ function wpbc__calendar__load( $params = array() ) {
 		'aggregate_resource_id_str' => implode( ',', (array) $params['aggregate_resource_id_arr'] ),
 		'aggregate_type'            => (string) $aggregate_type,
 		'skip_general_availability' => (int) $params['skip_general_availability'],
+		'classic_booking_context_token' => (string) $params['classic_booking_context_token'],
 	);
 
 	if ( ! empty( $params['calendar_request_overrides'] ) && is_array( $params['calendar_request_overrides'] ) ) {
 		foreach ( $params['calendar_request_overrides'] as $override_key => $override_value ) {
-			if (
-				'allow_past' === $override_key
-				&& function_exists( 'wpbc_is_11_5_features_enabled' )
-				&& wpbc_is_11_5_features_enabled()
-			) {
+			if ( 'allow_past' === $override_key ) {
 				$params_for_request['allow_past'] = ! empty( $override_value ) ? 1 : 0;
 			} elseif ( 0 === strpos( (string) $override_key, 'wpbc_settings_calendar_preview' ) ) {
 				$params_for_request[ $override_key ] = $override_value;
@@ -365,6 +365,7 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 	                                'request_uri'    => array( 'validate' => 's', 'default' => '' ),
 									'custom_form'    => array( 'validate' => 's', 'default' => 'standard' ),
 									'allow_past'     => array( 'validate' => 'd', 'default' => 0 ),
+									'classic_booking_context_token' => array( 'validate' => 'strong', 'default' => '' ),
 									'aggregate_resource_id_str' => array( 'validate' => 'digit_or_csd', 'default' => '' ),        // Comma separated string of resource ID,  which was used in 'aggregate' parameter.
 									'aggregate_type'            => array( 'validate' => 's', 'default' => 'all' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
 									'dates_to_check'            => array( 'validate' => 'array', 'default' => '' ),                 //  'all' | 'bookings_only'   // FixIn: 9.8.15.10.
@@ -407,11 +408,25 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 					);
 	$request_prefix = 'calendar_request_params';
 	$request_params = $user_request->get_sanitized__in_request__value_or_default( $request_prefix  );		 		    // NOT Direct: 	$_REQUEST['search_params']['resource_id']
-	$can_allow_past = (
-		! empty( $request_params['allow_past'] )
-		&& function_exists( 'wpbc_is_11_5_features_enabled' )
-		&& wpbc_is_11_5_features_enabled()
-	);
+	if ( ! empty( $request_params['classic_booking_context_token'] ) && function_exists( 'wpbc_classic_booking_context_validate_submission' ) ) {
+		$classic_context = wpbc_classic_booking_context_validate_submission(
+			$request_params['classic_booking_context_token'],
+			$request_params['resource_id'],
+			$request_params['dates_to_check'],
+			$request_params['custom_form'],
+			$request_params['aggregate_resource_id_str']
+		);
+		if ( ! is_wp_error( $classic_context ) ) {
+			$request_params['allow_past']    = ! empty( $classic_context['allow_past'] ) ? 1 : 0;
+			$request_params['dates_to_check'] = array(
+				$classic_context['calendar_dates_start'],
+				$classic_context['calendar_dates_end'],
+			);
+		} else {
+			$request_params['allow_past'] = 0;
+		}
+	}
+	$can_allow_past = ! empty( $request_params['allow_past'] );
 	$request_params['allow_past'] = $can_allow_past ? 1 : 0;
 
 	if ( ! empty( $request_params['skip_general_availability'] ) ) {

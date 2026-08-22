@@ -17,8 +17,3 @@ require_once __DIR__ . '/booking-appointment__render.php';
 require_once __DIR__ . '/booking-appointment__shortcode.php';
 require_once __DIR__ . '/ajax/booking-appointment__resolve.php';
 require_once __DIR__ . '/ajax/booking-appointment__validate-time.php';
-
-// Explicitly enabled, administrator-only browser diagnostics for development sites.
-if ( defined( 'WPBC_ENABLE_APPOINTMENT_TESTS' ) && true === WPBC_ENABLE_APPOINTMENT_TESTS ) {
-	require_once __DIR__ . '/tests/http-test-page.php';
-}

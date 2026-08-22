@@ -81,24 +81,33 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 					var ajx_post_data__resource_id = wpbc_get_resource_id__from_ajx_post_data_url( this.data );
 					wpbc_balancer__completed( ajx_post_data__resource_id , 'wpbc_calendar__load_data__ajx' );
 
-					// Probably Error
-					if ( (typeof response_data !== 'object') || (response_data === null) ){
+					var is_valid_response = (
+							(typeof response_data === 'object')
+						 && (response_data !== null)
+						 && (! Array.isArray( response_data ))
+						 && Object.prototype.hasOwnProperty.call( response_data, 'resource_id' )
+						 && (typeof response_data[ 'ajx_data' ] === 'object')
+						 && (response_data[ 'ajx_data' ] !== null)
+						 && (! Array.isArray( response_data[ 'ajx_data' ] ))
+						 && Object.prototype.hasOwnProperty.call( response_data[ 'ajx_data' ], 'dates' )
+						 && Object.prototype.hasOwnProperty.call( response_data[ 'ajx_data' ], 'resources_id_arr__in_dates' )
+						 && Object.prototype.hasOwnProperty.call( response_data[ 'ajx_data' ], 'aggregate_resource_id_arr' )
+					);
 
-						var jq_node  = wpbc_get_calendar__jq_node__for_messages( this.data );
-						var message_type = 'info';
+					if ( ! is_valid_response ) {
+						var jq_node = wpbc_get_calendar__jq_node__for_messages( this.data );
+						var response_error_message = _wpbc.get_message( 'message_unexpected_server_response' ) || 'The server returned an unexpected response. Please reload the page and try again.';
 
-						if ( '' === response_data ){
-							response_data = 'The server responds with an empty string. The server probably stopped working unexpectedly. <br>Please check your <strong>error.log</strong> in your server configuration for relative errors.';
-							message_type = 'warning';
-						}
+						wpbc_front_end__log_unexpected_ajax_response( 'WPBC_AJX_CALENDAR_LOAD', response_data, jqXHR, textStatus, 'Invalid response structure' );
+						wpbc_calendar__loading__stop( ajx_post_data__resource_id );
 
-						// Show Message
-						wpbc_front_end__show_message( response_data , { 'type'     : message_type,
-																		'show_here': {'jq_node': jq_node, 'where': 'after'},
-																		'is_append': true,
-																		'style'    : 'text-align:left;',
-																		'delay'    : 0
-																	} );
+						wpbc_front_end__show_message( response_error_message, { 'type'        : 'error',
+																							  'show_here'   : {'jq_node': jq_node, 'where': 'after'},
+																							  'is_append'   : true,
+																							  'style'       : 'text-align:left;',
+																							  'content_mode': 'text',
+																							  'delay'       : 0
+																							} );
 						return;
 					}
 
@@ -153,26 +162,18 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 
 					//jQuery( '#ajax_respond' ).html( response_data );		// For ability to show response, add such DIV element to page
 				}
-			  ).fail( function ( jqXHR, textStatus, errorThrown ) {    if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
+			  ).fail( function ( jqXHR, textStatus, errorThrown ) {
+					wpbc_front_end__log_unexpected_ajax_response( 'WPBC_AJX_CALENDAR_LOAD', jqXHR.responseText || '', jqXHR, textStatus, errorThrown );
 
 					var ajx_post_data__resource_id = wpbc_get_resource_id__from_ajx_post_data_url( this.data );
 					wpbc_balancer__completed( ajx_post_data__resource_id , 'wpbc_calendar__load_data__ajx' );
+					wpbc_calendar__loading__stop( ajx_post_data__resource_id );
 
-					// Get Content of Error Message
-					var error_message = '<strong>' + 'Error!' + '</strong> ' + errorThrown ;
+					var error_message = _wpbc.get_message( 'message_unexpected_server_response' ) || 'The server returned an unexpected response. Please reload the page and try again.';
 					if ( jqXHR.status ){
-						error_message += ' (<b>' + jqXHR.status + '</b>)';
-						if (403 == jqXHR.status ){
-							error_message += '<br> Probably nonce for this page has been expired. Please <a href="javascript:void(0)" onclick="javascript:location.reload();">reload the page</a>.';
-							error_message += '<br> Otherwise, please check this <a style="font-weight: 600;" href="https://wpbookingcalendar.com/faq/request-do-not-pass-security-check/?after_update=10.1.1">troubleshooting instruction</a>.<br>'
-						}
+						error_message += ' (' + parseInt( jqXHR.status, 10 ) + ')';
 					}
 					var message_show_delay = 3000;
-					if ( jqXHR.responseText ){
-						error_message += ' ' + jqXHR.responseText;
-						message_show_delay = 10;
-					}
-					error_message = error_message.replace( /\n/g, "<br />" );
 
 					var jq_node  = wpbc_get_calendar__jq_node__for_messages( this.data );
 
@@ -186,10 +187,11 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 																// Show Message
 																wpbc_front_end__show_message( error_message , { 'type'     : 'error',
 																												'show_here': {'jq_node': jq_node, 'where': 'after'},
-																												'is_append': true,
-																												'style'    : 'text-align:left;',
-																												'css_class':'wpbc_fe_message_alt',
-																												'delay'    : 0
+																									'is_append': true,
+																									'style'    : 'text-align:left;',
+																									'css_class':'wpbc_fe_message_alt',
+																									'content_mode': 'text',
+																									'delay'    : 0
 																											} );
 														   } ,
 														   parseInt( message_show_delay )   );

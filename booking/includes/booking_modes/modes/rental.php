@@ -10,17 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-return array(
+$wpbc_rental_booking_mode = array(
 	'id'            => 'rental',
 	'label'         => __( 'Rentals', 'booking' ),
 	'description'   => __( 'Present existing Booking Calendar features with property-rental terminology.', 'booking' ),
 	'default_page'  => 'wpbc__vm_booking_listing',
 	'groups'        => array(
-		'wpbc'              => array( 'title' => __( 'Bookings', 'booking' ), 'position' => 10 ),
-		'wpbc-resources'    => array( 'title' => __( 'Properties', 'booking' ), 'position' => 20 ),
-		'wpbc-availability' => array( 'title' => __( 'Availability', 'booking' ), 'position' => 30 ),
-		'wpbc-prices'       => array( 'title' => __( 'Pricing & Extras', 'booking' ), 'position' => 40 ),
-		'wpbc-settings'     => array( 'title' => __( 'Settings', 'booking' ), 'position' => 50 ),
+		'wpbc'                   => array( 'title' => __( 'Bookings', 'booking' ), 'position' => 10 ),
+		'wpbc-resources'         => array( 'title' => __( 'Properties', 'booking' ), 'position' => 20 ),
+		'wpbc-availability'      => array( 'title' => __( 'Availability', 'booking' ), 'position' => 30 ),
+		'wpbc-prices'            => array( 'title' => __( 'Pricing & Extras', 'booking' ), 'position' => 40 ),
+		'wpbc-settings'          => array( 'title' => __( 'Settings', 'booking' ), 'position' => 50 ),
 	),
 	'pages'         => array(
 		'wpbc__vm_booking_listing'                   => array( 'title' => __( 'Bookings', 'booking' ), 'position' => 10 ),
@@ -28,10 +28,15 @@ return array(
 		'wpbc__add-booking'                          => array( 'title' => __( 'Add Booking', 'booking' ), 'position' => 30 ),
 		'wpbc__add-appointment'                      => array( 'visible' => false ),
 		'wpbc-services__appointment_services'        => array( 'visible' => false ),
-		'wpbc-resources__resources'                  => array( 'title' => __( 'Properties', 'booking' ), 'position' => 10 ),
+		'wpbc-resources__resources'                  => array( 'title' => __( 'Properties', 'booking' ), 'position' => 10, 'font_icon' => 'wpbc_icn_villa'    ),
 		'wpbc-resources__capacity'                   => array( 'title' => __( 'Capacity Rules', 'booking' ), 'position' => 20 ),
 		'wpbc-resources__searchable_resources'       => array( 'title' => __( 'Searchable Properties', 'booking' ), 'position' => 30 ),
-		'wpbc-resources__users'                      => array( 'title' => __( 'Property Users', 'booking' ), 'position' => 40 ),
+		'wpbc-settings__users'                       => array(
+			'title'          => __( 'Property Users', 'booking' ),
+			'position'       => 40,
+			'group'          => 'wpbc-resources',
+			'navigation_key' => 'users',
+		),
 		'wpbc-availability__availability'            => array( 'title' => __( 'Days Availability', 'booking' ), 'position' => 10 ),
 		'wpbc-availability__general_availability'    => array( 'title' => __( 'Weekdays Availability', 'booking' ), 'position' => 20 ),
 		'wpbc-availability__season_availability'     => array( 'title' => __( 'Season Availability', 'booking' ), 'position' => 30 ),
@@ -50,18 +55,19 @@ return array(
 		'wpbc-settings__sync'                        => array( 'position' => 70 ),
 		'wpbc-settings__payment'                     => array( 'position' => 80 ),
 		'wpbc-settings__search'                      => array( 'position' => 90 ),
-		'wpbc-settings__users'                       => array( 'position' => 99999 ),
 		'wpbc-setup__step_01'                        => array( 'position' => 10 ),
 	),
 	'native_menu'   => array(
-		'wpbc'              => array( 'title' => __( 'Bookings', 'booking' ), 'position' => 10 ),
-		'wpbc-new'          => array( 'title' => __( '+ Add Booking', 'booking' ), 'position' => 20 ),
-		'wpbc-services'     => array( 'visible' => false ),
-		'wpbc-resources'    => array( 'title' => __( 'Properties', 'booking' ), 'position' => 30 ),
-		'wpbc-availability' => array( 'title' => __( 'Availability', 'booking' ), 'position' => 40 ),
-		'wpbc-prices'       => array( 'title' => __( 'Pricing & Extras', 'booking' ), 'position' => 50 ),
-		'wpbc-settings'     => array( 'title' => __( 'Settings', 'booking' ), 'position' => 60 ),
-		'wpbc-setup'        => array( 'title' => __( 'Setup', 'booking' ), 'position' => 70 ),
+		'wpbc'                   => array( 'title' => __( 'Bookings', 'booking' ), 'position' => 10 ),
+		'wpbc-new'               => array( 'title' => __( '+ Add Booking', 'booking' ), 'position' => 20 ),
+		'wpbc-services'          => array( 'visible' => false ),
+		'wpbc-resources'         => array( 'title' => __( 'Properties', 'booking' ), 'position' => 30 ),
+		'wpbc-availability'      => array( 'title' => __( 'Availability', 'booking' ), 'position' => 40 ),
+		'wpbc-prices'            => array( 'title' => __( 'Pricing & Extras', 'booking' ), 'position' => 50 ),
+		'wpbc-settings'          => array( 'title' => __( 'Settings', 'booking' ), 'position' => 60 ),
+		'wpbc-setup'             => array( 'title' => __( 'Setup', 'booking' ), 'position' => 70 ),
 	),
 	'quickstart_id' => 'rental',
 );
+
+return $wpbc_rental_booking_mode;

@@ -92,6 +92,8 @@ function wpbc_booking_resource_selector_enqueue_js( $where_to_load ) {
 			'error'                => __( 'The booking form could not be loaded. Please try again.', 'booking' ),
 			'initialization_error' => __( 'The booking form could not be initialized. Please start over and try again.', 'booking' ),
 			'duplicate_resource'   => __( 'This Booking Resource already has an open booking form on this page. Complete or restart that booking before opening another form for the same resource.', 'booking' ),
+			'resource_found'       => __( 'Booking Resource found.', 'booking' ),
+			'resources_found'      => __( 'Booking Resources found.', 'booking' ),
 		)
 	);
 }

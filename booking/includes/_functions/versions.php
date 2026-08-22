@@ -41,13 +41,17 @@ function wpbc_is_this_demo() {
 
 
 /**
- * Check if this Beta Demo website
+ * Determine whether the current request uses the local beta hostname.
  *
- * @return bool
+ * The comparison intentionally ignores a port and one trailing DNS dot. It
+ * does not classify beta subdomains or path names as the trusted beta host.
+ *
+ * @return bool True only for an HTTP Host whose normalized hostname is `beta`.
  */
 function wpbc_is_this_beta() {
-
-	$is_beta = ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( 'beta' === $_SERVER['HTTP_HOST'] ) );
+	$http_host = isset( $_SERVER['HTTP_HOST'] ) ? wp_unslash( $_SERVER['HTTP_HOST'] ) : '';
+	$http_host = wp_parse_url( 'http://' . ltrim( strtolower( $http_host ), '/' ), PHP_URL_HOST );
+	$is_beta   = is_string( $http_host ) && ( 'beta' === rtrim( $http_host, '.' ) );
 
 	return $is_beta;
 }

@@ -207,7 +207,7 @@ function wpbc_stp_wiz__template__general_info(){
 					<span class="wpbc_wrap_textarea wpdev-form-control-wrap details4"><textarea name="details4" autocomplete="details"></textarea></span> </div>
 			</div-->
 			<div class="wpbc__spacer" style="width:100%;clear:both;height:40px;margin-bottom:5px;border-bottom:1px solid #ccc;"></div>
-			<div class="wpbc__row wpbc_setup_wizard_accept_send_row">
+			<div class="wpbc__row wpbc_setup_wizard_accept_send_row" style="<?php if ( WPBC_IS_PLAYGROUND ) { ?>display:none;<?php } ?>" >
 				<div class="wpbc__field">
 					<span class="wpdev-list-item">
 						<input 	type="checkbox"

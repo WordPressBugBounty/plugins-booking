@@ -14,12 +14,52 @@
 		return Number( $form.find( '[name="wpbc_resource_selector_resource"]:checked' ).first().val() || 0 );
 	}
 
+	/**
+	 * Apply the public text search for one Resource catalog.
+	 *
+	 * Filtering only hides cards already authorized and rendered by the server;
+	 * it cannot add Resource IDs to the signed selection context.
+	 *
+	 * @param {jQuery} $catalog Resource catalog root.
+	 * @return {void}
+	 */
+	function filter_resource_catalog( $catalog ) {
+		var search_term = String( $catalog.find( '[data-wpbc-resource-catalog-search]' ).val() || '' ).toLocaleLowerCase().trim();
+		var visible_count = 0;
+
+		$catalog.find( '[data-resource-id]' ).each( function () {
+			var $card = $( this );
+			var searchable_text = String( $card.attr( 'data-resource-search' ) || '' ).toLocaleLowerCase();
+			var is_visible = ! search_term || searchable_text.indexOf( search_term ) !== -1;
+			var $resource_input = $card.find( '[name="wpbc_resource_selector_resource"]' );
+
+			$card.prop( 'hidden', ! is_visible );
+			$resource_input.prop( 'disabled', ! is_visible );
+			if ( is_visible ) {
+				visible_count += 1;
+			} else if ( $resource_input.prop( 'checked' ) ) {
+				$resource_input.prop( 'checked', false );
+				$card.removeClass( 'is-selected' );
+			}
+		} );
+
+		$catalog.find( '[data-wpbc-resource-catalog-empty]' ).prop( 'hidden', 0 !== visible_count );
+		$catalog.find( '[data-wpbc-resource-catalog-status]' ).text(
+			String( visible_count ) + ' ' + ( 1 === visible_count ? ( config.resource_found || 'Booking Resource found.' ) : ( config.resources_found || 'Booking Resources found.' ) )
+		);
+	}
+
 	/** Toggle one selector loading state without clearing its current stage. */
 	function set_loading( $root, is_loading ) {
 		$root.toggleClass( 'is-loading', is_loading ).attr( 'aria-busy', is_loading ? 'true' : 'false' );
 		$root.find( '> .wpbc_booking_resource_selector__stage' ).attr( 'aria-busy', is_loading ? 'true' : 'false' );
 		$root.find( '> .wpbc_booking_resource_selector__loading' ).prop( 'hidden', ! is_loading ).attr( 'aria-hidden', is_loading ? 'false' : 'true' );
 		$root.find( '.wpbc_booking_resource_selector__selection_form :input' ).prop( 'disabled', is_loading );
+		if ( ! is_loading ) {
+			$root.find( '[data-wpbc-resource-catalog]' ).each( function () {
+				filter_resource_catalog( $( this ) );
+			} );
+		}
 	}
 
 	/** Display and focus one controlled AJAX or initialization error. */
@@ -345,6 +385,11 @@
 		var $input = $( this );
 		$input.closest( '.wpbc_booking_resource_selector__choices' ).find( '.wpbc_booking_resource_selector__choice' ).removeClass( 'is-selected' );
 		$input.closest( '.wpbc_booking_resource_selector__choice' ).addClass( 'is-selected' );
+	} );
+
+	/** Filter cards without changing the server-authorized Resource set. */
+	$( document ).on( 'input', '.wpbc_booking_resource_catalog [data-wpbc-resource-catalog-search]', function () {
+		filter_resource_catalog( $( this ).closest( '[data-wpbc-resource-catalog]' ) );
 	} );
 
 	/** Return to Resource selection without reloading the public page. */

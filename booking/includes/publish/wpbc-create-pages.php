@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 function wpbc_create_page( $page_params = array() ){                                                                    // FixIn: 9.6.2.10.
 
 	/* Live demos must never create WordPress content through Booking Calendar. */
-	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
+	if ( wpbc_is_booking_form_publishing_restricted() ) {
 		return false;
 	}
 
@@ -375,8 +375,8 @@ function wpbc_add_shortcode_to_exist_page( $relative_url, $shortcode_to_add ) {
  *
  * @param array $params
  *
- * @return array                success: 	[ 'result' => true,  'relative_url' => $relative_post_url, 'message' => __( 'Booking form shortcode embedded into the page.', 'booking' ) ]
- *                              failed: 	[ 'result' => false, 'message' => __( 'We can not embed booking form shortcode into the page.', 'booking' ) ]
+ * @return array Success or failure response. Publishing restrictions return a
+ *               failure before WordPress page lookup or mutation.
  *
  *  Example:
  *           $result_arr = wpbc_add_shortcode_into_page( array(
@@ -385,6 +385,13 @@ function wpbc_add_shortcode_to_exist_page( $relative_url, $shortcode_to_add ) {
  *                                              ) );
  */
 function wpbc_add_shortcode_into_page( $params = array() ) {
+	/* Enforce the publishing policy at the canonical writer for every caller. */
+	if ( wpbc_is_booking_form_publishing_restricted() ) {
+		return array(
+			'result'  => false,
+			'message' => __( 'In the demo versions this operation is not allowed.', 'booking' ),
+		);
+	}
 
 	$defaults = array(
 						'page_post_name'        => '',              // 'wpbc-booking',
@@ -617,16 +624,14 @@ function wpbc_get_activation_booking_page_configs() {
 		$page_configs[ $page_key ]['resource_id'] = 1;
 	}
 
-	if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-		$page_configs['appointment_booking'] = array(
-			'page_slug'        => 'wpbc-appointment-booking',
-			'page_title'       => esc_html__( 'Book an Appointment', 'booking' ),
-			'button_title'     => esc_html__( 'Appointment booking form', 'booking' ),
-			'shortcode'        => '[booking_appointment]',
-			'shortcode_checks' => array( '[booking_appointment]', '[booking_appointment ' ),
-			'resource_id'      => 0,
-		);
-	}
+	$page_configs['appointment_booking'] = array(
+		'page_slug'        => 'wpbc-appointment-booking',
+		'page_title'       => esc_html__( 'Book an Appointment', 'booking' ),
+		'button_title'     => esc_html__( 'Appointment booking form', 'booking' ),
+		'shortcode'        => '[booking_appointment]',
+		'shortcode_checks' => array( '[booking_appointment]', '[booking_appointment ' ),
+		'resource_id'      => 0,
+	);
 
 	return $page_configs;
 }

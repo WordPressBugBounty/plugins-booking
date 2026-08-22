@@ -17,6 +17,39 @@ function wpbc_shortcode_config__normalize_workflow_id_list( raw_value ) {
 }
 
 /**
+ * Normalize one safe public catalog CSS width.
+ *
+ * @param {string} raw_value Raw width entered in the shortcode builder.
+ * @returns {string} Normalized width or an empty string for automatic width.
+ */
+function wpbc_shortcode_config__normalize_css_width( raw_value ) {
+    var normalized_width = String( raw_value || '' ).trim().toLowerCase();
+    var width_match;
+    var numeric_width;
+    var maximum_width;
+
+    if ( '' === normalized_width || 'auto' === normalized_width ) {
+        return '';
+    }
+    if ( /^\d+(?:\.\d+)?$/.test( normalized_width ) ) {
+        normalized_width += 'px';
+    }
+
+    width_match = /^(\d+(?:\.\d+)?)(px|%|rem|em|vw)$/.exec( normalized_width );
+    if ( ! width_match ) {
+        return '';
+    }
+
+    numeric_width = parseFloat( width_match[ 1 ] );
+    maximum_width = '%' === width_match[ 2 ] || 'vw' === width_match[ 2 ] ? 100 : ( 'px' === width_match[ 2 ] ? 2000 : 100 );
+    if ( numeric_width <= 0 || numeric_width > maximum_width ) {
+        return '';
+    }
+
+    return String( Number( numeric_width.toFixed( 4 ) ) ) + width_match[ 2 ];
+}
+
+/**
  * Normalize one workflow shortcode field according to its declared value type.
  *
  * @param {jQuery} $field Parameter control.
@@ -28,12 +61,17 @@ function wpbc_shortcode_config__get_workflow_field_value( $field ) {
     var field_value = Array.isArray( raw_value ) ? raw_value.join( ',' ) : String( raw_value || '' ).trim();
     var is_valid = true;
     var month_match;
+    var raw_css_width;
 
     if ( 'positive_integer' === value_type ) {
         field_value = '' === field_value ? '' : String( parseInt( field_value, 10 ) );
         is_valid = '' === field_value || ( ! isNaN( parseInt( field_value, 10 ) ) && parseInt( field_value, 10 ) > 0 );
     } else if ( 'id_list' === value_type ) {
         field_value = wpbc_shortcode_config__normalize_workflow_id_list( field_value );
+    } else if ( 'css_width' === value_type ) {
+        raw_css_width = field_value.toLowerCase();
+        field_value = wpbc_shortcode_config__normalize_css_width( field_value );
+        is_valid = '' === raw_css_width || 'auto' === raw_css_width || '' !== field_value;
     } else if ( 'date' === value_type ) {
         is_valid = '' === field_value || /^\d{4}-\d{2}-\d{2}$/.test( field_value );
     } else if ( 'month' === value_type ) {
@@ -97,6 +135,36 @@ function wpbc_shortcode_config__reset_workflow( shortcode_id ) {
     } );
 
     wpbc_set_shortcode();
+}
+
+/**
+ * Apply the recommended compact presentation when List view is selected.
+ *
+ * The preset is applied only in the shortcode configuration UI when the
+ * Resource layout control changes to List. Each affected control remains
+ * independently editable after the preset is applied, and shortcode parser
+ * defaults are not changed.
+ *
+ * @param {jQuery} $changed_field Workflow field that triggered the change.
+ * @returns {void}
+ */
+function wpbc_shortcode_config__apply_resource_list_preset( $changed_field ) {
+    var parameter_name = String( $changed_field.data( 'wpbc-shortcode-parameter' ) || '' );
+    var $container;
+
+    if ( 'catalog_layout' !== parameter_name || 'list' !== String( $changed_field.val() || '' ) ) {
+        return;
+    }
+
+    $container = $changed_field.closest( '#wpbc_sc_container__shortcode_booking_resource_selector' );
+    if ( ! $container.length ) {
+        return;
+    }
+
+    $container.find( '[data-wpbc-shortcode-parameter="show_resource_description"]' ).prop( 'checked', false );
+    $container.find( '[data-wpbc-shortcode-parameter="catalog_list_items_per_row"]' ).val( '2' );
+    $container.find( '[data-wpbc-shortcode-parameter="show_resource_hierarchy"]' ).prop( 'checked', false );
+    $container.find( '[data-wpbc-shortcode-parameter="show_availability"]' ).prop( 'checked', false );
 }
 
 /**
@@ -816,6 +884,20 @@ function wpbc_set_shortcode(){
             jQuery( '#booking_resource_shortcode_' + resource_id ).val( shortcode_val );
             jQuery( '#booking_resource_shortcode_' + resource_id ).trigger('change');
 
+		/**
+		 * Fires after the Resource shortcode customizer returns a shortcode.
+		 *
+		 * AJAX inspectors consume this event without duplicating the legacy
+		 * `booking_resource_shortcode_{ID}` DOM contract.
+		 *
+		 * @event wpbc:resource-shortcode-selected
+		 * @type {{resource_id: number|string, shortcode: string}}
+		 */
+		jQuery( document ).trigger( 'wpbc:resource-shortcode-selected', [ {
+			resource_id: resource_id,
+			shortcode: shortcode_val
+		} ] );
+
         // Scroll
         if ( 'function' === typeof (wpbc_scroll_to) ){
             wpbc_scroll_to( '#div_booking_resource_shortcode_' + jQuery( "#booking_wpbc_resource_id" ).val() );
@@ -1422,7 +1504,10 @@ jQuery( document ).ready( function (){
     // -----------------------------------------------------------------------------------------------------
     wpbc_set_shortcode();
 
-    jQuery( '.wpbc_shortcode_config__workflow_parameter' ).on( 'change input', function () {
+    jQuery( '.wpbc_shortcode_config__workflow_parameter' ).on( 'change input', function ( event ) {
+        if ( 'change' === event.type ) {
+            wpbc_shortcode_config__apply_resource_list_preset( jQuery( this ) );
+        }
         wpbc_set_shortcode();
     } );
 });

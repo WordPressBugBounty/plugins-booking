@@ -357,7 +357,9 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 							if ( 'time_slots_appointments' === $cleaned_data ['wpbc_swp_booking_types'] ) {
 								$cleaned_data_booking_feedback_arr = array_merge( $cleaned_data_booking_feedback_arr, array( 'appointments_type' => 'Appointment: ' . $cleaned_data ['wpbc_swp_booking_appointments_type'] ) );
 							}
-							wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
+							if ( ! WPBC_IS_PLAYGROUND ) {
+								wpbc_setup_feedback__send_email( $cleaned_data_booking_feedback_arr );
+							}
 							update_bk_option( 'booking_feedback__after_send', $cleaned_data_booking_feedback_arr );
 							delete_bk_option( 'booking_feedback__send_email' );
 						}

@@ -40,7 +40,7 @@ function wpbc_ui_chosen_filter_enqueue_assets() {
  * Load Chosen filter assets on Booking Calendar's booking administration page.
  *
  * Providers use the component in commercial editions and Appointment Services
- * use it in every edition while the 11.5 feature gate is enabled.
+ * use it in every edition as released 11.5 functionality.
  *
  * @param string $where_to_load Booking Calendar asset context.
  *
@@ -189,6 +189,7 @@ function wpbc_ui_chosen_filter_get_html( $arguments ) {
 				'disabled_options' => array(),
 				'options'          => is_array( $arguments['options'] ) ? $arguments['options'] : array(),
 				'value'            => $selected,
+				'style'            => 'display:none;',
 			)
 		);
 		?>

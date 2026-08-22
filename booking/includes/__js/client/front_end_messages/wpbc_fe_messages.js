@@ -9,6 +9,44 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
+ * Log an unexpected AJAX response for browser-console diagnostics.
+ *
+ * The response is intentionally kept out of frontend notices because it can contain a complete HTML error or login page.
+ * Logging it here preserves the server payload and request context for support troubleshooting.
+ *
+ * @param {string}      ajax_action   WordPress AJAX action that produced the unexpected response.
+ * @param {*}           response_data Raw response payload returned by the server.
+ * @param {jqXHR|null}  jq_xhr        jQuery XHR object, when available.
+ * @param {string}      text_status   jQuery request status or success state.
+ * @param {string|Error} error_thrown Error description or exception reported by jQuery.
+ * @return {void}
+ */
+function wpbc_front_end__log_unexpected_ajax_response( ajax_action, response_data, jq_xhr, text_status, error_thrown ) {
+	if ( ! window.console || 'function' !== typeof window.console.error ) {
+		return;
+	}
+
+	try {
+		var content_type = '';
+		if ( jq_xhr && 'function' === typeof jq_xhr.getResponseHeader ) {
+			content_type = jq_xhr.getResponseHeader( 'content-type' ) || '';
+		}
+
+		window.console.error( '[WPBC][AJAX-UNEXPECTED-RESPONSE] ' + ajax_action, {
+			'action'          : ajax_action,
+			'http_status'     : jq_xhr && jq_xhr.status ? parseInt( jq_xhr.status, 10 ) : 0,
+			'http_status_text': jq_xhr && jq_xhr.statusText ? jq_xhr.statusText : '',
+			'text_status'     : text_status || '',
+			'error'           : error_thrown || '',
+			'content_type'    : content_type,
+			'response'        : response_data
+		} );
+	} catch ( logging_error ) {
+		// Console diagnostics must never interrupt frontend error recovery.
+	}
+}
+
+/**
  * Show message in content
  *
  * @param message				Message HTML

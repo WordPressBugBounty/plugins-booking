@@ -978,9 +978,6 @@ div.wpbc_ajx_toolbar.wpbc_no_borders {
     align-items: center
   }
 }
-.wpbc_ajx_toolbar .ui_container .ui_group.ui_group__dates_status {
-  margin-right: 2.5em
-}
 .wpbc_ajx_toolbar .ui_container .ui_group.ui_group__keyword,
 .wpbc_ajx_toolbar .ui_container .ui_group.ui_group__keyword .ui_element {
   -ms-flex: 1 1 auto;

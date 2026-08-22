@@ -114,7 +114,7 @@
 /* TODO: Tempoarary fix to  use old Filter  ------------------------------------------------------------------------- */
 .wpbc_ajx_toolbar .wpbc_ui_el__choosen {
 	align-items: center;
-	margin-right: 20px;
+	/*margin-right: 20px;*/
 }
 .wpbc_ajx_toolbar .wpbc_ui_el__choosen .chzn-container {
 	align-self: initial;

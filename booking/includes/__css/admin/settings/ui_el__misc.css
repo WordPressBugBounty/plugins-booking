@@ -166,11 +166,14 @@
 .wp-core-ui .wpbc_page select:focus,
 .wp-core-ui .wpbc_page textarea:focus,
 .wp-core-ui .wpbc_page input[type=checkbox]:focus,
-.wp-core-ui .wpbc_page input[type=radio]:focus{
-  border-width: var(--wpbc_form-field-border-size);
-  border-style: solid;
-  border-color: var(--wpbc_form-button-background-color);
-  box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color),0 1px 2px rgba(0,0,0,.15);
-  outline: 0
+.wp-core-ui .wpbc_page input[type=radio]:focus {
+	outline: 0;
+	border-width: var(--wpbc_form-field-border-size);
+	border-style: solid;
+	border-color: var(--wpbc_form-button-background-color);
+	box-shadow: 0 0 0 1.2px var(--wpbc_form-button-background-color), 0 1px 2px rgba(0, 0, 0, .15);
 }
-
+/* Exception  for range slider,  to  have smaller highlight color */
+.wp-core-ui .wpbc_page input[type=range]:focus {
+	box-shadow: 0 0 0 1px var(--wpbc_form-button-background-color), 0 1px 2px rgba(0, 0, 0, .15);
+}

@@ -161,6 +161,54 @@ function wpbc_admin_ui__sidebar_right__do_hide() {
 }
 
 /**
+ * Collapse an expanded right sidebar after an opted-in page-content click.
+ *
+ * Pages enable this behavior through the page-structure
+ * right_vertical_sidebar__content_click_collapse_mode option. Interactive
+ * controls that open or retain sidebar content can opt out by placing the
+ * data-wpbc-right-sidebar-keep-open attribute on themselves or an ancestor.
+ *
+ * @param {jQuery.Event} event Content click event.
+ * @return {void}
+ */
+function wpbc_admin_ui__sidebar_right__collapse_from_content_click( event ) {
+	var $content = jQuery( event.currentTarget );
+	var $wrapper = $content.closest( '.wpbc_settings_page_wrapper' );
+	var collapse_mode = String( $wrapper.attr( 'data-wpbc-right-sidebar-content-click-collapse-mode' ) || '' );
+	var before_collapse_event;
+
+	if ( ! $wrapper.hasClass( 'max_right' ) || [ 'min', 'compact', 'none' ].indexOf( collapse_mode ) === -1 ) {
+		return;
+	}
+	if ( jQuery( event.target ).closest( '[data-wpbc-right-sidebar-keep-open]' ).length ) {
+		return;
+	}
+
+	before_collapse_event = jQuery.Event( 'wpbc:right-sidebar-before-content-collapse' );
+	$wrapper.trigger( before_collapse_event, [ event ] );
+	if ( before_collapse_event.isDefaultPrevented() ) {
+		return;
+	}
+
+	if ( 'compact' === collapse_mode ) {
+		wpbc_admin_ui__sidebar_right__do_compact();
+	} else if ( 'none' === collapse_mode ) {
+		wpbc_admin_ui__sidebar_right__do_hide();
+	} else {
+		wpbc_admin_ui__sidebar_right__do_min();
+	}
+
+	jQuery( document ).trigger( 'wpbc_setup_wizard_layout_changed' );
+}
+
+jQuery( document ).on(
+	'click',
+	'.wpbc_settings_page_wrapper[data-wpbc-right-sidebar-content-click-collapse-mode] > .wpbc_settings_page_content',
+	wpbc_admin_ui__sidebar_right__collapse_from_content_click
+);
+
+
+/**
  * Action on click "Go Back" - show root menu
  * or some other section in right sidebar.
  *

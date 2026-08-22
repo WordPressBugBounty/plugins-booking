@@ -23,7 +23,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
 
     public function in_page() {
-		if ( class_exists( 'wpdev_bk_personal' ) ) {
+		if (
+			class_exists( 'wpdev_bk_personal' )
+			|| ( function_exists( 'wpbc_booking_resources_catalog_should_use_new_renderer' ) && wpbc_booking_resources_catalog_should_use_new_renderer() )
+		) {
 			return (string) wp_rand( 100000, 1000000 );
 		}
         return 'wpbc-resources';
@@ -53,6 +56,9 @@ class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
 
     /** Show Content of Settings page */
     public function content() {
+		if ( function_exists( 'wpbc_booking_resources_catalog_get_request_renderer' ) && 'legacy' !== wpbc_booking_resources_catalog_get_request_renderer() ) {
+			return false;
+		}
 
         $this->css();
 
@@ -467,4 +473,6 @@ class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
 
 }
 
-add_action('wpbc_menu_created', array( new WPBC_Page_Settings__bresource() , '__construct') );    // Executed after creation of Menu
+if ( ! function_exists( 'wpbc_booking_resources_catalog_should_use_new_renderer' ) || ! wpbc_booking_resources_catalog_should_use_new_renderer() ) {
+	add_action( 'wpbc_menu_created', array( new WPBC_Page_Settings__bresource(), '__construct' ) ); // Executed after creation of Menu.
+}

@@ -80,7 +80,7 @@
 	border-left: 4px solid #fff;
 	-webkit-box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.02);
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.02);
-	margin: 5px 15px 2px;
+	margin: 10px 5px 25px;
 	padding: 1px 12px;
 }
 .wpbc_page .notice-success,
@@ -228,18 +228,19 @@
 
 /* Internal Settings Message */
 .wpbc-settings-notice {
-    background: #ffffff;
-    border-left: 4px solid #fff;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    margin: 5px 0 2px 0;
-    padding: 1px 12px;
-    line-height: 2.5em;
-    text-align:left;
-    border-top:1px solid #f0f0f0;
-    border-right:1px solid #f0f0f0;
+	background: #fff;
+	border-left: 4px solid #fff;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+	margin: 5px 0 2px 0;
+	padding: 1px 12px;
+	line-height: 2.5em;
+	text-align: left;
+	border-top: 1px solid #f0f0f0;
+	border-right: 1px solid #f0f0f0;
 }
 .wpbc-settings-notice.notice-success {
-    border-left-color: #46b450;
+	border-left-color: #46b450;
+	background: #fff;
 }
 .wpbc-settings-notice.notice-success.notice-alt {
     background-color: #ecf7ed;

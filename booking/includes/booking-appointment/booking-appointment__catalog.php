@@ -12,8 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Resolve the public image configured for one Provider Booking Resource.
  *
- * Searchable Resources belongs to Business Large, so editions without that
- * module receive an empty URL and retain the Provider-initials fallback.
+ * The shared Services resolver supports legacy Searchable Resources pictures
+ * and the cross-edition Booking Resource content repository. Initials remain
+ * the renderer fallback only when neither source provides a safe image URL.
  *
  * @param int                            $provider_id    Provider Booking Resource ID.
  * @param array<int,array<string,mixed>> $search_options Searchable Resource options keyed by resource ID.

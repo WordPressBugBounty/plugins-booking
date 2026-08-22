@@ -74,14 +74,16 @@ DIV.wpbc_gb_block_shortcode_preview_wrapper.wpbc_gb_block_preview_bookingtimelin
 /* FixIn: 8.4.3.2	*/
 /*  == Block Preview - Content and Header == */
 .wpbc_gb_block_shortcode_preview_wrapper .wpbc_gb_block_shortcode_preview_content {
-	border: #e4951b solid 1px;
-	border-bottom: none;
-	padding: 0 10px 20px;
+	border: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6)) solid 2.2px;
+  border-bottom: none;
+  padding: 0 10px 20px;
+  background: #fff;
+  border-radius: 10px 10px 0 0;
 }
 
 /*  == Block Preview - Header == */
 .wpbc_gb_block_shortcode_preview_wrapper .wpbc_gb_block_preview_inner_header{
-	border-bottom: #e4951b solid 1px;
+	border-bottom: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6)) solid 1px;
 	margin: 0.5em 0 1em;
 	font-weight: 600;
 }
@@ -125,15 +127,18 @@ DIV.wpbc_gb_block_shortcode_preview_wrapper.wpbc_gb_block_preview_bookingtimelin
 /*  == Block Preview - Footer == */
 .wpbc_gb_block_shortcode_preview_wrapper .wpbc_gb_block_preview_inner_footer {
 	width: 100%;
-	background: #f0f0f0;
-	margin: 0;
-	padding: 10px;
-	color: #777;
-	border: #e4951b solid 1px;
-	border-top: none;
-	font-size: 0.9em;
-	font-weight: 600;
-	box-sizing: border-box;
+  background: #fbfbfc;
+  margin: 0;
+  padding: 10px;
+  color: #1e1e1e;
+  border: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6)) solid 2.2px;
+  border-top: none;
+  font-size: 13px;
+  font-weight: 600;
+  box-sizing: border-box;
+  border-radius: 0 0 15px 15px;
+  line-height: 2.1;
+  border-top: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6)) dashed 1.5px;
 }
 
 
@@ -158,12 +163,6 @@ DIV.wpbc_gb_block_shortcode_preview_wrapper.wpbc_gb_block_preview_bookingtimelin
 
 
 
-/* Show Blue configuration shortcode button,  if block  selected or when  no shortcode at all */
-.editor-block-list__block .wpbc_gb_div_block.wpbc_gb_div_block_no_shortcode a.wpbc-gutenberg-open-btn,
-.editor-block-list__block.is-selected .wpbc_gb_div_block a.wpbc-gutenberg-open-btn,
-.block-editor-block-list__block.is-selected .wpbc_gb_div_block a.wpbc-gutenberg-open-btn /* FixIn: 8.7.6.11 */ {
-	display: block;
-}
 /* Hide Green Preview block buttin  inside of the Block  for WordPress older than 5.4 update*/
 .editor-block-list__block.is-selected .wpbc-gutenberg-update-view .wpbc-gutenberg-update-preview-btn{
 	visibility: hidden;
@@ -173,13 +172,27 @@ DIV.wpbc_gb_block_shortcode_preview_wrapper.wpbc_gb_block_preview_bookingtimelin
 .wpbc_gb_div_block a.wpbc-gutenberg-open-btn,
 .wpbc_gb_div_block a.wpbc-gutenberg-open-btn:hover,
 .wpbc_gb_div_block a.wpbc-gutenberg-open-btn:focus {
-									display: none;
-	background-color: #3b9fcf;
+	display: none;
+	background-color: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6));
 	color: #fff;
 	border-color: #3b9fcf;
 	text-align: center;
 	font-family: Helvetica, Arial;
-	margin-bottom: 20px;
+	font-family: inherit;
+	font-size: 16px;
+	font-weight: var(--wpds-typography-font-weight-emphasis, 600);
+	text-decoration: none;
+	margin: 5px auto 20px;
+	padding: 10px 20px;
+	width: auto;
+	max-width: max-content;
+}
+
+/* Show Blue configuration shortcode button,  if block  selected or when  no shortcode at all */
+.wpbc_gb_div_block.wpbc_gb_div_block_no_shortcode a.wpbc-gutenberg-open-btn,
+.editor-block-list__block.is-selected .wpbc_gb_div_block a.wpbc-gutenberg-open-btn,
+.block-editor-block-list__block.is-selected .wpbc_gb_div_block a.wpbc-gutenberg-open-btn /* FixIn: 8.7.6.11 */ {
+	display: block;
 }
 
 /* Shortcode Input Text */

@@ -137,6 +137,7 @@ function wpbc_bfb_activation__get_templates_registry() {
 		wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_with_vertical_layout.php',
 		wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_wizard_2_steps.php',
 
+
 		// Hints
 		wpbc_bfb_activation__get_templates_dir_path() . '/time_slots_20_min_3_steps_review_with_hints.php',
 		wpbc_bfb_activation__get_templates_dir_path() . '/time_appointments_3_steps_review_with_hints.php',
@@ -171,6 +172,11 @@ function wpbc_bfb_activation__get_templates_registry() {
 	 * template so it is the first matching card after a clean activation.
 	 */
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/appointments_services_flow.php';
+
+	/*
+	 * New Full Day - Booking Forms - 1st in the list.
+	 */
+	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_with_inline_hints.php';
 
 	foreach ( $template_files as $template_file ) {
 		if ( file_exists( $template_file ) ) {

@@ -563,6 +563,7 @@ function wpbc_send_ajax_submit(resource_id, formdata, captcha_chalange, user_cap
 	var preview_args = (form_status === 'preview') ? wpbc__get_bfb_preview_args_from_location() : null;
 	var $add_booking_modal = jQuery( '#booking_form' + resource_id ).closest( '#wpbc_modal__add_booking__section' );
 	var is_allow_past = 0;
+	var classic_booking_context_token = '';
 	var has_add_booking_modal_context = ( $add_booking_modal.length && $add_booking_modal.is( ':visible' ) );
 
 	if ( has_add_booking_modal_context ) {
@@ -573,6 +574,7 @@ function wpbc_send_ajax_submit(resource_id, formdata, captcha_chalange, user_cap
 	}
 	if ( ! has_add_booking_modal_context && ( 'undefined' !== typeof _wpbc ) ) {
 		is_allow_past = ( '1' === String( _wpbc.get_other_param( 'this_page_allow_past' ) || '0' ) ) ? 1 : 0;
+		classic_booking_context_token = String( _wpbc.booking__get_param_value( resource_id, 'classic_booking_context_token' ) || '' );
 	}
 
 	var request_params = {
@@ -587,7 +589,8 @@ function wpbc_send_ajax_submit(resource_id, formdata, captcha_chalange, user_cap
 		'is_emails_send'           : is_send_emeils,
 		'active_locale'            : wpdev_active_locale,
 		'form_status'              : form_status,
-		'allow_past'               : is_allow_past
+		'allow_past'               : is_allow_past,
+		'classic_booking_context_token': classic_booking_context_token
 	};
 
 	var $time_override_panel = jQuery( '#booking_form' + resource_id ).find( '[data-wpbc-add-booking-time-override-panel]' ).first();

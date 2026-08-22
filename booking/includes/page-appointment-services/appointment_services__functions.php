@@ -104,170 +104,6 @@ function wpbc_appointment_services_can_manage_availability() {
 }
 
 /**
- * Render the compact Monday-to-Sunday labels in the Service listing header.
- *
- * @param array<string,mixed> $column  Normalized shared listing column settings.
- * @param WPBC_UI_Listing     $listing Shared listing instance.
- *
- * @return void
- */
-function wpbc_appointment_services_render_weekday_listing_header( $column, $listing ) {
-	unset( $column, $listing );
-	?>
-	<span><?php esc_html_e( 'Weekly Availability', 'booking' ); ?></span>
-	<span class="wpbc_appointment_services__weekday_labels" aria-hidden="true">
-		<i><?php esc_html_e( 'Mon', 'booking' ); ?></i>
-		<i><?php esc_html_e( 'Tue', 'booking' ); ?></i>
-		<i><?php esc_html_e( 'Wed', 'booking' ); ?></i>
-		<i><?php esc_html_e( 'Thu', 'booking' ); ?></i>
-		<i><?php esc_html_e( 'Fri', 'booking' ); ?></i>
-		<i><?php esc_html_e( 'Sat', 'booking' ); ?></i>
-		<i><?php esc_html_e( 'Sun', 'booking' ); ?></i>
-	</span>
-	<?php
-}
-
-/**
- * Render an accessible-only title for the Service row-actions column.
- *
- * @param array<string,mixed> $column  Normalized shared listing column settings.
- * @param WPBC_UI_Listing     $listing Shared listing instance.
- *
- * @return void
- */
-function wpbc_appointment_services_render_actions_listing_header( $column, $listing ) {
-	unset( $column, $listing );
-	?><span class="screen-reader-text"><?php esc_html_e( 'Actions', 'booking' ); ?></span><?php
-}
-
-/**
- * Render Status and Service ID sorting controls in one listing column.
- *
- * Both sort keys use the shared listing request and AJAX controller. Combining
- * their controls keeps Service ID visible without dedicating another column.
- *
- * @param array<string,mixed> $column  Normalized shared listing column settings.
- * @param WPBC_UI_Listing     $listing Shared listing instance.
- *
- * @return void
- */
-function wpbc_appointment_services_render_status_listing_header( $column, $listing ) {
-	unset( $column );
-	$current_sorting = $listing->get_sorting_request();
-	$sort_controls   = array(
-		'status'     => array(
-			'label' => __( 'Status', 'booking' ),
-			'class' => 'wpbc_appointment_services__status_sort',
-		),
-		'service_id' => array(
-			'label' => __( 'ID', 'booking' ),
-			'class' => 'wpbc_appointment_services__id_sort',
-		),
-	);
-	?>
-	<div class="wpbc_appointment_services__status_header">
-		<?php foreach ( $sort_controls as $sort_key => $sort_control ) : ?>
-			<?php
-			$is_active  = $sort_key === $current_sorting['sort_by'];
-			$link_class = 'wpbc_ui_listing__sort_link ' . $sort_control['class'] . ( $is_active ? ' is-active' : '' );
-			$icon_class = $is_active
-				? ( 'desc' === $current_sorting['sort_order'] ? 'wpbc-bi-arrow-down' : 'wpbc-bi-arrow-up' )
-				: 'wpbc_icn_import_export';
-			?>
-			<a href="#"
-				class="<?php echo esc_attr( $link_class ); ?>"
-				data-wpbc-listing-sort="<?php echo esc_attr( $listing->get_listing_id() ); ?>"
-				data-wpbc-listing-sort-key="<?php echo esc_attr( $sort_key ); ?>">
-				<span><?php echo esc_html( $sort_control['label'] ); ?></span>
-				<i class="wpbc_ui_listing__sort_icon <?php echo esc_attr( $icon_class ); ?>" aria-hidden="true"></i>
-			</a>
-		<?php endforeach; ?>
-	</div>
-	<?php
-}
-
-/**
- * Return the shared listing configured for the Services catalog.
- *
- * The same instance is used by the page renderer and AJAX endpoint so the
- * displayed and persisted page sizes always follow one allow-list.
- *
- * @return WPBC_UI_Listing Services catalog listing component.
- */
-function wpbc_appointment_services_get_catalog_listing() {
-	static $service_listing = null;
-
-	if ( null === $service_listing ) {
-		$columns = array(
-			'service'  => array(
-				'label'    => __( 'Service', 'booking' ),
-				'class'    => 'column-service',
-				'sortable' => 'title',
-			),
-			'duration' => array(
-				'label'    => __( 'Duration', 'booking' ),
-				'class'    => 'column-duration',
-				'sortable' => 'duration',
-			),
-		);
-		if ( wpbc_appointment_services_is_pricing_available() ) {
-			$columns['price'] = array(
-				'label'    => __( 'Price', 'booking' ),
-				'class'    => 'column-price',
-				'sortable' => 'price',
-			);
-		}
-		$columns += array(
-			'providers' => array(
-				'label' => __( 'Providers', 'booking' ),
-				'class' => 'column-providers',
-			),
-			'weekdays' => array(
-				'class'           => 'column-weekdays',
-				'header_callback' => 'wpbc_appointment_services_render_weekday_listing_header',
-			),
-			'status' => array(
-				'label'           => __( 'Status', 'booking' ),
-				'class'           => 'column-status',
-				'sortable'        => 'status',
-				'header_callback' => 'wpbc_appointment_services_render_status_listing_header',
-			),
-			'actions' => array(
-				'class'           => 'column-actions',
-				'header_callback' => 'wpbc_appointment_services_render_actions_listing_header',
-			),
-		);
-
-		$service_listing = new WPBC_UI_Listing(
-			'appointment_services_catalog',
-			array(
-				'aria_label'             => __( 'Services catalog', 'booking' ),
-				'items_per_page_default' => 10,
-				'items_per_page_options' => array( 5, 10, 50, 100 ),
-				'sort_by'                => 'service_id',
-				'sort_order'             => 'desc',
-				'sort_keys'              => array( 'service_id' ),
-				'columns'                => $columns,
-				'classes'                => array(
-					'container'      => 'wpbc_appointment_services__list',
-					'table_wrap'     => 'wpbc_appointment_services__table_wrap',
-					'table'          => 'wpbc_appointment_services__table',
-					'footer'         => 'wpbc_appointment_services__list_footer',
-					'result_count'   => 'wpbc_appointment_services__result_count',
-					'items_per_page' => 'wpbc_appointment_services__items_per_page',
-					'pagination'     => 'wpbc_appointment_services__pagination',
-					'previous'       => 'wpbc_appointment_services__page_prev',
-					'page_label'     => 'wpbc_appointment_services__page_label',
-					'next'           => 'wpbc_appointment_services__page_next',
-				),
-			)
-		);
-	}
-
-	return $service_listing;
-}
-
-/**
  * Resolve the MultiUser-aware owner for Service queries and writes.
  *
  * @return int Owner user ID, or zero for site-wide ownership.
@@ -406,10 +242,14 @@ function wpbc_appointment_services_provider_has_weekly_availability( $resource_i
 /**
  * Resolve the public image configured for one Provider Booking Resource.
  *
- * Provider images are stored by the Business Large Searchable Resources
- * module. Callers pass that module's option collection so it is loaded only
- * once when several Providers are rendered. Other editions pass an empty
- * collection and retain their existing avatar or initials fallback.
+ * Existing Business Large Searchable Resources values remain the fast path
+ * because callers already load that option collection once for a Provider
+ * list. When that legacy field is not configured, the resolver uses the
+ * cross-edition Booking Resource content repository so Free's bundled default
+ * image and pictures saved by the Resource catalog reach every Provider UI.
+ * The guarded fallback keeps this presentation helper safe during partial
+ * bootstrap and compatibility requests where the content repository has not
+ * been loaded yet.
  *
  * @param int                            $provider_id   Provider Booking Resource ID.
  * @param array<int,array<string,mixed>> $search_options Searchable Resource options keyed by resource ID.
@@ -418,19 +258,37 @@ function wpbc_appointment_services_provider_has_weekly_availability( $resource_i
  */
 function wpbc_appointment_services_get_provider_image_url( $provider_id, $search_options ) {
 	$provider_id = absint( $provider_id );
-	if ( ! $provider_id || empty( $search_options[ $provider_id ]['picture'] ) ) {
+	if ( ! $provider_id ) {
 		return '';
 	}
 
-	$image_value = $search_options[ $provider_id ]['picture'];
-	if ( is_array( $image_value ) ) {
-		$image_value = reset( $image_value );
+	if ( ! empty( $search_options[ $provider_id ]['picture'] ) ) {
+		$image_value = $search_options[ $provider_id ]['picture'];
+		if ( is_array( $image_value ) ) {
+			$image_value = reset( $image_value );
+		}
+		if ( ! is_scalar( $image_value ) ) {
+			return '';
+		}
+
+		return esc_url_raw( wpbc_lang( (string) $image_value ) );
 	}
-	if ( ! is_scalar( $image_value ) ) {
+
+	if ( ! function_exists( 'wpbc_booking_resource_content_repository' ) ) {
 		return '';
 	}
 
-	return esc_url_raw( wpbc_lang( (string) $image_value ) );
+	// Booking Calendar Free has exactly one implicit Booking Resource (ID 1).
+	if ( ! class_exists( 'wpdev_bk_personal' ) && 1 !== $provider_id ) {
+		return '';
+	}
+
+	$resource_content = wpbc_booking_resource_content_repository()->get( $provider_id );
+	if ( empty( $resource_content['picture_url'] ) || ! is_scalar( $resource_content['picture_url'] ) ) {
+		return '';
+	}
+
+	return esc_url_raw( wpbc_lang( (string) $resource_content['picture_url'] ) );
 }
 
 /**
@@ -438,7 +296,7 @@ function wpbc_appointment_services_get_provider_image_url( $provider_id, $search
  *
  * Booking resources remain the availability authority. The default weekday
  * map combines General Availability with each resource's effective Working
- * Time rule. Business Large Searchable Resource pictures are reused before a
+ * Time rule. Cross-edition Booking Resource pictures are reused before a
  * WordPress user avatar, keeping the administration catalog consistent with
  * the public Appointment flow. Extensions may replace the presentation or
  * recurring-weekday summary through the filters below without changing the
@@ -677,107 +535,6 @@ function wpbc_appointment_services_normalize_status_counts( $raw_counts ) {
 	$counts['all'] = $counts['active'] + $counts['inactive'] + $counts['archived'];
 
 	return $counts;
-}
-
-/**
- * Load one exact page of Services through the shared listing contract.
- *
- * Providers implementing count_items() receive the efficient contract: one
- * grouped count followed by one LIMIT/OFFSET page query. Existing replacement
- * providers remain compatible through a bounded in-memory pagination fallback,
- * but should implement count_items() and honor list_items() limit/offset values
- * before serving large catalogs.
- *
- * @param object          $provider Service data provider.
- * @param array           $query    Search, status, Provider, page, and page-size values.
- * @param WPBC_UI_Listing $listing  Shared listing instance.
- *
- * @return array<string,mixed>|WP_Error Normalized Services, counts, and pagination metadata.
- */
-function wpbc_appointment_services_get_catalog_page( $provider, $query, $listing ) {
-	$query = wp_parse_args(
-		is_array( $query ) ? $query : array(),
-		array(
-			'search'         => '',
-			'status'         => 'all',
-			'resource_id'    => 0,
-			'page_number'    => 1,
-			'items_per_page' => $listing->get_items_per_page(),
-			'sort_by'        => null,
-			'sort_order'     => null,
-		)
-	);
-	$status = in_array( $query['status'], array( 'all', 'active', 'inactive', 'archived' ), true ) ? $query['status'] : 'all';
-	$sorting = $listing->get_sorting_request( $query['sort_by'], $query['sort_order'] );
-	$query['sort_by']    = $sorting['sort_by'];
-	$query['sort_order'] = $sorting['sort_order'];
-
-	if ( method_exists( $provider, 'count_items' ) ) {
-		$raw_counts = $provider->count_items( $query );
-		if ( is_wp_error( $raw_counts ) ) {
-			return $raw_counts;
-		}
-
-		$counts     = wpbc_appointment_services_normalize_status_counts( $raw_counts );
-		$total_items = 'all' === $status ? $counts['all'] : $counts[ $status ];
-		$pagination = $listing->get_pagination_data( $total_items, $query['page_number'], $query['items_per_page'] );
-		$page_query = array_merge(
-			$query,
-			array(
-				'status' => $status,
-				'limit'  => $pagination['limit'],
-				'offset' => $pagination['offset'],
-			)
-		);
-		$services = $provider->list_items( $page_query );
-		if ( is_wp_error( $services ) ) {
-			return $services;
-		}
-
-		$services = array_slice( (array) $services, 0, $pagination['limit'] );
-	} else {
-		$services = $provider->list_items(
-			array_merge(
-				$query,
-				array( 'status' => 'all' )
-			)
-		);
-		if ( is_wp_error( $services ) ) {
-			return $services;
-		}
-
-		$all_services = array_map( 'wpbc_appointment_services_normalize_item', (array) $services );
-		$counts       = array(
-			'all'      => count( $all_services ),
-			'active'   => 0,
-			'inactive' => 0,
-			'archived' => 0,
-		);
-		foreach ( $all_services as $service ) {
-			if ( isset( $counts[ $service['status'] ] ) ) {
-				++$counts[ $service['status'] ];
-			}
-		}
-		$services   = 'all' === $status
-			? $all_services
-			: array_values(
-				array_filter(
-					$all_services,
-					static function ( $service ) use ( $status ) {
-						return $status === $service['status'];
-					}
-				)
-			);
-		$pagination = $listing->get_pagination_data( count( $services ), $query['page_number'], $query['items_per_page'] );
-		$services   = array_slice( $services, $pagination['offset'], $pagination['limit'] );
-	}
-
-	return array(
-		'services'   => array_map( 'wpbc_appointment_services_normalize_item', (array) $services ),
-		'counts'     => $counts,
-		'pagination' => $pagination,
-		'sorting'    => $sorting,
-	);
 }
 
 /**

@@ -73,6 +73,9 @@ class WPBC_BookingInstall extends WPBC_Install {
 		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_m' ) ) && ( ! wpbc_is_table_exists( 'booking_seasons' ) ) ) {
 			$is_make_activation = true;
 		}
+		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_m' ) ) && ( wpbc_is_field_in_table_exists( 'booking_seasons', 'season_color' ) == 0 ) ) {
+			$is_make_activation = true;
+		}
 		if ( ( ! $is_make_activation ) && ( class_exists( 'wpdev_bk_biz_l' ) ) && ( ! wpbc_is_table_exists( 'booking_coupons' ) ) ) {
 			$is_make_activation = true;
 		}

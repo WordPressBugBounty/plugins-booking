@@ -100,13 +100,39 @@ function wpbc__where_to_save_booking( $local_params ){
 		'custom_form'         => $local_params['custom_form'],                                                                  // FixIn: 10.0.0.10.
 	) , $availability_per_days_arr__params ) );
 
+	// A contact form has no calendar and uses one synthetic date only to satisfy the booking storage schema.
+	// Keep its requested resource, because calendar availability rules do not apply to a no-date submission.
+	$is_no_dates_booking = ( is_array( $local_params['dates_only_sql_arr'] ) && ( 1 === count( $local_params['dates_only_sql_arr'] ) ) &&
+							 wpbc_is_these_dates__for__no_dates( $local_params['dates_only_sql_arr'] ) );
+	if ( $is_no_dates_booking ) {
+		$requested_resource_id = absint( $local_params['resource_id'] );
+		$loaded_resource_ids   = isset( $availability_per_days['resources_id_arr__in_dates'] ) ? array_map( 'absint', (array) $availability_per_days['resources_id_arr__in_dates'] ) : array();
+
+		if ( ( 0 === $requested_resource_id ) || ! in_array( $requested_resource_id, $loaded_resource_ids, true ) ) {
+			return array(
+				'result'  => 'error',
+				'message' => 'Wrong ID of booking resource: ' . $requested_resource_id,
+			);
+		}
+
+		$storage_resource_ids = array_values(
+			array_unique( array_merge( array( $requested_resource_id ), $loaded_resource_ids ) )
+		);
+		$resources_in_dates = array_fill_keys(
+			array_values( $local_params['dates_only_sql_arr'] ),
+			$storage_resource_ids
+		);
+
+		return array(
+			'result'             => 'ok',
+			'resources_in_dates' => $resources_in_dates,
+			'time_to_book'       => $local_params['time_as_his_arr'],
+			'main__resource_id'  => $requested_resource_id,
+		);
+	}
+
 	// Get value of how many  booking resources to  book
 	$how_many_items_to_book = $local_params['how_many_items_to_book'];
-
-	// FixIn: 2981-01-13    13 Jan 2981.
-	if ( ( ! empty( $local_params['dates_only_sql_arr'] ) ) && ( wpbc_is_these_dates__for__no_dates( $local_params['dates_only_sql_arr'] ) ) ) {
-		$how_many_items_to_book = 0;
-	}
 
 	// -------------------------------------------------------------------------------------------------------------
 	// [ 2023-10-18: [ 0:[ resource_id: 2, is_available: true, booked__seconds: [], booked__readable: [], time_to_book__seconds: [ 36030, 39570 ], time_to_book__readable: "10:00:00", "11:00:00" ] ], 1: [...], 2: [...], 3: [...] ], 2023-10-25: [...], 2023-11-25: [...] ]

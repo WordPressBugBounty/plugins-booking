@@ -400,10 +400,6 @@ function wpbc_appointment_services_get_admin_time_details( $snapshot, $booking )
  * @return array<string,mixed> Filtered listing fields.
  */
 function wpbc_appointment_services_add_listing_fields( $fields, $booking_id, $booking ) {
-	if ( ! function_exists( 'wpbc_is_11_5_features_enabled' ) || ! wpbc_is_11_5_features_enabled() ) {
-		return $fields;
-	}
-
 	$snapshot = wpbc_appointment_services_get_cached_snapshot( $booking_id );
 	if ( $snapshot ) {
 		$pricing_available = wpbc_appointment_services_is_pricing_available();
@@ -435,12 +431,10 @@ add_filter( 'wpbc_booking_listing_parsed_fields', 'wpbc_appointment_services_add
  * Appointment data remains available in every presentation mode, but its
  * Service filter belongs only to the Appointment administration workflow.
  *
- * @return bool True when 11.5 features and Appointment mode are active.
+ * @return bool True when Appointment mode is active.
  */
 function wpbc_appointment_services_is_appointment_listing_mode() {
-	return function_exists( 'wpbc_is_11_5_features_enabled' )
-		&& wpbc_is_11_5_features_enabled()
-		&& function_exists( 'wpbc_booking_modes_get_selected_mode_id' )
+	return function_exists( 'wpbc_booking_modes_get_selected_mode_id' )
 		&& 'appointment' === wpbc_booking_modes_get_selected_mode_id();
 }
 
@@ -622,10 +616,6 @@ add_action( 'wpbc_booking_listing_toolbar_after_resources', 'wpbc_appointment_se
  * @return string Filtered tooltip.
  */
 function wpbc_appointment_services_filter_timeline_pipeline_title( $title, $booking_id, $bookings ) {
-	if ( ! function_exists( 'wpbc_is_11_5_features_enabled' ) || ! wpbc_is_11_5_features_enabled() ) {
-		return $title;
-	}
-
 	$snapshot = wpbc_appointment_services_get_cached_snapshot( $booking_id );
 	$booking  = isset( $bookings[ $booking_id ] ) ? $bookings[ $booking_id ] : null;
 	$details  = $snapshot ? wpbc_appointment_services_get_admin_time_details( $snapshot, $booking ) : array();
@@ -661,7 +651,7 @@ add_filter( 'wpbc_timeline_booking_pipeline_title', 'wpbc_appointment_services_f
  * @return array<string,string> Filtered popover.
  */
 function wpbc_appointment_services_filter_timeline_popover( $popover, $booking_id, $bookings, $is_frontend ) {
-	if ( $is_frontend || ! function_exists( 'wpbc_is_11_5_features_enabled' ) || ! wpbc_is_11_5_features_enabled() ) {
+	if ( $is_frontend ) {
 		return $popover;
 	}
 

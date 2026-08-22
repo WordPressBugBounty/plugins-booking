@@ -10,10 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! function_exists( 'wpbc_is_11_5_features_enabled' ) || ! wpbc_is_11_5_features_enabled() ) {
-	return;
-}
-
 require_once __DIR__ . '/class-wpbc-booking-mode-registry.php';
 require_once __DIR__ . '/class-wpbc-booking-mode-page-registry.php';
 require_once __DIR__ . '/booking_modes-context.php';
@@ -43,8 +39,4 @@ if ( wpbc_booking_modes_is_navigation_boundary_enabled() ) {
 
 		require_once __DIR__ . '/booking_modes-toolbar.php';
 	}
-}
-
-if ( defined( 'WPBC_ENABLE_BOOKING_MODES_TESTS' ) && true === WPBC_ENABLE_BOOKING_MODES_TESTS ) {
-	require_once __DIR__ . '/tests/http-test-page.php';
 }

@@ -18,6 +18,9 @@
 .wpbc_ui__collapsible_group.is-open {
 	padding-bottom: 25px;
 }
+.wpbc_ui__collapsible_group:last-child {
+  padding-bottom: 100px;
+}
 .wpbc_ui__collapsible_group.is-open .group__header {
 	border-left-color: #1e7bc7;
 	background: #1e7bc70a;

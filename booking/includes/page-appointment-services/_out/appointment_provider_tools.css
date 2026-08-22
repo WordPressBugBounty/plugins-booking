@@ -19,6 +19,34 @@
   margin: 0 0 16px;
   padding: 14px 16px
 }
+.wpbc_appointment_provider_tools.is-dismissible {
+  padding-inline-end: 52px;
+  position: relative
+}
+.wpbc_appointment_provider_tools__dismiss {
+  -ms-flex-align: center;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: #50575e;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  float: none!important;
+  height: 30px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  position: absolute;
+  inset-inline-end: 10px;
+  top: 10px;
+  width: 30px
+}
+.wpbc_appointment_provider_tools__dismiss:focus-visible,
+.wpbc_appointment_provider_tools__dismiss:hover {
+  background: #f0f6fc;
+  border-color: var(--wpbc_admin-theme-color,#2271b1);
+  color: var(--wpbc_admin-theme-color,#2271b1);
+  outline: 0
+}
 .wpbc_appointment_provider_tools__copy {
   display: -ms-flexbox;
   display: flex;

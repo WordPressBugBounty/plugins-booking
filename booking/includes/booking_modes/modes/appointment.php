@@ -10,15 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-return array(
+$wpbc_appointment_booking_mode = array(
 	'id'            => 'appointment',
 	'label'         => __( 'Appointments', 'booking' ),
 	'description'   => __( 'Present existing Booking Calendar features with appointment-focused terminology.', 'booking' ),
 	'default_page'  => 'wpbc__vm_booking_listing',
 	'groups'        => array(
 		'wpbc'              => array( 'title' => __( 'Appointments', 'booking' ), 'position' => 10 ),
-		'wpbc-services'     => array( 'title' => __( 'Services', 'booking' ), 'position' => 20, 'font_icon' => 'wpbc-bi-grid' ),
-		'wpbc-resources'    => array( 'title' => __( 'Providers', 'booking' ), 'position' => 30 ),
+		'wpbc-services'     => array( 'title' => __( 'Services', 'booking' ), 'position' => 20, /*'font_icon' => 'wpbc-bi-grid' */),
+		'wpbc-resources'    => array( 'title' => __( 'Providers', 'booking' ), 'position' => 30    ),
 		'wpbc-availability' => array( 'title' => __( 'Availability', 'booking' ), 'position' => 40 ),
 		'wpbc-prices'       => array( 'title' => __( 'Pricing & Payments', 'booking' ), 'position' => 50 ),
 		'wpbc-settings'     => array( 'title' => __( 'Settings', 'booking' ), 'position' => 60 ),
@@ -27,8 +27,8 @@ return array(
 		'wpbc__vm_booking_listing'                         => array( 'title' => __( 'Appointments', 'booking' ), 'position' => 10 ),
 		'wpbc__vm_calendar'                                => array( 'title' => __( 'Calendar', 'booking' ), 'position' => 20 ),
 		'wpbc__add-appointment'                            => array( 'title' => __( 'Add Appointment', 'booking' ), 'position' => 30 ),
-		'wpbc-services__appointment_services'              => array( 'title' => __( 'Services', 'booking' ), 'position' => 10 ),
-		'wpbc-resources__resources'                        => array( 'title' => __( 'Providers', 'booking' ), 'position' => 10 ),
+		'wpbc-services__appointment_services'              => array( 'title' => __( 'Services', 'booking' ), 'position' => 10, 'font_icon' => 'wpbc-bi-grid' ),
+		'wpbc-resources__resources'                        => array( 'title' => __( 'Providers', 'booking' ), 'position' => 10, 'font_icon' => 'wpbc_icn_people_alt'   ),
 		'wpbc-resources__capacity'                         => array( 'title' => __( 'Capacity Rules', 'booking' ), 'position' => 20 ),
 		'wpbc-resources__searchable_resources'             => array( 'title' => __( 'Searchable Providers', 'booking' ), 'position' => 30 ),
 		'wpbc-availability__time_slots_availability'       => array( 'title' => __( 'Time Slots', 'booking' ), 'position' => 10 ),
@@ -53,14 +53,16 @@ return array(
 		'wpbc-setup__step_01'                              => array( 'position' => 10 ),
 	),
 	'native_menu'   => array(
-		'wpbc'              => array( 'title' => __( 'Appointments', 'booking' ), 'position' => 10 ),
-		'wpbc-new'          => array( 'title' => __( '+ Add Appointment', 'booking' ), 'position' => 20 ),
-		'wpbc-services'     => array( 'title' => __( 'Services', 'booking' ), 'position' => 30 ),
-		'wpbc-resources'    => array( 'title' => __( 'Providers', 'booking' ), 'position' => 40 ),
-		'wpbc-availability' => array( 'title' => __( 'Availability', 'booking' ), 'position' => 50 ),
-		'wpbc-prices'       => array( 'title' => __( 'Pricing & Payments', 'booking' ), 'position' => 60 ),
-		'wpbc-settings'     => array( 'title' => __( 'Settings', 'booking' ), 'position' => 70 ),
-		'wpbc-setup'        => array( 'title' => __( 'Setup', 'booking' ), 'position' => 80 ),
+		'wpbc'                   => array( 'title' => __( 'Appointments', 'booking' ), 'position' => 10 ),
+		'wpbc-new'               => array( 'title' => __( '+ Add Appointment', 'booking' ), 'position' => 20 ),
+		'wpbc-services'          => array( 'title' => __( 'Services', 'booking' ), 'position' => 30 ),
+		'wpbc-resources'         => array( 'title' => __( 'Providers', 'booking' ), 'position' => 40 ),
+		'wpbc-availability'      => array( 'title' => __( 'Availability', 'booking' ), 'position' => 50 ),
+		'wpbc-prices'            => array( 'title' => __( 'Pricing & Payments', 'booking' ), 'position' => 60 ),
+		'wpbc-settings'          => array( 'title' => __( 'Settings', 'booking' ), 'position' => 70 ),
+		'wpbc-setup'             => array( 'title' => __( 'Setup', 'booking' ), 'position' => 80 ),
 	),
 	'quickstart_id' => 'appointment',
 );
+
+return $wpbc_appointment_booking_mode;

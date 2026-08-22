@@ -141,12 +141,29 @@ public function define_admin_menu(){
             $booking_menu_position = '99.999';
             break;
         default:
-            $booking_menu_position = '3.3';
+			/**
+			 *  3.3 - top           //( 58.9 )  // - middle
+				(Optional). Positions for Core Menu Items
+				2 Dashboard
+				4 Separator
+				5 Posts
+				10 Media
+				15 Links
+				20 Pages
+				25 Comments
+				59 Separator
+				60 Appearance
+				65 Plugins
+				70 Users
+				75 Tools
+				80 Settings
+				99 Separator
+			*/
+			$booking_menu_position = '3.3';
             break;
     }
 
-		// FixIn: 10.11.3.3.
-
+/**
 //	//FixIn: 9.0.1.7		//scale image by  this params: viewBox="-2 -1 20 20"
 //	if( 0 ) {
 //			// calendar4-range		https://icons.getbootstrap.com/icons/calendar4-range/
@@ -172,142 +189,85 @@ public function define_admin_menu(){
 //							  . '<path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>'
 //							  . '<path d="M7 10a1 1 0 0 0 0-2H1v2h6zm2-3h6V5H9a1 1 0 0 0 0 2z"/>'
 //							. '</svg>';
+*/
 
 	$svg_icon_integarted = wpbc_get_svg_logo( '#aaa', '#aaa', '0.4' );   //  '#aaa', '#aaa', '0.2' .
 
-    self::$instance->admin_menu['master'] = new WPBC_Admin_Menus(
-                                                    'wpbc' , array (
-                                                    'in_menu' => 'root'
-												//, 'mune_icon_url' => '/assets/img/icon-16x16.png'
-												  , 'mune_icon_url' => $svg_icon_integarted								// FixIn: 9.0.1.7.
-                                                  , 'menu_title' => $title
-                                                  , 'menu_title_second' => __('Bookings', 'booking')
-                                                  , 'page_header' => __('Bookings Listing','booking')
-                                                  , 'browser_header' =>  __('Bookings Listing', 'booking') . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_booking' )
-                                                  , 'position' => $booking_menu_position // 3.3 - top           //( 58.9 )  // - middle
-                                                                                /*
-                                                                                (Optional). Positions for Core Menu Items
-                                                                                    2 Dashboard
-                                                                                    4 Separator
-                                                                                    5 Posts
-                                                                                    10 Media
-                                                                                    15 Links
-                                                                                    20 Pages
-                                                                                    25 Comments
-                                                                                    59 Separator
-                                                                                    60 Appearance
-                                                                                    65 Plugins
-                                                                                    70 Users
-                                                                                    75 Tools
-                                                                                    80 Settings
-                                                                                    99 Separator
-                                                                                     */
-                                                                            )
-                                                );
+	self::$instance->admin_menu['master'] = new WPBC_Admin_Menus( 'wpbc', array(
+		'in_menu'           => 'root',
+		'mune_icon_url'     => $svg_icon_integarted,
+		'menu_title'        => $title,
+		'menu_title_second' => __( 'Bookings', 'booking' ),
+		'page_header'       => __( 'Bookings Listing', 'booking' ),
+		'browser_header'    => __( 'Bookings Listing', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+		'user_role'         => get_bk_option( 'booking_user_role_booking' ),
+		'position'          => $booking_menu_position,
+	) );
 
-	self::$instance->admin_menu['new'] = new WPBC_Admin_Menus(
-		'wpbc-new',
-		array(
+	self::$instance->admin_menu['new'] = new WPBC_Admin_Menus( 'wpbc-new', array(
 			'in_menu'        => 'wpbc',
-			'menu_title'     => '+ ' . ucwords( __( 'Add booking', 'booking' ) ),                                      // FixIn: 10.9.3.1.
+			'menu_title'     => '+ ' . ucwords( __( 'Add booking', 'booking' ) ),
 			'page_header'    => ucwords( __( 'Add booking', 'booking' ) ),
 			'browser_header' => ucwords( __( 'Add booking', 'booking' ) ) . ' - ' . __( 'Booking Calendar', 'booking' ),
 			'user_role'      => get_bk_option( 'booking_user_role_addbooking' ),
-		)
-	);
+		) );
 
-    self::$instance->admin_menu['availability']    = new WPBC_Admin_Menus(												// FixIn: 9.3.0.1.
-                                                    'wpbc-availability' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => ucwords( __('Availability', 'booking') )
-                                                  , 'page_header'   => ucwords( __('Availability','booking') )
-                                                  , 'browser_header'=> ucwords( __('Availability', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_availability' )	// FixIn: 9.5.2.2.
-                                                                            )
-                                                );
-	//FixIn: 9.8.15.2.4
-    if ( class_exists( 'wpdev_bk_biz_m' ) )
-        self::$instance->admin_menu['prices']    = new WPBC_Admin_Menus(
-                                                    'wpbc-prices' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => __('Prices', 'booking')
-                                                  , 'page_header'   => ucwords( __('Booking Prices','booking') )
-                                                  , 'browser_header'=> __('Prices', 'booking') . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_prices' )			//FixIn: 9.8.15.2.6
-                                                                            )
-                                                );
-    if ( class_exists( 'wpdev_bk_personal' ) ) {
-        self::$instance->admin_menu['resources']    = new WPBC_Admin_Menus(
-                                                    'wpbc-resources' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => __('Resources', 'booking')
-                                                  , 'page_header'   => ucwords( __('Booking resources','booking') )
-                                                  , 'browser_header'=> __('Resources', 'booking') . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_resources' )
-                                                                            )
-                                                );
-	}
+	self::$instance->admin_menu['resources'] = new WPBC_Admin_Menus( 'wpbc-resources', array(
+		'in_menu'        => 'wpbc',
+		'menu_title'     => __( 'Resources', 'booking' ),
+		'page_header'    => ucwords( __( 'Booking resources', 'booking' ) ),
+		'browser_header' => __( 'Resources', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+		'user_role'      => ( ( class_exists( 'wpdev_bk_personal' ) ) ? get_bk_option( 'booking_user_role_resources' )
+			: get_bk_option( 'booking_user_role_settings' ) ),
+	) );
 
+	self::$instance->admin_menu['availability'] = new WPBC_Admin_Menus(                                                // FixIn: 9.3.0.1.
+		'wpbc-availability', array(
+			'in_menu'        => 'wpbc',
+			'menu_title'     => ucwords( __( 'Availability', 'booking' ) ),
+			'page_header'    => ucwords( __( 'Availability', 'booking' ) ),
+			'browser_header' => ucwords( __( 'Availability', 'booking' ) ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+			'user_role'      => get_bk_option( 'booking_user_role_availability' ),
+		) );
 
-	if ( ! class_exists( 'wpdev_bk_personal' ) ) {            // FixIn: 10.1.3.1.
-	    // FixIn: 9.8.15.7.
-        self::$instance->admin_menu['resources']    = new WPBC_Admin_Menus(
-                                                    'wpbc-resources' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    =>   __('Publish', 'booking')  // __('Resource', 'booking')
-                                                  , 'page_header'   => ucwords( __('Booking resource','booking') )
-                                                  , 'browser_header'=> __('Resource', 'booking') . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_settings' )
-                                                                            )
-                                                );
-	}
-
-	if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-		self::$instance->admin_menu['services'] = new WPBC_Admin_Menus(
-			'wpbc-services',
-			array(
+	if ( class_exists( 'wpdev_bk_biz_m' ) ) {
+		self::$instance->admin_menu['prices'] = new WPBC_Admin_Menus( 'wpbc-prices', array(
 				'in_menu'        => 'wpbc',
-				'menu_title'     => __( 'Services', 'booking' ),
-				'page_header'    => __( 'Services', 'booking' ),
-				'browser_header' => __( 'Services', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
-				'user_role'      => get_bk_option( 'booking_user_role_settings' ),
-			)
-		);
+				'menu_title'     => __( 'Prices', 'booking' ),
+				'page_header'    => ucwords( __( 'Booking Prices', 'booking' ) ),
+				'browser_header' => __( 'Prices', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+				'user_role'      => get_bk_option( 'booking_user_role_prices' ),            //FixIn: 9.8.15.2.6
+			) );
 	}
 
+	self::$instance->admin_menu['services'] = new WPBC_Admin_Menus( 'wpbc-services', array(
+			'in_menu'        => 'wpbc',
+			'menu_title'     => __( 'Services', 'booking' ),
+			'page_header'    => __( 'Services', 'booking' ),
+			'browser_header' => __( 'Services', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+			'user_role'      => get_bk_option( 'booking_user_role_settings' ),
+		) );
 
-    self::$instance->admin_menu['settings'] = new WPBC_Admin_Menus(
-                                                    'wpbc-settings' , array (
-                                                    'in_menu' => 'wpbc'
-                                                  , 'menu_title'    => __('Settings', 'booking')
-                                                  , 'page_header'   => __('General Settings','booking')
-                                                  , 'browser_header'=> __('Settings', 'booking') . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' => get_bk_option( 'booking_user_role_settings' )
-                                                                            )
-                                                );
+	self::$instance->admin_menu['settings'] = new WPBC_Admin_Menus( 'wpbc-settings', array(
+			'in_menu'        => 'wpbc',
+			'menu_title'     => __( 'Settings', 'booking' ),
+			'page_header'    => __( 'General Settings', 'booking' ),
+			'browser_header' => __( 'Settings', 'booking' ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+			'user_role'      => get_bk_option( 'booking_user_role_settings' ),
+		) );
 
+	if ( ( wpbc_is_user_can_access_wizard_page() ) && ( ! wpbc_setup_wizard_page__is_all_steps_completed() ) ) {
 
+		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
 
-
-		if (
-			( wpbc_is_user_can_access_wizard_page() ) &&
-			( ! wpbc_setup_wizard_page__is_all_steps_completed() )
-		){
-
-		 	$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
-
-    		self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus(
-                                                    'wpbc-setup' , array (
-                                                    'in_menu'        => 'wpbc'
-                                                  , 'menu_title'     => $setup_steps->get_plugin_menu_title__setup_progress()
-                                                  , 'page_header'    => ucwords( __('Setup','booking') )
-                                                  , 'browser_header' => ucwords( __('Setup', 'booking') ) . ' - ' . __('Booking Calendar', 'booking')
-                                                  , 'user_role' 	 => get_bk_option( 'booking_user_role_settings' )				//FixIn: 9.8.15.2.6
-                                                                            )
-                                                );
-		}
-
+		self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus( 'wpbc-setup', array(
+				'in_menu'        => 'wpbc',
+				'menu_title'     => $setup_steps->get_plugin_menu_title__setup_progress(),
+				'page_header'    => ucwords( __( 'Setup', 'booking' ) ),
+				'browser_header' => ucwords( __( 'Setup', 'booking' ) ) . ' - ' . __( 'Booking Calendar', 'booking' ),
+				'user_role'      => get_bk_option( 'booking_user_role_settings' ),
+			) );
+	}
 
 
 	$simulate_user_id = wpbc_mu__is_simulated_login_as_user();
@@ -315,22 +275,15 @@ public function define_admin_menu(){
 
 		$custom_user = get_userdata( $simulate_user_id );
 
-		self::$instance->admin_menu['log_off'] = new WPBC_Admin_Menus(
-											'wpbc-log-off' , array (
-												  'in_menu' 	  => 'wpbc'
-												//, 'menu_title' => __( 'Log Out Simulated Login as', 'booking' ) . ' "' . $custom_user->display_name . '"'
-												, 'menu_title' => '<span style="color:#fffcdf;font-size: 11px;font-weight: 400;" title="'
-																		. esc_attr( __( 'Log out as regular user and login as super booking admin user', 'booking' ) )
-																  .'">'
-																  .__( 'Back to Super Admin', 'booking' )
-																  .'<span>'
-												/* translators: 1: ... */
-												, 'page_header'   => ucwords( sprintf( __( 'Need even more functionality? Check %1$s higher versions %2$s', 'booking' ), '', '' ) )
-												, 'browser_header'=> 'Log In as Super Admin'
-												, 'user_role' 	  => get_bk_option( 'booking_user_role_booking' )
-											)
-										);
+		self::$instance->admin_menu['log_off'] = new WPBC_Admin_Menus( 'wpbc-log-off', array(
+			'in_menu'        => 'wpbc',
+			'menu_title'     => '<span style="color:#fffcdf;font-size: 11px;font-weight: 400;" title="' . esc_attr( __( 'Log out as regular user and login as super booking admin user', 'booking' ) ) . '">' . __( 'Back to Super Admin', 'booking' ) . '<span>',
+			'page_header'    => ucwords( sprintf( __( 'Need even more functionality? Check %1$s higher versions %2$s', 'booking' ), '', '' ) ), /* translators: 1: ... */
+			'browser_header' => 'Log In as Super Admin',
+			'user_role'      => get_bk_option( 'booking_user_role_booking' ),
+		) );
 	}
+
 }
 
 

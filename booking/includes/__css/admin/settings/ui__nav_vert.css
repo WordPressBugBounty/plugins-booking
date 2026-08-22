@@ -236,6 +236,23 @@
 		max-width: calc(100% - 25px); /* - 25px it is sidebar button ( expand / colapse )  width */
 		flex: 1 1 100%;
 	}
+	/* Hide icons and roate text  on compact  toolbar  in mobile mode */
+	.wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper {
+		flex: 0 0 40px;
+		min-width: 40px;
+		width: 40px;
+		max-width: 40px;
+		overflow:hidden;
+	}
+	.wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item .wpbc_ui_el__vert_nav_icon {
+		display: none;
+	}
+	.wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item {
+		writing-mode: vertical-lr;
+	}
+	.wpbc_settings_page_wrapper.max_right .wpbc_ui_el__vert_right_bar__wrapper.wpbc_ui_el__vert_right_bar_compact__wrapper .wpbc_ui_el__vert_nav_item .wpbc_ui_el__vert_nav_item__a {
+		padding: 20px;
+	}
 	/* Hide content,  if opened left menu in mobile mode */
 	.wpbc_settings_page_wrapper.max       .wpbc_settings_page_content .wpbc_page {
 		display: none;

@@ -15,7 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * The supplied page tree has already passed through the shared presentation
  * boundary. A configured group is shown only when the current edition exposed
- * at least one route for it. Classic returns the exact legacy root collection.
+ * at least one route for it. Classic preserves the legacy collection and its
+ * dividers while applying explicitly configured presentation metadata.
  *
  * @param array $legacy_root_navigation Existing root-menu definitions.
  * @param array $page_navigation        Resolved page, tab, and subtab tree.
@@ -27,8 +28,45 @@ function wpbc_booking_modes_resolve_root_navigation( $legacy_root_navigation, $p
 	$mode_id = wpbc_booking_modes_get_selected_mode_id();
 	$mode    = wpbc_booking_modes_get_mode( $mode_id );
 
-	if ( 'classic' === $mode_id || ! is_array( $mode ) || empty( $mode['groups'] ) ) {
+	if ( ! is_array( $mode ) || empty( $mode['groups'] ) ) {
 		return $legacy_root_navigation;
+	}
+
+	if ( 'classic' === $mode_id ) {
+		$resolved_root_navigation = $legacy_root_navigation;
+
+		foreach ( $resolved_root_navigation as $page_slug => $legacy_group ) {
+			if (
+				! is_array( $legacy_group )
+				|| ! isset( $mode['groups'][ $page_slug ] )
+				|| ! is_array( $mode['groups'][ $page_slug ] )
+			) {
+				continue;
+			}
+
+			$group_definition = $mode['groups'][ $page_slug ];
+
+			if ( isset( $group_definition['visible'] ) && false === (bool) $group_definition['visible'] ) {
+				unset( $resolved_root_navigation[ $page_slug ] );
+				continue;
+			}
+
+			if ( ! empty( $group_definition['title'] ) && is_scalar( $group_definition['title'] ) ) {
+				$legacy_group['title'] = wp_strip_all_tags( (string) $group_definition['title'] );
+			}
+
+			if ( array_key_exists( 'font_icon', $group_definition ) ) {
+				$legacy_group['font_icon']      = wpbc_booking_modes_sanitize_font_icon_classes( $group_definition['font_icon'] );
+				$legacy_group['mode_font_icon'] = $legacy_group['font_icon'];
+			}
+
+			$resolved_root_navigation[ $page_slug ] = $legacy_group;
+		}
+
+		/** This filter is documented below for all mode-specific root navigation. */
+		$filtered_navigation = apply_filters( 'wpbc_booking_modes_resolved_root_navigation', $resolved_root_navigation, $mode_id, $page_navigation );
+
+		return is_array( $filtered_navigation ) ? $filtered_navigation : $resolved_root_navigation;
 	}
 
 	$resolved_root_navigation = array();
@@ -36,7 +74,11 @@ function wpbc_booking_modes_resolve_root_navigation( $legacy_root_navigation, $p
 	foreach ( $mode['groups'] as $page_slug => $group_definition ) {
 		$page_slug = sanitize_key( $page_slug );
 
-		if ( empty( $page_navigation[ $page_slug ] ) || ! is_array( $group_definition ) ) {
+		if (
+			empty( $page_navigation[ $page_slug ] )
+			|| ! is_array( $group_definition )
+			|| ( isset( $group_definition['visible'] ) && false === (bool) $group_definition['visible'] )
+		) {
 			continue;
 		}
 
@@ -51,8 +93,9 @@ function wpbc_booking_modes_resolve_root_navigation( $legacy_root_navigation, $p
 			$legacy_group['title'] = wp_strip_all_tags( (string) $group_definition['title'] );
 		}
 
-		if ( ! empty( $group_definition['font_icon'] ) && is_scalar( $group_definition['font_icon'] ) ) {
-			$legacy_group['font_icon'] = sanitize_html_class( (string) $group_definition['font_icon'] );
+		if ( array_key_exists( 'font_icon', $group_definition ) ) {
+			$legacy_group['font_icon']      = wpbc_booking_modes_sanitize_font_icon_classes( $group_definition['font_icon'] );
+			$legacy_group['mode_font_icon'] = $legacy_group['font_icon'];
 		}
 
 		$legacy_group['_wpbc_mode_position'] = isset( $group_definition['position'] ) ? absint( $group_definition['position'] ) : 1000;
@@ -124,6 +167,7 @@ function wpbc_booking_modes_filter_wordpress_submenu() {
 
 	$resolved_submenu = array();
 	$unknown_position = 10000;
+	$source_position  = 0;
 
 	foreach ( $submenu['wpbc'] as $submenu_item ) {
 		$menu_slug       = isset( $submenu_item[2] ) && is_scalar( $submenu_item[2] ) ? sanitize_key( (string) $submenu_item[2] ) : '';
@@ -139,8 +183,9 @@ function wpbc_booking_modes_filter_wordpress_submenu() {
 
 		$position = null !== $menu_placement && isset( $menu_placement['position'] ) ? absint( $menu_placement['position'] ) : $unknown_position++;
 		$resolved_submenu[] = array(
-			'position' => $position,
-			'item'     => $submenu_item,
+			'position'        => $position,
+			'source_position' => $source_position++,
+			'item'            => $submenu_item,
 		);
 	}
 
@@ -148,7 +193,11 @@ function wpbc_booking_modes_filter_wordpress_submenu() {
 		$resolved_submenu,
 		static function ( $first_item, $second_item ) {
 			if ( $first_item['position'] === $second_item['position'] ) {
-				return 0;
+				if ( $first_item['source_position'] === $second_item['source_position'] ) {
+					return 0;
+				}
+
+				return $first_item['source_position'] < $second_item['source_position'] ? -1 : 1;
 			}
 
 			return $first_item['position'] < $second_item['position'] ? -1 : 1;

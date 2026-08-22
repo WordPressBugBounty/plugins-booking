@@ -1177,6 +1177,38 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
         // <editor-fold     defaultstate="collapsed"                        desc=" Advanced "  >
 
+		if ( wpbc_is_11_6_features_enabled() && wpbc_booking_resources_catalog_can_manage_settings() ) {
+			$is_pro_compatible = wpbc_booking_resources_catalog_is_pro_compatible();
+			$description       = __( 'Legacy catalog pages are deprecated and scheduled for removal in Booking Calendar 11.7. This setting applies to all administration catalogs upgraded in Booking Calendar 11.6.', 'booking' );
+
+			if ( ! $is_pro_compatible ) {
+				$pro_version = wpbc_booking_resources_catalog_get_pro_version();
+				if ( '' === $pro_version ) {
+					$pro_version = __( 'Unknown', 'booking' );
+				}
+
+				/* translators: 1: Detected Booking Calendar Pro version, 2: Minimum compatible Pro version. */
+				$description = sprintf( __( 'Legacy catalog mode is required because Booking Calendar Pro %1$s is active. Update Pro to %2$s or newer to use the new catalogs. Legacy catalog pages are deprecated and scheduled for removal in Booking Calendar 11.7.', 'booking' ), esc_html( $pro_version ), esc_html( wpbc_booking_resources_catalog_get_minimum_pro_version() ) );
+			}
+
+			$this->fields['booking_resources_catalog_renderer'] = array(
+				'type'        => 'select',
+				'default'     => 'new',
+				'title'       => __( 'Use legacy catalog pages', 'booking' ),
+				'description' => $description,
+				'options'     => array(
+					'new'    => __( 'No — use the new catalogs', 'booking' ),
+					'legacy' => __( 'Yes — use legacy catalog pages (Deprecated)', 'booking' ),
+				),
+				'group'       => 'advanced',
+				'disabled'    => ! $is_pro_compatible,
+			);
+
+			if ( ! $is_pro_compatible ) {
+				$this->fields['booking_resources_catalog_renderer']['value'] = 'legacy';
+			}
+		}
+
 
         $this->fields = apply_filters( 'wpbc_settings_edit_url_hash', $this->fields, $default_options_values );
         // FixIn: 10.10.1.2  $this->fields = apply_filters( 'wpbc_settings_resource_no_update__during_editing', $this->fields, $default_options_values );
@@ -1973,8 +2005,35 @@ if(1){
 
 
         // Enqueue JS to  the footer of the page
-        wpbc_enqueue_js( $js_script );
+		wpbc_enqueue_js( $js_script );
     }
+
+	/**
+	 * Validate the temporary shared 11.6 catalog renderer preference.
+	 *
+	 * The General Settings form verifies its nonce before invoking the Settings
+	 * API. This field adds an explicit capability boundary and allow list. When
+	 * compatibility forces disabled legacy views, the existing Resources-named
+	 * storage key is preserved instead of being overwritten by a derived value.
+	 *
+	 * @param string $post_key Full Settings API POST key.
+	 *
+	 * @return string Allow-listed stored renderer preference.
+	 */
+	public function validate_booking_resources_catalog_renderer_post( $post_key ) {
+		$stored_renderer = wpbc_booking_resources_catalog_get_stored_renderer();
+
+		if ( ! wpbc_booking_resources_catalog_can_manage_settings() || ! wpbc_booking_resources_catalog_is_pro_compatible() ) {
+			return $stored_renderer;
+		}
+
+		$submitted_renderer = self::validate_select_post_static( $post_key );
+		if ( ! is_string( $submitted_renderer ) || ! in_array( $submitted_renderer, array( 'new', 'legacy' ), true ) ) {
+			return $stored_renderer;
+		}
+
+		return $submitted_renderer;
+	}
 
 }
 

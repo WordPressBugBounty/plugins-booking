@@ -36,17 +36,14 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 	$local_params['is_from_admin_panel'] = ( false !== strpos( $server_http_referer_uri, $admin_uri ) );                                                            // true | false
 	$local_params['user_id']             = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) ) ? intval( $_REQUEST['wpbc_ajx_user_id'] ) : wpbc_get_current_user_id();       // 1
 
-	// Request parameters.
-	$experimental_request_rules = array();
-	if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-		$experimental_request_rules = array(
-			'service_id'                  => array( 'validate' => 'd', 'default' => 0 ),
-			'appointment_service_required' => array( 'validate' => 'd', 'default' => 0 ),
-			'appointment_context_token'   => array( 'validate' => 'strong', 'default' => '' ),
-			'resource_selector_required'  => array( 'validate' => 'd', 'default' => 0 ),
-			'resource_selector_context_token' => array( 'validate' => 'strong', 'default' => '' ),
-		);
-	}
+	// Request parameters for the released Appointment and Resource Selector workflows.
+	$workflow_request_rules = array(
+		'service_id'                     => array( 'validate' => 'd', 'default' => 0 ),
+		'appointment_service_required'   => array( 'validate' => 'd', 'default' => 0 ),
+		'appointment_context_token'      => array( 'validate' => 'strong', 'default' => '' ),
+		'resource_selector_required'     => array( 'validate' => 'd', 'default' => 0 ),
+		'resource_selector_context_token' => array( 'validate' => 'strong', 'default' => '' ),
+	);
 
 	$user_request = new WPBC_AJX__REQUEST( array(                                                                       // Using this class here only  for escaping variables
 												'db_option_name'          => 'booking__wpbc_booking_create__request_params',    // Not necessary,  because we not save request, only sanitize it
@@ -63,7 +60,8 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 																					'is_emails_send'            => array( 'validate' => 'd', 'default' => 1 ),
 																					'active_locale'             => array( 'validate' => 'strong', 'default'  => '' ),
 																					'form_status'               => array( 'validate' => 'strong', 'default'  => 'published' ),
-																					'allow_past'                => array( 'validate' => 'd', 'default' => 0 ),
+																	'allow_past'                => array( 'validate' => 'd', 'default' => 0 ),
+																	'classic_booking_context_token' => array( 'validate' => 'strong', 'default' => '' ),
 																					'wpbc_bfb_preview'          => array( 'validate' => 'd', 'default'  => 0 ),
 																					'wpbc_bfb_preview_token'    => array( 'validate' => 'strong', 'default'  => '' ),
 																					'wpbc_bfb_preview_form_id'  => array( 'validate' => 'd', 'default'  => 0 ),
@@ -72,7 +70,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 																					'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
 																					'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
 																					'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
-																									), $experimental_request_rules )
+																	), $workflow_request_rules )
 										));
 
 	// Escape of request params   in Ajax Post.         We use prefix 'calendar_request_params', if Ajax sent - $_REQUEST['calendar_request_params']['resource_id'], ...
@@ -121,6 +119,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 		'request_uri'               => $server_http_referer_uri,
 		'form_status'               => $request_params['form_status'],
 		'allow_past'                => $request_params['allow_past'],
+		'classic_booking_context_token' => $request_params['classic_booking_context_token'],
 		'wpbc_bfb_preview'          => $request_params['wpbc_bfb_preview'],
 		'wpbc_bfb_preview_token'    => $request_params['wpbc_bfb_preview_token'],
 		'wpbc_bfb_preview_form_id'  => $request_params['wpbc_bfb_preview_form_id'],
@@ -130,13 +129,11 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 		'wpbc_time_override_start'   => $request_params['wpbc_time_override_start'],
 		'wpbc_time_override_end'     => $request_params['wpbc_time_override_end'],
 	);
-	if ( wpbc_is_11_5_features_enabled() ) {
-		$request_save_params['service_id']                  = $request_params['service_id'];
-		$request_save_params['appointment_service_required'] = $request_params['appointment_service_required'];
-		$request_save_params['appointment_context_token']   = $request_params['appointment_context_token'];
-		$request_save_params['resource_selector_required']  = $request_params['resource_selector_required'];
-		$request_save_params['resource_selector_context_token'] = $request_params['resource_selector_context_token'];
-	}
+	$request_save_params['service_id']                     = $request_params['service_id'];
+	$request_save_params['appointment_service_required']   = $request_params['appointment_service_required'];
+	$request_save_params['appointment_context_token']      = $request_params['appointment_context_token'];
+	$request_save_params['resource_selector_required']     = $request_params['resource_selector_required'];
+	$request_save_params['resource_selector_context_token'] = $request_params['resource_selector_context_token'];
 	$booking_save_arr = wpbc_booking_save( $request_save_params );
 
 	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  BOOKING "  >
@@ -281,6 +278,7 @@ function wpbc_booking_save( $request_params ){
 								'is_show_payment_form'  => array( 'validate' => 'd',      'default' => 1 ),             // 0 | 1
 								'user_id'               => array( 'validate' => 'd',      'default' => wpbc_get_current_user_id() ),        // INT
 								'allow_past'            => array( 'validate' => 'd',      'default' => 0 ),
+								'classic_booking_context_token' => array( 'validate' => 'strong', 'default' => '' ),
 								'request_uri'           => array( 'validate' => 'strong', 'default'  => ( ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX ) ) ? $server_http_referer_uri : $server_request_uri ),     //  front-end: $server_request_uri | ajax: $server_http_referer_uri
 								// Really Optional:
 								'aggregate_resource_id_arr'         => array( 'validate' => 'digit_or_csd', 'default' => '' ),
@@ -301,22 +299,20 @@ function wpbc_booking_save( $request_params ){
 								'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
 								'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
 						);
-	if ( wpbc_is_11_5_features_enabled() ) {
-		$validate_arr_rules['service_id']                  = array( 'validate' => 'd', 'default' => 0 );
-		$validate_arr_rules['appointment_service_required'] = array( 'validate' => 'd', 'default' => 0 );
-		$validate_arr_rules['appointment_context_token']   = array( 'validate' => 'strong', 'default' => '' );
-		$validate_arr_rules['resource_selector_required']      = array( 'validate' => 'd', 'default' => 0 );
-		$validate_arr_rules['resource_selector_context_token'] = array( 'validate' => 'strong', 'default' => '' );
-	}
+	$validate_arr_rules['service_id']                     = array( 'validate' => 'd', 'default' => 0 );
+	$validate_arr_rules['appointment_service_required']   = array( 'validate' => 'd', 'default' => 0 );
+	$validate_arr_rules['appointment_context_token']      = array( 'validate' => 'strong', 'default' => '' );
+	$validate_arr_rules['resource_selector_required']     = array( 'validate' => 'd', 'default' => 0 );
+	$validate_arr_rules['resource_selector_context_token'] = array( 'validate' => 'strong', 'default' => '' );
 	$re_cleaned_params = wpbc_sanitize_params_in_arr( $request_params, $validate_arr_rules );
-	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['appointment_service_required'] ) && empty( $re_cleaned_params['service_id'] ) ) {
+	if ( ! empty( $re_cleaned_params['appointment_service_required'] ) && empty( $re_cleaned_params['service_id'] ) ) {
 		$ajx_data_arr['status']                          = 'error';
 		$ajx_data_arr['status_error']                    = 'appointment_service_required';
 		$ajx_data_arr['ajx_after_action_message']        = __( 'Please select a Service.', 'booking' );
 		$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
 		return array( 'ajx_data' => $ajx_data_arr );
 	}
-	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['service_id'] ) ) {
+	if ( ! empty( $re_cleaned_params['service_id'] ) ) {
 		if ( ! function_exists( 'wpbc_booking_appointment_validate_submission_context' ) ) {
 			$appointment_context_check = new WP_Error( 'appointment_context_unavailable', __( 'The Appointment selection cannot be verified. Please reload the page and try again.', 'booking' ) );
 		} else {
@@ -337,7 +333,7 @@ function wpbc_booking_save( $request_params ){
 		// A client value cannot enable past Appointment creation; trust only the site-authored signed context.
 		$re_cleaned_params['allow_past'] = wpbc_booking_appointment_is_past_booking_enabled( $appointment_context_check ) ? 1 : 0;
 	}
-	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['resource_selector_required'] ) ) {
+	if ( ! empty( $re_cleaned_params['resource_selector_required'] ) ) {
 		if ( ! function_exists( 'wpbc_booking_resource_selector_validate_submission_context' ) ) {
 			$resource_selector_context_check = new WP_Error( 'resource_selector_context_unavailable', __( 'The Booking Resource selection cannot be verified. Please reload the page and try again.', 'booking' ) );
 		} else {
@@ -385,6 +381,20 @@ function wpbc_booking_save( $request_params ){
 	$local_params['sync_gid']            = $re_cleaned_params['sync_gid'];                                              // ''
 	$local_params['is_approve_booking']  = $re_cleaned_params['is_approve_booking'];                                    // 0 | 1
 	$local_params['is_use_booking_recurrent_time'] = ( 1 === $re_cleaned_params['is_use_booking_recurrent_time'] );     // false | true
+	$request_action = isset( $_REQUEST['action'] ) && is_scalar( $_REQUEST['action'] )
+		? sanitize_key( (string) wp_unslash( $_REQUEST['action'] ) )
+		: ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$is_authorized_admin_booking_request = $local_params['is_from_admin_panel']
+		&& is_user_logged_in()
+		&& class_exists( 'WPBC_Add_Booking_Component' )
+		&& WPBC_Add_Booking_Component::current_user_can_add_booking()
+		&& wpbc_is_mu_user_can_be_here( 'activated_user' );
+	$is_public_booking_create_request = wp_doing_ajax()
+		&& 'wpbc_ajx_booking__create' === strtolower( $request_action )
+		&& ! $is_authorized_admin_booking_request;
+
+	// Time overrides belong exclusively to the capability-protected Add Booking administration workflow.
+	$re_cleaned_params = wpbc_restrict_booking_time_override_to_authorized_admin( $re_cleaned_params, $is_authorized_admin_booking_request );
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Parse Local parameters for later use
@@ -417,7 +427,7 @@ function wpbc_booking_save( $request_params ){
 	//  Important! : [ 64800, 72000 ]
 	$local_params['time_as_seconds_arr'] = wpbc_get_in_booking_form__time_to_book_as_seconds_arr( $local_params['structured_booking_data_arr'] );
 	$local_params['appointment_service'] = array();
-	if ( wpbc_is_11_5_features_enabled() && ! empty( $re_cleaned_params['service_id'] ) && function_exists( 'wpbc_appointment_services_repository' ) ) {
+	if ( ! empty( $re_cleaned_params['service_id'] ) && function_exists( 'wpbc_appointment_services_repository' ) ) {
 		$range_time_value = isset( $local_params['structured_booking_data_arr']['rangetime'] ) ? $local_params['structured_booking_data_arr']['rangetime'] : '';
 		$start_time_value = isset( $local_params['structured_booking_data_arr']['starttime'] ) ? $local_params['structured_booking_data_arr']['starttime'] : '';
 		$range_time_value = is_array( $range_time_value ) ? implode( '', $range_time_value ) : $range_time_value;
@@ -493,6 +503,36 @@ function wpbc_booking_save( $request_params ){
 	$local_params['dates_only_sql_arr'] = wpbc_convert_dates_str__dd_mm_yyyy__to__yyyy_mm_dd( $re_cleaned_params["dates_ddmmyy_csv"] );
 	$local_params['dates_only_sql_arr'] = explode( ',', $local_params['dates_only_sql_arr'] );
 
+	$has_verified_classic_context = false;
+	if ( ! empty( $re_cleaned_params['classic_booking_context_token'] ) && function_exists( 'wpbc_classic_booking_context_validate_submission' ) ) {
+		$classic_context = wpbc_classic_booking_context_validate_submission(
+			$re_cleaned_params['classic_booking_context_token'],
+			$re_cleaned_params['resource_id'],
+			$local_params['dates_only_sql_arr'],
+			$re_cleaned_params['custom_form'],
+			$re_cleaned_params['aggregate_resource_id_arr']
+		);
+		if ( is_wp_error( $classic_context ) ) {
+			$ajx_data_arr['status']                          = 'error';
+			$ajx_data_arr['status_error']                    = $classic_context->get_error_code();
+			$ajx_data_arr['ajx_after_action_message']        = $classic_context->get_error_message();
+			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+			return array( 'ajx_data' => $ajx_data_arr );
+		}
+
+		$has_verified_classic_context     = true;
+		$re_cleaned_params['allow_past'] = ! empty( $classic_context['allow_past'] ) ? 1 : 0;
+	}
+
+	$has_verified_workflow_context = (
+			( ! empty( $re_cleaned_params['service_id'] ) && ! empty( $re_cleaned_params['appointment_context_token'] ) )
+			|| ( ! empty( $re_cleaned_params['resource_selector_required'] ) && ! empty( $re_cleaned_params['resource_selector_context_token'] ) )
+		);
+	if ( $is_public_booking_create_request && ! $has_verified_classic_context && ! $has_verified_workflow_context ) {
+		$re_cleaned_params['allow_past']  = 0;
+		$re_cleaned_params['request_uri'] = remove_query_arg( 'allow_past', $re_cleaned_params['request_uri'] );
+	}
+
 	if (
 		   ( ! empty( $local_params['time_override_arr'] ) )
 		&& ( 'times_availability' === $local_params['time_override_arr']['source'] )
@@ -528,18 +568,10 @@ function wpbc_booking_save( $request_params ){
 		}
 	}
 
-	$request_action = isset( $_REQUEST['action'] ) && is_scalar( $_REQUEST['action'] )
-		? sanitize_key( (string) wp_unslash( $_REQUEST['action'] ) )
-		: ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$is_frontend_ajax_edit = defined( 'DOING_AJAX' )
-		&& DOING_AJAX
+	$is_frontend_ajax_edit = wp_doing_ajax()
 		&& 'wpbc_ajx_booking__create' === strtolower( $request_action )
 		&& 0 !== $local_params['is_edit_booking'];
-	$is_authorized_admin_edit = $local_params['is_from_admin_panel']
-		&& is_user_logged_in()
-		&& class_exists( 'WPBC_Add_Booking_Component' )
-		&& WPBC_Add_Booking_Component::current_user_can_add_booking()
-		&& wpbc_is_mu_user_can_be_here( 'activated_user' );
+	$is_authorized_admin_edit = $is_authorized_admin_booking_request;
 
 	if (
 		$is_frontend_ajax_edit
@@ -629,7 +661,7 @@ function wpbc_booking_save( $request_params ){
 																														// </editor-fold>
 	}
 
-	if ( wpbc_is_11_5_features_enabled() && ! empty( $local_params['appointment_service'] ) && function_exists( 'wpbc_appointment_services_check_buffer_conflicts' ) ) {
+	if ( ! empty( $local_params['appointment_service'] ) && function_exists( 'wpbc_appointment_services_check_buffer_conflicts' ) ) {
 		$buffer_check = wpbc_appointment_services_check_buffer_conflicts(
 			$local_params['appointment_service'],
 			$where_to_save_booking['main__resource_id'],
@@ -733,9 +765,7 @@ function wpbc_booking_save( $request_params ){
 	$payment_params['str_dates__dd_mm_yyyy'] = implode( ',', $str_dates__dd_mm_yyyy );                                  // REQUIRED --    '14.11.2023, 15.11.2023, 16.11.2023, 17.11.2023'
 	$payment_params['booking_id']            = $booking_new_arr['booking_id'];                                          // REQUIRED --    '2'
 	$payment_params['resource_id']           = $create_params['resource_id'];                                           // REQUIRED --    '2'  can be child resource (changed in wpbc_where_to_save() )
-	if ( wpbc_is_11_5_features_enabled() ) {
-		$payment_params['service_id'] = ! empty( $create_params['appointment_service']['service_id'] ) ? absint( $create_params['appointment_service']['service_id'] ) : 0;
-	}
+	$payment_params['service_id'] = ! empty( $create_params['appointment_service']['service_id'] ) ? absint( $create_params['appointment_service']['service_id'] ) : 0;
 	$payment_params['initial_resource_id']   = $local_params['initial_resource_id'];                                    // REQUIRED --    '2'  initial calendar - parent resource
 	$payment_params['form_data']             = $booking_new_arr['form_data'];      // we re-save it,  because here can be sync_guid and custom form new data from  wpbc_db__booking_save(..)    // REQUIRED --    'text^selected_short_timedates_hint4^06/11/2018 14:00...'
 	$payment_params['times_array']           = array(
@@ -1597,6 +1627,35 @@ function wpbc_clear_request_form_context() {
         }
 
 		return $time_as_seconds_arr;
+	}
+
+
+	/**
+	 * Remove administrator time-override values from an unauthorized booking request.
+	 *
+	 * The public booking endpoint intentionally accepts unauthenticated requests, so
+	 * sanitizing these values is not sufficient authorization. Clearing every related
+	 * value here prevents a public client from replacing the Booking Form's configured
+	 * time while preserving the capability-protected Add Booking workflow.
+	 *
+	 * @param array $request_params                      Sanitized booking request parameters.
+	 * @param bool  $is_authorized_admin_booking_request Whether the current request is an authorized Add Booking administration request.
+	 *
+	 * @return array Booking request parameters with unauthorized override values removed.
+	 */
+	function wpbc_restrict_booking_time_override_to_authorized_admin( $request_params, $is_authorized_admin_booking_request ) {
+
+		$request_params = is_array( $request_params ) ? $request_params : array();
+		if ( $is_authorized_admin_booking_request ) {
+			return $request_params;
+		}
+
+		$request_params['wpbc_time_override_enabled'] = 0;
+		$request_params['wpbc_time_override_source']  = '';
+		$request_params['wpbc_time_override_start']   = '';
+		$request_params['wpbc_time_override_end']     = '';
+
+		return $request_params;
 	}
 
 

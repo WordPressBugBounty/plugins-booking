@@ -165,18 +165,14 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-bal
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-coupon_discount_hint/field-coupon-discount-hint-wptpl.php';
 
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-resource_title_hint/field-resource-title-hint-wptpl.php';
-if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-service_title_hint/field-service-title-hint-wptpl.php';
-}
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-service_title_hint/field-service-title-hint-wptpl.php';
 
 
 // =====================================================================================================================
 // == Structure Packs ==
 // =====================================================================================================================
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/wizard-nav/wizard-nav.php';                     // -- Wizard Nav. --
-if ( function_exists( 'wpbc_is_11_5_features_enabled' ) && wpbc_is_11_5_features_enabled() ) {
-	require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/appointment-start-over/appointment-start-over.php'; // -- Appointment Start Over. --
-}
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/appointment-start-over/appointment-start-over.php'; // -- Appointment Start Over. --
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/divider/divider.php';                           // -- Divider --
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/steps-timeline/field-steps-timeline.php';       // -- Steps Timeline in Wizards --
 

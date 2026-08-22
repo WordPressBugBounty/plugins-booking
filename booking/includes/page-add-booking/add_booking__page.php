@@ -1085,7 +1085,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render the legacy page or the feature-gated inspector presentation.
+	 * Render the legacy page or the released inspector presentation.
 	 *
 	 * Both presentations delegate the actual Booking Form to the same reusable
 	 * component, so calendar and submission behavior cannot diverge.

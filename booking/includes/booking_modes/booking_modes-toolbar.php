@@ -140,8 +140,8 @@ add_action( 'wpbc_ui_el__top_nav__content_start', 'wpbc_booking_modes_render_too
  * Mode selection remains a presentation-only operation. QuickStart uses a
  * standard WordPress notice with standard buttons because it can create site
  * content. Each mode has a separate user-specific dismissal key, so dismissing
- * one prompt does not suppress the other. Live demos expose documentation only
- * and never page-editing actions.
+ * one prompt does not suppress the other. Live demos omit these prompts because
+ * their guided sample content is already provisioned separately.
  *
  * @param string $page_tag           Current Booking Calendar page slug.
  * @param string $active_page_tab    Current active tab slug.
@@ -154,6 +154,10 @@ function wpbc_booking_modes_render_quickstart_action( $page_tag, $active_page_ta
 	unset( $page_tag, $active_page_tab, $active_page_subtab );
 
 	if ( function_exists( 'wpbc_setup_wizard_page__is_in_progress' ) && wpbc_setup_wizard_page__is_in_progress() ) {
+		return;
+	}
+
+	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
 		return;
 	}
 
@@ -176,24 +180,6 @@ function wpbc_booking_modes_render_quickstart_action( $page_tag, $active_page_ta
 	$notice_text  = 'appointment' === $mode_id
 		? __( 'Create or reuse the first Service, Provider assignment, suitable Booking Form, and Appointment booking page.', 'booking' )
 		: __( 'Configure date ranges and changeover times, then create or reuse the first Property booking page.', 'booking' );
-
-	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
-		?>
-		<div>
-			<div class="wpbc_alert_message">
-				<div id="<?php echo esc_attr( $notice_id ); ?>" class="wpbc_inner_message notice notice-info wpbc_booking_modes_quickstart_notice">
-					<?php wpbc_booking_modes_render_quickstart_dismiss_button( $notice_id ); ?>
-					<p><strong><?php echo esc_html( $notice_title ); ?></strong></p>
-					<p><?php echo esc_html( $notice_text ); ?></p>
-					<p class="wpbc_booking_modes_quickstart_actions">
-						<a class="button button-secondary" href="https://wpbookingcalendar.com/faq/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'QuickStart guide', 'booking' ); ?></a>
-					</p>
-				</div>
-			</div>
-		</div>
-		<?php
-		return;
-	}
 
 	if ( ! function_exists( 'wpbc_booking_modes_current_user_can_quickstart' ) || ! wpbc_booking_modes_current_user_can_quickstart() ) {
 		return;

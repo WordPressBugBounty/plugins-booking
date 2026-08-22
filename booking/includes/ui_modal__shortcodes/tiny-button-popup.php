@@ -244,13 +244,11 @@ class WPBC_TinyMCE_Buttons {
 									// [bookingcalendar ... ] ----------------------------------------------------------
 									wpbc_shortcode_config__content__bookingcalendar();
 
-									if ( wpbc_is_11_5_features_enabled() ) {
-										// [booking_appointment ... ] --------------------------------------------------
-										wpbc_shortcode_config__content__booking_appointment();
+									// [booking_appointment ... ] --------------------------------------------------
+									wpbc_shortcode_config__content__booking_appointment();
 
-										// [booking_resource_selector ... ] --------------------------------------------
-										wpbc_shortcode_config__content__booking_resource_selector();
-									}
+									// [booking_resource_selector ... ] --------------------------------------------
+									wpbc_shortcode_config__content__booking_resource_selector();
 
 									// [bookingselect ... ] ------------------------------------------------------------
 									wpbc_shortcode_config__content__bookingselect();
@@ -325,7 +323,7 @@ function wpbc_get_pages_where_insert_tiny_mce_buttons() {
 
 if (
 	( in_array( basename( $_SERVER['PHP_SELF'] ), wpbc_get_pages_where_insert_tiny_mce_buttons() ) )      // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-	|| ( ( isset( $_REQUEST['page'] ) && ( 'wpbc-resources' === $_REQUEST['page'] ) ) )                   // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+	|| wpbc_can_i_load_on__resources_page()
 	|| wpbc_is_setup_wizard_page() // || wpbc_is_bookings_page()  // FixIn: 10.6.6.2.
 	|| wpbc_is_builder_booking_form_page()
 ) {

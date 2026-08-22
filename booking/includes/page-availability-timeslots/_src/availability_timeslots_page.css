@@ -42,7 +42,7 @@
 }
 
 .wpbc_modal__availability_timeslots__section .modal-dialog {
-	width: min(1180px, calc(100vw - 48px));
+	width: Min(1180px, calc(100vw - 48px));
 	max-width: 1180px;
 }
 
@@ -900,7 +900,7 @@
 	}
 }
 body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
-	margin: 2px 30px 2px 25px;
+	margin: 2px 30px 2px 30px;
 }
 
 #datepick-div,

@@ -107,7 +107,7 @@ class WPBC_Add_Booking_Modal {
 
 
 	/**
-	 * Print a feature-gated route to the Service-first administrator workflow.
+	 * Print the released route to the Service-first administrator workflow.
 	 *
 	 * The standard Add Booking form remains the popup's primary action. This
 	 * secondary route is hidden by the modal client whenever an existing booking
@@ -117,9 +117,7 @@ class WPBC_Add_Booking_Modal {
 	 */
 	private static function print_add_appointment_entry() {
 		if (
-			! function_exists( 'wpbc_is_11_5_features_enabled' )
-			|| ! wpbc_is_11_5_features_enabled()
-			|| ! function_exists( 'wpbc_add_appointment_page_get_url' )
+			! function_exists( 'wpbc_add_appointment_page_get_url' )
 			|| ! WPBC_Add_Booking_Component::current_user_can_add_booking()
 		) {
 			return;

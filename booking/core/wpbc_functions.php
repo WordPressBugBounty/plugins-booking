@@ -545,7 +545,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		function wpbc_can_i_load_on__resources_page() {
 
 			if (
-				   ( isset( $_REQUEST['page'] ) ) && ( $_REQUEST['page'] === 'wpbc-resources' )        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				   ( isset( $_REQUEST['page'] ) )
+				&& (
+					   ( $_REQUEST['page'] === 'wpbc-resources' )                                      // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					|| (
+						   ( $_REQUEST['page'] === 'wpbc-booking-resources' )                           // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						&& function_exists( 'wpbc_is_11_6_features_enabled' )
+						&& wpbc_is_11_6_features_enabled()
+					)
+					|| (
+						   ( $_REQUEST['page'] === 'wpbc-catalog-booking-resources' )                   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						&& function_exists( 'wpbc_is_11_6_features_enabled' )
+						&& wpbc_is_11_6_features_enabled()
+						&& defined( 'WPBC_ENABLE_11_6_CATALOG_V2' )
+						&& WPBC_ENABLE_11_6_CATALOG_V2
+					)
+				)
 			) {
 				return true;
 			}

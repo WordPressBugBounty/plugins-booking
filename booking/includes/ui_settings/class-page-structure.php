@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 'is_force_full_screen'                      => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__is_show'           => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__default_view_mode' => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
+'right_vertical_sidebar__content_click_collapse_mode' => '',                                                            // '' | 'min' | 'compact' | 'none'. Collapse or hide an expanded right sidebar when the page content is clicked. Default: ''.
 'left_navigation__default_view_mode'        => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'left_navigation__force_view_mode'          => '',                                                                      // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'right_vertical_sidebar_compact__is_show'   => false,                                                                   // true | false.     Default: false.
@@ -635,7 +636,6 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 			'wpbc-settings'     => __( 'Settings', 'booking' ),
 			'wpbc-setup'        => __( 'Setup', 'booking' ),
 		);
-
 		return isset( $root_titles[ $page_tag ] ) ? $root_titles[ $page_tag ] : __( 'Booking Calendar', 'booking' );
 	}
 

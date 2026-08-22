@@ -815,12 +815,22 @@ class WPBC_SETUP_WIZARD_STEPS {
 	 */
 	public function show_top_right_wizard_button() {
 
-		if ( ! wpbc_is_setup_wizard_page() ){
+		if ( ! wpbc_is_setup_wizard_page() ) {
+			$explicit_step_context = false;
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only Setup Wizard routing context.
+			if ( isset( $_GET['wpbc_setup_step'] ) && is_scalar( $_GET['wpbc_setup_step'] ) ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only Setup Wizard routing context.
+				$request_step = sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) );
+				$explicit_step_context = isset( $this->steps_arr[ $request_step ] )
+					&& function_exists( 'wpbc_setup_wizard_page__has_explicit_step_context' )
+					&& wpbc_setup_wizard_page__has_explicit_step_context( $request_step );
+			}
 
 			if (
 				( ! wpbc_is_user_can_access_wizard_page() ) ||
-				( $this->db__is_all_steps_completed() )
-			){
+				( $this->db__is_all_steps_completed() && ! $explicit_step_context )
+			) {
 				return false;
 			}
 
@@ -1185,14 +1195,14 @@ class WPBC_SETUP_WIZARD_STEPS {
 											class="wpbc_setup_wizard_bar_icon_button wpbc_setup_wizard_bar_reset_button"
 											title="<?php esc_attr_e( 'Reset setup bar position', 'booking' ); ?>"
 											aria-label="<?php esc_attr_e( 'Reset setup bar position', 'booking' ); ?>">
-										<i class="menu_icon icon-1x wpbc_icn_refresh"></i>
+										<i class="menu_icon icon-1x wpbc_icn_rotate_90 wpbc_icn_pin_invoke"></i>
 									</button>
 									<button type="button"
 											class="wpbc_setup_wizard_bar_icon_button wpbc_setup_wizard_bar_toggle_button"
 											title="<?php esc_attr_e( 'Collapse setup bar', 'booking' ); ?>"
 											aria-label="<?php esc_attr_e( 'Collapse setup bar', 'booking' ); ?>"
 											aria-expanded="true">
-										<i class="menu_icon icon-1x wpbc_icn_expand_less"></i>
+										<i class="menu_icon icon-1x wpbc_icn_minimize"></i>
 									</button>
 								</div>
 							</div>
@@ -1525,8 +1535,8 @@ class WPBC_SETUP_WIZARD_STEPS {
 							.attr( 'title', isCollapsed ? expandLabel : collapseLabel )
 							.attr( 'aria-label', isCollapsed ? expandLabel : collapseLabel );
 						$toggleIcon
-							.toggleClass( 'wpbc_icn_expand_less', ! isCollapsed )
-							.toggleClass( 'wpbc_icn_expand_more', !! isCollapsed );
+							.toggleClass( 'wpbc_icn_minimize', ! isCollapsed )
+							.toggleClass( 'wpbc_icn_fullscreen', !! isCollapsed );
 						wpbcSetupWizardStorageSet( collapsedStorageKey, isCollapsed ? '1' : '0' );
 						wpbcSetupWizardApplySavedPosition();
 					}
@@ -1586,7 +1596,11 @@ class WPBC_SETUP_WIZARD_STEPS {
 					jQuery( document ).on( 'wpbc_setup_wizard_layout_changed.wpbc_setup_wizard_bar', wpbcSetupWizardApplySavedPosition );
 
 					function wpbcSetupWizardOpenPublishArea() {
-						var isResourcesPage = -1 !== window.location.href.indexOf( 'page=wpbc-resources' );
+						var currentUrl = new window.URL( window.location.href );
+						var currentResourcesTab = currentUrl.searchParams.get( 'tab' ) || '';
+						var isResourcesPage = 'wpbc-resources' === currentUrl.searchParams.get( 'page' )
+							&& ( '' === currentResourcesTab || 'resources' === currentResourcesTab );
+						var catalogMount = document.getElementById( 'wpbc_catalog_booking_resources' );
 						var publishTabSelectors = [
 							'.wpdvlp-sub-tabs .nav-tab',
 							'.wpdvlp-top-tabs .nav-tab',
@@ -1616,7 +1630,75 @@ class WPBC_SETUP_WIZARD_STEPS {
 						var $publishTab;
 						var $publishToggle;
 
-						if ( ( 'wizard_publish' !== step && 'publish_area' !== openAction ) || ! isResourcesPage ) {
+						if ( 'wizard_publish' !== step || ! isResourcesPage ) {
+							return;
+						}
+
+						if ( 'catalog_publish' === openAction && catalogMount ) {
+							var catalogPublishRequested = false;
+							/**
+							 * Open the first authorized Resource at its publishing inspector section.
+							 *
+							 * @param {CustomEvent|null} renderEvent Shared catalog render event.
+							 * @return {void}
+							 */
+							var openCatalogPublishing = function( renderEvent ) {
+								var catalogResponse = renderEvent && renderEvent.detail ? renderEvent.detail.response : null;
+								var publishAction = catalogMount.querySelector( '[data-wpbc-booking-resource-action="publish_resource"][data-wpbc-booking-resource-id]' );
+								var resourceId = publishAction ? Number( publishAction.getAttribute( 'data-wpbc-booking-resource-id' ) || 0 ) : 0;
+
+								if ( ! resourceId && catalogResponse && Array.isArray( catalogResponse.items ) ) {
+									catalogResponse.items.some( function( resource ) {
+										var isPublishAuthorized = Array.isArray( resource.action_items ) && resource.action_items.some( function( resourceAction ) {
+											return resourceAction && 'publish_resource' === resourceAction.id;
+										} );
+
+										if ( ! isPublishAuthorized ) {
+											return false;
+										}
+
+										resourceId = Number( resource.id || 0 );
+										return 0 < resourceId;
+									} );
+								}
+								if ( catalogPublishRequested || ! resourceId ) {
+									return;
+								}
+
+								catalogPublishRequested = true;
+								catalogMount.removeEventListener( 'wpbc:ui-catalog-rendered', openCatalogPublishing );
+
+								// Defer until the domain catalog has completed its synchronous mount listeners.
+								window.setTimeout( function() {
+									var resourceActionEvent;
+
+									if ( 'function' === typeof window.CustomEvent ) {
+										resourceActionEvent = new window.CustomEvent( 'wpbc:booking-resource-action', {
+											bubbles: false,
+											detail: {
+												action: 'publish_resource',
+												resource_id: resourceId,
+												source: 'setup_wizard'
+											}
+										} );
+									} else {
+										resourceActionEvent = document.createEvent( 'CustomEvent' );
+										resourceActionEvent.initCustomEvent( 'wpbc:booking-resource-action', false, false, {
+											action: 'publish_resource',
+											resource_id: resourceId,
+											source: 'setup_wizard'
+										} );
+									}
+									document.dispatchEvent( resourceActionEvent );
+								}, 0 );
+							};
+
+							catalogMount.addEventListener( 'wpbc:ui-catalog-rendered', openCatalogPublishing );
+							openCatalogPublishing( null );
+							return;
+						}
+
+						if ( 'publish_area' !== openAction ) {
 							return;
 						}
 

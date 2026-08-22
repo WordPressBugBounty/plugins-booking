@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return bool True on the Add Appointment tab.
  */
 function wpbc_add_appointment_page_is_active() {
-	if ( ! is_admin() || ! wpbc_is_11_5_features_enabled() ) {
+	if ( ! is_admin() ) {
 		return false;
 	}
 
@@ -171,7 +171,7 @@ class WPBC_Page_Add_Appointment extends WPBC_Page_Structure {
 	}
 
 	/**
-	 * Register the feature-gated Appointment tab and shared inspector layout.
+	 * Register the released Appointment tab and shared inspector layout.
 	 *
 	 * @return array<string,array<string,mixed>> Tab definition.
 	 */

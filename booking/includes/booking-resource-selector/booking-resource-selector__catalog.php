@@ -66,6 +66,17 @@ function wpbc_booking_resource_selector_normalize_resource( $resource_record, $f
  */
 function wpbc_booking_resource_selector_get_catalog( $config ) {
 	$config         = wpbc_booking_resource_selector_normalize_config( $config );
+	if ( function_exists( 'wpbc_booking_resource_catalog_query_service' ) ) {
+		$resources = wpbc_booking_resource_catalog_query_service()->get_resources(
+			array(
+				'resource_ids'      => $config['resource_ids'],
+				'include_summaries' => true,
+			)
+		);
+
+		return (array) apply_filters( 'wpbc_booking_resource_selector_public_catalog', $resources, $config );
+	}
+
 	$raw_resources  = (array) apply_bk_filter( 'wpdebk_get_keyed_all_bk_resources', array() );
 	$search_options = array();
 	if ( function_exists( 'wpbc_searchable_resources__get_all_options' ) ) {
@@ -84,6 +95,14 @@ function wpbc_booking_resource_selector_get_catalog( $config ) {
 		if ( isset( $search_options[ $normalized_resource_id ] ) && is_array( $search_options[ $normalized_resource_id ] ) ) {
 			$resource_options = $search_options[ $normalized_resource_id ];
 		}
+		if ( function_exists( 'wpbc_booking_resource_content_repository' ) ) {
+			$raw_resource_array = is_object( $resource_record ) ? get_object_vars( $resource_record ) : (array) $resource_record;
+			$raw_title          = isset( $raw_resource_array['title'] ) ? (string) $raw_resource_array['title'] : '';
+			$shared_content     = wpbc_booking_resource_content_repository()->get( $normalized_resource_id, $raw_title, true );
+			$raw_resource_array['description'] = $shared_content['description'];
+			$raw_resource_array['image_url']   = $shared_content['picture_url'];
+			$resource_record                  = $raw_resource_array;
+		}
 		$resource = wpbc_booking_resource_selector_normalize_resource( $resource_record, $resource_key, $resource_options );
 		if ( $resource ) {
 			$resources[ $resource['resource_id'] ] = $resource;
@@ -92,12 +111,17 @@ function wpbc_booking_resource_selector_get_catalog( $config ) {
 
 	if ( empty( $resources ) && ! class_exists( 'wpdev_bk_personal' ) ) {
 		$resource_id               = class_exists( 'WPBC_FE_Attr_Postprocessor' ) ? WPBC_FE_Attr_Postprocessor::get_default_booking_resource_id() : 1;
-		$resource_title            = function_exists( 'wpbc_get_resource_title' ) ? wpbc_get_resource_title( $resource_id ) : '';
+		$shared_content            = function_exists( 'wpbc_booking_resource_content_repository' )
+			? wpbc_booking_resource_content_repository()->get( $resource_id )
+			: array();
+		$resource_title            = ! empty( $shared_content['title'] )
+			? wpbc_lang( $shared_content['title'] )
+			: ( function_exists( 'wpbc_get_resource_title' ) ? wpbc_get_resource_title( $resource_id ) : '' );
 		$resources[ $resource_id ] = array(
 			'resource_id' => absint( $resource_id ),
 			'title'       => $resource_title ? wp_strip_all_tags( wpbc_lang( $resource_title ) ) : __( 'Default Booking Resource', 'booking' ),
-			'description' => '',
-			'image_url'   => '',
+			'description' => ! empty( $shared_content['description'] ) ? wp_strip_all_tags( wpbc_lang( $shared_content['description'] ) ) : '',
+			'image_url'   => ! empty( $shared_content['picture_url'] ) ? esc_url_raw( wpbc_lang( $shared_content['picture_url'] ) ) : '',
 			'parent_id'   => 0,
 			'count'       => 0,
 		);

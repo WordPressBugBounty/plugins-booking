@@ -13,6 +13,11 @@
 
 // FixIn: 8.3.3.99.
 
+var wpbc_gutenberg_active_block_target = {
+	block_id: '',
+	set_attributes: null
+};
+
 /*
 		window.wp.blocks,
 		window.wp.components,
@@ -20,6 +25,101 @@
 
  */
 	//( function( blocks, components, element ) {
+
+/**
+ * Open the Booking Calendar block configurator for a specific block.
+ *
+ * This helper receives the clicked element directly because WordPress 7.1 renders
+ * the editor canvas in an iframe whose events and DOM are not available through
+ * the parent admin document.
+ *
+ * @param {string}      block_id          Gutenberg client ID for the block.
+ * @param {string|number} popup_tab_index Legacy configurator tab index.
+ * @param {string}      popup_shortcode_id Modern configurator section ID.
+ * @param {Element|null} trigger_element   Element that opened the configurator.
+ * @param {Function|null} set_attributes   Attribute updater from the live block edit instance.
+ * @return {boolean} Whether the configurator was opened.
+ */
+function wpbc_gutenberg_open_configurator( block_id, popup_tab_index, popup_shortcode_id, trigger_element, set_attributes ) {
+	var block_wrapper;
+	var normalized_tab_index = parseInt( popup_tab_index, 10 );
+
+	if ( ! block_id || ( 'function' !== typeof wpbc_tiny_btn_click ) ) {
+		return false;
+	}
+
+	if ( isNaN( normalized_tab_index ) ) {
+		normalized_tab_index = 0;
+	}
+
+	if ( trigger_element && ( 'function' === typeof trigger_element.closest ) ) {
+		block_wrapper = trigger_element.closest( 'div[data-block]' );
+		if ( block_wrapper ) {
+			block_wrapper.classList.remove( 'is-selected' );
+		}
+	}
+
+	wpbc_tiny_btn_click( '' );
+	jQuery( '#wpbc_text_gettenberg_section_id' ).val( block_id );
+	wpbc_gutenberg_active_block_target = {
+		block_id: block_id,
+		set_attributes: ( 'function' === typeof set_attributes ) ? set_attributes : null
+	};
+
+	if ( popup_shortcode_id && jQuery( '#wpbc_shortcode_config__nav_tab__' + popup_shortcode_id + ' a' ).length ) {
+		jQuery( '#wpbc_shortcode_config__nav_tab__' + popup_shortcode_id + ' a' ).first().trigger( 'click' );
+	} else {
+		jQuery( '#wpbc_tiny_modal .wpdvlp-top-tabs a.nav-tab' ).eq( normalized_tab_index ).trigger( 'click' );
+	}
+
+	return true;
+}
+
+/**
+ * Handle the React click event for the block configuration control.
+ *
+ * @param {Event}    event          React synthetic click event from the editor iframe.
+ * @param {Function} set_attributes Attribute updater from the live block edit instance.
+ * @return {boolean} Whether the configurator was opened.
+ */
+function wpbc_gutenberg_handle_configure_click( event, set_attributes ) {
+	var trigger_element = event.currentTarget;
+
+	event.preventDefault();
+	event.stopPropagation();
+
+	return wpbc_gutenberg_open_configurator(
+		trigger_element.getAttribute( 'data_block_id' ),
+		trigger_element.getAttribute( 'popup_tab_index' ),
+		trigger_element.getAttribute( 'popup_shortcode_id' ),
+		trigger_element,
+		set_attributes
+	);
+}
+
+/**
+ * Handle the React click event for the preview's edit control.
+ *
+ * @param {Event} event React synthetic click event from the editor iframe.
+ * @return {boolean} Whether a matching configuration control was activated.
+ */
+function wpbc_gutenberg_handle_preview_edit_click( event ) {
+	var preview_wrapper;
+	var configure_button;
+
+	event.preventDefault();
+	event.stopPropagation();
+
+	preview_wrapper = event.currentTarget.closest( '.wpbc_gb_div_block' );
+	configure_button = preview_wrapper ? preview_wrapper.querySelector( '.wpbc-gutenberg-open-btn' ) : null;
+
+	if ( ! configure_button ) {
+		return false;
+	}
+
+	configure_button.click();
+	return true;
+}
 
 	( function( wp ) {
 		/**
@@ -108,6 +208,46 @@
 											}
 			},
 
+			deprecated: [
+				{
+					supports: {},
+					attributes: {
+						wpbc_shortcode: {
+							type: 'string',
+							source: 'text',
+							selector: 'div',
+							default: ''
+						}
+					},
+
+					/**
+					 * Migrate a shortcode recovered from historical saved block markup.
+					 *
+					 * Some released posts contain a missing or stale comment attribute while
+					 * retaining the complete shortcode inside the saved div. The deprecated
+					 * parser makes that visible text authoritative only during recovery.
+					 *
+					 * @param {Object} attributes Parsed deprecated block attributes.
+					 * @return {Object} Current block attributes containing the recovered shortcode.
+					 */
+					migrate: function( attributes ) {
+						return {
+							wpbc_shortcode: attributes.wpbc_shortcode || ''
+						};
+					},
+
+					/**
+					 * Reproduce the historical wrapper while WordPress validates old content.
+					 *
+					 * @param {Object} props Deprecated block properties.
+					 * @return {Object} WordPress element for the historical saved markup.
+					 */
+					save: function( props ) {
+						return el( 'div', null, props.attributes.wpbc_shortcode );
+					}
+				}
+			],
+
 
 			edit: function( props ) {
 
@@ -124,21 +264,14 @@
 					////////////////////////////////////////////////////////////////////////////////////////////////////
 					////////////////////////////////////////////////////////////////////////////////////////////////////
 
-					// Old value from  attribute
+					// The block attribute is the only authoritative editor value. Reading the
+					// mounted input here races React's next commit: after the configurator
+					// calls setAttributes(), the old input still contains the previous value
+					// and would immediately overwrite the new shortcode during this render.
 					var _val = props.attributes.wpbc_shortcode;
 
-					// Possibly new value, set to the text field programmatically from popup
-					var _valNew = jQuery( 'div[data-block="' + cid + '"] .wpbc_gb_text_shortcode' ).val();
-
-//console.log( '%cWPBC-Gb :: E d i t  >>> _valNew , _val , cid, obj', 'color: green; font-weight: bold;', _valNew , _val  , cid , jQuery( 'div[data-block="' + cid + '"] .wpbc_gb_text_shortcode' ) );
-
-					// Default value here
 					if ( typeof _val == typeof undefined ) {
 						_val = '';
-					}
-					if ( ( typeof _valNew != typeof undefined ) &&  ( _val !== _valNew ) ) {
-						_val = _valNew;
-						props.setAttributes( { wpbc_shortcode: _val } );
 					}
 
 					////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +287,9 @@
 								data_block_id: cid,
 							    popup_tab_index: 0,						// Will be index for active tab in popup dialog
 							    popup_shortcode_id: '',
+								onClick: function( event ) {
+									return wpbc_gutenberg_handle_configure_click( event, props.setAttributes );
+								},
 							    key: 'configure_' + cid																// FixIn: 8.7.3.18.
 							},
 						__( 'Configure Booking Calendar Block' )
@@ -241,34 +377,12 @@
 		$( document ).on( 'click', '.wpbc-gutenberg-open-btn', function( e ) {
 
 			e.preventDefault();
-
-			// Set ID of currently edited section in post (just in case if we will have several sections
-			var _id = $( this ).attr( 'data_block_id' );
-
-
-			// Remove CSS class 'is-selected' (remove blue focus) in main DIV (after popup opened), because of that hide via CSS BIG blue button: "Configure Booking Calendar Block"
-			jQuery( 'div[data-block="' + _id + '"]' ).removeClass( 'is-selected' );										// FixIn: 8.8.2.10.
-
-			// Get num. of popup active tab to  set
-			var popup_tab_index    = $( this ).attr( 'popup_tab_index' );
-			var popup_shortcode_id = $( this ).attr( 'popup_shortcode_id' );
-
-			var wpbc_tag = '';
-
-			wpbc_tiny_btn_click( wpbc_tag );
-
-			jQuery( "#wpbc_text_gettenberg_section_id" ).val( _id );
-
-			// Select the matching shortcode section for modern workflow previews.
-			if ( popup_shortcode_id && jQuery( '#wpbc_shortcode_config__nav_tab__' + popup_shortcode_id + ' a' ).length ) {
-				jQuery( '#wpbc_shortcode_config__nav_tab__' + popup_shortcode_id + ' a' ).first().trigger( 'click' );
-			} else {
-				// Select specific TAB in popup dialog for legacy shortcode previews.
-				jQuery( "#wpbc_tiny_modal .wpdvlp-top-tabs a.nav-tab" ).eq( popup_tab_index ).trigger( 'click' );		// FixIn: 8.7.11.12.
-			}
-
-
-//console.log( 'WPBC-Gb :: Popup window for configuration Booking Calendar shortcode. Section #', _id );
+			wpbc_gutenberg_open_configurator(
+				$( this ).attr( 'data_block_id' ),
+				$( this ).attr( 'popup_tab_index' ),
+				$( this ).attr( 'popup_shortcode_id' ),
+				this
+			);
 
 		});
 
@@ -300,6 +414,11 @@
 
 		// Get ID of section, where to  insert  shortcode configuraiton
 		var block_section_id = jQuery( "#wpbc_text_gettenberg_section_id" ).val();
+		var block_editor_select;
+		var block_editor_dispatch;
+		var target_block;
+		var shortcode_input;
+		var active_set_attributes;
 
 //console.log( 'WPBC-Gb :: wpbc_send_text_to_gutenberg' , shortcode_text, block_section_id );
 
@@ -308,12 +427,59 @@
 			return false;		// if no such  block then just return  false, its means tha inserting in Classic block - TinyMCE
 		}
 
+		// Use the updater from this exact block edit instance. Unlike the global
+		// data registry, this callback remains bound to a scoped BlockEditorProvider.
+		if (
+			block_section_id === wpbc_gutenberg_active_block_target.block_id &&
+			'function' === typeof wpbc_gutenberg_active_block_target.set_attributes
+		) {
+			active_set_attributes = wpbc_gutenberg_active_block_target.set_attributes;
+			wpbc_gutenberg_active_block_target = {
+				block_id: '',
+				set_attributes: null
+			};
+			active_set_attributes(
+				{ wpbc_shortcode: shortcode_text }
+			);
+			return true;
+		}
+
+		// Retain a verified fallback for editors that expose their block store in
+		// the global registry. Do not report success unless that registry owns the
+		// exact Booking Calendar block targeted by the configurator.
+		if (
+			wp.data &&
+			( 'function' === typeof wp.data.select ) &&
+			( 'function' === typeof wp.data.dispatch )
+		) {
+			block_editor_select = wp.data.select( 'core/block-editor' );
+			target_block = block_editor_select && ( 'function' === typeof block_editor_select.getBlock )
+				? block_editor_select.getBlock( block_section_id )
+				: null;
+
+			if ( target_block && ( 'booking/booking' === target_block.name ) ) {
+				block_editor_dispatch = wp.data.dispatch( 'core/block-editor' );
+			}
+
+			if ( block_editor_dispatch && ( 'function' === typeof block_editor_dispatch.updateBlockAttributes ) ) {
+				block_editor_dispatch.updateBlockAttributes(
+					block_section_id,
+					{ wpbc_shortcode: shortcode_text }
+				);
+				return true;
+			}
+		}
+
 
 		// Code to  insert into Gutenberg section in our text field
-		jQuery( 'div[data-block="' + block_section_id + '"] .wpbc_gb_text_shortcode' ).val( shortcode_text );
+		shortcode_input = jQuery( 'div[data-block="' + block_section_id + '"] .wpbc_gb_text_shortcode' );
+		if ( ! shortcode_input.length ) {
+			return false;
+		}
+		shortcode_input.val( shortcode_text );
 
 		//Its does not work for automatic generating "Edit" event :((( , so we make some workarround in Edit block event
-		jQuery( 'div[data-block="' + block_section_id + '"] .wpbc_gb_text_shortcode' ).trigger( 'focus' ).trigger('mousedown').trigger( 'click' ).trigger('mouseup').trigger('change');
+		shortcode_input.trigger( 'focus' ).trigger('mousedown').trigger( 'click' ).trigger('mouseup').trigger('change');
 
 		// FixIn: 8.4.2.10.
 		//FixIn: 8.7.3.17	href: '#!'
@@ -754,6 +920,18 @@
 					{ key: 'selected_type', label: wp.i18n.__( 'Preselected Booking Resource (legacy)' ), prefix: 'ID = ' },
 					{ key: 'aggregate', label: wp.i18n.__( 'Aggregate Booking Resources' ), prefix: 'ID = ' },
 					{ key: 'auto_select_resource', label: wp.i18n.__( 'Auto-select Booking Resource' ) },
+					{ key: 'catalog_layout', label: wp.i18n.__( 'Resource layout' ) },
+					{ key: 'show_resource_filters', label: wp.i18n.__( 'Show Resource search' ) },
+					{ key: 'show_resource_image', label: wp.i18n.__( 'Show Resource image' ) },
+					{ key: 'show_resource_title', label: wp.i18n.__( 'Show Resource title' ) },
+					{ key: 'show_resource_description', label: wp.i18n.__( 'Show Resource description' ) },
+					{ key: 'catalog_item_width', label: wp.i18n.__( 'Resource item width' ) },
+					{ key: 'catalog_item_max_width', label: wp.i18n.__( 'Maximum Resource item width (px)' ) },
+					{ key: 'catalog_grid_items_per_row', label: wp.i18n.__( 'Grid items per row' ) },
+					{ key: 'catalog_list_items_per_row', label: wp.i18n.__( 'List items per row' ) },
+					{ key: 'show_resource_hierarchy', label: wp.i18n.__( 'Show Resource hierarchy' ) },
+					{ key: 'show_availability', label: wp.i18n.__( 'Show availability summary' ) },
+					{ key: 'show_starting_price', label: wp.i18n.__( 'Show starting price' ) },
 					{ key: 'form_type', label: wp.i18n.__( 'Booking Form' ) },
 					{ key: 'nummonths', label: wp.i18n.__( 'Visible months number' ) },
 					{ key: 'startmonth', label: wp.i18n.__( 'Start month' ) },
@@ -1758,7 +1936,12 @@ function wpbc_gb_tpl_header( props ){
 	return [
 		el( 'h3',  {className: 'wpbc_gb_block_preview_inner_title_text', key: 'h3header_' + props[ 'cid_key' ] }, props.header  ),
 
-		el( 'a',   {className: 'wpbc_gb_block_preview_inner_title_edit', key: 'a_clickedit_' + props[ 'cid_key' ] }, wp.i18n.__( 'Click to edit' ) ),
+		el( 'a',   {
+			className: 'wpbc_gb_block_preview_inner_title_edit',
+			href: '#!',
+			onClick: wpbc_gutenberg_handle_preview_edit_click,
+			key: 'a_clickedit_' + props[ 'cid_key' ]
+		}, wp.i18n.__( 'Click to edit' ) ),
 
 		el( 'div', {className: 'wpbc_gb_block_preview_inner_title_desc', key: 'div_notreal_' + props[ 'cid_key' ] }, wp.i18n.__( 'This is not real preview. Its configuration block of "Booking Calendar".' ) )
 	];

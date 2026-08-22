@@ -46,21 +46,19 @@ function wpbc_shortcode_config__navigation_panel(){
 				<span><?php esc_html_e( 'Availability Calendar / Days Not Selectable', 'booking' ); ?></span>
 			</a>
 		</div>
-		<?php if ( wpbc_is_11_5_features_enabled() ) : ?>
-			<div id="wpbc_shortcode_config__nav_tab__booking_appointment" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
-				<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_booking_appointment', 'booking_appointment' );" href="javascript:void(0);">
-					<span><?php esc_html_e( 'Appointment Booking', 'booking' ); ?></span>
-				</a>
-			</div>
-			<div id="wpbc_shortcode_config__nav_tab__booking_resource_selector" class="wpbc_settings_navigation_item wpbc_navigation_sub_item">
-				<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_booking_resource_selector', 'booking_resource_selector' );" href="javascript:void(0);">
-					<span><?php esc_html_e( 'Booking Resource Selector', 'booking' ); ?></span>
-				</a>
-			</div>
-		<?php endif; ?>
-		<div id="wpbc_shortcode_config__nav_tab__bookingselect" class="wpbc_settings_navigation_item wpbc_dismiss__booking_select <?php  echo ( ! class_exists( 'wpdev_bk_personal' ) ) ? ' wpbc_settings_navigation_item_disabled ' : '';  ?>">
+		<div id="wpbc_shortcode_config__nav_tab__booking_appointment" class="wpbc_settings_navigation_item wpbc_navigation_top_border">
+			<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_booking_appointment', 'booking_appointment' );" href="javascript:void(0);">
+				<span><?php esc_html_e( 'Appointment Booking', 'booking' ); ?></span>
+			</a>
+		</div>
+		<div id="wpbc_shortcode_config__nav_tab__booking_resource_selector" class="wpbc_settings_navigation_item">
+			<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_booking_resource_selector', 'booking_resource_selector' );" href="javascript:void(0);">
+				<span><?php esc_html_e( 'Booking Resource Selector', 'booking' ); ?></span>
+			</a>
+		</div>
+		<div id="wpbc_shortcode_config__nav_tab__bookingselect" class="wpbc_settings_navigation_item wpbc_navigation_sub_item wpbc_dismiss__booking_select <?php  echo ( ! class_exists( 'wpdev_bk_personal' ) ) ? ' wpbc_settings_navigation_item_disabled ' : '';  ?>">
 			<a onclick="javascript:wpbc_shortcode_config_click_show_section(this,'#wpbc_sc_container__shortcode_bookingselect', 'bookingselect' );" href="javascript:void(0);">
-				<span><?php esc_html_e( 'Resource Selection', 'booking' ); ?></span><?php
+				<span><?php esc_html_e( 'Booking Resources Dropdown', 'booking' ); ?></span><?php
 					echo ( ! class_exists( 'wpdev_bk_personal' ) ) ? '<span class="wpbc_pro_label">Pro</span>' : '';
 				?>
 			</a>
@@ -2121,7 +2119,7 @@ function wpbc_shortcode_config__workflow_parameter_reference( $parameters ) {
 function wpbc_shortcode_config__booking_appointment_parameters() {
 	$month_options = array_combine( range( 1, 24 ), range( 1, 24 ) );
 
-	return array(
+	$parameters = array(
 		'service_id' => array(
 			'section' => 'general', 'title' => __( 'Preselected Service', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
 			'description' => __( 'Preselect and restrict the flow to one positive Service ID.', 'booking' ), 'attr' => array( 'min' => 1, 'step' => 1 ),
@@ -2218,6 +2216,8 @@ function wpbc_shortcode_config__booking_appointment_parameters() {
 			'description' => __( 'Description on the Provider selection screen. Clear it to hide the description.', 'booking' ),
 		),
 	);
+
+	return $parameters;
 }
 
 /**
@@ -2296,7 +2296,7 @@ function wpbc_shortcode_config__content__booking_appointment() {
 function wpbc_shortcode_config__booking_resource_selector_parameters() {
 	$month_options = array_combine( range( 1, 24 ), range( 1, 24 ) );
 
-	return array(
+	$parameters = array(
 		'resource_id' => array(
 			'section' => 'general', 'title' => __( 'Preselected Booking Resource', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => '',
 			'options' => wpbc_shortcode_config__workflow_resource_options( true, __( 'No Booking Resource preselected', 'booking' ) ),
@@ -2315,6 +2315,59 @@ function wpbc_shortcode_config__booking_resource_selector_parameters() {
 		'auto_select_resource' => array(
 			'section' => 'general', 'title' => __( 'Auto-select Booking Resource', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
 			'description' => __( 'Open the preselected Resource immediately, or skip selection when exactly one Resource is available.', 'booking' ),
+		),
+		'catalog_layout' => array(
+			'section' => 'catalog', 'title' => __( 'Resource layout', 'booking' ), 'type' => 'select', 'value_type' => 'text', 'default' => 'grid',
+			'options' => array( 'grid' => __( 'Responsive grid', 'booking' ), 'list' => __( 'List', 'booking' ) ),
+			'description' => __( 'Show Booking Resources as responsive cards or compact list items. Selecting List applies recommended display settings that you can adjust afterward.', 'booking' ),
+		),
+		'show_resource_filters' => array(
+			'section' => 'catalog', 'title' => __( 'Show Resource search', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
+			'description' => __( 'Let visitors search the permitted Resources by title, description, or parent title.', 'booking' ),
+		),
+		'show_resource_image' => array(
+			'section' => 'catalog', 'title' => __( 'Show Resource image', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the Resource photo or its generated initials.', 'booking' ),
+		),
+		'show_resource_title' => array(
+			'section' => 'catalog', 'title' => __( 'Show Resource title', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the public Resource title. The title remains available to assistive technology when hidden.', 'booking' ),
+		),
+		'show_resource_description' => array(
+			'section' => 'catalog', 'title' => __( 'Show Resource description', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the public Resource description when one is configured.', 'booking' ),
+		),
+		'catalog_item_width' => array(
+			'section' => 'catalog', 'title' => __( 'Resource item width', 'booking' ), 'value_type' => 'css_width', 'default' => '',
+			'placeholder' => __( 'Automatic, 360px, or 50%', 'booking' ),
+			'description' => __( 'Optional explicit card or list-row width. Use px, %, em, rem, or vw. An items-per-row setting takes precedence for its active layout.', 'booking' ),
+		),
+		'catalog_item_max_width' => array(
+			'section' => 'catalog', 'title' => __( 'Maximum Resource item width', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'placeholder' => __( 'Automatic', 'booking' ), 'attr' => array( 'min' => 280, 'max' => 1200, 'step' => 1 ),
+			'description' => __( 'Optional maximum card or list-row width in pixels, from 280 through 1200. Leave empty to fill the available layout width.', 'booking' ),
+		),
+		'catalog_grid_items_per_row' => array(
+			'section' => 'catalog', 'title' => __( 'Grid items per row', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'placeholder' => __( 'Automatic', 'booking' ), 'attr' => array( 'min' => 1, 'max' => 12, 'step' => 1 ),
+			'description' => __( 'Optional exact number of equal-width items per row in the grid layout, from 1 through 12.', 'booking' ),
+		),
+		'catalog_list_items_per_row' => array(
+			'section' => 'catalog', 'title' => __( 'List items per row', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'placeholder' => __( 'One item per row', 'booking' ), 'attr' => array( 'min' => 1, 'max' => 12, 'step' => 1 ),
+			'description' => __( 'Optional number of equal-width items per row in the list layout, from 1 through 12. Empty keeps one item per row.', 'booking' ),
+		),
+		'show_resource_hierarchy' => array(
+			'section' => 'catalog', 'title' => __( 'Show Resource hierarchy', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show parent capacity and child-unit context without exposing administration controls. Independent Resources do not need a hierarchy badge.', 'booking' ),
+		),
+		'show_availability' => array(
+			'section' => 'catalog', 'title' => __( 'Show availability summary', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Explain that exact availability is confirmed after dates are selected.', 'booking' ),
+		),
+		'show_starting_price' => array(
+			'section' => 'catalog', 'title' => __( 'Show starting price', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the Resource base price and charging period when pricing is available in this edition.', 'booking' ),
 		),
 		'nummonths' => array(
 			'section' => 'calendar', 'title' => __( 'Visible months', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => 1, 'options' => $month_options,
@@ -2378,6 +2431,25 @@ function wpbc_shortcode_config__booking_resource_selector_parameters() {
 			'description' => __( 'Description on the Booking Resource selection screen. Clear it to hide the description.', 'booking' ),
 		),
 	);
+
+	if ( ! function_exists( 'wpbc_is_11_6_features_enabled' ) || ! wpbc_is_11_6_features_enabled() ) {
+		unset(
+			$parameters['catalog_layout'],
+			$parameters['show_resource_filters'],
+			$parameters['show_resource_image'],
+			$parameters['show_resource_title'],
+			$parameters['show_resource_description'],
+			$parameters['catalog_item_width'],
+			$parameters['catalog_item_max_width'],
+			$parameters['catalog_grid_items_per_row'],
+			$parameters['catalog_list_items_per_row'],
+			$parameters['show_resource_hierarchy'],
+			$parameters['show_availability'],
+			$parameters['show_starting_price']
+		);
+	}
+
+	return $parameters;
 }
 
 /**
@@ -2409,11 +2481,15 @@ function wpbc_shortcode_config__content__booking_resource_selector() {
 	$shortcode_name = 'booking_resource_selector';
 	$tabs = array(
 		'general'   => array( 'title' => __( 'Resource Selection', 'booking' ), 'icon' => 'wpbc-bi-card-checklist', 'default' => true ),
+		'catalog'   => array( 'title' => __( 'Catalog', 'booking' ), 'icon' => 'wpbc-bi-grid', 'default' => false ),
 		'calendar'  => array( 'title' => __( 'Calendar & Form', 'booking' ), 'icon' => 'wpbc-bi-calendar3', 'default' => false ),
 		'progress'  => array( 'title' => __( 'Progress', 'booking' ), 'icon' => 'wpbc-bi-list-ol', 'default' => false ),
 		'text'      => array( 'title' => __( 'Screen Text', 'booking' ), 'icon' => 'wpbc-bi-card-text', 'default' => false ),
 		'reference' => array( 'title' => __( 'Parameters', 'booking' ), 'icon' => 'wpbc-bi-code-square', 'default' => false ),
 	);
+	if ( ! function_exists( 'wpbc_is_11_6_features_enabled' ) || ! wpbc_is_11_6_features_enabled() ) {
+		unset( $tabs['catalog'] );
+	}
 	$parameters = wpbc_shortcode_config__booking_resource_selector_parameters();
 	?>
 	<div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>">

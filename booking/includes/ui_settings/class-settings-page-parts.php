@@ -95,6 +95,13 @@ class WPBC_Settings_Page_Parts {
 		$right_vertical_sidebar__is_show           = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar__is_show' );
 		$right_vertical_sidebar__default_view_mode = strval( $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar__default_view_mode' ) );
 		$right_vertical_sidebar__default_view_mode = ( ! empty( $right_vertical_sidebar__default_view_mode ) ) ? $right_vertical_sidebar__default_view_mode . '_right' : $right_vertical_sidebar__default_view_mode;
+		$right_sidebar_content_click_collapse_mode = $this->page_structure_obj->is_use_option__in_subtabs_or_tabs( 'right_vertical_sidebar__content_click_collapse_mode' );
+		$right_sidebar_content_click_collapse_mode = is_scalar( $right_sidebar_content_click_collapse_mode )
+			? sanitize_key( (string) $right_sidebar_content_click_collapse_mode )
+			: '';
+		$right_sidebar_content_click_collapse_mode = in_array( $right_sidebar_content_click_collapse_mode, array( 'min', 'compact', 'none' ), true )
+			? $right_sidebar_content_click_collapse_mode
+			: '';
 
 		if ( ! empty( $right_vertical_sidebar__default_view_mode ) ) {
 			if ( 'none_right' === $right_vertical_sidebar__default_view_mode ) {
@@ -135,7 +142,11 @@ class WPBC_Settings_Page_Parts {
 		echo '<div class="wpbc_settings_page_wrapper ' .
 							esc_attr( $left_navigation__default_view_mode ) . ' ' .
 							esc_attr( $right_vertical_sidebar__default_view_mode ) .
-						'" data-wpbc-left-sidebar-user-mode="' . esc_attr( $left_navigation__is_user_mode_enabled ? '1' : '0' ) . '">';
+						'" data-wpbc-left-sidebar-user-mode="' . esc_attr( $left_navigation__is_user_mode_enabled ? '1' : '0' ) . '"' .
+						( $right_sidebar_content_click_collapse_mode
+							? ' data-wpbc-right-sidebar-content-click-collapse-mode="' . esc_attr( $right_sidebar_content_click_collapse_mode ) . '"'
+							: '' ) .
+						'>';
 
 		if ( $left_navigation__is_user_mode_enabled ) {
 			$user_cust_option = 'left_sidebar_view_mode';

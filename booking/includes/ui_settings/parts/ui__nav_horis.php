@@ -48,8 +48,6 @@ function wpbc_ui__top_horisontal_nav( $args =array() ) {
 		'wpbc-settings'     => __( 'Settings', 'booking' ),
 		'wpbc-setup'        => __( 'Setup', 'booking' ),
 	);
-
-
 	// Ability to click on panel, only if there 'min' class - panel minimized!
 	echo '<div class="wpbc_ui_el__horis_top_bar__wrapper">';
 

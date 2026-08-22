@@ -37,6 +37,10 @@ function wpbc_get_resource_title( $resource_id = 1 ) {
 			$resource_title = wpbc_lang( $resource_title );
 		}
 	}
+	if ( '' === $resource_title && function_exists( 'wpbc_booking_resource_content_repository' ) ) {
+		$resource_content = wpbc_booking_resource_content_repository()->get( $resource_id );
+		$resource_title   = ! empty( $resource_content['title'] ) ? wpbc_lang( $resource_content['title'] ) : '';
+	}
 
 	return $resource_title;
 }

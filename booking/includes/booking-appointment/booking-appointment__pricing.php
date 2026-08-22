@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array<string,mixed> Filtered parameters.
  */
 function wpbc_booking_appointment_filter_cost_params( $params ) {
-	if ( ! wpbc_is_11_5_features_enabled() || ! wpbc_appointment_services_is_pricing_available() || ! is_array( $params ) || ! empty( $params['service_id'] ) ) {
+	if ( ! wpbc_appointment_services_is_pricing_available() || ! is_array( $params ) || ! empty( $params['service_id'] ) ) {
 		return $params;
 	}
 
@@ -58,7 +58,7 @@ add_filter( 'wpbc_booking_cost_calculation_params', 'wpbc_booking_appointment_fi
 function wpbc_booking_appointment_get_cost_service( $params ) {
 	static $cache = array();
 
-	if ( ! wpbc_is_11_5_features_enabled() || ! wpbc_appointment_services_is_pricing_available() || ! function_exists( 'wpbc_appointment_services_repository' ) ) {
+	if ( ! wpbc_appointment_services_is_pricing_available() || ! function_exists( 'wpbc_appointment_services_repository' ) ) {
 		return null;
 	}
 

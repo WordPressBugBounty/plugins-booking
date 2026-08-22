@@ -103,8 +103,6 @@ function wpbc_appointment_services_render_provider_tools( $settings_section ) {
 		'resources' !== $settings_section
 		|| ! function_exists( 'wpbc_is_resources_page' )
 		|| ! wpbc_is_resources_page()
-		|| ! function_exists( 'wpbc_is_11_5_features_enabled' )
-		|| ! wpbc_is_11_5_features_enabled()
 	) {
 		return;
 	}
@@ -115,15 +113,18 @@ function wpbc_appointment_services_render_provider_tools( $settings_section ) {
 	$guide_title       = __( 'Booking Resources and availability', 'booking' );
 	$guide_description = __( 'Configure available weekdays and dates for each Booking Resource, then use the Publish buttons below to add its booking form to a page.', 'booking' );
 	$guide_links       = array();
+	$guide_html_id     = 'wpbc_resources_booking_resources_availability_guide';
 
 	if ( 'appointment' === $selected_mode_id ) {
 		$guide_title       = __( 'Provider schedules and Services', 'booking' );
 		$guide_description = __( 'Providers use Booking Resources to manage availability. Configure their working hours and days off, then assign them to Services.', 'booking' );
 		$guide_links       = wpbc_appointment_services_get_provider_admin_links( 0, true );
+		$guide_html_id     = 'wpbc_resources_provider_services_guide';
 	} else {
 		if ( 'rental' === $selected_mode_id ) {
 			$guide_title       = __( 'Property availability and publishing', 'booking' );
 			$guide_description = __( 'Properties use Booking Resources to manage availability. Configure available weekdays and dates, then publish each property\'s booking form below.', 'booking' );
+			$guide_html_id     = 'wpbc_resources_property_availability_publishing_guide';
 		}
 
 		if ( wpbc_appointment_services_can_manage_availability() ) {
@@ -147,8 +148,25 @@ function wpbc_appointment_services_render_provider_tools( $settings_section ) {
 		}
 	}
 
+	if ( function_exists( 'wpbc_is_dismissed_panel_visible' ) && ! wpbc_is_dismissed_panel_visible( $guide_html_id ) ) {
+		return;
+	}
+
 	?>
-	<div class="wpbc_appointment_provider_tools">
+	<div id="<?php echo esc_attr( $guide_html_id ); ?>" class="wpbc_appointment_provider_tools is-dismissible">
+		<?php
+		if ( function_exists( 'wpbc_is_dismissed' ) ) {
+			wpbc_is_dismissed(
+				$guide_html_id,
+				array(
+					'title'            => '<span class="wpbc-bi-x-lg" aria-hidden="true"></span><span class="screen-reader-text">' . esc_html__( 'Dismiss', 'booking' ) . '</span>',
+					'hint'             => __( 'Dismiss', 'booking' ),
+					'class'            => 'wpbc_appointment_provider_tools__dismiss',
+					'is_apply_in_demo' => true,
+				)
+			);
+		}
+		?>
 		<div class="wpbc_appointment_provider_tools__copy">
 			<strong><?php echo esc_html( $guide_title ); ?></strong>
 			<span><?php echo esc_html( $guide_description ); ?></span>
@@ -260,15 +278,15 @@ function wpbc_appointment_services_render_field( $field_id, $label, $type = 'tex
  */
 function wpbc_appointment_services_render_picture_field() {
 	?>
-	<div class="inspector__row wpbc_appointment_services__picture_row">
+	<div class="inspector__row wpbc_ui_listing__picture_row wpbc_appointment_services__picture_row">
 		<label for="picture_url" class="inspector__label"><?php esc_html_e( 'Picture', 'booking' ); ?></label>
 		<div class="inspector__control">
-			<div class="wpbc_appointment_services__media">
-				<button type="button" class="wpbc_appointment_services__media_preview wpbc_media_upload_button" data-modal_title="<?php esc_attr_e( 'Select Service Image', 'booking' ); ?>" data-btn_title="<?php esc_attr_e( 'Use this image', 'booking' ); ?>" data-url_field="picture_url" aria-label="<?php esc_attr_e( 'Select Service image', 'booking' ); ?>" disabled>
-					<img alt="" class="wpbc_appointment_services__media_image" hidden />
-					<i class="wpbc_appointment_services__media_placeholder menu_icon icon-1x wpbc-bi-image-fill" aria-hidden="true"></i>
+			<div class="wpbc_ui_listing__media wpbc_appointment_services__media">
+				<button type="button" class="wpbc_ui_listing__media_preview wpbc_appointment_services__media_preview wpbc_media_upload_button" data-modal_title="<?php esc_attr_e( 'Select Service Image', 'booking' ); ?>" data-btn_title="<?php esc_attr_e( 'Use this image', 'booking' ); ?>" data-url_field="picture_url" aria-label="<?php esc_attr_e( 'Select Service image', 'booking' ); ?>" disabled>
+					<img alt="" class="wpbc_ui_listing__media_image wpbc_appointment_services__media_image" hidden />
+					<i class="wpbc_ui_listing__media_placeholder wpbc_appointment_services__media_placeholder menu_icon icon-1x wpbc-bi-image-fill" aria-hidden="true"></i>
 				</button>
-				<div class="wpbc_appointment_services__media_actions wpbc_ui_el__buttons_group">
+				<div class="wpbc_ui_listing__media_actions wpbc_appointment_services__media_actions wpbc_ui_el__buttons_group">
 					<button type="button" class="button wpbc_media_upload_button wpbc_appointment_services__select_image" data-modal_title="<?php esc_attr_e( 'Select Service Image', 'booking' ); ?>" data-btn_title="<?php esc_attr_e( 'Use this image', 'booking' ); ?>" data-url_field="picture_url" disabled><?php esc_html_e( 'Select image', 'booking' ); ?></button>
 					<button type="button" class="button wpbc_appointment_services__remove_image" disabled><?php esc_html_e( 'Remove', 'booking' ); ?></button>
 				</div>
@@ -363,11 +381,11 @@ function wpbc_appointment_services_render_pricing_fields() {
 
 	wpbc_appointment_services_render_field( 'base_cost', __( 'Base price', 'booking' ), 'number', array(
 		'min'         => 0,
-		'step'        => '0.01',
+		'step'        => 1,
 		'slider'      => true,
 		'slider_min'  => 0,
-		'slider_max'  => 100000,
-		'slider_step' => 1, //'0.01',
+		'slider_max'  => 1000,
+		'slider_step' => 1,
 	) );
 }
 
@@ -432,7 +450,13 @@ function wpbc_appointment_services_render_advanced_fields() {
  * @return void
  */
 function wpbc_appointment_services_render_settings_panel() {
-	WPBC_UI_Sidebar_Panels::render_inspector_header( __( 'Service Settings', 'booking' ), __( 'Select a Service or create a new one.', 'booking' ) );
+	?>
+	<div class="wpbc_appointment_services__operation_host" data-wpbc-appointment-services-operation-host hidden></div>
+	<div data-wpbc-appointment-services-native-inspector>
+	<div data-wpbc-appointment-service-inspector-header>
+		<?php WPBC_UI_Sidebar_Panels::render_inspector_header( __( 'Service Settings', 'booking' ), __( 'Select a Service or create a new one.', 'booking' ) ); ?>
+	</div>
+	<?php
 	WPBC_UI_Sidebar_Panels::render_collapsible_group( array(
 		'id'    => 'wpbc_service_general',
 		'group' => 'service-general',
@@ -465,6 +489,7 @@ function wpbc_appointment_services_render_settings_panel() {
 		'group' => 'service-advanced',
 		'title' => __( 'Advanced', 'booking' ),
 	), 'wpbc_appointment_services_render_advanced_fields' );
+	?></div><?php
 }
 
 /**
@@ -490,9 +515,14 @@ function wpbc_appointment_services_render_right_sidebar_footer( $active_page_arr
 	?>
 	<div class="wpbc_ui_el__vert_right_bar__footer_section wpbc_appointment_services__right_sidebar_footer" hidden>
 		<div class="wpbc_appointment_services__top_actions wpbc_appointment_services__footer_actions wpbc_ui_el__buttons_group" hidden>
+			<button type="button" class="button wpbc_appointment_services__cancel" data-wpbc-appointment-services-cancel hidden disabled>
+				<?php esc_html_e( 'Cancel', 'booking' ); ?>
+			</button>
 			<button type="button" class="button button-primary wpbc_appointment_services__save" hidden disabled>
 				<?php esc_html_e( 'Save Service', 'booking' ); ?>
 			</button>
+			<button type="button" class="button button-primary wpbc_appointment_services__operation_review" hidden disabled><?php esc_html_e( 'Review changes', 'booking' ); ?></button>
+			<button type="button" class="button button-primary wpbc_appointment_services__operation_apply" hidden disabled><?php esc_html_e( 'Apply changes', 'booking' ); ?></button>
 		</div>
 	</div>
 	<?php

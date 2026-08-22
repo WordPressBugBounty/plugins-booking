@@ -20,7 +20,7 @@ function wpbc_gutenberg_block_booking() {
 
 	if ( function_exists( 'register_block_type' ) ) {
 
-		$script_params = array( 'wp-blocks', 'wp-element', 'wp-i18n', 'wp-shortcode', 'underscore', 'jquery', 'wpbc-modal' );
+		$script_params = array( 'wp-blocks', 'wp-element', 'wp-i18n', 'wp-shortcode', 'wp-data', 'underscore', 'jquery', 'wpbc-modal' );
 		wp_register_script(
 			'gutenberg-wpbc-booking',
 			wpbc_plugin_url( '/js/wpbc-gutenberg.js' ),

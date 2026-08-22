@@ -984,7 +984,7 @@
 	margin: var(--wpbc_ui_horis_top_nav__margin);
 }
 
-/* 11.5 Appointment snapshot details shown only in feature-gated row markup. */
+/* Appointment snapshot details shown only for rows with Appointment data. */
 .wpbc_appointment_booking_details {
 	border: 1px dashed #777;
 	border-radius: 4px;

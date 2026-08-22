@@ -45,6 +45,45 @@ function wpbc_booking_resource_selector_normalize_boolean( $raw_value, $default_
 }
 
 /**
+ * Normalize a safe public catalog item width.
+ *
+ * Bare numbers are treated as pixels for shortcode convenience. Only simple
+ * dimensions are accepted; CSS functions and arbitrary declarations are
+ * rejected before the value can reach an inline custom property.
+ *
+ * @param mixed $raw_width Raw shortcode width.
+ *
+ * @return string Normalized CSS width or an empty string for automatic width.
+ */
+function wpbc_booking_resource_selector_normalize_css_width( $raw_width ) {
+	if ( is_int( $raw_width ) || is_float( $raw_width ) ) {
+		$raw_width = (string) $raw_width . 'px';
+	}
+
+	$raw_width = strtolower( trim( (string) $raw_width ) );
+	if ( '' === $raw_width || 'auto' === $raw_width ) {
+		return '';
+	}
+	if ( preg_match( '/^\d+(?:\.\d+)?$/', $raw_width ) ) {
+		$raw_width .= 'px';
+	}
+	if ( ! preg_match( '/^(\d+(?:\.\d+)?)(px|%|rem|em|vw)$/', $raw_width, $matches ) ) {
+		return '';
+	}
+
+	$numeric_width = (float) $matches[1];
+	$width_unit    = $matches[2];
+	$maximum_width = in_array( $width_unit, array( '%', 'vw' ), true ) ? 100 : ( 'px' === $width_unit ? 2000 : 100 );
+	if ( $numeric_width <= 0 || $numeric_width > $maximum_width ) {
+		return '';
+	}
+
+	$normalized_width = rtrim( rtrim( number_format( $numeric_width, 4, '.', '' ), '0' ), '.' );
+
+	return $normalized_width . $width_unit;
+}
+
+/**
  * Return the Booking Resource that should be checked on the selection screen.
  *
  * The public `resource_id` attribute is the primary default-selection
@@ -76,27 +115,39 @@ function wpbc_booking_resource_selector_get_default_resource_id( $config ) {
 function wpbc_booking_resource_selector_normalize_config( $attributes ) {
 	$attributes = is_array( $attributes ) ? $attributes : array();
 	$defaults   = array(
-		'resource_id'            => 0,
-		'selected_resource_id'   => 0,
-		'resource_ids'           => array(),
-		'aggregate_resource_ids' => array(),
-		'cal_count'              => 1,
-		'start_month_calendar'   => false,
-		'calendar_dates_start'   => '',
-		'calendar_dates_end'     => '',
-		'selected_dates'         => '',
-		'options'                => '',
-		'form_type'              => '',
-		'auto_select_resource'   => false,
-		'show_progress'          => true,
-		'progress_item_1_title'  => null,
-		'progress_item_1_number' => null,
-		'progress_item_2_title'  => null,
-		'progress_item_2_number' => null,
-		'screen_1_title'         => null,
-		'screen_1_description'   => null,
-		'allow_past'             => false,
-		'return_url'             => '',
+		'resource_id'               => 0,
+		'selected_resource_id'      => 0,
+		'resource_ids'              => array(),
+		'aggregate_resource_ids'    => array(),
+		'cal_count'                 => 1,
+		'start_month_calendar'      => false,
+		'calendar_dates_start'      => '',
+		'calendar_dates_end'        => '',
+		'selected_dates'            => '',
+		'options'                   => '',
+		'form_type'                 => '',
+		'auto_select_resource'      => false,
+		'catalog_layout'            => 'grid',
+		'show_resource_filters'     => false,
+		'show_resource_image'       => true,
+		'show_resource_title'       => true,
+		'show_resource_description' => true,
+		'catalog_item_width'        => '',
+		'catalog_item_max_width'    => 0,
+		'catalog_grid_items_per_row' => 0,
+		'catalog_list_items_per_row' => 0,
+		'show_resource_hierarchy'   => true,
+		'show_availability'         => true,
+		'show_starting_price'       => true,
+		'show_progress'             => true,
+		'progress_item_1_title'     => null,
+		'progress_item_1_number'    => null,
+		'progress_item_2_title'     => null,
+		'progress_item_2_number'    => null,
+		'screen_1_title'            => null,
+		'screen_1_description'      => null,
+		'allow_past'                => false,
+		'return_url'                => '',
 	);
 
 	$attribute_aliases = array(
@@ -146,8 +197,23 @@ function wpbc_booking_resource_selector_normalize_config( $attributes ) {
 	$config['form_type']            = sanitize_text_field( (string) $config['form_type'] );
 	$config['return_url']           = esc_url_raw( (string) $config['return_url'] );
 	$config['auto_select_resource'] = wpbc_booking_resource_selector_normalize_boolean( $config['auto_select_resource'] );
-	$config['show_progress']        = wpbc_booking_resource_selector_normalize_boolean( $config['show_progress'], true );
-	$config['allow_past']           = wpbc_booking_resource_selector_normalize_boolean( $config['allow_past'] );
+	$config['catalog_layout'] = 'list' === sanitize_key( (string) $config['catalog_layout'] ) ? 'list' : 'grid';
+	$config['show_resource_filters'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_resource_filters'] );
+	$config['show_resource_image'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_resource_image'], true );
+	$config['show_resource_title'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_resource_title'], true );
+	$config['show_resource_description'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_resource_description'], true );
+	$config['catalog_item_width'] = wpbc_booking_resource_selector_normalize_css_width( $config['catalog_item_width'] );
+	$config['catalog_item_max_width'] = absint( $config['catalog_item_max_width'] );
+	if ( $config['catalog_item_max_width'] > 0 ) {
+		$config['catalog_item_max_width'] = min( 1200, max( 280, $config['catalog_item_max_width'] ) );
+	}
+	$config['catalog_grid_items_per_row'] = min( 12, absint( $config['catalog_grid_items_per_row'] ) );
+	$config['catalog_list_items_per_row'] = min( 12, absint( $config['catalog_list_items_per_row'] ) );
+	$config['show_resource_hierarchy'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_resource_hierarchy'], true );
+	$config['show_availability'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_availability'], true );
+	$config['show_starting_price'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_starting_price'], true );
+	$config['show_progress'] = wpbc_booking_resource_selector_normalize_boolean( $config['show_progress'], true );
+	$config['allow_past'] = wpbc_booking_resource_selector_normalize_boolean( $config['allow_past'] );
 
 	$display_text_keys = array(
 		'progress_item_1_title',

@@ -204,7 +204,7 @@ class WPBC_BFB_Tpl__Publish {
 		$default_resource_id   = self::get_default_resource_id();
 		$default_form_name     = self::get_default_form_name();
 		$default_shortcode_raw = self::get_default_shortcode_raw( $default_resource_id, $default_form_name );
-		$is_demo               = ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() );
+		$is_demo               = wpbc_is_booking_form_publishing_restricted();
 
 		wp_enqueue_script(
 			self::SCRIPT_HANDLE,
@@ -218,7 +218,7 @@ class WPBC_BFB_Tpl__Publish {
 			self::SCRIPT_HANDLE,
 			'wpbc_bfb_publish_vars',
 			array(
-				'ajax_url'              => admin_url( 'admin-ajax.php' ),
+				'ajax_url'              => admin_url( 'admin-ajax.php', 'relative' ),
 				'action'                => self::get_ajax_action_name(),
 				'nonce'                 => wp_create_nonce( self::get_ajax_nonce_action_name() ),
 				'modal_selector'        => '#' . self::MODAL_DOM_ID,
@@ -263,7 +263,7 @@ class WPBC_BFB_Tpl__Publish {
 			return;
 		}
 
-		$is_demo = ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() );
+		$is_demo = wpbc_is_booking_form_publishing_restricted();
 		?>
 		<span class="wpdevelop">
 			<div id="<?php echo esc_attr( self::MODAL_DOM_ID ); ?>" class="modal wpbc_popup_modal" tabindex="-1" role="dialog" aria-hidden="true">

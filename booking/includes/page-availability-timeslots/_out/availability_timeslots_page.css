@@ -858,7 +858,7 @@
   }
 }
 body[class*=page_wpbc] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
-  margin: 2px 30px 2px 25px
+  margin: 2px 30px
 }
 #datepick-div,
 .datepick-popup {
