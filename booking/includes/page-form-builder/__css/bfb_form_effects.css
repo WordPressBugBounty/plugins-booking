@@ -15,7 +15,7 @@
 .wpbc_bfb__panel--preview .wpbc_bfb__form_preview_section_container
 {
 	width: var(--wpbc-bfb-booking_form_layout_width, 100%);
-	max-width: 100%;
+	max-width: Min( 100%, 67rem );
 	margin-left: auto;
 	margin-right: auto;
 	box-sizing: border-box;

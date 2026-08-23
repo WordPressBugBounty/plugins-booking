@@ -138,10 +138,10 @@ function wpbc_shortcode_config__reset_workflow( shortcode_id ) {
 }
 
 /**
- * Apply the recommended compact presentation when List view is selected.
+ * Apply the recommended compact presentation when a workflow List view is selected.
  *
  * The preset is applied only in the shortcode configuration UI when the
- * Resource layout control changes to List. Each affected control remains
+ * catalog layout control changes to List. Each affected control remains
  * independently editable after the preset is applied, and shortcode parser
  * defaults are not changed.
  *
@@ -156,7 +156,7 @@ function wpbc_shortcode_config__apply_resource_list_preset( $changed_field ) {
         return;
     }
 
-    $container = $changed_field.closest( '#wpbc_sc_container__shortcode_booking_resource_selector' );
+	$container = $changed_field.closest( '#wpbc_sc_container__shortcode_booking_resource_selector, #wpbc_sc_container__shortcode_booking_appointment' );
     if ( ! $container.length ) {
         return;
     }

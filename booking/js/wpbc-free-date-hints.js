@@ -143,9 +143,14 @@
 			w.wpbc_show_cost_hints_after_few_seconds( loadedResourceId );
 		} );
 
-		$( '.booking_form_div' ).on( 'date_selected', function ( event, resourceId ) {
-			w.wpbc_show_cost_hints_after_few_seconds( resourceId );
-		} );
+		// Resource Selector and other workflows can insert native forms after document readiness.
+		$( document ).on(
+			'date_selected.wpbc_free_date_hints',
+			'.booking_form_div',
+			function ( event, resourceId ) {
+				w.wpbc_show_cost_hints_after_few_seconds( resourceId );
+			}
+		);
 
 		$( document ).on( 'change', '.booking_form_div input, .booking_form_div select, .booking_form_div textarea', function () {
 			var form = $( this ).closest( 'form.booking_form' ),

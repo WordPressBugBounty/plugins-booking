@@ -102,7 +102,7 @@ class WPBC_BFB_Template_Picker_Section {
 			),
 			array(
 				'label'      => __( 'Full Days', 'booking' ),
-				'search_key' => 'full day|full-days',
+				'search_key' => 'full day|full-day',
 			),
 			array(
 				'label'      => __( 'Time Slots', 'booking' ),

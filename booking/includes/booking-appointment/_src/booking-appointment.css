@@ -121,6 +121,85 @@
 	gap: 10px;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
+.wpbc_booking_appointment__catalog {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+.wpbc_booking_appointment__catalog_filters {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: minmax(0, 1fr);
+}
+.wpbc_booking_appointment__catalog_filters input {
+	background: var(--wpbc-appointment-surface);
+	border: 1px solid var(--wpbc-appointment-border);
+	border-radius: var(--wpbc_form-field-border-radius, 6px);
+	color: var(--wpbc-appointment-surface-text);
+	font: inherit;
+	min-height: 42px;
+	padding: 8px 11px;
+	width: 100%;
+}
+.wpbc_booking_appointment__catalog_filters input:focus {
+	border-color: var(--wpbc-appointment-focus);
+	box-shadow: 0 0 0 2px var(--wpbc-appointment-focus-shadow);
+	outline: 0;
+}
+.wpbc_booking_appointment__catalog--list .wpbc_booking_appointment__catalog_items {
+	grid-template-columns: minmax(0, 1fr);
+}
+.wpbc_booking_appointment__catalog--explicit-columns .wpbc_booking_appointment__catalog_items {
+	grid-template-columns: repeat(var(--wpbc-appointment-catalog-items-per-row), minmax(0, 1fr));
+}
+.wpbc_booking_appointment__catalog--explicit-item-width .wpbc_booking_appointment__catalog_items {
+	grid-template-columns: repeat(auto-fill, minmax(0, var(--wpbc-appointment-catalog-item-track-width)));
+	justify-content: start;
+}
+.wpbc_booking_appointment__catalog--explicit-item-width .wpbc_booking_appointment__catalog_card {
+	width: 100%;
+}
+.wpbc_booking_appointment__catalog--bounded .wpbc_booking_appointment__catalog_items {
+	justify-items: start;
+}
+.wpbc_booking_appointment__catalog--bounded .wpbc_booking_appointment__catalog_card {
+	max-width: var(--wpbc-appointment-catalog-item-max-width);
+	width: 100%;
+}
+.wpbc_booking_appointment__catalog--grid .wpbc_booking_appointment__catalog_card {
+	align-items: stretch;
+	flex-direction: column;
+	min-height: 260px;
+	max-width: Min( 400px, 100% );
+}
+.wpbc_booking_appointment__catalog--grid.wpbc_booking_appointment__catalog--without-images .wpbc_booking_appointment__catalog_card {
+	min-height: 150px;
+}
+.wpbc_booking_appointment__catalog--grid .wpbc_booking_appointment__catalog_card--without-image {
+	min-height: 150px;
+}
+.wpbc_booking_appointment__catalog--grid .wpbc_booking_appointment__service_image,
+.wpbc_booking_appointment__catalog--grid .wpbc_booking_appointment__provider_avatar {
+	border-radius: calc(var(--wpbc_form-field-border-radius, 8px) - 2px);
+	flex-basis: 150px;
+	font-size: 24px;
+	height: 150px;
+	width: 100%;
+}
+.wpbc_booking_appointment__catalog--grid .wpbc_booking_appointment__choice_mark {
+	background: var(--wpbc-appointment-surface);
+	inset-block-start: 25px;
+	inset-inline-end: 25px;
+	position: absolute;
+}
+.wpbc_booking_appointment__catalog--grid .wpbc_booking_appointment__choice_body {
+	flex: 1 1 auto;
+}
+.wpbc_booking_appointment__catalog_empty {
+	color: var(--wpbc-appointment-muted);
+	margin: 0;
+	padding: 12px 0;
+}
 .wpbc_booking_appointment__choice {
 	align-items: center;
 	background: var(--wpbc-appointment-surface);
@@ -134,6 +213,9 @@
 	padding: 15px 16px;
 	position: relative;
 	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.wpbc_booking_appointment__catalog [hidden] {
+	display: none !important;
 }
 .wpbc_booking_appointment__choice:hover {
 	border-color: var(--wpbc_form-field-focus-border-color, var(--wpbc-appointment-focus));
@@ -237,7 +319,7 @@
 	flex-wrap: wrap;
 	gap: 7px 12px;
 }
-.wpbc_booking_appointment__selected > span, .wpbc_booking_appointment__booking_header span {
+.wpbc_booking_appointment__selected > span, .wpbc_booking_appointment__booking_header_content > span {
 	color: var(--wpbc-appointment-muted);
 	font-size: 12px;
 	text-transform: uppercase;
@@ -247,11 +329,20 @@
 }
 .wpbc_booking_appointment__booking_header {
 	align-items: center;
-	justify-content: space-between;
+	gap: 16px 24px;
+	justify-content: flex-start;
 }
-.wpbc_booking_appointment__booking_header > div {
+.wpbc_booking_appointment__booking_header_content {
 	display: flex;
+	flex: 1 1 auto;
 	flex-direction: column;
+	min-width: 0;
+}
+.wpbc_booking_appointment__booking_header_image {
+	flex: 0 0 54px;
+}
+.wpbc_booking_appointment__booking_header .wpbc_booking_appointment__change {
+	margin-inline-start: auto;
 }
 .wpbc_booking_appointment__selected strong, .wpbc_booking_appointment__booking_header strong {
 	color: var(--wpbc-appointment-surface-text);
@@ -326,6 +417,21 @@
 	}
 }
 @media (max-width: 600px) {
+	.wpbc_booking_appointment__booking_header {
+		align-items: flex-start;
+		flex-wrap: wrap;
+		gap: 12px 16px;
+	}
+	.wpbc_booking_appointment__booking_header_image {
+		flex-basis: 48px;
+		height: 48px;
+		width: 48px;
+	}
+	.wpbc_booking_appointment__booking_header .wpbc_booking_appointment__change {
+		flex: 1 0 100%;
+		margin-inline-start: 0;
+		text-align: center;
+	}
 	.wpbc_booking_appointment .wpbc_booking_appointment__progress {
 		margin-bottom: 22px;
 	}
@@ -333,7 +439,12 @@
 		font-size: 12px;
 		gap: 5px;
 	}
-	.wpbc_booking_appointment__choices {
+	.wpbc_booking_appointment__choices,
+	.wpbc_booking_appointment__catalog--explicit-columns .wpbc_booking_appointment__catalog_items,
+	.wpbc_booking_appointment__catalog--explicit-item-width .wpbc_booking_appointment__catalog_items {
 		grid-template-columns: 1fr;
+	}
+	.wpbc_booking_appointment__catalog--bounded .wpbc_booking_appointment__catalog_card {
+		max-width: none;
 	}
 }

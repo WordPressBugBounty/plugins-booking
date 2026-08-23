@@ -14,12 +14,54 @@
 		return Number( $form.find( '[name="' + name + '"]:checked, [name="' + name + '"][type="hidden"]' ).first().val() || 0 );
 	}
 
+	/**
+	 * Apply public text search to one server-authorized Appointment catalog.
+	 *
+	 * @param {jQuery} $catalog Appointment catalog root.
+	 * @return {void}
+	 */
+	function filter_appointment_catalog( $catalog ) {
+		var search_term = String( $catalog.find( '[data-wpbc-appointment-catalog-search]' ).val() || '' ).toLocaleLowerCase().trim();
+		var catalog_type = String( $catalog.attr( 'data-catalog-type' ) || 'services' );
+		var visible_count = 0;
+
+		$catalog.find( '[data-wpbc-appointment-catalog-card]' ).each( function () {
+			var $card = $( this );
+			var searchable_text = String( $card.attr( 'data-appointment-catalog-search' ) || '' ).toLocaleLowerCase();
+			var is_visible = ! search_term || searchable_text.indexOf( search_term ) !== -1;
+			var $choice_input = $card.find( 'input[type="radio"]' ).first();
+
+			$card.prop( 'hidden', ! is_visible );
+			$choice_input.prop( 'disabled', ! is_visible );
+			if ( is_visible ) {
+				visible_count += 1;
+			} else if ( $choice_input.prop( 'checked' ) ) {
+				$choice_input.prop( 'checked', false );
+				$card.removeClass( 'is-selected' );
+			}
+		} );
+
+		$catalog.find( '[data-wpbc-appointment-catalog-empty]' ).prop( 'hidden', 0 !== visible_count );
+		$catalog.find( '[data-wpbc-appointment-catalog-status]' ).text(
+			String( visible_count ) + ' ' + (
+				'providers' === catalog_type
+					? ( 1 === visible_count ? ( config.provider_found || 'Provider found.' ) : ( config.providers_found || 'Providers found.' ) )
+					: ( 1 === visible_count ? ( config.service_found || 'Service found.' ) : ( config.services_found || 'Services found.' ) )
+			)
+		);
+	}
+
 	/** Toggle one component loading state without clearing its current stage. */
 	function set_loading( $root, is_loading ) {
 		$root.toggleClass( 'is-loading', is_loading ).attr( 'aria-busy', is_loading ? 'true' : 'false' );
 		$root.find( '> .wpbc_booking_appointment__stage' ).attr( 'aria-busy', is_loading ? 'true' : 'false' );
 		$root.find( '> .wpbc_booking_appointment__loading' ).prop( 'hidden', ! is_loading ).attr( 'aria-hidden', is_loading ? 'false' : 'true' );
 		$root.find( '.wpbc_booking_appointment__selection_form :input' ).prop( 'disabled', is_loading );
+		if ( ! is_loading ) {
+			$root.find( '[data-wpbc-appointment-catalog]' ).each( function () {
+				filter_appointment_catalog( $( this ) );
+			} );
+		}
 	}
 
 	/**
@@ -876,6 +918,11 @@
 		$input.closest( '.wpbc_booking_appointment__choice' ).addClass( 'is-selected' );
 	} );
 
+	/** Filter Service and Provider cards without changing the signed catalog. */
+	$( document ).on( 'input search', '[data-wpbc-appointment-catalog-search]', function () {
+		filter_appointment_catalog( $( this ).closest( '[data-wpbc-appointment-catalog]' ) );
+	} );
+
 	/** Return to Service selection while preserving the last valid Service. */
 	$( document ).on( 'click', '.wpbc_booking_appointment [data-appointment-back="service"]', function () {
 		var $root = $( this ).closest( '.wpbc_booking_appointment' );
@@ -924,6 +971,9 @@
 	$( function () {
 		$( '.wpbc_booking_appointment' ).each( function () {
 			var $root = $( this );
+			$root.find( '[data-wpbc-appointment-catalog]' ).each( function () {
+				filter_appointment_catalog( $( this ) );
+			} );
 			var $native = $root.find( '.wpbc_booking_appointment__native_form' ).first();
 			if ( $native.length ) {
 				$root.attr( 'data-selected-service-id', Number( $native.data( 'service-id' ) || 0 ) );

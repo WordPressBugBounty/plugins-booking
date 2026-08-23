@@ -29,7 +29,11 @@ function wpbc_booking_appointment_get_fallback_selection( $key ) {
  *
  * Supported attributes include service_id, provider_id, services, providers,
  * nummonths, startmonth, calendar_dates_start, calendar_dates_end, options,
- * form_type, auto_select_provider, show_progress, progress_item_1_title,
+ * form_type, auto_select_provider, catalog_layout, show_resource_filters,
+ * show_resource_image, show_resource_title, show_resource_description,
+ * catalog_item_width, catalog_item_max_width, catalog_grid_items_per_row,
+ * catalog_list_items_per_row, show_resource_hierarchy, show_availability,
+ * show_starting_price, show_progress, progress_item_1_title,
  * progress_item_1_number through progress_item_3_title/progress_item_3_number,
  * screen_1_title, screen_1_description, screen_2_title, screen_2_description,
  * and allow_past. Provider auto-selection is disabled unless
@@ -93,6 +97,10 @@ function wpbc_booking_appointment_enqueue_js( $where_to_load ) {
 			'validation_error'=> __( 'This Appointment time could not be verified. Please try again.', 'booking' ),
 			'initialization_error' => __( 'The Appointment form could not be initialized. Please start over and try again.', 'booking' ),
 			'duplicate_provider'   => __( 'This Provider already has an open Appointment form on this page. Complete or restart that Appointment before opening another form for the same Provider.', 'booking' ),
+			'service_found'       => __( 'Service found.', 'booking' ),
+			'services_found'      => __( 'Services found.', 'booking' ),
+			'provider_found'      => __( 'Provider found.', 'booking' ),
+			'providers_found'     => __( 'Providers found.', 'booking' ),
 		)
 	);
 }

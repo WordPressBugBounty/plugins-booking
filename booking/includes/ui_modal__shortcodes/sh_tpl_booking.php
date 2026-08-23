@@ -2142,6 +2142,59 @@ function wpbc_shortcode_config__booking_appointment_parameters() {
 			'section' => 'general', 'title' => __( 'Auto-select the only Provider', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
 			'description' => __( 'Skip Provider selection only when exactly one compatible Provider exists.', 'booking' ),
 		),
+		'catalog_layout' => array(
+			'section' => 'catalog', 'title' => __( 'Catalog layout', 'booking' ), 'type' => 'select', 'value_type' => 'text', 'default' => 'grid',
+			'options' => array( 'grid' => __( 'Responsive grid', 'booking' ), 'list' => __( 'List', 'booking' ) ),
+			'description' => __( 'Show Services and Providers as responsive cards or compact list items. Selecting List applies recommended display settings that you can adjust afterward.', 'booking' ),
+		),
+		'show_resource_filters' => array(
+			'section' => 'catalog', 'title' => __( 'Show catalog search', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => false,
+			'description' => __( 'Let visitors search the permitted Services or compatible Providers on the active selection screen.', 'booking' ),
+		),
+		'show_resource_image' => array(
+			'section' => 'catalog', 'title' => __( 'Show images', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show configured Service pictures and Provider photos or generated initials.', 'booking' ),
+		),
+		'show_resource_title' => array(
+			'section' => 'catalog', 'title' => __( 'Show titles', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show Service and Provider titles. Each title remains available to assistive technology when hidden.', 'booking' ),
+		),
+		'show_resource_description' => array(
+			'section' => 'catalog', 'title' => __( 'Show Service descriptions', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the public Service description when one is configured.', 'booking' ),
+		),
+		'catalog_item_width' => array(
+			'section' => 'catalog', 'title' => __( 'Catalog item width', 'booking' ), 'value_type' => 'css_width', 'default' => '',
+			'placeholder' => __( 'Automatic, 360px, or 50%', 'booking' ),
+			'description' => __( 'Optional explicit card or list-row width. Use px, %, em, rem, or vw. An items-per-row setting takes precedence for its active layout.', 'booking' ),
+		),
+		'catalog_item_max_width' => array(
+			'section' => 'catalog', 'title' => __( 'Maximum catalog item width', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'placeholder' => __( 'Automatic', 'booking' ), 'attr' => array( 'min' => 280, 'max' => 1200, 'step' => 1 ),
+			'description' => __( 'Optional maximum card or list-row width in pixels, from 280 through 1200. Leave empty to fill the available layout width.', 'booking' ),
+		),
+		'catalog_grid_items_per_row' => array(
+			'section' => 'catalog', 'title' => __( 'Grid items per row', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'placeholder' => __( 'Automatic', 'booking' ), 'attr' => array( 'min' => 1, 'max' => 12, 'step' => 1 ),
+			'description' => __( 'Optional exact number of equal-width items per row in the grid layout, from 1 through 12.', 'booking' ),
+		),
+		'catalog_list_items_per_row' => array(
+			'section' => 'catalog', 'title' => __( 'List items per row', 'booking' ), 'type' => 'number', 'value_type' => 'positive_integer', 'default' => '',
+			'placeholder' => __( 'One item per row', 'booking' ), 'attr' => array( 'min' => 1, 'max' => 12, 'step' => 1 ),
+			'description' => __( 'Optional number of equal-width items per row in the list layout, from 1 through 12. Empty keeps one item per row.', 'booking' ),
+		),
+		'show_resource_hierarchy' => array(
+			'section' => 'catalog', 'title' => __( 'Show Service relationship', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Explain that each listed Provider offers the selected Service.', 'booking' ),
+		),
+		'show_availability' => array(
+			'section' => 'catalog', 'title' => __( 'Show availability summary', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show when a Provider has no weekly availability configured. Exact availability remains confirmed after dates are selected.', 'booking' ),
+		),
+		'show_starting_price' => array(
+			'section' => 'catalog', 'title' => __( 'Show starting price', 'booking' ), 'type' => 'checkbox', 'value_type' => 'boolean', 'default' => true,
+			'description' => __( 'Show the effective Service or Provider price when pricing is available in this edition.', 'booking' ),
+		),
 		'nummonths' => array(
 			'section' => 'calendar', 'title' => __( 'Visible months', 'booking' ), 'type' => 'select', 'value_type' => 'positive_integer', 'default' => 1, 'options' => $month_options,
 			'description' => __( 'Number of calendar months from 1 through 24.', 'booking' ),
@@ -2217,6 +2270,23 @@ function wpbc_shortcode_config__booking_appointment_parameters() {
 		),
 	);
 
+	if ( ! function_exists( 'wpbc_is_11_6_features_enabled' ) || ! wpbc_is_11_6_features_enabled() ) {
+		unset(
+			$parameters['catalog_layout'],
+			$parameters['show_resource_filters'],
+			$parameters['show_resource_image'],
+			$parameters['show_resource_title'],
+			$parameters['show_resource_description'],
+			$parameters['catalog_item_width'],
+			$parameters['catalog_item_max_width'],
+			$parameters['catalog_grid_items_per_row'],
+			$parameters['catalog_list_items_per_row'],
+			$parameters['show_resource_hierarchy'],
+			$parameters['show_availability'],
+			$parameters['show_starting_price']
+		);
+	}
+
 	return $parameters;
 }
 
@@ -2250,11 +2320,15 @@ function wpbc_shortcode_config__content__booking_appointment() {
 	$shortcode_name = 'booking_appointment';
 	$tabs = array(
 		'general'   => array( 'title' => __( 'Service & Provider', 'booking' ), 'icon' => 'wpbc-bi-person-check', 'default' => true ),
+		'catalog'   => array( 'title' => __( 'Catalog', 'booking' ), 'icon' => 'wpbc-bi-grid', 'default' => false ),
 		'calendar'  => array( 'title' => __( 'Calendar & Form', 'booking' ), 'icon' => 'wpbc-bi-calendar3', 'default' => false ),
 		'progress'  => array( 'title' => __( 'Progress', 'booking' ), 'icon' => 'wpbc-bi-list-ol', 'default' => false ),
 		'text'      => array( 'title' => __( 'Screen Text', 'booking' ), 'icon' => 'wpbc-bi-card-text', 'default' => false ),
 		'reference' => array( 'title' => __( 'Parameters', 'booking' ), 'icon' => 'wpbc-bi-code-square', 'default' => false ),
 	);
+	if ( ! function_exists( 'wpbc_is_11_6_features_enabled' ) || ! wpbc_is_11_6_features_enabled() ) {
+		unset( $tabs['catalog'] );
+	}
 	$parameters = wpbc_shortcode_config__booking_appointment_parameters();
 	?>
 	<div id="wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>" class="wpbc_sc_container__shortcode wpbc_sc_container__shortcode_<?php echo esc_attr( $shortcode_name ); ?>">

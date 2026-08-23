@@ -25,6 +25,64 @@ function wpbc_booking_appointment_normalize_ids( $value ) {
 }
 
 /**
+ * Convert a shortcode-style value to a strict Boolean.
+ *
+ * @param mixed $raw_value     Raw Boolean-like value.
+ * @param bool  $default_value Value used when the raw value is null.
+ *
+ * @return bool Normalized Boolean.
+ */
+function wpbc_booking_appointment_normalize_boolean( $raw_value, $default_value = false ) {
+	if ( null === $raw_value ) {
+		return (bool) $default_value;
+	}
+
+	if ( is_string( $raw_value ) ) {
+		$raw_value = strtolower( trim( $raw_value ) );
+	}
+
+	return ! in_array( $raw_value, array( false, 0, '0', 'false', 'off', 'no', '' ), true );
+}
+
+/**
+ * Normalize a safe public Appointment catalog item width.
+ *
+ * Bare numbers are treated as pixels. Only simple dimensions are accepted so
+ * a shortcode value cannot introduce an arbitrary inline CSS declaration.
+ *
+ * @param mixed $raw_width Raw shortcode width.
+ *
+ * @return string Normalized CSS width or an empty string for automatic width.
+ */
+function wpbc_booking_appointment_normalize_css_width( $raw_width ) {
+	if ( is_int( $raw_width ) || is_float( $raw_width ) ) {
+		$raw_width = (string) $raw_width . 'px';
+	}
+
+	$raw_width = strtolower( trim( (string) $raw_width ) );
+	if ( '' === $raw_width || 'auto' === $raw_width ) {
+		return '';
+	}
+	if ( preg_match( '/^\d+(?:\.\d+)?$/', $raw_width ) ) {
+		$raw_width .= 'px';
+	}
+	if ( ! preg_match( '/^(\d+(?:\.\d+)?)(px|%|rem|em|vw)$/', $raw_width, $matches ) ) {
+		return '';
+	}
+
+	$numeric_width = (float) $matches[1];
+	$width_unit    = $matches[2];
+	$maximum_width = in_array( $width_unit, array( '%', 'vw' ), true ) ? 100 : ( 'px' === $width_unit ? 2000 : 100 );
+	if ( $numeric_width <= 0 || $numeric_width > $maximum_width ) {
+		return '';
+	}
+
+	$normalized_width = rtrim( rtrim( number_format( $numeric_width, 4, '.', '' ), '0' ), '.' );
+
+	return $normalized_width . $width_unit;
+}
+
+/**
  * Normalize shortcode attributes into the stable AJAX configuration contract.
  *
  * @param mixed $attributes Raw shortcode attributes or decoded configuration.
@@ -45,6 +103,18 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 		'options'                 => '',
 		'form_type'               => '',
 		'auto_select_provider'    => false,
+		'catalog_layout'            => 'grid',
+		'show_resource_filters'     => false,
+		'show_resource_image'       => true,
+		'show_resource_title'       => true,
+		'show_resource_description' => true,
+		'catalog_item_width'        => '',
+		'catalog_item_max_width'    => 0,
+		'catalog_grid_items_per_row' => 0,
+		'catalog_list_items_per_row' => 0,
+		'show_resource_hierarchy'   => true,
+		'show_availability'         => true,
+		'show_starting_price'       => true,
 		'show_progress'           => true,
 		'progress_item_1_title'   => null,
 		'progress_item_1_number'  => null,
@@ -126,10 +196,23 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 	$config['options']    = sanitize_text_field( (string) $config['options'] );
 	$config['form_type']  = sanitize_text_field( (string) $config['form_type'] );
 	$config['return_url'] = esc_url_raw( (string) $config['return_url'] );
-	$auto_select_provider = is_string( $config['auto_select_provider'] ) ? strtolower( trim( $config['auto_select_provider'] ) ) : $config['auto_select_provider'];
-	$config['auto_select_provider'] = ! in_array( $auto_select_provider, array( false, 0, '0', 'false', 'off', 'no' ), true );
-	$show_progress = is_string( $config['show_progress'] ) ? strtolower( trim( $config['show_progress'] ) ) : $config['show_progress'];
-	$config['show_progress'] = ! in_array( $show_progress, array( false, 0, '0', 'false', 'off', 'no', '' ), true );
+	$config['auto_select_provider'] = wpbc_booking_appointment_normalize_boolean( $config['auto_select_provider'] );
+	$config['catalog_layout'] = 'list' === sanitize_key( (string) $config['catalog_layout'] ) ? 'list' : 'grid';
+	$config['show_resource_filters'] = wpbc_booking_appointment_normalize_boolean( $config['show_resource_filters'] );
+	$config['show_resource_image'] = wpbc_booking_appointment_normalize_boolean( $config['show_resource_image'], true );
+	$config['show_resource_title'] = wpbc_booking_appointment_normalize_boolean( $config['show_resource_title'], true );
+	$config['show_resource_description'] = wpbc_booking_appointment_normalize_boolean( $config['show_resource_description'], true );
+	$config['catalog_item_width'] = wpbc_booking_appointment_normalize_css_width( $config['catalog_item_width'] );
+	$config['catalog_item_max_width'] = absint( $config['catalog_item_max_width'] );
+	if ( $config['catalog_item_max_width'] > 0 ) {
+		$config['catalog_item_max_width'] = min( 1200, max( 280, $config['catalog_item_max_width'] ) );
+	}
+	$config['catalog_grid_items_per_row'] = min( 12, absint( $config['catalog_grid_items_per_row'] ) );
+	$config['catalog_list_items_per_row'] = min( 12, absint( $config['catalog_list_items_per_row'] ) );
+	$config['show_resource_hierarchy'] = wpbc_booking_appointment_normalize_boolean( $config['show_resource_hierarchy'], true );
+	$config['show_availability'] = wpbc_booking_appointment_normalize_boolean( $config['show_availability'], true );
+	$config['show_starting_price'] = wpbc_booking_appointment_normalize_boolean( $config['show_starting_price'], true );
+	$config['show_progress'] = wpbc_booking_appointment_normalize_boolean( $config['show_progress'], true );
 	$display_text_keys = array(
 		'progress_item_1_title',
 		'progress_item_1_number',
@@ -147,8 +230,7 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 			$config[ $display_text_key ] = sanitize_text_field( (string) $config[ $display_text_key ] );
 		}
 	}
-	$allow_past = is_string( $config['allow_past'] ) ? strtolower( trim( $config['allow_past'] ) ) : $config['allow_past'];
-	$config['allow_past'] = ! in_array( $allow_past, array( false, 0, '0', 'false', 'off', 'no', '' ), true );
+	$config['allow_past'] = wpbc_booking_appointment_normalize_boolean( $config['allow_past'] );
 
 	return (array) apply_filters( 'wpbc_booking_appointment_normalized_config', $config, $attributes );
 }

@@ -546,7 +546,7 @@ function wpbc_get_activation_booking_form_page_configs() {
 
 	return array(
 		'full_day_booking' => array(
-			'template_key' => 'dates_advanced_3_steps_review_with_hints',
+			'template_key' => 'dates_form_with_inline_hints',
 			'form_slug'    => 'full_day_booking',
 			'form_title'   => esc_html__( 'Full Day Booking Form', 'booking' ),
 			'page_slug'    => 'wp-booking-calendar-full-day',
