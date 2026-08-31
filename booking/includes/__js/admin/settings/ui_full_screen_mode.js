@@ -4,17 +4,48 @@
 // =====================================================================================================================
 
 /**
- * Save Full Screen preference in a short browser cookie.
+ * Return every cookie path that can apply to the current WordPress admin URL.
  *
- * This makes the next admin page load deterministic even if the async user-meta
- * AJAX request is interrupted by immediate navigation.
+ * WordPress may run from a subdirectory. Updating the root, site, and admin
+ * paths prevents an older, more-specific cookie from overriding the new mode.
  *
- * @param string value 'On' or 'Off'.
+ * @return {string[]} Unique absolute cookie paths.
+ */
+function wpbc_admin_ui__full_screen__get_cookie_paths() {
+	var cookie_paths = [ '/' ];
+	var admin_marker = '/wp-admin/';
+	var current_path = window.location && window.location.pathname ? window.location.pathname : '';
+	var admin_index  = current_path.indexOf( admin_marker );
+
+	if ( admin_index >= 0 ) {
+		cookie_paths.push( current_path.substring( 0, admin_index + 1 ) );
+		cookie_paths.push( current_path.substring( 0, admin_index + admin_marker.length ) );
+	}
+
+	return cookie_paths.filter( function ( path, index ) {
+		return path && cookie_paths.indexOf( path ) === index;
+	} );
+}
+
+/**
+ * Save Full Screen preference in a short-lived browser cookie.
+ *
+ * This makes the next admin page load deterministic even if the asynchronous
+ * user-meta request is interrupted. The timestamp lets PHP distinguish this
+ * pending value from a stale legacy cookie.
+ *
+ * @param {string} value Fullscreen mode, either `On` or `Off`.
+ *
+ * @return {void}
  */
 function wpbc_admin_ui__full_screen__set_cookie( value ) {
-	var max_age = 60 * 60 * 24 * 365;
+	var max_age      = 5 * 60;
+	var issued_at    = Math.floor( Date.now() / 1000 );
+	var cookie_value = encodeURIComponent( value + '|' + issued_at );
 
-	document.cookie = 'wpbc_admin_full_screen=' + encodeURIComponent( value ) + '; path=/; max-age=' + max_age + '; SameSite=Lax';
+	wpbc_admin_ui__full_screen__get_cookie_paths().forEach( function ( cookie_path ) {
+		document.cookie = 'wpbc_admin_full_screen=' + cookie_value + '; path=' + cookie_path + '; max-age=' + max_age + '; SameSite=Lax';
+	} );
 }
 
 /**

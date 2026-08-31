@@ -310,30 +310,170 @@ function wpbc_ui__top_nav__btn_normal_screen( $args = array() ) {
 
 
 /**
- * Get Full Screen mode from the immediate browser cookie, falling back to saved user meta value.
+ * Build a short-lived browser value for an immediately changed fullscreen preference.
  *
- * @param string $saved_value Saved user-meta value.
+ * The timestamp distinguishes a pending navigation safeguard from legacy
+ * year-long cookies, which must not override a successfully stored user value.
  *
- * @return string 'On', 'Off', or empty string.
+ * @param string   $mode             Fullscreen mode, either `On` or `Off`.
+ * @param int|null $issued_timestamp Optional Unix timestamp for deterministic tests.
+ *
+ * @return string Pending cookie value, or an empty string for an invalid mode.
  */
-function wpbc_ui__get_full_screen_mode_from_cookie( $saved_value = '' ) {
+function wpbc_ui__create_full_screen_mode_cookie_value( $mode, $issued_timestamp = null ) {
+
+	if ( ! in_array( $mode, array( 'On', 'Off' ), true ) ) {
+		return '';
+	}
+
+	$issued_timestamp = null === $issued_timestamp ? time() : absint( $issued_timestamp );
+
+	return $mode . '|' . $issued_timestamp;
+}
+
+/**
+ * Return every server-side cookie path used by Booking Calendar administration.
+ *
+ * Multiple paths are updated together to replace legacy cookies created by
+ * root, subdirectory, or WordPress administration requests.
+ *
+ * @return string[] Unique absolute cookie paths.
+ */
+function wpbc_ui__get_full_screen_mode_cookie_paths() {
+
+	$cookie_paths = array( '/' );
+
+	if ( defined( 'COOKIEPATH' ) && COOKIEPATH ) {
+		$cookie_paths[] = COOKIEPATH;
+	}
+
+	if ( defined( 'ADMIN_COOKIE_PATH' ) && ADMIN_COOKIE_PATH ) {
+		$cookie_paths[] = ADMIN_COOKIE_PATH;
+	}
+
+	return array_values( array_unique( array_filter( $cookie_paths ) ) );
+}
+
+/**
+ * Set the pending fullscreen cookie on every applicable administration path.
+ *
+ * User metadata remains authoritative. This short-lived cookie only bridges
+ * immediate navigation and replaces stale same-name cookies on narrower paths.
+ *
+ * @param string $mode Fullscreen mode, either `On` or `Off`.
+ *
+ * @return bool True when the mode was valid; otherwise false.
+ */
+function wpbc_ui__set_full_screen_mode_cookie( $mode ) {
+
+	$cookie_value = wpbc_ui__create_full_screen_mode_cookie_value( $mode );
+	if ( '' === $cookie_value ) {
+		return false;
+	}
+
+	if ( ! headers_sent() ) {
+		$cookie_domain = defined( 'COOKIE_DOMAIN' ) ? COOKIE_DOMAIN : '';
+
+		foreach ( wpbc_ui__get_full_screen_mode_cookie_paths() as $cookie_path ) {
+			setcookie(
+				'wpbc_admin_full_screen',
+				$cookie_value,
+				time() + ( 5 * 60 ),
+				$cookie_path,
+				$cookie_domain,
+				is_ssl(),
+				false
+			);
+		}
+	}
+
+	$_COOKIE['wpbc_admin_full_screen'] = $cookie_value;
+
+	return true;
+}
+
+/**
+ * Resolve fullscreen mode from saved user data and an optional pending cookie.
+ *
+ * A fresh timestamped cookie temporarily wins so immediate navigation remains
+ * deterministic if the asynchronous AJAX request is interrupted. A legacy
+ * plain `On` or `Off` cookie is accepted only when no valid user preference
+ * exists, preventing stale or duplicate-path cookies from overriding storage.
+ *
+ * @param string   $saved_value      Saved user-meta value.
+ * @param string   $cookie_value     Browser cookie value.
+ * @param int|null $current_timestamp Optional Unix timestamp for deterministic tests.
+ *
+ * @return string `On`, `Off`, or an empty string.
+ */
+function wpbc_ui__resolve_full_screen_mode( $saved_value = '', $cookie_value = '', $current_timestamp = null ) {
 
 	$saved_value = in_array( $saved_value, array( 'On', 'Off' ), true ) ? $saved_value : '';
+	$cookie_value = is_scalar( $cookie_value ) ? (string) $cookie_value : '';
 
-	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-	if ( ! isset( $_COOKIE['wpbc_admin_full_screen'] ) ) {
+	if ( in_array( $cookie_value, array( 'On', 'Off' ), true ) ) {
+		return '' === $saved_value ? $cookie_value : $saved_value;
+	}
+
+	if ( ! preg_match( '/^(On|Off)\|([0-9]{10,})$/', $cookie_value, $cookie_parts ) ) {
 		return $saved_value;
 	}
 
-	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-	$cookie_value = sanitize_text_field( $_COOKIE['wpbc_admin_full_screen'] );
+	$current_timestamp       = null === $current_timestamp ? time() : absint( $current_timestamp );
+	$issued_timestamp        = absint( $cookie_parts[2] );
+	$pending_cookie_lifetime = 5 * 60;
+	$allowed_clock_skew      = 60;
 
-	if ( in_array( $cookie_value, array( 'On', 'Off' ), true ) ) {
-		return $cookie_value;
+	if (
+		$issued_timestamp > ( $current_timestamp + $allowed_clock_skew )
+		|| $issued_timestamp < ( $current_timestamp - $pending_cookie_lifetime )
+	) {
+		return $saved_value;
 	}
 
-	return $saved_value;
+	return $cookie_parts[1];
 }
+
+/**
+ * Get fullscreen mode from the immediate browser cookie and saved user metadata.
+ *
+ * @param string $saved_value Saved user-meta value.
+ *
+ * @return string `On`, `Off`, or an empty string.
+ */
+function wpbc_ui__get_full_screen_mode_from_cookie( $saved_value = '' ) {
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Optional same-origin UI preference.
+	$cookie_value = isset( $_COOKIE['wpbc_admin_full_screen'] ) && is_scalar( $_COOKIE['wpbc_admin_full_screen'] )
+		? sanitize_text_field( wp_unslash( $_COOKIE['wpbc_admin_full_screen'] ) )
+		: '';
+
+	return wpbc_ui__resolve_full_screen_mode( $saved_value, $cookie_value );
+}
+
+/**
+ * Synchronize the fullscreen navigation cookie after verified user-meta storage.
+ *
+ * @param int    $user_id       User whose preference was saved.
+ * @param string $data_name     Saved Booking Calendar preference name.
+ * @param array  $sanitized_data Sanitized value stored in user metadata.
+ *
+ * @return void
+ */
+function wpbc_ui__sync_full_screen_cookie_after_user_data_save( $user_id, $data_name, $sanitized_data ) {
+
+	if (
+		'is_full_screen' !== $data_name
+		|| wpbc_get_current_user_id() !== absint( $user_id )
+		|| ! isset( $sanitized_data['value'] )
+		|| ! is_scalar( $sanitized_data['value'] )
+	) {
+		return;
+	}
+
+	wpbc_ui__set_full_screen_mode_cookie( (string) $sanitized_data['value'] );
+}
+add_action( 'wpbc_user_custom_data_saved', 'wpbc_ui__sync_full_screen_cookie_after_user_data_save', 10, 3 );
 
 
 /**

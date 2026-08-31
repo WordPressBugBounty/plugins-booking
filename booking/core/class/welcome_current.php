@@ -4,6 +4,160 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * What's New section for Booking Calendar 11.7.
+ *
+ * @param object $obj Welcome-page renderer.
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_7( $obj ) {
+
+	$section_param_arr = array( 'version_num' => '11.7', 'show_expand' => false );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	$prices_inspector_sections = array(
+		array(
+			'title'           => 'Base Cost',
+			'image'           => '11.7/wp_booking_calendar__prices_catalog_base_cost_placeholder.png',
+			'alt'             => 'Prices inspector showing the Base Cost editor with a decimal amount and synchronized slider',
+			'minimum_edition' => 'Booking Calendar Business Medium or higher.',
+			'purpose'         => 'Use Base Cost to define the normal starting price for this Resource before date, duration, deposit, and booking-time adjustments are applied.',
+			'description'     => 'Enter an exact Resource price, including decimals, or use the synchronized slider. The inspector also shows the owner currency and charging period that control how the value is understood.',
+		),
+		array(
+			'title'           => 'Seasonal Rates',
+			'image'           => '11.7/wp_booking_calendar__prices_catalog_seasonal_rates_placeholder.png',
+			'alt'             => 'Prices inspector showing ordered Seasonal Rates with On and Off controls',
+			'minimum_edition' => 'Booking Calendar Business Medium or higher.',
+			'purpose'         => 'Use Seasonal Rates when the same Resource should cost more or less on holidays, weekends, high seasons, or other reusable date periods.',
+			'description'     => 'Add fixed or percentage Seasonal Rates, switch saved rates On or Off without losing their settings, search authorized Seasons, and control evaluation order with drag or keyboard actions.',
+		),
+		array(
+			'title'           => 'Duration-Based Costs',
+			'image'           => '11.7/wp_booking_calendar__prices_catalog_duration_costs_placeholder.png',
+			'alt'             => 'Prices inspector showing ordered Duration-Based Cost rules and a separate LAST-day value',
+			'minimum_edition' => 'Booking Calendar Business Medium or higher.',
+			'purpose'         => 'Use Duration-Based Costs when the price should change according to how many days a customer books.',
+			'description'     => 'Build ordered From, For, Together, and LAST rules with fixed, percentage, or added amounts. Optional Season conditions, synchronized controls, and separate LAST-day previews make each rule easier to understand.',
+		),
+		array(
+			'title'           => 'Partial Payment',
+			'image'           => '11.7/wp_booking_calendar__prices_catalog_partial_payment_placeholder.png',
+			'alt'             => 'Prices inspector showing a Partial Payment preview with due-now and balance amounts',
+			'minimum_edition' => 'Booking Calendar Business Medium or higher.',
+			'purpose'         => 'Use Partial Payment when customers should pay a deposit at booking and the remaining balance later instead of paying the full total immediately.',
+			'description'     => 'Configure a percentage or fixed deposit with optional lead-time and Season conditions. The live preview separates the configured value from the amount currently due and shows the remaining balance and calculation basis.',
+		),
+		array(
+			'title'           => 'Early Booking Adjustment',
+			'image'           => '11.7/wp_booking_calendar__prices_catalog_early_booking_placeholder.png',
+			'alt'             => 'Prices inspector showing an Early Booking discount preview and qualifying date range',
+			'minimum_edition' => 'Booking Calendar Business Medium or higher.',
+			'purpose'         => 'Use Early Booking Adjustment to encourage advance reservations by reducing the price when check-in is sufficiently far away.',
+			'description'     => 'Offer fixed or percentage reductions for sufficiently early check-ins. The date ruler shows site today, the inclusive threshold, the selected check-in, and whether the authorized Season condition applies.',
+		),
+		array(
+			'title'           => 'Late Booking Adjustment',
+			'image'           => '11.7/wp_booking_calendar__prices_catalog_last_minute_placeholder.png',
+			'alt'             => 'Prices inspector showing a Last-Minute discount preview and near-term qualifying date range',
+			'minimum_edition' => 'Booking Calendar Business Medium or higher.',
+			'purpose'         => 'Use Late Booking Adjustment to help fill near-term availability by reducing the price for check-ins inside a short booking window.',
+			'description'     => 'Offer fixed or percentage reductions for near-term check-ins. The preview clearly shows the inverse date range and exclusive boundary, while saving this section leaves Early Booking settings unchanged.',
+		),
+	);
+
+	$obj->expand_section_start( $section_param_arr );
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section">
+			<h2><?php echo 'A New Prices Catalog'; ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // Replace this placeholder with the final 11.7 Prices Catalog screenshot before release. ?>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.7/wp_booking_calendar__prices_catalog_overview_placeholder.png' ) ); ?>"
+					alt="<?php echo 'Prices Catalog showing Resource pricing summaries, previews, filters, layouts, and the right-side inspector'; ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<p><strong><?php echo 'Minimum edition:'; ?></strong> <?php echo 'Booking Calendar Business Medium or higher.'; ?></p>
+				<p><strong><?php echo 'Why use it:'; ?></strong> <?php echo 'Use the Prices Catalog to review and manage all Resource-owned pricing rules from one page instead of opening several separate pricing screens.'; ?></p>
+				<ul>
+					<li><?php echo 'Manage Resource pricing from the familiar Booking Calendar > Prices page with search, filtering, sorting, paging, layouts, customizable columns, and clear pricing previews.'; ?></li>
+					<li><?php echo 'Expand a Resource to open direct links for Base Cost, Seasonal Rates, Duration-Based Costs, Partial Payment, Early Booking, and Last-Minute adjustments, together with owner Pricing context and authorized external settings.'; ?></li>
+					<li><?php echo 'The right-side inspector keeps each pricing area focused, validates current authorized values before saving, and protects changes made by another request.'; ?></li>
+					<li><?php echo 'Need more time before switching? Enable Use legacy catalog pages to temporarily restore the previous Prices listing without migrating or resetting pricing data.'; ?></li>
+					<li><?php echo 'Catalog previews cover Resource-owned pricing. Booking Form option costs, coupons, taxes, payment fees, additional Resources, and other later adjustments can still change the final booking total.'; ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<?php foreach ( $prices_inspector_sections as $prices_inspector_section ) { ?>
+			<div class="wpbc_wn_section">
+				<h2><?php echo esc_html( $prices_inspector_section['title'] ); ?></h2>
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<?php // Replace this placeholder with the final 11.7 inspector screenshot before release. ?>
+					<img
+						src="<?php echo esc_attr( $obj->section_img_url( $prices_inspector_section['image'] ) ); ?>"
+						alt="<?php echo esc_attr( $prices_inspector_section['alt'] ); ?>"
+						style="margin:10px 0;width:98%;"
+					/>
+				</div>
+				<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+					<p><strong><?php echo 'Minimum edition:'; ?></strong> <?php echo esc_html( $prices_inspector_section['minimum_edition'] ); ?></p>
+					<p><strong><?php echo 'Why use it:'; ?></strong> <?php echo esc_html( $prices_inspector_section['purpose'] ); ?></p>
+					<p><?php echo esc_html( $prices_inspector_section['description'] ); ?></p>
+				</div>
+			</div>
+		<?php } ?>
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo 'Clearer Left Sidebar Navigation'; ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 10px 0;">
+				<p><strong><?php echo 'Minimum edition:'; ?></strong> <?php echo 'Booking Calendar Free. This improvement is available in every edition.'; ?></p>
+				<p><strong><?php echo 'Why use it:'; ?></strong> <?php echo 'Use the grouped navigation to find administration pages faster and keep the current page visible in long menus.'; ?></p>
+				<ul>
+					<li><?php echo 'The grouped left menu keeps Appointments, Services, Providers, Availability, Pricing, and Settings easier to scan while preserving the familiar WordPress administration area.'; ?></li>
+					<li><?php echo 'Long menus automatically bring the exact current page into view, and the Minimize control now remembers and restores the visible sidebar state reliably.'; ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 50%;margin: 10px 0;">
+				<?php // Replace this placeholder with the final 11.7 navigation screenshot before release. ?>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.7/wp_booking_calendar__left_sidebar_navigation_placeholder.png' ) ); ?>"
+					alt="<?php echo 'Booking Calendar administration showing the grouped left sidebar navigation and selected page'; ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section">
+			<h2><?php echo 'More Improvements in 11.7'; ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<?php // Replace these placeholders with the final 11.7 Cost correction screenshots before release. ?>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.7/wp_booking_calendar__add_booking_cost_correction_placeholder.png' ) ); ?>"
+					alt="<?php echo 'Add Booking inspector showing the Cost correction number and slider controls'; ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<p><strong><?php echo 'Minimum edition for Cost correction:'; ?></strong> <?php echo 'Booking Calendar Business Small or higher.'; ?></p>
+				<p><strong><?php echo 'Why use it:'; ?></strong> <?php echo 'Use Cost correction when an administrator needs to replace the automatically calculated total for one manually created Booking or Appointment.'; ?></p>
+				<ul>
+					<li><?php echo 'Optionally set an exact final total while adding a Booking or Appointment. Leave the field empty to keep normal automatic pricing.'; ?></li>
+					<li><?php echo 'Applied Cost corrections continue through the established deposit, balance, notification, and cost-note workflow.'; ?></li>
+					<li><?php echo 'All editions: Full Screen preferences now remain consistent between Booking Calendar pages, including WordPress installations in subdirectories.'; ?></li>
+					<li><?php echo 'All editions: Form Builder Select fields now keep Value different from label turned off after saving and continue synchronizing option values with their labels.'; ?></li>
+					<li><?php echo 'Business Medium and higher: Prices Catalog editing keeps Changed indicators compact, and inspector actions retain readable icon spacing in left-to-right and right-to-left layouts.'; ?></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<?php
+	$obj->expand_section_end( $section_param_arr );
+}
+
+/**
  * What's New section for Booking Calendar 11.6.
  *
  * @param object $obj Welcome-page renderer.
@@ -11,7 +165,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @return void
  */
 function wpbc_welcome_section_11_6( $obj ) {
-	$section_param_arr = array( 'version_num' => '11.6', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.6', 'show_expand' => true );
 
 	$obj->expand_section_start( $section_param_arr );
 

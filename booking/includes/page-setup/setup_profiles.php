@@ -29,23 +29,10 @@ function wpbc_setup_wizard__set_full_screen_mode_for_current_user( $is_full_scre
 	}
 
 	$full_screen_value = $is_full_screen ? 'On' : 'Off';
-	$cookie_path       = ( defined( 'COOKIEPATH' ) && COOKIEPATH ) ? COOKIEPATH : '/';
-	$cookie_domain     = defined( 'COOKIE_DOMAIN' ) ? COOKIE_DOMAIN : '';
 
-	if ( ! headers_sent() ) {
-		setcookie(
-			'wpbc_admin_full_screen',
-			$full_screen_value,
-			time() + YEAR_IN_SECONDS,
-			$cookie_path,
-			$cookie_domain,
-			is_ssl(),
-			false
-		);
+	if ( function_exists( 'wpbc_ui__set_full_screen_mode_cookie' ) ) {
+		wpbc_ui__set_full_screen_mode_cookie( $full_screen_value );
 	}
-
-	// Keep cookie-aware page rendering deterministic during the current request.
-	$_COOKIE['wpbc_admin_full_screen'] = $full_screen_value;
 
 	return update_user_option(
 		$user_id,

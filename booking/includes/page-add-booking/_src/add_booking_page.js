@@ -334,6 +334,77 @@
 		} );
 	}
 
+	/**
+	 * Copy the authoritative cost-correction number into its convenience slider.
+	 *
+	 * The slider intentionally keeps its 0-1000 exploration range. Exact values,
+	 * including decimals and totals above 1000, remain unchanged in the number input.
+	 *
+	 * @return {void}
+	 */
+	function synchronize_cost_correction_range() {
+		var $number_field = $( '#wpbc_add_booking_cost_correction' );
+		var $range = $( '.wpbc_add_booking__cost_correction [data-wpbc-admin-cost-correction-range="1"]' ).first();
+		var number_value;
+
+		if ( ! $number_field.length || ! $range.length ) {
+			return;
+		}
+
+		number_value = Number( $number_field.val() );
+		if ( '' === String( $number_field.val() || '' ).trim() || ! isFinite( number_value ) ) {
+			$range.val( '0' );
+			return;
+		}
+
+		$range.val( String( number_value ) );
+	}
+
+	/**
+	 * Copy the convenience slider into the authoritative number input.
+	 *
+	 * @return {void}
+	 */
+	function synchronize_cost_correction_number() {
+		var $number_field = $( '#wpbc_add_booking_cost_correction' );
+		var $range = $( '.wpbc_add_booking__cost_correction [data-wpbc-admin-cost-correction-range="1"]' ).first();
+
+		if ( ! $number_field.length || ! $range.length ) {
+			return;
+		}
+
+		$number_field.val( $range.val() ).trigger( 'input' );
+	}
+
+	/**
+	 * Add an explicitly entered correction to the outgoing Add Booking request.
+	 *
+	 * The control is outside the Booking Form element and therefore is not part of
+	 * the legacy serialized form data. The server authorizes and normalizes this
+	 * dedicated value before it reaches the Business Small cost pipeline.
+	 *
+	 * @param {Event} event jQuery event.
+	 * @param {number} resource_id Submitted Booking resource ID.
+	 * @param {Object} params Mutable booking-create request parameters.
+	 * @return {void}
+	 */
+	function add_cost_correction_to_booking_request( event, resource_id, params ) {
+		var number_field = document.getElementById( 'wpbc_add_booking_cost_correction' );
+		var raw_cost;
+
+		if ( ! params || ! number_field ) {
+			return;
+		}
+
+		delete params.wpbc_admin_cost_correction;
+		raw_cost = String( number_field.value || '' ).trim();
+		if ( '' === raw_cost || ! number_field.checkValidity() ) {
+			return;
+		}
+
+		params.wpbc_admin_cost_correction = raw_cost;
+	}
+
 	$( document ).on( 'click', '.wpbc_add_booking__rightbar_tabs [role="tab"]', function () {
 		switch_right_panel( $( this ) );
 	} );
@@ -344,11 +415,15 @@
 	} );
 
 	$( document ).on( 'change', '#is_send_email_for_pending, #is_allow_bookings_in_past', refresh_booking_tools_summary );
+	$( document ).on( 'input', '#wpbc_add_booking_cost_correction', synchronize_cost_correction_range );
+	$( document ).on( 'input', '.wpbc_add_booking__cost_correction [data-wpbc-admin-cost-correction-range="1"]', synchronize_cost_correction_number );
+	$( 'body' ).on( 'wpbc_before_booking_create.wpbc_add_booking_cost_correction', add_cost_correction_to_booking_request );
 	$( document ).on( 'click', 'input[name="wpbc_add_booking_days_selection_mode"]', function () {
 		active_days_selection_override = normalize_days_selection_mode( $( this ).val() );
 		apply_days_selection_mode( active_days_selection_override, true );
 		schedule_days_selection_synchronization();
 	} );
 	$( refresh_booking_tools_summary );
+	$( synchronize_cost_correction_range );
 	$( schedule_days_selection_synchronization );
 }( jQuery ) );

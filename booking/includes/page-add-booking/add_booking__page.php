@@ -371,7 +371,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 	 */
 	private function render_booking_setup_summary() {
 
-		$resource_id    = $this->get_selected_booking_resource_id();
+		$resource_id      = $this->get_selected_booking_resource_id();
 		$resource_title = function_exists( 'wpbc_get_resource_title' ) ? wpbc_get_resource_title( $resource_id ) : '';
 		$form_name      = $this->get_selected_booking_form_name( $resource_id );
 		$days_mode      = $this->get_current_days_selection_mode();
@@ -924,6 +924,19 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$normal_url     = esc_url_raw( wpbc_add_booking_page_get_allow_past_url( false ) );
 		$send_emails    = 'On' !== get_bk_option( 'booking_send_emails_off_addbooking' );
 		?>
+		<?php
+		wpbc_render_admin_cost_correction_control(
+			array(
+				'input_id'      => 'wpbc_add_booking_cost_correction',
+				'resource_id'   => $this->get_selected_booking_resource_id(),
+				'wrapper_class' => 'inspector__row wpbc_add_booking__cost_correction',
+				'label_class'   => 'inspector__label',
+				'control_class' => 'inspector__control',
+				'help_class'    => 'description wpbc_bfb__help',
+				'help'          => __( 'Leave the number empty to use the calculated Booking cost. Enter an exact total to replace the final cost for this Booking.', 'booking' ),
+			)
+		);
+		?>
 		<div class="inspector__row inspector__row--toggle">
 			<div class="inspector__control">
 				<?php
@@ -962,7 +975,6 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		<?php do_action( 'wpbc_admin_add_booking_tools_panel', $this ); ?>
 		<?php
 	}
-
 
 	/**
 	 * Render per-user calendar sizing controls and their existing AJAX actions.

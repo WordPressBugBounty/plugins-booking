@@ -1920,6 +1920,11 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				//------------------------------------------------------------------------------------------------------
 
 				$custom_booking_form_name = ( ! empty( $booking_data_arr['wpbc_custom_booking_form'] ) ) ? $booking_data_arr['wpbc_custom_booking_form'] : '';  // FixIn: 9.4.3.12.
+				$booking_data_arr['admin_edit_url'] = wpbc_get_booking_admin_edit_url(
+					$resource_id,
+					isset( $booking_data_arr['hash'] ) ? $booking_data_arr['hash'] : '',
+					$custom_booking_form_name
+				);
 			    $form_show_template = wpbc_get_content_booking_form_show( $resource_id , $custom_booking_form_name );                                    // <strong>First Name</strong>:<span class="fieldvalue">[name]</span>&nbsp;&nbsp; ...
 				$parsed_form_show   = wpbc_get_parsed_content_booking_form_show( $booking_data_arr, $form_show_template );   // <strong>First Name</strong>:<span class="fieldvalue">John</span>&nbsp;&nbsp; ...
 

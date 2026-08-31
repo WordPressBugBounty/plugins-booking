@@ -91,6 +91,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_functions/booking_data__get.php';    
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/simple_html_tags.php';          // Simple HTML Tags             -   Custom Shortcodes.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/admin_menu_url.php';            // Admin Menu Pages & URLs.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/admin_top_bar.php';             // Admin Top Bar.
+require_once WPBC_PLUGIN_DIR . '/includes/_functions/admin-cost-correction.php';     // Shared Add Booking and Add Appointment exact-total control.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/news_version.php';              // News, Version.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/versions.php';                  // Versions.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/booking-resources-catalog-compatibility.php'; // Temporary 11.6 Resources catalog compatibility.

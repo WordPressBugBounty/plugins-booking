@@ -4,8 +4,8 @@
 @import url("24_9__light.css");
 /* Color Scheme: - 25_5 Square 1 */
 :root {
-	--wpbc_cal-day-cell-border-radius: 0;
-	--wpbc_cal-day-cell-border-width: 0;
+	--wpbc_cal-day-cell-border-radius: 0px;
+	--wpbc_cal-day-cell-border-width: 0px;
 	--wpbc_cal-day-bg-color-opacity: 80%;
 	--wpbc_cal-selected-day-bg-color-opacity: 80%;
 	--wpbc_cal-text-general-size: 15px;

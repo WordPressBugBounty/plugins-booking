@@ -31,6 +31,9 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
     public function tabs() {
         
 		$is_full_screen = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), 'is_full_screen' );
+		$is_full_screen = function_exists( 'wpbc_ui__get_full_screen_mode_from_cookie' )
+			? wpbc_ui__get_full_screen_mode_from_cookie( $is_full_screen )
+			: $is_full_screen;
 		$is_full_screen = ( 'On' === $is_full_screen );
 
         $tabs = array();

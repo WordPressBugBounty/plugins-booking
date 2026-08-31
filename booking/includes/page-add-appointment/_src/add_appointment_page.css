@@ -92,6 +92,52 @@
 	width: 100%;
 }
 
+.wpbc_add_appointment__cost_correction_label {
+	font-weight: 600;
+}
+
+.wpbc_add_appointment__cost_correction_control,
+.wpbc_add_appointment__cost_correction .wpbc_admin_cost_correction__number_control {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+}
+
+.wpbc_add_appointment__cost_correction .wpbc_admin_cost_correction__number_input_row {
+	align-items: center;
+	display: flex;
+	gap: 10px;
+	min-width: 0;
+}
+
+.wpbc_add_appointment__cost_correction .inspector__input {
+	box-sizing: border-box;
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+}
+
+.wpbc_add_appointment__cost_correction .wpbc_admin_cost_correction__number_prefix,
+.wpbc_add_appointment__cost_correction .wpbc_admin_cost_correction__number_suffix {
+	color: #646970;
+	flex: 0 0 auto;
+	font-size: 12px;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+.wpbc_add_appointment__cost_correction .wpbc_admin_cost_correction__number_slider {
+	align-self: center;
+	box-sizing: border-box;
+	cursor: pointer;
+	margin: 0;
+	max-width: none;
+	min-height: 20px;
+	padding: 0;
+	width: 100%;
+}
+
 .wpbc_add_appointment__setting_row p,
 .wpbc_add_appointment__settings_notice,
 .wpbc_add_appointment__tool_help {

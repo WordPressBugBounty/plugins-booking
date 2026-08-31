@@ -1226,15 +1226,16 @@
 				if ( props ) {
 					Object.keys( props ).forEach( (k) => {
 						const meta = props[k] || {};
-						if ( !hasOwn( data, k ) || data[k] === '' ) {
+						if ( !hasOwn( data, k ) ) {
 							if ( hasOwn( meta, 'default' ) ) {
 								// Coerce booleans to a real boolean; leave others as-is
 								merged[k] = (meta.type === 'boolean') ? !!meta.default : meta.default;
 							}
 						} else if ( meta.type === 'boolean' ) {
-							// Normalize truthy strings into booleans for templates that check on truthiness
-							const v   = data[k];
-							merged[k] = (v === true || v === 'true' || v === 1 || v === '1');
+							// Explicit empty values are legacy unchecked booleans, not missing defaults.
+							merged[k] = w.WPBC_BFB_Core.WPBC_BFB_Sanitize.coerce_boolean( data[k], false );
+						} else if ( data[k] === '' && hasOwn( meta, 'default' ) ) {
+							merged[k] = meta.default;
 						}
 					} );
 				}

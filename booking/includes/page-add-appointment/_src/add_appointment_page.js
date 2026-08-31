@@ -227,12 +227,86 @@
 		schedule_summary_refresh();
 	}
 
+	/** Copy the authoritative Appointment correction into its convenience slider. */
+	function synchronize_cost_correction_range() {
+		var $number_field = $( '#wpbc_add_appointment_cost_correction' );
+		var $range = $( '[data-wpbc-admin-cost-correction-range="1"]' ).first();
+		var number_value;
+
+		if ( ! $number_field.length || ! $range.length ) {
+			return;
+		}
+
+		number_value = Number( $number_field.val() );
+		if ( '' === String( $number_field.val() || '' ).trim() || ! isFinite( number_value ) ) {
+			$range.val( '0' );
+			return;
+		}
+
+		$range.val( String( number_value ) );
+	}
+
+	/** Copy the convenience slider into the authoritative Appointment number input. */
+	function synchronize_cost_correction_number() {
+		var $number_field = $( '#wpbc_add_appointment_cost_correction' );
+		var $range = $( '[data-wpbc-admin-cost-correction-range="1"]' ).first();
+
+		if ( ! $number_field.length || ! $range.length ) {
+			return;
+		}
+
+		$number_field.val( $range.val() ).trigger( 'input' );
+	}
+
+	/** Clear an unsaved or successfully submitted Appointment correction draft. */
+	function clear_cost_correction() {
+		var $number_field = $( '#wpbc_add_appointment_cost_correction' );
+
+		if ( ! $number_field.length ) {
+			return;
+		}
+
+		$number_field.val( '' );
+		synchronize_cost_correction_range();
+	}
+
+	/**
+	 * Add an explicitly entered correction to the active Appointment request.
+	 *
+	 * The inspector is outside the AJAX-inserted native Booking Form. Requiring
+	 * the submitted Provider to match the active Appointment form prevents this
+	 * page-only draft from affecting an unrelated booking-create event.
+	 *
+	 * @param {Event} event jQuery event.
+	 * @param {number} resource_id Submitted Provider resource ID.
+	 * @param {Object} params Mutable booking-create request parameters.
+	 * @return {void}
+	 */
+	function add_cost_correction_to_appointment_request( event, resource_id, params ) {
+		var number_field = document.getElementById( 'wpbc_add_appointment_cost_correction' );
+		var $native_form = $( '.wpbc_add_appointment__canvas .wpbc_booking_appointment__native_form[data-provider-id="' + Number( resource_id || 0 ) + '"]' ).first();
+		var raw_cost;
+
+		if ( ! params || ! number_field || ! $native_form.length ) {
+			return;
+		}
+
+		delete params.wpbc_admin_cost_correction;
+		raw_cost = String( number_field.value || '' ).trim();
+		if ( '' === raw_cost || ! number_field.checkValidity() ) {
+			return;
+		}
+
+		params.wpbc_admin_cost_correction = raw_cost;
+	}
+
 	$( document ).on( 'click', '.wpbc_add_appointment__rightbar_tabs [role="tab"]', function ( event ) {
 		event.preventDefault();
 		switch_right_panel( $( this ) );
 	} );
 
 	$( document ).on( 'click', '[data-wpbc-add-appointment-start-over]', function () {
+		clear_cost_correction();
 		var $action = $( '.wpbc_add_appointment__canvas [data-wpbc-appointment-action="start-over"]' ).first();
 		if ( ! $action.length ) {
 			$action = $( '.wpbc_add_appointment__canvas [data-appointment-back="service"]' ).first();
@@ -241,6 +315,7 @@
 			$action.trigger( 'click' );
 		}
 	} );
+	$( document ).on( 'click', '.wpbc_add_appointment__canvas [data-wpbc-appointment-action="start-over"]', clear_cost_correction );
 
 	$( document ).on( 'click', '[data-wpbc-add-appointment-open-group]', function ( event ) {
 		event.preventDefault();
@@ -249,11 +324,16 @@
 
 	$( document ).on( 'click', '[data-wpbc-add-appointment-autofill]', auto_fill_booking_form );
 	$( document ).on( 'input change wpbc_booking_date_or_option_selected', '.wpbc_add_appointment__canvas, #is_send_email_for_pending', schedule_summary_refresh );
+	$( document ).on( 'input', '#wpbc_add_appointment_cost_correction', synchronize_cost_correction_range );
+	$( document ).on( 'input', '.wpbc_add_appointment__cost_correction [data-wpbc-admin-cost-correction-range="1"]', synchronize_cost_correction_number );
+	$( 'body' ).on( 'wpbc_before_booking_create.wpbc_add_appointment_cost_correction', add_cost_correction_to_appointment_request );
+	$( 'body' ).on( 'wpbc_booking_form_submit_success.wpbc_add_appointment_cost_correction', clear_cost_correction );
 
 	$( function () {
 		var stage = document.querySelector( '.wpbc_add_appointment__canvas .wpbc_booking_appointment__stage' );
 		apply_booking_context();
 		refresh_summary();
+		synchronize_cost_correction_range();
 		if ( stage && window.MutationObserver ) {
 			new MutationObserver( schedule_summary_refresh ).observe( stage, { childList: true, subtree: true } );
 		}

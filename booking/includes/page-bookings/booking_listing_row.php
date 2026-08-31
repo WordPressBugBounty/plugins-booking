@@ -590,6 +590,7 @@ function wpbc_template__booking_listing__action_edit_booking() {
 		return false;
 	}
 
+	$edit_booking_url     = 'javascript:void(0)';
 	$edit_booking_onclick = "if ( '' == '{{data.parsed_fields.hash}}' ) { return false; }"
 							. " wpbc_boo_listing__click__add_booking_modal_from_row("
 							. " '{{data.parsed_fields.booking_id}}',"
@@ -597,9 +598,14 @@ function wpbc_template__booking_listing__action_edit_booking() {
 							. " '{{data.parsed_fields.hash}}',"
 							. " '{{data.parsed_fields.wpbc_custom_booking_form}}'"
 							. ' );';
+
+	if ( wpbc_is_booking_admin_edit_page_enabled() ) {
+		$edit_booking_url     = '{{{data.parsed_fields.admin_edit_url}}}';
+		$edit_booking_onclick = "if ( '' == '{{data.parsed_fields.hash}}' ) { return false; }";
+	}
 	// FixIn: 10.10.1.2  $edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
-	$html_for_drop_down_option = "<a  	href='javascript:void(0)'
+	$html_for_drop_down_option = "<a  	href='" . $edit_booking_url . "'
 										onclick=\"" . $edit_booking_onclick . "\"
 										class=\"ul_dropdown_menu_li_action ul_dropdown_menu_li_action_" . $booking_action .
 											" <# if ( '' == data['parsed_fields']['hash']) { #>wpbc_field_disabled<# } #>\" >" .

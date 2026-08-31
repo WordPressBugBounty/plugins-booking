@@ -924,6 +924,20 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
                                 , 'group'       => 'booking_listing'
                         );
 
+		if ( class_exists( 'wpdev_bk_personal' ) ) {
+			$this->fields['booking_admin_edit_booking_mode'] = array(
+				'type'        => 'select',
+				'default'     => $default_options_values['booking_admin_edit_booking_mode'],
+				'title'       => __( 'Edit booking in', 'booking' ),
+				'description' => __( 'Choose whether Edit booking opens in a popup or on the dedicated Add Booking page.', 'booking' ),
+				'options'     => array(
+					'popup'            => __( 'Popup window (default)', 'booking' ),
+					'add_booking_page' => __( 'Add Booking page', 'booking' ),
+				),
+				'group'       => 'booking_listing',
+			);
+		}
+
         // Default booking resources.
         $this->fields = apply_filters( 'wpbc_settings_booking_listing_br_default_count', $this->fields, $default_options_values );
 
@@ -2033,6 +2047,28 @@ if(1){
 		}
 
 		return $submitted_renderer;
+	}
+
+	/**
+	 * Validate the administrator edit-booking destination.
+	 *
+	 * The General Settings page owns nonce and capability checks. This method
+	 * adds an explicit allow list and preserves the current normalized setting
+	 * when a malformed value is submitted.
+	 *
+	 * @param string $post_key Full Settings API POST key.
+	 *
+	 * @return string Allow-listed edit destination.
+	 */
+	public function validate_booking_admin_edit_booking_mode_post( $post_key ) {
+		$stored_mode    = wpbc_get_booking_admin_edit_mode();
+		$submitted_mode = self::validate_select_post_static( $post_key );
+
+		if ( ! is_string( $submitted_mode ) || ! in_array( $submitted_mode, array( 'popup', 'add_booking_page' ), true ) ) {
+			return $stored_mode;
+		}
+
+		return $submitted_mode;
 	}
 
 }

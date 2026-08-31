@@ -81,7 +81,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	$params   = wp_parse_args( $args, $defaults );
 
 	// Ability to click on panel, only if there 'min' class - panel minimized!
-	echo '<div class="wpbc_ui_el__vert_left_bar__wrapper" onclick0="javascript:if (( jQuery( this ).parent(\'.wpbc_settings_page_wrapper\').hasClass(\'min\') ) && ( ! wpbc_admin_ui__is_in_mobile_screen_size())) { wpbc_admin_ui__sidebar_left__do_max(); }" >';
+	echo '<div class="wpbc_ui_el__vert_left_bar__wrapper" onclick="javascript:if (( jQuery( this ).parent(\'.wpbc_settings_page_wrapper\').hasClass(\'min\') ) && ( ! wpbc_admin_ui__is_in_mobile_screen_size())) { wpbc_admin_ui__sidebar_left__do_max( true ); }" >';
 
 	// FixIn: 10.12.1.7.
 	wpbc_ui__vert_left_bar__side_button__do_compact();
@@ -124,8 +124,9 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 
 		// wpbc_ui_el__divider_horizontal();
 		echo '<div class="wpbc_ui_el__row100 wpbc_ui_el__expand_colapse_btns">';
-		wpbc_ui__vert_left_bar__do_compact();
-		wpbc_ui__vert_left_bar__do_max();
+		wpbc_ui__vert_left_bar__do_min();
+		//wpbc_ui__vert_left_bar__do_compact();
+		//wpbc_ui__vert_left_bar__do_max();
 		echo '</div>';
 
 		echo '  <div class="wpbc_ui_el__vert_left_bar__root_sections_container" role="tablist">';
@@ -142,7 +143,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		$is_expanded = ( $main_page_slug === $active_page_arr['active_page'] );
 
 		if ( $is_show_all_menus ) {
-			echo '  <div class="wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . esc_attr( $main_page_slug ) . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
+			echo '  <div class="section_expanded wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . esc_attr( $main_page_slug ) . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
 
 			$mode_font_icon = isset( $root_menu_options_arr['mode_font_icon'] ) ? $root_menu_options_arr['mode_font_icon'] : '';
 			wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title, $mode_font_icon );
@@ -281,7 +282,13 @@ function wpbc_start_element_scrollable__with_simplebar( $jq_element, $options = 
 		(function() { var a = setInterval( function() {  if ( ( 'undefined' === typeof jQuery ) || ! window.jQuery ) { return; } clearInterval( a ); jQuery( document ).ready( function () {
 			jQuery( '.wpbc_ui_el__vert_left_bar__section' ).css( { "animation-duration": "1ms" } ); // Set animation of showing left siebar from left to right imediate to prevent flipping.
 			if ( 'undefined' !== typeof SimpleBar ) {
-				new SimpleBar( jQuery( '<?php echo esc_attr( $jq_element ); ?>' )[0], { <?php echo esc_attr( $options ); ?> } );
+				var simplebar_element = jQuery( '<?php echo esc_attr( $jq_element ); ?>' )[0];
+				if ( simplebar_element ) {
+					var simplebar_instance = new SimpleBar( simplebar_element, { <?php echo esc_attr( $options ); ?> } );
+					if ( 'function' === typeof wpbc_admin_ui__sidebar_left__scroll_to_active_item ) {
+						wpbc_admin_ui__sidebar_left__scroll_to_active_item( simplebar_instance );
+					}
+				}
 			}
 			var wait_timer = setTimeout( function (){
 				jQuery( '.wpbc_ui_el__vert_left_bar__section' ).css( { "animation-duration": "200ms" } ); // Set animation to normal value.
@@ -301,11 +308,13 @@ function wpbc_start_element_scrollable__with_simplebar( $jq_element, $options = 
 function wpbc_ui__vert_left_bar__do_toggle() {
 
 	$el_arr                    = array();
-	$el_arr['font_icon']       = 'wpbc_icn_menu';
+	$el_arr['font_icon']       = 'wpbc-bi-layout-sidebar-inset'; // 'wpbc_icn_menu';
 	$el_arr['container_style'] = 'padding:0 8px;';
 	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_show_left_vertical_nav';
-	$el_arr['onclick']         = "if ( jQuery( '.wpbc_ui_el__vert_left_bar__content' ).is( ':visible' ) ) {";
-	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_min( true ); ';
+	$el_arr['onclick']         = "if ( jQuery( '.wpbc_page_wrapper_left_max' ).length ) {";
+	// $el_arr['onclick']         = "if ( jQuery( '.wpbc_ui_el__vert_left_bar__content' ).is( ':visible' ) ) {";
+	// $el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_min( true ); ';
+	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_compact( true ); ';
 	$el_arr['onclick']         .= '} else {';
 	$el_arr['onclick']         .= ' wpbc_admin_ui__sidebar_left__do_max( true ); ';
 	$el_arr['onclick']         .= '}';
@@ -382,12 +391,15 @@ function wpbc_ui__vert_left_bar__do_min() {
 
 	$el_arr                    = array();
 	$el_arr['container_style'] = '';
-	$el_arr['container_class'] = 'wpbc_ui__top_nav__btn_hide_left_vertical_nav';
-	$el_arr['onclick']         = ' wpbc_admin_ui__sidebar_left__do_min( true ); ';
-	$el_arr['font_icon']       = 'wpbc_icn_minimize';
+	$el_arr['container_class'] = '';// 'wpbc_ui__top_nav__btn_hide_left_vertical_nav';
+	// User Save Preferences of other pages (saved collapsed left  menu).
+	// $el_arr['onclick']         = 'event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min( true ); ';
+	// Do NOT  - Save User Preferences of other pages (not save collapsed left  menu).
+	$el_arr['onclick']         = 'event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min(); ';
+	$el_arr['font_icon']       = 'wpbc_icn_close'; //'wpbc_icn_minimize';
 	$el_arr['hint']            = array(
-		'title'    => __( 'Minimize side menu', 'booking' ),
-		'position' => 'bottom',
+		'title'    => __( 'Hide', 'booking' ),
+		'position' => 'right',
 	);
 	wpbc_ui_el__a( $el_arr );
 }
@@ -484,11 +496,15 @@ function wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_ti
 	$css_section = '.root_section_element_' . $main_page_slug;
 
 	// Section Header.
-	?><a class="wpbc_ui_el__row100 wpbc_ui_el__root_section_header_a" href="javascript:void(0)"
-		 onclick="javascript:var is_has_class = jQuery( '<?php echo esc_attr( $css_section ); ?>' ).hasClass('section_expanded'); jQuery( '.wpbc_ui_el__vert_left_bar__root_section_element' ).removeClass('section_expanded'); if (is_has_class) { jQuery( '<?php echo esc_attr( $css_section ); ?>' ).removeClass('section_expanded'); } else {jQuery( '<?php echo esc_attr( $css_section ); ?>' ).addClass('section_expanded');}"
-	><?php
-
-		?><i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i><?php
+	?><a class="wpbc_ui_el__row100 wpbc_ui_el__root_section_header_a"
+		 href="javascript:void(0)"
+	<?php /**/ ?>
+			 onclick="javascript:var is_has_class = jQuery( '<?php echo esc_attr( $css_section ); ?>' ).hasClass('section_expanded'); <?php
+			 /* ?> jQuery( '.wpbc_ui_el__vert_left_bar__root_section_element' ).removeClass('section_expanded'); <?php */
+			 ?>if (is_has_class) { jQuery( '<?php echo esc_attr( $css_section ); ?>' ).removeClass('section_expanded'); } else {jQuery( '<?php echo esc_attr( $css_section ); ?>' ).addClass('section_expanded');}"
+	<?php /**/ ?>
+	  >
+		<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i><?php
 
 		if ( '' !== $font_icon ) {
 			?><i class="wpbc_ui_el__vert_menu_root_section_font_icon menu_icon icon-1x <?php echo esc_attr( $font_icon ); ?>" aria-hidden="true"></i><?php
@@ -769,8 +785,13 @@ function wpbc_ui__vert_menu__item_html( $menu_slug, $menu_item_arr ) {
 function wpbc_ui__vert_left_bar__side_button__do_compact() {
 
 	?>
-	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav"
-			onclick="javascript:wpbc_admin_ui__sidebar_left__do_min( true );" title="<?php esc_attr_e( 'Minimize side menu', 'booking' ); ?>">
+	<button type="button" class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav"
+			<?php /* Save user preferences ?>
+ 			onclick="event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min( true ); return false;"
+ 			<?php /**/ ?>
+			<?php /* Not Save user preferences - collpased left  menu */ ?>
+			onclick="event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min(); return false;"
+			title="<?php esc_attr_e( 'Minimize side menu', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
 		</svg>
@@ -785,8 +806,8 @@ function wpbc_ui__vert_left_bar__side_button__do_compact() {
  */
 function wpbc_ui__vert_left_bar__side_button__do_max() {
 	?>
-	<button class="wpbc_ui__left_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_left_vertical_nav"
-			onclick="javascript:wpbc_admin_ui__sidebar_left__do_max( true );" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
+	<button type="button" class="wpbc_ui__left_sidebar__side_button wpbc_ui__hide wpbc_ui__top_nav__btn_open_left_vertical_nav"
+			onclick="event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_max( true ); return false;" title="<?php esc_attr_e( 'Open side menu', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>
 		</svg>

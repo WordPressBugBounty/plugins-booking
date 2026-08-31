@@ -373,8 +373,11 @@ final class WPBC_UI_Catalog_Request {
 		}
 
 		$request_value = (int) $request_value;
+		if ( $minimum > $request_value || $maximum < $request_value ) {
+			return self::get_error( 'invalid_' . sanitize_key( $request_key ), __( 'A numeric catalog request value is outside the accepted range.', 'booking' ) );
+		}
 
-		return max( $minimum, min( $maximum, $request_value ) );
+		return $request_value;
 	}
 
 	/**

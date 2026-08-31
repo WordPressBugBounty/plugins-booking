@@ -98,9 +98,17 @@ final class WPBC_UI_Catalog_Inline_Field_Schema {
 				$normalized_field[ $property_name ] = wp_strip_all_tags( (string) $raw_field[ $property_name ] );
 			}
 		}
-		foreach ( array( 'min', 'max', 'step', 'maxlength', 'default_value', 'slider_min', 'slider_max', 'slider_step' ) as $property_name ) {
+		foreach ( array( 'min', 'max', 'maxlength', 'default_value', 'slider_min', 'slider_max', 'slider_step' ) as $property_name ) {
 			if ( isset( $raw_field[ $property_name ] ) && is_numeric( $raw_field[ $property_name ] ) ) {
 				$normalized_field[ $property_name ] = (float) $raw_field[ $property_name ];
+			}
+		}
+		if ( isset( $raw_field['step'] ) && is_scalar( $raw_field['step'] ) ) {
+			$raw_step = strtolower( trim( (string) $raw_field['step'] ) );
+			if ( 'any' === $raw_step ) {
+				$normalized_field['step'] = 'any';
+			} elseif ( is_numeric( $raw_step ) ) {
+				$normalized_field['step'] = (float) $raw_step;
 			}
 		}
 		if ( isset( $raw_field['operations'] ) ) {

@@ -43,6 +43,7 @@
 		menu.hidden = true;
 		menu.style.removeProperty( 'left' );
 		menu.style.removeProperty( 'top' );
+		menu.removeAttribute( 'data-wpbc-ui-catalog-action-placement' );
 		toggle.setAttribute( 'aria-expanded', 'false' );
 		root.classList.remove( 'is-open' );
 		if ( restore_focus && 'function' === typeof toggle.focus ) {
@@ -67,7 +68,12 @@
 	}
 
 	/**
-	 * Position one fixed menu inside the current viewport.
+	 * Position one fixed menu toward the available catalog space.
+	 *
+	 * A reordered Actions column can sit on either physical side of a catalog.
+	 * Comparing the trigger and catalog centers avoids domain-specific column
+	 * assumptions, while the alternate placement and viewport clamp protect
+	 * narrow, horizontally scrolled, and RTL presentations.
 	 *
 	 * @param {HTMLElement} toggle Menu toggle.
 	 * @param {HTMLElement} menu   Menu element.
@@ -79,13 +85,29 @@
 		var menu_rect = menu.getBoundingClientRect();
 		var viewport_width = document.documentElement.clientWidth || window.innerWidth || 0;
 		var viewport_height = window.innerHeight || document.documentElement.clientHeight || 0;
-		var left = Math.min( toggle_rect.right - menu_rect.width, viewport_width - menu_rect.width - viewport_margin );
+		var positioning_root = toggle.closest( '.wpbc_ui_listing__table_wrap, .wpbc_ui_catalog' );
+		var positioning_rect = positioning_root ? positioning_root.getBoundingClientRect() : null;
+		var available_left = positioning_rect ? Math.max( 0, positioning_rect.left ) : 0;
+		var available_right = positioning_rect ? Math.min( viewport_width, positioning_rect.right ) : viewport_width;
+		var trigger_center = toggle_rect.left + ( toggle_rect.width / 2 );
+		var root_center = available_left + ( ( available_right - available_left ) / 2 );
+		var opens_right = trigger_center <= root_center;
+		var preferred_left = opens_right ? toggle_rect.left : toggle_rect.right - menu_rect.width;
+		var alternate_left = opens_right ? toggle_rect.right - menu_rect.width : toggle_rect.left;
+		var left = preferred_left;
 		var top = toggle_rect.bottom + 6;
 
-		left = Math.max( viewport_margin, left );
+		if ( left < viewport_margin || left + menu_rect.width > viewport_width - viewport_margin ) {
+			if ( alternate_left >= viewport_margin && alternate_left + menu_rect.width <= viewport_width - viewport_margin ) {
+				left = alternate_left;
+				opens_right = ! opens_right;
+			}
+		}
+		left = Math.min( Math.max( viewport_margin, left ), Math.max( viewport_margin, viewport_width - menu_rect.width - viewport_margin ) );
 		if ( top + menu_rect.height > viewport_height - viewport_margin ) {
 			top = Math.max( viewport_margin, toggle_rect.top - menu_rect.height - 6 );
 		}
+		menu.setAttribute( 'data-wpbc-ui-catalog-action-placement', opens_right ? 'right' : 'left' );
 		menu.style.left = Math.round( left ) + 'px';
 		menu.style.top = Math.round( top ) + 'px';
 	}

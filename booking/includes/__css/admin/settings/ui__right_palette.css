@@ -84,12 +84,39 @@
 	justify-content: flex-start;
 	width: 100%;
 }
-
 .wpbc_rightbar_palette .inspector__label,
 .wpbc_rightbar_palette .inspector__control {
 	box-sizing: border-box;
 	flex: 1 1 100%;
 }
+
+/*
+ * Shared inspector widths.
+ *
+ * Keep this block after the palette's full-width label/control default. The
+ * source order makes an explicit width win without domain overrides, while
+ * the unscoped helpers remain reusable by the Form Builder inspector.
+ */
+.inspector__row .inspector__w_10 { flex-basis: 10%; }
+.inspector__row .inspector__w_20 { flex-basis: 20%; }
+.inspector__row .inspector__w_30 { flex-basis: 30%; }
+.inspector__row .inspector__w_40 { flex-basis: 40%; }
+.inspector__row .inspector__w_50 { flex-basis: 50%; }
+.inspector__row .inspector__w_60 { flex-basis: 60%; }
+.inspector__row .inspector__w_70 { flex-basis: 70%; }
+.inspector__row .inspector__w_80 { flex-basis: 80%; }
+.inspector__row .inspector__w_90 { flex-basis: 90%; }
+.inspector__row .inspector__w_100 { flex-basis: 100%; }
+.inspector__row .inspector__w_05 { flex-basis: 5%; }
+.inspector__row .inspector__w_15 { flex-basis: 15%; }
+.inspector__row .inspector__w_25 { flex-basis: 25%; }
+.inspector__row .inspector__w_35 { flex-basis: 35%; }
+.inspector__row .inspector__w_45 { flex-basis: 45%; }
+.inspector__row .inspector__w_55 { flex-basis: 55%; }
+.inspector__row .inspector__w_65 { flex-basis: 65%; }
+.inspector__row .inspector__w_75 { flex-basis: 75%; }
+.inspector__row .inspector__w_85 { flex-basis: 85%; }
+.inspector__row .inspector__w_95 { flex-basis: 95%; }
 
 .wpbc_rightbar_palette .inspector__label {
 	color: var(--wpbc-palette-text);
@@ -99,10 +126,10 @@
 	margin: 0;
 }
 
-.wpbc_rightbar_palette .inspector__control > input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
-.wpbc_rightbar_palette .inspector__control > select,
-.wpbc_rightbar_palette .inspector__control > textarea,
-.wpbc_rightbar_palette .inspector__input {
+.wp-core-ui .wpbc_page .wpbc_rightbar_palette .inspector__control > input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+.wp-core-ui .wpbc_page .wpbc_rightbar_palette .inspector__control > select,
+.wp-core-ui .wpbc_page .wpbc_rightbar_palette .inspector__control > textarea,
+.wp-core-ui .wpbc_page .wpbc_rightbar_palette .inspector__input {
 	box-sizing: border-box;
 	line-height: 2.4;
 	max-width: 100%;

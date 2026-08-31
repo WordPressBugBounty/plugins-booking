@@ -117,7 +117,22 @@ class WPBC_User_Custom_Data_Saver {
 				: sanitize_text_field( $val );
 		}
 
-		update_user_option( $user_id, self::$user_option_prefix . $data_name, $sanitized_data );
+		$option_name = self::$user_option_prefix . $data_name;
+		update_user_option( $user_id, $option_name, $sanitized_data );
+
+		$stored_data = get_user_option( $option_name, $user_id );
+		if ( ! is_array( $stored_data ) || $sanitized_data !== $stored_data ) {
+			wp_send_json_error( array( 'message' => 'The setting could not be saved. Please reload the page and try again.' ) );
+		}
+
+		/**
+		 * Fires after Booking Calendar user data has been stored and verified.
+		 *
+		 * @param int    $user_id        Current WordPress user ID.
+		 * @param string $data_name      Sanitized Booking Calendar preference name.
+		 * @param array  $sanitized_data Sanitized value confirmed in user metadata.
+		 */
+		do_action( 'wpbc_user_custom_data_saved', $user_id, $data_name, $sanitized_data );
 
 		wp_send_json_success( array( 'message' => 'Settings saved successfully.' ) );
 	}

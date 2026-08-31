@@ -48,7 +48,7 @@
 .wpbc_ui_catalog__error {
 	align-items: center;
 	background: #fff;
-	border: 1px solid #dcdcde;
+	border: 0;
 	border-radius: 4px;
 	display: flex;
 	justify-content: center;
@@ -537,7 +537,54 @@
 	z-index: 10000;
 }
 
-/* Shared selection actions and permanent-deletion review presentation. */
+/* Shared catalog action buttons, selection actions, and deletion review. */
+.wpbc_ui_catalog_button_success.button {
+	background: #64aa45 !important;
+	border-color: #4f9134 !important;
+	color: #fff !important;
+}
+
+.wpbc_ui_catalog_button_icon_text.button > [aria-hidden="true"]:first-child {
+	margin-inline-end: 6px;
+}
+
+.wpbc_ui_catalog_button_success.button:focus,
+.wpbc_ui_catalog_button_success.button:hover {
+	background: #4f9134 !important;
+	border-color: #3f792a !important;
+	color: #fff !important;
+}
+
+.wpbc_ui_catalog_button_success.button.disabled,
+.wpbc_ui_catalog_button_success.button:disabled {
+	background: #dcdcde !important;
+	border-color: #c3c4c7 !important;
+	color: #7c7c7c !important;
+}
+
+.wpbc_ui_catalog_button_danger.button,
+.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete {
+	border-color: #d63638 !important;
+	color: #b32d2e !important;
+}
+
+.wpbc_ui_catalog_button_danger.button:focus,
+.wpbc_ui_catalog_button_danger.button:hover,
+.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete:focus,
+.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete:hover {
+	background: #fcf0f1 !important;
+	border-color: #b32d2e !important;
+	color: #8a2424 !important;
+}
+
+.wpbc_ui_catalog_button_danger.button.disabled,
+.wpbc_ui_catalog_button_danger.button:disabled,
+.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete:disabled {
+	background: #f6f7f7 !important;
+	border-color: #dcdcde !important;
+	color: #a7aaad !important;
+}
+
 .wpbc_ui_catalog .wpbc_ui_catalog_selection_actions {
 	align-items: center;
 	display: inline-flex;
@@ -549,23 +596,6 @@
 	align-items: center;
 	display: inline-flex;
 	gap: 6px;
-}
-
-.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete {
-	border-color: #d63638 !important;
-	color: #b32d2e !important;
-}
-
-.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete:focus,
-.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete:hover {
-	background: #fcf0f1 !important;
-	border-color: #b32d2e !important;
-}
-
-.wpbc_ui_catalog .wpbc_ui_catalog_selection_delete:disabled {
-	background: #f6f7f7 !important;
-	border-color: #dcdcde !important;
-	color: #a7aaad !important;
 }
 
 .wpbc_ui_catalog_delete_review .wpbc_bfb__inspector__head .header_title_content {
@@ -835,6 +865,17 @@
 	font-weight: 600;
 	margin: 6px 0 0;
 	padding: 2px 7px;
+}
+
+.wpbc_ui_catalog [data-wpbc-ui-catalog-inline-changed-host] {
+	white-space: nowrap;
+}
+
+.wpbc_ui_catalog [data-wpbc-ui-catalog-inline-changed-host] > .wpbc_ui_catalog_inline_changed_label {
+	align-self: auto;
+	margin: 0;
+	margin-inline-end: 6px;
+	vertical-align: middle;
 }
 
 /* Shared create/edit inspector heading and domain-supplied context badge. */

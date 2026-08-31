@@ -287,6 +287,16 @@ class WPBC_Page_Add_Appointment extends WPBC_Page_Structure {
 				),
 				function () {
 					$send_emails = get_bk_option( 'booking_send_emails_off_addbooking' ) !== 'On';
+					wpbc_render_admin_cost_correction_control(
+						array(
+							'input_id'      => 'wpbc_add_appointment_cost_correction',
+							'wrapper_class' => 'wpbc_add_appointment__setting_row wpbc_add_appointment__cost_correction',
+							'label_class'   => 'wpbc_add_appointment__cost_correction_label',
+							'control_class' => 'wpbc_add_appointment__cost_correction_control',
+							'help_class'    => 'wpbc_add_appointment__tool_help',
+							'help'          => __( 'Leave the number empty to use the calculated Appointment cost. Enter an exact total to replace the final cost for this Appointment.', 'booking' ),
+						)
+					);
 					?>
 					<div class="wpbc_add_appointment__setting_row wpbc_add_appointment__setting_row--toggle">
 						<?php

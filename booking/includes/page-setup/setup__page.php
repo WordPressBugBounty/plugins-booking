@@ -323,7 +323,7 @@ function wpbc_setup_wizard_page__force_in_get() {
 	$request_step = '';
 
 	if ( 'On' === get_bk_option( 'booking_setup_wizard_page_is_completed' ) ) {
-		wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+		// A completed wizard has no authority over the administrator's later Full Screen preference.
 		return true;
 	}
 

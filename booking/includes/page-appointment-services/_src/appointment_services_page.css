@@ -1,3 +1,9 @@
+.wpbc_ui_el__vert_right_bar__wrapper_opened .wpbc_appointment_services_page {
+	opacity: 20%;
+}
+.wpbc_admin .wpbc_ui_el__vert_right_bar__wrapper {
+	--wpbc_ui_left_vert_nav__width_max: Min(490px, 100%);
+}
 .wpbc_appointment_services_page {
 	min-width: 0;
 	padding: 20px;
@@ -203,7 +209,7 @@ body.rtl .wpbc_appointment_services__status_filter:nth-of-type(4) {
 	width: var(--wpbc-listing-column-min-width);
 }
 .wpbc_appointment_services__table .column-price {
-	--wpbc-listing-column-min-width: 80px;
+	--wpbc-listing-column-min-width: 115px;
 	width: var(--wpbc-listing-column-min-width);
 }
 .wpbc_appointment_services__table .column-providers {
@@ -565,6 +571,13 @@ a.wpbc_appointment_services__provider_avatar:focus-visible {
 	text-align: center;
 	width: 36px;
 }
+
+.wpbc_appointment_services_page.is-inline-editing .wpbc_appointment_services__table .column-selection,
+.wpbc_appointment_services_page.is-inline-editing .wpbc_appointment_services__table .wpbc_ui_listing__selection_column {
+	--wpbc-listing-column-min-width: 112px;
+	min-width: 112px;
+	width: 112px;
+}
 .wpbc_appointment_services__cards {
 	display: grid;
 	gap: 16px;
@@ -914,10 +927,11 @@ body.rtl .wpbc_appointment_services__card_actions {
 	width: 100%;
 }
 .wpbc_appointment_services__footer_actions {
-	align-items: stretch;
 	box-sizing: border-box;
 	display: flex;
-	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: stretch;
+	flex-flow: row wrap;
 	gap: 8px;
 	padding: 8px 18px;
 	width: 100%;
@@ -926,7 +940,7 @@ body.rtl .wpbc_appointment_services__card_actions {
 	align-items: center;
 	box-sizing: border-box;
 	display: flex;
-	flex: 1 1 auto;
+	flex: 0 1 auto;
 	gap: 6px;
 	justify-content: center;
 	margin: 0;

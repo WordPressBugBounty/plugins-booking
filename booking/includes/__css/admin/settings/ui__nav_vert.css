@@ -3,9 +3,8 @@
 /* ------------------------------------------------------------------------------------------------------------------ */
 .wpbc_admin {
 	/* --wpbc_ui_left_vert_nav__width_min: 5px; */
-	--wpbc_ui_left_vert_nav__width_min: 0; /* // FixIn: 10.12.4.4. */
-	--wpbc_ui_left_vert_nav__width_compact: 48px;
-	--wpbc_ui_left_vert_nav__width_compact: 90px;   /* // FixIn: 10.14.4.1. */
+	--wpbc_ui_left_vert_nav__width_min: 10px;
+	--wpbc_ui_left_vert_nav__width_compact: 80px;
 	--wpbc_ui_left_vert_nav__width_max: 250px;
 
 	--wpbc_ui_left_vert_nav__margin: 0;
@@ -315,8 +314,8 @@
 .wpbc_ui_el__vert_nav_item a,
 .wpbc_ui_el__vert_nav_item button{
 	flex: 1 1 100%;
-	margin: 2px 0 2px 8px;
-	padding: 7px 8px;
+	margin: 0 0 0 3px;
+  	padding: 8px 5px 8px 12px;
 	border: none;
 	border-radius: var(--wpbc_ui__gen__border-radius) 0 0 var(--wpbc_ui__gen__border-radius);
 	text-shadow: none;
@@ -331,14 +330,20 @@
 	flex-flow: row;
 	justify-content: flex-start;
 	align-items: center;
+	gap: 8px;
 
 	/* 2025-08-08 */
 	font-weight: 500;
-	font-size: 13px;
+	font-size: 12px;
 	letter-spacing: 0.1px;
 	margin: 0 0 0px 3px;
   	padding: 8px 5px 8px 12px;
 	cursor:pointer;
+}
+.wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon_expanded,
+.wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon_collapsed,
+.wpbc_ui_el__vert_nav_item a .wpbc-bi-question-circle {
+	font-size: 10px;
 }
 .wpbc_ui_el__vert_nav_item__uninstall a {
   /*color: #d63638;*/
@@ -398,28 +403,60 @@
 }
 /** // FixIn: 10.14.4.1.  */
 /* Show top  Icon menu  opening wider in this compact  mode*/
-.wpbc_page_wrapper_left_compact .wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child {
-	width: 80px;
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child {
+	width: 70px;
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: stretch;
 	align-items: center;
 	padding: 0 !important;
 }
-.wpbc_page_wrapper_left_compact .wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a {
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a {
+	max-height: 30px;
+	max-width: 30px;
+	margin: auto;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+}
+
+/*.wpbc_page_wrapper_left_compact .wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a{*/
+  .wpbc_page_wrapper_left_max     .wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a{
+	background: #46516021;
+}
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a:hover {
+	background: #46516011;
+}
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child:has(a:hover:not(.button)) *{
+	color: var(--wpbc_ui_top_nav__a_color);
+}
+.wpbc_ui_el__top_nav > .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child:has(a:hover){
+	border-bottom-color: transparent;
+}
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a {
 	flex: 1 1 100%;
 	text-align: center;
 }
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a:focus {
+	box-shadow: none;
+}
+.wpbc_ui_el__top_nav .wpbc_ui__top_nav__btn_show_left_vertical_nav:first-child a:focus-visible {
+	box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--wp-admin-theme-color, #3858e9);
+}
+
 /* Show in Compact mode the Icon Text wrapping . */
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item a {
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;
 	align-items: center;
-	padding: 10px 5px;
+	padding: 8px 8px;
 	margin: 0;
 	border-radius: 0;
-	min-height: 40px;
+	min-height: 10px;
+	gap: 4px;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item a .wpbc_ui_el__vert_nav_icon,
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_nav_item button .wpbc_ui_el__vert_nav_icon{
@@ -476,6 +513,7 @@
 	visibility: visible !important;
 	padding: 0 5px;
 	display: flex;
+	justify-content: center;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__section_header.hide_in_compact_mode {
 	font-size: 10px;
@@ -497,6 +535,7 @@
 	font-size: 10px;
 	font-weight: 650;
 	letter-spacing: 0px;
+	color: #465160 !important;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns {
 	margin: 10px 0 0;
@@ -541,21 +580,26 @@
 	gap: 0px;
 }
 .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__section {
-	margin-block-end: 9px;
+	margin-block-end: 8px;
 }
 .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__root_section_element {
 	/*padding-inline-start: 14px;*/
 	/*padding-block-end: 10px;*/
 	padding-inline-start: 8px;
 	padding-block-start: 8px;
-	padding-block-end: 8px;
+	padding-block-end: 20px;
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: flex-start;
 	align-items: stretch;
-	gap: 5px;
+	gap: 1px;
 }
-/* In compact mode hide header sections and set  padding 0*/
+/* In compact mode  */
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__root_section_element {
+	padding-block-end: 40px;
+}
+
+/* In compact mode hide header sections and set  padding 0 */
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__root_section_element {
   padding-inline-start: 0
 }
@@ -575,6 +619,12 @@
 	flex-flow: row nowrap;
 	align-items: center;
 	gap: 8px;
+	position: sticky;
+	top: 0;
+	background: #fff;
+	z-index: 1;
+	/*border-bottom: 1px solid #f1f1f1;*/
+  	border-radius: 0;
 }
 .wpbc_ui_el__root_section_header_a .wpbc_ui_el__vert_menu_root_section_icon {
 	margin: 0;
@@ -589,6 +639,15 @@
 }
 /* Hovering and Expending */
 .wpbc_ui_el__vert_left_bar__root_section_element:not(.section_expanded) .wpbc_ui_el__vert_left_bar__section {
+	display:none;
+}
+									.wpbc_ui_el__vert_left_bar__root_section_element.section_expanded       .wpbc_ui_el__root_section_header_a .wpbc_ui_el__vert_menu_root_section_icon {
+										order: 2;
+										margin-left: auto;
+										flex: 0 0 20px;
+										text-align: center;
+									}
+.wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__root_section_element.section_expanded       .wpbc_ui_el__root_section_header_a .wpbc_ui_el__vert_menu_root_section_icon {
 	display:none;
 }
 .wpbc_ui_el__vert_left_bar__root_section_element:not(.section_expanded) .wpbc_ui_el__root_section_header_a .wpbc_ui_el__vert_menu_root_section_icon::before{
@@ -623,9 +682,15 @@
 	color: #575757 !important;
 }
 .wpbc_ui_el__root_section_header_a:not(:hover) h2.wpbc_ui_el__section_header {
-	color: #707070;
+	/*color: #707070;*/
 }
-
+.wpbc_ui_el__root_section_header_a h2.wpbc_ui_el__section_header {
+	color: #565656 !important;
+	font-size: 10px;
+	padding: 0 8px;
+	text-transform: uppercase;
+	font-weight: 700;
+}
 /* Section  header */
 .wpbc_ui_el__section_header {
 	font-size: 13px;
@@ -676,7 +741,7 @@ a > .wpbc_ui_el__section_header {
 	flex-flow: column nowrap;
 	align-items: stretch;
 	justify-content: flex-start;
-	gap:5px;
+	gap:1px;
 }
 /* -- Items  -------------------------------------------------------------------------------------------------------- */
 /* Default order */
@@ -797,7 +862,8 @@ a > .wpbc_ui_el__section_header {
 .wpbc_ui_el__expand_colapse_btns {
 	padding: 0;
 	/* We shift  " > Bookings " menu  to  the same level  as this colapse button */
-	margin: 16px 0 -38px;
+	margin: 16px 0 -15px;
+	margin: 15px 0 0;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns {
   margin-bottom: -22px;
@@ -864,7 +930,7 @@ a > .wpbc_ui_el__section_header {
 	order: 1;
 	bottom: 15px;
 	/* // FixIn: 10.12.4.4. */
-	bottom: 25%;
+	bottom: 3%;
 	box-shadow: var(--wpbc_ui__gen__panel_box-shadow);
 	box-shadow: 1px 1px 3px rgba(17,24,39,.09);
 	border-color: #00000014;
@@ -921,6 +987,11 @@ a > .wpbc_ui_el__section_header {
 .wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui__left_sidebar__side_button svg path{
 	fill: #fff;
 }
+.wpbc_settings_page_wrapper.min .wpbc_ui_el__vert_left_bar__wrapper:hover {
+	--wpbc_ui_left_vert_nav__width_min: 20px;
+	cursor:pointer;
+}
+
 
 /* == Right Sidebar ================================================================================================= */
 /* Shift  "#10.14.1 MultiUser (for Beta Test)"  to  the right. */

@@ -75,6 +75,50 @@
 	width: 100%;
 }
 
+.wpbc_add_booking__cost_correction .wpbc_admin_cost_correction__number_control {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+}
+
+.wpbc_add_booking__cost_correction .wpbc_admin_cost_correction__number_input_row {
+	align-items: center;
+	display: flex;
+	gap: 10px;
+	min-width: 0;
+}
+
+.wpbc_add_booking__cost_correction .wpbc_admin_cost_correction__number_input_row .inspector__input {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+}
+
+.wpbc_add_booking__cost_correction .wpbc_admin_cost_correction__number_prefix,
+.wpbc_add_booking__cost_correction .wpbc_admin_cost_correction__number_suffix {
+	color: #646970;
+	flex: 0 0 auto;
+	font-size: 12px;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+.wpbc_add_booking__cost_correction .wpbc_admin_cost_correction__number_slider {
+	align-self: center;
+	box-sizing: border-box;
+	cursor: pointer;
+	margin: 0;
+	max-width: none;
+	min-height: 20px;
+	padding: 0;
+	width: 100%;
+}
+
+.wpbc_add_booking__cost_correction .description {
+	margin-bottom: 0;
+}
+
 .wpbc_add_booking__setting_row {
 	border-bottom: 1px solid #e2e4e7;
 	display: grid;

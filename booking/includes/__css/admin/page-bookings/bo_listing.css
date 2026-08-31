@@ -44,6 +44,12 @@
 /* ================================================================================================================== */
 .wpbc__wrap__booking_listing {
 	margin: 15px 0;
+	min-height: 550px;
+}
+/* Exception for the Booking Listing to show correctly the Bulk Actions - Long Dropdown menu*/
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing .wpbc_settings_page_content {
+	min-width: 0;
+	overflow: visible;
 }
 .wpbc__list__table,
 .wpbc__list__table .wpbc__list__head,

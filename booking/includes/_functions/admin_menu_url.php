@@ -275,6 +275,75 @@ function wpbc_get_new_booking_url( $is_absolute_url = true, $is_old = true ) {
 }
 
 /**
+ * Get the normalized administrator edit-booking destination.
+ *
+ * Existing installations and malformed stored values retain the popup workflow.
+ * The optional argument keeps normalization independently testable without
+ * changing a saved WordPress option.
+ *
+ * @param null|string $stored_mode Optional stored mode. Null loads the site option.
+ *
+ * @return string Either `popup` or `add_booking_page`.
+ */
+function wpbc_get_booking_admin_edit_mode( $stored_mode = null ) {
+
+	if ( null === $stored_mode ) {
+		$stored_mode = get_bk_option( 'booking_admin_edit_booking_mode' );
+	}
+
+	$stored_mode = sanitize_key( (string) $stored_mode );
+
+	return in_array( $stored_mode, array( 'popup', 'add_booking_page' ), true ) ? $stored_mode : 'popup';
+}
+
+/**
+ * Check whether administrator edit links should open the dedicated Add Booking page.
+ *
+ * @param null|string $stored_mode Optional stored mode used for independent testing.
+ *
+ * @return bool True for the dedicated page; false for the default popup.
+ */
+function wpbc_is_booking_admin_edit_page_enabled( $stored_mode = null ) {
+	return 'add_booking_page' === wpbc_get_booking_admin_edit_mode( $stored_mode );
+}
+
+/**
+ * Build the authorized administrator URL for editing one Booking on Add Booking.
+ *
+ * The destination page retains its existing capability, MultiUser ownership,
+ * Booking hash, Resource, and Booking Form checks. This helper only centralizes
+ * the released URL contract used by Booking Listing and Timeline links.
+ *
+ * @param int    $resource_id Booking Resource ID.
+ * @param string $booking_hash Booking edit hash.
+ * @param string $booking_form Optional custom Booking Form name.
+ *
+ * @return string Sanitized Add Booking edit URL, or an empty string when required values are missing.
+ */
+function wpbc_get_booking_admin_edit_url( $resource_id, $booking_hash, $booking_form = '' ) {
+
+	$resource_id  = absint( $resource_id );
+	$booking_hash = sanitize_text_field( (string) $booking_hash );
+	$booking_form = sanitize_text_field( (string) $booking_form );
+
+	if ( $resource_id < 1 || '' === $booking_hash ) {
+		return '';
+	}
+
+	$query_args = array(
+		'booking_type' => $resource_id,
+		'booking_hash' => $booking_hash,
+		'parent_res'   => 1,
+	);
+
+	if ( '' !== $booking_form ) {
+		$query_args['booking_form'] = $booking_form;
+	}
+
+	return esc_url_raw( add_query_arg( $query_args, wpbc_get_new_booking_url( true, false ) ) );
+}
+
+/**
  * Get URL of Booking > Resources page
  *
  * @param boolean $is_absolute_url  - Absolute or relative url { default: true }

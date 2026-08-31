@@ -633,6 +633,8 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
 	// FixIn: 9.6.3.5.
     $default_options['booking_listing_default_view_mode'] = 'vm_booking_listing';	// 'vm_calendar';		// FixIn: 9.6.3.5.
  $mu_option4delete[]='booking_listing_default_view_mode';
+	$default_options['booking_admin_edit_booking_mode'] = 'popup';
+ $mu_option4delete[]='booking_admin_edit_booking_mode';
 
     $default_options['booking_view_days_num'] = (  ( ! class_exists( 'wpdev_bk_personal' ) ) ? '90' : '30' );
  $mu_option4delete[]='booking_view_days_num';

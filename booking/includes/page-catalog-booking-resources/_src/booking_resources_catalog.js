@@ -3657,8 +3657,15 @@
 		} );
 		if ( window.jQuery ) {
 			window.jQuery( '.wpbc_settings_page_wrapper' ).on( 'wpbc:right-sidebar-before-content-collapse.wpbcCatalogBookingResources', function ( event ) {
-				if ( inspector_mutation_in_progress ) {
+				var closing_mode = inspector_mode;
+
+				if ( inspector_mode && ! close_inspector( config, true ) ) {
 					event.preventDefault();
+					return;
+				}
+				if ( 'inline_review' === closing_mode ) {
+					inline_state.review_token = '';
+					synchronize_inline_controls( config );
 				}
 			} );
 			window.jQuery( document ).on( 'wpbc_media_upload_url_set', '[data-wpbc-catalog-resource-field="picture_url"]', function () {

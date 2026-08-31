@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.6.1
+Stable tag: 11.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,7 +50,7 @@ https://www.youtube.com/watch?v=bp3lZ5Dnxns
 = Appointment Booking with Services and Providers =
 Let visitors book appointments through a simple step-by-step flow. Customers choose a Service and an available Provider, select a date and start time, enter their contact details, and submit the booking. The confirmation displays the complete appointment details and provides an option to add the appointment to Google Calendar.
 
-https://www.youtube.com/watch?v=iT5RKjH3iUY
+https://www.youtube.com/watch?v=0lwrMgXaHkk
 
 == Installation ==
 
@@ -307,6 +307,34 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 8. **Calendar Availability**: Super easily set available or unavailable dates in the calendar with just 3 mouse clicks.
 
 == Changelog ==
+= 11.7 =
+- Changes in **all** versions:
+	* **Improvement**: Added clearer grouped left sidebar navigation, automatic current-page visibility in long menus, and reliable Minimize-state restoration.
+	* **Fix**: Preserved each administrator's Full Screen preference while moving between Booking Calendar pages, including WordPress installations in subdirectories.
+	* **Fix**: Kept **Value different from label** disabled for Form Builder Select fields after saving and continued synchronizing option values with their labels.
+	* **Fix**: Prevented repeated PHP warnings when simultaneous CAPTCHA cleanup requests encounter a temporary file already removed by another request.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Improvement**: Added a **Booking Admin Panel** setting to choose whether **Edit booking** opens in the existing popup or on the dedicated **Add Booking** page. The popup remains the default after upgrading.
+- Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added optional **Cost correction** when creating or editing a Booking, or creating an Appointment, allowing an administrator to set an exact final total without changing the Booking Form. Leave it empty to keep automatic pricing.
+- Changes in **Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added the **Prices Catalog** with search, filters, sorting, paging, layouts, customizable columns, clear Resource pricing previews, and a focused right-side inspector.
+	* **New**: Added dedicated inspectors for Base Cost, Seasonal Rates, Duration-Based Costs, Partial Payment, Early Booking Adjustment, and Late Booking Adjustment.
+	* **Improvement**: Base Cost accepts exact decimal prices, provides a synchronized slider, and supports reviewed safe inline or bulk changes.
+	* **Improvement**: Seasonal Rates can be added, reordered, edited, removed, or switched On and Off without losing saved values or Season assignments.
+	* **Improvement**: Duration-Based Costs provide ordered From, For, Together, and LAST rules with fixed, percentage, added-amount, and optional Season settings.
+	* **Improvement**: Partial Payment supports fixed or percentage deposits, optional conditions, and a preview of the due-now amount, balance, Resource total, and calculation basis.
+	* **Improvement**: Early Booking and Late Booking adjustments provide distinct date-threshold previews, optional Seasons, and fixed or percentage reductions.
+	* **Improvement**: Pricing context shows owner currency, charging period, time-cost behavior, and deposit basis, with authorized links to Payment Setup and Advanced Costs.
+	* **Improvement**: Pricing links open the matching inspector section, successful saves close cleanly, and compact controls remain readable on mobile and RTL screens.
+	* **Improvement**: Pricing previews distinguish saved configuration from the selected preview context and explain that later Booking Form costs or discounts can change the final total.
+	* **Fix**: Saved Partial Payment values display correctly on first open, without duplicate validation messages, and show loading feedback while recalculating.
+	* **Fix**: Early and Late Booking timeline labels remain readable and clearly show disabled, incomplete, qualifying, and non-qualifying states.
+	* **Fix**: Seasonal Rate rows keep large values and long Season names readable with stable sizing, concise On/Off status, and full-text tooltips.
+	* **Fix**: Changed indicators no longer make edited rows taller, and icon-and-text actions keep consistent RTL-safe spacing.
+	* **Compatibility**: Enable **Use legacy catalog pages** to temporarily restore the previous Prices listing without migrating or resetting Resource pricing.
+	* **Security**: Pricing saves recheck the current Resource, owner, site, edition, stored values, and valid Season references while preserving unrelated Resource and Season data.
+
 = 11.6.1 =
 	* **New**: Added responsive Grid and List Service and Provider catalogs to `[booking_appointment]`, with search, configurable card details, item sizing, and per-row controls.
 	* **Improvement**: Added the selected Service picture to the Appointment summary above the Booking Form, with responsive text-only fallback when images are hidden or unavailable.
@@ -341,6 +369,8 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 	* **Fix**: Restored Booking Calendar block shortcode insertion and preview updates in WordPress 7.0.4 and newer editors by preventing stale editor input from reverting the configured shortcode, while retaining legacy block recovery and visible configuration for newly inserted empty blocks.
 	* **Support**: WordPress 7.1
 - Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added Klarna as an eligible one-time payment method in Stripe Checkout. Availability still depends on the connected Stripe account, customer location, currency, amount, and Stripe configuration.
+	* **Security**: Stripe Checkout now marks a one-time booking as paid only when the completed session belongs to that booking and Stripe reports a paid status.
 	* **New**: Added guided creation of one or multiple Booking Resources, with quantity, edition-limit, and batch validation.
 	* **New**: Added advanced editing for Base cost in Business Small and higher, Default Form in Business Medium and higher, parent and Priority in Business Large and higher, and authorized Resource ownership in MultiUser.
 	* **New**: Added reviewed bulk editing for Base cost, Default Form, Priority, and authorized ownership, including relative and progressive Priority changes with a per-Resource preview.
@@ -372,6 +402,9 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Find more at [this page](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.7 =
+Introduces the new Prices Catalog and dedicated Resource pricing inspectors in Business Medium and higher editions, while retaining the previous Prices listing through **Use legacy catalog pages**. Also adds optional administrator Cost correction in Business Small and higher editions, a setting for opening edits on the dedicated Add Booking page in Personal and higher editions, and improvements to left navigation, pricing previews, and Form Builder Select fields.
+
 = 11.6 =
 Introduces redesigned Booking Resources, Services, and paid Seasons catalogs; Resource titles, photos and descriptions; frontend Resource Catalog layouts; reviewed inline and bulk editing; and Business Large hierarchy and capacity tools. Existing Booking Resource and Season data remains compatible.
 

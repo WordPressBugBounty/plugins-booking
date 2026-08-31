@@ -289,6 +289,11 @@ class wpdevReallySimpleCaptcha {
 				$file = $this->normalize_path( $dir . $filename );
 
 				$stat = @stat( $file );
+				if ( false === $stat || ! isset( $stat['mtime'] ) ) {
+					// A concurrent CAPTCHA cleanup can remove the file after readdir().
+					continue;
+				}
+
 				if ( ( $stat['mtime'] + $minutes * 60 ) < time() ) {
 					// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
 					if ( ! @wp_delete_file( $file ) ) {

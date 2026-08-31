@@ -20,7 +20,13 @@
 	margin-right: auto;
 	box-sizing: border-box;
 }
-
+/* Mobile mode */
+@media (max-width: 782px) {
+	div.booking_form_div .wpbc_bfb_form {
+		width: 100%;
+		max-width: 100%;
+	}
+}
 div.wpbc_container.wpbc_form.wpbc_bfb_form_appearance_custom,
 div.wpbc_container.wpbc_form .wpbc_bfb_form_appearance_custom {
 	color: var(--wpbc_form-label-color) !important;

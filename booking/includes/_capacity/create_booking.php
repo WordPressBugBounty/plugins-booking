@@ -67,10 +67,11 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 																					'wpbc_bfb_preview_form_id'  => array( 'validate' => 'd', 'default'  => 0 ),
 																					'wpbc_bfb_preview_nonce'    => array( 'validate' => 'strong', 'default'  => '' ),
 																					'wpbc_time_override_enabled' => array( 'validate' => 'd', 'default' => 0 ),
-																					'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
-																					'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
-																					'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
-																	), $workflow_request_rules )
+															'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
+															'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
+															'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
+															'wpbc_admin_cost_correction' => array( 'validate' => 'strong', 'default' => '' ),
+															), $workflow_request_rules )
 										));
 
 	// Escape of request params   in Ajax Post.         We use prefix 'calendar_request_params', if Ajax sent - $_REQUEST['calendar_request_params']['resource_id'], ...
@@ -128,6 +129,7 @@ function ajax_WPBC_AJX_BOOKING__CREATE() {  // phpcs:ignore WordPress.NamingConv
 		'wpbc_time_override_source'  => $request_params['wpbc_time_override_source'],
 		'wpbc_time_override_start'   => $request_params['wpbc_time_override_start'],
 		'wpbc_time_override_end'     => $request_params['wpbc_time_override_end'],
+		'wpbc_admin_cost_correction' => $request_params['wpbc_admin_cost_correction'],
 	);
 	$request_save_params['service_id']                     = $request_params['service_id'];
 	$request_save_params['appointment_service_required']   = $request_params['appointment_service_required'];
@@ -298,7 +300,8 @@ function wpbc_booking_save( $request_params ){
 								'wpbc_time_override_source'  => array( 'validate' => 'strong', 'default' => '' ),
 								'wpbc_time_override_start'   => array( 'validate' => 'strong', 'default' => '' ),
 								'wpbc_time_override_end'     => array( 'validate' => 'strong', 'default' => '' ),
-						);
+								'wpbc_admin_cost_correction' => array( 'validate' => 'strong', 'default' => '' ),
+					);
 	$validate_arr_rules['service_id']                     = array( 'validate' => 'd', 'default' => 0 );
 	$validate_arr_rules['appointment_service_required']   = array( 'validate' => 'd', 'default' => 0 );
 	$validate_arr_rules['appointment_context_token']      = array( 'validate' => 'strong', 'default' => '' );
@@ -395,6 +398,8 @@ function wpbc_booking_save( $request_params ){
 
 	// Time overrides belong exclusively to the capability-protected Add Booking administration workflow.
 	$re_cleaned_params = wpbc_restrict_booking_time_override_to_authorized_admin( $re_cleaned_params, $is_authorized_admin_booking_request );
+	// Cost corrections belong exclusively to capability-protected administrator booking workflows.
+	$re_cleaned_params = wpbc_restrict_booking_cost_correction_to_authorized_admin( $re_cleaned_params, $is_authorized_admin_booking_request );
 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Parse Local parameters for later use
@@ -778,6 +783,7 @@ function wpbc_booking_save( $request_params ){
 	$payment_params['is_duplicate_booking'] = $create_params['is_duplicate_booking'];           //           => 0        0 | 1
 	$payment_params['is_from_admin_panel']  = $create_params['is_from_admin_panel'];            //           => false    true | false
 	$payment_params['is_show_payment_form'] = $create_params['is_show_payment_form'];           //           => 1        0 | 1
+	$payment_params['wpbc_admin_cost_correction'] = $re_cleaned_params['wpbc_admin_cost_correction'];
 	if ( $payment_params['is_from_admin_panel'] ) {
 		// $payment_params['is_show_payment_form'] = 0;                     // FixIn: 9.9.0.21.
 	}
@@ -1656,6 +1662,65 @@ function wpbc_clear_request_form_context() {
 		$request_params['wpbc_time_override_end']     = '';
 
 		return $request_params;
+	}
+
+
+	/**
+	 * Authorize and normalize an administrator cost-correction request value.
+	 *
+	 * Booking creation is intentionally public, so a sanitized numeric value is
+	 * not sufficient authorization. Only capability-protected Add Booking and
+	 * Add Appointment workflows in Business Small or higher may retain this value.
+	 * Missing, malformed, out-of-range, public, and unsupported-edition values
+	 * are reduced to an empty sentinel, which preserves automatic calculation.
+	 *
+	 * @param array $request_params                      Sanitized booking request parameters.
+	 * @param bool  $is_authorized_admin_booking_request Whether this is an authorized administrator booking request.
+	 *
+	 * @return array Booking request parameters with a normalized or empty cost correction.
+	 */
+	function wpbc_restrict_booking_cost_correction_to_authorized_admin( $request_params, $is_authorized_admin_booking_request ) {
+
+		$request_params = is_array( $request_params ) ? $request_params : array();
+		$raw_cost       = isset( $request_params['wpbc_admin_cost_correction'] ) ? $request_params['wpbc_admin_cost_correction'] : '';
+
+		$request_params['wpbc_admin_cost_correction'] = '';
+		if ( ! $is_authorized_admin_booking_request || ! class_exists( 'wpdev_bk_biz_s' ) ) {
+			return $request_params;
+		}
+
+		$request_params['wpbc_admin_cost_correction'] = wpbc_sanitize_booking_cost_correction( $raw_cost );
+
+		return $request_params;
+	}
+
+
+	/**
+	 * Sanitize one exact administrator-entered Booking total.
+	 *
+	 * @param mixed $raw_cost Raw request value.
+	 *
+	 * @return string Normalized decimal without trailing zeroes, or an empty string when invalid.
+	 */
+	function wpbc_sanitize_booking_cost_correction( $raw_cost ) {
+
+		if ( ! is_scalar( $raw_cost ) ) {
+			return '';
+		}
+
+		$raw_cost = trim( sanitize_text_field( (string) $raw_cost ) );
+		if ( '' === $raw_cost || ! preg_match( '/^[0-9]{1,10}(?:\.[0-9]{1,8})?$/', $raw_cost ) ) {
+			return '';
+		}
+
+		$normalized_cost = (float) $raw_cost;
+		if ( ! is_finite( $normalized_cost ) || $normalized_cost < 0 || $normalized_cost > 1000000000 ) {
+			return '';
+		}
+
+		$normalized_cost = rtrim( rtrim( number_format( $normalized_cost, 8, '.', '' ), '0' ), '.' );
+
+		return '' === $normalized_cost ? '0' : $normalized_cost;
 	}
 
 

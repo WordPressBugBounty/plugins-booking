@@ -1644,18 +1644,20 @@
 		 *
 		 * @param {HTMLElement} row_element       Domain row or card element.
 		 * @param {boolean}     changed           Whether its draft differs.
-		 * @param {HTMLElement} indicator_element Element receiving the badge.
+		 * @param {HTMLElement} indicator_element Backward-compatible fallback badge host.
 		 * @param {string}      changed_label     Localized badge text.
 		 * @return {void}
 		 */
 		function set_row_changed( row_element, changed, indicator_element, changed_label ) {
 			var indicator;
+			var preferred_indicator_host;
 
 			if ( ! row_element ) {
 				return;
 			}
 			row_element.classList.add( 'wpbc_ui_catalog_inline_row' );
 			row_element.classList.toggle( 'is-inline-changed', !! changed );
+			preferred_indicator_host = row_element.querySelector( '[data-wpbc-ui-catalog-inline-changed-host]' );
 			indicator = row_element.querySelector( '[data-wpbc-ui-catalog-inline-changed-label]' );
 			if ( ! changed ) {
 				if ( indicator ) {
@@ -1663,11 +1665,19 @@
 				}
 				return;
 			}
+			if ( indicator && preferred_indicator_host && indicator.parentElement !== preferred_indicator_host ) {
+				preferred_indicator_host.insertBefore( indicator, preferred_indicator_host.firstChild );
+			}
+			indicator_element = preferred_indicator_host || indicator_element;
 			if ( ! indicator && indicator_element ) {
 				indicator = document.createElement( 'span' );
 				indicator.className = 'wpbc_ui_catalog_inline_changed_label';
 				indicator.setAttribute( 'data-wpbc-ui-catalog-inline-changed-label', '' );
-				indicator_element.appendChild( indicator );
+				if ( preferred_indicator_host ) {
+					preferred_indicator_host.insertBefore( indicator, preferred_indicator_host.firstChild );
+				} else {
+					indicator_element.appendChild( indicator );
+				}
 			}
 			if ( indicator ) {
 				indicator.textContent = String( changed_label || '' );

@@ -1074,12 +1074,25 @@ function wpbc__legacy__get_form_content_arr ( $formdata, $bktype =-1, $booking_f
 		}
 	}
 
-	if (! isset($all_fields_array_without_types[ 'booking_resource_id'  ])) $all_fields_array_without_types[ 'booking_resource_id'  ] = $bktype;
-	if (! isset($all_fields_array_without_types[ 'resource_id'  ]))         $all_fields_array_without_types[ 'resource_id'  ] = $bktype;
-	if (! isset($all_fields_array_without_types[ 'type_id'  ]))             $all_fields_array_without_types[ 'type_id'  ] = $bktype;
+	if ( ! isset( $all_fields_array_without_types['booking_resource_id'] ) ) {
+		$all_fields_array_without_types['booking_resource_id'] = $bktype;
+	}
+	if ( ! isset( $all_fields_array_without_types['resource_id'] ) ) {
+		$all_fields_array_without_types['resource_id'] = $bktype;
+	}
+	if ( ! isset( $all_fields_array_without_types['type_id'] ) ) {
+		$all_fields_array_without_types['type_id'] = $bktype;
+	}
 
-	if (! isset($all_fields_array_without_types[ 'type'  ]))                $all_fields_array_without_types[ 'type'  ] = $bktype;
-	if (! isset($all_fields_array_without_types[ 'resource'  ]))            $all_fields_array_without_types[ 'resource'  ] = $bktype;
+	if ( ! isset( $all_fields_array_without_types['type'] ) ) {
+		$all_fields_array_without_types['type'] = $bktype;
+	}
+	if ( ! isset( $all_fields_array_without_types['resource'] ) ) {
+		$all_fields_array_without_types['resource'] = wpbc_get_resource_title( $bktype );
+	}
+	if ( ! isset( $all_fields_array_without_types['resource_title'] ) ) {
+		$all_fields_array_without_types['resource_title'] = wpbc_get_resource_title( $bktype );
+	}
 
 	foreach ($extended_params as $key_param=>$value_param) {
 		if (! isset($all_fields_array_without_types[  $key_param  ]))            $all_fields_array_without_types[ $key_param  ] = $value_param;

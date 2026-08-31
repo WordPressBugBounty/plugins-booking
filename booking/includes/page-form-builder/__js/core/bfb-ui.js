@@ -1016,7 +1016,8 @@
 					if ( !hasRaw ) {
 						ctrl.checked = !!defValue;
 					} else {
-						ctrl.checked = Core.WPBC_BFB_Sanitize.coerce_boolean( raw, !!defValue );
+						// An explicit empty value is the legacy persisted representation of false.
+						ctrl.checked = Core.WPBC_BFB_Sanitize.coerce_boolean( raw, false );
 					}
 				} else if ( 'value' in ctrl ) {
 					if ( hasRaw ) {
@@ -1295,7 +1296,8 @@
 					}
 					let nextVal = '';
 					if ( t instanceof HTMLInputElement && (t.type === 'checkbox' || t.type === 'radio') ) {
-						nextVal = t.checked ? '1' : '';
+						// Persist both boolean states explicitly so schema defaults cannot replace false.
+						nextVal = t.checked ? 'true' : 'false';
 					} else if ( 'value' in t ) {
 						nextVal = String( t.value ?? '' );
 					}
@@ -1926,6 +1928,42 @@
 			this.builder.load_saved_structure = (s, opts) => this.deserialize( s, opts );
 		}
 
+		/**
+		 * Normalize option values when a field explicitly disables separate values.
+		 *
+		 * Older Builder versions persisted an unchecked value_differs toggle as an
+		 * empty string. Treat that explicit legacy value as false, while retaining
+		 * the schema default when the property is genuinely absent.
+		 *
+		 * @param {Object} field_data Serialized field data.
+		 * @returns {Object} Normalized serialized field data.
+		 */
+		_normalize_field_option_values(field_data) {
+			const has_value_differs = Object.prototype.hasOwnProperty.call( field_data, 'value_differs' );
+			if ( !has_value_differs ) {
+				return field_data;
+			}
+
+			const value_differs   = Core.WPBC_BFB_Sanitize.coerce_boolean( field_data.value_differs, false );
+			field_data.value_differs = value_differs;
+
+			if ( !value_differs && Array.isArray( field_data.options ) ) {
+				field_data.options = field_data.options.map( ( option_record ) => {
+					if ( !option_record || typeof option_record !== 'object' ) {
+						return option_record;
+					}
+
+					return Object.assign(
+						{},
+						option_record,
+						{ value: String( option_record.label == null ? '' : option_record.label ) }
+					);
+				} );
+			}
+
+			return field_data;
+		}
+
 		/** @returns {Array} */
 		serialize() {
 			const b = this.builder;
@@ -1948,7 +1986,9 @@
 						if ( child.classList.contains( 'is-invalid' ) ) {
 							return;
 						}
-						const f_data = Core.WPBC_Form_Builder_Helper.get_all_data_attributes( child );
+						const f_data = this._normalize_field_option_values(
+							Core.WPBC_Form_Builder_Helper.get_all_data_attributes( child )
+						);
 						// Drop ephemeral/editor-only flags
 						[ 'uid', 'fresh', 'autoname', 'was_loaded', 'name_user_touched' ]
 							.forEach( k => {
@@ -2000,7 +2040,9 @@
 						if ( child.classList.contains( 'is-invalid' ) ) {
 							return;
 						}
-						const f_data = Core.WPBC_Form_Builder_Helper.get_all_data_attributes( child );
+						const f_data = this._normalize_field_option_values(
+							Core.WPBC_Form_Builder_Helper.get_all_data_attributes( child )
+						);
 						[ 'uid', 'fresh', 'autoname', 'was_loaded', 'name_user_touched' ].forEach( function (k) {
 							if ( k in f_data ) {
 								delete f_data[k];

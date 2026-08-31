@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <script type="text/html" id="tmpl-wpbc-booking-resource-row-cells">
 	<# if ( data.selection_enabled ) { #>
-		<td class="wpbc_ui_listing__column_selection" data-label="">
+		<td class="wpbc_ui_listing__column_selection" data-label="" data-wpbc-ui-catalog-inline-changed-host>
 			<label class="wpbc_ui_listing__selection_control" for="wpbc_catalog_booking_resource_select_{{ data.id }}">
 				<span class="screen-reader-text">{{ data.selection_label }}</span>
 				<input type="checkbox" id="wpbc_catalog_booking_resource_select_{{ data.id }}" value="{{ data.id }}" data-wpbc-ui-catalog-select-item>

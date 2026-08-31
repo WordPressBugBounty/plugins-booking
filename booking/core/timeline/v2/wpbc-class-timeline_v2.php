@@ -3077,29 +3077,32 @@ if(1)
 											href=\''.wpbc_get_bookings_url( true, false ).'&wh_booking_id='.$bk_id.'&tab=vm_booking_listing\' ><i class=\'wpbc_icn_gps_fixed\'></i></a>';
 					//Edit
 					if ( class_exists( 'wpdev_bk_personal' ) ) {
-						$bk_url_add = wpbc_get_new_booking_url( true, false );
 						$bk_hash = (isset( $bookings[$bk_id]->hash )) ? $bookings[$bk_id]->hash : '';
 						$bk_booking_type = $bookings[$bk_id]->booking_type;
-						$edit_booking_url = $bk_url_add . '&booking_type=' . $bk_booking_type . '&booking_hash=' . $bk_hash . '&parent_res=1';
 						// FixIn: 10.10.1.2  $edit_booking_url .= ( 'Off' !== get_bk_option( 'booking_is_resource_no_update__during_editing' ) ) ? '&resource_no_update=1' : '';        // FixIn: 9.4.2.3.
 
 						$custom_booking_form = '';
 						if ( ! empty( $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'] ) ) {
 							$custom_booking_form = $bookings[ $bk_id ]->form_data['_all_fields_']['wpbc_custom_booking_form'];
-							$edit_booking_url   .= '&booking_form=' . rawurlencode( $custom_booking_form );					// FixIn: 9.4.3.12.
 						}
+						$edit_booking_url = wpbc_get_booking_admin_edit_url( $bk_booking_type, $bk_hash, $custom_booking_form );
 
-						$edit_booking_onclick = "if ( 'function' === typeof wpbc_boo_listing__click__add_booking_modal_from_row ) {"
+						$edit_booking_onclick = '';
+						if ( ! wpbc_is_booking_admin_edit_page_enabled() ) {
+							$edit_booking_onclick = "if ( 'function' === typeof wpbc_boo_listing__click__add_booking_modal_from_row ) {"
 												. ' wpbc_boo_listing__click__add_booking_modal_from_row('
 												. absint( $bk_id ) . ','
 												. absint( $bk_booking_type ) . ','
 												. "'" . esc_js( $bk_hash ) . "',"
 												. "'" . esc_js( $custom_booking_form ) . "'"
 												. ' ); return false; }';
+						}
 
 						$header_title .= '<a 	class=\'button button-secondary\' 
 												title=\'' . esc_attr( str_replace( "'", '', __( 'Edit', 'booking' ) ) ) . '\' 
-												href=\'' . esc_url( $edit_booking_url ) . '\' onclick=\'' . esc_attr( $edit_booking_onclick ) . '\' ><i class=\'wpbc_icn_draw\'></i></a>';
+												href=\'' . esc_url( $edit_booking_url ) . '\''
+												. ( '' !== $edit_booking_onclick ? ' onclick=\'' . esc_attr( $edit_booking_onclick ) . '\'' : '' )
+												. ' ><i class=\'wpbc_icn_draw\'></i></a>';
 
 
 						$header_title .= '<span class=\'wpbc-buttons-separator\'></span>';
