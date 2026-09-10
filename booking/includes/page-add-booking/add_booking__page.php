@@ -180,7 +180,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$tabs['add-booking'] = array(
 			'is_show_top_path'                   => true,                                  // true | false.  By default value is: true.
 			'is_show_top_navigation'             => true,
-			'left_navigation__default_view_mode' => 'min',                             // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'left_navigation__default_view_mode' => '',  // FixIn:11.7.1.1: 'min',                             // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'right_vertical_sidebar__is_show'           => $is_inspector_ui,
 			'right_vertical_sidebar__default_view_mode' => '',
 			'right_vertical_sidebar_compact__is_show'   => $is_inspector_ui,

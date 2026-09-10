@@ -98,9 +98,9 @@ final class WPBC_Catalog_Booking_Resource_Updater {
 			$validated['picture_url']
 		);
 		if ( is_wp_error( $content_result ) ) {
-			$this->restore_settings( $resource, $settings_result );
+			$settings_restored = $this->restore_settings( $resource, $settings_result );
 
-			return $content_result;
+			return is_wp_error( $settings_restored ) ? $settings_restored : $content_result;
 		}
 
 		if ( function_exists( 'make_bk_action' ) ) {
@@ -279,18 +279,20 @@ final class WPBC_Catalog_Booking_Resource_Updater {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Explicit canonical Resource mutation.
 			$updated = $wpdb->update( $wpdb->prefix . 'bookingtypes', $update_values, array( 'booking_type_id' => absint( $resource['id'] ) ), $update_formats, array( '%d' ) );
 			if ( false === $updated ) {
-				$this->availability->restore_fields( absint( $resource['id'] ), $availability_rollback );
+				$availability_restored = $this->availability->restore_fields( absint( $resource['id'] ), $availability_rollback );
 
-				return new WP_Error( 'wpbc_catalog_resource_settings_not_saved', __( 'The Booking Resource settings could not be saved.', 'booking' ) );
+				return is_wp_error( $availability_restored )
+					? $availability_restored
+					: new WP_Error( 'wpbc_catalog_resource_settings_not_saved', __( 'The Booking Resource settings could not be saved.', 'booking' ) );
 			}
 		}
 
 		$rollback['shortcode_default'] = isset( $resource['publishing_shortcode'] ) ? (string) $resource['publishing_shortcode'] : '';
 		$shortcode_saved = $this->save_shortcode( absint( $resource['id'] ), $validated['booking_shortcode'] );
 		if ( is_wp_error( $shortcode_saved ) ) {
-			$this->restore_settings( $resource, $rollback );
+			$settings_restored = $this->restore_settings( $resource, $rollback );
 
-			return $shortcode_saved;
+			return is_wp_error( $settings_restored ) ? $settings_restored : $shortcode_saved;
 		}
 
 		return $rollback;
@@ -302,11 +304,11 @@ final class WPBC_Catalog_Booking_Resource_Updater {
 	 * @param array $resource Current Resource snapshot.
 	 * @param array $rollback Previously stored settings.
 	 *
-	 * @return void
+	 * @return true|WP_Error True after restoration or a nested recovery error.
 	 */
 	private function restore_settings( $resource, $rollback ) {
 		if ( ! class_exists( 'wpdev_bk_personal' ) || ! is_array( $rollback ) ) {
-			return;
+			return true;
 		}
 
 		global $wpdb;
@@ -324,8 +326,13 @@ final class WPBC_Catalog_Booking_Resource_Updater {
 			$this->save_shortcode( absint( $resource['id'] ), (string) $rollback['shortcode_default'] );
 		}
 		if ( isset( $rollback['availability'] ) ) {
-			$this->availability->restore_fields( absint( $resource['id'] ), $rollback['availability'] );
+			$availability_restored = $this->availability->restore_fields( absint( $resource['id'] ), $rollback['availability'] );
+			if ( is_wp_error( $availability_restored ) ) {
+				return $availability_restored;
+			}
 		}
+
+		return true;
 	}
 
 	/**

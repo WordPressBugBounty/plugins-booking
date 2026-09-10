@@ -131,6 +131,39 @@ function wpbc_catalog_booking_resources_get_column_config() {
 }
 
 /**
+ * Resolve the edition-aware default Booking Resources catalog view.
+ *
+ * Only a genuine first installation of Booking Calendar Free stores the
+ * Publishing default. Existing installations, paid editions, and malformed
+ * option values retain the established Overview default. Saved per-user
+ * catalog preferences continue to take precedence over this site default.
+ *
+ * @param bool   $is_free_version Whether the active edition is Booking Calendar Free.
+ * @param string $stored_view     Site default stored during initial activation.
+ *
+ * @return string The allow-listed default view identifier.
+ */
+function wpbc_catalog_booking_resources_resolve_default_view( $is_free_version, $stored_view ) {
+	if ( ! $is_free_version ) {
+		return 'overview';
+	}
+
+	return 'publishing' === sanitize_key( (string) $stored_view ) ? 'publishing' : 'overview';
+}
+
+/**
+ * Return the current site's default Booking Resources catalog view.
+ *
+ * @return string The allow-listed default view identifier.
+ */
+function wpbc_catalog_booking_resources_get_default_view() {
+	return wpbc_catalog_booking_resources_resolve_default_view(
+		! class_exists( 'wpdev_bk_personal' ),
+		get_bk_option( 'booking_resources_catalog_default_view', '' )
+	);
+}
+
+/**
  * Return the readable mechanics and template contract for this catalog.
  *
  * This domain configuration declares allow-lists and edition availability. It
@@ -140,6 +173,7 @@ function wpbc_catalog_booking_resources_get_column_config() {
  */
 function wpbc_catalog_booking_resources_get_config() {
 	$column_config = wpbc_catalog_booking_resources_get_column_config();
+	$default_view  = wpbc_catalog_booking_resources_get_default_view();
 	$display_views = array(
 		'overview'   => array(
 			'label'  => __( 'Overview', 'booking' ),
@@ -172,6 +206,11 @@ function wpbc_catalog_booking_resources_get_config() {
 		'label'  => __( 'All fields', 'booking' ),
 		'fields' => $column_config['allowed'],
 	);
+	if ( 'publishing' === $default_view ) {
+		$column_config['default_visible'] = array_values(
+			array_intersect( $display_views['publishing']['fields'], $column_config['allowed'] )
+		);
+	}
 	$sorting_keys  = array( 'id', 'title' );
 	if ( isset( $column_config['definitions']['capacity'] ) ) {
 		$sorting_keys[] = 'capacity';
@@ -202,7 +241,7 @@ function wpbc_catalog_booking_resources_get_config() {
 
 		'columns' => $column_config,
 		'views'   => array(
-			'default'     => 'overview',
+			'default'     => $default_view,
 			'definitions' => $display_views,
 		),
 

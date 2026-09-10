@@ -1193,7 +1193,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 
 		if ( wpbc_is_11_6_features_enabled() && wpbc_booking_resources_catalog_can_manage_settings() ) {
 			$is_pro_compatible = wpbc_booking_resources_catalog_is_pro_compatible();
-			$description       = __( 'Legacy catalog pages are deprecated and scheduled for removal in Booking Calendar 11.7. This setting applies to all administration catalogs upgraded in Booking Calendar 11.6.', 'booking' );
+			$description       = __( 'Choose the new or legacy pages for upgraded administration catalogs, including Seasonal Availability and Searchable Resources when their new catalogs are enabled. Legacy pages remain available for compatibility.', 'booking' );
 
 			if ( ! $is_pro_compatible ) {
 				$pro_version = wpbc_booking_resources_catalog_get_pro_version();
@@ -1202,7 +1202,7 @@ class  WPBC_Settings_API_General extends WPBC_Settings_API {
 				}
 
 				/* translators: 1: Detected Booking Calendar Pro version, 2: Minimum compatible Pro version. */
-				$description = sprintf( __( 'Legacy catalog mode is required because Booking Calendar Pro %1$s is active. Update Pro to %2$s or newer to use the new catalogs. Legacy catalog pages are deprecated and scheduled for removal in Booking Calendar 11.7.', 'booking' ), esc_html( $pro_version ), esc_html( wpbc_booking_resources_catalog_get_minimum_pro_version() ) );
+				$description = sprintf( __( 'Legacy catalog mode is required because Booking Calendar Pro %1$s is active. Update Pro to %2$s or newer to use the new catalogs. Legacy pages remain available for compatibility.', 'booking' ), esc_html( $pro_version ), esc_html( wpbc_booking_resources_catalog_get_minimum_pro_version() ) );
 			}
 
 			$this->fields['booking_resources_catalog_renderer'] = array(

@@ -119,9 +119,7 @@ function wpbc_booking_resources_catalog_is_pro_compatible() {
  */
 function wpbc_booking_resources_catalog_is_available() {
 	return function_exists( 'wpbc_is_11_6_features_enabled' )
-		&& wpbc_is_11_6_features_enabled()
-		&& function_exists( 'wpbc_is_11_6_catalog_v2_enabled' )
-		&& wpbc_is_11_6_catalog_v2_enabled();
+		&& wpbc_is_11_6_features_enabled();
 }
 
 /**

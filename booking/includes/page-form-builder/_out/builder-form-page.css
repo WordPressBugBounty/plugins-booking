@@ -1892,3 +1892,7 @@ html[data-wpbc-bfb-live-source=builder] .wp-admin .modal-backdrop {
   font-family: monospace;
   font-size: 12px
 }
+.wpbc_admin_page__tab__builder_booking_form .wpbc_header_news,
+.wpbc_admin_page__tab__builder_booking_form div.wpbc_inner_message.wpbc_booking_modes_quickstart_notice {
+  display: none
+}

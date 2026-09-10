@@ -530,12 +530,12 @@ class WPBC_Page_TimeSlots_Availability extends WPBC_Page_Structure {
 			'right_vertical_sidebar__is_show'           => true,
 			'right_vertical_sidebar__default_view_mode' => '',
 			'right_vertical_sidebar_compact__is_show'   => true,
-			'left_navigation__default_view_mode'        => 'compact',
-			'top_path_title'                            => __( 'Time Slots Availability', 'booking' ),
-			'title'                                     => __( 'Time Slots Availability', 'booking' ),                            // Title of TAB.
+			'left_navigation__default_view_mode'        => '',  // FixIn:11.7.1.1: 'compact',
+			'top_path_title'                            => __( 'Block Times', 'booking' ),
+			'title'                                     => __( 'Block Times', 'booking' ),                            // Title of TAB.
 														   // . '<span class="wpbc_new_label" style="margin-left: auto;">' . esc_html__( 'New', 'booking' ) . '</span>',
 			'hint'                                      => __( 'Flexible blocking time-slot ranges.', 'booking' ),
-			'page_title'                                => __( 'Time Slots Availability', 'booking' ),
+			'page_title'                                => __( 'Block Times', 'booking' ),
 			'link'                                      => '',
 			'position'                                  => '',
 			'css_classes'                               => '',
@@ -578,7 +578,7 @@ class WPBC_Page_TimeSlots_Availability extends WPBC_Page_Structure {
 				),
 			),
 			array(
-				'aria_label' => __( 'Time Slots Availability Panels', 'booking' ),
+				'aria_label' => __( 'Block Times Panels', 'booking' ),
 				'context'    => 'time_slots_availability',
 				'class'      => 'wpbc_ts_rightbar_tabs',
 			)

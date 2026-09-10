@@ -41,6 +41,9 @@ public static function init() {
 
         self::$instance = new Booking_Calendar;
         self::$instance->includes();
+		if ( defined( 'WPBC_BOOKING_MODES_ACTIVE_ENGINE' ) && 'none' === WPBC_BOOKING_MODES_ACTIVE_ENGINE ) {
+			return self::$instance;
+		}
         self::$instance->define_version();
 
 		add_action( 'init', array( self::$instance, 'wp_inited' ) );

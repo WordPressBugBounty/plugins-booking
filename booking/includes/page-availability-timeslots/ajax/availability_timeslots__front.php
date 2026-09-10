@@ -627,7 +627,7 @@ function wpbc_availability_timeslots__get_unavailable_day_statuses() {
 		'resource_availability'       => array(
 			'source_type' => 'days_availability',
 			'title'       => __( 'Unavailable day', 'booking' ),
-			'source'      => __( 'Days Availability', 'booking' ),
+			'source'      => __( 'Block Dates', 'booking' ),
 		),
 		'weekday_unavailable'         => array(
 			'source_type' => 'weekday_unavailable',
@@ -637,7 +637,7 @@ function wpbc_availability_timeslots__get_unavailable_day_statuses() {
 		'season_filter'               => array(
 			'source_type' => 'season_filter',
 			'title'       => __( 'Season unavailable', 'booking' ),
-			'source'      => __( 'Season Availability', 'booking' ),
+			'source'      => __( 'Seasonal Availability', 'booking' ),
 		),
 		'from_today_unavailable'      => array(
 			'source_type' => 'from_today_unavailable',

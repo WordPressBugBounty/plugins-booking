@@ -44,6 +44,25 @@ class WPBC_SETUP_WIZARD_STEPS {
 	 */
 	private static $is_top_bar_rendered = false;
 
+	/**
+	 * Check whether the legacy floating Setup Wizard bar is enabled.
+	 *
+	 * The bar is temporarily disabled while the initial Setup Wizard hands the
+	 * user directly to Form Builder. The filter preserves a bounded rollback
+	 * path without changing Setup Wizard progress or stored configuration.
+	 *
+	 * @return bool True when the floating Setup Wizard bar may be registered.
+	 */
+	private static function is_floating_setup_bar_enabled() {
+
+		/**
+		 * Filter whether the legacy floating Setup Wizard bar is enabled.
+		 *
+		 * @param bool $is_enabled Whether the floating Setup Wizard bar is enabled.
+		 */
+		return (bool) apply_filters( 'wpbc_setup_wizard_floating_bar_enabled', false );
+	}
+
 	public function __construct() {
 
 		if ( WPBC()->is_wp_inited() || did_action( 'init' ) ) {
@@ -52,7 +71,7 @@ class WPBC_SETUP_WIZARD_STEPS {
 			add_action( 'init', array( $this, 'init_steps_data' ) );
 		}
 
-		if ( ! self::$is_top_bar_hook_registered ) {
+		if ( self::is_floating_setup_bar_enabled() && ! self::$is_top_bar_hook_registered ) {
 			add_action( 'wpbc_after_wpbc_page_top__header_tabs', array( $this, 'show_top_right_wizard_button' ), 10, 3 );
 			self::$is_top_bar_hook_registered = true;
 		}
@@ -814,6 +833,10 @@ class WPBC_SETUP_WIZARD_STEPS {
 	 * @return void
 	 */
 	public function show_top_right_wizard_button() {
+
+		if ( ! self::is_floating_setup_bar_enabled() ) {
+			return false;
+		}
 
 		if ( ! wpbc_is_setup_wizard_page() ) {
 			$explicit_step_context = false;

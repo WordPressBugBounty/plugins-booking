@@ -2019,6 +2019,12 @@ function wpbc_clear_div() {
 ////////////////////////////////////////////////////////////////////////////////
 /** Tooltips JavaScript functions */
 function wpbc_bs_javascript_tooltips() {
+	static $is_rendered = false;
+
+	if ( $is_rendered ) {
+		return;
+	}
+	$is_rendered = true;
     
     ?><span id="wpbc_tooltips_container"></span><?php
     // FixIn: 7.0.1.10.
@@ -2059,12 +2065,6 @@ function wpbc_bs_javascript_tooltips() {
 					return wpbc_get_tippy_tooltip_title_text( reference );
 				},
 				placement: 'top-start',
-			} );
-			wpbc_tippy( parent_class + '.tooltip_bottom', {
-				content( reference ){
-					return wpbc_get_tippy_tooltip_title_text( reference );
-				},
-				placement: 'bottom-start',
 			} );
 			wpbc_tippy( parent_class + '.tooltip_bottom', {
 				content( reference ){

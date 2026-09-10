@@ -55,6 +55,7 @@ class WPBC_FE_Render {
 			'calendar_dates_end'              => '',
 			'booking_hash'                    => '',
 			'form_status'                     => 'published',
+			'booking_workflow'                => 'classic',
 			'calendar_request_overrides'      => array(),
 		);
 		$params_arr     = wp_parse_args( $params_arr, $default_params );
@@ -126,13 +127,10 @@ class WPBC_FE_Render {
 		// ---------------------------------------------------------------------
 		$calendar_dates_range = WPBC_FE_Attr_Postprocessor::normalize_calendar_dates_range( $params_arr['calendar_dates_start'], $params_arr['calendar_dates_end'] );
 		$classic_booking_context_token = '';
-		if (
-			function_exists( 'wpbc_classic_booking_context_encode' )
-			&& '' !== $calendar_dates_range['start']
-			&& '' !== $calendar_dates_range['end']
-		) {
+		if ( function_exists( 'wpbc_classic_booking_context_encode' ) ) {
 			$classic_booking_context_token = wpbc_classic_booking_context_encode(
 				array(
+					'booking_workflow'       => $params_arr['booking_workflow'],
 					'resource_id'            => $params_arr['resource_id'],
 					'calendar_dates_start'   => $calendar_dates_range['start'],
 					'calendar_dates_end'     => $calendar_dates_range['end'],

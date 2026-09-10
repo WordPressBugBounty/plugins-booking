@@ -117,7 +117,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 			$wp_admin_bar->add_menu(
 				array(
 					'id' => 'wpbc_bar_days_availability',
-					'title' => __( 'Days Availability', 'booking' ),
+					'title' => __( 'Block Dates', 'booking' ),
 					'href' => wpbc_get_availability_url() ,
 					'parent' => 'wpbc_bar_availability'
 				)
@@ -125,7 +125,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 			$wp_admin_bar->add_menu(
 				array(
 					'id'     => 'wpbc_bar_time_slots_availability',
-					'title'  => __( 'Time Slots Availability', 'booking' ),
+					'title'  => __( 'Block Times', 'booking' ),
 					'href'   => function_exists( 'wpbc_get_time_slots_availability_url' ) ? wpbc_get_time_slots_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=time_slots_availability' ),
 					'parent' => 'wpbc_bar_availability'
 				)
@@ -134,7 +134,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 				$wp_admin_bar->add_menu(
 					array(
 						'id' => 'wpbc_bar_general_availability',
-						'title' => __( 'General Availability', 'booking' ),
+						'title' => __( 'Schedule & Rules', 'booking' ),
 						'href' => function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' ),
 						'parent' => 'wpbc_bar_availability'
 					)
@@ -144,7 +144,7 @@ function wpbc_add__booking_menu__in__admin_top_bar(){
 				$wp_admin_bar->add_menu(
 					array(
 						'id' => 'wpbc_bar_seasons_availability',
-						'title' => __( 'Season Availability', 'booking' ),
+						'title' => __( 'Seasonal Availability', 'booking' ),
 						'href' => wpbc_get_availability_url() . '&tab=season_availability',
 						'parent' => 'wpbc_bar_availability'
 					)

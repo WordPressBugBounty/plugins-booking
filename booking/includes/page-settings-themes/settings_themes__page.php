@@ -1294,7 +1294,7 @@ class WPBC_Page_Settings_Themes extends WPBC_Page_Structure {
 			'right_vertical_sidebar__is_show'           => true,
 			'right_vertical_sidebar__default_view_mode' => '',
 			'right_vertical_sidebar_compact__is_show'   => true,
-			'left_navigation__default_view_mode'        => 'compact',
+			'left_navigation__default_view_mode'        => '',  // FixIn:11.7.1.1: 'compact',
 			'top_path_title'                            => __( 'Appearance', 'booking' ) . ' / ' . __( 'Theme', 'booking' ),
 			'title'                                     => __( 'Appearance', 'booking' ) . ' / ' . __( 'Theme', 'booking' ),
 														   // . '<span class="wpbc_new_label" style="margin-left: auto;">' . esc_html__( 'New', 'booking' ) . '</span>'

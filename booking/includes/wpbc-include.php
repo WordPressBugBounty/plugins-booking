@@ -26,7 +26,124 @@ require_once WPBC_PLUGIN_DIR . '/core/wpbc-debug.php';                       // 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-core.php';                        // Core.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/feature-flags.php';      // Release gates for functionality under development.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/starter-assets.php';     // Local or remote starter-image URLs.
-require_once WPBC_PLUGIN_DIR . '/includes/booking_modes/booking_modes.php';   // Administration presentation modes.
+
+/**
+ * Register a fail-closed diagnostic when no complete booking-mode engine exists.
+ *
+ * The production package contains one booking-mode engine. An incomplete V3
+ * package must stop before registering partial navigation, services, or assets.
+ * Translation remains inside the later notice callback so this early bootstrap
+ * does not load the text domain prematurely.
+ *
+ * @param array<int,string> $errors Preflight or package-integrity errors.
+ *
+ * @return void
+ */
+function wpbc_booking_modes_register_missing_engine_diagnostic( $errors ) {
+	$GLOBALS['wpbc_booking_modes_missing_engine_errors'] = is_array( $errors ) ? $errors : array();
+	add_action( 'admin_notices', 'wpbc_booking_modes_render_missing_engine_diagnostic' );
+}
+
+/**
+ * Render the administrator-only missing-engine package diagnostic.
+ *
+ * @return void
+ */
+function wpbc_booking_modes_render_missing_engine_diagnostic() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+
+	$errors = isset( $GLOBALS['wpbc_booking_modes_missing_engine_errors'] ) && is_array( $GLOBALS['wpbc_booking_modes_missing_engine_errors'] )
+		? $GLOBALS['wpbc_booking_modes_missing_engine_errors']
+		: array();
+	?>
+	<div class="notice notice-error">
+		<p><strong><?php esc_html_e( 'Booking Calendar could not start a complete booking-mode engine. Restore a complete plugin package before using Booking Calendar administration pages.', 'booking' ); ?></strong></p>
+		<?php if ( ! empty( $errors ) ) : ?>
+			<ul>
+				<?php foreach ( array_slice( $errors, 0, 10 ) as $error_message ) : ?>
+					<li><?php echo esc_html( $error_message ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	</div>
+	<?php
+}
+
+/**
+ * Register a migration notice for the removed development engine selector.
+ *
+ * The constant is intentionally ignored after cutover. Keeping a late notice
+ * gives administrators an actionable upgrade path without loading translations
+ * during the early plugin bootstrap.
+ *
+ * @return void
+ */
+function wpbc_booking_modes_register_obsolete_selector_diagnostic() {
+	add_action( 'admin_notices', 'wpbc_booking_modes_render_obsolete_selector_diagnostic' );
+}
+
+/**
+ * Render the administrator-only obsolete-selector migration notice.
+ *
+ * @return void
+ */
+function wpbc_booking_modes_render_obsolete_selector_diagnostic() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+	?>
+	<div class="notice notice-warning is-dismissible">
+		<p><?php esc_html_e( 'Booking Calendar V3 is now the production booking-mode engine. Remove the obsolete WPBC_BOOKING_MODE constant from your configuration.', 'booking' ); ?></p>
+	</div>
+	<?php
+}
+
+if ( defined( 'WPBC_BOOKING_MODE' ) ) {
+	wpbc_booking_modes_register_obsolete_selector_diagnostic();
+}
+
+$wpbc_booking_modes_v3_preflight_file = WPBC_PLUGIN_DIR . '/includes/booking_modes_v3/preflight.php';
+$wpbc_booking_modes_v3_result         = array(
+	'ready'  => false,
+	'errors' => array(),
+);
+
+if ( is_readable( $wpbc_booking_modes_v3_preflight_file ) ) {
+	require_once $wpbc_booking_modes_v3_preflight_file;
+	$wpbc_booking_modes_v3_result = wpbc_booking_modes_v3_preflight();
+} else {
+	$wpbc_booking_modes_v3_result['errors'][] = 'Missing or unreadable V3 component: preflight.php';
+}
+
+if ( ! empty( $wpbc_booking_modes_v3_result['ready'] ) ) {
+	if ( ! defined( 'WPBC_BOOKING_MODES_ACTIVE_ENGINE' ) ) {
+		define( 'WPBC_BOOKING_MODES_ACTIVE_ENGINE', 'v3' );
+	}
+	require_once WPBC_PLUGIN_DIR . '/includes/booking_modes_v3/booking_modes.php';
+} else {
+	if ( ! defined( 'WPBC_BOOKING_MODES_ACTIVE_ENGINE' ) ) {
+		define( 'WPBC_BOOKING_MODES_ACTIVE_ENGINE', 'none' );
+	}
+
+	$wpbc_booking_modes_missing_engine_errors = isset( $wpbc_booking_modes_v3_result['errors'] ) && is_array( $wpbc_booking_modes_v3_result['errors'] )
+		? $wpbc_booking_modes_v3_result['errors']
+		: array();
+	wpbc_booking_modes_register_missing_engine_diagnostic( $wpbc_booking_modes_missing_engine_errors );
+
+	unset(
+		$wpbc_booking_modes_v3_preflight_file,
+		$wpbc_booking_modes_v3_result,
+		$wpbc_booking_modes_missing_engine_errors
+	);
+	return;
+}
+
+unset(
+	$wpbc_booking_modes_v3_preflight_file,
+	$wpbc_booking_modes_v3_result
+);
 
 require_once WPBC_PLUGIN_DIR . '/core/any/class-css-js.php';                 // Abstract. Loading CSS & JS files                 = Package: Any =.
 require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-settings-api.php';     // Abstract. Settings API.
@@ -104,7 +221,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_functions/calendar_scripts.php';    	
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions.php';                               // Functions.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc_functions_dates.php';                         // Function Dates                       New in 9.8.
-require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-booking-context.php';       // Signed Classic shortcode context for AJAX availability and booking requests.
+require_once WPBC_PLUGIN_DIR . '/includes/_front_end/class-fe-booking-context.php';       // Signed native Booking Form context for AJAX availability and booking requests.
 require_once WPBC_PLUGIN_DIR . '/core/form_parser.php';                                  // Parser for booking form              New in 9.8.
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-dates.php';                                   // Dates.
 require_once WPBC_PLUGIN_DIR . '/includes/_front_end/date-hints.php';                    // Front-end date hints for Free.       // FixIn: 10.15.6.2.
@@ -221,7 +338,7 @@ if ( wpbc_is_11_6_features_enabled() ) {
 // Domain-neutral template-driven catalog mechanics shared by all registered catalogs.
 require_once WPBC_PLUGIN_DIR . '/includes/_shared-ui-catalog/wpbc-ui-catalog.php';
 
-if ( wpbc_is_11_6_features_enabled() && wpbc_is_11_6_catalog_v2_enabled() ) {
+if ( wpbc_is_11_6_features_enabled() ) {
 	// Independent template-driven Booking Resources catalog.
 	require_once WPBC_PLUGIN_DIR . '/includes/page-catalog-booking-resources/booking-resources-catalog.php';
 }

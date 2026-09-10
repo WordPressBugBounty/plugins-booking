@@ -810,11 +810,6 @@
   -ms-flex-pack: center;
   justify-content: center
 }
-.wpbc_ui_catalog .wpbc_ui_catalog_inline_toggle.is-active {
-  background: var(--wpbc_admin-theme-color,#2271b1);
-  border-color: var(--wpbc_admin-theme-color,#2271b1);
-  color: #fff
-}
 .wpbc_ui_catalog .wpbc_ui_catalog_inline_control {
   box-sizing: border-box;
   display: block;

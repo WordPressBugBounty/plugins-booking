@@ -643,7 +643,7 @@ class WPBC_AJX__Availability {
 
 			$data_arr['popover_hints']['season_unavailable'] = '<strong>' . esc_html__( 'Season unavailable day', 'booking' ) . '</strong><hr>'
 											 	/* translators: 1: ... */
-											 	. sprintf( __( 'Change this date status at %1$sBooking Calendar %2$s Availability %3$s Season Availability page.', 'booking' ), '<br>', '&gt;', '&gt;' );
+											 	. sprintf( __( 'Change this date status at %1$sBooking Calendar %2$s Availability %3$s Seasonal Availability page.', 'booking' ), '<br>', '&gt;', '&gt;' );
 			$data_arr['popover_hints']['weekdays_unavailable'] = '<strong>' . esc_html__( 'Unavailable week day', 'booking' ) . '</strong><hr>'
 											   /* translators: 1: ... */
 											   . sprintf( __( 'Change this date status at %1$sBooking Calendar %2$s Settings General page %3$s in "Availability" section.', 'booking' ), '<br>', '&gt;', '<br>' );

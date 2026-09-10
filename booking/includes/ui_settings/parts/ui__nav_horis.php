@@ -39,6 +39,15 @@ function wpbc_ui__top_horisontal_nav( $args =array() ) {
 		'active_subtab' => $args['active_subtab'],        // calendar_appearance_skin.
 	);
 
+	if ( function_exists( 'wpbc_booking_modes_v3_compile_horizontal_navigation' ) ) {
+		$args['page_nav_tabs'] = wpbc_booking_modes_v3_compile_horizontal_navigation(
+			$args['page_nav_tabs'],
+			$active_page_arr['active_page'],
+			$active_page_arr['active_tab'],
+			$active_page_arr['active_subtab']
+		);
+	}
+
 	// Available Main Menu - slug => titles.
 	$show_these_pages_arr = array(
 		'wpbc'              => __( 'Bookings', 'booking' ),

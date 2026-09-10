@@ -481,7 +481,7 @@ class WPBC_Page_Appointment_Services extends WPBC_Page_Structure {
 			'appointment_services' => array(
 				'is_show_top_path'                          => true,
 				'is_show_top_navigation'                    => false,
-				'left_navigation__default_view_mode'        => 'compact',
+				'left_navigation__default_view_mode'        => '',  // FixIn:11.7.1.1: 'compact',
 				'right_vertical_sidebar__is_show'           => true,
 				'right_vertical_sidebar__default_view_mode' => 'none',
 				'right_vertical_sidebar__content_click_collapse_mode' => 'none',

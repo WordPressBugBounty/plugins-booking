@@ -831,11 +831,8 @@
 	justify-content: center;
 }
 
-.wpbc_ui_catalog .wpbc_ui_catalog_inline_toggle.is-active {
-	background: var(--wpbc_admin-theme-color, #2271b1);
-	border-color: var(--wpbc_admin-theme-color, #2271b1);
-	color: #fff;
-}
+/* Edit rows becomes Cancel: keep WordPress secondary styling in both states.
+ * The label and aria-pressed communicate mode; is-active is not a primary action. */
 
 .wpbc_ui_catalog .wpbc_ui_catalog_inline_control {
 	box-sizing: border-box;

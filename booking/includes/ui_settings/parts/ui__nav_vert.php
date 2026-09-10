@@ -93,11 +93,15 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		'active_subtab' => $args['active_subtab'],        // calendar_appearance_skin.
 	);
 
+	if ( function_exists( 'wpbc_booking_modes_v3_compile_sidebar_navigation' ) ) {
+		$args['page_nav_tabs'] = wpbc_booking_modes_v3_compile_sidebar_navigation( $args['page_nav_tabs'] );
+	}
+
 	// Available Main Menu - slug => titles.
 	$root_menu_arr = wpbc_ui__get_root_menu_arr();
 
-	if ( function_exists( 'wpbc_booking_modes_resolve_root_navigation' ) ) {
-		$root_menu_arr = wpbc_booking_modes_resolve_root_navigation( $root_menu_arr, $args['page_nav_tabs'] );
+	if ( function_exists( 'wpbc_booking_modes_v3_compile_root_navigation' ) ) {
+		$root_menu_arr = wpbc_booking_modes_v3_compile_root_navigation( $root_menu_arr, $args['page_nav_tabs'] );
 	}
 
 	// A mode may display an existing controller route below a different presentation group.
@@ -140,13 +144,30 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 		}
 
 		$page_title = $root_menu_options_arr['title'];
-		$is_expanded = ( $main_page_slug === $active_page_arr['active_page'] );
+		$is_v3_standalone = ! empty( $root_menu_options_arr['mode_standalone'] );
+		// Respect a V3 root's explicit initial state while retaining the original Settings behavior for V1.
+		if ( $is_v3_standalone ) {
+			$is_expanded = true;
+		} elseif ( isset( $root_menu_options_arr['mode_expanded'] ) ) {
+			$is_expanded = 'On' === $root_menu_options_arr['mode_expanded']
+				|| ( 'when_active' === $root_menu_options_arr['mode_expanded'] && $main_page_slug === $active_page_arr['active_page'] );
+		} else {
+			$is_expanded = ( 'wpbc-settings' !== $main_page_slug ) || ( $main_page_slug === $active_page_arr['active_page'] );
+		}
 
 		if ( $is_show_all_menus ) {
-			echo '  <div class="section_expanded wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . esc_attr( $main_page_slug ) . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
+			echo '  <div class="wpbc_ui_el__vert_left_bar__root_section_element root_section_element_' . esc_attr( $main_page_slug ) . ' ' . ( ( $is_expanded ) ? 'section_expanded' : '' ) . '">';
 
 			$mode_font_icon = isset( $root_menu_options_arr['mode_font_icon'] ) ? $root_menu_options_arr['mode_font_icon'] : '';
-			wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title, $mode_font_icon );
+			if ( ! $is_v3_standalone ) {
+				wpbc_ui__vert_menu__show_root_section_header(
+					$main_page_slug,
+					$page_title,
+					$mode_font_icon,
+					isset( $root_menu_options_arr['mode_expanded'] ),
+					$is_expanded
+				);
+			}
 		}
 
 		echo '  <div class="wpbc_ui_el__vert_left_bar__section wpbc_ui_el__vert_left_bar__section_' .
@@ -172,60 +193,72 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 			wpbc_ui_el__divider_horizontal();
 		}
 
-		foreach ( $page_item_arr as $main_menu_slug => $menu_item_arr ) {
-			$folder_style = ( ! empty( $menu_item_arr['folder_style'] ) ) ? esc_attr( $menu_item_arr['folder_style'] ) : '';
+		if ( function_exists( 'wpbc_booking_modes_v3_compile_sidebar_navigation' ) ) {
+			wpbc_ui__vert_menu__render_v3_nodes( $page_item_arr );
+		} else {
+			foreach ( $page_item_arr as $main_menu_slug => $menu_item_arr ) {
+				$folder_style = ( ! empty( $menu_item_arr['folder_style'] ) ) ? esc_attr( $menu_item_arr['folder_style'] ) : '';
 
-			$folder_css = '';
-			if ( ( ! empty( $menu_item_arr['subtabs'] ) ) && ( ! empty( $menu_item_arr['is_active'] ) ) ) {
-				$folder_css .= ' expanded';
-			}
-
-			echo '<div class="wpbc_ui_el__level__folder ' . esc_attr( $folder_css ) . '" style="' . esc_attr( $folder_style ) . '">';
-
-
-			if ( empty( $menu_item_arr['type'] ) ) {
-				$menu_item_arr['type'] = 'main';
-			}
-
-			switch ( $menu_item_arr['type'] ) {
-
-				case 'separator':
-					wpbc_ui_el__divider_horizontal();
-					break;
-
-				case 'html':
-					wpbc_ui__vert_menu__item_html( $main_menu_slug, $menu_item_arr );
-					break;
-
-				default:
-					wpbc_ui__vert_menu__item_main( $main_menu_slug, $menu_item_arr );
-			}
-
-
-			foreach ( $menu_item_arr['subtabs'] as $main_submenu_slug => $submenu_item_arr ) {
-
-				if ( empty( $submenu_item_arr['type'] ) ) {
-					$submenu_item_arr['type'] = 'subtab';
+				$folder_css = '';
+				$is_folder_expanded = ! empty( $menu_item_arr['subtabs'] ) && ! empty( $menu_item_arr['is_active'] );
+				if ( isset( $menu_item_arr['_wpbc_v3_expanded'] ) ) {
+					$is_folder_expanded = 'On' === $menu_item_arr['_wpbc_v3_expanded']
+						|| ( 'when_active' === $menu_item_arr['_wpbc_v3_expanded'] && $is_folder_expanded );
+				}
+				if ( $is_folder_expanded ) {
+					$folder_css .= ' expanded';
+				}
+				if ( ! empty( $menu_item_arr['_wpbc_v3_branch_css_classes'] ) ) {
+					$folder_css .= ' ' . $menu_item_arr['_wpbc_v3_branch_css_classes'];
 				}
 
-				switch ( $submenu_item_arr['type'] ) {
+				echo '<div class="wpbc_ui_el__level__folder ' . esc_attr( $folder_css ) . '" style="' . esc_attr( $folder_style ) . '">';
 
-					case 'subtab':
-						wpbc_ui__vert_menu__item_sub( $main_submenu_slug, $submenu_item_arr );
-						break;
+
+				if ( empty( $menu_item_arr['type'] ) ) {
+					$menu_item_arr['type'] = 'main';
+				}
+
+				switch ( $menu_item_arr['type'] ) {
 
 					case 'separator':
-						wpbc_ui__vert_menu__item_separtor( $main_submenu_slug, $submenu_item_arr );
+						wpbc_ui_el__divider_horizontal();
 						break;
 
 					case 'html':
-						wpbc_ui__vert_menu__item_html( $main_submenu_slug, $submenu_item_arr );
+						wpbc_ui__vert_menu__item_html( $main_menu_slug, $menu_item_arr );
 						break;
 
 					default:
+						wpbc_ui__vert_menu__item_main( $main_menu_slug, $menu_item_arr );
 				}
+
+
+				foreach ( $menu_item_arr['subtabs'] as $main_submenu_slug => $submenu_item_arr ) {
+
+					if ( empty( $submenu_item_arr['type'] ) ) {
+						$submenu_item_arr['type'] = 'subtab';
+					}
+
+					switch ( $submenu_item_arr['type'] ) {
+
+						case 'subtab':
+							wpbc_ui__vert_menu__item_sub( $main_submenu_slug, $submenu_item_arr );
+							break;
+
+						case 'separator':
+							wpbc_ui__vert_menu__item_separtor( $main_submenu_slug, $submenu_item_arr );
+							break;
+
+						case 'html':
+							wpbc_ui__vert_menu__item_html( $main_submenu_slug, $submenu_item_arr );
+							break;
+
+						default:
+					}
+				}
+				echo '</div><!-- wpbc_ui_el__level__folder -->';
 			}
-			echo '</div><!-- wpbc_ui_el__level__folder -->';
 		}
 
 		if ( $is_show_all_menus ) {
@@ -240,9 +273,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	}
 
 
-	$is_show_up = wpbc_is_show_up();
-	// Show upgrade icon only  for the Free version here.
-	$is_show_up = ( $is_show_up && ( ! class_exists( 'wpdev_bk_personal' ) ) );
+	$is_show_up = wpbc_is_show_free_upgrade();
 	if ( $is_show_up ) {
 		?><div class="wpbc_ui_el__vert_left_bar__footer_compensator"></div><?php
 	}
@@ -251,7 +282,7 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	if ( $is_show_up ) {
 		$url = wpbc_up_link();
 		?>
-		<div class="wpbc_ui_el__vert_left_bar__footer_section">
+		<div class="wpbc_ui_el__vert_left_bar__footer_section" style="visibility: hidden;">
 			<a class="wpbc_ui_el_upgrade_button wpbc_button_light wpbc_button_green" href="<?php echo esc_url( $url ); ?>">
 				<span class="hide_in_compact_mode"><?php esc_html_e( 'Upgrade to Pro', 'booking' ); ?></span>
 				<span class="hide_in_max_mode"><?php esc_html_e( 'Pro', 'booking' ); ?></span>
@@ -262,6 +293,78 @@ function wpbc_ui__left_vertical_nav( $args =array() ) {
 	echo '</div><!-- wpbc_ui_el__vert_left_bar__wrapper -->';
 
 	wpbc_start_element_scrollable__with_simplebar( '.wpbc_ui_el__vert_left_bar__content' );
+}
+
+/**
+ * Render an arbitrarily nested V3 sidebar through the existing row functions.
+ *
+ * Top-level and disclosure nodes retain the existing main-row markup. Nested
+ * leaves retain the existing subrow markup, so the recursive traversal adds no
+ * new visual system or navigation-only asset.
+ *
+ * @param array $navigation_nodes Prepared V3 navigation nodes.
+ * @param int   $depth            Zero-based sidebar depth.
+ *
+ * @return void
+ */
+function wpbc_ui__vert_menu__render_v3_nodes( $navigation_nodes, $depth = 0 ) {
+	foreach ( $navigation_nodes as $menu_slug => $menu_item_arr ) {
+		if ( ! is_array( $menu_item_arr ) ) {
+			continue;
+		}
+
+		$subtabs     = isset( $menu_item_arr['subtabs'] ) && is_array( $menu_item_arr['subtabs'] ) ? $menu_item_arr['subtabs'] : array();
+		$has_children = ! empty( $subtabs );
+		$item_type    = empty( $menu_item_arr['type'] ) ? ( 0 === $depth || $has_children ? 'main' : 'subtab' ) : $menu_item_arr['type'];
+
+		if ( 0 < $depth && ! $has_children ) {
+			switch ( $item_type ) {
+				case 'separator':
+					wpbc_ui__vert_menu__item_separtor( $menu_slug, $menu_item_arr );
+					break;
+
+				case 'html':
+					wpbc_ui__vert_menu__item_html( $menu_slug, $menu_item_arr );
+					break;
+
+				default:
+					wpbc_ui__vert_menu__item_sub( $menu_slug, $menu_item_arr );
+			}
+			continue;
+		}
+
+		$folder_style = ! empty( $menu_item_arr['folder_style'] ) ? $menu_item_arr['folder_style'] : '';
+		$folder_css   = '';
+		$is_expanded  = $has_children && ! empty( $menu_item_arr['is_active'] );
+		if ( isset( $menu_item_arr['_wpbc_v3_expanded'] ) ) {
+			$is_expanded = 'On' === $menu_item_arr['_wpbc_v3_expanded']
+				|| ( 'when_active' === $menu_item_arr['_wpbc_v3_expanded'] && $is_expanded );
+		}
+		if ( $is_expanded ) {
+			$folder_css .= ' expanded';
+		}
+		if ( ! empty( $menu_item_arr['_wpbc_v3_branch_css_classes'] ) ) {
+			$folder_css .= ' ' . $menu_item_arr['_wpbc_v3_branch_css_classes'];
+		}
+
+		echo '<div class="wpbc_ui_el__level__folder ' . esc_attr( $folder_css ) . '" style="' . esc_attr( $folder_style ) . '">';
+		switch ( $item_type ) {
+			case 'separator':
+				wpbc_ui_el__divider_horizontal();
+				break;
+
+			case 'html':
+				wpbc_ui__vert_menu__item_html( $menu_slug, $menu_item_arr );
+				break;
+
+			default:
+				wpbc_ui__vert_menu__item_main( $menu_slug, $menu_item_arr );
+		}
+		if ( $has_children ) {
+			wpbc_ui__vert_menu__render_v3_nodes( $subtabs, $depth + 1 );
+		}
+		echo '</div><!-- wpbc_ui_el__level__folder -->';
+	}
 }
 
 /**
@@ -488,21 +591,27 @@ function wpbc_ui__vert_left_bar__section__root_menu( $pages_arr ) {
  * @param string $main_page_slug Slug of the submenu section.
  * @param string $page_title     Section title.
  * @param string $font_icon      Optional sanitized font-icon CSS classes supplied by the selected mode.
+ * @param bool   $is_v3_scoped   Whether to use V3's nearest-branch disclosure behavior.
+ * @param bool   $is_expanded    Whether the V3 branch is initially expanded.
  *
  * @return void
  */
-function wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title, $font_icon = '' ) {
+function wpbc_ui__vert_menu__show_root_section_header( $main_page_slug, $page_title, $font_icon = '', $is_v3_scoped = false, $is_expanded = false ) {
 
 	$css_section = '.root_section_element_' . $main_page_slug;
 
 	// Section Header.
 	?><a class="wpbc_ui_el__row100 wpbc_ui_el__root_section_header_a"
 		 href="javascript:void(0)"
-	<?php /**/ ?>
+	<?php if ( $is_v3_scoped ) { ?>
+			 aria-expanded="<?php echo $is_expanded ? 'true' : 'false'; ?>"
+			 onkeydown="if ( ' ' === event.key ) { event.preventDefault(); this.click(); }"
+			 onclick="javascript:var wpbc_root=jQuery(this).closest('.wpbc_ui_el__vert_left_bar__root_section_element');var wpbc_open=wpbc_root.hasClass('section_expanded');wpbc_root.toggleClass('section_expanded',!wpbc_open);jQuery(this).attr('aria-expanded',wpbc_open?'false':'true');"
+	<?php } else { ?>
 			 onclick="javascript:var is_has_class = jQuery( '<?php echo esc_attr( $css_section ); ?>' ).hasClass('section_expanded'); <?php
 			 /* ?> jQuery( '.wpbc_ui_el__vert_left_bar__root_section_element' ).removeClass('section_expanded'); <?php */
 			 ?>if (is_has_class) { jQuery( '<?php echo esc_attr( $css_section ); ?>' ).removeClass('section_expanded'); } else {jQuery( '<?php echo esc_attr( $css_section ); ?>' ).addClass('section_expanded');}"
-	<?php /**/ ?>
+	<?php } ?>
 	  >
 		<i class="wpbc_ui_el__vert_menu_root_section_icon menu_icon icon-1x wpbc-bi-chevron-right"></i><?php
 
@@ -593,7 +702,13 @@ function wpbc_ui__vert_menu__item_main( $menu_slug, $menu_item_arr ) {
 			// Folder Item - expand / colapse.  Previously: here was : wpbc_admin_ui__sidebar_left__do_max();
 			?>
 			<a href="javascript:void(0)"
-				onclick="javascript:  if( ! jQuery( this ).parents('.wpbc_ui_el__level__folder').hasClass('expanded') ) { jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');jQuery( this ).parents('.wpbc_ui_el__level__folder').addClass('expanded'); } else {jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');} "
+				<?php if ( isset( $menu_item_arr['_wpbc_v3_expanded'] ) ) { ?>
+					aria-expanded="<?php echo ( 'On' === $menu_item_arr['_wpbc_v3_expanded'] || ( 'when_active' === $menu_item_arr['_wpbc_v3_expanded'] && ! empty( $menu_item_arr['is_active'] ) ) ) ? 'true' : 'false'; ?>"
+					onkeydown="if ( ' ' === event.key ) { event.preventDefault(); this.click(); }"
+					onclick="javascript:var wpbc_folder=jQuery(this).closest('.wpbc_ui_el__level__folder');var wpbc_open=wpbc_folder.hasClass('expanded');wpbc_folder.toggleClass('expanded',!wpbc_open);jQuery(this).attr('aria-expanded',wpbc_open?'false':'true');"
+				<?php } else { ?>
+					onclick="javascript:  if( ! jQuery( this ).parents('.wpbc_ui_el__level__folder').hasClass('expanded') ) { jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');jQuery( this ).parents('.wpbc_ui_el__level__folder').addClass('expanded'); } else {jQuery( '.wpbc_ui_el__level__folder' ).removeClass('expanded');} "
+				<?php } ?>
 				class="wpbc_ui_el__vert_nav_item__a wpbc_ui_el__vert_nav_item__folder">
 				<?php if ( ! empty( $menu_item_arr['font_icon'] ) ) { ?>
 					<?php // Show icon in max mode, without right tooltip, thanks to '.hide_in_compact_mode'. // FixIn: 10.11.5.8. ?>

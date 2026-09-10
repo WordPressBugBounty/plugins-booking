@@ -1873,3 +1873,9 @@ html[data-wpbc-bfb-live-source="advanced"] .wp-admin .modal-backdrop {
 	font-family: monospace;
 	font-size: 12px;
 }
+
+/* Prevent showing some messages in the WP Booking Calendar > Settings > Forms Builder page: */
+.wpbc_admin_page__tab__builder_booking_form  .wpbc_header_news,
+.wpbc_admin_page__tab__builder_booking_form div.wpbc_inner_message.wpbc_booking_modes_quickstart_notice {
+  display:none;
+}

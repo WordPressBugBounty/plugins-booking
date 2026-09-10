@@ -1,12 +1,25 @@
 <?php
 /**
- * Signed context for Classic Booking Calendar shortcode AJAX requests.
+ * Signed context for native Booking Form AJAX requests.
  *
  * @package Booking Calendar
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+/**
+ * Return the current signed Booking Form context contract version.
+ *
+ * Version 2 adds a server-authored workflow identity. Rejecting older tokens
+ * prevents indefinitely cached pre-fix Appointment or Resource Selector forms
+ * from being replayed as unsigned Classic bookings.
+ *
+ * @return int Current context contract version.
+ */
+function wpbc_classic_booking_context_get_version() {
+	return 2;
 }
 
 /**
@@ -70,7 +83,7 @@ function wpbc_classic_booking_context_normalize_form( $custom_form ) {
 }
 
 /**
- * Normalize Classic shortcode context before it is signed or consumed.
+ * Normalize the native Booking Form context before it is signed or consumed.
  *
  * @param mixed $context Raw context values.
  *
@@ -81,6 +94,8 @@ function wpbc_classic_booking_context_normalize( $context ) {
 	$context = wp_parse_args(
 		$context,
 		array(
+			'context_version'        => 0,
+			'booking_workflow'       => 'classic',
 			'resource_id'            => 0,
 			'calendar_dates_start'   => '',
 			'calendar_dates_end'     => '',
@@ -93,9 +108,15 @@ function wpbc_classic_booking_context_normalize( $context ) {
 
 	$aggregate_resource_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) $context['aggregate_resource_ids'] ) ) ) );
 	sort( $aggregate_resource_ids, SORT_NUMERIC );
+	$booking_workflow = sanitize_key( (string) $context['booking_workflow'] );
+	if ( ! in_array( $booking_workflow, array( 'classic', 'appointment', 'resource_selector' ), true ) ) {
+		$booking_workflow = 'classic';
+	}
 
 	// Derive permission from the site-authored date boundary; never trust a caller-supplied allow_past flag.
 	return array(
+		'context_version'        => absint( $context['context_version'] ),
+		'booking_workflow'       => $booking_workflow,
 		'resource_id'            => absint( $context['resource_id'] ),
 		'calendar_dates_start'   => $calendar_dates_start,
 		'calendar_dates_end'     => wpbc_classic_booking_context_normalize_date( $context['calendar_dates_end'] ),
@@ -134,7 +155,7 @@ function wpbc_classic_booking_context_base64url_decode( $encoded_value ) {
 }
 
 /**
- * Sign normalized Classic shortcode context for cache-safe AJAX round trips.
+ * Sign a normalized native Booking Form context for cache-safe AJAX round trips.
  *
  * The HMAC has no time component, so cached front-end pages remain usable until
  * WordPress authentication salts change. No secret or raw signature key is
@@ -142,15 +163,19 @@ function wpbc_classic_booking_context_base64url_decode( $encoded_value ) {
  *
  * @param mixed $context Raw or normalized context.
  *
- * @return string Signed opaque token, or an empty string for incomplete context.
+	 * @return string Signed opaque token, or an empty string for invalid context.
  */
 function wpbc_classic_booking_context_encode( $context ) {
+	$context = is_array( $context ) ? $context : array();
+	$context['context_version'] = wpbc_classic_booking_context_get_version();
 	$context = wpbc_classic_booking_context_normalize( $context );
 	if (
 		0 === $context['resource_id']
-		|| '' === $context['calendar_dates_start']
-		|| '' === $context['calendar_dates_end']
-		|| $context['calendar_dates_start'] > $context['calendar_dates_end']
+		|| ( ( '' === $context['calendar_dates_start'] ) !== ( '' === $context['calendar_dates_end'] ) )
+		|| (
+			'' !== $context['calendar_dates_start']
+			&& $context['calendar_dates_start'] > $context['calendar_dates_end']
+		)
 	) {
 		return '';
 	}
@@ -162,7 +187,7 @@ function wpbc_classic_booking_context_encode( $context ) {
 }
 
 /**
- * Verify and decode a signed Classic shortcode context token.
+ * Verify and decode a signed native Booking Form context token.
  *
  * @param string $context_token Signed token received through AJAX.
  *
@@ -187,11 +212,16 @@ function wpbc_classic_booking_context_decode( $context_token ) {
 	}
 
 	$context = wpbc_classic_booking_context_normalize( $context );
+	if ( wpbc_classic_booking_context_get_version() !== $context['context_version'] ) {
+		return new WP_Error( 'classic_booking_context_expired', __( 'The booking form context has expired. Please reload the page and try again.', 'booking' ) );
+	}
 	if (
 		0 === $context['resource_id']
-		|| '' === $context['calendar_dates_start']
-		|| '' === $context['calendar_dates_end']
-		|| $context['calendar_dates_start'] > $context['calendar_dates_end']
+		|| ( ( '' === $context['calendar_dates_start'] ) !== ( '' === $context['calendar_dates_end'] ) )
+		|| (
+			'' !== $context['calendar_dates_start']
+			&& $context['calendar_dates_start'] > $context['calendar_dates_end']
+		)
 	) {
 		return new WP_Error( 'classic_booking_context_invalid', __( 'The booking form context could not be verified. Please reload the page and try again.', 'booking' ) );
 	}
@@ -200,9 +230,9 @@ function wpbc_classic_booking_context_decode( $context_token ) {
 }
 
 /**
- * Validate a Classic AJAX request against its signed shortcode boundaries.
+ * Validate a Booking Form AJAX request against its signed server-rendered boundaries.
  *
- * @param string       $context_token         Signed Classic context token.
+ * @param string       $context_token         Signed Booking Form context token.
  * @param mixed        $resource_id           Submitted primary Booking Resource ID.
  * @param array|string $submitted_dates       Submitted YYYY-MM-DD dates.
  * @param string       $custom_form           Submitted Booking Form identifier.
@@ -247,7 +277,10 @@ function wpbc_classic_booking_context_validate_submission( $context_token, $reso
 		if ( '' === $submitted_date ) {
 			return new WP_Error( 'classic_booking_context_date_invalid', __( 'The selected booking date is invalid. Please select the date again.', 'booking' ) );
 		}
-		if ( $submitted_date < $context['calendar_dates_start'] || $submitted_date > $context['calendar_dates_end'] ) {
+		if (
+			'' !== $context['calendar_dates_start']
+			&& ( $submitted_date < $context['calendar_dates_start'] || $submitted_date > $context['calendar_dates_end'] )
+		) {
 			return new WP_Error( 'classic_booking_context_date_outside_range', __( 'The selected booking date is outside this calendar range. Please select another date.', 'booking' ) );
 		}
 	}

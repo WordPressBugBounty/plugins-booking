@@ -33,12 +33,12 @@ function wpbc_appointment_services_get_provider_admin_links( $resource_id = 0, $
 			$days_off_url      = add_query_arg( 'resource_id', $resource_id, $days_off_url );
 		}
 		$links[] = array(
-			'title' => __( 'Working Hours', 'booking' ),
+			'title' => __( 'Schedule & Rules', 'booking' ),
 			'url'   => $working_hours_url,
 			'icon'  => 'wpbc-bi-clock',
 		);
 		$links[] = array(
-			'title' => __( 'Days Off', 'booking' ),
+			'title' => __( 'Block Dates', 'booking' ),
 			'url'   => $days_off_url,
 			'icon'  => 'wpbc-bi-calendar-x',
 		);
@@ -136,12 +136,12 @@ function wpbc_appointment_services_render_provider_tools( $settings_section ) {
 				: admin_url( 'admin.php?page=wpbc-availability' );
 
 			$guide_links[] = array(
-				'title' => ( 'rental' === $selected_mode_id ) ? __( 'Weekdays Availability', 'booking' ) : __( 'General Availability', 'booking' ),
+				'title' => __( 'Schedule & Rules', 'booking' ),
 				'url'   => $weekdays_availability_url,
 				'icon'  => 'wpbc-bi-calendar-week',
 			);
 			$guide_links[] = array(
-				'title' => __( 'Days Availability', 'booking' ),
+				'title' => __( 'Block Dates', 'booking' ),
 				'url'   => $days_availability_url,
 				'icon'  => 'wpbc-bi-calendar-check',
 			);
@@ -550,7 +550,7 @@ function wpbc_appointment_services_render_help_panel() {
 		esc_html_e( 'Providers remain Booking Calendar resources because every Provider needs an independent availability calendar.', 'booking' ); ?></p>
 	<ul>
 		<li><?php
-			esc_html_e( 'The weekday dots are a recurring weekly summary. A weekday is available when General Availability allows it and, when Working Time is enabled, the Provider has at least one working interval that day.', 'booking' ); ?></li>
+			esc_html_e( 'The weekday dots are a recurring weekly summary. A weekday is available when Schedule & Rules allows it and, when Working Time is enabled, the Provider has at least one working interval that day.', 'booking' ); ?></li>
 		<li><?php
 			esc_html_e( 'The summary does not check Seasons, date-specific days off, existing bookings, time-slot rules, Service duration, or buffers. The customer booking calendar performs those complete checks for the selected date and time.', 'booking' ); ?></li>
 		<li><?php

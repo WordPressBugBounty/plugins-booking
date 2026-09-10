@@ -689,6 +689,7 @@ function wpbc_booking_appointment_render_booking_form( $service, $provider, $con
 		'shortcode_param__options'   => $config['options'],
 		'calendar_dates_start'       => $config['calendar_dates_start'],
 		'calendar_dates_end'         => $config['calendar_dates_end'],
+		'booking_workflow'           => 'appointment',
 		'calendar_request_overrides' => array(
 			'allow_past' => $allow_past ? 1 : 0,
 		),

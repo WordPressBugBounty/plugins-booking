@@ -15,6 +15,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 //     H   A   S   H                                                                                                            // FixIn: 9.2.3.3.
 
 /**
+ * Generate an opaque booking hash without relying on database hashing functions.
+ *
+ * Booking hashes are used in customer-facing edit, cancellation, and payment
+ * links. Keep the historical 32-character hexadecimal shape so existing
+ * consumers continue to work, while deriving new values from WordPress random
+ * data and a PHP hashing algorithm supported by the plugin's PHP requirement.
+ *
+ * @return string A 32-character lowercase hexadecimal booking hash.
+ */
+function wpbc_hash__generate_booking_hash() {
+	$random_source = wp_generate_password( 64, true, true ) . '|' . microtime( true ) . '|' . wp_rand();
+
+	return substr( hash( 'sha256', $random_source ), 0, 32 );
+}
+
+/**
  * Get booking ID and resource ID  by booking HASH
  *
  * @param $booking_hash
@@ -103,8 +119,8 @@ function wpbc_hash__update_booking_hash( $booking_id, $resource_id = '1' ) {
 	global $wpdb;
 	// FixIn: 10.12.1.5.
 	$update_sql = $wpdb->prepare(
-		"UPDATE {$wpdb->prefix}booking SET hash = MD5(%s) WHERE booking_id = %d"
-		, time() . '_' . wp_rand( 1000, 1000000 )
+		"UPDATE {$wpdb->prefix}booking SET hash = %s WHERE booking_id = %d"
+		, wpbc_hash__generate_booking_hash()
 		, $booking_id
 	);
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter

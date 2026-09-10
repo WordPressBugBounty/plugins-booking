@@ -219,16 +219,23 @@ final class WPBC_Catalog_Booking_Resource_Availability {
 		}
 
 		if ( array_key_exists( 'searchable_status', $validated_fields ) ) {
-			$rollback['search_options'] = function_exists( 'wpbc_searchable_resources__get_all_options' )
-				? (array) wpbc_searchable_resources__get_all_options()
-				: array();
-			$saved = $this->save_searchable_status( $resource_id, $validated_fields['searchable_status'] );
+			$current_search_options = function_exists( 'wpbc_catalog_searchable_resources_option_writer' )
+				? wpbc_catalog_searchable_resources_option_writer()->get_all()
+				: new WP_Error( 'wpbc_catalog_resource_searchability_unavailable', __( 'Search Availability settings are unavailable.', 'booking' ) );
+			if ( is_wp_error( $current_search_options ) ) {
+				$this->restore_fields_in_owner_context( $resource_id, $rollback );
+				$this->restore_owner_environment( $previous_active_user, $resource_id );
+
+				return $current_search_options;
+			}
+			$saved = $this->save_searchable_status( $resource_id, $validated_fields['searchable_status'], $current_search_options );
 			if ( is_wp_error( $saved ) ) {
 				$this->restore_fields_in_owner_context( $resource_id, $rollback );
 				$this->restore_owner_environment( $previous_active_user, $resource_id );
 
 				return $saved;
 			}
+			$rollback['search_options_write'] = $saved;
 		}
 
 		$this->restore_owner_environment( $previous_active_user, $resource_id );
@@ -246,18 +253,20 @@ final class WPBC_Catalog_Booking_Resource_Availability {
 	 * @param int                 $resource_id Booking Resource ID.
 	 * @param array<string,mixed> $rollback    Snapshot returned by save_fields().
 	 *
-	 * @return void
+	 * @return true|WP_Error True after restoration or a Searchable Resources recovery error.
 	 */
 	public function restore_fields( $resource_id, $rollback ) {
 		if ( ! $resource_id || empty( $rollback ) ) {
-			return;
+			return true;
 		}
 		$previous_active_user = $this->set_owner_environment( $resource_id );
-		$this->restore_fields_in_owner_context( $resource_id, $rollback );
+		$restored             = $this->restore_fields_in_owner_context( $resource_id, $rollback );
 		$this->restore_owner_environment( $previous_active_user, $resource_id );
 		if ( isset( $rollback['availability'] ) && function_exists( 'make_bk_action' ) ) {
 			make_bk_action( 'wpbc_reinit_seasonfilters_cache' );
 		}
+
+		return $restored;
 	}
 
 	/**
@@ -266,15 +275,20 @@ final class WPBC_Catalog_Booking_Resource_Availability {
 	 * @param int                 $resource_id Booking Resource ID.
 	 * @param array<string,mixed> $rollback    Rollback snapshot.
 	 *
-	 * @return void
+	 * @return true|WP_Error True after restoration or a Searchable Resources recovery error.
 	 */
 	private function restore_fields_in_owner_context( $resource_id, $rollback ) {
 		if ( isset( $rollback['availability'] ) && function_exists( 'wpbc_save_resource_meta' ) ) {
 			wpbc_save_resource_meta( $resource_id, 'availability', $rollback['availability'] );
 		}
-		if ( isset( $rollback['search_options'] ) && function_exists( 'wpbc_searchable_resources__save_all_options' ) ) {
-			wpbc_searchable_resources__save_all_options( $rollback['search_options'] );
+		if ( isset( $rollback['search_options_write'] ) && function_exists( 'wpbc_catalog_searchable_resources_option_writer' ) ) {
+			$search_restored = wpbc_catalog_searchable_resources_option_writer()->compensate( $rollback['search_options_write'] );
+			if ( is_wp_error( $search_restored ) ) {
+				return $search_restored;
+			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -340,25 +354,38 @@ final class WPBC_Catalog_Booking_Resource_Availability {
 	/**
 	 * Save only one Resource's Search Availability visibility.
 	 *
-	 * @param int    $resource_id       Booking Resource ID.
-	 * @param string $searchable_status Canonical `on` or `off` value.
+	 * @param int          $resource_id       Booking Resource ID.
+	 * @param string       $searchable_status Canonical `on` or `off` value.
+	 * @param array<mixed> $before_options    Exact reviewed Search option snapshot.
 	 *
-	 * @return true|WP_Error True or a verified storage error.
+	 * @return array<string,mixed>|WP_Error Verified write record or safe error.
 	 */
-	private function save_searchable_status( $resource_id, $searchable_status ) {
-		if ( ! function_exists( 'wpbc_searchable_resources__get_all_options' ) || ! function_exists( 'wpbc_searchable_resources__save_all_options' ) ) {
+	private function save_searchable_status( $resource_id, $searchable_status, $before_options ) {
+		if ( ! function_exists( 'wpbc_catalog_searchable_resources_option_writer' ) ) {
 			return new WP_Error( 'wpbc_catalog_resource_searchability_unavailable', __( 'Search Availability settings are unavailable.', 'booking' ) );
 		}
-		$all_options = (array) wpbc_searchable_resources__get_all_options();
-		if ( ! isset( $all_options[ $resource_id ] ) || ! is_array( $all_options[ $resource_id ] ) ) {
-			$all_options[ $resource_id ] = array();
+		if ( ! is_array( $before_options ) ) {
+			return new WP_Error( 'wpbc_catalog_resource_searchability_unavailable', __( 'Search Availability settings are unavailable.', 'booking' ) );
 		}
-		$all_options[ $resource_id ]['is_searchable'] = 'on' === $searchable_status ? 'On' : 'Off';
-		wpbc_searchable_resources__save_all_options( $all_options );
+		$write_result = wpbc_catalog_searchable_resources_option_writer()->write_resource_visibility(
+			$before_options,
+			absint( $resource_id ),
+			'on' === $searchable_status,
+			'booking_resources_control'
+		);
+		if ( is_wp_error( $write_result ) ) {
+			return $write_result;
+		}
 
-		return $searchable_status === $this->get_searchable_status( $resource_id )
-			? true
-			: new WP_Error( 'wpbc_catalog_resource_searchability_not_saved', __( 'Search Availability visibility could not be saved.', 'booking' ) );
+		if ( $searchable_status !== $this->get_searchable_status( $resource_id ) ) {
+			$compensated = wpbc_catalog_searchable_resources_option_writer()->compensate( $write_result );
+
+			return is_wp_error( $compensated )
+				? new WP_Error( 'wpbc_catalog_resource_searchability_recovery_required', __( 'Search Availability visibility could not be verified. Reload and inspect this Booking Resource before making another change.', 'booking' ) )
+				: new WP_Error( 'wpbc_catalog_resource_searchability_not_saved', __( 'Search Availability visibility could not be saved.', 'booking' ) );
+		}
+
+		return $write_result;
 	}
 
 	/**

@@ -895,11 +895,11 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 			'right_vertical_sidebar__is_show'           => true,
 			'right_vertical_sidebar__default_view_mode' => '',
 			'right_vertical_sidebar_compact__is_show'   => true,
-			'left_navigation__default_view_mode'        => 'compact',
-			'top_path_title'                            => __( 'General Availability', 'booking' ),
-			'title'                                     => __( 'General Availability', 'booking' ),
+			'left_navigation__default_view_mode'        => '',  // FixIn:11.7.1.1: 'compact',
+			'top_path_title'                            => __( 'Schedule & Rules', 'booking' ),
+			'title'                                     => __( 'Schedule & Rules', 'booking' ),
 			'hint'                                      => __( 'Define global front-end availability rules for all calendars, including unavailable weekdays, booking buffers, and availability limits.', 'booking' ),
-			'page_title'                                => __( 'General Availability', 'booking' ),
+			'page_title'                                => __( 'Schedule & Rules', 'booking' ),
 			'link'                                      => '',
 			'position'                                  => '',
 			'css_classes'                               => 'wpbc_top_tab__general_availability',
@@ -967,7 +967,7 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 				),
 			),
 			array(
-				'aria_label' => __( 'General Availability Panels', 'booking' ),
+				'aria_label' => __( 'Schedule & Rules Panels', 'booking' ),
 				'context'    => 'general_availability',
 				'class'      => 'wpbc_ag_rightbar_tabs',
 			)
@@ -1036,7 +1036,7 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 			}
 		}
 
-		WPBC_UI_Sidebar_Panels::render_inspector_header( __( 'General Availability', 'booking' ), __( 'Global front-end availability rules for all calendars.', 'booking' ) );
+		WPBC_UI_Sidebar_Panels::render_inspector_header( __( 'Schedule & Rules', 'booking' ), __( 'Availability rules for all calendars.', 'booking' ) );
 		?>
 		<form method="post" id="<?php echo esc_attr( $form_name ); ?>" class="wpbc_ag_settings_form" data-wpbc-ag-settings-form="1">
 			<?php wp_nonce_field( 'wpbc_settings_page_' . $form_name ); ?>
@@ -1051,31 +1051,93 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 						'open'  => ( 'working_time' !== $open_section ),
 					),
 					function () use ( $unavailable_weekdays ) {
-						$days           = array(
-							0 => __( 'Sunday', 'booking' ),
-							1 => __( 'Monday', 'booking' ),
-							2 => __( 'Tuesday', 'booking' ),
-							3 => __( 'Wednesday', 'booking' ),
-							4 => __( 'Thursday', 'booking' ),
-							5 => __( 'Friday', 'booking' ),
-							6 => __( 'Saturday', 'booking' ),
+						$days_ordered = array(
+							1 => array(
+								'short' => _x( 'Mo', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Monday', 'booking' ),
+							),
+							2 => array(
+								'short' => _x( 'Tu', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Tuesday', 'booking' ),
+							),
+							3 => array(
+								'short' => _x( 'We', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Wednesday', 'booking' ),
+							),
+							4 => array(
+								'short' => _x( 'Th', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Thursday', 'booking' ),
+							),
+							5 => array(
+								'short' => _x( 'Fr', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Friday', 'booking' ),
+							),
+							6 => array(
+								'short' => _x( 'Sa', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Saturday', 'booking' ),
+							),
+							0 => array(
+								'short' => _x( 'Su', 'Short weekday label', 'booking' ),
+								'full'  => __( 'Sunday', 'booking' ),
+							),
 						);
-						$start_week_day = absint( get_bk_option( 'booking_start_day_weeek' ) );
-						if ( $start_week_day > 6 ) {
-							$start_week_day = 0;
-						}
-						$days_ordered = array_slice( $days, $start_week_day, null, true ) + array_slice( $days, 0, $start_week_day, true );
 						?>
 						<div class="wpbc_ag_weekday_grid">
-							<?php foreach ( $days_ordered as $day_num => $day_title ) : ?>
-								<label class="wpbc_ag_switch">
-									<input type="checkbox" name="booking_unavailable_days[]" value="<?php echo esc_attr( $day_num ); ?>" <?php checked( in_array( $day_num, $unavailable_weekdays, true ) ); ?> />
+							<?php foreach ( $days_ordered as $day_num => $day_labels ) : ?>
+								<?php
+								$unavailable_day_aria_label = sprintf(
+									/* translators: %s: Full weekday name. */
+									__( 'Set %s as unavailable', 'booking' ),
+									$day_labels['full']
+								);
+								?>
+								<label class="wpbc_ag_switch wpbc_ag_weekday_switch">
+									<input type="checkbox" name="booking_unavailable_days[]" value="<?php echo esc_attr( $day_num ); ?>" aria-label="<?php echo esc_attr( $unavailable_day_aria_label ); ?>" <?php checked( in_array( $day_num, $unavailable_weekdays, true ) ); ?> />
 									<span class="wpbc_ag_switch_control" aria-hidden="true"><span class="wpbc_ag_switch_knob"></span></span>
-									<span class="wpbc_ag_switch_label"><?php echo esc_html( $day_title ); ?></span>
+									<span class="wpbc_ag_switch_label"><?php echo esc_html( $day_labels['short'] ); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
 						<p class="wpbc_ag_description"><?php esc_html_e( 'Selected weekdays will be unavailable in calendars and override other availability settings.', 'booking' ); ?></p>
+						<?php
+					}
+				);
+
+				WPBC_UI_Sidebar_Panels::render_collapsible_group(
+					array(
+						'id'    => 'wpbc_ag_working_time_group',
+						'group' => 'general-availability-working-time',
+						'title' => __( 'Working Time', 'booking' ),
+						'open'  => ( 'working_time' === $open_section ),
+					),
+					function () use ( $working_time_settings, $working_time_resource_id, $working_time_resource ) {
+						?>
+						<div class="wpbc_ag_notice wpbc_ag_working_time_notice"><?php esc_html_e( 'Working Time restricts only time-based bookings, such as rangetime, start/end time, or start/duration time fields.', 'booking' ); ?></div>
+						<input type="hidden" name="booking_working_time_resource_id" data-wpbc-working-time-resource-id="1" value="<?php echo esc_attr( $working_time_resource_id ); ?>" />
+						<label class="wpbc_ag_switch wpbc_ag_switch_card">
+							<input type="checkbox" name="booking_working_time_enabled" value="On" <?php checked( $working_time_settings['enabled'], 'On' ); ?> />
+							<span class="wpbc_ag_switch_control" aria-hidden="true"><span class="wpbc_ag_switch_knob"></span></span>
+							<span class="wpbc_ag_switch_label"><?php esc_html_e( 'Restrict time-based bookings to working time', 'booking' ); ?></span>
+						</label>
+
+						<div class="wpbc_ag_working_time_block">
+							<div class="wpbc_ag_scope_title"><?php esc_html_e( 'Default working time', 'booking' ); ?></div>
+							<p class="wpbc_ag_description"><?php esc_html_e( 'Used by all booking resources unless a resource override is configured below.', 'booking' ); ?></p>
+							<?php wpbc_availability_general__render_working_time_weekdays( 'booking_working_time_default', $working_time_settings['default']['weekdays'] ); ?>
+						</div>
+
+						<div class="wpbc_ag_working_time_block wpbc_ag_working_time_resource_block" data-wpbc-working-time-resource-block="1">
+							<div class="wpbc_ag_scope_title"><?php esc_html_e( 'Selected resource override', 'booking' ); ?></div>
+							<p class="wpbc_ag_description"><?php esc_html_e( 'This override follows the booking resource selected in the page toolbar.', 'booking' ); ?></p>
+							<div class="wpbc_ag_radio_stack wpbc_ag_working_time_mode">
+								<label><input type="radio" name="booking_working_time_resource_mode" value="inherit" <?php checked( $working_time_resource['mode'], 'inherit' ); ?> /> <?php esc_html_e( 'Inherit default working time', 'booking' ); ?></label>
+								<label><input type="radio" name="booking_working_time_resource_mode" value="custom" <?php checked( $working_time_resource['mode'], 'custom' ); ?> /> <?php esc_html_e( 'Use custom working time', 'booking' ); ?></label>
+								<label><input type="radio" name="booking_working_time_resource_mode" value="disabled" <?php checked( $working_time_resource['mode'], 'disabled' ); ?> /> <?php esc_html_e( 'Do not restrict this resource by working time', 'booking' ); ?></label>
+							</div>
+							<div class="wpbc_ag_working_time_custom" data-wpbc-working-time-resource-custom="1">
+								<?php wpbc_availability_general__render_working_time_weekdays( 'booking_working_time_resource', $working_time_resource['weekdays'] ); ?>
+							</div>
+						</div>
 						<?php
 					}
 				);
@@ -1171,46 +1233,6 @@ class WPBC_Page_Availability_General_Dedicated extends WPBC_Page_Structure {
 						<?php
 					}
 				);
-
-				WPBC_UI_Sidebar_Panels::render_collapsible_group(
-					array(
-						'id'    => 'wpbc_ag_working_time_group',
-						'group' => 'general-availability-working-time',
-						'title' => __( 'Working Time', 'booking' ),
-						'open'  => ( 'working_time' === $open_section ),
-					),
-					function () use ( $working_time_settings, $working_time_resource_id, $working_time_resource ) {
-						?>
-						<div class="wpbc_ag_notice wpbc_ag_working_time_notice"><?php esc_html_e( 'Working Time restricts only time-based bookings, such as rangetime, start/end time, or start/duration time fields.', 'booking' ); ?></div>
-						<input type="hidden" name="booking_working_time_resource_id" data-wpbc-working-time-resource-id="1" value="<?php echo esc_attr( $working_time_resource_id ); ?>" />
-						<label class="wpbc_ag_switch wpbc_ag_switch_card">
-							<input type="checkbox" name="booking_working_time_enabled" value="On" <?php checked( $working_time_settings['enabled'], 'On' ); ?> />
-							<span class="wpbc_ag_switch_control" aria-hidden="true"><span class="wpbc_ag_switch_knob"></span></span>
-							<span class="wpbc_ag_switch_label"><?php esc_html_e( 'Restrict time-based bookings to working time', 'booking' ); ?></span>
-						</label>
-
-						<div class="wpbc_ag_working_time_block">
-							<div class="wpbc_ag_scope_title"><?php esc_html_e( 'Default working time', 'booking' ); ?></div>
-							<p class="wpbc_ag_description"><?php esc_html_e( 'Used by all booking resources unless a resource override is configured below.', 'booking' ); ?></p>
-							<?php wpbc_availability_general__render_working_time_weekdays( 'booking_working_time_default', $working_time_settings['default']['weekdays'] ); ?>
-						</div>
-
-						<div class="wpbc_ag_working_time_block wpbc_ag_working_time_resource_block" data-wpbc-working-time-resource-block="1">
-							<div class="wpbc_ag_scope_title"><?php esc_html_e( 'Selected resource override', 'booking' ); ?></div>
-							<p class="wpbc_ag_description"><?php esc_html_e( 'This override follows the booking resource selected in the page toolbar.', 'booking' ); ?></p>
-							<div class="wpbc_ag_radio_stack wpbc_ag_working_time_mode">
-								<label><input type="radio" name="booking_working_time_resource_mode" value="inherit" <?php checked( $working_time_resource['mode'], 'inherit' ); ?> /> <?php esc_html_e( 'Inherit default working time', 'booking' ); ?></label>
-								<label><input type="radio" name="booking_working_time_resource_mode" value="custom" <?php checked( $working_time_resource['mode'], 'custom' ); ?> /> <?php esc_html_e( 'Use custom working time', 'booking' ); ?></label>
-								<label><input type="radio" name="booking_working_time_resource_mode" value="disabled" <?php checked( $working_time_resource['mode'], 'disabled' ); ?> /> <?php esc_html_e( 'Do not restrict this resource by working time', 'booking' ); ?></label>
-							</div>
-							<div class="wpbc_ag_working_time_custom" data-wpbc-working-time-resource-custom="1">
-								<?php wpbc_availability_general__render_working_time_weekdays( 'booking_working_time_resource', $working_time_resource['weekdays'] ); ?>
-							</div>
-						</div>
-						<?php
-					}
-				);
-
 				?>
 			</div>
 		</form>

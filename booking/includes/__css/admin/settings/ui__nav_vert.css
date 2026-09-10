@@ -538,7 +538,7 @@
 	color: #465160 !important;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns {
-	margin: 10px 0 0;
+	margin: 8px 0 0;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__level__folder.expanded .wpbc_ui_el__vert_nav_item_sub {
 	border-left: 2px solid #465160;
@@ -594,6 +594,11 @@
 	align-items: stretch;
 	gap: 1px;
 }
+/* Search Availability - Top  Line */
+.wpbc_ui_el__vert_left_bar__root_section_element.root_section_element_wpbc-search-availability {
+	border-top: 1px solid #e9e9e9;
+	padding-block-start: 15px;
+}
 /* In compact mode  */
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__root_sections_container .wpbc_ui_el__vert_left_bar__root_section_element {
 	padding-block-end: 40px;
@@ -620,7 +625,7 @@
 	align-items: center;
 	gap: 8px;
 	position: sticky;
-	top: 0;
+	top: 26px;
 	background: #fff;
 	z-index: 1;
 	/*border-bottom: 1px solid #f1f1f1;*/
@@ -857,13 +862,21 @@ a > .wpbc_ui_el__section_header {
 
 /* Row for header and buttons */
 .wpbc_ui_el__vert_left_bar__wrapper .wpbc_ui_el__vert_left_bar__root_sections_container {
-	margin-top: 8px;
+	margin-top: 0px;
 }
 .wpbc_ui_el__expand_colapse_btns {
 	padding: 0;
 	/* We shift  " > Bookings " menu  to  the same level  as this colapse button */
 	margin: 16px 0 -15px;
 	margin: 15px 0 0;
+
+	margin: 0;
+	padding: 8px 0;
+	position: sticky;
+	top: 0px;
+	z-index: 2;
+	background: #fff;
+	border-bottom: 0px dashed #c2c2c2;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__expand_colapse_btns {
   margin-bottom: -22px;
@@ -881,7 +894,7 @@ a > .wpbc_ui_el__section_header {
 }
 .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns .wpbc_ui_el__a {
 	margin-left: auto;
-	padding: 0 8px;
+	padding: 0 2px;
 }
 .wpbc_settings_page_wrapper.compact .wpbc_ui_el__vert_left_bar__content .wpbc_ui_el__expand_colapse_btns {
 	justify-content: center;

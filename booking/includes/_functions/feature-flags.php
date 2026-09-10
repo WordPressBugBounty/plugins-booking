@@ -41,16 +41,3 @@ function wpbc_is_11_6_features_enabled() {
 	return defined( 'WPBC_ENABLE_11_6_FEATURES' ) && true === WPBC_ENABLE_11_6_FEATURES;
 }
 
-/**
- * Check whether the experimental template-driven catalog may load.
- *
- * This dedicated, non-filterable gate does not replace the 11.6 master gate.
- * Callers at bootstrap boundaries must require both gates so an explicitly
- * enabled catalog cannot bypass a disabled 11.6 feature set.
- *
- * @return bool True only when the catalog constant is the boolean true.
- */
-function wpbc_is_11_6_catalog_v2_enabled() {
-
-	return defined( 'WPBC_ENABLE_11_6_CATALOG_V2' ) && true === WPBC_ENABLE_11_6_CATALOG_V2;
-}

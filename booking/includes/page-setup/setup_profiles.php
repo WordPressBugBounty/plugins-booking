@@ -295,7 +295,27 @@ function wpbc_setup_wizard__get_profile_route( $profile = null, $is_bfb_enabled 
 	$mode_id   = wpbc_setup_wizard__get_selected_mode_id();
 	$route_map = wpbc_setup_wizard__get_profile_route_map();
 
-	if ( 'appointment' === $mode_id ) {
+	/**
+	 * Filter whether Setup temporarily ends with a Form Builder handoff.
+	 *
+	 * The compact route keeps the four introductory screens and uses Form
+	 * Builder as the fifth and final destination. Returning false restores the
+	 * longer mode-aware route while it remains available for compatibility.
+	 *
+	 * @param bool   $is_enabled Whether the compact Form Builder handoff is enabled.
+	 * @param string $mode_id    Active administration mode.
+	 * @param string $profile    Selected booking behavior profile.
+	 */
+	$is_compact_form_builder_handoff = (bool) apply_filters(
+		'wpbc_setup_wizard_compact_form_builder_handoff_enabled',
+		true,
+		$mode_id,
+		$profile
+	);
+
+	if ( $is_compact_form_builder_handoff ) {
+		$route = array( 'form_structure' );
+	} elseif ( 'appointment' === $mode_id ) {
 		$route = array(
 			'service_provider',
 			'working_time',
@@ -609,7 +629,7 @@ function wpbc_setup_wizard__get_step_description( $step_name ) {
 	}
 
 	if ( 'date_availability' === $step_name && 'appointment' === $mode_id ) {
-		return __( 'Use the canonical Days Availability calendar to block holidays, leave, and other Provider-specific exceptions.', 'booking' );
+		return __( 'Use the Block Dates calendar to block holidays, leave, and other Provider-specific exceptions.', 'booking' );
 	}
 
 	$step_descriptions = array(

@@ -369,15 +369,23 @@ class WPBC_AJX__Setup_Wizard__Ajax_Request {
 
 				$setup_steps->db__set_step_as_completed( 'bookings_types' );
 				if ( ! empty( $cleaned_data ) ) {
-					wpbc_setup_wizard__set_full_screen_mode_for_current_user( true );
-					$data_arr['current_step'] = wpbc_setup_wizard__get_first_profile_step();
-					$current_steps_arr        = $setup_steps->get_steps_arr();
-					$setup_steps->db__reset_steps_from( $data_arr['current_step'] );
-					if (
-						isset( $current_steps_arr[ $data_arr['current_step'] ] )
-						&& 'manual_save_required' === $setup_steps->get_step_save_behavior( $data_arr['current_step'] )
-					) {
-						$setup_steps->db__set_step_as_saved( $data_arr['current_step'], false );
+					$data_arr['current_step']  = wpbc_setup_wizard__get_first_profile_step();
+					$current_steps_arr         = $setup_steps->get_steps_arr();
+					$is_form_builder_handoff   = array( 'form_structure' ) === wpbc_setup_wizard__get_profile_route();
+
+					if ( $is_form_builder_handoff ) {
+						// Form Builder is the fifth and final temporary Setup step.
+						$setup_steps->db__set_step_as_completed( 'form_structure' );
+						wpbc_setup_wizard__set_full_screen_mode_for_current_user( false );
+					} else {
+						wpbc_setup_wizard__set_full_screen_mode_for_current_user( true );
+						$setup_steps->db__reset_steps_from( $data_arr['current_step'] );
+						if (
+							isset( $current_steps_arr[ $data_arr['current_step'] ] )
+							&& 'manual_save_required' === $setup_steps->get_step_save_behavior( $data_arr['current_step'] )
+						) {
+							$setup_steps->db__set_step_as_saved( $data_arr['current_step'], false );
+						}
 					}
 					$data_arr['redirect_url'] = $setup_steps->get_step_target_url( $data_arr['current_step'] );
 					$data_arr['steps']        = $current_steps_arr;

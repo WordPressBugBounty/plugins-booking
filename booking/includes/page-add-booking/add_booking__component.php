@@ -195,6 +195,7 @@ class WPBC_Add_Booking_Component {
 	private static function print_context_js( $args ) {
 
 		$booking_hash        = isset( $args['booking_hash'] ) ? (string) $args['booking_hash'] : '';
+		$admin_booking_nonce = self::current_user_can_add_booking() ? wp_create_nonce( 'wpbc_admin_booking_create' ) : '';
 		$allow_past_date_arr = self::get_allow_past_min_date_arr( $args );
 		$context      = array(
 			'resource_id'                     => absint( $args['resource_id'] ),
@@ -215,6 +216,7 @@ class WPBC_Add_Booking_Component {
 				_wpbc.set_other_param( 'this_page_booking_hash', <?php echo wp_json_encode( $booking_hash ); ?> );
 				_wpbc.set_other_param( 'this_page_allow_past', <?php echo wp_json_encode( ! empty( $args['allow_past'] ) ? 1 : 0 ); ?> );
 				_wpbc.set_other_param( 'this_page_allow_past_arr', <?php echo wp_json_encode( $allow_past_date_arr ); ?> );
+				_wpbc.set_other_param( 'this_page_admin_booking_nonce', <?php echo wp_json_encode( $admin_booking_nonce ); ?> );
 			}
 		</script>
 		<?php

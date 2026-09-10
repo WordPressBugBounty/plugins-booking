@@ -557,8 +557,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 						   ( $_REQUEST['page'] === 'wpbc-catalog-booking-resources' )                   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						&& function_exists( 'wpbc_is_11_6_features_enabled' )
 						&& wpbc_is_11_6_features_enabled()
-						&& defined( 'WPBC_ENABLE_11_6_CATALOG_V2' )
-						&& WPBC_ENABLE_11_6_CATALOG_V2
 					)
 				)
 			) {
@@ -599,7 +597,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 		 */
 		function wpbc_can_i_load_on_this_page__modal_search_options() {
 
-			if ( wpbc_can_i_load_on__searchable_resources_page() ){
+			if (
+				wpbc_can_i_load_on__searchable_resources_page()
+				|| (
+					function_exists( 'wpbc_catalog_searchable_resources_is_page' )
+					&& wpbc_catalog_searchable_resources_is_page()
+				)
+			) {
 				return true;
 			} else {
 				return false;

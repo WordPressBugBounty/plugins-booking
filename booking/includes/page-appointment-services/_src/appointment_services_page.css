@@ -796,11 +796,6 @@ body.rtl .wpbc_appointment_services__card_actions {
 .wpbc_appointment_services__inline_number {
 	min-width: 82px;
 }
-.wpbc_appointment_services_page .wpbc_appointment_services__inline_toggle.is-active {
-	background: var(--wpbc_admin-theme-color, #2271b1);
-	border-color: var(--wpbc_admin-theme-color, #2271b1);
-	color: #fff;
-}
 .wpbc_appointment_services_page.is-inline-editing .wpbc_appointment_services__selection_summary:not(.wpbc_appointment_services__inline_bar) {
 	display: none !important;
 }

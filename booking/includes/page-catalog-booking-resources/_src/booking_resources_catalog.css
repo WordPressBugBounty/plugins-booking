@@ -1932,6 +1932,7 @@
 
 .wpbc_catalog_booking_resources[data-wpbc-template-pack="cards"] .wpbc_booking_resources__card_stack {
 	bottom: -14px;
+	display: none;
 	inset-inline: 0 -86px;
 	overflow: visible;
 	pointer-events: none;

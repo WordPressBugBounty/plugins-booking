@@ -68,3 +68,14 @@ div div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(.wpbc_bfb_divide
 .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element .wpbc_bfb_divider_wrap hr {
 	background: transparent;
 }
+
+/*
+ * The Full-Day two-column template uses a desktop-only center separator.
+ * Remove its column when the surrounding form columns stack on small screens.
+ */
+@media (max-width: 782px) {
+	.wpbc_bfb_form .wpbc__row.wpbc_bfb_full_day_split_form > .wpbc__field:has(.wpbc_bfb_divider_wrap[data-orientation="vertical"]),
+	.wpbc_bfb_form .wpbc_bfb__section.wpbc_bfb_full_day_split_form .wpbc_bfb__field[data-type="divider"][data-orientation="vertical"] {
+		display: none;
+	}
+}

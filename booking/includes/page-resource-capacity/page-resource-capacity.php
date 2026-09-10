@@ -211,7 +211,7 @@ class WPBC_Page_Resource_Capacity extends WPBC_Page_Structure {
 		return array(
 			'capacity' => array(
 				'is_show_top_path'                   => true,
-				'left_navigation__default_view_mode' => 'compact',
+				'left_navigation__default_view_mode' => '',  // FixIn:11.7.1.1: 'compact',
 				'title'                              => __( 'Capacity Rules', 'booking' ),
 				'hint'                               => __( 'Manage booking capacity, pending-day availability, and related resource rules.', 'booking' ),
 				'page_title'                         => __( 'Capacity Rules', 'booking' ),

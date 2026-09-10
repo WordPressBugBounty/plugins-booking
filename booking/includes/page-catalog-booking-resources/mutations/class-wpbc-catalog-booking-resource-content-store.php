@@ -102,12 +102,19 @@ final class WPBC_Catalog_Booking_Resource_Content_Store {
 		if ( false !== get_option( $option_name, false ) ) {
 			return new WP_Error( 'wpbc_catalog_resource_content_not_deleted', __( 'The Booking Resource presentation details could not be deleted.', 'booking' ) );
 		}
-		if ( function_exists( 'wpbc_searchable_resources__get_all_options' ) && function_exists( 'wpbc_searchable_resources__save_all_options' ) ) {
+		if ( function_exists( 'wpbc_catalog_searchable_resources_lifecycle_service' ) ) {
+			$cleanup_result = wpbc_catalog_searchable_resources_lifecycle_service()->cleanup_deleted_resources( array( $resource_id ) );
+			if ( is_wp_error( $cleanup_result ) ) {
+				return $cleanup_result;
+			}
+		} elseif ( function_exists( 'wpbc_searchable_resources__get_all_options' ) && function_exists( 'wpbc_searchable_resources__save_all_options' ) ) {
 			$search_options = (array) wpbc_searchable_resources__get_all_options();
 			unset( $search_options[ $resource_id ] );
 			wpbc_searchable_resources__save_all_options( $search_options );
+		}
+		if ( function_exists( 'wpbc_searchable_resources__get_all_options' ) ) {
 			$stored_search_options = (array) wpbc_searchable_resources__get_all_options();
-			if ( isset( $stored_search_options[ $resource_id ] ) ) {
+			if ( array_key_exists( $resource_id, $stored_search_options ) ) {
 				return new WP_Error( 'wpbc_catalog_resource_search_content_not_deleted', __( 'The Booking Resource search presentation could not be deleted.', 'booking' ) );
 			}
 		}

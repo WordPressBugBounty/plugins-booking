@@ -261,6 +261,22 @@ function wpbc_is_show_up() {
 
 
 /**
+ * Check whether Free-edition upgrade navigation may be shown.
+ *
+ * This combines the existing administrator preference and MultiUser policy
+ * with the product-edition check used by Free-only upgrade actions.
+ *
+ * @since 11.8.0
+ *
+ * @return bool True when Free-edition upgrade navigation may be rendered.
+ */
+function wpbc_is_show_free_upgrade() {
+
+	return wpbc_is_show_up() && ! class_exists( 'wpdev_bk_personal' );
+}
+
+
+/**
  * Get Up link.
  *
  * @return string

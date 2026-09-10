@@ -303,6 +303,9 @@ abstract class WPBC_Menu_Structure {
 	}
 
 	public function get_nav_tabs() {
+		if ( function_exists( 'wpbc_booking_modes_v3_capture_navigation_source' ) ) {
+			return wpbc_booking_modes_v3_capture_navigation_source( self::$nav_tabs );
+		}
 
 		if (
 			function_exists( 'wpbc_booking_modes_is_navigation_boundary_enabled' )
@@ -447,6 +450,16 @@ abstract class WPBC_Menu_Structure {
 			'tab'    => array_merge( $this_tab, array( 'tag' => $this_tab_tag ) ),
 			'subtab' => array_merge( $this_subtab, array( 'tag' => $this_subtab_tag ) ),
 		);
+
+		if ( function_exists( 'wpbc_booking_modes_v3_apply_current_page_options' ) ) {
+			$context = wpbc_booking_modes_get_context();
+			$this->current_page_params = wpbc_booking_modes_v3_apply_current_page_options(
+				$this->current_page_params,
+				$context['page'],
+				$this_tab_tag,
+				$this_subtab_tag
+			);
+		}
 	}
 
 

@@ -284,6 +284,7 @@ function wpbc_booking_resource_selector_render_booking_form( $resource_record, $
 		'shortcode_param__options'        => $config['options'],
 		'calendar_dates_start'            => $config['calendar_dates_start'],
 		'calendar_dates_end'              => $config['calendar_dates_end'],
+		'booking_workflow'                => 'resource_selector',
 		'calendar_request_overrides'      => array(
 			'allow_past' => $allow_past ? 1 : 0,
 		),

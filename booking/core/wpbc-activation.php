@@ -206,10 +206,13 @@ function wpbc_booking_activate() {
 	// -----------------------------------------------------------------------------------------------------------------
     // Options
 	// -----------------------------------------------------------------------------------------------------------------
-    $default_options_to_add = wpbc_get_default_options();
+	$default_options_to_add = wpbc_get_default_options();
 	// Existing installations retain their saved value; add_bk_option() never overwrites it during upgrades.
 	if ( $is_new_install ) {
 		$default_options_to_add['booking_form_accent_enabled'] = 'On';
+		if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+			$default_options_to_add['booking_resources_catalog_default_view'] = 'publishing';
+		}
 	}
 	// TODO: for Import / Export options,  we can  use this function to get all option_names and then just  get  the real  values from  the wp_options table.
     make_bk_action( 'wpbc_before_activation__add_options', $default_options_to_add );           // FixIn: 9.6.2.11.
@@ -334,7 +337,11 @@ function wpbc_booking_activate() {
 
 				$res = $wpdb->get_results( $sql_check_table );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				foreach ( $res as $l ) {
-					$wp_queries[] = "UPDATE {$wpdb->prefix}booking SET hash = MD5('" . time() . '_' . wp_rand( 1000, 1000000 ) . "') WHERE booking_id = " . $l->id;  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+					$wp_queries[] = $wpdb->prepare(
+						"UPDATE {$wpdb->prefix}booking SET hash = %s WHERE booking_id = %d",
+						wpbc_hash__generate_booking_hash(),
+						$l->id
+					); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				}
 			}
 		}
@@ -390,7 +397,7 @@ function wpbc_booking_activate() {
 			// -- Test Booking #1 --
 			$is_appr    = 1;
 			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
-				 'text^name1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
+				 'text^firstname1^John~text^secondname1^Smith~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
 			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 			$temp_id        = $wpdb->insert_id;
@@ -403,7 +410,7 @@ function wpbc_booking_activate() {
 			// -- Test Booking #2 --
 			$is_appr    = 0;
 			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date ) VALUES (
-				 'text^name1^Emma~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^999-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
+				 'text^firstname1^Emma~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^999-77-77~textarea^details1^This is a test booking showing booking for several days.', " . wpbc_sql_date_math_expr_explicit('', 'now') . " );";
 			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 			$temp_id        = $wpdb->insert_id;
@@ -419,7 +426,7 @@ function wpbc_booking_activate() {
 			$start_time = '10:00';
 			$end_time   = '10:30';
 			$wp_queries_sub = "INSERT INTO {$wpdb->prefix}booking ( form, modification_date, is_new ) VALUES (
-				 'selectbox^rangetime1^".$start_time." - ".$end_time."~text^name1^Sophia~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing a one day time slot booking.', " . wpbc_sql_date_math_expr_explicit('', 'now') . ", 0 );";
+				 'selectbox^rangetime1^".$start_time." - ".$end_time."~text^firstname1^Sophia~text^secondname1^Robinson~text^email1^example-free@wpbookingcalendar.com~text^phone1^458-77-77~textarea^details1^This is a test booking showing a one day time slot booking.', " . wpbc_sql_date_math_expr_explicit('', 'now') . ", 0 );";
 			$wpdb->query( $wp_queries_sub );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 			$temp_id = $wpdb->insert_id;
@@ -635,6 +642,8 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
  $mu_option4delete[]='booking_listing_default_view_mode';
 	$default_options['booking_admin_edit_booking_mode'] = 'popup';
  $mu_option4delete[]='booking_admin_edit_booking_mode';
+	$default_options['booking_resources_catalog_default_view'] = '';
+	$mu_option4delete[] = 'booking_resources_catalog_default_view';
 
     $default_options['booking_view_days_num'] = (  ( ! class_exists( 'wpdev_bk_personal' ) ) ? '90' : '30' );
  $mu_option4delete[]='booking_view_days_num';
@@ -666,7 +675,8 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
  	// FixIn: 10.13.1.5.
     $default_options['booking_is_use_phone_validation'] = 'Off';
  $mu_option4delete[]='booking_is_use_phone_validation';
-    $default_options['booking_date_format'] = get_option( 'date_format' );
+	$wordpress_date_format = get_option( 'date_format' );
+    $default_options['booking_date_format'] = ( 'F j, Y' === $wordpress_date_format ) ? 'j M Y' : $wordpress_date_format;
  $mu_option4delete[]='booking_date_format';
     $default_options['booking_time_format'] = get_option( 'time_format' );	//'H:i';
  $mu_option4delete[]='booking_time_format';

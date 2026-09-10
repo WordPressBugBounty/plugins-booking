@@ -65,7 +65,7 @@ class WPBC_Free_Date_Hints {
 				'default' => '...',
 			),
 			'days_number_hint' => array(
-				'default' => '0',
+				'default' => '...',
 			),
 			'start_time_hint' => array(
 				'default' => '...',

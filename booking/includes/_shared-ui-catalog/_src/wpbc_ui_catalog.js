@@ -1440,6 +1440,7 @@
 			'[data-wpbc-ui-catalog-select-all]',
 			'[data-wpbc-ui-catalog-sort]',
 			'[data-wpbc-ui-catalog-page]',
+			'[data-wpbc-ui-catalog-page-number]',
 			'[data-wpbc-ui-catalog-items-per-page]',
 			'[data-wpbc-ui-catalog-column-visible]',
 			'[data-wpbc-ui-catalog-column-order-reset]',

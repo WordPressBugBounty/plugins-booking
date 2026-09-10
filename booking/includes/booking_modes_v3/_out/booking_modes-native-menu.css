@@ -1,0 +1,23 @@
+#adminmenu #toplevel_page_wpbc .wp-submenu .wpbc_native_upgrade_menu_label {
+  background: #465160;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #ececec;
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 4px 2px 2px;
+  padding: 5px 12px;
+  text-align: center;
+  transition: background-color .3s ease-in-out,color .3s ease-in-out
+}
+#adminmenu #toplevel_page_wpbc .wp-submenu a:focus .wpbc_native_upgrade_menu_label,
+#adminmenu #toplevel_page_wpbc .wp-submenu a:hover .wpbc_native_upgrade_menu_label {
+  background: #536171;
+  color: #fff
+}
+#adminmenu #toplevel_page_wpbc .wp-submenu a:focus .wpbc_native_upgrade_menu_label {
+  box-shadow: 0 0 0 1px #72aee6;
+  outline: transparent solid 2px
+}

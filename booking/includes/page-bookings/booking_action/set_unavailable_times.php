@@ -83,6 +83,21 @@ class WPBC_Action_Set_Unavailable_Times {
 		}
 
 		/**
+		 * Filter whether the Booking Listing availability toolbar button is visible.
+		 *
+		 * Presentation layers can remove the context-free toolbar shortcut without
+		 * removing the booking-row action or coupling this controller to a workflow.
+		 *
+		 * @since 11.8.0
+		 *
+		 * @param bool $show_button Whether to render the toolbar button.
+		 */
+		$show_button = (bool) apply_filters( 'wpbc_booking_listing_show_set_unavailable_times_button', true );
+		if ( ! $show_button ) {
+			return false;
+		}
+
+		/**
 		 * Filter whether the Booking Listing availability toolbar button shows text.
 		 *
 		 * Presentation layers can request the compact icon-only variant without
@@ -98,10 +113,10 @@ class WPBC_Action_Set_Unavailable_Times {
 				id="wpbc_booking_listing_set_unavailable_times_button"
 				class="button button-secondary"
 				onclick="wpbc_boo_listing__click__set_unavailable_times( '', '', '', '' );"
-				title="<?php esc_attr_e( 'Set times availability', 'booking' ); ?>"
-				aria-label="<?php esc_attr_e( 'Set times availability', 'booking' ); ?>">
+				title="<?php esc_attr_e( 'Block Times', 'booking' ); ?>"
+				aria-label="<?php esc_attr_e( 'Block Times', 'booking' ); ?>">
 				<i class="menu_icon icon-1x wpbc-bi-clock-history" aria-hidden="true"></i><?php if ( $show_button_text ) : ?>&nbsp;
-					<?php esc_html_e( 'Set Times Availability', 'booking' ); ?><?php endif; ?>
+					<?php esc_html_e( 'Block Times', 'booking' ); ?><?php endif; ?>
 			</a>
 		</div>
 		<?php
@@ -163,7 +178,7 @@ class WPBC_Action_Set_Unavailable_Times {
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<h4 class="modal-title">
-								<?php esc_html_e( 'Set unavailable times', 'booking' ); ?>
+								<?php esc_html_e( 'Block Times', 'booking' ); ?>
 								<sup class="wpbc_modal__set_unavailable_times__booking_id wpbc_modal__booking_id__in_title"></sup>
 							</h4>
 						</div>

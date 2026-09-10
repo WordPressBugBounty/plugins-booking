@@ -42,7 +42,7 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 		$tabs['vm_booking_listing'] = array(
 			'is_show_top_path'                   => true,                                // true | false.  By default value is: true.
 			'is_show_top_navigation'             => true,                                // true | false.  By default value is: false.
-			'left_navigation__default_view_mode' => ( $is_full_screen ) ? 'compact' : 'min',   // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
+			'left_navigation__default_view_mode' => '', // FixIn: 11.7.1.1.:  ( $is_full_screen ) ? 'compact' : 'min',   // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'page_title'                         => false,                               // Header - Title.  If false, than hidden.
 			'page_description'                   => false,                               // Header - Title Description.  If false, than hidden.
 			'title'                              => __( 'Bookings', 'booking' ),         // Menu - Title.

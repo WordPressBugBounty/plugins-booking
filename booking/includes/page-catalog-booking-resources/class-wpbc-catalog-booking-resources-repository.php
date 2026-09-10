@@ -1205,7 +1205,6 @@ final class WPBC_Catalog_Booking_Resources_Repository {
 		$stored_options = function_exists( 'get_bk_option' )
 			? get_bk_option( 'booking_resources_search_options', array() )
 			: get_option( 'booking_resources_search_options', array() );
-		$stored_options = maybe_unserialize( $stored_options );
 
 		return is_array( $stored_options ) ? $stored_options : array();
 	}

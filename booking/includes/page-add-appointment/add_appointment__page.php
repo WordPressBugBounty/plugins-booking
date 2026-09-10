@@ -180,7 +180,7 @@ class WPBC_Page_Add_Appointment extends WPBC_Page_Structure {
 			'add-appointment' => array(
 				'is_show_top_path'                          => true,
 				'is_show_top_navigation'                    => true,
-				'left_navigation__default_view_mode'        => 'min',
+				'left_navigation__default_view_mode'        => '',  // FixIn:11.7.1.1: 'min',
 				'right_vertical_sidebar__is_show'           => true,
 				'right_vertical_sidebar__default_view_mode' => '',
 				'right_vertical_sidebar_compact__is_show'   => true,

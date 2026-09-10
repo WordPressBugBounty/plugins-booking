@@ -4,6 +4,123 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * Render Booking Calendar 11.8 What's New content.
+ *
+ * Booking Modes and the Full-Day Form Builder template are available in every
+ * edition. Seasonal Availability and the Business Large Searchable Resources
+ * catalog remain protected by their existing feature, edition, and current-user
+ * gates. Image placeholders must be replaced by verified, edition-appropriate
+ * captures before release.
+ *
+ * @param object $obj Welcome-page renderer and image loader.
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_8( $obj ) {
+
+	$section_parameters = array( 'version_num' => '11.8', 'show_expand' => false );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	$obj->expand_section_start( $section_parameters );
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo( '2 New Full-Day Booking Form Templates' ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.8/wp_booking_calendar__form_2_columns_hints_full_days.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Two-column full-day booking form with a calendar, date summary, and customer details' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo( 'Start with a clear two-column layout.' ); ?></strong> <?php echo( 'Customers select dates in the calendar, then review their Check-in, Check-out, and Days beside the customer details.' ); ?></li>
+					<li><strong><?php echo( 'Vertical full-day layout.' ); ?></strong> <?php echo( 'Vertical full-day booking form with a ability to use a two-month calendar and date summary' ); ?></li>
+					<li><strong><?php echo( 'Designed for full-day bookings.' ); ?></strong> <?php echo( 'Use the live date summary with your saved full-day or changeover settings to make each selection easier to understand.' ); ?></li>
+					<li><strong><?php echo( 'Apply it when you need it.' ); ?></strong> <?php echo( 'The templates are available in Form Builder without replacing existing forms or changing first-install defaults. Confirm its starter Terms links before publishing.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo( 'New Seasonal Availability Catalog' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.8/wp_booking_calendar__season_availability_review_placeholder_3.png' ) ); ?>" alt="<?php echo esc_attr( 'Availability listing with Resource names, default-status labels, search and view controls' ); ?>" style="margin:5px 0;width:100%;" />
+				<p style="text-align:center;font-style: italic;font-size:0.8em;"><strong><?php echo 'Minimum edition:'; ?></strong> <?php echo 'Booking Calendar Business Medium or higher.'; ?></p>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 20%;margin: 0;padding: 0;">
+
+				<ul>
+					<li data-wpbc-availability-feature="overview"><strong><?php echo( 'Availability at a glance.' ); ?></strong> <?php echo( 'Find your Resources in a clear list or Card view. See each Resource’s default availability below its name, search for the one you need, and choose the columns you want to see.' ); ?></li>
+					<li data-wpbc-availability-feature="preview"><strong><?php echo( 'See your seasonal dates clearly.' ); ?></strong> <?php echo( 'Green dates are available and gray dates are unavailable according to your seasonal settings. Hover over a Resource or focus a control in its row to see which Season applies. The preview shows seasonal settings, not existing bookings or remaining capacity.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<ul>
+					<li data-wpbc-availability-feature="bulk"><strong><?php echo( 'Update selected Resources together.' ); ?></strong> <?php echo( 'Select Resources and choose Edit selected to set their default availability, add one Season exception, or remove one Season exception. Other assignments are kept. Review every proposed change before applying; updated Resources are highlighted after a successful save.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<div class="wpbc_wn_col" style="flex: 1 1 20%;margin: 0;padding: 0;">
+				<ul>
+					<li data-wpbc-availability-feature="inspector"><strong><?php echo( 'Edit availability without leaving the list.' ); ?></strong> <?php echo( 'Open a Resource in the new sidebar editor. Choose its default, add Season exceptions, turn them on or off, and preview their dates. A plain-language overview explains the result before you review and apply your changes.' ); ?></li>
+					<li data-wpbc-availability-feature="inline"><strong><?php echo( 'Change defaults directly in the list.' ); ?></strong> <?php echo( 'Choose Edit rows to change default availability for several Resources without opening each one. Changed rows are marked so you can check your work, then review the effect on existing Seasons before applying.' ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img src="<?php echo esc_attr( $obj->section_img_url( '11.8/wp_booking_calendar__season_availability__inspector_edit_season_availability_3.png' ) ); ?>" alt="<?php echo esc_attr( 'Seasonal Availability inspector showing default availability, ordered Season exceptions and a selected Season date preview' ); ?>" style="margin:5px 0;width:100%;" />
+				<p style="text-align:center;font-style: italic;font-size:0.8em;"><strong><?php echo 'Minimum edition:'; ?></strong> <?php echo 'Booking Calendar Business Medium or higher.'; ?></p>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo( 'New Searchable Resources Catalog' ); ?></h2>
+			<div class="wpbc_wn_col"  style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<?php // Replace this placeholder with the final 11.8 Searchable Resources Catalog screenshot before release. ?>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.8/wp_booking_calendar__searchable_resources_catalog_placeholder.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Searchable Resources Catalog with status filters, presentation columns, and Resource editing controls' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+				<p style="text-align:center;font-style: italic;font-size:0.8em;"><strong><?php echo 'Minimum edition:'; ?></strong> <?php echo 'Booking Calendar Business Large or higher.'; ?></p>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo( 'Control each search result in one place.' ); ?></strong> <?php echo( 'Open the direct Search Availability > Searchable Resources link, then edit Search visibility, result title, description, image, landing page, and supported criteria from the Inspector or directly in catalog rows. Search form, results, and options each have their own neighboring link.' ); ?></li>
+					<li><strong><?php echo( 'Find the right Resources quickly.' ); ?></strong> <?php echo( 'Switch between All, Searchable, and Not searchable Resources, then use focused table views, compact rows, or image-led Cards.' ); ?></li>
+					<li><strong><?php echo( 'Review changes before saving.' ); ?></strong> <?php echo( 'Stage direct, inline, and selected-Resource updates, review the affected fields, and apply only the changes you approve.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo( 'More Reliable Administration Modes' ); ?></h2>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo( 'Choose the view that fits your work.' ); ?></strong> <?php echo( 'Switch between Classic, Appointments, and Rentals while continuing to use the familiar Booking Calendar pages and saved configuration.' ); ?></li>
+					<li><strong><?php echo( 'See the pages available to you.' ); ?></strong> <?php echo( 'Each mode shows the pages provided by your installed edition and add-ons while safely omitting unavailable features.' ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo( 'Continue where you were working.' ); ?></strong> <?php echo( 'When possible, switching modes keeps the current Booking Calendar page and section, with a safe destination used when the equivalent page is unavailable.' ); ?></li>
+					<li><strong><?php echo( 'Complete Setup in five steps.' ); ?></strong> <?php echo( 'The streamlined Setup flow now finishes in Form Builder, and the overlapping floating Setup Bar is disabled by default.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<?php
+	$obj->expand_section_end( $section_parameters );
+}
+
+/**
  * What's New section for Booking Calendar 11.7.
  *
  * @param object $obj Welcome-page renderer.
@@ -12,7 +129,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 function wpbc_welcome_section_11_7( $obj ) {
 
-	$section_param_arr = array( 'version_num' => '11.7', 'show_expand' => false );
+	$section_param_arr = array( 'version_num' => '11.7', 'show_expand' => true );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
 	$prices_inspector_sections = array(
 		array(
@@ -209,7 +326,7 @@ function wpbc_welcome_section_11_6( $obj ) {
 					<li><?php echo( 'Create and edit Conditional or Specific-date Seasons in a native right-side inspector with guided controls, color selection, a live twelve-month preview, and the standard Booking Calendar datepicker.' ); ?></li>
 					<li><?php echo( 'Select Seasons and review server-approved safe title changes inline or in bulk before applying them.' ); ?></li>
 					<li><?php echo( 'Review single or bulk deletion impact, follow authorized links to affected configuration, and keep referenced Seasons protected without silently rewriting related settings.' ); ?></li>
-					<li><?php echo( 'Open the reusable Seasons catalog from its dedicated Booking Calendar navigation group between Pricing and Settings; Season Availability remains under Availability, while legacy Season editors remain available through the rollback setting.' ); ?></li>
+					<li><?php echo( 'Open the reusable Seasons catalog from its dedicated Booking Calendar navigation group between Availability and Pricing; Season Availability remains under Availability, while legacy Season editors remain available through the rollback setting.' ); ?></li>
 				</ul>
 			</div>
 		</div>

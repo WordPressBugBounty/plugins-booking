@@ -173,6 +173,12 @@ class WPBC_Settings_Page_Parts {
 
 		?>
 		<div class="wpbc_settings_page_content">
+			<?php
+			// Initialize shared sidebar and page-control tooltips once per request.
+			if ( function_exists( 'wpbc_bs_javascript_tooltips' ) ) {
+				wpbc_bs_javascript_tooltips();
+			}
+			?>
 			<div id="<?php echo esc_attr( $this->active_page ); ?>-admin-page" class="wrap wpbc_page wpbc_page_tab__<?php echo esc_attr( $this->active_tab ); ?> wpbc_page_subtab__<?php echo esc_attr( $this->active_subtab ); ?>">
 				<div class="wpbc_admin_message"></div>
 				<div class="wpbc_admin_page">

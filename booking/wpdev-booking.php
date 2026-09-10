@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 11.7
+Version: 11.8
 License: GPLv2 or later
 */
 
@@ -34,13 +34,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '11.7' );
+	define( 'WP_BK_VERSION_NUM', '11.8' );
 }
 if ( ! defined( 'WP_BK_PRO_BFB_ONLY_VERSION' ) ) {
 	define( 'WP_BK_PRO_BFB_ONLY_VERSION', '11.4' );                                                                     // First Pro version that no longer loads legacy Booking Form settings pages.
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
-	define( 'WP_BK_MINOR_UPDATE',  ! true );
+	define( 'WP_BK_MINOR_UPDATE', false );
 }
 
 /**
@@ -65,20 +65,6 @@ if ( ! defined( 'WPBC_DEFAULT_FORM_ACCENT_COLOR' ) ) {
  */
 if ( ! defined( 'WPBC_ENABLE_11_6_FEATURES' ) ) {
 	define( 'WPBC_ENABLE_11_6_FEATURES', true );
-}
-
-/**
- * Internal availability gate for the 11.6 Booking Resources catalog.
- *
- * The released 11.6 default is enabled. Support rollback should use
- * `WPBC_BOOKING_RESOURCES_CATALOG_MODE` so the independent catalog runtime
- * remains available while only the canonical page renderer changes. This
- * lower-level gate remains available for disabled-runtime testing.
- *
- * @since 11.6.0
- */
-if ( ! defined( 'WPBC_ENABLE_11_6_CATALOG_V2' ) ) {
-	define( 'WPBC_ENABLE_11_6_CATALOG_V2', true );
 }
 
 /**

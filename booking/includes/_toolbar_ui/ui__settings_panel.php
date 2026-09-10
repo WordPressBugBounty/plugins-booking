@@ -540,7 +540,7 @@ function wpbc_ui_settings__panel__calendar( $params = array() ) {
 	 */
 	function wpbc_ui_settings_panel__card__general_availability( $params = array() ){
 
-		$title   = esc_attr__( 'General Availability', 'booking' );
+		$title   = esc_attr__( 'Schedule & Rules', 'booking' );
 
 		$permalink = function_exists( 'wpbc_get_general_availability_url' ) ? wpbc_get_general_availability_url() : admin_url( 'admin.php?page=wpbc-availability&tab=general_availability' );
 		$onclick   = "";

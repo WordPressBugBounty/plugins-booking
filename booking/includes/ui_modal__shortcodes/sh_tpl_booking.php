@@ -1015,7 +1015,7 @@ function wpbc_shortcode_config__content__booking() {
 								 /* translators: 1: ... */
 								 echo wp_kses_post( sprintf( __( 'Enable %1$sAggregate only bookings%2$s option to  aggregate only bookings without including unavailable dates from the %3$s page.', 'booking' )
 											 , '<strong>', '</strong>'
-											, '<strong>Booking > Availability > Days Availability</strong>'
+											, '<strong>Booking > Availability > Block Dates</strong>'
 								 ) );
 								?>
 

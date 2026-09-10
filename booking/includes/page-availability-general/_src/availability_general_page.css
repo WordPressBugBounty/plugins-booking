@@ -164,9 +164,30 @@
 }
 
 .wpbc_ag_weekday_grid {
+	align-items: start;
 	display: grid;
+	gap: 6px;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.wpbc_ag_weekday_grid .wpbc_ag_weekday_switch {
+	align-items: center;
+	flex-direction: column;
 	gap: 8px;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	justify-content: flex-start;
+	min-height: 0;
+	min-width: 0;
+	padding: 6px 0 4px;
+	text-align: center;
+}
+
+.wpbc_ag_weekday_grid .wpbc_ag_switch_label {
+	overflow-wrap: normal;
+	white-space: nowrap;
+}
+
+.wpbc_ag_weekday_grid + .wpbc_ag_description {
+	margin-top: 20px;
 }
 
 .wpbc_ag_switch {
@@ -533,7 +554,8 @@
 	}
 
 	.wpbc_ag_weekday_grid {
-		grid-template-columns: 1fr;
+		gap: 3px;
+		grid-template-columns: repeat(7, minmax(0, 1fr));
 	}
 
 	.wpbc_ag_working_time_row {
