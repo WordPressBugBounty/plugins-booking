@@ -31,6 +31,7 @@ require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/templates/04.bookings_type
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_steps.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_ajax.php' );
 require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/setup_support.php' );
+require_once( WPBC_PLUGIN_DIR . '/includes/page-setup/first-run-popup.php' );
 
 /** Show Content
  *  Update Content

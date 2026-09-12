@@ -415,6 +415,12 @@ function wpbc_bfb_activation__ensure_preview_page_exists() {
  * @return void
  */
 function wpbc_bfb_activation__preview_page() {
+	// Activation callbacks also run during version upgrades. Keep page creation
+	// strictly inside the verified first-install boundary.
+	if ( ! function_exists( 'wpbc_should_create_activation_pages' ) || ! wpbc_should_create_activation_pages() ) {
+		return;
+	}
+
 	wpbc_bfb_activation__ensure_preview_page_exists();
 }
 add_bk_action( 'wpbc_free_version_activation', 'wpbc_bfb_activation__preview_page' );
@@ -506,15 +512,18 @@ add_bk_action( 'wpbc_free_version_deactivation', 'wpbc_bfb_deactivation__form_st
 
 
 /**
- * Import legacy "standard" booking form as initial BFB structure.
+ * Check the shared activation decision before provisioning a Standard form.
  *
- * @return void
+ * The wrapper name is retained for compatibility with existing Form Builder
+ * callers and tests. The core detector additionally requires the canonical
+ * booking table to be absent, so a missing version option on an established
+ * installation cannot be mistaken for a new install.
+ *
+ * @return bool True only during a genuine first-install activation request.
  */
 function wpbc_bfb_is_brand_new_install__before_version_update() {
 
-	$stored_version = get_option( 'booking_version_num', false );
-
-	return ( false === $stored_version );
+	return function_exists( 'wpbc_is_plugin_initial_install' ) && wpbc_is_plugin_initial_install();
 }
 
 /**

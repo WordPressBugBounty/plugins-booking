@@ -292,9 +292,7 @@ class WPBC_Welcome {
 					<?php
 				}
 			} else {
-				$wp_post_booking_absolute = function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' )
-					? wpbc_stp_wiz__is_exist_published_page_with_booking_form()
-					: false;
+				$wp_post_booking_absolute = false;
 				if ( ! empty( $wp_post_booking_absolute ) ) {
 				?>
 				<a class="button button-secondary"
@@ -322,6 +320,7 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
+		wpbc_welcome_section_11_8_1( $this );
 		wpbc_welcome_section_11_8( $this );
 		wpbc_welcome_section_11_7( $this );
 		wpbc_welcome_section_11_6( $this );

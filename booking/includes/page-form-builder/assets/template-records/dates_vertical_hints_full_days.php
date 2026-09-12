@@ -223,7 +223,7 @@ $wpbc_dates_vertical_hints_full_days_structure = array(
 					$wpbc_dates_vertical_hints_full_days_column(
 						'100%',
 						array(
-							$wpbc_dates_vertical_hints_full_days_static_text( 'static_text-2', 'Select dates', 'h1', true ),
+							$wpbc_dates_vertical_hints_full_days_static_text( 'static_text-2', 'Select dates', 'div', true ),
 							$wpbc_dates_vertical_hints_full_days_static_text( 'static_text-14g-2', 'Choose your check-in and check-out dates.', 'small' ),
 						)
 					),
@@ -258,7 +258,7 @@ $wpbc_dates_vertical_hints_full_days_structure = array(
 					$wpbc_dates_vertical_hints_full_days_column(
 						'100%',
 						array(
-							$wpbc_dates_vertical_hints_full_days_static_text( 'static_text-3', 'Your Booking', 'h1', true ),
+							$wpbc_dates_vertical_hints_full_days_static_text( 'static_text-3', 'Your Booking', 'div', true ),
 							$wpbc_dates_vertical_hints_full_days_static_text( 'static_text-14g-3', 'Review your dates and enter your details.', 'small' ),
 						)
 					),
@@ -484,7 +484,7 @@ $wpbc_dates_vertical_hints_full_days_advanced_form = trim(
 	<div class="wpbc_wizard_step wpbc__form__div wpbc_wizard_step1">
 		<r data-colstyles-active="1">
 			<c data-colstyles-active="1" style="flex-basis: 100%; --wpbc-bfb-col-ai: flex-start; --wpbc-bfb-col-gap: 1em; --wpbc-col-min: 0px">
-				<item><h1 name="static_text-2" class="wpbc_static_text" style="text-align:left;font-weight:bold">Select dates</h1></item>
+				<item><div name="static_text-2" class="wpbc_static_text" style="text-align:left;font-weight:bold">Select dates</div></item>
 				<item><small name="static_text-14g-2" class="wpbc_static_text" style="text-align:left">Choose your check-in and check-out dates.</small></item>
 			</c>
 		</r>
@@ -502,7 +502,7 @@ $wpbc_dates_vertical_hints_full_days_advanced_form = trim(
 		<r><c style="flex-basis: 100%; --wpbc-col-min: 0px"><item><div class="wpbc_bfb_divider_wrap" data-bfb-type="divider" data-orientation="horizontal" style="margin:2px 2px 2px 2px"><hr name="divider_horizontal" class="wpbc_bfb_divider wpbc_bfb_divider--h" style="border:none; height:0; border-top:1px solid #e0e0e0; width:100%; margin-left:auto; margin-right:auto"></div></item></c></r>
 		<r data-colstyles-active="1">
 			<c data-colstyles-active="1" style="flex-basis: 100%; --wpbc-bfb-col-ai: flex-start; --wpbc-bfb-col-gap: 1em; --wpbc-col-min: 0px">
-				<item><h1 name="static_text-3" class="wpbc_static_text" style="text-align:left;font-weight:bold">Your Booking</h1></item>
+				<item><div name="static_text-3" class="wpbc_static_text" style="text-align:left;font-weight:bold">Your Booking</div></item>
 				<item><small name="static_text-14g-3" class="wpbc_static_text" style="text-align:left">Review your dates and enter your details.</small></item>
 			</c>
 		</r>

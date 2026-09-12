@@ -59,17 +59,27 @@ function wpbc_is_table_exists( $tablename ) {
 
 
 /**
- * Check if table exist
+ * Check whether a field exists in a database table.
  *
- * @global  $wpdb
- * @param string $tablename
- * @param  $fieldname
- * @return 0|1
+ * Missing tables return zero without issuing a column query. This keeps
+ * activation schema checks quiet while an owning edition is not installed yet.
+ *
+ * @param string $tablename Table name or Booking Calendar table suffix.
+ * @param string $fieldname Field name.
+ *
+ * @return int One when the field exists; otherwise zero.
+ * @global wpdb $wpdb WordPress database abstraction object.
  */
 function wpbc_is_field_in_table_exists( $tablename, $fieldname ) {
 
-
 	global $wpdb;
+
+	// Schema probes against a missing table emit a visible WordPress database error.
+	// Activation callers treat a missing table and a missing field identically, so
+	// fail closed before issuing SHOW COLUMNS.
+	if ( 0 === wpbc_is_table_exists( $tablename ) ) {
+		return 0;
+	}
 
 	if (
 		( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) )
@@ -108,16 +118,22 @@ function wpbc_is_field_in_table_exists( $tablename, $fieldname ) {
 
 
 /**
- * Check if index exist
+ * Check whether an index exists in a database table.
  *
- * @param string $tablename
- * @param        $fieldindex
+ * Missing tables return zero without issuing an index query.
  *
- * @return 0|1
- * @global       $wpdb
+ * @param string $tablename Table name or Booking Calendar table suffix.
+ * @param string $fieldindex Index name.
+ *
+ * @return int One when the index exists; otherwise zero.
+ * @global wpdb $wpdb WordPress database abstraction object.
  */
 function wpbc_is_index_in_table_exists( $tablename, $fieldindex ) {
 	global $wpdb;
+
+	if ( 0 === wpbc_is_table_exists( $tablename ) ) {
+		return 0;
+	}
 	if ( ( ! empty( $wpdb->prefix ) ) && ( strpos( $tablename, $wpdb->prefix ) === false ) ) {
 		$tablename = $wpdb->prefix . $tablename;
 	}

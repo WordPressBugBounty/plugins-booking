@@ -147,6 +147,7 @@ function wpbc_add_appointment_page_enqueue_js( $where_to_load ) {
 			'minutesLabel'     => __( 'min', 'booking' ),
 			'allowPast'        => $settings['allow_past'] ? 1 : 0,
 			'allowPastDateArr' => $allow_past_date_arr,
+			'adminBookingNonce' => WPBC_Add_Booking_Component::get_admin_booking_nonce(),
 		)
 	);
 }

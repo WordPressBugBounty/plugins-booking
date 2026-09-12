@@ -23,23 +23,49 @@ function wpbc_welcome_panel() {
 		return;
 	}
 
+	$is_live_demo = wpbc_is_this_demo();
+
 	?><script type="text/javascript">
 			jQuery( document ).ready( function (){
+				jQuery( document ).on( 'click.wpbcWelcomePanelDemo', '[data-wpbc-welcome-panel-demo-dismiss]', function () {
+					jQuery( '#wpbc_welcome_panel__version2' ).slideUp( 500 );
+				} );
 				setTimeout( function (){
+					if ( jQuery( '[data-wpbc-booking-pages-open-dialog]' ).length ) {
+						return;
+					}
 					if ( jQuery( '#wpbc_welcome_panel__version2' ).is( ':visible' ) ){
 						jQuery( '#wpbc_welcome_panel__version2' ).slideUp( 1000 );
 					}
 				}, 60000 );
 			} );
 		</script>
-		<div id="wpbc_welcome_panel__version2" style="display:none;">
+		<div id="wpbc_welcome_panel__version2" style="display:<?php echo esc_attr( $is_live_demo ? 'block' : 'none' ); ?>;">
 			<?php
-				$is_panel_visible = wpbc_is_dismissed( 'wpbc_welcome_panel__version2', array(
-														'title' => '<i class="menu_icon icon-1x wpbc_icn_close"></i> ',
-														'hint'  => __( 'Dismiss', 'booking' ),
-														'class' => 'wpbc_panel_get_started_dismiss0',
-														'css'   => 'text-decoration: none;font-weight: 600;float:right;background: #fff;border-radius: 7px;z-index: 1;position: relative;margin: 16px 15px 0 -32px;'
-													));
+				if ( $is_live_demo ) {
+					$is_panel_visible = true;
+					?>
+					<button
+						type="button"
+						class="wpbc_panel_get_started_dismiss0 wpbc_welcome_panel__dismiss"
+						data-wpbc-welcome-panel-demo-dismiss="1"
+						aria-label="<?php esc_attr_e( 'Dismiss', 'booking' ); ?>"
+						title="<?php esc_attr_e( 'Dismiss', 'booking' ); ?>"
+					>
+						<i class="menu_icon icon-1x wpbc_icn_close" aria-hidden="true"></i>
+					</button>
+					<?php
+				} else {
+					$is_panel_visible = wpbc_is_dismissed(
+						'wpbc_welcome_panel__version2',
+						array(
+							'title' => '<i class="menu_icon icon-1x wpbc_icn_close" aria-hidden="true"></i><span class="screen-reader-text">' . esc_html__( 'Dismiss', 'booking' ) . '</span>',
+							'hint'  => __( 'Dismiss', 'booking' ),
+							'class' => 'wpbc_panel_get_started_dismiss0 wpbc_welcome_panel__dismiss',
+							'css'   => '',
+						)
+					);
+				}
 				if ( $is_panel_visible ) {
 					wpbc_welcome_panel__version2__content();
 				}
@@ -49,7 +75,7 @@ function wpbc_welcome_panel() {
 
 function wpbc_welcome_panel__version2__content() {
 
-	?><div class="wpbc_welcome_panel" style="margin: 1px 0 20px;"><?php
+	?><div class="wpbc_welcome_panel"><?php
 
 		wpbc_ui_settings__panel__welcome();
 
@@ -68,71 +94,27 @@ function wpbc_welcome_panel__version2__content() {
  */
 function wpbc_ui_settings__panel__welcome(){
 
-
-	?><style type="text/css">
-		.wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar.wpbc_no_borders{
-			margin-top: 5px !important;
-		}
-		.wpbc_ui_settings__panel__welcome .wpbc_ui_settings__card_text_small h1{
-			line-height: 1.2;
-			margin: 0;
-		}
-		.wpbc_ui_settings__panel__welcome .about-description {
-			flex: 100%;
-			margin: 0;
-			color: #8a8a8a;
-			font-size: 20px;
-			font-weight: 600;
-			border-bottom: 1px solid #eee;
-			padding: 10px 20px;
-		}
-		.wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar .ui_container.ui_container_small .ui_group .ui_element .wpbc_ui_button {
-			white-space: wrap;
-			flex-flow: row nowrap;
-			height: auto;
-			padding: 5px 15px;
-			line-height: 1.74;
-		}
-		.wpbc_ui_settings__panel__welcome .wpbc_ui_settings__panel h1 {
-			margin: 0;
-		}
-	</style><?php
-
 	?><div class="wpbc_ui_settings__flex_container wpbc_ui_settings__panel__welcome"><?php
 
 		wpbc_ui_settings__panel_start();
 
 			wpbc_ui_settings__panel__welcome__header();
 
-			// wpbc_ui_settings_panel__card__setup_wizard();
 
-			wpbc_ui_settings_panel__card__version( array( 'is_show_wizard_button' => true ) );
+			wpbc_ui_settings_panel__card__open_test_pages_popup();
 
-			if (
-				function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' )
-				&& ! empty( wpbc_stp_wiz__is_exist_published_page_with_booking_form() )
-			) {
-				wpbc_ui_settings_panel__card__publish_into_exist( array() );
-			}
+			wpbc_ui_settings_panel__card__setup_wizard();
 
-
-			//Info: If needs to show "Shortcode Popup Dialog" and create new Pages, please uncomment all rows marked with: // FixIn: 10.6.6.2.
-			// wpbc_ui_settings_panel__card__publish_into_new( array() );			// FixIn: 10.6.6.2.
+			wpbc_ui_settings_panel__card__version();
 
 			?><div style="flex:100%;border-bottom: 1px solid #eeeff1;"></div><?php		// Divider
-
 
 			wpbc_ui_settings_panel__card__integreate_into_new();
 			wpbc_ui_settings_panel__card__shortcodes_help();
 			wpbc_ui_settings_panel__card__welcome__have_questions();
 
 			//wpbc_ui_settings_panel__card__welcome__next_steps();
-
-
-
-
-
-		wpbc_ui_settings__panel_end();
+	wpbc_ui_settings__panel_end();
 
 	?></div><?php
 }
@@ -140,8 +122,12 @@ function wpbc_ui_settings__panel__welcome(){
 
 	function wpbc_ui_settings__panel__welcome__header() {
 
-		?><p class="about-description"><?php esc_html_e( 'We&#8217;ve assembled some links to get you started:', 'booking' ); ?></p><?php
+		?><div class="wpbc_ui_settings__panel__welcome_header">
+			<p class="about-description"><?php esc_html_e( 'We&#8217;ve assembled some links to get you started:', 'booking' ); ?></p>
+		</div><?php
 	}
+
+
 
 
 	/**

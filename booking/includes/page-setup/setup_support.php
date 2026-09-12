@@ -14,6 +14,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 
 /**
+ * Check whether this site was initialized by the current first-install flow.
+ *
+ * This persisted marker is intentionally separate from wizard completion and
+ * prompt dismissal. It prevents plugin updates from adding the native Setup menu
+ * while allowing a new administrator to postpone the popup and return through
+ * that menu later.
+ *
+ * @return bool True for sites marked during genuine first installation.
+ */
+function wpbc_setup_wizard_is_initial_install_site() {
+
+	return 'On' === get_bk_option( 'booking_setup_wizard_initial_install' );
+}
+
+
+/**
  * Do we need to start 'Setup Wizard' ?
  *
  * @return bool

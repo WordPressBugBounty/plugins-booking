@@ -261,7 +261,15 @@ function wpbc_classic_booking_context_validate_submission( $context_token, $reso
 	$aggregate_resource_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) $aggregate_resource_ids ) ) ) );
 	sort( $aggregate_resource_ids, SORT_NUMERIC );
 	if ( $aggregate_resource_ids !== $context['aggregate_resource_ids'] ) {
-		return new WP_Error( 'classic_booking_context_aggregate_mismatch', __( 'The booking resources do not match this calendar. Please reload the page and try again.', 'booking' ) );
+		$troubleshooting_url       = 'https://wpbookingcalendar.com/faq/troubleshooting-the-booking-resources-do-not-match-this-calendar/';
+		$aggregate_mismatch_message = esc_html__( 'The booking resources do not match this calendar. Please reload the page and try again.', 'booking' );
+		$aggregate_mismatch_message .= sprintf(
+			'<br><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( $troubleshooting_url ),
+			esc_html__( 'Open the troubleshooting guide.', 'booking' )
+		);
+
+		return new WP_Error( 'classic_booking_context_aggregate_mismatch', $aggregate_mismatch_message );
 	}
 
 	if ( is_string( $submitted_dates ) ) {

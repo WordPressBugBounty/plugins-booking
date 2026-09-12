@@ -33,6 +33,31 @@ class WPBC_Add_Booking_Component {
 		return current_user_can( $cap );
 	}
 
+
+	/**
+	 * Create the administrator booking nonce for an authorized page context.
+	 *
+	 * The public booking endpoint accepts signed-out requests, so administrator
+	 * behavior must be enabled by a user-bound nonce and the same capability and
+	 * MultiUser checks that the server repeats during booking creation.
+	 *
+	 * @return string Administrator booking nonce, or an empty string when the
+	 *                current user cannot use the administrator booking workflow.
+	 */
+	public static function get_admin_booking_nonce() {
+
+		if (
+			! is_user_logged_in()
+			|| ! self::current_user_can_add_booking()
+			|| ! function_exists( 'wpbc_is_mu_user_can_be_here' )
+			|| ! wpbc_is_mu_user_can_be_here( 'activated_user' )
+		) {
+			return '';
+		}
+
+		return wp_create_nonce( 'wpbc_admin_booking_create' );
+	}
+
 	/**
 	 * Render the component and echo by default.
 	 *
@@ -195,9 +220,9 @@ class WPBC_Add_Booking_Component {
 	private static function print_context_js( $args ) {
 
 		$booking_hash        = isset( $args['booking_hash'] ) ? (string) $args['booking_hash'] : '';
-		$admin_booking_nonce = self::current_user_can_add_booking() ? wp_create_nonce( 'wpbc_admin_booking_create' ) : '';
+		$admin_booking_nonce = self::get_admin_booking_nonce();
 		$allow_past_date_arr = self::get_allow_past_min_date_arr( $args );
-		$context      = array(
+		$context              = array(
 			'resource_id'                     => absint( $args['resource_id'] ),
 			'selected_dates_without_calendar' => (string) $args['selected_dates_without_calendar'],
 			'selected_dates'                  => (string) $args['selected_dates'],
@@ -209,15 +234,39 @@ class WPBC_Add_Booking_Component {
 			'time_override_end'               => (string) $args['time_override_end'],
 			'allow_past'                      => ! empty( $args['allow_past'] ) ? 1 : 0,
 		);
+		$booking_context_js = "_wpbc.set_other_param( 'this_page_booking_hash', " . wp_json_encode( $booking_hash ) . ' );';
+		$booking_context_js .= "_wpbc.set_other_param( 'this_page_allow_past', " . wp_json_encode( ! empty( $args['allow_past'] ) ? 1 : 0 ) . ' );';
+		$booking_context_js .= "_wpbc.set_other_param( 'this_page_allow_past_arr', " . wp_json_encode( $allow_past_date_arr ) . ' );';
+		$booking_context_js .= "_wpbc.set_other_param( 'this_page_admin_booking_nonce', " . wp_json_encode( $admin_booking_nonce ) . ' );';
+
+		$is_context_queued = false;
+		if ( ! wp_doing_ajax() && class_exists( 'WPBC_FE_Assets' ) ) {
+			$is_context_queued = WPBC_FE_Assets::add_jq_ready_js_to_wp_script(
+				'wpbc_all',
+				$booking_context_js,
+				'wpbc:add-booking-admin-context:' . md5( $booking_context_js )
+			);
+		}
 		?>
 		<script type="text/javascript">
 			window.wpbc_add_booking_component_context = <?php echo wp_json_encode( $context ); ?>;
-			if ( 'undefined' !== typeof _wpbc ) {
-				_wpbc.set_other_param( 'this_page_booking_hash', <?php echo wp_json_encode( $booking_hash ); ?> );
-				_wpbc.set_other_param( 'this_page_allow_past', <?php echo wp_json_encode( ! empty( $args['allow_past'] ) ? 1 : 0 ); ?> );
-				_wpbc.set_other_param( 'this_page_allow_past_arr', <?php echo wp_json_encode( $allow_past_date_arr ); ?> );
-				_wpbc.set_other_param( 'this_page_admin_booking_nonce', <?php echo wp_json_encode( $admin_booking_nonce ); ?> );
-			}
+			<?php if ( ! $is_context_queued ) : ?>
+			( function () {
+				function apply_booking_context() {
+					if ( 'undefined' === typeof _wpbc ) {
+						return;
+					}
+
+					<?php echo $booking_context_js; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Values are JSON encoded above. ?>
+				}
+
+				if ( 'undefined' !== typeof _wpbc ) {
+					apply_booking_context();
+				} else {
+					document.addEventListener( 'DOMContentLoaded', apply_booking_context );
+				}
+			}() );
+			<?php endif; ?>
 		</script>
 		<?php
 	}

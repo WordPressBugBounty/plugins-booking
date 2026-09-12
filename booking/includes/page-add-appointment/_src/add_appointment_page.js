@@ -14,6 +14,7 @@
 		window._wpbc.set_other_param( 'this_page_booking_hash', '' );
 		window._wpbc.set_other_param( 'this_page_allow_past', labels.allowPast ? 1 : 0 );
 		window._wpbc.set_other_param( 'this_page_allow_past_arr', labels.allowPastDateArr || [] );
+		window._wpbc.set_other_param( 'this_page_admin_booking_nonce', String( labels.adminBookingNonce || '' ) );
 	}
 
 	/** Switch one shared right-sidebar panel. */

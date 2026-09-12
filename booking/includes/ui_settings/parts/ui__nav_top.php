@@ -69,6 +69,48 @@ function wpbc_ui__top_nav( $args = array() ) {
 }
 
 
+/**
+ * Order validated starter pages for the Booking Calendar top dropdown.
+ *
+ * The publishing module remains responsible for discovering valid pages. This
+ * helper controls presentation only and appends unknown future page purposes in
+ * their original order so new integrations are not hidden.
+ *
+ * @param array $wpbc_starter_pages Validated starter pages keyed by purpose.
+ *
+ * @return array Starter pages in top-dropdown display order.
+ */
+function wpbc_ui__top_nav__order_starter_pages( $wpbc_starter_pages ) {
+
+	if ( empty( $wpbc_starter_pages ) || ! is_array( $wpbc_starter_pages ) ) {
+		return array();
+	}
+
+	$preferred_page_order = array(
+		'full_day_booking',
+		'appointment_booking',
+		'time_slots_booking',
+		'resource_selector_booking',
+		'contact_form',
+	);
+	$ordered_starter_pages = array();
+
+	foreach ( $preferred_page_order as $page_key ) {
+		if ( array_key_exists( $page_key, $wpbc_starter_pages ) ) {
+			$ordered_starter_pages[ $page_key ] = $wpbc_starter_pages[ $page_key ];
+		}
+	}
+
+	foreach ( $wpbc_starter_pages as $page_key => $wpbc_starter_page ) {
+		if ( ! array_key_exists( $page_key, $ordered_starter_pages ) ) {
+			$ordered_starter_pages[ $page_key ] = $wpbc_starter_page;
+		}
+	}
+
+	return $ordered_starter_pages;
+}
+
+
 
 /**
  * Show element - "WPBC - Main Dropdown"
@@ -82,14 +124,8 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 	$svg_icon       = wpbc_get_svg_logo_for_background( '#555', '#e5e5e5', '1.0' );
 
 	$wpbc_starter_pages       = function_exists( 'wpbc_get_published_activation_booking_pages' ) ? wpbc_get_published_activation_booking_pages() : array();
+	$wpbc_starter_pages       = wpbc_ui__top_nav__order_starter_pages( $wpbc_starter_pages );
 	$wp_post_booking_absolute = false;
-
-	if (
-		empty( $wpbc_starter_pages ) &&
-		function_exists( 'wpbc_stp_wiz__is_exist_published_page_with_booking_form' )
-	) {
-		$wp_post_booking_absolute = wpbc_stp_wiz__is_exist_published_page_with_booking_form();
-	}
 
 	$el_arr = array(
 		// 'title'        => 'Booking Calendar',
@@ -108,11 +144,6 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 		$el_arr['items'][] = array(
 			'type'  => 'header',
 			'title' => __( 'Visit Booking Pages', 'booking' ),
-		);
-		$el_arr['items'][] = array(
-			'type'  => 'link',
-			'title' => __( 'Visit Home Page', 'booking' ),
-			'url'   => esc_url( home_url( '/' ) ),
 		);
 
 		foreach ( $wpbc_starter_pages as $wpbc_starter_page ) {
@@ -133,6 +164,12 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 				'url'   => esc_url( $wpbc_starter_page['url'] ),
 			);
 		}
+
+		$el_arr['items'][] = array(
+			'type'  => 'link',
+			'title' => __( 'Visit Home Page', 'booking' ),
+			'url'   => esc_url( home_url( '/' ) ),
+		);
 	} elseif ( ! empty( $wp_post_booking_absolute ) ) {
 		$el_arr['items'][] = array(
 			'type'  => 'header',
@@ -140,13 +177,13 @@ function wpbc_ui__top_nav__dropdown__wpbc() {
 		);
 		$el_arr['items'][] = array(
 			'type'  => 'link',
-			'title' => __( 'Visit Home Page', 'booking' ),
-			'url'   => esc_url( home_url( '/' ) ),
+			'title' => __( 'Go to page with booking form', 'booking' ),
+			'url'   => esc_url( $wp_post_booking_absolute ),
 		);
 		$el_arr['items'][] = array(
 			'type'  => 'link',
-			'title' => __( 'Go to page with booking form', 'booking' ),
-			'url'   => esc_url( $wp_post_booking_absolute ),
+			'title' => __( 'Visit Home Page', 'booking' ),
+			'url'   => esc_url( home_url( '/' ) ),
 		);
 	}
 	$el_arr['items'][] = array(

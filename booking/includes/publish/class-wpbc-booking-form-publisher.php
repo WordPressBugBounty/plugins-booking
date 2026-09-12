@@ -33,6 +33,7 @@ final class WPBC_Booking_Form_Publisher {
 	 */
 	public static function is_demo_restricted() {
 		$request_host       = self::get_request_host();
+  		// if ( $request_host === 'freetest.wpbookingcalendar.com' ) { return false; }
 		$site_host          = self::normalize_host( wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
 		$canonical_host     = '' !== $site_host ? $site_host : $request_host;
 		$official_demo_host = self::is_official_demo_host( $canonical_host );

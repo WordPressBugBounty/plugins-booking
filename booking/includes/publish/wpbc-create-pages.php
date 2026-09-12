@@ -546,20 +546,22 @@ function wpbc_get_activation_booking_form_page_configs() {
 
 	return array(
 		'full_day_booking' => array(
-			'template_key' => 'dates_form_with_inline_hints',
-			'form_slug'    => 'full_day_booking',
-			'form_title'   => esc_html__( 'Full Day Booking Form', 'booking' ),
-			'page_slug'    => 'wp-booking-calendar-full-day',
-			'page_title'   => esc_html__( 'Full Day Booking', 'booking' ),
-			'button_title' => esc_html__( 'Full day booking form', 'booking' ),
+			'template_key'      => 'dates_2_columns_hints_full_days', // 'dates_form_with_inline_hints',	                    // FixIn: 11.8.1.1.
+			'form_slug'         => 'full_day_booking',
+			'form_title'        => esc_html__( 'Full Day Booking Form', 'booking' ),
+			'page_slug'         => 'booking-calendar-full-day',
+			'legacy_page_slugs' => array( 'wp-booking-calendar-full-day' ),
+			'page_title'        => esc_html__( 'Full Day Booking', 'booking' ),
+			'button_title'      => esc_html__( 'Full day booking form', 'booking' ),
 		),
 		'time_slots_booking' => array(
-			'template_key' => 'time_slots_20_min_3_steps_review_with_hints',
-			'form_slug'    => 'time_slots_booking',
-			'form_title'   => esc_html__( 'Time Slots Booking Form', 'booking' ),
-			'page_slug'    => 'wp-booking-calendar-time-slots',
-			'page_title'   => esc_html__( 'Time Slots Booking', 'booking' ),
-			'button_title' => esc_html__( 'Time slots booking form', 'booking' ),
+			'template_key'      => 'time_slots_2_columns_hints',
+			'form_slug'         => 'time_slots_booking',
+			'form_title'        => esc_html__( 'Time Slots Booking Form', 'booking' ),
+			'page_slug'         => 'booking-calendar-time-slots',
+			'legacy_page_slugs' => array( 'wp-booking-calendar-time-slots' ),
+			'page_title'        => esc_html__( 'Time Slots Booking', 'booking' ),
+			'button_title'      => esc_html__( 'Time slots booking form', 'booking' ),
 		),
 		'time_appointments_booking' => array(
 			'template_key' => 'time_appointments_3_steps_review_with_hints',
@@ -575,12 +577,13 @@ function wpbc_get_activation_booking_form_page_configs() {
 			'assign_to_default_appointment_service' => true,
 		),
 		'contact_form' => array(
-			'template_key' => 'contact_form_simple',
-			'form_slug'    => 'contact_form',
-			'form_title'   => esc_html__( 'Contact Form', 'booking' ),
-			'page_slug'    => 'wp-booking-calendar-contact',
-			'page_title'   => esc_html__( 'Contact Form', 'booking' ),
-			'button_title' => esc_html__( 'Contact form', 'booking' ),
+			'template_key'      => 'contact_form_simple',
+			'form_slug'         => 'contact_form',
+			'form_title'        => esc_html__( 'Contact Form', 'booking' ),
+			'page_slug'         => 'booking-calendar-contact',
+			'legacy_page_slugs' => array( 'wp-booking-calendar-contact' ),
+			'page_title'        => esc_html__( 'Contact Form', 'booking' ),
+			'button_title'      => esc_html__( 'Contact form', 'booking' ),
 		),
 	);
 }
@@ -625,15 +628,197 @@ function wpbc_get_activation_booking_page_configs() {
 	}
 
 	$page_configs['appointment_booking'] = array(
-		'page_slug'        => 'wpbc-appointment-booking',
-		'page_title'       => esc_html__( 'Book an Appointment', 'booking' ),
-		'button_title'     => esc_html__( 'Appointment booking form', 'booking' ),
-		'shortcode'        => '[booking_appointment]',
-		'shortcode_checks' => array( '[booking_appointment]', '[booking_appointment ' ),
-		'resource_id'      => 0,
+		'page_slug'         => 'booking-calendar-appointment',
+		'legacy_page_slugs' => array( 'wpbc-appointment-booking' ),
+		'page_title'        => esc_html__( 'Book an Appointment', 'booking' ),
+		'button_title'      => esc_html__( 'Appointment booking form', 'booking' ),
+		'shortcode'         => '[booking_appointment]',
+		'shortcode_checks'  => array( '[booking_appointment]', '[booking_appointment ' ),
+		'resource_id'       => 0,
+	);
+	$page_configs['resource_selector_booking'] = array(
+		'page_slug'         => 'booking-calendar-resource-selection',
+		'legacy_page_slugs' => array(),
+		'page_title'        => esc_html__( 'Resource Selection', 'booking' ),
+		'button_title'      => esc_html__( 'Resource selection', 'booking' ),
+		'shortcode'         => '[booking_resource_selector]',
+		'shortcode_checks'  => array( '[booking_resource_selector]', '[booking_resource_selector ' ),
+		'resource_id'       => 0,
 	);
 
 	return $page_configs;
+}
+
+
+/**
+ * Get the Free Booking Received page definition used during initial activation.
+ *
+ * The legacy slug remains lookup-only so a clean reinstall can reuse a retained
+ * page without making legacy URLs canonical for new installations.
+ *
+ * @return array Confirmation page definition with canonical and legacy slugs.
+ */
+function wpbc_get_activation_confirmation_page_config() {
+
+	return array(
+		'page_slug'         => 'booking-calendar-confirmation',
+		'legacy_page_slugs' => array( 'wpbc-booking-received' ),
+	);
+}
+
+
+/**
+ * Get the Personal-edition customer page definitions used during activation.
+ *
+ * @return array Personal page definitions keyed by stable purpose.
+ */
+function wpbc_get_activation_personal_page_configs() {
+
+	return array(
+		'manage_booking' => array(
+			'page_slug'         => 'booking-calendar-manage-booking',
+			'legacy_page_slugs' => array( 'wpbc-my-booking' ),
+			'page_title'        => esc_html__( 'My Booking', 'booking' ),
+			'shortcode'         => '[bookingedit]',
+			'option_name'       => 'booking_url_bookings_edit_by_visitors',
+		),
+		'my_bookings' => array(
+			'page_slug'         => 'booking-calendar-my-bookings',
+			'legacy_page_slugs' => array( 'wpbc-my-bookings-listing' ),
+			'page_title'        => esc_html__( 'My Bookings Listing', 'booking' ),
+			'shortcode'         => '[bookingcustomerlisting]',
+			'option_name'       => 'booking_url_bookings_listing_by_customer',
+		),
+	);
+}
+
+
+/**
+ * Get the Business Small payment-result page definitions used during activation.
+ *
+ * @return array Payment-result definitions keyed by stable outcome.
+ */
+function wpbc_get_activation_payment_page_configs() {
+
+	return array(
+		'success' => array(
+			'page_slug'          => 'booking-calendar-payment-success',
+			'legacy_page_slugs'  => array( 'wpbc-booking-payment-successful' ),
+			'page_title'         => esc_html__( 'Booking Payment Confirmation', 'booking' ),
+			'page_content'       => esc_html__( 'Thank you for your booking. Your payment for the booking has been successfully received.', 'booking' )
+				. "\r\n\r\n[booking_confirm]",
+			'required_shortcode' => '[booking_confirm]',
+			'default_url'        => '/successful',
+			'option_names'       => array(
+				'booking_stripe_v3_order_successful',
+				'booking_paypal_std_co_order_successful',
+				'booking_paypal_return_url',
+				'booking_authorizenet_order_successful',
+				'booking_sage_order_successful',
+				'booking_redsys_order_successful',
+				'booking_ideal_return_url',
+				'booking_ipay88_return_url',
+			),
+		),
+		'failed' => array(
+			'page_slug'          => 'booking-calendar-payment-failed',
+			'legacy_page_slugs'  => array( 'wpbc-booking-payment-failed' ),
+			'page_title'         => esc_html__( 'Booking Payment Failed', 'booking' ),
+			'page_content'       => esc_html__( 'Payment Unsuccessful. Please contact us for assistance.', 'booking' ),
+			'required_shortcode' => '',
+			'default_url'        => '/failed',
+			'option_names'       => array(
+				'booking_stripe_v3_order_failed',
+				'booking_paypal_std_co_order_failed',
+				'booking_paypal_cancel_return_url',
+				'booking_authorizenet_order_failed',
+				'booking_sage_order_failed',
+				'booking_redsys_order_failed',
+				'booking_ideal_cancel_return_url',
+				'booking_ipay88_cancel_return_url',
+			),
+		),
+	);
+}
+
+
+/**
+ * Check whether an activation payment URL still contains its replaceable default.
+ *
+ * Missing options and the released placeholder paths may be connected to a
+ * newly eligible payment page. Every other value is treated as administrator
+ * configuration and must remain unchanged.
+ *
+ * @param mixed  $configured_url Saved payment return URL, or false when absent.
+ * @param string $default_url    Released relative placeholder URL.
+ *
+ * @return bool True when activation may store the eligible payment page URL.
+ */
+function wpbc_should_update_activation_payment_url( $configured_url, $default_url ) {
+
+	if ( false === $configured_url ) {
+		return true;
+	}
+
+	return (string) $default_url === wpbc_make_link_relative( $configured_url );
+}
+
+
+/**
+ * Find an existing activation-owned page by its canonical or legacy slug.
+ *
+ * Canonical slugs are checked first. Legacy aliases are used only to preserve
+ * existing pages and prevent duplicates after a full plugin-data reset.
+ *
+ * @param string $page_slug         Canonical page slug.
+ * @param array  $legacy_page_slugs Previously released page slugs.
+ *
+ * @return WP_Post|null Existing WordPress page, or null when no slug matches.
+ */
+function wpbc_get_activation_page_by_slugs( $page_slug, $legacy_page_slugs = array() ) {
+
+	$page_slugs = array_merge( array( $page_slug ), (array) $legacy_page_slugs );
+	$page_slugs = array_unique( array_filter( array_map( 'sanitize_title', $page_slugs ) ) );
+
+	foreach ( $page_slugs as $candidate_page_slug ) {
+		$wp_post = get_page_by_path( $candidate_page_slug, OBJECT, 'page' );
+
+		if ( $wp_post instanceof WP_Post ) {
+			return $wp_post;
+		}
+	}
+
+	return null;
+}
+
+
+/**
+ * Get the first published activation page matching a canonical or legacy slug.
+ *
+ * This read-only lookup is separate from the activation writer lookup because
+ * activation must recognize retained non-published pages to avoid duplicates,
+ * while public-page navigation must never advertise an inaccessible draft or
+ * trashed canonical page when a published legacy page is still available.
+ *
+ * @param string $page_slug         Canonical activation page slug.
+ * @param array  $legacy_page_slugs Previously released lookup-only slugs.
+ *
+ * @return WP_Post|null Published page, or null when no public match exists.
+ */
+function wpbc_get_published_activation_page_by_slugs( $page_slug, $legacy_page_slugs = array() ) {
+
+	$page_slugs = array_merge( array( $page_slug ), (array) $legacy_page_slugs );
+	$page_slugs = array_unique( array_filter( array_map( 'sanitize_title', $page_slugs ) ) );
+
+	foreach ( $page_slugs as $candidate_page_slug ) {
+		$wp_post = get_page_by_path( $candidate_page_slug, OBJECT, 'page' );
+
+		if ( $wp_post instanceof WP_Post && 'publish' === $wp_post->post_status ) {
+			return $wp_post;
+		}
+	}
+
+	return null;
 }
 
 
@@ -756,6 +941,102 @@ function wpbc_create_activation_custom_booking_forms() {
 
 
 /**
+ * Return the ordered activation-page level for a Booking Calendar edition.
+ *
+ * The ordering is intentionally limited to product editions. Page groups use
+ * these levels to determine whether a paid activation has crossed the edition
+ * boundary that first makes those pages available.
+ *
+ * @param string $edition_id Booking Calendar edition identifier.
+ *
+ * @return int Edition level, or -1 when the identifier is not supported.
+ */
+function wpbc_get_activation_page_edition_level( $edition_id ) {
+
+	$edition_levels = array(
+		'free'      => 0,
+		'personal'  => 1,
+		'biz_s'     => 2,
+		'biz_m'     => 3,
+		'biz_l'     => 4,
+		'multiuser' => 5,
+	);
+
+	$edition_id = (string) $edition_id;
+
+	return isset( $edition_levels[ $edition_id ] ) ? $edition_levels[ $edition_id ] : -1;
+}
+
+
+/**
+ * Check whether a paid-edition transition newly unlocks one page group.
+ *
+ * This pure comparison keeps Free-to-Pro, lower-to-higher, reactivation,
+ * update, and downgrade behavior deterministic and independently testable.
+ *
+ * @param string $previous_edition_id Previously provisioned or detected edition.
+ * @param string $current_edition_id  Edition active during this activation.
+ * @param string $required_edition_id First edition that owns the page group.
+ *
+ * @return bool True when this activation crosses the required edition boundary.
+ */
+function wpbc_is_activation_page_edition_transition( $previous_edition_id, $current_edition_id, $required_edition_id ) {
+
+	$previous_edition_level = wpbc_get_activation_page_edition_level( $previous_edition_id );
+	$current_edition_level  = wpbc_get_activation_page_edition_level( $current_edition_id );
+	$required_edition_level = wpbc_get_activation_page_edition_level( $required_edition_id );
+
+	if ( 0 > $previous_edition_level || 0 > $current_edition_level || 1 > $required_edition_level ) {
+		return false;
+	}
+
+	return $previous_edition_level < $required_edition_level
+		&& $required_edition_level <= $current_edition_level;
+}
+
+
+/**
+ * Check whether activation-owned WordPress pages may be provisioned.
+ *
+ * Free-owned pages remain restricted to the immutable first-Free-install
+ * decision. Paid page groups can additionally opt into the exact Pro edition
+ * transition that first makes them available. The Pro activation layer owns
+ * that transition state and exposes it through a narrow filter; normal Free or
+ * Pro updates therefore remain fail-closed.
+ *
+ * @param string $required_edition_id First edition that owns the page group.
+ *
+ * @return bool True only during the qualifying initial activation request.
+ */
+function wpbc_should_create_activation_pages( $required_edition_id = 'free' ) {
+	$required_edition_id    = (string) $required_edition_id;
+	$required_edition_level = wpbc_get_activation_page_edition_level( $required_edition_id );
+
+	if ( 0 > $required_edition_level ) {
+		return false;
+	}
+
+	if ( function_exists( 'wpbc_is_plugin_initial_install' ) && wpbc_is_plugin_initial_install() ) {
+		return true;
+	}
+
+	if ( 0 === $required_edition_level ) {
+		return false;
+	}
+
+	/**
+	 * Filter whether the current paid-edition activation newly owns a page group.
+	 *
+	 * @since 11.8.1
+	 *
+	 * @param bool   $should_create_pages  Fail-closed default decision.
+	 * @param string $required_edition_id First edition that owns the page group.
+	 */
+	return (bool) apply_filters( 'wpbc_should_create_paid_edition_activation_pages', false, $required_edition_id );
+}
+
+
+/**
  * Build starter page content with a booking shortcode.
  *
  * @param string $shortcode Booking shortcode.
@@ -808,6 +1089,10 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 	 */
 	do_action( 'wpbc_activation_custom_booking_forms_created' );
 
+	if ( ! wpbc_should_create_activation_pages() ) {
+		return;
+	}
+
 	$configs = wpbc_get_activation_booking_page_configs();
 	if ( empty( $configs ) || ! is_array( $configs ) ) {
 		return;
@@ -827,11 +1112,14 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 			continue;
 		}
 
-		$content   = wpbc_get_activation_booking_page_content( $shortcode );
+		$content           = wpbc_get_activation_booking_page_content( $shortcode );
+		$legacy_page_slugs = isset( $config['legacy_page_slugs'] ) ? (array) $config['legacy_page_slugs'] : array();
+		$existing_page     = wpbc_get_activation_page_by_slugs( $config['page_slug'], $legacy_page_slugs );
 
 		$result_arr = wpbc_add_shortcode_into_page(
 			array(
 				'page_post_name'        => $config['page_slug'],
+				'page_id'               => $existing_page instanceof WP_Post ? $existing_page->ID : 0,
 				'post_title'            => $config['page_title'],
 				'shortcode'             => $content,
 				'check_exist_shortcode' => $shortcode_checks,
@@ -840,7 +1128,7 @@ function wpbc_create_page_with_booking_form( $default_options_to_add = array() )
 		);
 
 		if ( WPBC_IS_PLAYGROUND && empty( $front_page_id ) && ! empty( $result_arr['relative_url'] ) ) {
-			$wp_post = get_page_by_path( $config['page_slug'] );
+			$wp_post = wpbc_get_activation_page_by_slugs( $config['page_slug'], $legacy_page_slugs );
 			if ( ! empty( $wp_post ) ) {
 				$front_page_id = $wp_post->ID;
 			}
@@ -872,8 +1160,9 @@ function wpbc_get_published_activation_booking_pages() {
 
 	foreach ( $configs as $key => $config ) {
 
-		$wp_post = get_page_by_path( $config['page_slug'] );
-		if ( empty( $wp_post ) ) {
+		$legacy_page_slugs = isset( $config['legacy_page_slugs'] ) ? (array) $config['legacy_page_slugs'] : array();
+		$wp_post           = wpbc_get_published_activation_page_by_slugs( $config['page_slug'], $legacy_page_slugs );
+		if ( ! ( $wp_post instanceof WP_Post ) ) {
 			continue;
 		}
 
@@ -924,6 +1213,10 @@ function wpbc_get_published_activation_booking_pages() {
  */
 function wpbc_create_page_thank_you( $default_options_to_add ) {                                                        // FixIn: 9.6.2.11.
 
+	if ( ! wpbc_should_create_activation_pages() ) {
+		return false;
+	}
+
 	global $wp_rewrite;
 	if ( is_null( $wp_rewrite ) ) {                                                                                     // FixIn: 9.7.1.1.
 
@@ -945,7 +1238,11 @@ function wpbc_create_page_thank_you( $default_options_to_add ) {                
 	       )
 		|| ( '/' == wpbc_make_link_relative( get_bk_option( 'booking_thank_you_page_URL' ) ) )
 	){
-		$wp_post = get_page_by_path( 'wpbc-booking-received' );
+		$confirmation_page_config = wpbc_get_activation_confirmation_page_config();
+		$wp_post                  = wpbc_get_activation_page_by_slugs(
+			$confirmation_page_config['page_slug'],
+			$confirmation_page_config['legacy_page_slugs']
+		);
 
 		$post_url = '';
 
@@ -955,7 +1252,7 @@ function wpbc_create_page_thank_you( $default_options_to_add ) {                
 				'post_title'   => esc_html( __( 'Booking Received', 'booking' ) ),
 				'post_content' => esc_html( __( 'Thank you for your booking. Your booking has been successfully received.', 'booking' ) )
                                  .  "\r\n" . ' [booking_confirm]',
-				'post_name'    => 'wpbc-booking-received'
+				'post_name'    => $confirmation_page_config['page_slug'],
 			);
 			$post_id = wpbc_create_page( $page_params );
 
@@ -994,6 +1291,10 @@ add_bk_action( 'wpbc_before_activation__add_options', 'wpbc_create_page_thank_yo
  */
 function wpbc_create_page_bookingedit(){                                                                                // FixIn: 9.6.2.10.
 
+	if ( ! wpbc_should_create_activation_pages( 'personal' ) ) {
+		return false;
+	}
+
 	global $wp_rewrite;
 	if ( is_null( $wp_rewrite ) ) {     // FixIn: 9.7.1.1.
 		// Maybe it was not init,  yet
@@ -1003,180 +1304,89 @@ function wpbc_create_page_bookingedit(){                                        
 		return false;
 	}
 
-	// Booking Edit page - set  default page and URL ---------------------------------------------------------------
-	$url_booking_edit = get_bk_option( 'booking_url_bookings_edit_by_visitors' );
-	if (
-		   ( site_url() == $url_booking_edit )
-		&& ( empty( get_page_by_path( 'wpbc-my-booking' ) ) )
-	){
-		$page_params = array(
-			'post_content' => '[bookingedit]',                          // The post content
-			'post_name'    => 'wpbc-my-booking',                        // sanitize_title( $post_title )
-			'post_title'   => esc_html__( 'My Booking', 'booking' )     // Title
+	$page_configs = wpbc_get_activation_personal_page_configs();
+
+	foreach ( $page_configs as $page_config ) {
+		$configured_page_url = get_bk_option( $page_config['option_name'] );
+		$existing_page       = wpbc_get_activation_page_by_slugs(
+			$page_config['page_slug'],
+			$page_config['legacy_page_slugs']
 		);
 
-		$post_id = wpbc_create_page( $page_params );
-
-		if ( ! empty( $post_id ) ) {
-			$post_url = get_permalink( $post_id );
-			update_bk_option( 'booking_url_bookings_edit_by_visitors', $post_url );
-		}
-	} else if (
-				(
-					( site_url() == $url_booking_edit )
-				 || ( empty( $url_booking_edit ) )
+		if ( site_url() === $configured_page_url && ! ( $existing_page instanceof WP_Post ) ) {
+			$page_id = wpbc_create_page(
+				array(
+					'post_content' => $page_config['shortcode'],
+					'post_name'    => $page_config['page_slug'],
+					'post_title'   => $page_config['page_title'],
 				)
-			    && ( ! empty( get_page_by_path( 'wpbc-my-booking' ) ) )
-	){
-		$wp_post = get_page_by_path( 'wpbc-my-booking' );
-		if ( ! empty( $wp_post ) ) {
-			update_bk_option( 'booking_url_bookings_edit_by_visitors', get_permalink(  $wp_post->ID ) );
+			);
+
+			if ( ! empty( $page_id ) ) {
+				update_bk_option( $page_config['option_name'], get_permalink( $page_id ) );
+			}
+		} elseif (
+			( site_url() === $configured_page_url || empty( $configured_page_url ) )
+			&& $existing_page instanceof WP_Post
+		) {
+			update_bk_option( $page_config['option_name'], get_permalink( $existing_page->ID ) );
 		}
+
+		$relative_page_url = wpbc_make_link_relative( get_bk_option( $page_config['option_name'] ) );
+		wpbc_add_shortcode_to_exist_page( $relative_page_url, $page_config['shortcode'] );
 	}
-
-	// -----------------------------------------------------------------------------------------------------------------
-	// Check  if existing page has our shortcode
-	// -----------------------------------------------------------------------------------------------------------------
-	$booking_edit_relative_url = wpbc_make_link_relative( get_bk_option( 'booking_url_bookings_edit_by_visitors' ) );
-	$is_added = wpbc_add_shortcode_to_exist_page( $booking_edit_relative_url, '[bookingedit]' );
-
-
-	// =================================================================================================================
-	// =================================================================================================================
-	// =================================================================================================================
-
-
-	// Booking Listing page - set  default page and URL ---------------------------------------------------------------
-	$url_booking_edit = get_bk_option( 'booking_url_bookings_listing_by_customer' );
-	if (
-		   ( site_url() == $url_booking_edit )
-		&& ( empty( get_page_by_path( 'wpbc-my-bookings-listing' ) ) )
-	){
-
-		$page_params = array(
-			'post_content' => '[bookingcustomerlisting]',                           // The post content
-			'post_name'    => 'wpbc-my-bookings-listing',                           // sanitize_title( $post_title )
-			'post_title'   => esc_html__( 'My Bookings Listing', 'booking' )                // Title
-		);
-
-		$post_id = wpbc_create_page( $page_params );
-
-		if ( ! empty( $post_id ) ) {
-			$post_url = get_permalink( $post_id );
-			update_bk_option( 'booking_url_bookings_listing_by_customer', $post_url );
-		}
-	} else if (
-				(
-					( site_url() == $url_booking_edit )
-				 || ( empty( $url_booking_edit ) )
-				)
-			    && ( ! empty( get_page_by_path( 'wpbc-my-bookings-listing' ) ) )
-	){
-		$wp_post = get_page_by_path( 'wpbc-my-bookings-listing' );
-		if (  ! empty( $wp_post )  ){
-			update_bk_option( 'booking_url_bookings_listing_by_customer', get_permalink(  $wp_post->ID ) );
-		}
-	}
-
-
-	// -----------------------------------------------------------------------------------------------------------------
-	// Check  if existing page has our shortcode
-	// -----------------------------------------------------------------------------------------------------------------
-	$booking_listing_relative_url = wpbc_make_link_relative( get_bk_option( 'booking_url_bookings_listing_by_customer' ) );
-	$is_added = wpbc_add_shortcode_to_exist_page( $booking_listing_relative_url, '[bookingcustomerlisting]' );
 
 }
 
 
 function wpbc_create_page_booking_payment_status(){                                                                     // FixIn: 9.6.2.13.
 
+	if ( ! wpbc_should_create_activation_pages( 'biz_s' ) ) {
+		return false;
+	}
+
 	global $wp_rewrite;
 	if ( is_null( $wp_rewrite ) ) {     // FixIn: 9.7.1.1.
 		return false;
 	}
 
-	// Successful Payment page options ---------------------------------------------------------------------------------
+	$page_configs = wpbc_get_activation_payment_page_configs();
 
-	$post_url_relative = false;
-	$slug              = 'wpbc-booking-payment-successful';
-	if ( empty( get_page_by_path( $slug ) ) ) {
-		// Create page
-		$page_params = array(
-			'post_title'   => esc_html( __( 'Booking Payment Confirmation', 'booking' ) ),
-			'post_content' => esc_html( __( 'Thank you for your booking. Your payment for the booking has been successfully received.', 'booking' ) ),
-			'post_name'    => $slug
+	foreach ( $page_configs as $page_config ) {
+		$existing_page = wpbc_get_activation_page_by_slugs(
+			$page_config['page_slug'],
+			$page_config['legacy_page_slugs']
 		);
 
-		$post_id = wpbc_create_page( $page_params );
-
-		if ( ! empty( $post_id ) ) {
-			$post_url          = get_permalink( $post_id );
-			$post_url_relative = str_replace( site_url(), '', $post_url );
+		if ( ! ( $existing_page instanceof WP_Post ) ) {
+			$page_id = wpbc_create_page(
+				array(
+					'post_title'   => $page_config['page_title'],
+					'post_content' => $page_config['page_content'],
+					'post_name'    => $page_config['page_slug'],
+				)
+			);
+			$existing_page = ! empty( $page_id ) ? get_post( $page_id ) : null;
 		}
-	}
-	if ( ! empty( $post_url_relative ) ) {
 
-		//$post_url_relative = wpbc_make_link_absolute( $post_url_relative );
-
-		$payment_systems = array(
-			'booking_stripe_v3_order_successful',
-			'booking_paypal_return_url',
-			'booking_authorizenet_order_successful',
-			'booking_sage_order_successful',
-			'booking_ideal_return_url',
-			'booking_ipay88_return_url'
-		);
-
-		foreach ( $payment_systems as $payment_system ) {
-
-			if (
-				    ( false === get_bk_option( $payment_system ) )
-			     || ( '/successful' == wpbc_make_link_relative( get_bk_option( $payment_system ) ) )
-			) {
-				update_bk_option( $payment_system, wpbc_make_link_relative( $post_url_relative ) );
-			}
+		if ( ! ( $existing_page instanceof WP_Post ) || 'publish' !== $existing_page->post_status ) {
+			continue;
 		}
-	}
 
-	// Failed Payment page options -------------------------------------------------------------------------------------
-
-	$post_url_relative = false;
-	$slug              = 'wpbc-booking-payment-failed';
-	if ( empty( get_page_by_path( $slug ) ) ) {
-		// Create page
-		$page_params = array(
-			'post_title'   => esc_html( __( 'Booking Payment Failed', 'booking' ) ),
-			'post_content' => esc_html( __( 'Payment Unsuccessful. Please contact us for assistance.', 'booking' ) ),
-			'post_name'    => $slug
-		);
-
-		$post_id = wpbc_create_page( $page_params );
-
-		if ( ! empty( $post_id ) ) {
-			$post_url          = get_permalink( $post_id );
-			$post_url_relative = str_replace( site_url(), '', $post_url );
+		$page_url_relative = wpbc_make_link_relative( get_permalink( $existing_page->ID ) );
+		if ( empty( $page_url_relative ) ) {
+			continue;
 		}
-	}
-	if ( ! empty( $post_url_relative ) ) {
 
-		//$post_url_relative = wpbc_make_link_absolute( $post_url_relative );
+		if ( ! empty( $page_config['required_shortcode'] ) ) {
+			wpbc_add_shortcode_to_exist_page( $page_url_relative, $page_config['required_shortcode'] );
+		}
 
-		$payment_systems = array(
-			'booking_stripe_v3_order_failed',
-			'booking_paypal_cancel_return_url',
-			'booking_authorizenet_order_failed',
-			'booking_sage_order_failed',
-			'booking_ideal_cancel_return_url',
-			'booking_ipay88_cancel_return_url'
-		);
+		foreach ( $page_config['option_names'] as $option_name ) {
+			$configured_url = get_bk_option( $option_name );
 
-		foreach ( $payment_systems as $payment_system ) {
-
-			if (
-				    ( false === get_bk_option( $payment_system ) )
-			     || ( '/failed' == wpbc_make_link_relative( get_bk_option( $payment_system ) ) )
-			) {
-				update_bk_option( $payment_system, wpbc_make_link_relative( $post_url_relative ) );
+			if ( wpbc_should_update_activation_payment_url( $configured_url, $page_config['default_url'] ) ) {
+				update_bk_option( $option_name, $page_url_relative );
 			}
 		}
 	}

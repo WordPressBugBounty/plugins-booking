@@ -168,26 +168,15 @@ function wpbc_bfb_activation__get_templates_registry() {
 
 	/*
 	 * Template cards are listed newest-first, with the row ID as the final
-	 * tie-breaker. Seed the preferred Appointment flow after every other bundled
-	 * template so it is the first matching card after a clean activation.
+	 * tie-breaker. Append preferred templates in increasing display priority.
+	 * The last bundled template seeded is therefore the first library card after
+	 * activation. The insert-only records below never overwrite installed rows.
 	 */
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/appointments_services_flow.php';
-
-	/*
-	 * New Full Day - Booking Forms - 1st in the list.
-	 */
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_with_inline_hints.php';
-
-	/*
-	 * Keep the newest two-column Full Day form first in the template library.
-	 */
-	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_2_columns_hints_full_days.php';
-
-	/*
-	 * Keep the vertical Full Day starter first in the template library. The
-	 * Setup Wizard uses its stable key to open this exact template.
-	 */
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_vertical_hints_full_days.php';
+	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_2_columns_hints_full_days.php';
+	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/time_slots_2_columns_hints.php';
 
 	foreach ( $template_files as $template_file ) {
 		if ( file_exists( $template_file ) ) {

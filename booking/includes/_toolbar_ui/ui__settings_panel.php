@@ -1919,11 +1919,16 @@ function wpbc_ui_settings__panel__statistic(){
 	<?php
 }
 
+	/**
+	 * Render the administration card that opens the Setup Wizard.
+	 *
+	 * @return void
+	 */
 	function wpbc_ui_settings_panel__card__setup_wizard() {
 		?>
 		<div class="wpbc_ui_settings__card wpbc_ui_settings__card_divider_right">
-			<div class="wpbc_ui_settings__center  wpbc_container wpbc_container_booking_form">
-				<a class="wpbc_button_light button-primary wpbc_button_green tooltip_top" style="padding: 12px 24px;"
+			<div class="wpbc_ui_settings__center">
+				<a class="wpbc_admin_button wpbc_admin_button--success tooltip_top"
 				   title="<?php echo esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ); ?>"
 				   href="<?php echo esc_url( wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) ); ?>"><?php
 					esc_html_e( 'Start Setup Wizard', 'booking' )
@@ -1931,6 +1936,40 @@ function wpbc_ui_settings__panel__statistic(){
 			</div>
 		</div>
 		<?php
+	}
+
+
+	/**
+	 * Show the starter-page testing action.
+	 *
+	 * The manual starter-page action is intentionally available only on a site
+	 * retained as a genuine first installation with at least one currently valid
+	 * starter page. It reopens the dialog without changing its automatic prompt
+	 * state and never creates or repairs a missing page.
+	 *
+	 * @return void
+	 */
+	function wpbc_ui_settings_panel__card__open_test_pages_popup() {
+
+		$can_open_booking_pages = class_exists( 'WPBC_Setup_Wizard_First_Run_Popup' ) && WPBC_Setup_Wizard_First_Run_Popup::can_manually_open_booking_pages_dialog();
+
+		if ( $can_open_booking_pages ) :
+			?>
+			<div class="wpbc_ui_settings__card wpbc_ui_settings__card_divider_right">
+				<div class="wpbc_ui_settings__center">
+					<button
+						type="button"
+						class="wpbc_admin_button wpbc_admin_button--primary"
+						data-wpbc-booking-pages-open-dialog="1"
+					>
+						<?php
+						esc_html_e( 'Test your booking pages', 'booking' ); ?>
+					</button>
+				</div>
+			</div>
+			<?php
+		endif;
+
 	}
 
 	function wpbc_ui_settings_panel__card__transaltion_download() {
@@ -1967,6 +2006,8 @@ function wpbc_ui_settings__panel__statistic(){
 
 	/**
 	 * Show Version card in top  panel
+	 *
+	 * @param array $params_btn Optional version-card presentation parameters.
 	 *
 	 * @return void
 	 */
@@ -2014,8 +2055,8 @@ function wpbc_ui_settings__panel__statistic(){
 			</div>
 
 		<?php if ( $params_btn['is_show_wizard_button'] ) { ?>
-			<div class="wpbc_ui_settings__center  wpbc_container wpbc_container_booking_form" style="flex: 1 1 auto;">
-				<a class="wpbc_button_light button-primary wpbc_button_green tooltip_top" style="padding: 12px 24px;"
+			<div class="wpbc_ui_settings__center" style="flex: 1 1 auto;">
+				<a class="wpbc_admin_button wpbc_admin_button--success tooltip_top"
 				   title="<?php echo esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ); ?>"
 				   href="<?php echo esc_url( wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) ); ?>"><?php
 					esc_html_e( 'Start Setup Wizard', 'booking' )

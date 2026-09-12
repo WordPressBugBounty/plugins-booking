@@ -234,9 +234,18 @@ function wpbc_booking_modes_run_appointment_quickstart() {
 
 	$booking_form_id = ! empty( $service['booking_form_id'] ) ? absint( $service['booking_form_id'] ) : 0;
 	$provider_id = ! empty( $service['resource_ids'] ) ? absint( reset( $service['resource_ids'] ) ) : absint( $default_provider_id );
+	$activation_page_configs = function_exists( 'wpbc_get_activation_booking_page_configs' )
+		? wpbc_get_activation_booking_page_configs()
+		: array();
+	$appointment_page_config = isset( $activation_page_configs['appointment_booking'] )
+		? $activation_page_configs['appointment_booking']
+		: array();
+	$appointment_page_slug   = isset( $appointment_page_config['page_slug'] )
+		? (string) $appointment_page_config['page_slug']
+		: 'booking-calendar-appointment';
 	$page_result = wpbc_booking_modes_quickstart_ensure_page(
 		'appointment_booking',
-		'wpbc-appointment-booking',
+		$appointment_page_slug,
 		__( 'Book an Appointment', 'booking' ),
 		'[booking_appointment]',
 		'[booking_appointment'

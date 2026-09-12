@@ -259,12 +259,14 @@ public function define_admin_menu(){
 			'user_role'      => get_bk_option( 'booking_user_role_settings' ),
 		) );
 
-	if ( ( wpbc_is_user_can_access_wizard_page() ) && ( ! wpbc_setup_wizard_page__is_all_steps_completed() ) ) {
+	if ( wpbc_is_user_can_access_wizard_page() ) {
 
-		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
+		$setup_steps           = new WPBC_SETUP_WIZARD_STEPS();
+		$is_setup_menu_visible = wpbc_setup_wizard_is_initial_install_site()
+			&& ! $setup_steps->db__is_all_steps_completed();
 
 		self::$instance->admin_menu['setup'] = new WPBC_Admin_Menus( 'wpbc-setup', array(
-				'in_menu'        => 'wpbc',
+				'in_menu'        => $is_setup_menu_visible ? 'wpbc' : false,
 				'menu_title'     => $setup_steps->get_plugin_menu_title__setup_progress(),
 				'page_header'    => ucwords( __( 'Setup', 'booking' ) ),
 				'browser_header' => ucwords( __( 'Setup', 'booking' ) ) . ' - ' . __( 'Booking Calendar', 'booking' ),

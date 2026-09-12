@@ -14,6 +14,57 @@
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
 
+/**
+ * Evaluate whether the current activation starts from a genuinely empty install.
+ *
+ * Both signals are required. A missing version option by itself is not reliable,
+ * because older installations or interrupted upgrades can still have Booking
+ * Calendar tables. A missing table by itself is also insufficient when stored
+ * installation metadata remains.
+ *
+ * @param mixed $stored_version       Stored Booking Calendar version, or false when absent.
+ * @param bool  $booking_table_exists Whether the canonical booking table exists.
+ *
+ * @return bool True only when neither installation signal exists.
+ */
+function wpbc_is_plugin_initial_install_state( $stored_version, $booking_table_exists ) {
+
+	return ( false === $stored_version ) && ! (bool) $booking_table_exists;
+}
+
+
+/**
+ * Check whether the active activation request is a genuine first installation.
+ *
+ * The result is cached before activation creates tables or saves
+ * `booking_version_num`, allowing later activation callbacks to consume the same
+ * immutable request-scoped decision. For later administration requests, use the
+ * persisted first-install marker owned by the Setup Wizard instead.
+ *
+ * @return bool True during a genuine first-install activation; otherwise false.
+ */
+function wpbc_is_plugin_initial_install() {
+
+	static $is_initial_install = null;
+
+	if ( null !== $is_initial_install ) {
+		return $is_initial_install;
+	}
+
+	if ( ! function_exists( 'wpbc_is_table_exists' ) ) {
+		$is_initial_install = false;
+		return $is_initial_install;
+	}
+
+	$is_initial_install = wpbc_is_plugin_initial_install_state(
+		get_option( 'booking_version_num', false ),
+		wpbc_is_table_exists( 'booking' )
+	);
+
+	return $is_initial_install;
+}
+
+
 /** Activation  & Deactivation  of Booking Calendar  */
 class WPBC_BookingInstall extends WPBC_Install {
 
@@ -191,10 +242,7 @@ function wpbc_booking_activate() {
 
 	wpbc_load_translation();
 
-	$is_new_install = (
-		false === get_option( 'booking_version_num', false )
-		&& ! wpbc_is_table_exists( 'booking' )
-	);
+	$is_new_install = wpbc_is_plugin_initial_install();
 
     make_bk_action( 'wpbc_before_activation' );
     
@@ -210,6 +258,9 @@ function wpbc_booking_activate() {
 	// Existing installations retain their saved value; add_bk_option() never overwrites it during upgrades.
 	if ( $is_new_install ) {
 		$default_options_to_add['booking_form_accent_enabled'] = 'On';
+		$default_options_to_add['booking_setup_wizard_initial_install'] = 'On';
+		$default_options_to_add['booking_setup_wizard_first_run_prompt'] = 'On';
+		$default_options_to_add['booking_setup_wizard_booking_pages_prompt'] = 'On';
 		if ( ! class_exists( 'wpdev_bk_personal' ) ) {
 			$default_options_to_add['booking_resources_catalog_default_view'] = 'publishing';
 		}
@@ -632,6 +683,12 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
 	// FixIn: 9.6.3.5.
 	$default_options['booking_setup_wizard_page_steps_is_done'] = '';
  $mu_option4delete[]='booking_setup_wizard_page_steps_is_done';
+	$default_options['booking_setup_wizard_initial_install'] = 'Off';
+	$mu_option4delete[] = 'booking_setup_wizard_initial_install';
+	$default_options['booking_setup_wizard_first_run_prompt'] = 'Off';
+	$mu_option4delete[] = 'booking_setup_wizard_first_run_prompt';
+	$default_options['booking_setup_wizard_booking_pages_prompt'] = 'Off';
+	$mu_option4delete[] = 'booking_setup_wizard_booking_pages_prompt';
 
     $default_options['booking_admin_cal_count'] = ($is_demo) ? '3' : '2';       
  $mu_option4delete[]='booking_admin_cal_count';                                 // $multiuser_general_option[] = implode( '', array_keys( array_slice( $default_options, -1 ) ) );

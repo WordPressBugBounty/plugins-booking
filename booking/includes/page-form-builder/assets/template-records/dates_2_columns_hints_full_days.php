@@ -127,7 +127,7 @@ $wpbc_dates_2_columns_hints_full_days_left_section = $wpbc_dates_2_columns_hints
 		$wpbc_dates_2_columns_hints_full_days_column(
 			'100%',
 			array(
-				$wpbc_dates_2_columns_hints_full_days_static_text( 'static_text-2', 'Select dates', 'h1', true ),
+				$wpbc_dates_2_columns_hints_full_days_static_text( 'static_text-2', 'Select dates', 'div', true ),
 				$wpbc_dates_2_columns_hints_full_days_static_text( 'static_text-14g-2', 'Choose your check-in and check-out dates.', 'small' ),
 				$wpbc_dates_2_columns_hints_full_days_field(
 					'calendar',
@@ -220,7 +220,7 @@ $wpbc_dates_2_columns_hints_full_days_right_items = array(
 			$wpbc_dates_2_columns_hints_full_days_column(
 				'100%',
 				array(
-					$wpbc_dates_2_columns_hints_full_days_static_text( 'static-text-gee7w', 'Your booking', 'h1', true ),
+					$wpbc_dates_2_columns_hints_full_days_static_text( 'static-text-gee7w', 'Your booking', 'div', true ),
 					$wpbc_dates_2_columns_hints_full_days_static_text( 'static-text-1d1cs', 'Review your dates and enter your details.', 'small' ),
 				)
 			),
@@ -454,7 +454,7 @@ $wpbc_dates_2_columns_hints_full_days_advanced_form = trim(
 			<c style="flex-basis: 47%; --wpbc-col-min: 0px">
 				<r data-colstyles-active="1">
 					<c data-colstyles-active="1" style="flex-basis: 100%; --wpbc-bfb-col-ai: flex-start; --wpbc-bfb-col-gap: 1em; --wpbc-col-min: 0px">
-						<item><h1 name="static_text-2" class="wpbc_static_text" style="text-align:left;font-weight:bold">Select dates</h1></item>
+						<item><div name="static_text-2" class="wpbc_static_text" style="text-align:left;font-weight:bold">Select dates</div></item>
 						<item><small name="static_text-14g-2" class="wpbc_static_text" style="text-align:left">Choose your check-in and check-out dates.</small></item>
 						<item>[calendar]</item>
 					</c>
@@ -466,7 +466,7 @@ $wpbc_dates_2_columns_hints_full_days_advanced_form = trim(
 			<c data-colstyles-active="1" style="flex-basis: 45.7962%; --wpbc-bfb-col-jc: space-between; --wpbc-bfb-col-gap: 10px; --wpbc-bfb-col-aself: stretch; --wpbc-col-min: 0px">
 				<r data-colstyles-active="1">
 					<c data-colstyles-active="1" style="flex-basis: 100%; --wpbc-bfb-col-ai: flex-start; --wpbc-bfb-col-gap: 1em; --wpbc-col-min: 0px">
-						<item><h1 name="static-text-gee7w" class="wpbc_static_text" style="text-align:left;font-weight:bold">Your booking</h1></item>
+						<item><div name="static-text-gee7w" class="wpbc_static_text" style="text-align:left;font-weight:bold">Your booking</div></item>
 						<item><small name="static-text-1d1cs" class="wpbc_static_text" style="text-align:left">Review your dates and enter your details.</small></item>
 					</c>
 				</r>

@@ -73,8 +73,9 @@ class WPBC_CSS extends WPBC_JS_CSS {
             wp_enqueue_style( 'wpbc-br-table',              wpbc_plugin_url( '/core/any/css/admin-br-table.css' ),      array(), WP_BK_VERSION_NUM);
 			wp_enqueue_style( 'wpbc-flex-table',            wpbc_plugin_url( '/core/any/css/wpbc_flextable.css' ),      array(), WP_BK_VERSION_NUM);                   // Flex: Booking resources Table    // FixIn: 9.9.0.7.
             wp_enqueue_style( 'wpbc-admin-modal-popups',    wpbc_plugin_url( '/css/modal.css' ),                        array(), WP_BK_VERSION_NUM);
-            wp_enqueue_style( 'wpbc-admin-pages',           wpbc_plugin_url( '/css/admin.css' ),                        array(), WP_BK_VERSION_NUM);
+			wp_enqueue_style( 'wpbc-admin-pages',           wpbc_plugin_url( '/css/admin.css' ),                        array(), WP_BK_VERSION_NUM);
 			wp_enqueue_style( 'wpbc-admin-skin',            wpbc_plugin_url( '/css/admin-skin.css' ),                   array( 'wpbc-admin-pages' ), WP_BK_VERSION_NUM );  // FixIn: 8.0.2.4.
+			wp_enqueue_style( 'wpbc-admin-components',      wpbc_plugin_url( '/includes/_toolbar_ui/_out/wpbc_admin_components.css' ), array( 'wpbc-admin-skin' ), WP_BK_VERSION_NUM ); // Reusable components that must override legacy administration compatibility styles.
 
 			$wpbc_inline_css = '';
 			if ( wpbc_mu__is_simulated_login_as_user() ) {

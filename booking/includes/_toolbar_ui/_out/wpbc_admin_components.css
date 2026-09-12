@@ -1,0 +1,160 @@
+.wpbc_welcome_panel {
+  margin: 1px 0 20px
+}
+.wp-core-ui .wpbc_page .wpbc_welcome_panel__dismiss {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #fff;
+  border: 0;
+  border-radius: 7px;
+  color: #50575e;
+  cursor: pointer;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  float: right;
+  font-weight: 600;
+  -ms-flex-pack: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 16px 15px 0 -32px;
+  min-height: 30px;
+  padding: 0;
+  position: relative;
+  text-decoration: none;
+  width: 30px;
+  z-index: 1
+}
+.wp-core-ui .wpbc_page .wpbc_welcome_panel__dismiss:hover {
+  color: var(--wpbc_admin-theme-color,#2271b1)
+}
+.wp-core-ui .wpbc_page .wpbc_welcome_panel__dismiss:focus-visible {
+  box-shadow: 0 0 0 2px #fff,0 0 0 4px var(--wpbc_admin-theme-color,#2271b1);
+  outline: transparent solid 2px
+}
+.wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar.wpbc_no_borders {
+  margin-top: 5px!important
+}
+.wpbc_ui_settings__panel__welcome .wpbc_ui_settings__card_text_small h1,
+.wpbc_ui_settings__panel__welcome .wpbc_ui_settings__panel h1 {
+  line-height: 1.2;
+  margin: 0
+}
+.wpbc_ui_settings__panel__welcome .about-description {
+  color: #8a8a8a;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  padding: 10px 20px
+}
+.wpbc_ui_settings__panel__welcome_header {
+  -ms-flex-align: center;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%;
+  gap: 20px;
+  min-width: 0;
+  padding-right: 18px
+}
+.wpbc_ui_settings__panel__welcome_header .wpbc_settings_path_el {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  margin-left: auto!important;
+  white-space: nowrap
+}
+.wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar .ui_container.ui_container_small .ui_group .ui_element .wpbc_ui_button {
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  height: auto;
+  line-height: 1.74;
+  padding: 5px 15px;
+  white-space: normal
+}
+.wp-core-ui .wpbc_page .wpbc_admin_button {
+  --wpbc_admin-button-background: var(--wpbc_admin-theme-color, #3858e9);
+  --wpbc_admin-button-border-color: rgba(255, 255, 255, 0.12);
+  --wpbc_admin-button-focus-ring: var(--wpbc_admin-theme-color, #3858e9);
+  --wpbc_admin-button-hover-background: var(--wp-admin-theme-color-darker-10, #2145e6);
+  -ms-flex-align: center;
+  align-items: center;
+  appearance: none;
+  background: var(--wpbc_admin-button-background);
+  border: 2px solid var(--wpbc_admin-button-border-color);
+  border-radius: .375em;
+  box-shadow: 0 0 0 2px rgba(56,88,233,.18);
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  height: var(--wpbc_admin-button-height,46px);
+  -ms-flex-pack: center;
+  justify-content: center;
+  line-height: 1.2;
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 var(--wpbc_admin-button-padding-horizontal,2.2em);
+  text-align: center;
+  text-decoration: none!important;
+  text-shadow: none;
+  transition: background-color .2s,border-color .2s,box-shadow .2s,color .2s;
+  white-space: normal
+}
+.wp-core-ui .wpbc_page .wpbc_admin_button--primary {
+  --wpbc_admin-button-background: var(--wpbc_admin-theme-color, #3858e9);
+  --wpbc_admin-button-focus-ring: var(--wpbc_admin-theme-color, #3858e9);
+  --wpbc_admin-button-hover-background: var(--wp-admin-theme-color-darker-10, #2145e6)
+}
+.wp-core-ui .wpbc_page .wpbc_admin_button--success {
+  --wpbc_admin-button-background: #00ac03;
+  --wpbc_admin-button-focus-ring: #00ac03;
+  --wpbc_admin-button-hover-background: #059307;
+  box-shadow: 0 0 0 2px rgba(22,128,0,.19)
+}
+.wp-core-ui .wpbc_page .wpbc_admin_button:focus,
+.wp-core-ui .wpbc_page .wpbc_admin_button:focus-visible,
+.wp-core-ui .wpbc_page .wpbc_admin_button:hover {
+  background: var(--wpbc_admin-button-hover-background);
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--wpbc_admin-button-focus-ring);
+  color: #fff
+}
+.wp-core-ui .wpbc_page .wpbc_admin_button:focus-visible {
+  outline: transparent solid 2px
+}
+.wp-core-ui .wpbc_page .wpbc_admin_button:disabled,
+.wp-core-ui .wpbc_page .wpbc_admin_button[aria-disabled=true] {
+  background: #f0f0f1;
+  border-color: #c3c4c7;
+  box-shadow: none;
+  color: #8c8f94;
+  cursor: not-allowed
+}
+@media (max-width:782px) {
+  .wpbc_ui_settings__panel__welcome_header {
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 16px 14px
+  }
+  .wpbc_ui_settings__panel__welcome .about-description {
+    padding-left: 0;
+    padding-right: 0
+  }
+  .wpbc_ui_settings__panel__welcome_header .wpbc_settings_path_el {
+    margin-left: 0!important
+  }
+  .wp-core-ui .wpbc_page .wpbc_ui_settings__panel__welcome .wpbc_admin_button {
+    width: 100%
+  }
+}

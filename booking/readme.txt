@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.8
+Stable tag: 11.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,9 +308,25 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 
 
 == Changelog ==
+= 11.8.1 =
+- Changes in **all** versions:
+	* **Improvement**: Added a two-column, two-step Time Slots booking template with live date, start-time, and end-time summary. It appears first in Form Builder when initially added, and clean installations use it for the starter Time Slots page; updates preserve existing forms, pages, and custom URLs.
+	* **Improvement**: Added a two-step, one-time welcome flow on Booking Listing after a clean installation: start guided Setup, then test valid starter booking pages through full, uncropped previews. Clean installations now also receive a Resource Selection page for trying the resource-first workflow. The starter-pages window uses complete Booking Calendar branding and can be reopened manually from the welcome panel after automatic dismissal; updates never add these prompts, pages, the reopen action, or the initial Setup menu.
+	* **Improvement**: Refined first-run administration presentation with consistent blue and green admin actions, responsive three-, two-, and one-column starter-page cards, and a live-demo welcome section that does not save shared dismissal state.
+	* **Fix**: Corrected the first-install welcome prompt so it opens reliably through Booking Calendar's built-in dialog on the Booking Listing page.
+	* **Fix**: Corrected the starter-page window so every card displays its page title, description, and open-page button instead of template placeholders.
+	* **Fix**: Ordered the top Booking Calendar menu links as Full day, Appointment, Time slots, Resource selection, and Contact booking forms, followed by the Home page; unavailable starter pages remain omitted.
+	* **Fix**: Kept Appointment and Rental QuickStart notices out of Form Builder so they no longer cover or compete with the editing workspace.
+	* **Fix**: On fresh template insertion, Full-Day / 2 Columns / Date Summary now appears before Full-Day / Vertical / Date Summary in the Full Days library while Time-Slots remains first overall. Existing template records are not reordered.
+	* **Fix**: Restricted automatic page creation to the first installation of the edition that owns each page. Installing Personal can add its customer booking pages once, and installing Business Small or higher can add its payment result pages once; normal updates, reactivation, and downgrades preserve existing pages and content.
+	* **Improvement**: Standardized page addresses created by newly eligible Free and paid installations under the readable `booking-calendar-` prefix. Existing page addresses and custom payment URLs remain unchanged, and updates do not recreate deleted pages.
+- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Prevented a missing Booking Resources table warning during the first Pro activation.
+- Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Successful payment pages now include the booking confirmation, and all payment gateways use the generated success and failure page addresses when their original placeholders are unchanged. Custom gateway URLs remain untouched.
+	* **Fix**: Restored administrator **Cost correction** on the full Add Booking page, dedicated Booking edit page, and Add Appointment page after the 11.8 booking-security update, while retaining the strengthened authorization checks.
 
 = 11.8 =
-
 - Changes in **all** versions:
 	* **New**: Added the spacious **Full-Day / Vertical / Date Summary** Form Builder template with a wide two-month preview, live date summary, guest counts, and customer details. New installations use it as the Standard form; upgrades and existing forms remain unchanged.
 	* **Improvement**: Choosing **Full day** during initial Setup now opens Form Builder with the new vertical full-day template selected. Published calendar month counts remain controlled by the booking block or shortcode.

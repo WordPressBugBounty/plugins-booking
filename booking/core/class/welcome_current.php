@@ -4,6 +4,69 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * Render Booking Calendar 11.8.1 What's New content.
+ *
+ * @param object $obj Welcome-page renderer and image loader.
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_8_1( $obj ) {
+
+	$section_parameters = array( 'version_num' => '11.8.1', 'show_expand' => false );
+	$obj->expand_section_start( $section_parameters );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+
+
+	<div class="wpbc_wn_container">
+
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<div class="wpbc_wn_section" style="gap: 10px 50px;">
+					<h2><?php echo( 'Clearer First-Run Setup' ); ?></h2>
+					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.8.1/wp_booking_calendar__first_run_starter_pages_prompt_placeholder.png' ) ); ?>"
+							alt="<?php echo esc_attr( 'First-run starter booking pages invitation with public-page links' ); ?>"
+							style="margin:10px 0;width:98%;"
+						/>
+					</div>
+					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+						<ul>
+							<li><strong><?php echo( 'Choose Setup when you are ready.' ); ?></strong> <?php echo( 'New installations show one focused invitation on Booking Listing. Start guided Setup immediately or postpone it; either choice is remembered.' ); ?></li>
+							<li><strong><?php echo( 'Test the visitor experience immediately.' ); ?></strong> <?php echo( 'A second one-time window shows complete previews and links to valid published starter pages, including the resource-first Resource Selection workflow. After automatic dismissal, new installations can reopen it from the Booking Listing welcome panel. Live demos also show the welcome section without saving a shared dismissal. The top Booking Calendar menu keeps the public links in a predictable workflow order and places the Home page last.' ); ?></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<div class="wpbc_wn_section" style="gap: 10px 50px;">
+					<h2><?php echo( 'Time-Slot Booking Flow' ); ?></h2>
+					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.8.1/wp_booking_calendar__time-slots-booking-form-2-columns.png' ) ); ?>"
+							alt="<?php echo esc_attr( 'Two-column time-slot booking form with a calendar and live date and time summary' ); ?>"
+							style="margin:10px 0;width:98%;"
+						/>
+					</div>
+					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+						<ul>
+							<li><strong><?php echo( 'Choose date and time together.' ); ?></strong> <?php echo( 'The calendar, time choices, and live Date, Start Time, and End Time summary share one clear first step.' ); ?></li>
+							<li><strong><?php echo( 'Finish details on a focused second step.' ); ?></strong> <?php echo( 'Visitors continue to contact, guest, and Terms fields before sending the booking.' ); ?></li>
+							<li><strong><?php echo( 'Ready to find and reuse.' ); ?></strong> <?php echo( 'When initially added, the Time-Slots template appears first overall and, within Full Days, Two Columns appears before Vertical. Clean installations use the Time-Slots template on their starter page. Updates preserve existing forms, pages, custom URLs, and installed template copies.' ); ?></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+	<?php
+	$obj->expand_section_end( $section_parameters );
+}
+
+/**
  * Render Booking Calendar 11.8 What's New content.
  *
  * Booking Modes and the Full-Day Form Builder template are available in every

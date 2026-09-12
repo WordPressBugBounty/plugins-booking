@@ -277,7 +277,7 @@ a.wpbc_ui_settings__text_pro:hover {
 
 
 /* ================================================================================================================== */
-/* == Buttons only  in admin  panel  e.g.  .wpbc_settings_flex_container_right * ==                                                                                                      */
+/* == Legacy settings-panel button compatibility == */
 /* ================================================================================================================== */
 .wp-core-ui .wpbc_page .wpbc_settings_flex_container_right {
     --wpbc_form-button-light-size-height: 43px;

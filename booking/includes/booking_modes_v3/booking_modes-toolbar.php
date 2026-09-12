@@ -143,6 +143,24 @@ function wpbc_booking_modes_render_toolbar_selector( $page_tag, $active_page_tab
 add_action( 'wpbc_ui_el__top_nav__content_start', 'wpbc_booking_modes_render_toolbar_selector', 5, 3 );
 
 /**
+ * Check whether the QuickStart notice belongs on the current administration route.
+ *
+ * Form Builder has its own focused editing workflow and action toolbar. Keeping
+ * the content-provisioning notice out of that route prevents it from covering
+ * the Builder canvas while leaving QuickStart available on other eligible
+ * Booking Calendar screens.
+ *
+ * @param string $page_tag        Current Booking Calendar page slug.
+ * @param string $active_page_tab Current active tab slug.
+ *
+ * @return bool True when the current route may render QuickStart.
+ */
+function wpbc_booking_modes_is_quickstart_route_allowed( $page_tag, $active_page_tab ) {
+
+	return ! ( 'wpbc-settings' === (string) $page_tag && 'builder_booking_form' === (string) $active_page_tab );
+}
+
+/**
  * Render the explicit QuickStart notice in the floating admin-message stack.
  *
  * Mode selection remains a presentation-only operation. QuickStart uses a
@@ -159,7 +177,11 @@ add_action( 'wpbc_ui_el__top_nav__content_start', 'wpbc_booking_modes_render_too
  */
 function wpbc_booking_modes_render_quickstart_action( $page_tag, $active_page_tab, $active_page_subtab ) {
 
-	unset( $page_tag, $active_page_tab, $active_page_subtab );
+	if ( ! wpbc_booking_modes_is_quickstart_route_allowed( $page_tag, $active_page_tab ) ) {
+		return;
+	}
+
+	unset( $active_page_subtab );
 
 	if ( function_exists( 'wpbc_setup_wizard_page__is_in_progress' ) && wpbc_setup_wizard_page__is_in_progress() ) {
 		return;
