@@ -417,7 +417,9 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 			$request_params['aggregate_resource_id_str']
 		);
 		if ( ! is_wp_error( $classic_context ) ) {
-			$request_params['allow_past']    = ! empty( $classic_context['allow_past'] ) ? 1 : 0;
+			$request_params['allow_past'] = ! empty( $classic_context['allow_past'] ) ? 1 : 0;
+			// Use the signed canonical set so equivalent wire shapes cannot change availability input.
+			$request_params['aggregate_resource_id_str'] = implode( ',', $classic_context['aggregate_resource_ids'] );
 			$request_params['dates_to_check'] = array(
 				$classic_context['calendar_dates_start'],
 				$classic_context['calendar_dates_end'],

@@ -77,7 +77,7 @@ function wpbc_calendar_show( resource_id ){
 		jQuery( '#calendar_booking' + resource_id ).removeClass( 'hasDatepick' );
 	}
 
-	wpbc_range_selection__hide_guidance( resource_id );
+	wpbc_range_selection__prepare_guidance( resource_id );
 
 
 
@@ -705,30 +705,18 @@ function wpbc_calendar_show( resource_id ){
 
 
 	/**
-	 * Remove the range-selection guidance belonging to one calendar.
+	 * Prepare a collapsed range-selection guidance note for one calendar.
+	 * Keeping one reusable node avoids repeated insertion while inactive guidance occupies no layout space.
 	 *
 	 * @param {number|string} resource_id Booking resource ID.
+	 * @returns {jQuery} The prepared note, or an empty collection when guidance is unavailable.
 	 */
-	function wpbc_range_selection__hide_guidance( resource_id ){
-		jQuery( '#wpbc_range_selection_guidance' + resource_id ).remove();
-	}
-
-
-	/**
-	 * Show a persistent informational note after the first range click.
-	 * The calendar parameter can be set to false by PHP or JavaScript to suppress this UI per resource.
-	 *
-	 * @param {number|string} resource_id Booking resource ID.
-	 * @returns {boolean} True when the note was inserted.
-	 */
-	function wpbc_range_selection__show_guidance( resource_id ){
+	function wpbc_range_selection__prepare_guidance( resource_id ){
 
 		var is_enabled = _wpbc.calendar__get_param_value( resource_id, 'range_selection_guidance_is_enabled' );
 		var $booking_form = jQuery( '#booking_form_div' + resource_id );
 		var $calendar_frame;
-		var $note;
-
-		wpbc_range_selection__hide_guidance( resource_id );
+		var $note = jQuery( '#wpbc_range_selection_guidance' + resource_id );
 
 		if (
 			   false === is_enabled
@@ -739,7 +727,13 @@ function wpbc_calendar_show( resource_id ){
 			|| 'dynamic' !== _wpbc.calendar__get_param_value( resource_id, 'days_select_mode' )
 			|| 0 === $booking_form.length
 		) {
-			return false;
+			$note.remove();
+			return jQuery();
+		}
+
+		if ( 0 < $note.length ) {
+			$note.stop( true, true ).hide().attr( 'aria-hidden', 'true' );
+			return $note;
 		}
 
 		$calendar_frame = $booking_form.find( '.block_hints.datepick' ).first();
@@ -748,7 +742,7 @@ function wpbc_calendar_show( resource_id ){
 			if ( 0 === $calendar_frame.length ) {
 				$calendar_frame = $booking_form.find( '.bk_calendar_frame' ).first();
 				if ( 0 === $calendar_frame.length ) {
-					return false;
+					return jQuery();
 				}
 			}
 		}
@@ -757,7 +751,9 @@ function wpbc_calendar_show( resource_id ){
 			'id': 'wpbc_range_selection_guidance' + resource_id,
 			'class': 'wpbc_range_selection_guidance wpbc_front_end__message wpbc_fe_message_info',
 			'role': 'status',
-			'aria-live': 'polite'
+			'aria-live': 'polite',
+			'aria-hidden': 'true',
+			'style': 'display: none;'
 		} );
 		$note.append( jQuery( '<i>', {
 			'class': 'menu_icon icon-1x wpbc_icn_info_outline',
@@ -765,6 +761,63 @@ function wpbc_calendar_show( resource_id ){
 		} ) );
 		$note.append( jQuery( '<span>' ).text( _wpbc.get_message( 'message_range_selection_click_last_date' ) ) );
 		$calendar_frame.after( $note );
+
+		return $note;
+	}
+
+
+	/**
+	 * Get the range-guidance animation duration for the current motion preference.
+	 *
+	 * @returns {number} Animation duration in milliseconds, or zero when reduced motion is preferred.
+	 */
+	function wpbc_range_selection__get_guidance_animation_duration(){
+
+		if (
+			'function' === typeof window.matchMedia
+			&& window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches
+		) {
+			return 0;
+		}
+
+		return 160;
+	}
+
+
+	/**
+	 * Collapse the range-selection guidance so it does not reserve empty layout space.
+	 *
+	 * @param {number|string} resource_id Booking resource ID.
+	 */
+	function wpbc_range_selection__hide_guidance( resource_id ){
+
+		jQuery( '#wpbc_range_selection_guidance' + resource_id )
+			.attr( 'aria-hidden', 'true' )
+			.stop( true, true )
+			.slideUp( wpbc_range_selection__get_guidance_animation_duration() );
+	}
+
+
+	/**
+	 * Show the prepared informational note after the first range click.
+	 * The calendar parameter can be set to false by PHP or JavaScript to suppress this UI per resource.
+	 *
+	 * @param {number|string} resource_id Booking resource ID.
+	 * @returns {boolean} True when the note was shown.
+	 */
+	function wpbc_range_selection__show_guidance( resource_id ){
+
+		var $note = wpbc_range_selection__prepare_guidance( resource_id );
+
+		if ( 0 === $note.length ) {
+			return false;
+		}
+
+		$note
+			.stop( true, true )
+			.slideDown( wpbc_range_selection__get_guidance_animation_duration() )
+			.removeAttr( 'aria-hidden' );
+		$note.find( 'span' ).text( _wpbc.get_message( 'message_range_selection_click_last_date' ) );
 
 		return true;
 	}

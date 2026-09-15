@@ -817,32 +817,15 @@ function wpbc_get__in_all_forms__field_names_arr() {
 
 		$booking_form = isset( $booking_form_element['form'] ) ? (string) $booking_form_element['form'] : '';
 
-		$types  = 'text[*]?|email[*]?|time[*]?|textarea[*]?|select[*]?|selectbox[*]?|checkbox[*]?|radio|acceptance|captchac|captchar|file[*]?|quiz';
-		$regex  = '%\[\s*(' . $types . ')(\s+[a-zA-Z][0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)?((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
-		$regex2 = '%\[\s*(country[*]?|starttime[*]?|endtime[*]?)(\s*[a-zA-Z]*[0-9a-zA-Z:._-]*)([-0-9a-zA-Z:#_/|\s]*)*((?:\s*(?:"[^"]*"|\'[^\']*\'))*)?\s*\]%';
+		// Keep field-assignment inventories aligned with the shared shortcode parser. Builder choice fields can
+		// contain named attributes such as default="1", which the former duplicate regex did not recognize.
+		$parsed_booking_fields = '' !== trim( $booking_form ) ? wpbc_get_fields_from_booking_form( $booking_form ) : false;
+		$fields_count          = 0;
+		$fields_matches        = array_fill( 0, 5, array() );
 
-		$fields_matches  = array();
-		$fields_matches2 = array();
-
-		$fields_count  = preg_match_all( $regex, $booking_form, $fields_matches );
-		$fields_count2 = preg_match_all( $regex2, $booking_form, $fields_matches2 );
-
-		foreach ( $fields_matches2 as $key => $value ) {
-
-			if ( 2 === (int) $key ) {
-				$value = $fields_matches2[1];
-			}
-
-			if ( ! isset( $fields_matches[ $key ] ) || ! is_array( $fields_matches[ $key ] ) ) {
-				$fields_matches[ $key ] = array();
-			}
-
-			foreach ( $value as $single_value ) {
-				$fields_matches[ $key ][] = $single_value;
-			}
+		if ( false !== $parsed_booking_fields ) {
+			list( $fields_count, $fields_matches ) = $parsed_booking_fields;
 		}
-
-		$fields_count += $fields_count2;
 
 		$booking_form_fields_arr[ $form_key ]['num']     = $fields_count;
 		$booking_form_fields_arr[ $form_key ]['listing'] = array();

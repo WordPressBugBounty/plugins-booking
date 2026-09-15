@@ -5,6 +5,14 @@
 	margin: 0 0 10px;
 	text-shadow: none;
 }
+/* Use a definite one-month cap so intrinsic sizing cannot widen a centered calendar field. */
+.wpbc_range_selection_guidance {
+	box-sizing: border-box;
+	max-width: 341px;
+	overflow-wrap: anywhere;
+	white-space: normal;
+	display:block;
+}
 .wpbc_range_selection_guidance,
 .wpbc_range_selection_guidance.wpbc_front_end__message.wpbc_fe_message_info i.menu_icon {
 	border: 0;

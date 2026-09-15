@@ -137,6 +137,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/season-r
 // =====================================================================================================================
 // == Hints Packs ==
 // =====================================================================================================================
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/custom-shortcode/field-custom-shortcode.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-cost_hint/field-cost-hint-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-selected_short_timedates_hint/field-selected-short-timedates-hint-wptpl.php';
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/hint-capacity_hint/field-capacity-hint-wptpl.php';

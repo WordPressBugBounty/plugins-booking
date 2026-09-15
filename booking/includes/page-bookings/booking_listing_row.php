@@ -97,6 +97,7 @@ function wpbc_template__booking_listing_row() {
 							<div class="wpbc_a_col  wpbc_a_col__action"><?php wpbc_template__booking_listing_row__section_col__action_button(); ?></div>
 						</div>
 						<?php wpbc_template__booking_listing_row__section_col__appointment_details(); ?>
+						<?php wpbc_template__booking_listing_row__section_col__resource_allocation(); ?>
 						<div class="wpbc_a_row wpbc_a_row__notes">
 							<div class="wpbc_a_col"><?php wpbc_template__booking_listing_row__section_col__note_readonly(); ?></div>
 						</div>
@@ -183,12 +184,21 @@ function wpbc_template__booking_listing_row__section_col__checkrow(){
 function wpbc_template__booking_listing_row__section_col__dates() {
 
 	?>
+	<# if ( undefined !== data.resource_allocation && data.resource_allocation.is_multiple_resources ) { #>
+	<div class="booking_dates_resource_allocation_summary booking_dates_expand_section">
+		<div class="content_text">
+			<span class="wpbc_label wpbc_label_booking_dates">{{data.resource_allocation.date_summary_label}}</span>
+			<span class="wpbc_booking_resource_count">{{data.resource_allocation.resource_count_label}}</span>
+		</div>
+	</div>
+	<# } else { #>
 	<div class="booking_dates_small booking_dates_expand_section" style="<# /* if ( 'short' !== wpbc_ajx_booking_listing.search_get_param('ui_usr__dates_short_wide') ) { #>display: none;<# } */ #>" >
 		<div class="content_text">{{{data.templates.short_dates_content}}}</div>
 	</div>
 	<div class="booking_dates_full booking_dates_expand_section" style="<# /* if ( 'wide' !== wpbc_ajx_booking_listing.search_get_param('ui_usr__dates_short_wide') ) { #>display: none;<# } */ #>" >
 		<div class="content_text">{{{data.templates.wide_dates_content}}}</div>
 	</div>
+	<# } #>
 	<div class="wpbc_btn_expand_down">
 		<a class="wpbc_btn_expand_down_a"
 		   href="javascript:void(0)"
@@ -256,6 +266,57 @@ function wpbc_template__booking_listing_row__section_col__appointment_details() 
 						<span><?php echo esc_js( __( 'Buffer before / after', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_buffer_before_minutes}} / {{data.parsed_fields.appointment_buffer_after_minutes}} <?php echo esc_js( __( 'min', 'booking' ) ); ?></strong></span>
 						<span><?php echo esc_js( __( 'Provider reserved', 'booking' ) ); ?>: <strong>{{data.parsed_fields.appointment_reserved_time_label}}</strong></span>
 						<# } #>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<# } #>
+	<?php
+}
+
+/**
+ * Render date-to-Resource allocation details in an expanded Booking row.
+ *
+ * The normalized DTO is produced from the saved booking-date rows. This
+ * template owns presentation only and remains hidden for bookings that use one
+ * Resource, preserving the familiar compact layout for the common case.
+ *
+ * @return void
+ */
+function wpbc_template__booking_listing_row__section_col__resource_allocation() {
+	?>
+	<#
+	if (
+		undefined !== data.resource_allocation
+		&& data.resource_allocation.is_multiple_resources
+		&& data.resource_allocation.segments.length
+	) {
+	#>
+	<div class="wpbc_a_row wpbc_a_row__resource_allocation">
+		<div class="wpbc_a_col">
+			<div class="wpbc_listing_col wpbc_col_resource_allocation">
+				<div
+					class="wpbc_resource_allocation"
+					role="group"
+					aria-label="<?php echo esc_attr( __( 'Resource allocation', 'booking' ) ); ?>"
+				>
+					<div class="wpbc_resource_allocation__header">
+						<strong><?php esc_html_e( 'Resource allocation', 'booking' ); ?></strong>
+						<span class="wpbc_resource_allocation__count">{{data.resource_allocation.resource_count_label}}</span>
+					</div>
+					<div class="wpbc_resource_allocation__segments">
+						<# _.each( data.resource_allocation.segments, function( allocation_segment ) { #>
+						<div class="wpbc_resource_allocation__segment">
+							<span class="wpbc_resource_allocation__period">{{allocation_segment.period_label}}</span>
+							<span class="wpbc_resource_allocation__arrow" aria-hidden="true"><i class="menu_icon icon-1x wpbc_icn_arrow_forward"></i></span>
+							<span class="wpbc_resource_allocation__resources">
+								<# _.each( allocation_segment.resources, function( allocation_resource ) { #>
+								<span class="wpbc_label wpbc_label_resource<# if ( allocation_resource.is_missing ) { #> wpbc_label_deleted_resource<# } #>">{{allocation_resource.resource_title}}</span>
+								<# } ); #>
+							</span>
+						</div>
+						<# } ); #>
 					</div>
 				</div>
 			</div>

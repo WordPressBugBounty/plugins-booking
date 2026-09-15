@@ -83,6 +83,48 @@ function wpbc_classic_booking_context_normalize_form( $custom_form ) {
 }
 
 /**
+ * Normalize additional aggregate Booking Resource IDs for signed contexts.
+ *
+ * The legacy shortcode renderer represents an aggregate form as the primary
+ * Resource followed by its additional Resources. Calendar runtime state
+ * intentionally stores only the additional Resources because the primary is
+ * already carried separately as resource_id. Removing that separately bound
+ * primary gives both established shapes one canonical representation while
+ * preserving an exact-set security comparison for every additional Resource.
+ *
+ * @param array|string|int $aggregate_resource_ids Candidate Resource IDs.
+ * @param mixed            $primary_resource_id    Separately bound primary Resource ID.
+ *
+ * @return int[] Sorted unique positive IDs excluding the primary Resource.
+ */
+function wpbc_classic_booking_context_normalize_aggregate_resource_ids( $aggregate_resource_ids, $primary_resource_id = 0 ) {
+	$aggregate_resource_ids  = is_array( $aggregate_resource_ids ) ? $aggregate_resource_ids : array( $aggregate_resource_ids );
+	$primary_resource_id     = absint( $primary_resource_id );
+	$normalized_resource_ids = array();
+
+	foreach ( $aggregate_resource_ids as $aggregate_resource_id ) {
+		if ( ! is_int( $aggregate_resource_id ) && ! is_float( $aggregate_resource_id ) && ! is_string( $aggregate_resource_id ) ) {
+			continue;
+		}
+
+		$resource_id_parts = preg_split( '/[;,\s]+/', (string) $aggregate_resource_id, -1, PREG_SPLIT_NO_EMPTY );
+		foreach ( (array) $resource_id_parts as $resource_id_part ) {
+			$resource_id = absint( $resource_id_part );
+			if ( ! $resource_id || $resource_id === $primary_resource_id ) {
+				continue;
+			}
+
+			$normalized_resource_ids[ $resource_id ] = $resource_id;
+		}
+	}
+
+	$normalized_resource_ids = array_values( $normalized_resource_ids );
+	sort( $normalized_resource_ids, SORT_NUMERIC );
+
+	return $normalized_resource_ids;
+}
+
+/**
  * Normalize the native Booking Form context before it is signed or consumed.
  *
  * @param mixed $context Raw context values.
@@ -104,11 +146,10 @@ function wpbc_classic_booking_context_normalize( $context ) {
 			'allow_past'             => false,
 		)
 	);
-	$calendar_dates_start = wpbc_classic_booking_context_normalize_date( $context['calendar_dates_start'] );
-
-	$aggregate_resource_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) $context['aggregate_resource_ids'] ) ) ) );
-	sort( $aggregate_resource_ids, SORT_NUMERIC );
-	$booking_workflow = sanitize_key( (string) $context['booking_workflow'] );
+	$calendar_dates_start   = wpbc_classic_booking_context_normalize_date( $context['calendar_dates_start'] );
+	$resource_id            = absint( $context['resource_id'] );
+	$aggregate_resource_ids = wpbc_classic_booking_context_normalize_aggregate_resource_ids( $context['aggregate_resource_ids'], $resource_id );
+	$booking_workflow        = sanitize_key( (string) $context['booking_workflow'] );
 	if ( ! in_array( $booking_workflow, array( 'classic', 'appointment', 'resource_selector' ), true ) ) {
 		$booking_workflow = 'classic';
 	}
@@ -117,7 +158,7 @@ function wpbc_classic_booking_context_normalize( $context ) {
 	return array(
 		'context_version'        => absint( $context['context_version'] ),
 		'booking_workflow'       => $booking_workflow,
-		'resource_id'            => absint( $context['resource_id'] ),
+		'resource_id'            => $resource_id,
 		'calendar_dates_start'   => $calendar_dates_start,
 		'calendar_dates_end'     => wpbc_classic_booking_context_normalize_date( $context['calendar_dates_end'] ),
 		'custom_form'            => wpbc_classic_booking_context_normalize_form( $context['custom_form'] ),
@@ -255,11 +296,7 @@ function wpbc_classic_booking_context_validate_submission( $context_token, $reso
 		return new WP_Error( 'classic_booking_context_form_mismatch', __( 'The selected Booking Form does not match this calendar. Please reload the page and try again.', 'booking' ) );
 	}
 
-	if ( is_string( $aggregate_resource_ids ) ) {
-		$aggregate_resource_ids = preg_split( '/[;,\s]+/', $aggregate_resource_ids, -1, PREG_SPLIT_NO_EMPTY );
-	}
-	$aggregate_resource_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) $aggregate_resource_ids ) ) ) );
-	sort( $aggregate_resource_ids, SORT_NUMERIC );
+	$aggregate_resource_ids = wpbc_classic_booking_context_normalize_aggregate_resource_ids( $aggregate_resource_ids, $context['resource_id'] );
 	if ( $aggregate_resource_ids !== $context['aggregate_resource_ids'] ) {
 		$troubleshooting_url       = 'https://wpbookingcalendar.com/faq/troubleshooting-the-booking-resources-do-not-match-this-calendar/';
 		$aggregate_mismatch_message = esc_html__( 'The booking resources do not match this calendar. Please reload the page and try again.', 'booking' );

@@ -167,6 +167,14 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type=checkbox],
 div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type=radio] {
   margin: -5px 5px 0
 }
+body:not(.wp-admin) .wpbc_bfb_form .wpbc-hidden-on-frontend {
+  display: none!important
+}
+.wpbc_bfb__panel--preview .wpbc_bfb__field.wpbc-hidden-on-frontend > :not(.wpbc_bfb__overlay-controls),
+.wpbc_bfb__panel--preview .wpbc_bfb__field:has(.wpbc-hidden-on-frontend) > :not(.wpbc_bfb__overlay-controls),
+.wpbc_bfb__panel--preview .wpbc_bfb__section.wpbc-hidden-on-frontend > .wpbc_bfb__row {
+  opacity: .5
+}
 .wpbc_bfb_form .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field[data-type=divider][data-orientation=horizontal] {
   width: 100%;
   margin: 0;
@@ -1566,6 +1574,13 @@ div.wpbc_container.wpbc_form.wpbc_theme_dark_1 {
   text-align: left;
   margin: 0 0 10px;
   text-shadow: none
+}
+.wpbc_range_selection_guidance {
+  box-sizing: border-box;
+  max-width: 341px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  display: block
 }
 .wpbc_range_selection_guidance,
 .wpbc_range_selection_guidance.wpbc_front_end__message.wpbc_fe_message_info i.menu_icon {

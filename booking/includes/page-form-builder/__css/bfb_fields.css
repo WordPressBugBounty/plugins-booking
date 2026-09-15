@@ -98,3 +98,15 @@ div.wpbc_container.wpbc_form .wpdev-form-control-wrap input[type="radio"] {
     margin: 0 5px;
     margin-top: -5px;
 }
+
+/* Front-end visibility utility entered through a Form Builder CSS class control. */
+body:not(.wp-admin) .wpbc_bfb_form .wpbc-hidden-on-frontend {
+	display: none !important;
+}
+
+/* Keep hidden-on-frontend elements identifiable and editable in the Builder canvas. */
+.wpbc_bfb__panel--preview .wpbc_bfb__field.wpbc-hidden-on-frontend > :not(.wpbc_bfb__overlay-controls),
+.wpbc_bfb__panel--preview .wpbc_bfb__field:has(.wpbc-hidden-on-frontend) > :not(.wpbc_bfb__overlay-controls),
+.wpbc_bfb__panel--preview .wpbc_bfb__section.wpbc-hidden-on-frontend > .wpbc_bfb__row {
+	opacity: .5;
+}

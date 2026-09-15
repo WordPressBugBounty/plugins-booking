@@ -1749,6 +1749,368 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 		}
 
 
+		/**
+		 * Build an empty Booking Listing Resource-allocation DTO.
+		 *
+		 * A stable empty shape keeps the browser template data-only and avoids
+		 * edition-specific checks in the presentation layer.
+		 *
+		 * @return array<string,mixed> Empty Resource-allocation DTO.
+		 */
+		function wpbc_booking_listing_get_empty_resource_allocation() {
+
+			return array(
+				'is_multiple_resources' => false,
+				'resource_count'         => 0,
+				'resource_count_label'   => '',
+				'date_summary_label'     => '',
+				'segment_count'          => 0,
+				'segments'               => array(),
+			);
+		}
+
+
+		/**
+		 * Return a localized time label for one allocation day.
+		 *
+		 * Duplicate timestamps are expected when a quantity booking reserves
+		 * several Resources. Midnight represents a full day and is omitted. When
+		 * two or more non-midnight values exist, the first and last values describe
+		 * the booked time interval without repeating it for every Resource.
+		 *
+		 * @param array<string,mixed> $allocation_day Normalized day record.
+		 *
+		 * @return string Localized time or time-range label. Empty for full days.
+		 */
+		function wpbc_booking_listing_get_allocation_day_time_label( $allocation_day ) {
+
+			if ( empty( $allocation_day['times'] ) || ! is_array( $allocation_day['times'] ) ) {
+				return '';
+			}
+
+			$sql_times = array_values( array_unique( array_filter( array_map( 'strval', $allocation_day['times'] ) ) ) );
+			sort( $sql_times, SORT_STRING );
+
+			$formatted_times = array();
+			foreach ( $sql_times as $sql_time ) {
+				if ( '00:00:00' === $sql_time ) {
+					continue;
+				}
+
+				list( , $formatted_time ) = wpbc_get_date_in_correct_format( $allocation_day['date'] . ' ' . $sql_time );
+				$formatted_time = trim( $formatted_time );
+				if ( '' !== $formatted_time ) {
+					$formatted_times[] = $formatted_time;
+				}
+			}
+
+			$formatted_times = array_values( array_unique( $formatted_times ) );
+			if ( empty( $formatted_times ) ) {
+				return '';
+			}
+
+			if ( 1 === count( $formatted_times ) ) {
+				return $formatted_times[0];
+			}
+
+			return $formatted_times[0] . ' – ' . $formatted_times[ count( $formatted_times ) - 1 ];
+		}
+
+
+		/**
+		 * Format one chronological Resource-allocation period.
+		 *
+		 * Common recurrent times are shown once after the date range. Check-in and
+		 * check-out times that differ between the first and final day stay attached
+		 * to their respective dates. Full-day periods contain dates only.
+		 *
+		 * @param string              $start_date      First date in Y-m-d format.
+		 * @param string              $end_date        Final date in Y-m-d format.
+		 * @param array<string,array> $allocation_days Normalized days keyed by Y-m-d.
+		 *
+		 * @return string Localized period label.
+		 */
+		function wpbc_booking_listing_format_allocation_period_label( $start_date, $end_date, $allocation_days ) {
+
+			list( $start_date_label ) = wpbc_get_date_in_correct_format( $start_date . ' 00:00:00' );
+			list( $end_date_label )   = wpbc_get_date_in_correct_format( $end_date . ' 00:00:00' );
+
+			$period_days = array();
+			foreach ( $allocation_days as $date_key => $allocation_day ) {
+				if ( $date_key >= $start_date && $date_key <= $end_date ) {
+					$period_days[ $date_key ] = $allocation_day;
+				}
+			}
+
+			$day_time_labels = array();
+			foreach ( $period_days as $date_key => $allocation_day ) {
+				$day_time_labels[ $date_key ] = wpbc_booking_listing_get_allocation_day_time_label( $allocation_day );
+			}
+
+			if ( $start_date === $end_date ) {
+				$time_label = isset( $day_time_labels[ $start_date ] ) ? $day_time_labels[ $start_date ] : '';
+
+				return '' !== $time_label ? $start_date_label . ', ' . $time_label : $start_date_label;
+			}
+
+			$non_empty_time_labels = array_values( array_filter( $day_time_labels ) );
+			$unique_time_labels    = array_values( array_unique( $non_empty_time_labels ) );
+			if ( count( $non_empty_time_labels ) === count( $period_days ) && 1 === count( $unique_time_labels ) ) {
+				return $start_date_label . ' – ' . $end_date_label . ', ' . $unique_time_labels[0];
+			}
+
+			$start_time_label = isset( $day_time_labels[ $start_date ] ) ? $day_time_labels[ $start_date ] : '';
+			$end_time_label   = isset( $day_time_labels[ $end_date ] ) ? $day_time_labels[ $end_date ] : '';
+			if ( '' !== $start_time_label ) {
+				$start_date_label .= ', ' . $start_time_label;
+			}
+			if ( '' !== $end_time_label ) {
+				$end_date_label .= ', ' . $end_time_label;
+			}
+
+			return $start_date_label . ' – ' . $end_date_label;
+		}
+
+
+		/**
+		 * Resolve authorized Resource presentation records for an allocation set.
+		 *
+		 * Only titles already present in the owner-filtered Booking Listing Resource
+		 * collection are exposed. Missing or deleted Resources receive the existing
+		 * neutral fallback instead of leaking an unavailable title.
+		 *
+		 * @param array<int>          $resource_ids          Resource IDs in display order.
+		 * @param array<int,array>    $booking_resources_arr Owner-filtered Resource records.
+		 *
+		 * @return array<int,array<string,mixed>> JSON-safe Resource presentation records.
+		 */
+		function wpbc_booking_listing_get_allocation_resource_records( $resource_ids, $booking_resources_arr ) {
+
+			$resource_records = array();
+			foreach ( $resource_ids as $resource_id ) {
+				$resource_id    = absint( $resource_id );
+				$resource_title = isset( $booking_resources_arr[ $resource_id ]['title'] )
+					? wp_strip_all_tags( wpbc_lang( $booking_resources_arr[ $resource_id ]['title'] ) )
+					: __( 'Resource not exist', 'booking' );
+
+				$resource_records[] = array(
+					'resource_id'    => $resource_id,
+					'resource_title' => $resource_title,
+					'is_missing'     => ! isset( $booking_resources_arr[ $resource_id ] ),
+				);
+			}
+
+			return $resource_records;
+		}
+
+
+		/**
+		 * Group normalized allocation days into chronological Resource-set segments.
+		 *
+		 * Consecutive dates are merged only while their complete Resource set stays
+		 * identical. This represents both a booking that moves between Resources and
+		 * a quantity booking that reserves several Resources for the same period.
+		 *
+		 * @param array<string,array> $allocation_days       Normalized days keyed by Y-m-d.
+		 * @param array<int,array>    $booking_resources_arr Owner-filtered Resource records.
+		 *
+		 * @return array<int,array<string,mixed>> Ordered allocation segments.
+		 */
+		function wpbc_booking_listing_group_allocation_days( $allocation_days, $booking_resources_arr ) {
+
+			$segments        = array();
+			$current_segment = array();
+
+			foreach ( $allocation_days as $date_key => $allocation_day ) {
+				$resource_ids = array_values( array_unique( array_map( 'absint', array_keys( $allocation_day['resources'] ) ) ) );
+				sort( $resource_ids, SORT_NUMERIC );
+				$resource_signature = implode( ',', $resource_ids );
+
+				$is_same_segment = ! empty( $current_segment )
+					&& $resource_signature === $current_segment['resource_signature']
+					&& wpbc_is_next_day( $date_key, $current_segment['end_date'] );
+
+				if ( ! $is_same_segment ) {
+					if ( ! empty( $current_segment ) ) {
+						$current_segment['period_label'] = wpbc_booking_listing_format_allocation_period_label(
+							$current_segment['start_date'],
+							$current_segment['end_date'],
+							$allocation_days
+						);
+						$current_segment['resources'] = wpbc_booking_listing_get_allocation_resource_records( $current_segment['resource_ids'], $booking_resources_arr );
+						unset( $current_segment['resource_signature'], $current_segment['resource_ids'] );
+						$segments[] = $current_segment;
+					}
+
+					$current_segment = array(
+						'start_date'         => $date_key,
+						'end_date'           => $date_key,
+						'day_count'          => 1,
+						'resource_signature' => $resource_signature,
+						'resource_ids'       => $resource_ids,
+					);
+					continue;
+				}
+
+				$current_segment['end_date'] = $date_key;
+				++$current_segment['day_count'];
+			}
+
+			if ( ! empty( $current_segment ) ) {
+				$current_segment['period_label'] = wpbc_booking_listing_format_allocation_period_label(
+					$current_segment['start_date'],
+					$current_segment['end_date'],
+					$allocation_days
+				);
+				$current_segment['resources'] = wpbc_booking_listing_get_allocation_resource_records( $current_segment['resource_ids'], $booking_resources_arr );
+				unset( $current_segment['resource_signature'], $current_segment['resource_ids'] );
+				$segments[] = $current_segment;
+			}
+
+			return $segments;
+		}
+
+
+		/**
+		 * Build compact chronological date periods independently of Resource changes.
+		 *
+		 * This summary is used in the narrow date column. It avoids repeating dates
+		 * for quantity bookings while preserving gaps between non-consecutive dates.
+		 *
+		 * @param array<string,array> $allocation_days Normalized days keyed by Y-m-d.
+		 *
+		 * @return array<int,string> Localized date-period labels.
+		 */
+		function wpbc_booking_listing_get_allocation_date_period_labels( $allocation_days ) {
+
+			$period_labels = array();
+			$start_date    = '';
+			$end_date      = '';
+
+			foreach ( array_keys( $allocation_days ) as $date_key ) {
+				if ( '' === $start_date ) {
+					$start_date = $date_key;
+					$end_date   = $date_key;
+					continue;
+				}
+
+				if ( wpbc_is_next_day( $date_key, $end_date ) ) {
+					$end_date = $date_key;
+					continue;
+				}
+
+				$period_labels[] = wpbc_booking_listing_format_allocation_period_label( $start_date, $end_date, $allocation_days );
+				$start_date      = $date_key;
+				$end_date        = $date_key;
+			}
+
+			if ( '' !== $start_date ) {
+				$period_labels[] = wpbc_booking_listing_format_allocation_period_label( $start_date, $end_date, $allocation_days );
+			}
+
+			return $period_labels;
+		}
+
+
+		/**
+		 * Build the Booking Listing Resource-allocation DTO from saved date rows.
+		 *
+		 * Business Large stores the booking's main Resource in `booking.booking_type`.
+		 * A date on that Resource has an empty `bookingdates.type_id`; only dates on
+		 * another Resource contain `type_id`. Normalizing that fallback before
+		 * counting or grouping prevents both missing labels and repeated per-date
+		 * child labels.
+		 *
+		 * @param object           $booking               Booking with `booking_db`, `dates`, and `child_id` values.
+		 * @param array<int,array> $booking_resources_arr Owner-filtered Resource records.
+		 *
+		 * @return array<string,mixed> JSON-safe Resource-allocation DTO.
+		 */
+		function wpbc_booking_listing_build_resource_allocation( $booking, $booking_resources_arr ) {
+
+			$resource_allocation = wpbc_booking_listing_get_empty_resource_allocation();
+			if (
+				empty( $booking->booking_db->booking_type )
+				|| empty( $booking->dates )
+				|| ! is_array( $booking->dates )
+			) {
+				return $resource_allocation;
+			}
+
+			$main_resource_id = absint( $booking->booking_db->booking_type );
+			$allocation_days  = array();
+			$all_resource_ids = array();
+
+			foreach ( $booking->dates as $date_index => $sql_booking_date ) {
+				$sql_booking_date = is_scalar( $sql_booking_date ) ? trim( (string) $sql_booking_date ) : '';
+				if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}):(\d{2}))?$/', $sql_booking_date, $date_parts ) ) {
+					continue;
+				}
+
+				$year  = (int) $date_parts[1];
+				$month = (int) $date_parts[2];
+				$day   = (int) $date_parts[3];
+				$hour   = isset( $date_parts[4] ) ? (int) $date_parts[4] : 0;
+				$minute = isset( $date_parts[5] ) ? (int) $date_parts[5] : 0;
+				$second = isset( $date_parts[6] ) ? (int) $date_parts[6] : 0;
+				if (
+					! checkdate( $month, $day, $year )
+					|| $hour > 23
+					|| $minute > 59
+					|| $second > 59
+				) {
+					continue;
+				}
+
+				$date_key         = sprintf( '%04d-%02d-%02d', $year, $month, $day );
+				$sql_time         = isset( $date_parts[4], $date_parts[5], $date_parts[6] )
+					? sprintf( '%02d:%02d:%02d', $hour, $minute, $second )
+					: '00:00:00';
+				$date_resource_id = isset( $booking->child_id[ $date_index ] ) && ! empty( $booking->child_id[ $date_index ] )
+					? absint( $booking->child_id[ $date_index ] )
+					: $main_resource_id;
+
+				if ( empty( $date_resource_id ) ) {
+					continue;
+				}
+
+				if ( ! isset( $allocation_days[ $date_key ] ) ) {
+					$allocation_days[ $date_key ] = array(
+						'date'      => $date_key,
+						'times'     => array(),
+						'resources' => array(),
+					);
+				}
+
+				$allocation_days[ $date_key ]['times'][]                           = $sql_time;
+				$allocation_days[ $date_key ]['resources'][ $date_resource_id ]    = true;
+				$all_resource_ids[ $date_resource_id ]                              = true;
+			}
+
+			if ( empty( $allocation_days ) ) {
+				return $resource_allocation;
+			}
+
+			ksort( $allocation_days, SORT_STRING );
+			$resource_count = count( $all_resource_ids );
+			$period_labels  = wpbc_booking_listing_get_allocation_date_period_labels( $allocation_days );
+			$segments       = wpbc_booking_listing_group_allocation_days( $allocation_days, $booking_resources_arr );
+
+			$resource_allocation['is_multiple_resources'] = ( $resource_count > 1 );
+			$resource_allocation['resource_count']         = $resource_count;
+			$resource_allocation['resource_count_label']   = sprintf(
+				/* translators: %d: Number of booking Resources reserved by one booking. */
+				_n( '%d booking resource', '%d booking resources', $resource_count, 'booking' ),
+				$resource_count
+			);
+			$resource_allocation['date_summary_label'] = implode( ', ', $period_labels );
+			$resource_allocation['segment_count']      = count( $segments );
+			$resource_allocation['segments']           = $segments;
+
+			return $resource_allocation;
+		}
+
+
 		function wpbc_ajx_parse_bookings( $bookings_arr, $resources_arr ) {
 
 			$user_id = ( isset( $_REQUEST['wpbc_ajx_user_id'] ) )  ?  intval( $_REQUEST['wpbc_ajx_user_id'] )  :  wpbc_get_current_user_id();  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
@@ -1784,7 +2146,9 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 						$resource_title_listing = wpbc_lang( $resources_arr[ $child_resource_id_arr[0] ]['title'] );
 					}
 				}
-				$show_child_resource_in_dates = ( count( $child_resource_id_arr ) > 1 );
+				$resource_allocation = class_exists( 'wpdev_bk_biz_l' )
+					? wpbc_booking_listing_build_resource_allocation( $booking, $resources_arr )
+					: wpbc_booking_listing_get_empty_resource_allocation();
 
 				// Parse form  fields only  from  $booking->booking_db->form  ------------------------------------------
 				$booking_data_arr  = wpbc_parse_booking_data_fields(	    $booking->booking_db->form,
@@ -1835,7 +2199,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				// Get SHORT / WIDE Dates showing data -----------------------------------------------------------------
 				$dates_attr = array(
 					'date_html_tag'                 => 'span',
-					'show_child_resource_in_dates'  => $show_child_resource_in_dates,
+					'show_child_resource_in_dates'  => false,
 				);
 				$short_dates_content = wpbc_get_formated_dates__short( $booking->short_dates, (bool) $booking->approved, $booking->short_dates_child_id, $resources_arr, $dates_attr );
 				$wide_dates_content  = wpbc_get_formated_dates__wide(  $booking->dates,       (bool) $booking->approved, $booking->child_id,             $resources_arr, $dates_attr );
@@ -1942,6 +2306,7 @@ function wpbc_ajx__user_request_params__get_option( $user_id, $option_name ){
 				// =====================================================================================================
 				$booking_data_arr = apply_filters( 'wpbc_booking_listing_parsed_fields', $booking_data_arr, $booking_id, $booking );
 				$bookings_arr[ $booking_id ]->parsed_fields = $booking_data_arr;
+				$bookings_arr[ $booking_id ]->resource_allocation = $resource_allocation;
 
 
 				// =====================================================================================================

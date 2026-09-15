@@ -522,8 +522,10 @@ function wpbc_booking_save( $request_params ){
 			return array( 'ajx_data' => $ajx_data_arr );
 		}
 
-		$has_verified_classic_context     = true;
+		$has_verified_classic_context = true;
 		$re_cleaned_params['allow_past'] = ! empty( $classic_context['allow_past'] ) ? 1 : 0;
+		// Pass only the signed canonical set into final availability and persistence decisions.
+		$re_cleaned_params['aggregate_resource_id_arr'] = implode( ',', $classic_context['aggregate_resource_ids'] );
 	}
 
 	if ( $is_public_booking_create_request && ! $has_verified_classic_context ) {
