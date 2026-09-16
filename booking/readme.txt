@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.8.2
+Stable tag: 11.8.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -318,6 +318,12 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 
 
 == Changelog ==
+= 11.8.3 =
+- Changes in **all** versions:
+	* **Improvement**: Completed Ukrainian translations.
+	* **Security**: Restricted Form Builder option requests to explicitly registered Booking Calendar settings with fixed server-defined nonces and server-owned multi-option allowlists, preventing access to core or unrelated WordPress options.
+	* **Security**: Hardened public Timeline navigation with mandatory request tokens, allow-listed Resource-link options, and JavaScript-safe response serialization to prevent reflected script injection.
+
 = 11.8.2 =
 - Changes in **all** versions:
 	* **Improvement**: Added a Custom Shortcode field to Form Builder so supported display tokens, including custom Form Options Cost hints in Business Medium or higher, can be placed without editing Advanced form code.

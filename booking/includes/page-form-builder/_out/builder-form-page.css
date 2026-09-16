@@ -1336,7 +1336,10 @@ html.wpbc_bfb__drag-from-palette [data-drag-role=palette] {
   font-weight: 400;
   margin-inline-start: 1em;
   -ms-flex-align: center;
-  align-items: center
+  align-items: center;
+  white-space: nowrap;
+  max-width: 20em;
+  overflow: hidden
 }
 .wpbc_bfb__live_status__builder {
   color: #619d40

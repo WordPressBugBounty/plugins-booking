@@ -37,7 +37,7 @@ final class WPBC_Booking_Modes_V3_Definition_Translator {
 
 		foreach ( array( 'label', 'description' ) as $mode_text_key ) {
 			if ( isset( $definition[ $mode_text_key ] ) && is_string( $definition[ $mode_text_key ] ) ) {
-				$definition[ $mode_text_key ] = translate( $definition[ $mode_text_key ], 'booking' );
+				$definition[ $mode_text_key ] = self::translate_display_string( $definition[ $mode_text_key ] );
 			}
 		}
 
@@ -75,6 +75,60 @@ final class WPBC_Booking_Modes_V3_Definition_Translator {
 	}
 
 	/**
+	 * Translate a declaration display string and expose declaration-only text to gettext.
+	 *
+	 * Mode declarations must remain translation-neutral because preflight loads them
+	 * before WordPress `init`. Most declaration labels also occur in ordinary page
+	 * code, but the strings below exist only in the raw declarations and therefore
+	 * need an active, post-`init` gettext boundary so translation tools can extract
+	 * them and runtime catalogs can resolve them.
+	 *
+	 * @param string $source_string Validated English declaration string.
+	 *
+	 * @return string Translated display string.
+	 */
+	private static function translate_display_string( $source_string ) {
+		switch ( $source_string ) {
+			case '+ Add Appointment':
+				return __( '+ Add Appointment', 'booking' );
+			case '+ Add Booking':
+				return __( '+ Add Booking', 'booking' );
+			case 'Add Booking':
+				return __( 'Add Booking', 'booking' );
+			case 'Appointment administration.':
+				return __( 'Appointment administration.', 'booking' );
+			case 'Booking Forms':
+				return __( 'Booking Forms', 'booking' );
+			case 'Classic':
+				return __( 'Classic', 'booking' );
+			case 'General booking administration.':
+				return __( 'General booking administration.', 'booking' );
+			case 'MultiUser Settings':
+				return __( 'MultiUser Settings', 'booking' );
+			case 'Prices & Extras':
+				return __( 'Prices & Extras', 'booking' );
+			case 'Pricing & Extras':
+				return __( 'Pricing & Extras', 'booking' );
+			case 'Pricing & Payments':
+				return __( 'Pricing & Payments', 'booking' );
+			case 'Pricing Rules':
+				return __( 'Pricing Rules', 'booking' );
+			case 'Properties':
+				return __( 'Properties', 'booking' );
+			case 'Property rental administration.':
+				return __( 'Property rental administration.', 'booking' );
+			case 'Rentals':
+				return __( 'Rentals', 'booking' );
+			case 'Searchable Properties':
+				return __( 'Searchable Properties', 'booking' );
+			case 'Searchable Providers':
+				return __( 'Searchable Providers', 'booking' );
+			default:
+				return translate( $source_string, 'booking' );
+		}
+	}
+
+	/**
 	 * Translate an allow-listed set of display keys.
 	 *
 	 * @param array $record    Validated declaration record.
@@ -85,7 +139,7 @@ final class WPBC_Booking_Modes_V3_Definition_Translator {
 	private static function translate_keys( $record, $text_keys ) {
 		foreach ( $text_keys as $text_key ) {
 			if ( array_key_exists( $text_key, $record ) && is_string( $record[ $text_key ] ) ) {
-				$record[ $text_key ] = translate( $record[ $text_key ], 'booking' );
+				$record[ $text_key ] = self::translate_display_string( $record[ $text_key ] );
 			}
 		}
 

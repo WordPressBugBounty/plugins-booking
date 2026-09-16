@@ -2778,7 +2778,8 @@ a > .wpbc_ui_el__section_header {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.74;
-  text-align: center
+  text-align: center;
+  word-break: break-all
 }
 .wpbc_ui_el__vert_right_bar_compact__wrapper button.wpbc_ui_el__vert_nav_item__a.wpbc_ui_el__vert_nav_item__single {
   width: 100%

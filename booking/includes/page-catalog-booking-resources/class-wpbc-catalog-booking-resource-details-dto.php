@@ -449,7 +449,13 @@ final class WPBC_Catalog_Booking_Resource_Details_DTO {
 			&& class_exists( 'wpdev_bk_personal' )
 			&& WPBC_Catalog_Booking_Resource_Demo_Policy::can_delete_resource( $resource_id )
 		) {
-			$actions[] = $this->get_button_action( 'delete_resource', __( 'Delete Booking Resource', 'booking' ), 'wpbc-bi-trash3', 'delete', 'destructive' );
+			$actions[] = $this->get_button_action(
+				'delete_resource',
+				_x( 'Delete Booking Resource', 'Booking Resource details action', 'booking' ),
+				'wpbc-bi-trash3',
+				'delete',
+				'destructive'
+			);
 		}
 
 		$section               = $this->get_section( 'resource_actions', __( 'Resource actions', 'booking' ), 'wpbc-bi-lightning-charge', array(), $actions );

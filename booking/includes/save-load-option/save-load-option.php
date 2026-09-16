@@ -12,8 +12,7 @@
  * Data attributes on clickable elements:
  *   Save:
  *     data-wpbc-u-save-name      — option key (required)
- *     data-wpbc-u-save-nonce     — nonce value (required for SAVE)
- *     data-wpbc-u-save-action    — nonce action (required for SAVE)
+ *     SAVE requests use a fixed, server-generated nonce localized with this module.
  *     data-wpbc-u-save-value     — RAW scalar to save (optional)
  *     data-wpbc-u-save-value-json— JSON string to save (optional)
  *     data-wpbc-u-save-fields    — CSV of selectors; values serialized with jQuery.param (optional)
@@ -35,7 +34,7 @@
  * @package   Booking Calendar
  * @author    wpdevelop
  * @since     11.0.0
- * @version   1.0.1
+ * @version   1.0.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -44,11 +43,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class wpbc_option_saver_loader {
 
-	private static $ajax_action_save = 'wpbc_ajax_option_save';
-	private static $ajax_action_load = 'wpbc_ajax_option_load';
-	private static $option_prefix    = '';
-	private static $asset_version    = '1.0.1';
-	private static $save_policies    = array();
+	private static $ajax_action_save  = 'wpbc_ajax_option_save';
+	private static $ajax_action_load  = 'wpbc_ajax_option_load';
+	private static $nonce_action_save = 'wpbc_option_save';
+	private static $nonce_action_load = 'wpbc_option_load';
+	private static $option_prefix     = '';
+	private static $asset_version     = '1.0.2';
+	private static $save_policies     = array();
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_ajax_handlers' ) );
@@ -56,7 +57,10 @@ class wpbc_option_saver_loader {
 	}
 
 	/**
-	 * Register an option-specific save policy.
+	 * Register an option-specific save and load policy.
+	 *
+	 * Registration is the endpoint allowlist. Unregistered option names are
+	 * rejected even when the current user has the configured capability.
 	 *
 	 * Supported policy keys:
 	 * - can_save            callable(): bool
@@ -96,6 +100,25 @@ class wpbc_option_saver_loader {
 		return ( isset( self::$save_policies[ $option_name ] ) && is_array( self::$save_policies[ $option_name ] ) )
 			? self::$save_policies[ $option_name ]
 			: array();
+	}
+
+	/**
+	 * Check whether an option name was explicitly registered for this endpoint.
+	 *
+	 * Registration is the writable and readable option allowlist. Sanitizing an
+	 * arbitrary WordPress option name does not make that option safe to expose.
+	 *
+	 * @param string $option_name Option name from data_name.
+	 *
+	 * @return bool True when a policy was explicitly registered.
+	 */
+	private static function has_option_policy( $option_name ) {
+
+		$option_name = sanitize_key( (string) $option_name );
+
+		return '' !== $option_name
+			&& isset( self::$save_policies[ $option_name ] )
+			&& is_array( self::$save_policies[ $option_name ] );
 	}
 
 	/**
@@ -172,6 +195,8 @@ class wpbc_option_saver_loader {
 				'ajax_url'    => admin_url( 'admin-ajax.php' ),
 				'action_save' => self::$ajax_action_save,
 				'action_load' => self::$ajax_action_load,
+				'save_nonce'  => wp_create_nonce( self::$nonce_action_save ),
+				'load_nonce'  => wp_create_nonce( self::$nonce_action_load ),
 			)
 		);
 	}
@@ -182,8 +207,7 @@ class wpbc_option_saver_loader {
 	 * Expected POST:
 	 * - data_name     string  Option key.
 	 * - data_value    string  RAW scalar | query-string | JSON string.
-	 * - nonce_action  string  Nonce action name.
-	 * - nonce         string  Nonce value.
+	 * - nonce         string  Nonce for the fixed wpbc_option_save action.
 	 *
 	 * @return void
 	 */
@@ -194,22 +218,21 @@ class wpbc_option_saver_loader {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to save settings.', 'booking' ) ) );
 		}
 
-		$data_name   = isset( $_POST['data_name'] ) ? sanitize_key( wp_unslash( $_POST['data_name'] ) ) : '';
+		$data_name = isset( $_POST['data_name'] ) ? sanitize_key( wp_unslash( $_POST['data_name'] ) ) : '';
 		/* phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */
 		$data_raw    = isset( $_POST['data_value'] ) ? wp_unslash( $_POST['data_value'] ) : '';
-		// Optional: split JSON object into multiple options.
-		$data_mode   = isset( $_POST['data_mode'] ) ? sanitize_key( wp_unslash( $_POST['data_mode'] ) ) : '';
-		$data_fields = isset( $_POST['data_fields'] ) ? sanitize_text_field( wp_unslash( $_POST['data_fields'] ) ) : '';
-
-		$nonce_name  = isset( $_POST['nonce_action'] ) ? sanitize_key( wp_unslash( $_POST['nonce_action'] ) ) : '';
 		$nonce_value = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
 
-		if ( empty( $nonce_name ) || ! wp_verify_nonce( $nonce_value, $nonce_name ) ) {
+		if ( ! wp_verify_nonce( $nonce_value, self::$nonce_action_save ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'booking' ) ) );
 		}
 
 		if ( empty( $data_name ) ) {
 			wp_send_json_error( array( 'message' => __( 'Missing data name.', 'booking' ) ) );
+		}
+
+		if ( ! self::has_option_policy( $data_name ) ) {
+			wp_send_json_error( array( 'message' => __( 'This option cannot be saved by this request.', 'booking' ) ) );
 		}
 
 		$save_policy = self::get_option_policy( $data_name );
@@ -225,31 +248,23 @@ class wpbc_option_saver_loader {
 			$data_raw = call_user_func( $save_policy['normalize_raw'], $data_raw, $data_name );
 		}
 
-		if ( ! empty( $save_policy['force_mode'] ) ) {
-			$data_mode = sanitize_key( (string) $save_policy['force_mode'] );
-		}
+		$data_mode = ( ! empty( $save_policy['force_mode'] ) && 'split' === sanitize_key( (string) $save_policy['force_mode'] ) ) ? 'split' : '';
 
 		$policy_allowed_keys = self::get_policy_allowed_keys( $save_policy );
-		if ( ! empty( $policy_allowed_keys ) ) {
-			$data_fields = implode( ',', $policy_allowed_keys );
+		if ( 'split' === $data_mode && empty( $policy_allowed_keys ) ) {
+			wp_send_json_error( array( 'message' => __( 'This option does not define any writable fields.', 'booking' ) ) );
 		}
 
 		$value_to_store = self::normalize_incoming_value( $data_raw );
 
 		// Split mode: JSON object => multiple options saved separately.
-		if ( 'split' === $data_mode && is_array( $value_to_store ) ) {
+		if ( 'split' === $data_mode ) {
 
-			$allowed_keys = array();
-			if ( '' !== trim( $data_fields ) ) {
-				$parts = explode( ',', (string) $data_fields );
-				foreach ( $parts as $p ) {
-					$k = sanitize_key( trim( (string) $p ) );
-					if ( '' !== $k ) {
-						$allowed_keys[ $k ] = true;
-					}
-				}
+			if ( ! is_array( $value_to_store ) ) {
+				wp_send_json_error( array( 'message' => __( 'Invalid option data.', 'booking' ) ) );
 			}
 
+			$allowed_keys = array_fill_keys( $policy_allowed_keys, true );
 			$saved = array();
 
 			foreach ( $value_to_store as $k => $v ) {
@@ -263,8 +278,7 @@ class wpbc_option_saver_loader {
 					continue;
 				}
 
-				// If allowlist provided, only save those keys.
-				if ( ! empty( $allowed_keys ) && ! isset( $allowed_keys[ $opt_key ] ) ) {
+				if ( ! isset( $allowed_keys[ $opt_key ] ) ) {
 					continue;
 				}
 
@@ -316,6 +330,7 @@ class wpbc_option_saver_loader {
 	 *
 	 * Expected GET:
 	 * - data_name  string  Option key.
+	 * - nonce      string  Nonce for the fixed wpbc_option_load action.
 	 *
 	 * @return void
 	 */
@@ -326,10 +341,23 @@ class wpbc_option_saver_loader {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to load settings.', 'booking' ) ) );
 		}
 
-		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing */
+		$nonce_value = isset( $_GET['nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce_value, self::$nonce_action_load ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid nonce.', 'booking' ) ) );
+		}
+
 		$data_name = isset( $_GET['data_name'] ) ? sanitize_key( wp_unslash( $_GET['data_name'] ) ) : '';
 		if ( empty( $data_name ) ) {
 			wp_send_json_error( array( 'message' => __( 'Missing data name.', 'booking' ) ) );
+		}
+
+		if ( ! self::has_option_policy( $data_name ) ) {
+			wp_send_json_error( array( 'message' => __( 'This option cannot be loaded by this request.', 'booking' ) ) );
+		}
+
+		$load_policy = self::get_option_policy( $data_name );
+		if ( ! empty( $load_policy['can_save'] ) && is_callable( $load_policy['can_save'] ) && ! call_user_func( $load_policy['can_save'], $data_name ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to load this option.', 'booking' ) ) );
 		}
 
 		$option_key = self::$option_prefix . $data_name;
@@ -468,33 +496,30 @@ add_action( 'plugins_loaded', array( 'wpbc_option_saver_loader', 'init' ) );
  *
 
 <?php
-$opt_name     = 'booking_timeslot_picker';
-$nonce_action = 'wpbc_nonce_' . $opt_name;
+$opt_name = 'booking_timeslot_picker';
 ?>
 <a  href="javascript:void(0);"
 	class="button button-secondary"
 	onclick="(function(btn){var $=jQuery, $chk=$('.js-toggle-timeslot-picker').first(); $(btn).data('wpbc-u-save-value',$chk.is(':checked')?'On':'Off'); wpbc_save_option_from_element(btn);})(this)"
 	data-wpbc-u-save-name="<?php echo esc_attr( $opt_name ); ?>"
-	data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
-	data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
 	data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving…', 'booking' ); ?>">
 	<?php esc_html_e( 'Save Toggle', 'booking' ); ?>
 </a>
 
  *
- * 2) Save complex structure (RAW JSON)
+ * 2) Save complex structure (RAW JSON).
+ *
+ * Register an exact server-side policy for wpbc_bfb_form_structure before
+ * rendering this control. Client attributes never register writable options.
  *
 
 <?php
-$opt_name     = 'wpbc_bfb_form_structure';
-$nonce_action = 'wpbc_nonce_' . $opt_name;
+$opt_name = 'wpbc_bfb_form_structure';
 ?>
 <a  href="javascript:void(0);"
 	class="button button-primary"
 	onclick="(function(btn){var s=window.wpbc_bfb && window.wpbc_bfb.get_structure ? window.wpbc_bfb.get_structure() : []; jQuery(btn).data('wpbc-u-save-value-json', JSON.stringify(s)); wpbc_save_option_from_element(btn);})(this)"
 	data-wpbc-u-save-name="<?php echo esc_attr( $opt_name ); ?>"
-	data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
-	data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ) ; ?>"
 	data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving…', 'booking' ); ?>">
 	<?php esc_html_e( 'Save Form Structure', 'booking' ); ?>
 </a>

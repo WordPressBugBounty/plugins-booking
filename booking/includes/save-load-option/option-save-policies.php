@@ -138,6 +138,21 @@ class WPBC_Option_Save_Policy_Global_Options {
 
 		return sanitize_text_field( is_scalar( $value ) ? (string) $value : '' );
 	}
+
+	/**
+	 * Normalize the pre-check-in hint duration used by the Form Builder setting.
+	 *
+	 * @param mixed  $value     Raw value.
+	 * @param string $data_name Submitted option name.
+	 *
+	 * @return string Number of days between 1 and 91.
+	 */
+	public static function normalize_pre_checkin_days( $value, $data_name = '' ) {
+
+		$days = is_scalar( $value ) ? absint( $value ) : 14;
+
+		return (string) min( 91, max( 1, $days ) );
+	}
 }
 
 /**
@@ -383,6 +398,15 @@ function wpbc_register_builtin_option_save_policies() {
 	);
 
 	wpbc_option_saver_loader::register_option_policy(
+		'booking_is_use_autofill_4_logged_user',
+		array(
+			'can_save'           => array( 'WPBC_Option_Save_Policy_Global_Options', 'can_save_global_options' ),
+			'permission_message' => __( 'You do not have permission to save global form options.', 'booking' ),
+			'normalize_raw'      => array( 'WPBC_Option_Save_Policy_Global_Options', 'normalize_on_off' ),
+		)
+	);
+
+	wpbc_option_saver_loader::register_option_policy(
 		'booking_form_accent_enabled',
 		array(
 			'can_save'           => array( 'WPBC_Option_Save_Policy_Global_Options', 'can_save_global_options' ),
@@ -406,6 +430,24 @@ function wpbc_register_builtin_option_save_policies() {
 			'can_save'           => array( 'WPBC_Option_Save_Policy_Global_Options', 'can_save_global_options' ),
 			'permission_message' => __( 'You do not have permission to save global form appearance options.', 'booking' ),
 			'normalize_raw'      => array( 'WPBC_Option_Save_Policy_Global_Options', 'normalize_hex_color' ),
+		)
+	);
+
+	wpbc_option_saver_loader::register_option_policy(
+		'booking_is_use_phone_validation',
+		array(
+			'can_save'           => array( 'WPBC_Option_Save_Policy_Global_Options', 'can_save_global_options' ),
+			'permission_message' => __( 'You do not have permission to save global form options.', 'booking' ),
+			'normalize_raw'      => array( 'WPBC_Option_Save_Policy_Global_Options', 'normalize_on_off' ),
+		)
+	);
+
+	wpbc_option_saver_loader::register_option_policy(
+		'booking_number_for_pre_checkin_date_hint',
+		array(
+			'can_save'           => array( 'WPBC_Option_Save_Policy_Global_Options', 'can_save_global_options' ),
+			'permission_message' => __( 'You do not have permission to save global form options.', 'booking' ),
+			'normalize_raw'      => array( 'WPBC_Option_Save_Policy_Global_Options', 'normalize_pre_checkin_days' ),
 		)
 	);
 }

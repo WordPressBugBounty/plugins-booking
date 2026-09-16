@@ -692,10 +692,7 @@ class WPBC_BFB_Setting_Options {
 			$value_from = '#' . $id;
 		}
 
-		// Stable saver requires nonce + action.
-		$opt_name     = $key; // option name == key
-		$nonce_action = 'wpbc_nonce_' . $opt_name;
-		$nonce_value  = wp_create_nonce( $nonce_action );
+		$opt_name = $key; // Option name equals the registered policy name.
 
 		$wrap_class = 'wpbc_bfb__form_setting_save';
 		$btn_class  = 'button button-primary wpbc_bfb__form_setting_save_btn';
@@ -711,8 +708,6 @@ class WPBC_BFB_Setting_Options {
 
 					data-wpbc-u-save="1"
 					data-wpbc-u-save-name="<?php echo esc_attr( $opt_name ); ?>"
-					data-wpbc-u-save-nonce="<?php echo esc_attr( $nonce_value ); ?>"
-					data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
 					data-wpbc-u-busy-text="<?php echo esc_attr__( 'Saving…', 'booking' ); ?>"
 
 					data-wpbc-u-save-ui="<?php echo esc_attr( $save_ui ); ?>"

@@ -162,13 +162,10 @@
 
 	function wpbc_uix_get_option_save_config($el) {
 		return {
-			nonce              : $el.data('wpbc-u-save-nonce'),
-			nonce_action       : $el.data('wpbc-u-save-action'),
 			data_name          : $el.data('wpbc-u-save-name'),
 			fields_raw         : $el.data('wpbc-u-save-fields') || '',
 			inline_value       : wpbc_uix_read_attr_or_data($el, 'data-wpbc-u-save-value', 'wpbc-u-save-value'),
 			json               : wpbc_uix_read_attr_or_data($el, 'data-wpbc-u-save-value-json', 'wpbc-u-save-value-json'),
-			save_mode          : $el.data('wpbc-u-save-mode') || $el.attr('data-wpbc-u-save-mode') || '',
 			value_from_selector: $el.data('wpbc-u-save-value-from') || $el.attr('data-wpbc-u-save-value-from')
 		};
 	}
@@ -225,19 +222,15 @@
 		}
 
 		wpbc_uix_autosave_registry[cfg.data_name] = {
-			nonce       : cfg.nonce,
-			nonce_action: cfg.nonce_action,
 			data_name   : cfg.data_name,
 			payload     : wpbc_uix_build_option_save_payload($el, cfg),
-			save_mode   : cfg.save_mode,
-			fields_raw  : cfg.fields_raw,
 			dirty       : !!is_dirty,
 			el          : el
 		};
 	}
 
 	function wpbc_uix_save_autosave_registry_entry(entry) {
-		if (!entry || !entry.dirty || !entry.nonce || !entry.nonce_action || !entry.data_name || entry.payload === null) {
+		if (!entry || !entry.dirty || !entry.data_name || entry.payload === null || !w.wpbc_option_saver_loader_config || !w.wpbc_option_saver_loader_config.save_nonce) {
 			return;
 		}
 
@@ -248,12 +241,9 @@
 			type: 'POST',
 			data: {
 				action:       w.wpbc_option_saver_loader_config.action_save,
-				nonce:        entry.nonce,
-				nonce_action: entry.nonce_action,
+				nonce:        w.wpbc_option_saver_loader_config.save_nonce,
 				data_name:    entry.data_name,
-				data_value:   entry.payload,
-				data_mode:    entry.save_mode,
-				data_fields:  (entry.save_mode === 'split' ? String(entry.fields_raw || '') : '')
+				data_value:   entry.payload
 			}
 		})
 		.done(function (resp) {
@@ -284,12 +274,10 @@
 	 *
 	 * Data attributes:
 	 *     data-wpbc-u-save-name       — option key (required)
-	 *     data-wpbc-u-save-nonce      — nonce value (required)
-	 *     data-wpbc-u-save-action     — nonce action (required)
+	 *     The fixed save nonce is supplied by wpbc_option_saver_loader_config.
 	 *     data-wpbc-u-save-value      — RAW scalar to save (optional)  (dynamic: read via attr first)
 	 *     data-wpbc-u-save-value-json — JSON string to save (optional) (dynamic: read via attr first)
-	 *     data-wpbc-u-save-fields     — CSV selectors; values serialized with jQuery.param (optional). Optional allowlist of keys for split mode (CSV).
-	 *     data-wpbc-u-save-mode       - Optional.: 'split' | ''  --  Optional: split JSON object into separate options server-side.
+	 *     data-wpbc-u-save-fields     — CSV selectors serialized with jQuery.param (optional). Server policy owns the writable-key allowlist.
 	 *     data-wpbc-u-save-value-from — OPTIONAL selector to read scalar from (checkbox => On/Off)
 	 *     data-wpbc-u-busy-text       — custom text during AJAX (optional)
 	 *     data-wpbc-u-save-callback   — window function name to call on success (optional)
@@ -306,16 +294,13 @@
 
 		var $el = $(el);
 
-		// Static values can be read from .data().
-		var nonce        = $el.data('wpbc-u-save-nonce');
-		var nonce_action = $el.data('wpbc-u-save-action');
-		var data_name    = $el.data('wpbc-u-save-name');
+		var nonce     = w.wpbc_option_saver_loader_config.save_nonce;
+		var data_name = $el.data('wpbc-u-save-name');
 
 		// Dynamic values MUST prefer attribute read (fresh), fallback to .data().
 		var fields_raw   = $el.data('wpbc-u-save-fields') || '';
 		var inline_value = wpbc_uix_read_attr_or_data($el, 'data-wpbc-u-save-value', 'wpbc-u-save-value');
 		var json         = wpbc_uix_read_attr_or_data($el, 'data-wpbc-u-save-value-json', 'wpbc-u-save-value-json');
-		var save_mode    = $el.data('wpbc-u-save-mode') || $el.attr('data-wpbc-u-save-mode') || '';
 
 		// Optional: compute scalar from another control selector at click time.
 		var value_from_selector = $el.data('wpbc-u-save-value-from') || $el.attr('data-wpbc-u-save-value-from');
@@ -323,8 +308,8 @@
 		var cb_id = $el.data('wpbc-u-save-callback');
 		var cb_fn = (cb_id && typeof w[cb_id] === 'function') ? w[cb_id] : null;
 
-		if (!nonce || !nonce_action || !data_name) {
-			console.error('WPBC | missing nonce/action/name');
+		if (!nonce || !data_name) {
+			console.error('WPBC | missing nonce/name');
 			return;
 		}
 
@@ -391,15 +376,8 @@
 			data: {
 				action:       w.wpbc_option_saver_loader_config.action_save,
 				nonce:        nonce,
-				nonce_action: nonce_action,
 				data_name:    data_name,
-				data_value:   payload,
-
-				// Optional: split JSON object into separate options server-side.
-				data_mode:    save_mode,
-
-				// Optional allowlist of keys for split mode (CSV).
-				data_fields:  (save_mode === 'split' ? String(fields_raw || '') : '')
+				data_value:   payload
 			}
 		})
 		.done(function (resp) {
@@ -521,8 +499,8 @@
 		var cb_id = $el.data('wpbc-u-load-callback');
 		var cb_fn = (cb_id && typeof w[cb_id] === 'function') ? w[cb_id] : null;
 
-		if (!name) {
-			console.error('WPBC | missing data-wpbc-u-load-name');
+		if (!name || !w.wpbc_option_saver_loader_config.load_nonce) {
+			console.error('WPBC | missing load nonce/name');
 			return;
 		}
 
@@ -534,6 +512,7 @@
 			type: 'GET',
 			data: {
 				action:    w.wpbc_option_saver_loader_config.action_load,
+				nonce:     w.wpbc_option_saver_loader_config.load_nonce,
 				data_name: name
 			}
 		})

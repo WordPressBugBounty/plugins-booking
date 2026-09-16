@@ -185,8 +185,6 @@ function wpbc_bfb_ui__settings_options__print() {
 							class="button button-secondary"
 							data-wpbc-bfb-apply-accent-components="1"
 							data-wpbc-u-save-name="booking_timeslot_picker_skin"
-							data-wpbc-u-save-action="wpbc_bfb_save_time_picker_skin"
-							data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( 'wpbc_bfb_save_time_picker_skin' ) ); ?>"
 							data-wpbc-u-save-value="/css/time_picker_skins/form_style.css"
 							data-wpbc-u-save-callback="wpbc_bfb_time_picker_skin_saved"
 							data-wpbc-time-picker-skin-current="<?php echo esc_attr( get_bk_option( 'booking_timeslot_picker_skin' ) ); ?>"

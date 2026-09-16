@@ -152,8 +152,6 @@ function wpbc_bfb_time_picker__print_inspector_group() {
 	$current_skin        = wpbc_bfb_time_picker__normalize_skin_value( get_bk_option( 'booking_timeslot_picker_skin' ) );
 	$toggle_option       = 'booking_timeslot_picker';
 	$skin_option         = 'booking_timeslot_picker_skin';
-	$toggle_nonce_action = 'wpbc_nonce_' . $toggle_option;
-	$skin_nonce_action   = 'wpbc_nonce_' . $skin_option;
 	$skin_select_id      = 'wpbc_bfb__time_field__booking_timeslot_picker_skin';
 
 	?>
@@ -173,8 +171,6 @@ function wpbc_bfb_time_picker__print_inspector_group() {
 					class="button button-secondary"
 					onclick="wpbc_save_option_from_element(this);"
 					data-wpbc-u-save-name="<?php echo esc_attr( $toggle_option ); ?>"
-					data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $toggle_nonce_action ) ); ?>"
-					data-wpbc-u-save-action="<?php echo esc_attr( $toggle_nonce_action ); ?>"
 					data-wpbc-u-save-value-from="#wpbc_bfb__time_field__booking_timeslot_picker"
 					data-wpbc-u-autosave-on-form-save="1"
 					data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving', 'booking' ); ?>...">
@@ -217,8 +213,6 @@ function wpbc_bfb_time_picker__print_inspector_group() {
 					class="button button-primary"
 					onclick="wpbc_save_option_from_element(this);"
 					data-wpbc-u-save-name="<?php echo esc_attr( $skin_option ); ?>"
-					data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $skin_nonce_action ) ); ?>"
-					data-wpbc-u-save-action="<?php echo esc_attr( $skin_nonce_action ); ?>"
 					data-wpbc-u-save-value-from="#<?php echo esc_attr( $skin_select_id ); ?>"
 					data-wpbc-u-save-callback="wpbc_bfb_time_picker_skin_control_saved"
 					data-wpbc-u-autosave-on-form-save="1"

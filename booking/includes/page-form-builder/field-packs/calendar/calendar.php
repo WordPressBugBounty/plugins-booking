@@ -277,15 +277,10 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 							<?php echo esc_html__( 'This is a global calendar appearance option.', 'booking' ); ?>
 						</p>
 					</div>
-					<?php
-					$nonce_action = 'wpbc_nonce_' . $booking_action;
-					?>
 					<a  href="javascript:void(0);"
 						class="button button-primary"
 						onclick="wpbc_save_option_from_element(this);"
 						data-wpbc-u-save-name="<?php echo esc_attr( $booking_action ); ?>"
-						data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
-						data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
 						data-wpbc-u-save-value-from="#<?php echo esc_attr( $el_id ); ?>"
 						data-wpbc-u-autosave-on-form-save="1"
 						data-wpbc-u-busy-text="<?php esc_attr_e( 'Saving', 'booking' ); ?>...">
@@ -463,7 +458,6 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 		}
 
 		$booking_action = 'wpbc_calendar_legend_options';
-		$nonce_action   = 'wpbc_nonce_' . $booking_action;
 		$save_fields    = array();
 
 		foreach ( self::get_calendar_legend_option_names() as $option_name ) {
@@ -523,9 +517,6 @@ class WPBC_BFB_Field_Calendar_WPTPL_Pack {
 						class="button button-primary"
 						onclick="wpbc_save_option_from_element(this);"
 						data-wpbc-u-save-name="<?php echo esc_attr( $booking_action ); ?>"
-						data-wpbc-u-save-nonce="<?php echo esc_attr( wp_create_nonce( $nonce_action ) ); ?>"
-						data-wpbc-u-save-action="<?php echo esc_attr( $nonce_action ); ?>"
-						data-wpbc-u-save-mode="split"
 						data-wpbc-u-save-fields="<?php echo esc_attr( implode( ',', $save_fields ) ); ?>"
 						data-wpbc-u-autosave-watch=".wpbc_bfb__calendar_legend_fields"
 						data-wpbc-u-autosave-on-form-save="1"

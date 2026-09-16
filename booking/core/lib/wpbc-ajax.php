@@ -24,18 +24,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 //FixIn: Flex TimeLine 1.0
 function wpbc_ajax_WPBC_FLEXTIMELINE_NAV() {
 
-	// if ( ! wpbc_check_nonce_in_admin_panel( $_POST['action'] ) ) return false;  //FixIn: 7.2.1.10          // This line for admin panel
-
-	if ( wpbc_is_use_nonce_at_front_end() ) {           // FixIn: 10.1.1.2.
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$nonce = ( isset( $_REQUEST['wpbc_nonce'] ) ) ? $_REQUEST['wpbc_nonce'] : '';
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		if ( ! wp_verify_nonce( $nonce, $_POST['action'] ) ) {                  // This nonce is not valid.
-			/* translators: 1: ... */
-			wp_die( wp_kses_post( sprintf( __( '%1$sError!%2$s Request do not pass security check! Please refresh the page and try one more time.', 'booking' ), '<strong>', '</strong>' ) . '<br/>' . sprintf( __( 'Please check more %1$shere%2$s', 'booking' ), '<a href="https://wpbookingcalendar.com/faq/request-do-not-pass-security-check/?after_update=10.1.1" target="_blank">', '</a>.' )      // FixIn: 8.8.3.6.
-			) );                                                         // Its prevent of showing '0' et  the end of request.
-		}
+	// Timeline markup always includes this action-specific nonce. Unlike the
+	// optional booking-form nonce policy, public timeline navigation must never
+	// process or reflect a cross-origin request without verifying it.
+	$nonce = isset( $_POST['wpbc_nonce'] ) && is_scalar( $_POST['wpbc_nonce'] )
+		? sanitize_text_field( wp_unslash( (string) $_POST['wpbc_nonce'] ) )
+		: '';
+	if ( ! wp_verify_nonce( $nonce, 'WPBC_FLEXTIMELINE_NAV' ) ) {
+		wp_die( '', '', array( 'response' => 403 ) );
 	}
+
 	make_bk_action( 'wpbc_ajax_flex_timeline' );
 	wp_die( '' );                                                             // Its prevent of showing '0' et  the end of request.
 }

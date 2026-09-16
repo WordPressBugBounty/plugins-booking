@@ -126,6 +126,114 @@ class WPBC_TimelineFlex {
     }
 
 	/**
+	 * Validate the server-generated DOM identifier used by Timeline navigation.
+	 *
+	 * Public AJAX requests may return this value in JavaScript and inline event
+	 * attributes. Accepting only the established prefix and decimal suffix keeps
+	 * it an identifier rather than caller-controlled markup or selector syntax.
+	 *
+	 * @param mixed $html_client_id Candidate Timeline DOM identifier.
+	 * @return string Valid identifier, or an empty string.
+	 */
+	public static function normalize_html_client_id( $html_client_id ) {
+		if ( ! is_scalar( $html_client_id ) ) {
+			return '';
+		}
+
+		$html_client_id = (string) $html_client_id;
+		if ( 64 < strlen( $html_client_id ) ) {
+			return '';
+		}
+
+		return preg_match( '/\Awpbc_timeline_[0-9]+\z/D', $html_client_id )
+			? $html_client_id
+			: '';
+	}
+
+	/**
+	 * Normalize the public timeline options contract.
+	 *
+	 * Timeline navigation round-trips options through the browser. Only Resource
+	 * links are consumed by the renderer, so every other key is discarded rather
+	 * than retained as attacker-controlled state for a later response.
+	 *
+	 * @param mixed $options Candidate timeline options.
+	 * @return array<string,array<int,string>> Valid Resource links keyed by Resource ID.
+	 */
+	public static function normalize_options( $options ) {
+		if (
+			! is_array( $options )
+			|| empty( $options['resource_link'] )
+			|| ! is_array( $options['resource_link'] )
+		) {
+			return array();
+		}
+
+		$resource_links = array();
+		foreach ( $options['resource_link'] as $resource_key => $resource_url ) {
+			if ( ! is_scalar( $resource_key ) || ! is_scalar( $resource_url ) ) {
+				continue;
+			}
+
+			$resource_id  = absint( $resource_key );
+			$resource_url = esc_url_raw( (string) $resource_url );
+			if ( empty( $resource_id ) || '' === $resource_url ) {
+				continue;
+			}
+
+			$resource_links[ $resource_id ] = $resource_url;
+		}
+
+		return empty( $resource_links )
+			? array()
+			: array( 'resource_link' => $resource_links );
+	}
+
+	/**
+	 * Decode and normalize browser-submitted timeline options.
+	 *
+	 * @param mixed $encoded_options JSON text received from the timeline client.
+	 * @return array<string,array<int,string>> Valid Resource links, or an empty array.
+	 */
+	public static function decode_options( $encoded_options ) {
+		if ( ! is_scalar( $encoded_options ) ) {
+			return array();
+		}
+
+		$decoded_options = json_decode( (string) $encoded_options, true, 32 );
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			return array();
+		}
+
+		return self::normalize_options( $decoded_options );
+	}
+
+	/**
+	 * Encode timeline options as one complete JavaScript string literal.
+	 *
+	 * The timeline browser contract stores JSON text, rather than an object, in
+	 * `timeline_obj.options`. Encoding the normalized options twice preserves that
+	 * contract while the hexadecimal flags prevent quotes or HTML delimiters in a
+	 * URL from terminating the inline script context.
+	 *
+	 * @param mixed $options Candidate timeline options.
+	 * @return string JavaScript-safe JSON string literal, including its delimiters.
+	 */
+	public static function encode_options_for_inline_script( $options ) {
+		$options_json = wp_json_encode( self::normalize_options( $options ) );
+		if ( false === $options_json ) {
+			$options_json = '{}';
+		}
+
+		$javascript_literal = wp_json_encode(
+			$options_json,
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+		);
+
+		return false === $javascript_literal ? '"{}"' : $javascript_literal;
+	}
+
+	/**
 	 * Apply an exact booking and resource authorization scope to timeline SQL arguments.
 	 *
 	 * A booking hash is a bearer credential for one booking. It must never be
@@ -254,6 +362,7 @@ class WPBC_TimelineFlex {
 
 //debuge($this->options);
         }
+		$this->options = self::normalize_options( $this->options );
         // FixIn: 7.0.1.50.
 
 
@@ -532,7 +641,7 @@ class WPBC_TimelineFlex {
         $this->time_array_new = $bookings_date_time[1];
                 
     
-        $this->html_client_id = $attr['html_client_id'];
+		$this->html_client_id = self::normalize_html_client_id( $attr['html_client_id'] );
 
         return $this->html_client_id;
     }
@@ -590,7 +699,10 @@ class WPBC_TimelineFlex {
 				'wh_trash'             : "<?php echo esc_js( $this->request_args['wh_trash'] ); ?>",
 				'limit_hours'          : "<?php echo esc_js( $this->request_args['limit_hours'] ); ?>",
 				'only_booked_resources': "<?php echo esc_js( $this->request_args['only_booked_resources'] ); ?>",
-				'options'              : '<?php echo wp_json_encode( $this->options ); ?>',
+				'options'              : <?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Returns a complete JSON-encoded JavaScript string literal.
+					echo self::encode_options_for_inline_script( $this->options );
+				?>,
 				'booking_hash'         : "<?php echo esc_js( $this->request_args['booking_hash'] ); ?>"
 			};
 		</script>
@@ -916,7 +1028,7 @@ class WPBC_TimelineFlex {
 			$this->request_args['booking_hash'] = $param['booking_hash'];
 		}                                // FixIn: 8.1.3.5.
 		if ( ( empty( $this->options ) ) && ( isset( $param['options'] ) ) ) {
-			$this->options = json_decode( wp_unslash( $param['options'] ), true );                        // FixIn: 9.2.1.8.
+			$this->options = self::decode_options( $param['options'] );                        // FixIn: 9.2.1.8.
 		}
 
 	}
@@ -3382,7 +3494,15 @@ function wpbc_ajax_flex_timeline() {
 		if ( '' === $clean_key || ! isset( $allowed_timeline_keys[ $clean_key ] ) ) {
 			continue;
 		}
-		$attr[ $clean_key ] = wpbc_clean_text_value( wp_unslash( (string) $tl_value ) );
+		$clean_value = wp_unslash( (string) $tl_value );
+		if ( 'options' === $clean_key ) {
+			$normalized_options = WPBC_TimelineFlex::decode_options( $clean_value );
+			$encoded_options    = wp_json_encode( $normalized_options );
+			$attr[ $clean_key ] = false === $encoded_options ? '{}' : $encoded_options;
+			continue;
+		}
+
+		$attr[ $clean_key ] = wpbc_clean_text_value( $clean_value );
 	}
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -3391,9 +3511,14 @@ function wpbc_ajax_flex_timeline() {
 		wp_die( '' );
 	}
 
-	$attr['nav_step']   = isset( $_POST['nav_step'] ) ? wpbc_clean_text_value( wp_unslash( (string) $_POST['nav_step'] ) ) : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-	$attr['is_frontend'] = isset( $attr['is_frontend'] ) ? $attr['is_frontend'] : '1';
-	if ( empty( $attr['html_client_id'] ) ) {
+	$attr['nav_step'] = isset( $_POST['nav_step'] )
+		? wpbc_clean_text_value( wp_unslash( (string) $_POST['nav_step'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		: '0';
+	$attr['is_frontend']    = isset( $attr['is_frontend'] ) ? $attr['is_frontend'] : '1';
+	$attr['html_client_id'] = isset( $attr['html_client_id'] )
+		? WPBC_TimelineFlex::normalize_html_client_id( $attr['html_client_id'] )
+		: '';
+	if ( '' === $attr['html_client_id'] ) {
 		status_header( 400 );
 		wp_die( '' );
 	}
