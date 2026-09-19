@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 11.8.3
+Version: 11.8.4
 License: GPLv2 or later
 */
 
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '11.8.3' );
+	define( 'WP_BK_VERSION_NUM', '11.8.4' );
 }
 if ( ! defined( 'WP_BK_PRO_BFB_ONLY_VERSION' ) ) {
 	define( 'WP_BK_PRO_BFB_ONLY_VERSION', '11.4' );                                                                     // First Pro version that no longer loads legacy Booking Form settings pages.
@@ -66,6 +66,14 @@ if ( ! defined( 'WPBC_DEFAULT_FORM_ACCENT_COLOR' ) ) {
 if ( ! defined( 'WPBC_ENABLE_11_6_FEATURES' ) ) {
 	define( 'WPBC_ENABLE_11_6_FEATURES', true );
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// DEV CONSTANTS
+// ---------------------------------------------------------------------------------------------------------------------
+if ( ! defined( 'WPBC_ENABLE_11_9_SETUP_WIZARD' ) ) {
+	define( 'WPBC_ENABLE_11_9_SETUP_WIZARD', false );
+}
+
 
 /**
  * Select the source used for bundled starter images.

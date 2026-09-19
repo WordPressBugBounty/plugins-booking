@@ -737,6 +737,22 @@ function wpbc_bfb_ajax_save_form_config() {
 		wp_send_json_error( array( 'code' => 'invalid_structure', 'message' => __( 'Form structure is not a valid JSON object.', 'booking' ) ) );
 	}
 
+	/**
+	 * Filter and sanitize a decoded Form Builder structure before persistence.
+	 *
+	 * Field packs may normalize only their own stored properties. Callbacks must
+	 * return the complete structure and must not perform persistence or output.
+	 *
+	 * @since 11.8.4
+	 *
+	 * @param array $structure_arr Decoded Form Builder structure.
+	 */
+	$structure_arr = apply_filters( 'wpbc_bfb_sanitize_structure_before_save', $structure_arr );
+
+	if ( ! is_array( $structure_arr ) ) {
+		wp_send_json_error( array( 'code' => 'invalid_structure', 'message' => __( 'Form structure could not be normalized.', 'booking' ) ) );
+	}
+
 	// Settings JSON (normalized to the ONLY supported schema).
 	$settings_arr = wpbc_bfb__normalize_settings_array( $settings_raw );
 	$preview_form_style = wpbc_bfb__normalize_preview_form_style( $preview_form_style_raw );

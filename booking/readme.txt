@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.8.3
+Stable tag: 11.8.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -318,6 +318,11 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 
 
 == Changelog ==
+= 11.8.4 =
+- Changes in **all** versions:
+	* **Improvement**: Expanded Form Builder's Custom Shortcode field to accept one supported Booking Calendar shortcode with options and quoted values, including Coupon fields in editions that provide them, while rejecting malformed or unsafe input.
+	* **Security**: Hardened form auto-fill and time-slot rendering to prevent crafted links from injecting scripts into administrator booking pages.
+
 = 11.8.3 =
 - Changes in **all** versions:
 	* **Improvement**: Completed Ukrainian translations.
@@ -382,4 +387,4 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 
 == Upgrade Notice ==
 = 11.8 =
-Adds a vertical multi-month-ready full-day form for new installs, streamlined Booking Modes and Setup, plus paid Availability and Searchable Resources catalogs. Security hardens booking creation. MySQL 9.6+ compatibility; clear page and CDN caches after updating.
+Adds a multi-month-ready full-day form for new installs, streamlined Booking Modes and Setup, plus paid Availability and Searchable Resources catalogs. Security hardens booking creation, options, Timeline, form auto-fill, and time-slot rendering. MySQL 9.6+ compatibility; clear page/CDN caches.

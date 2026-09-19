@@ -20,24 +20,71 @@
 
 		return {
 			example_shortcode : String( boot.example_shortcode || '[field_name_hint]' ),
-			invalid_message   : String( boot.invalid_message || 'Enter one shortcode in square brackets, for example [field_name_hint].' )
+			invalid_message   : String( boot.invalid_message || 'Enter one complete shortcode, for example [field_name_hint] or [coupon discount ""].' )
 		};
 	}
 
 	/**
-	 * Normalize one bare bracketed shortcode token.
+	 * Normalize one bracketed Booking Calendar shortcode.
 	 *
-	 * Attributes, whitespace, nested brackets, and multiple tokens are rejected
-	 * so this presentation field cannot become a second form-control builder.
+	 * The token may contain space-separated options and balanced single- or
+	 * double-quoted values. Control characters, HTML delimiters, nested brackets,
+	 * multiple tokens, unbalanced quotes, and excessive input are rejected before
+	 * the value can reach the Advanced Booking Form exporter.
 	 *
 	 * @param {*} shortcode_value Candidate value from Builder field data.
 	 *
 	 * @returns {string} Trimmed token when valid, otherwise an empty string.
 	 */
 	function wpbc_bfb_custom_shortcode_normalize( shortcode_value ) {
-		var shortcode = String( shortcode_value || '' ).trim();
+		var shortcode = String( shortcode_value == null ? '' : shortcode_value ).trim();
+		var shortcode_body;
+		var shortcode_name_end;
+		var shortcode_name;
+		var active_quote = '';
+		var character;
+		var index;
 
-		return /^\[[A-Za-z0-9_-]+\]$/.test( shortcode ) ? shortcode : '';
+		if (
+			shortcode.length < 3 ||
+			shortcode.length > 1000 ||
+			'[' !== shortcode.charAt( 0 ) ||
+			']' !== shortcode.charAt( shortcode.length - 1 )
+		) {
+			return '';
+		}
+
+		shortcode_body = shortcode.slice( 1, -1 ).trim();
+
+		if ( ! shortcode_body || /[\u0000-\u001F\u007F<>\[\]]/.test( shortcode_body ) ) {
+			return '';
+		}
+
+		shortcode_name_end = shortcode_body.indexOf( ' ' );
+		shortcode_name     = -1 === shortcode_name_end
+			? shortcode_body
+			: shortcode_body.slice( 0, shortcode_name_end );
+
+		if ( ! /^[A-Za-z0-9_.*-]+$/.test( shortcode_name ) ) {
+			return '';
+		}
+
+		for ( index = shortcode_name.length; index < shortcode_body.length; index++ ) {
+			character = shortcode_body.charAt( index );
+
+			if ( active_quote ) {
+				if ( character === active_quote ) {
+					active_quote = '';
+				}
+				continue;
+			}
+
+			if ( '"' === character || "'" === character ) {
+				active_quote = character;
+			}
+		}
+
+		return active_quote ? '' : '[' + shortcode_body + ']';
 	}
 
 	/**
@@ -57,7 +104,7 @@
 	}
 
 	/**
-	 * Render and export a single custom shortcode token.
+	 * Render and export one validated custom shortcode token.
 	 */
 	class WPBC_BFB_Field_Custom_Shortcode extends Base {
 
@@ -183,7 +230,7 @@
 	}
 
 	/**
-	 * Omit a display-only shortcode from submitted Booking Data output.
+	 * Omit the custom token from submitted Booking Data output.
 	 *
 	 * @returns {void}
 	 */
@@ -194,8 +241,8 @@
 	/**
 	 * Register an empty Booking Data exporter.
 	 *
-	 * Custom runtime hints belong to the public form only and do not represent a
-	 * submitted customer value suitable for booking details or notifications.
+	 * The field pack modifies only the Advanced Booking Form. It cannot infer the
+	 * correct Booking Data representation for arbitrary display or input tokens.
 	 *
 	 * @returns {void}
 	 */

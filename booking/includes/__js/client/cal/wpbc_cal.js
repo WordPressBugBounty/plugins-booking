@@ -2394,7 +2394,10 @@ jQuery( document ).ready( function (){
 		}
 	}
 
-	if ( url_params.has( 'wpbc_auto_fill' ) ){
+	if (
+		url_params.has( 'wpbc_auto_fill' )
+		&& ! jQuery( 'body' ).hasClass( 'wp-admin' )
+	){
 
 		var wpbc_auto_fill_value = url_params.get( 'wpbc_auto_fill' );
 
@@ -2409,7 +2412,11 @@ jQuery( document ).ready( function (){
 /**
  * Autofill / select booking form  fields by  values from  the GET request  parameter: ?wpbc_auto_fill=
  *
- * @param auto_fill_str
+ * URL-provided field names are resolved through the exact-name DOM API so
+ * they can never be interpreted as CSS selector syntax.
+ *
+ * @param {string} auto_fill_str Serialized field-name and value pairs.
+ * @return {void}
  */
 function wpbc_auto_fill_booking_fields( auto_fill_str ){																// FixIn: 10.0.0.48.
 
@@ -2422,7 +2429,15 @@ function wpbc_auto_fill_booking_fields( auto_fill_str ){																// FixIn
 	var fields_arr = wpbc_auto_fill_booking_fields__parse( auto_fill_str );
 
 	for ( let i = 0; i < fields_arr.length; i++ ){
-		jQuery( '[name="' + fields_arr[ i ][ 'name' ] + '"]' ).val( fields_arr[ i ][ 'value' ] );
+		var field_name = String( fields_arr[ i ][ 'name' ] || '' );
+		if ( '' === field_name ) {
+			continue;
+		}
+
+		var field_elements = document.getElementsByName( field_name );
+		if ( 0 < field_elements.length ) {
+			jQuery( field_elements ).val( fields_arr[ i ][ 'value' ] );
+		}
 	}
 }
 

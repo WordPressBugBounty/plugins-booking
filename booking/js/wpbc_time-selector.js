@@ -27,9 +27,9 @@
 
 				} );
 
-				var times_options_html = $.fn.wpbc_timeselector.format( times_options );
+				var times_options_element = $.fn.wpbc_timeselector.format( times_options );
 
-				el.after( times_options_html );
+				el.after( times_options_element );
 
 				el.next('.wpbc_times_selector').find('div').not('.wpbc_time_picker_disabled').on( "click", function() {
 
@@ -42,8 +42,10 @@
 					jQuery( this ).addClass('wpbc_time_selected');
 
 					el.find( 'option' ).prop( 'selected', false );
-					// Find option in selectbox with this value
-					el.find( 'option[value="' + selected_value + '"]' ).prop( 'selected', true );
+					// Match the literal value without interpreting it as selector syntax.
+					el.find( 'option' ).filter( function (){
+						return selected_value === jQuery( this ).val();
+					} ).prop( 'selected', true );
 
 					el.trigger( 'change' );
 				});
@@ -67,43 +69,54 @@
 	} );
 
 
-	// Get HTML structure of times selection
+	/**
+	 * Build the visual time-slot selector from native option data.
+	 *
+	 * Values and labels can originate in saved form configuration or modified
+	 * DOM state. Creating elements and assigning text/attributes separately
+	 * prevents either value from becoming executable markup.
+	 *
+	 * @param {Array<Object>} el_arr Time-slot option records.
+	 * @return {jQuery} Detached, safely populated time-slot selector.
+	 */
 	$.fn.wpbc_timeselector.format = function ( el_arr ) {
 
-		var select_div = '';
-		var css_class='';
+		var times_selector = jQuery( document.createElement( 'div' ) ).addClass( 'wpbc_times_selector' );
+		var has_available_times = false;
 
 		$.each( el_arr, function (index, el_item){
 
 			if ( !el_item.disabled ){
+				var time_option_value = ( 'undefined' === typeof el_item.value || null === el_item.value ) ? '' : el_item.value;
+				var time_option_title = ( 'undefined' === typeof el_item.title || null === el_item.title ) ? '' : el_item.title;
+				var time_option = jQuery( document.createElement( 'div' ) )
+					.attr( 'data-value', String( time_option_value ) )
+					.attr( 'tabindex', '0' )
+					.text( String( time_option_title ) );
 
-				if (el_item.selected){
-					css_class = 'wpbc_time_selected';
-				} else {
-					css_class = '';
+				if ( el_item.selected ){
+					time_option.addClass( 'wpbc_time_selected' );
 				}
 
-				select_div += '<div '
-									+ ' data-value="' + el_item.value + '" '
-									+ ' class="' + css_class + '" '
-									+ ' tabindex="0" '
-					         + '>'
-									+ el_item.title
-							 + '</div>'
+				times_selector.append( time_option );
+				has_available_times = true;
 			} else {
 				// Uncomment row bellow to Show booked time slots as unavailable RED slots		// FixIn: 9.9.0.2.
-				// select_div += '<div class="wpbc_time_picker_disabled">' + el_item.title + '</div>';
+				// Add a disabled element through the same DOM construction path when this feature is enabled.
 			}
 
 		} );
 
-		if ( '' == select_div ){
-			select_div = '<span class="wpbc_no_time_pickers">'
-							+ 'No available times'
-					   + '</span>'
+		if ( ! has_available_times ){
+			times_selector.append(
+				jQuery( document.createElement( 'span' ) )
+					.addClass( 'wpbc_no_time_pickers' )
+					.text( 'No available times' )
+			);
 		}
-		return '<div class="wpbc_times_selector">' + select_div + '</div>';
-	}
+
+		return times_selector;
+	};
 
 
 })( jQuery );
