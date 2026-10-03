@@ -190,6 +190,38 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 		$my_resource_unavailable .= '</div>';
 	}
 
+	// Some Resources unavailable in an aggregate calendar.
+	if ( 1 ) {
+		$my_resources_partially_unavailable  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';
+		$my_resources_partially_unavailable .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
+		$my_resources_partially_unavailable .= '<td class="datepick-days-cell date_available wpbc_resources_partially_unavailable wpbc_calendar_legend_day_cell_height">';
+		$my_resources_partially_unavailable .= '<div class="wpbc-cell-box">';
+		$my_resources_partially_unavailable .= '	<div class="date-cell-content">';
+		$my_resources_partially_unavailable .= '		<div class="date-content-top"></div>';
+		$my_resources_partially_unavailable .= '		<span>' . esc_html( $params['text_for_day_cell'] ) . '</span>';
+		$my_resources_partially_unavailable .= '		<div class="date-content-bottom"></div>';
+		$my_resources_partially_unavailable .= '	</div>';
+		$my_resources_partially_unavailable .= '</div>';
+		$my_resources_partially_unavailable .= '</td></tr></tbody></table>';
+		$my_resources_partially_unavailable .= '</div>';
+	}
+
+	// One or more Resources have bookings in an aggregate calendar.
+	if ( 1 ) {
+		$my_resources_have_bookings  = '<div class="datepick-inline wpbc_calendar_legend_table_width_height">';
+		$my_resources_have_bookings .= '<table class="datepick wpbc_calendar" style=""><tbody><tr>';
+		$my_resources_have_bookings .= '<td class="datepick-days-cell date_available wpbc_resources_have_bookings wpbc_calendar_legend_day_cell_height">';
+		$my_resources_have_bookings .= '<div class="wpbc-cell-box">';
+		$my_resources_have_bookings .= '	<div class="date-cell-content">';
+		$my_resources_have_bookings .= '		<div class="date-content-top"></div>';
+		$my_resources_have_bookings .= '		<span>' . esc_html( $params['text_for_day_cell'] ) . '</span>';
+		$my_resources_have_bookings .= '		<div class="date-content-bottom"></div>';
+		$my_resources_have_bookings .= '	</div>';
+		$my_resources_have_bookings .= '</div>';
+		$my_resources_have_bookings .= '</td></tr></tbody></table>';
+		$my_resources_have_bookings .= '</div>';
+	}
+
 
 
 	$items_arr = array(   'available' => array(
@@ -234,6 +266,16 @@ function wpbc_get_calendar_legend__content_html( $params ) {
 											, 'text_for_day_cell' => $my_resource_unavailable
 											, 'css_class'         => '' //'datepick-days-cell resource_unavailable date_user_unavailable'
 										)
+						, 'resources_partially_unavailable' => array(
+											  'title'             => ( ! empty( $params['titles']['resources_partially_unavailable'] ) ) ? $params['titles']['resources_partially_unavailable'] : __( 'Some booking items unavailable', 'booking' )
+											, 'text_for_day_cell' => $my_resources_partially_unavailable
+											, 'css_class'         => ''
+										)
+						, 'resources_have_bookings' => array(
+											  'title'             => ( ! empty( $params['titles']['resources_have_bookings'] ) ) ? $params['titles']['resources_have_bookings'] : __( 'Bookings exist for one or more booking items', 'booking' )
+											, 'text_for_day_cell' => $my_resources_have_bookings
+											, 'css_class'         => ''
+										)
 					);
 
 	$calendar_legend_html = '<div class="block_hints datepick ' . ( ( $params['is_vertical'] ) ? ' block_hints_vertical ' : '' ) . '">';
@@ -267,7 +309,7 @@ function wpbc_get_calendar_legend__content_html( $params ) {
  *                              [legend_items items="available,unavailable,pending,approved,partially" text_for_day_cell="31"]
  *                              [legend_items is_vertical="1"]
  *                              [legend_items]
- *  [legend_items items="resource_unavailable,available,unavailable,pending,approved,partially" text_for_day_cell="31" titles="resource_unavailable={Resource unavailable days} unavailable={Season unavailable}"]
+ *  [legend_items items="resource_unavailable,resources_partially_unavailable,resources_have_bookings,available,unavailable,pending,approved,partially" text_for_day_cell="31" titles="resource_unavailable={Resource unavailable days} unavailable={Season unavailable}"]
  *
  * PHP code example with  escaping single and double quotes:
  *  echo wpbc_replace_shortcodes_in_booking_form__legend_items( '[legend_items'

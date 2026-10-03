@@ -156,6 +156,9 @@ add_action( 'wpbc_ui_el__top_nav__content_start', 'wpbc_booking_modes_render_too
  * @return bool True when the current route may render QuickStart.
  */
 function wpbc_booking_modes_is_quickstart_route_allowed( $page_tag, $active_page_tab ) {
+	if ( 'wpbc-setup' === (string) $page_tag ) {
+		return false;
+	}
 
 	return ! ( 'wpbc-settings' === (string) $page_tag && 'builder_booking_form' === (string) $active_page_tab );
 }
@@ -182,10 +185,6 @@ function wpbc_booking_modes_render_quickstart_action( $page_tag, $active_page_ta
 	}
 
 	unset( $active_page_subtab );
-
-	if ( function_exists( 'wpbc_setup_wizard_page__is_in_progress' ) && wpbc_setup_wizard_page__is_in_progress() ) {
-		return;
-	}
 
 	if ( function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo() ) {
 		return;

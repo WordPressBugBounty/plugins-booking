@@ -208,20 +208,12 @@ function wpbc_feedback_deactivation__send_email( $uninstall_slug, $feedback_desc
 	$fields_values['from_name']  = wp_specialchars_decode( esc_html( stripslashes( $fields_values['from_name'] ) ), ENT_QUOTES );
 	$fields_values['from_email'] = sanitize_email( $fields_values['from_email'] );
 
-	$subject = 'WPBC Uninstall: ' . $uninstall_slug . '';
+	$subject = 'Booking Calendar | Uninstall | ' . $uninstall_slug . '';
 
 
 	$message = '';
 	$message .= $feedback_description . "\n";
 	$message .= '=====' . "\n";
-
-	$cleaned_data_booking_feedback_arr = get_bk_option( 'booking_feedback__after_send' );
-	if ( ( ! empty( $cleaned_data_booking_feedback_arr ) ) && ( is_array( $cleaned_data_booking_feedback_arr ) ) ) {
-		$feedback_description_setup = implode( "\n", $cleaned_data_booking_feedback_arr );
-		$message .= $feedback_description_setup . "\n";
-		$message .= '=====' . "\n";
-	}
-
 
 	$message .="\n";
 
@@ -262,7 +254,8 @@ function wpbc_feedback_deactivation__send_email( $uninstall_slug, $feedback_desc
 	$attachments = '';
 
 
-	$to = 'feedback_uninstall@wpbookingcalendar.com';
+	// $to = 'feedback_uninstall@wpbookingcalendar.com';
+	$to = 'feedback_deactivate@wpbookingcalendar.com';
 
 // debuge('In email', htmlentities($to), $subject, htmlentities($message), $headers, $attachments)  ;
 // debuge( '$to, $subject, $message, $headers, $attachments',htmlspecialchars($to), htmlspecialchars($subject), htmlspecialchars($message), htmlspecialchars($headers), htmlspecialchars($attachments));

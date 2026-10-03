@@ -551,23 +551,29 @@ function wpbc_booking_appointment_resolve_form_slug( $service, $provider_id, $co
  *
  * @param string $form_slug   Resolved form slug.
  * @param int    $provider_id Provider resource ID.
+ * @param string $form_status Form source status: published or preview.
  *
  * @return bool True when Start Time is present or an extension allows the form.
  */
-function wpbc_booking_appointment_form_has_start_time( $form_slug, $provider_id ) {
+function wpbc_booking_appointment_form_has_start_time( $form_slug, $provider_id, $form_status = 'published' ) {
 	global $wpdb;
 
+	$form_status    = 'preview' === sanitize_key( (string) $form_status ) ? 'preview' : 'published';
 	$has_start_time = false;
 	if ( class_exists( 'WPBC_FE_Form_Source_Resolver' ) ) {
 		$resolution = WPBC_FE_Form_Source_Resolver::resolve(
 			array(
 				'resource_id' => absint( $provider_id ),
 				'form_slug'   => sanitize_text_field( $form_slug ),
-				'form_status' => 'published',
+				'form_status' => $form_status,
 			)
 		);
 		$form_id = ! empty( $resolution['bfb_loader_args']['form_id'] ) ? absint( $resolution['bfb_loader_args']['form_id'] ) : 0;
-		if ( $form_id ) {
+		if ( 'preview' === $form_status && ! empty( $resolution['bfb_loader_args'] ) && function_exists( 'wpbc_bfb_get_booking_form_pair' ) ) {
+			$form_pair     = wpbc_bfb_get_booking_form_pair( $resolution['bfb_loader_args'] );
+			$form_source   = is_array( $form_pair ) && isset( $form_pair['form'] ) ? (string) $form_pair['form'] : '';
+			$has_start_time = false !== stripos( $form_source, 'starttime' );
+		} elseif ( $form_id ) {
 			$form_source = $wpdb->get_var( $wpdb->prepare( "SELECT advanced_form FROM {$wpdb->prefix}booking_form_structures WHERE booking_form_id = %d AND status = %s LIMIT 1", $form_id, 'published' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$has_start_time = is_string( $form_source ) && false !== stripos( $form_source, 'starttime' );
 		}
@@ -656,9 +662,25 @@ function wpbc_booking_appointment_get_error_response_data( $error ) {
 function wpbc_booking_appointment_render_booking_form( $service, $provider, $config, $config_token ) {
 	$provider_id = absint( $provider['provider_id'] );
 	$form_slug   = wpbc_booking_appointment_resolve_form_slug( $service, $provider_id, $config );
+	/**
+	 * Filters the Form Builder source status used by an Appointment form.
+	 *
+	 * The normal public workflow always uses a published form. The authenticated
+	 * Form Builder preview service temporarily changes this to `preview` only for
+	 * an exact, user-bound transient snapshot.
+	 *
+	 * @param string              $form_status Existing source status. Default `published`.
+	 * @param string              $form_slug   Resolved Form Builder slug.
+	 * @param int                 $provider_id Selected Provider resource ID.
+	 * @param array<string,mixed> $config      Signed Appointment shortcode configuration.
+	 */
+	$filtered_form_status = apply_filters( 'wpbc_booking_appointment_form_status', 'published', $form_slug, $provider_id, $config );
+	$form_status          = is_scalar( $filtered_form_status ) && 'preview' === sanitize_key( (string) $filtered_form_status )
+		? 'preview'
+		: 'published';
 	$allow_past  = wpbc_booking_appointment_is_past_booking_enabled( $config );
 	$require_start_time = (bool) apply_filters( 'wpbc_booking_appointment_require_start_time', true, $service, $provider, $form_slug );
-	if ( $require_start_time && ! wpbc_booking_appointment_form_has_start_time( $form_slug, $provider_id ) ) {
+	if ( $require_start_time && ! wpbc_booking_appointment_form_has_start_time( $form_slug, $provider_id, $form_status ) ) {
 		$error_data           = array();
 		$service_settings_url = wpbc_booking_appointment_get_service_form_settings_url( $service['service_id'] );
 		if ( $service_settings_url ) {
@@ -681,18 +703,24 @@ function wpbc_booking_appointment_render_booking_form( $service, $provider, $con
 	}
 	$rendered_provider_ids[ $provider_id ] = true;
 
+	$calendar_request_overrides = class_exists( 'WPBC_BFB_Preview_Service' )
+		? WPBC_BFB_Preview_Service::get_instance()->get_current_preview_calendar_request_overrides()
+		: array();
+	// Appointment policy remains authoritative for past-date access while the
+	// signed preview supplies only its allow-listed Date Selection draft values.
+	$calendar_request_overrides['allow_past'] = $allow_past ? 1 : 0;
+
 	$render_params = array(
 		'is_echo'                    => 0,
 		'resource_id'                => $provider_id,
 		'cal_count'                  => absint( $config['cal_count'] ),
 		'custom_booking_form'        => $form_slug,
+		'form_status'                => $form_status,
 		'shortcode_param__options'   => $config['options'],
 		'calendar_dates_start'       => $config['calendar_dates_start'],
 		'calendar_dates_end'         => $config['calendar_dates_end'],
 		'booking_workflow'           => 'appointment',
-		'calendar_request_overrides' => array(
-			'allow_past' => $allow_past ? 1 : 0,
-		),
+		'calendar_request_overrides' => $calendar_request_overrides,
 	);
 	if ( ! empty( $config['start_month_calendar'] ) && is_array( $config['start_month_calendar'] ) ) {
 		$render_params['start_month_calendar'] = array(

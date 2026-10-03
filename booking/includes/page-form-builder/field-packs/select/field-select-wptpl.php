@@ -189,7 +189,7 @@ function wpbc_bfb_field_select_wptpl_print_templates( $page ) {
 								<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button"
 										data-action="deselect" aria-label="<?php
 								echo esc_attr__( 'Deselect', 'booking' ); ?>">
-									<i class="menu_icon icon-1x wpbc_icn_remove_done"></i>
+									<i class="menu_icon icon-1x wpbc_icn_rotate_270 wpbc_icn_near_me_disabled"></i>
 								</button>
 								<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button"
 										data-action="scrollto" aria-label="<?php

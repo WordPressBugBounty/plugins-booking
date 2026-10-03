@@ -432,4 +432,47 @@ class WPBC_BFB_Form_Storage {
 		}
 		return intval( $wpdb->insert_id );
 	}
+
+	/**
+	 * Delete one newly created form only when its complete logical identity matches.
+	 *
+	 * This narrow compensation API is used by multi-domain setup operations after
+	 * a later Service-assignment write fails. Existing forms are never deleted;
+	 * callers must provide the exact inserted row ID, slug, status, and owner.
+	 *
+	 * @param int    $booking_form_id Booking Form row ID created in this operation.
+	 * @param string $form_slug      Exact canonical form slug.
+	 * @param string $status         Exact canonical status.
+	 * @param int    $owner_user_id  Exact canonical owner ID.
+	 *
+	 * @return bool True when exactly one matching row was deleted.
+	 */
+	public static function delete_form_if_matches( $booking_form_id, $form_slug, $status, $owner_user_id ) {
+		global $wpdb;
+
+		$booking_form_id = absint( $booking_form_id );
+		$form_slug       = sanitize_title( (string) $form_slug );
+		$status          = sanitize_key( (string) $status );
+		$owner_user_id   = absint( $owner_user_id );
+		if ( ! $booking_form_id || '' === $form_slug || '' === $status ) {
+			return false;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$deleted = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$wpdb->prefix}booking_form_structures
+				 WHERE booking_form_id = %d
+				   AND form_slug = %s
+				   AND status = %s
+				   AND owner_user_id = %d",
+				$booking_form_id,
+				$form_slug,
+				$status,
+				$owner_user_id
+			)
+		);
+
+		return 1 === (int) $deleted;
+	}
 }

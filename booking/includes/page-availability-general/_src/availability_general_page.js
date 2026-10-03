@@ -398,23 +398,229 @@
 		return ( hours < 10 ? '0' : '' ) + hours + ':' + ( mins < 10 ? '0' : '' ) + mins;
 	}
 
+	/**
+	 * Return the bounded interval limit for one Working Time editor.
+	 *
+	 * @param {jQuery} $weekdays Working Time weekday wrapper.
+	 * @return {number} Maximum intervals per weekday.
+	 */
+	function get_max_working_time_intervals( $weekdays ) {
+		var configured_limit = parseInt( $weekdays.attr( 'data-max-intervals' ), 10 );
+		var localized_limit = parseInt( cfg.max_working_time_intervals, 10 );
+
+		return Math.max( 1, Math.min( 48, configured_limit || localized_limit || 8 ) );
+	}
+
+	/**
+	 * Read all visible interval controls for one weekday.
+	 *
+	 * @param {jQuery} $day_row Weekday row.
+	 * @return {Object[]} Canonical interval records.
+	 */
+	function collect_working_time_day_intervals( $day_row ) {
+		var intervals = [];
+
+		$day_row.find( '[data-wpbc-working-time-interval="1"]' ).each( function () {
+			var $interval = $( this );
+
+			intervals.push( {
+				start_second: time_to_seconds( $interval.find( '.wpbc_ag_working_time_start' ).val() ),
+				end_second: time_to_seconds( $interval.find( '.wpbc_ag_working_time_end' ).val() )
+			} );
+		} );
+
+		return intervals;
+	}
+
+	/**
+	 * Rebuild dynamic names, IDs, and label associations after a row mutation.
+	 *
+	 * @param {jQuery} $day_row Weekday row.
+	 * @return {void}
+	 */
+	function reindex_working_time_day( $day_row ) {
+		var $weekdays = $day_row.closest( '[data-wpbc-working-time-weekdays]' );
+		var prefix = String( $weekdays.attr( 'data-wpbc-working-time-weekdays' ) || '' );
+		var day = parseInt( $day_row.attr( 'data-wpbc-working-time-day' ), 10 );
+
+		$day_row.find( '[data-wpbc-working-time-interval="1"]' ).each( function ( interval_index ) {
+			var $interval = $( this );
+			var start_id = prefix + '_start_' + day + '_' + interval_index;
+			var end_id = prefix + '_end_' + day + '_' + interval_index;
+			var $labels = $interval.find( 'label' );
+
+			$interval.attr( 'data-interval-index', interval_index );
+			$interval.find( '.wpbc_ag_working_time_start' )
+				.attr( 'id', start_id )
+				.attr( 'name', prefix + '_start[' + day + '][]' );
+			$interval.find( '.wpbc_ag_working_time_end' )
+				.attr( 'id', end_id )
+				.attr( 'name', prefix + '_end[' + day + '][]' );
+			$labels.eq( 0 ).attr( 'for', start_id );
+			$labels.eq( 1 ).attr( 'for', end_id );
+		} );
+	}
+
+	/**
+	 * Refresh one weekday's enabled controls and interval-limit state.
+	 *
+	 * @param {jQuery} $day_row Weekday row.
+	 * @return {void}
+	 */
+	function refresh_working_time_day( $day_row ) {
+		var $weekdays = $day_row.closest( '[data-wpbc-working-time-weekdays]' );
+		var $toggle = $day_row.find( '[data-wpbc-working-time-day-toggle="1"]' ).first();
+		var $resource_custom = $day_row.closest( '[data-wpbc-working-time-resource-custom="1"]' );
+		var is_block_disabled = $day_row.closest( '.wpbc_ag_working_time_block' ).hasClass( 'is-disabled' )
+			|| ( $resource_custom.length && ! $resource_custom.hasClass( 'is-visible' ) );
+		var is_day_enabled = ! is_block_disabled && $toggle.prop( 'checked' );
+		var interval_count = $day_row.find( '[data-wpbc-working-time-interval="1"]' ).length;
+		var max_intervals = get_max_working_time_intervals( $weekdays );
+
+		$day_row.toggleClass( 'is-enabled', $toggle.prop( 'checked' ) );
+		$toggle.prop( 'disabled', is_block_disabled );
+		$day_row.find( '.wpbc_ag_working_time_start, .wpbc_ag_working_time_end, [data-wpbc-remove-working-time-interval]' ).prop( 'disabled', ! is_day_enabled );
+		$day_row.find( '[data-wpbc-add-working-time-interval]' ).prop( 'disabled', ! is_day_enabled || interval_count >= max_intervals );
+	}
+
+	/**
+	 * Find a non-overlapping one-hour interval proposal.
+	 *
+	 * @param {Object[]} intervals Current weekday intervals.
+	 * @return {Object|null} Proposed interval, or null when the day has no gap.
+	 */
+	function find_working_time_interval_proposal( intervals ) {
+		var sorted_intervals = intervals.slice().sort( function ( first_interval, second_interval ) {
+			return first_interval.start_second - second_interval.start_second;
+		} );
+		var preferred_start = sorted_intervals.length ? sorted_intervals[ sorted_intervals.length - 1 ].end_second : 9 * 3600;
+		var candidates = [];
+		var candidate_start;
+
+		for ( candidate_start = 0; candidate_start <= 23 * 3600; candidate_start += 1800 ) {
+			if ( candidate_start >= preferred_start ) {
+				candidates.push( candidate_start );
+			}
+		}
+		for ( candidate_start = 0; candidate_start < preferred_start && candidate_start <= 23 * 3600; candidate_start += 1800 ) {
+			candidates.push( candidate_start );
+		}
+
+		candidate_start = null;
+		candidates.some( function ( proposed_start ) {
+			var proposed_end = proposed_start + 3600;
+			var overlaps = sorted_intervals.some( function ( interval ) {
+				return proposed_start < interval.end_second && proposed_end > interval.start_second;
+			} );
+
+			if ( proposed_end <= 86400 && ! overlaps ) {
+				candidate_start = proposed_start;
+				return true;
+			}
+			return false;
+		} );
+
+		return null === candidate_start ? null : {
+			start_second: candidate_start,
+			end_second: candidate_start + 3600
+		};
+	}
+
+	/**
+	 * Append an interval by cloning the server-rendered allow-listed controls.
+	 *
+	 * @param {jQuery} $day_row Weekday row.
+	 * @param {Object} interval Canonical interval record.
+	 * @return {jQuery} Appended interval node.
+	 */
+	function append_working_time_interval( $day_row, interval ) {
+		var $container = $day_row.find( '[data-wpbc-working-time-intervals="1"]' ).first();
+		var $prototype = $container.find( '[data-wpbc-working-time-interval="1"]' ).first();
+		var $interval = $prototype.clone( false, false );
+
+		$interval.find( '.wpbc_ag_working_time_start' ).val( seconds_to_time( interval.start_second ) );
+		$interval.find( '.wpbc_ag_working_time_end' ).val( seconds_to_time( interval.end_second ) );
+		$container.append( $interval );
+		reindex_working_time_day( $day_row );
+
+		return $interval;
+	}
+
+	/**
+	 * Add the next available one-hour interval to a weekday.
+	 *
+	 * @param {HTMLElement} button Add-interval button.
+	 * @return {void}
+	 */
+	function add_working_time_interval( button ) {
+		var $day_row = $( button ).closest( '[data-wpbc-working-time-day]' );
+		var $weekdays = $day_row.closest( '[data-wpbc-working-time-weekdays]' );
+		var intervals = collect_working_time_day_intervals( $day_row );
+		var max_intervals = get_max_working_time_intervals( $weekdays );
+		var proposal;
+		var $interval;
+
+		if ( intervals.length >= max_intervals ) {
+			show_message( ( cfg.i18n && cfg.i18n.interval_limit ) || 'No additional one-hour interval is available for this weekday.', 'error', 6000 );
+			return;
+		}
+
+		proposal = find_working_time_interval_proposal( intervals );
+		if ( ! proposal ) {
+			show_message( ( cfg.i18n && cfg.i18n.interval_limit ) || 'No additional one-hour interval is available for this weekday.', 'error', 6000 );
+			return;
+		}
+
+		$interval = append_working_time_interval( $day_row, proposal );
+		$day_row.find( '[data-wpbc-working-time-day-toggle="1"]' ).prop( 'checked', true );
+		refresh_working_time_day( $day_row );
+		$interval.find( '.wpbc_ag_working_time_start' ).trigger( 'focus' );
+		schedule_preview_refresh();
+	}
+
+	/**
+	 * Remove one weekday interval, closing the weekday when it is the last one.
+	 *
+	 * Keeping one disabled interval in the DOM preserves an allow-listed control
+	 * prototype for reopening the day or adding a later interval.
+	 *
+	 * @param {HTMLElement} button Remove-interval button.
+	 * @return {void}
+	 */
+	function remove_working_time_interval( button ) {
+		var $button = $( button );
+		var $day_row = $button.closest( '[data-wpbc-working-time-day]' );
+		var $intervals = $day_row.find( '[data-wpbc-working-time-interval="1"]' );
+		var $focus_target;
+
+		if ( $intervals.length > 1 ) {
+			$button.closest( '[data-wpbc-working-time-interval="1"]' ).remove();
+			$focus_target = $day_row.find( '[data-wpbc-add-working-time-interval="1"]' ).first();
+		} else {
+			$day_row.find( '[data-wpbc-working-time-day-toggle="1"]' ).prop( 'checked', false );
+			$focus_target = $day_row.find( '[data-wpbc-working-time-day-toggle="1"]' ).first();
+		}
+
+		reindex_working_time_day( $day_row );
+		refresh_working_time_day( $day_row );
+		$focus_target.trigger( 'focus' );
+		schedule_preview_refresh();
+	}
+
 	function collect_working_time_weekdays( prefix ) {
 		var $form = get_form();
 		var weekdays = {};
 
 		$form.find( '[data-wpbc-working-time-weekdays="' + prefix + '"] .wpbc_ag_working_time_row' ).each( function () {
 			var $row = $( this );
-			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+			var day = parseInt( $row.attr( 'data-wpbc-working-time-day' ), 10 );
 
 			weekdays[ day ] = [];
-			if ( ! $row.find( 'input[type="checkbox"]' ).prop( 'checked' ) ) {
+			if ( ! $row.find( '[data-wpbc-working-time-day-toggle="1"]' ).prop( 'checked' ) ) {
 				return;
 			}
 
-			weekdays[ day ].push( {
-				start_second: time_to_seconds( $row.find( '.wpbc_ag_working_time_start' ).val() ),
-				end_second: time_to_seconds( $row.find( '.wpbc_ag_working_time_end' ).val() )
-			} );
+			weekdays[ day ] = collect_working_time_day_intervals( $row );
 		} );
 
 		return weekdays;
@@ -425,27 +631,40 @@
 
 		$wrap.find( '.wpbc_ag_working_time_row' ).each( function () {
 			var $row = $( this );
-			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
-			var intervals = weekdays && weekdays[ day ] ? weekdays[ day ] : [];
-			var interval = intervals.length ? intervals[0] : { start_second: 32400, end_second: 64800 };
+			var day = parseInt( $row.attr( 'data-wpbc-working-time-day' ), 10 );
+			var intervals = weekdays && $.isArray( weekdays[ day ] ) ? weekdays[ day ] : [];
+			var display_intervals = intervals.length ? intervals : [ { start_second: 32400, end_second: 64800 } ];
+			var $container = $row.find( '[data-wpbc-working-time-intervals="1"]' ).first();
+			var $prototype = $container.find( '[data-wpbc-working-time-interval="1"]' ).first().clone( false, false );
 
-			$row.find( 'input[type="checkbox"]' ).prop( 'checked', intervals.length > 0 );
-			$row.find( '.wpbc_ag_working_time_start' ).val( seconds_to_time( interval.start_second ) );
-			$row.find( '.wpbc_ag_working_time_end' ).val( seconds_to_time( interval.end_second ) );
+			$container.empty().append( $prototype );
+			$prototype.find( '.wpbc_ag_working_time_start' ).val( seconds_to_time( display_intervals[0].start_second ) );
+			$prototype.find( '.wpbc_ag_working_time_end' ).val( seconds_to_time( display_intervals[0].end_second ) );
+			display_intervals.slice( 1 ).forEach( function ( interval ) {
+				append_working_time_interval( $row, interval );
+			} );
+			$row.find( '[data-wpbc-working-time-day-toggle="1"]' ).prop( 'checked', intervals.length > 0 );
+			reindex_working_time_day( $row );
 		} );
 	}
 
 	function refresh_working_time_panels() {
 		var is_enabled = get_form().find( 'input[name="booking_working_time_enabled"]' ).prop( 'checked' );
 		var mode = get_form().find( 'input[name="booking_working_time_resource_mode"]:checked' ).val() || 'inherit';
+		var $resource_custom = get_form().find( '[data-wpbc-working-time-resource-custom]' );
+
+		$resource_custom.toggleClass( 'is-visible', mode === 'custom' );
 
 		get_form()
 			.find( '.wpbc_ag_working_time_block' )
-			.toggleClass( 'is-disabled', ! is_enabled )
-			.find( 'input, select, button' )
-			.prop( 'disabled', ! is_enabled );
+			.toggleClass( 'is-disabled', ! is_enabled );
 
-		get_form().find( '[data-wpbc-working-time-resource-custom]' ).toggleClass( 'is-visible', mode === 'custom' );
+		get_form().find( '.wpbc_ag_working_time_block' ).each( function () {
+			$( this ).find( 'input, select, button' ).prop( 'disabled', ! is_enabled );
+		} );
+		get_form().find( '[data-wpbc-working-time-day]' ).each( function () {
+			refresh_working_time_day( $( this ) );
+		} );
 	}
 
 	function get_working_time_settings_from_form() {
@@ -502,22 +721,30 @@
 
 		$form.find( '[data-wpbc-working-time-weekdays="booking_working_time_default"] .wpbc_ag_working_time_row' ).each( function () {
 			var $row = $( this );
-			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+			var day = parseInt( $row.attr( 'data-wpbc-working-time-day' ), 10 );
 
-			defaultStart[ day ] = $row.find( '.wpbc_ag_working_time_start' ).val() || '09:00';
-			defaultEnd[ day ] = $row.find( '.wpbc_ag_working_time_end' ).val() || '18:00';
-			if ( $row.find( 'input[type="checkbox"]' ).prop( 'checked' ) ) {
+			defaultStart[ day ] = [];
+			defaultEnd[ day ] = [];
+			$row.find( '[data-wpbc-working-time-interval="1"]' ).each( function () {
+				defaultStart[ day ].push( $( this ).find( '.wpbc_ag_working_time_start' ).val() || '09:00' );
+				defaultEnd[ day ].push( $( this ).find( '.wpbc_ag_working_time_end' ).val() || '18:00' );
+			} );
+			if ( $row.find( '[data-wpbc-working-time-day-toggle="1"]' ).prop( 'checked' ) ) {
 				defaultDays.push( day );
 			}
 		} );
 
 		$form.find( '[data-wpbc-working-time-weekdays="booking_working_time_resource"] .wpbc_ag_working_time_row' ).each( function () {
 			var $row = $( this );
-			var day = parseInt( $row.find( 'input[type="checkbox"]' ).val(), 10 );
+			var day = parseInt( $row.attr( 'data-wpbc-working-time-day' ), 10 );
 
-			resourceStart[ day ] = $row.find( '.wpbc_ag_working_time_start' ).val() || '09:00';
-			resourceEnd[ day ] = $row.find( '.wpbc_ag_working_time_end' ).val() || '18:00';
-			if ( $row.find( 'input[type="checkbox"]' ).prop( 'checked' ) ) {
+			resourceStart[ day ] = [];
+			resourceEnd[ day ] = [];
+			$row.find( '[data-wpbc-working-time-interval="1"]' ).each( function () {
+				resourceStart[ day ].push( $( this ).find( '.wpbc_ag_working_time_start' ).val() || '09:00' );
+				resourceEnd[ day ].push( $( this ).find( '.wpbc_ag_working_time_end' ).val() || '18:00' );
+			} );
+			if ( $row.find( '[data-wpbc-working-time-day-toggle="1"]' ).prop( 'checked' ) ) {
 				resourceDays.push( day );
 			}
 		} );
@@ -956,6 +1183,9 @@
 			}
 			if ( response.data && response.data.settings ) {
 				cfg.settings = response.data.settings;
+				if ( response.data.settings.working_time ) {
+					apply_working_time_settings_to_form( response.data.settings.working_time, $( '#wpbc_ag_resource_id' ).val() );
+				}
 			}
 
 			load_calendar_preview();
@@ -965,8 +1195,12 @@
 				}
 			} ) );
 			show_message( ( response.data && response.data.message ) || ( cfg.i18n && cfg.i18n.saved ) || 'General availability settings updated.', 'success', 2000 );
-		} ).fail( function () {
-			show_message( ( cfg.i18n && cfg.i18n.save_failed ) || 'Unable to save general availability settings.', 'error', 10000 );
+		} ).fail( function ( jq_xhr ) {
+			var response_message = jq_xhr && jq_xhr.responseJSON && jq_xhr.responseJSON.data && jq_xhr.responseJSON.data.message
+				? jq_xhr.responseJSON.data.message
+				: '';
+
+			show_message( response_message || ( cfg.i18n && cfg.i18n.save_failed ) || 'Unable to save general availability settings.', 'error', 10000 );
 		} ).always( function () {
 			set_busy( $button, false );
 		} );
@@ -1055,6 +1289,18 @@
 	$( document ).on( 'change', 'input[name="booking_working_time_enabled"]', refresh_working_time_panels );
 
 	$( document ).on( 'change', 'input[name="booking_working_time_resource_mode"]', refresh_working_time_panels );
+
+	$( document ).on( 'change', '[data-wpbc-working-time-day-toggle="1"]', function () {
+		refresh_working_time_day( $( this ).closest( '[data-wpbc-working-time-day]' ) );
+	} );
+
+	$( document ).on( 'click', '[data-wpbc-add-working-time-interval="1"]', function () {
+		add_working_time_interval( this );
+	} );
+
+	$( document ).on( 'click', '[data-wpbc-remove-working-time-interval="1"]', function () {
+		remove_working_time_interval( this );
+	} );
 
 	$( document ).on( 'change', '[data-wpbc-ag-settings-form="1"] input, [data-wpbc-ag-settings-form="1"] select', schedule_preview_refresh );
 

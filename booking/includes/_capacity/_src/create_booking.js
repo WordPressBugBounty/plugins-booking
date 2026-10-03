@@ -254,10 +254,8 @@ console.groupEnd();
 					// This section execute,  when  NONCE field was not passed or some error happened at  server!
 					// -------------------------------------------------------------------------------------------------
 
-					var error_message = _wpbc.get_message( 'message_unexpected_server_response' ) || 'The server returned an unexpected response. Please reload the page and try again.';
-					if ( jqXHR.status ){
-						error_message += ' (' + parseInt( jqXHR.status, 10 ) + ')';
-					}
+					var fallback_error_message = _wpbc.get_message( 'message_unexpected_server_response' ) || 'The server returned an unexpected response. Please reload the page and try again.';
+					var error_message          = wpbc_front_end__get_ajax_error_message( jqXHR, fallback_error_message, '' );
 
 					var calendar_id = wpbc_get_resource_id__from_ajx_post_data_url( this.data );
 					var jq_node = '#booking_form' + calendar_id;

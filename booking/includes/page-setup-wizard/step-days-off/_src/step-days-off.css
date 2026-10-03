@@ -1,0 +1,252 @@
+
+.wpbc_setup_wizard__days-off-panel {
+	padding: 22px 24px 18px;
+}
+
+.wpbc_setup_wizard__days-off-fields {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(220px, 0.9fr);
+	gap: 18px;
+}
+
+.wpbc_setup_wizard__days-off-date-output {
+	display: flex;
+	width: 100%;
+	min-height: 42px;
+	align-items: center;
+	padding: 6px 12px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: #f6f7f7;
+	box-sizing: border-box;
+	color: #50575e;
+	font-size: 16px;
+}
+
+.wpbc_setup_wizard__days-off-picker-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 220px;
+	margin-top: 10px;
+	border: 1px solid var(--wpbc-wizard-border);
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.wpbc_setup_wizard__days-off-calendar-column {
+	display: flex;
+	min-width: 0;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 12px 14px;
+	background: #fff;
+}
+
+.wpbc_setup_wizard__days-off-calendar-column.is-loading {
+	opacity: 0.58;
+	pointer-events: none;
+}
+
+.wpbc_setup_wizard__days-off-calendar-column .bk_calendar_frame {
+	min-width: 0;
+	margin: 0 auto;
+}
+
+.wpbc_setup_wizard__days-off-calendar {
+	width: 100%;
+}
+
+.wpbc_setup_wizard__days-off-calendar .datepick-inline {
+	max-width: 100%;
+}
+
+.wpbc_setup_wizard__days-off-step .datepick-days-cell.wpbc_resources_partially_unavailable .wpbc-cell-box {
+	background-image: repeating-linear-gradient(135deg, rgba(80, 117, 147, 0.24) 0, rgba(80, 117, 147, 0.24) 5px, rgba(255, 255, 255, 0.24) 5px, rgba(255, 255, 255, 0.24) 10px);
+	box-shadow: inset 0 0 0 2px #718096;
+}
+
+.wpbc_setup_wizard__days-off-step .datepick-days-cell.wpbc_resources_have_bookings .wpbc-cell-box::after {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	z-index: 98;
+	width: 7px;
+	height: 7px;
+	border: 1.2px solid #fff;
+	border-radius: 50%;
+	background: #8a2424;
+	box-shadow: 0 0 0 1px rgba(29,35,39,.3);
+	content: "";
+	pointer-events: none
+}
+
+[dir="rtl"] .wpbc_setup_wizard__days-off-step .datepick-days-cell.wpbc_resources_have_bookings .wpbc-cell-box::after {
+	right: auto;
+	left: 5px;
+}
+
+.wpbc_setup_wizard__days-off-summary {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: center;
+	gap: 10px;
+	padding: 24px;
+	border-left: 1px solid var(--wpbc-wizard-border);
+	background: #fbfcfd;
+}
+
+.wpbc_setup_wizard__days-off-summary strong {
+	font-size: 18px;
+}
+
+.wpbc_setup_wizard__days-off-summary > span {
+	color: var(--wpbc-wizard-muted);
+}
+
+.wp-core-ui .wpbc_page .wpbc_setup_wizard__days-off-summary .wpbc_setup_wizard__days-off-add {
+	display: inline-flex;
+	min-height: 44px;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 20px;
+	margin-top: 8px;
+	font-size: 15px;
+	line-height: 1.4;
+}
+
+.wp-core-ui .wpbc_page .wpbc_setup_wizard__days-off-summary .wpbc_setup_wizard__days-off-clear {
+	align-self: center;
+	min-height: 30px;
+	padding: 3px 8px;
+	font-size: 13px;
+}
+
+.wpbc_setup_wizard__days-off-legend {
+	margin-top: 10px;
+	color: var(--wpbc-wizard-muted);
+}
+
+.wpbc_setup_wizard__days-off-legend[hidden] {
+	display: none !important;
+}
+
+.wpbc_setup_wizard__days-off-legend .block_hints {
+	margin: 0;
+}
+
+.wpbc_setup_wizard__days-off-error {
+	min-height: 20px;
+	margin-top: 4px;
+}
+
+.wpbc_setup_wizard__days-off-upcoming h2 {
+	margin: 4px 0 8px;
+	font-size: 16px;
+}
+
+.wpbc_setup_wizard__days-off-empty {
+	margin: 0;
+	padding: 12px;
+	border: 1px dashed var(--wpbc-wizard-border);
+	color: var(--wpbc-wizard-muted);
+	text-align: center;
+}
+
+.wpbc_setup_wizard__days-off-ranges {
+	display: grid;
+	gap: 7px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.wpbc_setup_wizard__days-off-ranges li {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(160px, 0.65fr) 38px;
+	align-items: center;
+	gap: 12px;
+	min-height: 42px;
+	padding: 4px 5px 4px 14px;
+	border: 1px solid var(--wpbc-wizard-border);
+	border-radius: 4px;
+	background: #fff;
+}
+
+.wpbc_setup_wizard__days-off-ranges li > span:nth-child(2) {
+	color: var(--wpbc-wizard-muted);
+}
+
+.wpbc_setup_wizard__days-off-remove {
+	display: inline-flex;
+	width: 34px;
+	height: 34px;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	padding: 0 0 3px;
+	background: transparent;
+	color: #646970;
+	cursor: pointer;
+}
+
+.wpbc_setup_wizard__days-off-remove:hover,
+.wpbc_setup_wizard__days-off-remove:focus-visible {
+	background: #f0f0f1;
+	color: #b32d2e;
+}
+
+.wpbc_setup_wizard__days-off-permission {
+	margin: 0;
+}
+
+[dir="rtl"] .wpbc_setup_wizard__days-off-summary {
+	border-right: 1px solid var(--wpbc-wizard-border);
+	border-left: 0;
+}
+
+@media screen and (max-width: 960px) {
+	.wpbc_setup_wizard__days-off-fields {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.wpbc_setup_wizard__days-off-fields .wpbc_setup_wizard__field:last-child {
+		grid-column: 1 / -1;
+	}
+
+	.wpbc_setup_wizard__days-off-picker-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.wpbc_setup_wizard__days-off-summary,
+	[dir="rtl"] .wpbc_setup_wizard__days-off-summary {
+		border-top: 1px solid var(--wpbc-wizard-border);
+		border-right: 0;
+		border-left: 0;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.wpbc_setup_wizard__days-off-fields {
+		grid-template-columns: 1fr;
+	}
+
+	.wpbc_setup_wizard__days-off-fields .wpbc_setup_wizard__field:last-child {
+		grid-column: auto;
+	}
+
+	.wpbc_setup_wizard__days-off-ranges li {
+		grid-template-columns: minmax(0, 1fr) 38px;
+	}
+
+	.wpbc_setup_wizard__days-off-ranges li > span:nth-child(2) {
+		grid-column: 1 / 2;
+	}
+
+	.wpbc_setup_wizard__days-off-remove {
+		grid-row: 1 / 3;
+		grid-column: 2;
+	}
+}

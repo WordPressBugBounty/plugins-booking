@@ -268,7 +268,7 @@ function wpbc_bfb_field_season_rangetime_wptpl_print_templates( $page ) {
 						<div class="ui_container ui_container_small">
 							<div class="ui_group">
 								<div class="ui_element">
-									<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button" data-action="deselect" aria-label="<?php echo esc_attr__( 'Deselect', 'booking' ); ?>"><i class="menu_icon icon-1x wpbc_icn_remove_done"></i></button>
+									<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button" data-action="deselect" aria-label="<?php echo esc_attr__( 'Deselect', 'booking' ); ?>"><i class="menu_icon icon-1x wpbc_icn_rotate_270 wpbc_icn_near_me_disabled"></i></button>
 									<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button" data-action="scrollto" aria-label="<?php echo esc_attr__( 'Scroll to field', 'booking' ); ?>"><i class="menu_icon icon-1x wpbc_icn_ads_click filter_center_focus"></i></button>
 								</div>
 								<div class="ui_element">

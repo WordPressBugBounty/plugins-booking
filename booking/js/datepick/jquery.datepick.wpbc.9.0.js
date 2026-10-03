@@ -157,6 +157,7 @@ function Datepick() {
 			// [2] = cell title (optional), e.g. $.datepick.noWeekends
 		onChangeMonthYear: null, // Define a callback function when the month or year is changed
 		onHover: null, // Define a callback function when hovering over a day
+		beforeSelectDay: null, // Optional (Date, instance) callback; false vetoes selection before any state change.
 		onSelect: null, // Define a callback function when a date is selected
 		onClose: null, // Define a callback function when the datepicker is closed
 		altField: '', // Selector for an alternate field to store selected dates into
@@ -1147,6 +1148,11 @@ $.extend(Datepick.prototype, {
 			return false;
 		var rangeSelect = this._get(inst, 'rangeSelect');
 		var multiSelect = this._get(inst, 'multiSelect');
+		// Allow a domain validator to veto activation before native selection state changes.
+		var beforeSelectDay = this._get(inst, 'beforeSelectDay');
+		if (beforeSelectDay && beforeSelectDay.apply((inst.input ? inst.input[0] : null),
+			[this._daylightSavingAdjust(new Date(timestamp)), inst]) === false)
+			return false;
 		if (rangeSelect)
 			inst.stayOpen = !inst.stayOpen;
 		else if (multiSelect)

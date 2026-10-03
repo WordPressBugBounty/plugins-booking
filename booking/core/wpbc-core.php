@@ -79,20 +79,57 @@ function add_bk_filter( $filter_type, $filter ) {   // phpcs:ignore WordPress.Na
 	}
 }
 
+/**
+ * Remove the first matching callback from an internal Booking Calendar filter.
+ *
+ * Registry entries must be deleted rather than replaced with null because the
+ * same request may apply this filter again after a request-local override ends.
+ *
+ * @param string   $filter_type Internal filter identifier.
+ * @param callable $filter      Callback registered with add_bk_filter().
+ *
+ * @return void
+ */
 function remove_bk_filter( $filter_type, $filter ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 	global $wpbc_bk_filter;
 
-	if ( isset( $wpbc_bk_filter[ $filter_type ] ) ) {
-		for ( $i = 0; $i < count( $wpbc_bk_filter[ $filter_type ] ); $i++ ) {
-			if ( $wpbc_bk_filter[ $filter_type ][ $i ][0] == $filter ) {
-				$wpbc_bk_filter[ $filter_type ][ $i ] = null;
+	if (
+		! is_array( $wpbc_bk_filter )
+		|| empty( $wpbc_bk_filter[ $filter_type ] )
+		|| ! is_array( $wpbc_bk_filter[ $filter_type ] )
+	) {
+		return;
+	}
 
-				return;
+	foreach ( $wpbc_bk_filter[ $filter_type ] as $filter_index => $registered_filter ) {
+		if ( ! is_array( $registered_filter ) || ! array_key_exists( 0, $registered_filter ) ) {
+			continue;
+		}
+
+		// Preserve the legacy loose callback comparison for object-method arrays.
+		if ( $registered_filter[0] == $filter ) {
+			unset( $wpbc_bk_filter[ $filter_type ][ $filter_index ] );
+			$wpbc_bk_filter[ $filter_type ] = array_values( $wpbc_bk_filter[ $filter_type ] );
+
+			if ( empty( $wpbc_bk_filter[ $filter_type ] ) ) {
+				unset( $wpbc_bk_filter[ $filter_type ] );
 			}
+
+			return;
 		}
 	}
 }
 
+/**
+ * Apply callbacks registered for an internal Booking Calendar filter.
+ *
+ * Additional function arguments are forwarded to every registered callback.
+ * The first additional argument is returned unchanged when no callback exists.
+ *
+ * @param string $filter_type Internal filter identifier.
+ *
+ * @return mixed Last callback result, the first supplied value, or false.
+ */
 function apply_bk_filter( $filter_type ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 	global $wpbc_bk_filter;
 
@@ -108,13 +145,19 @@ function apply_bk_filter( $filter_type ) { // phpcs:ignore WordPress.NamingConve
 		$value = false;
 	}
 
-	if ( is_array( $wpbc_bk_filter ) ) {
-		if ( isset( $wpbc_bk_filter[ $filter_type ] ) ) {
-			foreach ( $wpbc_bk_filter[ $filter_type ] as $filter ) {
-				$filter_func = array_shift( $filter );
-				$parameter   = $args;
-				$value       = call_user_func_array( $filter_func, $parameter );
+	if (
+		is_array( $wpbc_bk_filter )
+		&& ! empty( $wpbc_bk_filter[ $filter_type ] )
+		&& is_array( $wpbc_bk_filter[ $filter_type ] )
+	) {
+		foreach ( $wpbc_bk_filter[ $filter_type ] as $filter ) {
+			if ( ! is_array( $filter ) || empty( $filter ) ) {
+				continue;
 			}
+
+			$filter_func = array_shift( $filter );
+			$parameter   = $args;
+			$value       = call_user_func_array( $filter_func, $parameter );
 		}
 	}
 

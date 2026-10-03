@@ -173,6 +173,7 @@ function wpbc_bfb_activation__get_templates_registry() {
 	 * activation. The insert-only records below never overwrite installed rows.
 	 */
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/appointments_services_flow.php';
+	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/appointments_services_selection_summary.php';
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_form_with_inline_hints.php';
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_vertical_hints_full_days.php';
 	$template_files[] = wpbc_bfb_activation__get_templates_dir_path() . '/dates_2_columns_hints_full_days.php';
@@ -195,6 +196,32 @@ function wpbc_bfb_activation__get_templates_registry() {
 
 	return $templates;
 }
+
+/**
+ * Keep the replacement Appointment template adjacent to its legacy predecessor.
+ *
+ * The shared list endpoint owns the neutral ordering mechanic. This domain
+ * registration supplies only the two stable template slugs and does not change
+ * either insert-only row or its saved timestamp.
+ *
+ * @param array $adjacencies Registered template-library adjacency pairs.
+ *
+ * @return array Filtered adjacency pairs.
+ */
+function wpbc_bfb_activation__register_template_library_adjacencies( $adjacencies ) {
+
+	if ( ! is_array( $adjacencies ) ) {
+		$adjacencies = array();
+	}
+
+	$adjacencies[] = array(
+		'before' => 'appointments_services_selection_summary',
+		'after'  => 'appointments_services_flow',
+	);
+
+	return $adjacencies;
+}
+add_filter( 'wpbc_bfb_template_library_adjacencies', 'wpbc_bfb_activation__register_template_library_adjacencies' );
 
 /**
  * Add default form appearance settings to bundled template settings_json.

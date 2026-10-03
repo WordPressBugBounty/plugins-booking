@@ -1128,7 +1128,7 @@ function wpbc_ajx__ui__creation_date( $escaped_search_request_params, $defaults 
 														, 'class'    => 'wpdevbk-filters-section-calendar' 					// CSS Class of select element
 														, 'disabled' => false
 														, 'attr'     => array() 			// Any  additional attributes, if this radio | checkbox element
-														, 'placeholder' => __('To' ,'booking')		// gmdate( 'Y-m-d' )
+														, 'placeholder' => _x( 'To', 'range end', 'booking' )		// gmdate( 'Y-m-d' )
 														, 'value'    => $request_input_el_default[ 'ui_wh_modification_date_checkout']  		// Some Value from optins array that selected by default
 														, 'onfocus' =>  "jQuery('#ui_wh_modification_date_radio_3').prop('checked', true);"					// JavaScript code
 														//, 'onchange' => "console.log( 'ON CHANGE:', jQuery( this ).is(':checked') , 'in element:' , jQuery( this ) );"					// JavaScript code

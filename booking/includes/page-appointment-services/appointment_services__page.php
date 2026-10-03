@@ -41,9 +41,8 @@ add_action( 'wpbc_enqueue_css_files', 'wpbc_appointment_services_enqueue_css', 6
 /**
  * Resolve the Service that should be selected when the catalog first opens.
  *
- * An explicit `service_id` request always wins. The first owner-visible active
- * Service is selected automatically only on the Service and Provider Setup
- * Wizard step, leaving ordinary Services-page visits unchanged.
+ * An explicit `service_id` request opens that Service. Ordinary catalog visits
+ * do not infer a selection from Setup Wizard state.
  *
  * @return int Initial Service ID, or zero when the inspector should stay closed.
  */
@@ -55,32 +54,7 @@ function wpbc_appointment_services_get_initial_service_id() {
 		? absint( wp_unslash( $_GET['service_id'] ) )
 		: 0;
 
-	if ( $requested_service_id ) {
-		return $requested_service_id;
-	}
-
-	if (
-		! function_exists( 'wpbc_setup_wizard_page__is_active_step' )
-		|| ! wpbc_setup_wizard_page__is_active_step( 'service_provider' )
-		|| ! function_exists( 'wpbc_appointment_services_repository' )
-	) {
-		return 0;
-	}
-
-	$services = wpbc_appointment_services_repository()->list_items(
-		array(
-			'status'     => 'active',
-			'sort_by'    => 'service_id',
-			'sort_order' => 'asc',
-			'limit'      => 1,
-		)
-	);
-
-	if ( is_wp_error( $services ) || empty( $services[0]['service_id'] ) ) {
-		return 0;
-	}
-
-	return absint( $services[0]['service_id'] );
+	return $requested_service_id;
 }
 
 /**

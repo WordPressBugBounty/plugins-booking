@@ -136,9 +136,7 @@ class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
         </span>
         <?php
 
-        do_action( 'wpbc_hook_settings_page_footer', 'resources' );
-
-        $this->enqueue_js();
+		do_action( 'wpbc_hook_settings_page_footer', 'resources' );
     }
 
 
@@ -179,66 +177,7 @@ class WPBC_Page_Settings__bresource extends WPBC_Page_Structure {
 	        </style>
 	        <?php
 	    }
-	
-	
-	
-	    /**
-		 * Add Custom JavaScript - for some specific settings options
-	     * Executed After post content, after initial definition of settings,  and possible definition after POST request.
-	     *
-	     * @param type $menu_slug
-	     */
-	    private function enqueue_js(){
-	
-	        // JavaScript //////////////////////////////////////////////////////////////
-	
-	        $js_script = '';
-	
-	        /*
-		        // Hide|Show  on Click      Checkbox
-		        $js_script .= " jQuery('#bresources_booking_gcal_auto_import_is_active').on( 'change', function(){
-		                                if ( this.checked ) {
-		                                    jQuery('.wpbc_tr_auto_import').removeClass('hidden_items');
-		                                } else {
-		                                    jQuery('.wpbc_tr_auto_import').addClass('hidden_items');
-		                                }
-		                            } ); ";
-	        */
-
-			// Open the publish controls when this page is used as the Setup Wizard "Publish" step.
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			if ( isset( $_GET['wpbc_setup_step'] ) && ( 'wizard_publish' === sanitize_key( wp_unslash( $_GET['wpbc_setup_step'] ) ) ) ) {
-				$js_script .= "
-					jQuery( document ).ready( function() {
-						setTimeout( function() {
-							var publishSelector = '.ui_group__publish_btn:visible';
-							var tableSelector = '#wpbc_booking_resource_table:visible';
-							var \$publishTarget = jQuery( publishSelector ).first();
-							var targetSelector = \$publishTarget.length ? publishSelector : tableSelector;
-
-							if ( ! jQuery( targetSelector ).length ) {
-								return;
-							}
-
-							if ( 'function' === typeof wpbc_scroll_to ) {
-								wpbc_scroll_to( targetSelector );
-							} else {
-								jQuery( 'html, body' ).animate( { scrollTop: jQuery( targetSelector ).first().offset().top - 80 }, 300 );
-							}
-
-							if ( 'function' === typeof wpbc_blink_element ) {
-								wpbc_blink_element( targetSelector, 3, 300 );
-							}
-						}, 350 );
-					} );
-				";
-			}
-
-	        // Enqueue JS to  the footer of the page
-	        wpbc_enqueue_js( $js_script );
-	    }
-
-    // </editor-fold>
+	// </editor-fold>
 
 
 	// -----------------------------------------------------------------------------------------------------------------

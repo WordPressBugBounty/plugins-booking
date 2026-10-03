@@ -210,6 +210,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_functions/admin_menu_url.php';       
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/admin_top_bar.php';             // Admin Top Bar.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/admin-cost-correction.php';     // Shared Add Booking and Add Appointment exact-total control.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/news_version.php';              // News, Version.
+require_once WPBC_PLUGIN_DIR . '/includes/_functions/class-wpbc-environment-policy.php'; // Shared environment identity and capability policy.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/versions.php';                  // Versions.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/booking-resources-catalog-compatibility.php'; // Temporary 11.6 Resources catalog compatibility.
 require_once WPBC_PLUGIN_DIR . '/includes/_functions/sanitizing.php';                // Sanitizing.
@@ -237,6 +238,7 @@ require_once WPBC_PLUGIN_DIR . '/includes/_capacity/capacity.php';              
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/get_times_fields.php';               // Get Times Fields options from  Booking Form.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/aggregate.php';                      // Aggregate functions  for 'aggregate' parameter in shortcode.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/where_to_save.php';                  // Check  where to  save booking.
+require_once WPBC_PLUGIN_DIR . '/includes/_capacity/booking_availability_guard.php';      // Serialize final availability validation and booking persistence on supported databases.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/create_booking.php';                 // Functions to create new bookings.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/confirmation.php';                   // Confirmation section - get data.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/confirmation_page.php';              // Confirmation Page.
@@ -244,28 +246,6 @@ require_once WPBC_PLUGIN_DIR . '/includes/_capacity/calendar_load.php';         
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/captcha_simple_text.php';            // Simple text captcha checking.
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-translation.php';                 // Translation,  must be loaded after '/core/wpbc-core.php',  because there defined  add_bk_filter(), etc...
-// FixIn: 8.9.4.12.
-if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations.php' ) ) {
-
-	require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations.php';    // All Translation Terms.
-
-	// FixIn: 8.7.3.6.
-	if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations1.php' ) ) {
-		require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations1.php';
-	}
-	if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations2.php' ) ) {
-		require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations2.php';
-	}
-	if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations3.php' ) ) {
-		require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations3.php';
-	}
-	if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations4.php' ) ) {
-		require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations4.php';
-	}
-	if ( file_exists( WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations5.php' ) ) {
-		require_once WPBC_PLUGIN_DIR . '/core/lang/wpbc_all_translations5.php';
-	}
-}
 
 require_once WPBC_PLUGIN_DIR . '/core/wpbc-frontend-messages.php';           // Visitor-facing form messages and multilingual overrides.
 
@@ -337,6 +317,9 @@ if ( wpbc_is_11_6_features_enabled() ) {
 
 // Domain-neutral template-driven catalog mechanics shared by all registered catalogs.
 require_once WPBC_PLUGIN_DIR . '/includes/_shared-ui-catalog/wpbc-ui-catalog.php';
+
+// Reusable Booking Resources read/create domain used by production workflows.
+require_once WPBC_PLUGIN_DIR . '/includes/page-catalog-booking-resources/booking-resources-domain.php';
 
 if ( wpbc_is_11_6_features_enabled() ) {
 	// Independent template-driven Booking Resources catalog.
@@ -418,8 +401,8 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-settings-messages/settings_messag
 require_once WPBC_PLUGIN_DIR . '/includes/page-settings-messages/ajax/settings_messages__save.php';
 
 // Booking > Setup page                                                         // FixIn: 10.2.0.1.
-// FixIn: 9.8.0.2.
-require_once WPBC_PLUGIN_DIR . '/includes/page-setup/setup__page.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-setup-wizard/first-run-launcher/class-wpbc-setup-wizard-first-install-state.php';
+require_once WPBC_PLUGIN_DIR . '/includes/page-setup-wizard/setup-wizard.php';
 require_once WPBC_PLUGIN_DIR . '/includes/_tour/wpbc_tour.php';              // FixIn: 10.4.0.1.
 
 

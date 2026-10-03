@@ -165,7 +165,7 @@ class WPBC_Tour_01 {
 					'text'   => sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ),
 					'button' => array(
 						'text' => __( 'Let\'s go', 'booking' ),
-						'url'  => wpbc_get_setup_wizard_page_url()      //  URL to  start  new Guide: wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' )
+						'url'  => wpbc_get_setup_wizard_page_url(),
 					)
 				),
 				'setup_page'      => array(
@@ -206,8 +206,10 @@ function wpbc_tour_maybe_initialize_setup_wizard_tour() {
 	if (
 		! is_admin()
 		|| wpbc_is_this_demo()
-		|| ! wpbc_setup_wizard_page__is_need_start()
-		|| ! wpbc_is_user_can_access_wizard_page()
+		|| ! class_exists( 'WPBC_Setup_Wizard_First_Run_Launcher' )
+		|| ! class_exists( 'WPBC_Setup_Wizard_Access' )
+		|| ! WPBC_Setup_Wizard_First_Run_Launcher::is_prompt_pending()
+		|| ! WPBC_Setup_Wizard_Access::current_user_can_access()
 	) {
 		return;
 	}

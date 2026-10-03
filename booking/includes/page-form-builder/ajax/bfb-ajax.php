@@ -141,6 +141,21 @@ function wpbc_bfb_safe_style_props_filter( $styles ) {
 		'--wpbc-bfb-col-gap',
 		'--wpbc-bfb-col-ac',
 		'--wpbc-bfb-col-aself',
+		'--wpbc-bfb-col-padding',
+		'--wpbc-bfb-col-margin',
+		'--wpbc-bfb-col-padding-top',
+		'--wpbc-bfb-col-padding-right',
+		'--wpbc-bfb-col-padding-bottom',
+		'--wpbc-bfb-col-padding-left',
+		'--wpbc-bfb-col-margin-top',
+		'--wpbc-bfb-col-margin-right',
+		'--wpbc-bfb-col-margin-bottom',
+		'--wpbc-bfb-col-margin-left',
+		'--wpbc-bfb-col-max-width',
+		'--wpbc-bfb-col-max-height',
+		'--wpbc-bfb-col-overflow',
+		'--wpbc-bfb-col-overflow-x',
+		'--wpbc-bfb-col-overflow-y',
 		'--wpbc-bfb-form-background',
 		'--wpbc-bfb-form-border-color',
 		'--wpbc-bfb-form-border-width',
@@ -723,11 +738,15 @@ function wpbc_bfb_ajax_save_form_config() {
 	$preview_form_style_raw = isset( $_POST['preview_form_style'] ) ? wp_unslash( $_POST['preview_form_style'] ) : '';
 
 	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	$content_form_raw = isset( $_POST['content_form'] ) ? wp_unslash( $_POST['content_form'] ) : '';
+	$content_form_raw = isset( $_POST['content_form'] ) && is_scalar( $_POST['content_form'] )
+		? wp_unslash( $_POST['content_form'] )
+		: '';
 	$content_form     = wpbc_bfb_sanitize_form_text( $content_form_raw );
 
 	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	$advanced_form_raw = isset( $_POST['advanced_form'] ) ? wp_unslash( $_POST['advanced_form'] ) : '';
+	$advanced_form_raw = isset( $_POST['advanced_form'] ) && is_scalar( $_POST['advanced_form'] )
+		? wp_unslash( $_POST['advanced_form'] )
+		: '';
 	$advanced_form     = wpbc_bfb_sanitize_form_text( $advanced_form_raw );
 
 
@@ -736,6 +755,7 @@ function wpbc_bfb_ajax_save_form_config() {
 	if ( ! is_array( $structure_arr ) ) {
 		wp_send_json_error( array( 'code' => 'invalid_structure', 'message' => __( 'Form structure is not a valid JSON object.', 'booking' ) ) );
 	}
+	$preview_structure_arr = $structure_arr;
 
 	/**
 	 * Filter and sanitize a decoded Form Builder structure before persistence.
@@ -891,29 +911,19 @@ function wpbc_bfb_ajax_save_form_config() {
 
 		$preview_service = WPBC_BFB_Preview_Service::get_instance();
 
-		$res = $preview_service->create_preview_session( $preview_form_id, wpbc_get_current_user_id(), $structure_arr, $form_name, $advanced_form, $content_form, $preview_form_style );
+		$res = $preview_service->create_preview_session(
+			$preview_form_id,
+			get_current_user_id(),
+			$preview_structure_arr,
+			$form_name,
+			$advanced_form_raw,
+			$content_form_raw,
+			$preview_form_style
+		);
 
 		if ( is_array( $res ) && ! empty( $res['preview_url'] ) ) {
 			$preview_url   = (string) $res['preview_url'];
 			$preview_token = ! empty( $res['token'] ) ? (string) $res['token'] : '';
-		}
-	}
-
-	$setup_step_saved = false;
-	$setup_step       = isset( $_POST['wpbc_setup_step'] ) ? sanitize_key( wp_unslash( $_POST['wpbc_setup_step'] ) ) : '';
-	if ( ! empty( $setup_step ) && class_exists( 'WPBC_SETUP_WIZARD_STEPS' ) ) {
-		$setup_steps = new WPBC_SETUP_WIZARD_STEPS();
-		$steps_arr   = $setup_steps->get_steps_arr();
-		if ( function_exists( 'wpbc_setup_wizard__detect_step_from_admin_url' ) ) {
-			$referer_step = wpbc_setup_wizard__detect_step_from_admin_url( wp_get_referer() );
-			if ( ! empty( $referer_step ) && isset( $steps_arr[ $referer_step ] ) ) {
-				$setup_step = $referer_step;
-			}
-		}
-		if ( isset( $steps_arr[ $setup_step ] ) ) {
-			$setup_steps->db__set_step_as_saved( $setup_step, true );
-			$setup_steps->db__save_current_step_name( $setup_step );
-			$setup_step_saved = true;
 		}
 	}
 
@@ -928,7 +938,6 @@ function wpbc_bfb_ajax_save_form_config() {
 			'title'          => isset( $form_config['title'] ) ? (string) $form_config['title'] : '',
 			'description'    => isset( $form_config['description'] ) ? (string) $form_config['description'] : '',
 			'picture_url'    => isset( $form_config['picture_url'] ) ? (string) $form_config['picture_url'] : '',
-			'setup_step_saved' => $setup_step_saved,
 		)
 	);
 
@@ -1301,6 +1310,74 @@ add_action( 'wp_ajax_' . 'WPBC_AJX_BFB_CREATE_FORM_CONFIG', 'wpbc_bfb_ajax_creat
 
 
 /**
+ * Build optional adjacency-aware ordering for the template library.
+ *
+ * Domains may register stable before/after slug pairs through
+ * `wpbc_bfb_template_library_adjacencies`. The list endpoint keeps every pair
+ * together at the existing target template's chronological position without
+ * placing domain slugs or other business knowledge in the shared controller.
+ *
+ * @param string $table_name Trusted Booking Form structures table name.
+ *
+ * @return array SQL fragments and ordered prepare arguments.
+ */
+function wpbc_bfb_get_template_library_order_clauses( $table_name ) {
+
+	$adjacencies = apply_filters( 'wpbc_bfb_template_library_adjacencies', array() );
+
+	if ( ! is_array( $adjacencies ) ) {
+		$adjacencies = array();
+	}
+
+	$effective_updated_at_cases = array();
+	$adjacency_rank_cases       = array();
+	$effective_updated_at_args  = array();
+	$adjacency_rank_args        = array();
+
+	foreach ( $adjacencies as $adjacency ) {
+		if ( ! is_array( $adjacency ) ) {
+			continue;
+		}
+
+		$before_slug = isset( $adjacency['before'] ) ? sanitize_title( (string) $adjacency['before'] ) : '';
+		$after_slug  = isset( $adjacency['after'] ) ? sanitize_title( (string) $adjacency['after'] ) : '';
+
+		if ( '' === $before_slug || '' === $after_slug || $before_slug === $after_slug ) {
+			continue;
+		}
+
+		$effective_updated_at_cases[] = "WHEN form_slug = %s THEN COALESCE(
+			( SELECT MAX( wpbc_adjacent_target.updated_at )
+			  FROM {$table_name} AS wpbc_adjacent_target
+			  WHERE wpbc_adjacent_target.form_slug = %s
+			    AND wpbc_adjacent_target.status = 'template'
+			    AND ( wpbc_adjacent_target.owner_user_id = 0 OR wpbc_adjacent_target.owner_user_id IS NULL ) ),
+			updated_at
+		)";
+		$effective_updated_at_args[]  = $before_slug;
+		$effective_updated_at_args[]  = $after_slug;
+
+		$adjacency_rank_cases[] = 'WHEN form_slug = %s THEN 2 WHEN form_slug = %s THEN 1';
+		$adjacency_rank_args[]  = $before_slug;
+		$adjacency_rank_args[]  = $after_slug;
+	}
+
+	if ( empty( $effective_updated_at_cases ) ) {
+		return array(
+			'effective_updated_at_sql' => 'updated_at',
+			'adjacency_rank_sql'       => '',
+			'args'                     => array(),
+		);
+	}
+
+	return array(
+		'effective_updated_at_sql' => 'CASE ' . implode( ' ', $effective_updated_at_cases ) . ' ELSE updated_at END',
+		'adjacency_rank_sql'       => 'CASE ' . implode( ' ', $adjacency_rank_cases ) . ' ELSE 0 END',
+		'args'                     => array_merge( $effective_updated_at_args, $adjacency_rank_args ),
+	);
+}
+
+/**
  * Handle AJAX request: list booking forms for current user (and optionally global ones).
  *
  * Security:
@@ -1323,6 +1400,7 @@ add_action( 'wp_ajax_' . 'WPBC_AJX_BFB_CREATE_FORM_CONFIG', 'wpbc_bfb_ajax_creat
  *
  * @return void
  */
+
 function wpbc_bfb_ajax_list_forms() {
 
 	global $wpdb;
@@ -1442,12 +1520,29 @@ function wpbc_bfb_ajax_list_forms() {
 	// Order:
 	// - prefer user-owned rows first (when include_global + owner_user_id > 0)
 	// - default forms first
+	// - preserve registered template adjacency at the target template's position
 	// - newest first
-	$order_sql = " ORDER BY is_default DESC, updated_at DESC, version DESC, booking_form_id DESC ";
+	$template_order_clauses = array(
+		'effective_updated_at_sql' => 'updated_at',
+		'adjacency_rank_sql'       => '',
+		'args'                     => array(),
+	);
+
+	if ( 'template' === $status ) {
+		$template_order_clauses = wpbc_bfb_get_template_library_order_clauses( $table );
+	}
+
+	$effective_updated_at_sql = $template_order_clauses['effective_updated_at_sql'];
+	$adjacency_rank_order_sql = '' !== $template_order_clauses['adjacency_rank_sql']
+		? ', ' . $template_order_clauses['adjacency_rank_sql'] . ' DESC'
+		: '';
+	$order_sql               = " ORDER BY is_default DESC, {$effective_updated_at_sql} DESC{$adjacency_rank_order_sql}, version DESC, booking_form_id DESC ";
 
 	if ( $owner_user_id > 0 && $include_global ) {
-		$order_sql = " ORDER BY ( owner_user_id = " . intval( $owner_user_id ) . " ) DESC, is_default DESC, updated_at DESC, version DESC, booking_form_id DESC ";
+		$order_sql = " ORDER BY ( owner_user_id = " . intval( $owner_user_id ) . " ) DESC, is_default DESC, {$effective_updated_at_sql} DESC{$adjacency_rank_order_sql}, version DESC, booking_form_id DESC ";
 	}
+
+	$query_args = array_merge( $where_args, $template_order_clauses['args'] );
 
 	$limit_plus_one = $limit + 1;
 
@@ -1458,7 +1553,7 @@ function wpbc_bfb_ajax_list_forms() {
 			LIMIT " . intval( $limit_plus_one ) . ' OFFSET ' . intval( $offset );
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-	$rows = $wpdb->get_results( $wpdb->prepare( $sql, $where_args ) );
+	$rows = $wpdb->get_results( $wpdb->prepare( $sql, $query_args ) );
 
 	$has_more = ( count( (array) $rows ) > $limit );
 	if ( $has_more ) {

@@ -136,6 +136,123 @@ function wpbc_working_time__normalize_weekday_intervals( $weekdays ) {
 }
 
 /**
+ * Validate a complete canonical weekly Working Time schedule.
+ *
+ * This strict validator complements the compatibility normalizer above. It is
+ * intended for administration mutation boundaries, where silently dropping an
+ * invalid or overlapping interval would make the saved schedule differ from
+ * what the user submitted. Intervals that touch at one boundary are valid.
+ *
+ * @param mixed $weekdays             Untrusted weekday interval records.
+ * @param int   $max_intervals_per_day Maximum intervals accepted for one weekday.
+ *
+ * @return array<int,array<int,array{start_second:int,end_second:int}>>|WP_Error Validated weekdays or an error.
+ */
+function wpbc_working_time__validate_weekday_intervals( $weekdays, $max_intervals_per_day = 8 ) {
+
+	if ( ! is_array( $weekdays ) ) {
+		return new WP_Error( 'wpbc_working_time_weekdays_invalid', __( 'Enter a valid weekly Working Time schedule.', 'booking' ) );
+	}
+
+	foreach ( array_keys( $weekdays ) as $day_key ) {
+		if ( ! preg_match( '/^[0-6]$/', (string) $day_key ) ) {
+			return new WP_Error( 'wpbc_working_time_weekday_invalid', __( 'The Working Time schedule contains an invalid weekday.', 'booking' ) );
+		}
+	}
+
+	$max_intervals_per_day = max( 1, min( 48, absint( $max_intervals_per_day ) ) );
+	$normalized_weekdays   = array();
+
+	for ( $day_number = 0; $day_number <= 6; $day_number++ ) {
+		$raw_intervals = isset( $weekdays[ $day_number ] ) && is_array( $weekdays[ $day_number ] )
+			? array_values( $weekdays[ $day_number ] )
+			: array();
+
+		if ( count( $raw_intervals ) > $max_intervals_per_day ) {
+			return new WP_Error(
+				'wpbc_working_time_interval_limit',
+				/* translators: %d: Maximum intervals per weekday. */
+				sprintf( __( 'Add no more than %d Working Time intervals to one weekday.', 'booking' ), $max_intervals_per_day ),
+				array( 'day_number' => $day_number )
+			);
+		}
+
+		$normalized_intervals = array();
+		foreach ( $raw_intervals as $raw_interval ) {
+			if ( ! is_array( $raw_interval ) || array_diff( array_keys( $raw_interval ), array( 'start_second', 'end_second' ) ) ) {
+				return new WP_Error(
+					'wpbc_working_time_interval_invalid',
+					__( 'Enter a valid start and end time for every Working Time interval.', 'booking' ),
+					array( 'day_number' => $day_number )
+				);
+			}
+
+			$raw_start_second = isset( $raw_interval['start_second'] ) ? $raw_interval['start_second'] : null;
+			$raw_end_second   = isset( $raw_interval['end_second'] ) ? $raw_interval['end_second'] : null;
+			if (
+				! is_scalar( $raw_start_second )
+				|| ! is_scalar( $raw_end_second )
+				|| ! preg_match( '/^\d+$/', (string) $raw_start_second )
+				|| ! preg_match( '/^\d+$/', (string) $raw_end_second )
+			) {
+				return new WP_Error(
+					'wpbc_working_time_interval_invalid',
+					__( 'Enter a valid start and end time for every Working Time interval.', 'booking' ),
+					array( 'day_number' => $day_number )
+				);
+			}
+
+			$start_second = absint( $raw_start_second );
+			$end_second   = absint( $raw_end_second );
+			if (
+				$start_second >= $end_second
+				|| DAY_IN_SECONDS < $end_second
+				|| 0 !== $start_second % MINUTE_IN_SECONDS
+				|| 0 !== $end_second % MINUTE_IN_SECONDS
+			) {
+				return new WP_Error(
+					'wpbc_working_time_interval_invalid',
+					__( 'Every Working Time interval must end after it starts and stay within one day.', 'booking' ),
+					array( 'day_number' => $day_number )
+				);
+			}
+
+			$normalized_intervals[] = array(
+				'start_second' => $start_second,
+				'end_second'   => $end_second,
+			);
+		}
+
+		usort(
+			$normalized_intervals,
+			function ( $first_interval, $second_interval ) {
+				if ( $first_interval['start_second'] === $second_interval['start_second'] ) {
+					return $first_interval['end_second'] - $second_interval['end_second'];
+				}
+
+				return $first_interval['start_second'] - $second_interval['start_second'];
+			}
+		);
+
+		$previous_end = -1;
+		foreach ( $normalized_intervals as $normalized_interval ) {
+			if ( $normalized_interval['start_second'] < $previous_end ) {
+				return new WP_Error(
+					'wpbc_working_time_interval_overlap',
+					__( 'Working Time intervals on the same weekday cannot overlap or repeat.', 'booking' ),
+					array( 'day_number' => $day_number )
+				);
+			}
+			$previous_end = $normalized_interval['end_second'];
+		}
+
+		$normalized_weekdays[ $day_number ] = $normalized_intervals;
+	}
+
+	return $normalized_weekdays;
+}
+
+/**
  * Get stored Working Time settings.
  *
  * @return array

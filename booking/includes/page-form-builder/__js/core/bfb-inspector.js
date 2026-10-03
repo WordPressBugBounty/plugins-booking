@@ -757,7 +757,7 @@
 				}
 				// toolbar variant (rich)
 				var iconMap = {
-					'deselect' : 'wpbc_icn_remove_done',
+					'deselect' : 'wpbc_icn_near_me_disabled',
 					'scrollto' : 'wpbc_icn_ads_click filter_center_focus',
 					'move-up'  : 'wpbc_icn_arrow_upward',
 					'move-down': 'wpbc_icn_arrow_downward',

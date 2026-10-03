@@ -486,16 +486,20 @@
 			return;
 		}
 		try {
-			document.querySelectorAll( '.wpbc_times_selector' ).forEach( function (el) {
-				if ( el.parentNode ) el.parentNode.removeChild( el );
-			} );
-			document.querySelectorAll(
-				'.wpbc_bfb__preview-select.wpbc_bfb__preview-rangetime,' +
-				'select[name^="rangetime"], select[name^="starttime"], select[name^="endtime"], select[name^="durationtime"]'
-			).forEach( function (s) {
-				s.style.removeProperty( 'display' );
-				s.hidden = false;
-			} );
+			if ( typeof w.wpbc_hook__destroy_timeselector === 'function' ) {
+				w.wpbc_hook__destroy_timeselector( d );
+			} else {
+				document.querySelectorAll( '.wpbc_times_selector' ).forEach( function (el) {
+					if ( el.parentNode ) el.parentNode.removeChild( el );
+				} );
+				document.querySelectorAll(
+					'.wpbc_bfb__preview-select.wpbc_bfb__preview-rangetime,' +
+					'select[name^="rangetime"], select[name^="starttime"], select[name^="endtime"], select[name^="durationtime"]'
+				).forEach( function (s) {
+					s.style.removeProperty( 'display' );
+					s.hidden = false;
+				} );
+			}
 		} catch ( e ) {
 		}
 		if ( window.WPBC_BFB_Settings && typeof window.WPBC_BFB_Settings.when_builder_ready === 'function' ) {

@@ -49,13 +49,61 @@
 	}
 
 	// == Helpers – column styles parsing & CSS vars builder ===========================================================
+	var wpbc_column_overflow_values = [ 'visible', 'auto', 'hidden' ];
+
+	/**
+	 * Constrain a column spacing length to units supported by the Inspector.
+	 *
+	 * @param {*} candidate_value Saved column-style value.
+	 * @returns {string} Valid non-negative CSS length or `0px`.
+	 */
+	function normalize_column_length( candidate_value ) {
+		var normalized_value = String( candidate_value == null ? '' : candidate_value ).trim();
+		if ( /^\d+(\.\d+)?$/.test( normalized_value ) ) {
+			return normalized_value + 'px';
+		}
+		return /^\d+(\.\d+)?(px|rem|em|%)$/.test( normalized_value ) ? normalized_value : '0px';
+	}
+
+	/**
+	 * Constrain an optional column maximum dimension.
+	 *
+	 * @param {*} candidate_value Saved column-style value.
+	 * @returns {string} Valid maximum dimension or `none`.
+	 */
+	function normalize_column_maximum( candidate_value ) {
+		var normalized_value = String( candidate_value == null ? '' : candidate_value ).trim();
+		if ( ! normalized_value || 'none' === normalized_value ) {
+			return 'none';
+		}
+		if ( /^\d+(\.\d+)?$/.test( normalized_value ) ) {
+			return normalized_value + 'px';
+		}
+		return /^\d+(\.\d+)?(px|rem|em|%|vh|vw)$/.test( normalized_value ) ? normalized_value : 'none';
+	}
+
+	/**
+	 * Constrain column overflow to the Inspector allowlist.
+	 *
+	 * @param {*} candidate_value Saved column-style value.
+	 * @returns {string} Allowlisted overflow value.
+	 */
+	function normalize_column_overflow( candidate_value ) {
+		var normalized_value = String( candidate_value || '' );
+		return wpbc_column_overflow_values.indexOf( normalized_value ) !== -1 ? normalized_value : wpbc_column_overflow_values[0];
+	}
 
 	// Known keys we treat as real per-column style overrides.
 	function has_non_default_col_styles(obj) {
 		if ( !obj || typeof obj !== 'object' ) {
 			return false;
 		}
-		var keys = [ 'dir', 'wrap', 'jc', 'ai', 'gap', 'aself', 'ac' ];
+		var keys = [
+			'dir', 'wrap', 'jc', 'ai', 'gap', 'padding', 'margin',
+			'padding_top', 'padding_right', 'padding_bottom', 'padding_left',
+			'margin_top', 'margin_right', 'margin_bottom', 'margin_left',
+			'max_width', 'max_height', 'overflow', 'overflow_x', 'overflow_y', 'aself', 'ac'
+		];
 		for ( var i = 0; i < keys.length; i++ ) {
 			var k = keys[i];
 			if ( obj[k] != null && String( obj[k] ).trim() !== '' ) {
@@ -99,6 +147,15 @@
 	 *  - jc   -> --wpbc-bfb-col-jc
 	 *  - ai   -> --wpbc-bfb-col-ai
 	 *  - gap  -> --wpbc-bfb-col-gap
+	 *  - padding -> --wpbc-bfb-col-padding
+	 *  - margin  -> --wpbc-bfb-col-margin
+	 *  - padding_top/right/bottom/left -> --wpbc-bfb-col-padding-*
+	 *  - margin_top/right/bottom/left  -> --wpbc-bfb-col-margin-*
+	 *  - max_width  -> --wpbc-bfb-col-max-width
+	 *  - max_height -> --wpbc-bfb-col-max-height
+	 *  - overflow   -> --wpbc-bfb-col-overflow
+	 *  - overflow_x -> --wpbc-bfb-col-overflow-x
+	 *  - overflow_y -> --wpbc-bfb-col-overflow-y
 	 *  - ac   -> --wpbc-bfb-col-ac
 	 *  - aself-> --wpbc-bfb-col-aself
 	 *
@@ -116,6 +173,21 @@
 			jc   : '--wpbc-bfb-col-jc',
 			ai   : '--wpbc-bfb-col-ai',
 			gap  : '--wpbc-bfb-col-gap',
+			padding: '--wpbc-bfb-col-padding',
+			margin : '--wpbc-bfb-col-margin',
+			padding_top   : '--wpbc-bfb-col-padding-top',
+			padding_right : '--wpbc-bfb-col-padding-right',
+			padding_bottom: '--wpbc-bfb-col-padding-bottom',
+			padding_left  : '--wpbc-bfb-col-padding-left',
+			margin_top    : '--wpbc-bfb-col-margin-top',
+			margin_right  : '--wpbc-bfb-col-margin-right',
+			margin_bottom : '--wpbc-bfb-col-margin-bottom',
+			margin_left   : '--wpbc-bfb-col-margin-left',
+			max_width     : '--wpbc-bfb-col-max-width',
+			max_height    : '--wpbc-bfb-col-max-height',
+			overflow      : '--wpbc-bfb-col-overflow',
+			overflow_x    : '--wpbc-bfb-col-overflow-x',
+			overflow_y    : '--wpbc-bfb-col-overflow-y',
 			ac   : '--wpbc-bfb-col-ac',
 			aself: '--wpbc-bfb-col-aself'
 		};
@@ -124,8 +196,17 @@
 
 		for ( var k in obj ) {
 			if ( !Object.prototype.hasOwnProperty.call( obj, k ) ) continue;
+			// Ignore the removed experimental child-flex setting in previously saved Builder JSON.
+			if ( 'item_flex' === k ) continue;
 			var v = obj[k];
 			if ( v == null || v === '' ) continue;
+			if ( [ 'padding_top', 'padding_right', 'padding_bottom', 'padding_left', 'margin_top', 'margin_right', 'margin_bottom', 'margin_left' ].indexOf( k ) !== -1 ) {
+				v = normalize_column_length( v );
+			} else if ( 'max_width' === k || 'max_height' === k ) {
+				v = normalize_column_maximum( v );
+			} else if ( [ 'overflow', 'overflow_x', 'overflow_y' ].indexOf( k ) !== -1 ) {
+				v = normalize_column_overflow( v );
+			}
 
 			var var_name = map[k] || ('--wpbc-bfb-col-' + String( k ).replace( /[^a-z0-9_-]/gi, '' ).toLowerCase());
 			parts.push( var_name + ': ' + String( v ) );

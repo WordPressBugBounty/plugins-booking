@@ -82,6 +82,29 @@ function wpbc_cache__save( $function_name, $params, $value_to_save ){
 }
 
 
+/**
+ * Clear all request-local cached results for one function namespace.
+ *
+ * Availability validation uses this immediately before and after a protected
+ * booking save so a result loaded earlier in the request cannot outlive the
+ * database state that was serialized by the booking availability guard.
+ *
+ * @param string $function_name Function cache namespace to clear.
+ *
+ * @return void
+ */
+function wpbc_cache__clear( $function_name ) {
+
+	global $wpbc_global_cache;
+
+	if ( ! is_array( $wpbc_global_cache ) || ! isset( $wpbc_global_cache[ $function_name ] ) ) {
+		return;
+	}
+
+	unset( $wpbc_global_cache[ $function_name ] );
+}
+
+
 
 
 

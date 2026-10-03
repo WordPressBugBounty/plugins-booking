@@ -1,0 +1,230 @@
+.wpbc_setup_overview {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	max-width: 1600px;
+}
+
+.wpbc_setup_overview__actions {
+	display: flex;
+	align-items: stretch;
+	border: 1px solid #72a5ff;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+	padding: 22px;
+}
+
+.wpbc_setup_overview__action {
+	display: flex;
+	flex: 1 1 0;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+	min-width: 0;
+	padding: 0 46px;
+	text-align: center;
+}
+
+.wpbc_setup_overview__action + .wpbc_setup_overview__action {
+	border-inline-start: 1px solid #dce3ed;
+}
+
+.wpbc_setup_overview__action form {
+	margin: 0;
+}
+.wp-core-ui .wpbc_page .wpbc_setup_overview .wpbc_setup_overview__action_button,
+.wpbc_setup_overview .wpbc_setup_overview__action_button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	width: 100%;
+	min-height: 48px;
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.3;
+}
+
+.wpbc_setup_overview__action_button .menu_icon::before {
+	font-size: 24px;
+	line-height: 1;
+	vertical-align: -7px;
+	vertical-align: center;
+}
+
+.wpbc_setup_overview__action p {
+	margin: 12px 0 0;
+	color: #526070;
+	font-size: 14px;
+}
+
+.wpbc_setup_overview__table_wrap {
+	overflow-x: auto;
+	border: 1px solid #cfd7e2;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.wpbc_setup_overview__table {
+	width: 100%;
+	min-width: 900px;
+	border-collapse: collapse;
+	color: #17233c;
+	font-size: 14px;
+}
+
+.wpbc_setup_overview__table th,
+.wpbc_setup_overview__table td {
+	border-block-end: 1px solid #dce3ed;
+	padding: 12px 18px;
+	text-align: start;
+	vertical-align: middle;
+}
+
+.wpbc_setup_overview__table thead th {
+	background: #f7f9fc;
+	font-weight: 600;
+}
+
+.wpbc_setup_overview__table tbody:last-child tr:last-child > * {
+	border-block-end: 0;
+}
+
+.wpbc_setup_overview__number_heading,
+.wpbc_setup_overview__group {
+	width: 280px;
+}
+
+.wpbc_setup_overview__group {
+	border-inline-end: 1px solid #dce3ed;
+	vertical-align: top !important;
+}
+
+.wpbc_setup_overview__group_content {
+	display: flex;
+	align-items: flex-start;
+	gap: 18px;
+}
+
+.wpbc_setup_overview__group_number {
+	display: inline-flex;
+	flex: 0 0 42px;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: #f7f9fc;
+	color: #28334a;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.wpbc_setup_overview__group strong {
+	display: block;
+	margin-block-start: 3px;
+	font-size: 17px;
+	line-height: 1.3;
+}
+
+.wpbc_setup_overview__group p {
+	max-width: 220px;
+	margin: 6px 0 0;
+	color: #526070;
+	font-weight: 400;
+	line-height: 1.45;
+}
+
+.wpbc_setup_overview__setting {
+	width: 280px;
+	font-weight: 400;
+}
+
+.wpbc_setup_overview__setting_content {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-height: 24px;
+}
+
+.wpbc_setup_overview__setting .menu_icon {
+	display: inline-flex;
+	flex: 0 0 24px;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	color: #17233c;
+	font-size: 21px;
+	text-align: center;
+}
+
+.wpbc_setup_overview__summary {
+	font-weight: 600;
+}
+
+.wpbc_setup_overview__summary--danger {
+	color: #c5221f;
+}
+
+.wpbc_setup_overview__summary--success {
+	color: #08783e;
+}
+
+.wpbc_setup_overview__summary--muted {
+	color: #657386;
+}
+
+.wpbc_setup_overview__row_action {
+	width: 120px;
+	border-inline-start: 1px solid #e4e9f0;
+}
+
+.wpbc_setup_overview__row_action form {
+	margin: 0;
+}
+
+.wpbc_setup_overview__row_action a,
+.wpbc_setup_overview__row_action .button-link {
+	font-size: 14px;
+}
+
+.wpbc_setup_overview :focus-visible {
+	outline: 2px solid #1d6fe9;
+	outline-offset: 2px;
+}
+
+@media screen and (max-width: 1080px) {
+	.wpbc_setup_overview__actions {
+		flex-wrap: wrap;
+	}
+
+	.wpbc_setup_overview__action {
+		flex: 1 1 280px;
+		padding: 16px 24px;
+	}
+
+	.wpbc_setup_overview__action + .wpbc_setup_overview__action {
+		border-inline-start: 0;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.wpbc_setup_overview {
+		gap: 16px;
+	}
+
+	.wpbc_setup_overview__actions {
+		padding: 8px;
+	}
+
+	.wpbc_setup_overview__action {
+		flex-basis: 100%;
+		padding: 14px;
+	}
+
+	.wpbc_setup_overview__action + .wpbc_setup_overview__action {
+		border-block-start: 1px solid #dce3ed;
+	}
+}

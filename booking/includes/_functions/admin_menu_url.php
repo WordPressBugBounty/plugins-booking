@@ -61,11 +61,15 @@ function wpbc_make_link_relative( $maybe_absolute_link ) {
 }
 
 /**
- * Get  Absolute URL  (check for languages)
+ * Convert a relative front-end path to an absolute language-aware URL.
  *
- * @param $maybe_relative_link
+ * The path is passed through WordPress so multilingual URL filters can apply
+ * the current language directory or domain without introducing duplicate
+ * path separators.
  *
- * @return string
+ * @param string $maybe_relative_link Relative or absolute front-end URL.
+ *
+ * @return string JavaScript-safe absolute URL.
  */
 function wpbc_make_link_absolute( $maybe_relative_link ){
 
@@ -73,7 +77,8 @@ function wpbc_make_link_absolute( $maybe_relative_link ){
 
 		$maybe_relative_link = wpbc_lang( $maybe_relative_link );           // FixIn: 8.4.5.1.
 
-		$maybe_relative_link = home_url() . '/' . trim( wp_make_link_relative( $maybe_relative_link ), '/' );        // FixIn: 7.0.1.20.
+		$relative_path       = trim( wp_make_link_relative( $maybe_relative_link ), '/' );
+		$maybe_relative_link = home_url( '/' . $relative_path );
 	}
 
 	return esc_js( $maybe_relative_link );
@@ -410,11 +415,17 @@ function wpbc_get_settings_messages_url( $is_absolute_url = true, $is_old = true
 }
 
 /**
- * Get URL of Booking > Setup page
+ * Get the canonical production Setup Wizard URL.
  *
- * @param boolean $is_absolute_url  - Absolute or relative url { default: true }
- * @param boolean $is_old           - { default: true }
- * @return string                   - URL  to  menu
+ * Opening this URL never restarts or completes a checkpoint. The page resumes
+ * an active checkpoint, starts Welcome when no checkpoint exists, or renders
+ * Setup overview when the checkpoint is complete. A new setup is an explicit,
+ * nonce-protected action from Setup overview.
+ *
+ * @param bool $is_absolute_url Whether to return an absolute administration URL.
+ * @param bool $is_old          Retained compatibility argument; ignored by the native menu URL builder.
+ *
+ * @return string Canonical Setup Wizard URL.
  */
 function wpbc_get_setup_wizard_page_url( $is_absolute_url = true, $is_old = true ) {
 	return wpbc_get_menu_url( 'setup', $is_absolute_url, $is_old );
@@ -653,11 +664,15 @@ function wpbc_is_builder_booking_form_page( $server_param = 'REQUEST_URI' ) {
 
 
 /**
- * Check if this Booking > Setup page
+ * Check whether the current administration URL belongs to a Booking Calendar setup route.
  *
- * @param string $server_param -  'REQUEST_URI' | 'HTTP_REFERER'  Default: 'REQUEST_URI'
+ * The prefix match is intentional because the canonical route and its hidden
+ * compatibility alias share the same stable setup prefix.
  *
- * @return boolean true | false
+ * @param string $server_param Server field to inspect. Expected values are
+ *                             `REQUEST_URI` or `HTTP_REFERER`.
+ *
+ * @return bool True for any Booking Calendar setup route; otherwise false.
  */
 function wpbc_is_setup_wizard_page( $server_param = 'REQUEST_URI' ) {                                            // FixIn: 9.8.0.1.
 

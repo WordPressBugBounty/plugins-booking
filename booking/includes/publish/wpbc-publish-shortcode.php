@@ -54,7 +54,6 @@ function wpbc_check_for_submit__page_resource_publish( $page_name ) {
 
 	if (
 		 ( 'resources' !== $page_name )
-		 // && ( 'wpbc-ajx_booking_setup_wizard' !== $page_name )
 	){
 		return false;
 	}
@@ -229,7 +228,6 @@ function wpbc_write_content_for_modal__page_resource_publish( $page_name ) {
 
 	if (
 		 ( 'resources' !== $page_name ) &&
-		 ( 'wpbc-ajx_booking_setup_wizard' !== $page_name ) &&
 		 ( ! wpbc_is_builder_booking_form_page() )
 		 // && ( 'wpbc-ajx_booking' !== $page_name )        // FixIn: 10.6.6.2.
 	){

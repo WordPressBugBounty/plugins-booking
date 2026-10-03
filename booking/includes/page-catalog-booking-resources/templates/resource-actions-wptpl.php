@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<ul id="{{ data.menu_id }}" class="wpbc_ui_listing__actions_menu" role="menu" aria-label="{{ data.aria_label }}" data-wpbc-ui-catalog-action-menu-list hidden>
 				<# _.each( data.actions, function ( action ) { #>
 					<li role="none">
-						<button type="button" role="menuitem" tabindex="-1" class="wpbc_catalog_booking_resources__action {{ action.class_name }}" data-wpbc-booking-resource-action="{{ action.id }}" data-wpbc-booking-resource-id="{{ data.resource_id }}"<# if ( action.keep_sidebar_open ) { #> data-wpbc-right-sidebar-keep-open="1"<# } #>>
+						<button type="button" role="menuitem" tabindex="-1" class="wpbc_catalog_booking_resources__action {{ action.class_name }}" data-wpbc-ui-catalog-action-id="{{ action.id }}" data-wpbc-booking-resource-action="{{ action.id }}" data-wpbc-booking-resource-id="{{ data.resource_id }}"<# if ( action.keep_sidebar_open ) { #> data-wpbc-right-sidebar-keep-open="1"<# } #>>
 							<span>{{ action.label }}</span>
 							<span class="{{ action.icon }}" aria-hidden="true"></span>
 						</button>

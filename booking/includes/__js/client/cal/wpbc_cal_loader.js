@@ -77,20 +77,29 @@
 	}
 
 	/* ---------------------------------------------------------------------------
-	 * Messages (fixed English strings; no i18n)
+	 * Messages
 	 * ------------------------------------------------------------------------ */
 
 	/**
-	 * Build fixed English messages for a resource.
+	 * Build visitor messages for a resource, using localized Form Messages when available.
 	 * @param {string|number} rid
-	 * @return {{duplicate:string,support:string,lib_jq:string,lib_dp:string,lib_wpbc:string}}
+	 * @return {{duplicate:string,init_failed:string,support:string,lib_jq:string,lib_dp:string,lib_wpbc:string}}
 	 */
 	function get_messages(rid) {
-		var rid_int = parseInt( rid, 10 );
+		var rid_int          = parseInt( rid, 10 );
+		var duplicate_message =
+			'More than one calendar or booking form for Booking Resource ID {resource_id} is present on this page. ' +
+			'A hidden copy still conflicts with the visible form and can prevent booking submission. ' +
+			'The site administrator must keep only one calendar or form for this Booking Resource. ' +
+			'After the page is corrected, reload it and try again.';
+
+		if ( w._wpbc && typeof w._wpbc.get_message === 'function' ) {
+			duplicate_message = w._wpbc.get_message( 'message_duplicate_booking_resource_on_page' ) || duplicate_message;
+		}
+		duplicate_message = String( duplicate_message ).replace( /\{resource_id\}/g, String( rid_int ) );
+
 		return {
-			duplicate  :
-				'You have added the same calendar (ID = ' + rid_int + ') more than once on this page. ' +
-				'Please keep only one calendar with the same ID on a page to avoid conflicts.',
+			duplicate  : duplicate_message,
 			init_failed:
 				'The calendar could not be initialized on this page.' + '\n' +
 				'Please check your browser console for JavaScript errors and conflicts with other scripts/plugins.',
@@ -109,12 +118,27 @@
 	}
 
 	/**
+	 * Escape a plain-text loader message before inserting its wrapper markup.
+	 *
+	 * @param {string} plain_text Visitor-facing plain text.
+	 * @return {string} HTML-safe text.
+	 */
+	function escape_html(plain_text) {
+		return String( plain_text || '' )
+			.replace( /&/g, '&amp;' )
+			.replace( /</g, '&lt;' )
+			.replace( />/g, '&gt;' )
+			.replace( /"/g, '&quot;' )
+			.replace( /'/g, '&#039;' );
+	}
+
+	/**
 	 * Wrap plain text (with newlines) in a small HTML container.
 	 * @param {string} msg
 	 * @return {string}
 	 */
 	function wrap_html(msg) {
-		return '<div style="font-size:13px;margin:10px;">' + String( msg || '' ).replace( /\n/g, '<br>' ) + '</div>';
+		return '<div style="font-size:13px;margin:10px;">' + escape_html( msg ).replace( /\n/g, '<br>' ) + '</div>';
 	}
 
 	/** Library presence checks (fast & cheap). */

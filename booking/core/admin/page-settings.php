@@ -511,19 +511,6 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 			<?php
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-		if ( ( isset( $_GET['wpbc_setup_wizard'] ) ) && ( 'reset' === $_GET['wpbc_setup_wizard'] ) ) {
-
-			wpbc_setup_wizard_page__force_in_get();
-
-			?>
-			<div class="wpdvlp-sub-tabs wpbc_redirection_message" style="margin: 20px 0;padding: 1em;font-size: 14px;">
-			<a href="<?php echo esc_url( wpbc_get_setup_wizard_page_url() ); ?>">Redirect</a> after <span class="wpbc_countdown">1</span> second...</div>
-			<?php
-
-			wpbc_redirect( wpbc_get_setup_wizard_page_url() );
-		}
-
 		// JavaScript: Tooltips, Popover, Datepick (js & css) .
 		echo '<span class="wpdevelop">';
 		wpbc_js_for_bookings_page();

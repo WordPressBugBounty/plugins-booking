@@ -1930,7 +1930,7 @@ function wpbc_ui_settings__panel__statistic(){
 			<div class="wpbc_ui_settings__center">
 				<a class="wpbc_admin_button wpbc_admin_button--success tooltip_top"
 				   title="<?php echo esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ); ?>"
-				   href="<?php echo esc_url( wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) ); ?>"><?php
+				   href="<?php echo esc_url( wpbc_get_setup_wizard_page_url() ); ?>"><?php
 					esc_html_e( 'Start Setup Wizard', 'booking' )
 				?></a>
 			</div>
@@ -1951,7 +1951,7 @@ function wpbc_ui_settings__panel__statistic(){
 	 */
 	function wpbc_ui_settings_panel__card__open_test_pages_popup() {
 
-		$can_open_booking_pages = class_exists( 'WPBC_Setup_Wizard_First_Run_Popup' ) && WPBC_Setup_Wizard_First_Run_Popup::can_manually_open_booking_pages_dialog();
+		$can_open_booking_pages = class_exists( 'WPBC_Setup_Wizard_Booking_Pages' ) && WPBC_Setup_Wizard_Booking_Pages::can_manually_open_booking_pages_dialog();
 
 		if ( $can_open_booking_pages ) :
 			?>
@@ -2058,7 +2058,7 @@ function wpbc_ui_settings__panel__statistic(){
 			<div class="wpbc_ui_settings__center" style="flex: 1 1 auto;">
 				<a class="wpbc_admin_button wpbc_admin_button--success tooltip_top"
 				   title="<?php echo esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ); ?>"
-				   href="<?php echo esc_url( wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) ); ?>"><?php
+				   href="<?php echo esc_url( wpbc_get_setup_wizard_page_url() ); ?>"><?php
 					esc_html_e( 'Start Setup Wizard', 'booking' )
 				?></a>
 			</div>

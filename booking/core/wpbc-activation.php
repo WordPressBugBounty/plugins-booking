@@ -680,15 +680,14 @@ function wpbc_get_default_options( $option_name = '', $is_get_multiuser_general_
 	// If this option here, then system get this option from "Super Admin" options configuration for "Regular" users.
     $mu_option4delete = array();
 
-	// FixIn: 9.6.3.5.
-	$default_options['booking_setup_wizard_page_steps_is_done'] = '';
- $mu_option4delete[]='booking_setup_wizard_page_steps_is_done';
 	$default_options['booking_setup_wizard_initial_install'] = 'Off';
 	$mu_option4delete[] = 'booking_setup_wizard_initial_install';
 	$default_options['booking_setup_wizard_first_run_prompt'] = 'Off';
 	$mu_option4delete[] = 'booking_setup_wizard_first_run_prompt';
 	$default_options['booking_setup_wizard_booking_pages_prompt'] = 'Off';
 	$mu_option4delete[] = 'booking_setup_wizard_booking_pages_prompt';
+	$default_options['booking_update_navigation_context'] = array();
+	$mu_option4delete[] = 'booking_update_navigation_context';
 
     $default_options['booking_admin_cal_count'] = ($is_demo) ? '3' : '2';       
  $mu_option4delete[]='booking_admin_cal_count';                                 // $multiuser_general_option[] = implode( '', array_keys( array_slice( $default_options, -1 ) ) );
@@ -1390,6 +1389,24 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
 			$default_options['booking_super_admin_receive_regular_user_payments'] = 'Off';
 		$mu_option4delete[]='booking_super_admin_receive_regular_user_payments';
 	}
+
+	/**
+	 * Filters the complete Booking Calendar default-option registry.
+	 *
+	 * Edition modules may register missing-value defaults without placing their
+	 * domain-specific option names in the shared Free-version implementation.
+	 * Existing stored values continue to be preserved by the activation layer.
+	 *
+	 * @param array $default_options Default option names and values.
+	 */
+	$default_options = apply_filters( 'wpbc_default_options', $default_options );
+
+	/**
+	 * Filters option names handled by the applicable MultiUser cleanup flow.
+	 *
+	 * @param array $mu_option4delete Option names registered for cleanup.
+	 */
+	$mu_option4delete = apply_filters( 'wpbc_multiuser_options_for_delete', $mu_option4delete );
     
     
     if ( ! $is_get_multiuser_general_options ) { 

@@ -4,6 +4,302 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * Render Booking Calendar 11.9 What's New content.
+ *
+ * @param object $obj Welcome-page renderer and image loader.
+ *
+ * @return void
+ */
+function wpbc_welcome_section_11_9( $obj ) {
+
+	$section_parameters = array( 'version_num' => '11.9', 'show_expand' => false );
+	$obj->expand_section_start( $section_parameters );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo ( 'A Simpler Setup Wizard for Every Booking Journey' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__setup_wizard_customer_journeys_placeholder_2.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Booking Calendar Setup Wizard showing customer journey choices and the guided setup steps' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<p><?php echo ( 'The redesigned Setup Wizard starts with one practical question: how should customers book? After you choose the answer, it presents only the settings needed for that booking flow instead of asking you to configure every Booking Calendar option.' ); ?></p>
+				<ul>
+					<li><strong><?php echo ( 'Begin with the right next step.' ); ?></strong> <?php echo ( 'A first activation from Plugins opens Setup Wizard directly, while a manual update opens What\'s New after the update without interrupting automatic, command-line, or managed live-demo maintenance.' ); ?></li>
+					<li><strong><?php echo ( 'Follow a focused path.' ); ?></strong> <?php echo ( 'The wizard guides you through the matching Date Selection, Booking Resources or Services, time choices, availability, Booking Form, appearance, publishing, and review steps.' ); ?></li>
+					<li><strong><?php echo ( 'Start from the right defaults.' ); ?></strong> <?php echo ( 'Journey-aware recommendations select compatible date behavior and Booking Form templates. Multi-date time journeys also configure their Start and End Times, with Working Hours available only when you want that extra restriction.' ); ?></li>
+					<li><strong><?php echo ( 'Publish and test the result clearly.' ); ?></strong> <?php echo ( 'Non-guided journeys start with a direct Booking Form page, Review links to the published page, and the testing window places your configured page before separate starter examples.' ); ?></li>
+					<li><strong><?php echo ( 'Save as you go.' ); ?></strong> <?php echo ( 'Each step saves its settings, unfinished setup can resume later, and the final Setup overview provides clear links for testing, publishing, and future changes.' ); ?></li>
+				</ul>
+				<h3><?php echo ( 'Choose the customer journey that matches your business' ); ?></h3>
+				<div style="display:flex;flex-wrap:wrap;gap:18px;">
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_single_full_day_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with one complete date selected for a Single full day booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Single full day' ); ?></h4>
+						<p><?php echo ( 'Customers reserve one complete date without choosing a time.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'One-day rentals, events and daily reservations.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_multiple_independent_full_days_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with several separate dates selected for a Multiple independent full days booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Multiple independent full days' ); ?></h4>
+						<p><?php echo ( 'Customers select several separate full dates in one booking.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Bookings that cover several non-consecutive days.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_flexible_date_range_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with the first and last date selected for a Flexible date range booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Flexible date range' ); ?></h4>
+						<p><?php echo ( 'Customers choose the first and last date of a variable-length booking.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Stays and rentals whose length varies by booking.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_fixed_length_date_range_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with an automatically selected Fixed-length date range' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Fixed-length date range' ); ?></h4>
+						<p><?php echo ( 'Customers choose a start date and the configured range is selected automatically.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Weekend, multi-day and weekly packages.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_check_in_out_changeover_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar showing arrival and departure boundaries for a Check-in and check-out changeover booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Check-in & check-out changeover' ); ?></h4>
+						<p><?php echo ( 'Customers choose arrival and departure dates with changeover boundaries.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Accommodation and rentals with arrival and departure times.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_fixed_time_slots_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar and predefined appointment choices for a Fixed time slots booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Fixed time slots' ); ?></h4>
+						<p><?php echo ( 'Customers select one predefined available time slot.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Classes, consultations and fixed timetables.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_start_end_time_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with separate start and end choices for a Start and end time booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Start & end time' ); ?></h4>
+						<p><?php echo ( 'Customers choose both ends of a flexible appointment time range.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Flexible appointments, equipment use and variable-duration work.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_start_time_duration_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with start-time and duration choices for a Start time and duration booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Start time + duration' ); ?></h4>
+						<p><?php echo ( 'Customers choose a start time and one of the available durations.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Appointments offered in standard duration choices.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_repeated_time_multiple_dates_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Calendar with multiple dates sharing one selected time for a repeated-time booking' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Repeat one time on multiple dates' ); ?></h4>
+						<p><?php echo ( 'Customers select several dates and use the same time on every selected date.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Recurring sessions submitted together for the same daily time.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_first_date_start_last_date_end_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Multi-day calendar with a start time on the first date and an end time on the last date' ); ?>"
+							style="display:block;margin:0 auto 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'First-date start & last-date end' ); ?></h4>
+						<p><?php echo ( 'Customers choose a start on the first date and an end on the last date.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Multi-day bookings with different arrival and departure times.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;">
+						<img
+							src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__journey_guided_appointment_flow_placeholder.png' ) ); ?>"
+							width="420"
+							height="236"
+							loading="lazy"
+							alt="<?php echo esc_attr( 'Guided appointment sequence showing Service, Provider, Date, Time, and Details steps' ); ?>"
+							style="display:block;margin:0 0 12px;width:100%;max-width:300px;height:auto;"
+						/>
+						<h4><?php echo ( 'Guided appointment flow' ); ?></h4>
+						<p><?php echo ( 'Customers choose a Service, Provider and available start time step by step.' ); ?></p>
+						<p><strong><?php echo ( 'Best for:' ); ?></strong> <?php echo ( 'Businesses with several Services or Providers.' ); ?></p>
+					</div>
+					<div class="wpbc_wn_col" style="flex:1 1 28%;min-width:240px;margin:0;padding:12px;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo( 'Select the Date Range You Point To' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__range_selection_pointer_period_placeholder.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Booking calendar highlighting the valid date range that contains the pointed date' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo( 'Keep hover and click together.' ); ?></strong> <?php echo( 'Fixed and Dynamic range selection now previews and selects the same valid period containing the date a visitor points to.' ); ?></li>
+					<li><strong><?php echo( 'Preserve the visitor\'s choice.' ); ?></strong> <?php echo( 'Invalid end dates leave the first Dynamic-range click in place, while conditional Season, weekday, and exact-date rules use the actual range start.' ); ?></li>
+					<li><span><?php echo( 'Available in the  Booking Calendar Business Medium or igher versions' ); ?></span> <?php ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo ( 'Prevent Unbookable Date Gaps' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<p><strong><?php echo ( 'Before' ); ?></strong></p>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__unbookable_date_gaps_before_placeholder.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Booking calendar before enabling Unbookable date gaps, with a short bounded opening still shown as selectable' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<p><strong><?php echo ( 'After' ); ?></strong></p>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__unbookable_date_gaps_after_placeholder.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Booking calendar after enabling Unbookable date gaps, with the same impossible opening shown as unavailable' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo ( 'Stop visitors at impossible openings.' ); ?></strong> <?php echo ( 'Business Small and higher editions can optionally show a bounded opening as unavailable when no configured fixed or dynamic date range can fit.' ); ?></li>
+					<li><strong><?php echo ( 'Follow the active booking rules.' ); ?></strong> <?php echo ( 'The calendar respects permitted range lengths, start weekdays, conditional date and Season rules, changeovers, pending dates, and Resource capacity before marking the opening unavailable.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo ( 'Manage Split Working Time' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.9/wp_booking_calendar__schedule_rules_multi_interval_placeholder.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Schedule and Rules Working Time editor showing two non-overlapping intervals for one weekday with Add interval and remove actions' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo ( 'Keep breaks in the normal week.' ); ?></strong> <?php echo ( 'Add several non-overlapping Working Time intervals to a weekday so gaps such as lunch remain unavailable.' ); ?></li>
+					<li><strong><?php echo ( 'Use the same schedule everywhere.' ); ?></strong> <?php echo ( 'Schedule & Rules reads and saves default and Resource-specific intervals used by the Setup Wizard and appointment availability.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<h2><?php echo ( 'New Appointment Services Booking Flow' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '11.9/appointments_services_flow_02.png' ) ); ?>"
+					alt="<?php echo esc_attr( 'Appointment Services booking form with a live selection summary, calendar, duration, and start-time choices' ); ?>"
+					style="margin:10px 0;width:98%;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo ( 'See the appointment before continuing.' ); ?></strong> <?php echo ( 'Visitors choose a Service duration, date, and start time while a live summary shows the selected date, start, and end time.' ); ?></li>
+					<li><strong><?php echo ( 'Finish in a focused second step.' ); ?></strong> <?php echo ( 'Customer details, Terms agreement, Back, and Book appointment actions stay together on one responsive page.' ); ?></li>
+					<li><strong><?php echo ( 'Keep existing forms unchanged.' ); ?></strong> <?php echo ( 'The new flow is used for newly created Appointment Services forms without replacing existing forms or their templates.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+
+
+
+
+		<div class="wpbc_wn_section" style="gap: 10px 50px;">
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<div class="wpbc_wn_section" style="gap: 10px 50px;">
+					<h2><?php echo ( 'Add a Country List Visually' ); ?></h2>
+					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+						<ul>
+							<li><strong><?php echo ( 'Add a ready-made country selector.' ); ?></strong> <?php echo ( 'Drag the Country List field into a visual booking form, then configure its label, help text, and validated default country.' ); ?></li>
+							<li><strong><?php echo ( 'Keep form output synchronized.' ); ?></strong> <?php echo ( 'Saving generates the supported Country shortcode in Advanced Mode and its matching Booking Data token.' ); ?></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<div class="wpbc_wn_section" style="gap: 10px 50px;">
+					<h2><?php echo ( 'Add Discount Coupons Visually' ); ?></h2>
+					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+						<ul>
+							<li><strong><?php echo ( 'Add the coupon input without editing code.' ); ?></strong> <?php echo ( 'Business Large and higher editions can drag one Discount Coupon field into a visual booking form and configure its content and appearance.' ); ?></li>
+							<li><strong><?php echo ( 'See edition requirements clearly.' ); ?></strong> <?php echo ( 'Lower editions show an upgrade badge and explanation without publishing an unsupported coupon input.' ); ?></li>
+							<li><strong><?php echo ( 'Keep form output synchronized.' ); ?></strong> <?php echo ( 'Saving generates the Coupon shortcode in Advanced Mode and its matching Booking Data token.' ); ?></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<?php
+	$obj->expand_section_end( $section_parameters );
+}
+
+/**
  * Render Booking Calendar 11.8.1 What's New content.
  *
  * @param object $obj Welcome-page renderer and image loader.
@@ -12,7 +308,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 function wpbc_welcome_section_11_8_1( $obj ) {
 
-	$section_parameters = array( 'version_num' => '11.8.1', 'show_expand' => false );
+	$section_parameters = array( 'version_num' => '11.8.1', 'show_expand' => true );
 	$obj->expand_section_start( $section_parameters );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
 	?>
@@ -34,7 +330,7 @@ function wpbc_welcome_section_11_8_1( $obj ) {
 					<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
 						<ul>
 							<li><strong><?php echo( 'Choose Setup when you are ready.' ); ?></strong> <?php echo( 'New installations show one focused invitation on Booking Listing. Start guided Setup immediately or postpone it; either choice is remembered.' ); ?></li>
-							<li><strong><?php echo( 'Test the visitor experience immediately.' ); ?></strong> <?php echo( 'A second one-time window shows complete previews and links to valid published starter pages, including the resource-first Resource Selection workflow. After automatic dismissal, new installations can reopen it from the Booking Listing welcome panel. Live demos also show the welcome section without saving a shared dismissal. The top Booking Calendar menu keeps the public links in a predictable workflow order and places the Home page last.' ); ?></li>
+							<li><strong><?php echo( 'Test the visitor experience immediately.' ); ?></strong> <?php echo( 'A second one-time window shows complete previews and links to valid published starter pages, including the resource-first Resource Selection workflow. Automatic dismissal is remembered for that administrator and site, while manual reopening remains available from the Booking Listing welcome panel. Live demos also show the welcome section without saving a shared dismissal. The top Booking Calendar menu keeps the public links in a predictable workflow order and places the Home page last.' ); ?></li>
 						</ul>
 					</div>
 				</div>
@@ -81,7 +377,7 @@ function wpbc_welcome_section_11_8_1( $obj ) {
  */
 function wpbc_welcome_section_11_8( $obj ) {
 
-	$section_parameters = array( 'version_num' => '11.8', 'show_expand' => false );
+	$section_parameters = array( 'version_num' => '11.8', 'show_expand' => true );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
 	$obj->expand_section_start( $section_parameters );
 	?>

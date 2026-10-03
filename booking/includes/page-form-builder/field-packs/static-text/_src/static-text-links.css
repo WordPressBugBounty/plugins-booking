@@ -1,0 +1,88 @@
+/**
+ * Static Text link-token editor.
+ *
+ * @since 11.8.5
+ */
+
+.wpbc_bfb__static_text_links_editor,
+.wpbc_bfb__static_text_links_list {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: stretch;
+	gap: 10px;
+}
+
+.wpbc_bfb__static_text_link_tokens {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 6px;
+}
+
+.wpbc_bfb__static_text_link_status:empty {
+	display: none;
+}
+
+.wpbc_bfb__static_text_link_row {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 12px 0;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.wpbc_bfb__static_text_link_row:last-child {
+	border-bottom: 0;
+}
+
+.wpbc_bfb__static_text_link_control {
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+}
+
+.wpbc_bfb__static_text_link_label {
+	flex: 0 0 92px;
+	color: #50575e;
+	white-space: nowrap;
+}
+
+.wpbc_bfb__static_text_link_control input,
+.wpbc_bfb__static_text_link_control select {
+	flex: 1 1 150px;
+	min-width: 0;
+}
+
+.wpbc_bfb__static_text_link_actions,
+.wpbc_bfb__static_text_links_toolbar {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	width: 100%;
+}
+
+.wpbc_bfb__static_text_links_toolbar {
+	justify-content: center;
+	margin-top: 8px;
+}
+
+@media screen and (max-width: 782px) {
+	.wpbc_bfb__static_text_link_control {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.wpbc_bfb__static_text_link_label,
+	.wpbc_bfb__static_text_link_control input,
+	.wpbc_bfb__static_text_link_control select {
+		flex: 1 1 auto;
+		width: 100%;
+	}
+}

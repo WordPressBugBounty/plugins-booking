@@ -1,0 +1,331 @@
+.wpbc_setup_wizard__working-hours-panel {
+  padding: 18px 20px;
+  border: 1px solid var(--wpbc-wizard-border);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(25,35,45,.04)
+}
+.wpbc_setup_wizard__working-hours-master {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0 4px 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e1e6eb
+}
+.wpbc_setup_wizard__working-hours-master label {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 9px
+}
+.wpbc_setup_wizard__working-hours-master p {
+  margin: 0 0 0 25px;
+  color: var(--wpbc-wizard-muted)
+}
+.wpbc_setup_wizard__working-hours-controls {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0
+}
+.wpbc_setup_wizard__working-hours-panel.is-disabled .wpbc_setup_wizard__working-hours-controls {
+  opacity: .55
+}
+[dir=rtl] .wpbc_setup_wizard__working-hours-master p {
+  margin-right: 25px;
+  margin-left: 0
+}
+.wpbc_setup_wizard__working-hours-notice {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--wpbc-wizard-info-border);
+  border-inline-start: 4px solid var(--wpbc-wizard-info-accent);
+  border-radius: 6px;
+  background: var(--wpbc-wizard-info-background);
+  color: var(--wpbc-wizard-info-copy)
+}
+.wpbc_setup_wizard__working-hours-notice .menu_icon {
+  color: var(--wpbc-wizard-info-accent);
+  font-size: 24px;
+  line-height: 1
+}
+.wpbc_setup_wizard__working-hours-notice .menu_icon::before {
+  line-height: 2
+}
+.wpbc_setup_wizard__working-hours-notice p {
+  margin: 0
+}
+.wpbc_setup_wizard__working-day,
+.wpbc_setup_wizard__working-hours-header {
+  display: grid;
+  grid-template-columns: 210px minmax(460px,1fr) 190px;
+  -ms-flex-align: start;
+  align-items: start;
+  column-gap: 24px
+}
+.wpbc_setup_wizard__working-hours-header {
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0 4px 10px
+}
+.wpbc_setup_wizard__copy-schedule-toggle {
+  display: -ms-inline-flexbox!important;
+  display: inline-flex!important;
+  justify-self: end;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 7px
+}
+.wpbc_setup_wizard__copy-schedule {
+  margin: 4px 4px 16px;
+  padding: 16px;
+  border: 1px solid #c8d7e6;
+  border-radius: 5px;
+  background: #f7fafc
+}
+.wpbc_setup_wizard__copy-schedule-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 16px
+}
+.wpbc_setup_wizard__copy-schedule-heading h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600
+}
+.wpbc_setup_wizard__copy-schedule-heading p {
+  margin: 0;
+  color: var(--wpbc-wizard-muted)
+}
+.wpbc_setup_wizard__copy-schedule-close {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  -ms-flex: 0 0 34px;
+  flex: 0 0 34px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: 0 0;
+  color: #3c434a;
+  cursor: pointer
+}
+.wpbc_setup_wizard__copy-schedule-close:focus,
+.wpbc_setup_wizard__copy-schedule-close:hover {
+  background: #e7edf3
+}
+.wpbc_setup_wizard__copy-schedule-controls {
+  display: grid;
+  grid-template-columns: minmax(190px,.35fr) minmax(0,1fr);
+  gap: 22px;
+  margin-top: 16px
+}
+.wpbc_setup_wizard__copy-schedule-controls select {
+  width: 100%;
+  max-width: none;
+  min-height: 40px
+}
+.wpbc_setup_wizard__copy-targets {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0
+}
+.wpbc_setup_wizard__copy-targets legend {
+  margin-bottom: 8px;
+  font-weight: 600
+}
+.wpbc_setup_wizard__copy-targets > div {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px 18px
+}
+.wpbc_setup_wizard__copy-targets label {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 6px
+}
+.wpbc_setup_wizard__copy-schedule-actions {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px
+}
+.wpbc_setup_wizard__working-day {
+  min-height: 62px;
+  padding: 10px 4px;
+  border-top: 1px solid #e1e6eb
+}
+.wpbc_setup_wizard__working-day-toggle {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 14px;
+  min-height: 40px;
+  font-weight: 500
+}
+.wpbc_setup_wizard__working-day-schedule,
+.wpbc_setup_wizard__working-intervals {
+  display: grid;
+  gap: 8px
+}
+.wpbc_setup_wizard__working-interval {
+  display: grid;
+  grid-template-columns: minmax(150px,190px) 22px minmax(150px,190px) 36px;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 12px
+}
+.wpbc_setup_wizard__working-interval select,
+.wpbc_setup_wizard__working-unavailable {
+  width: 100%;
+  max-width: none;
+  min-height: 40px;
+  margin: 0;
+  padding: 5px 30px 5px 12px;
+  border-color: #b7c0ca;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px
+}
+.wpbc_setup_wizard__working-unavailable {
+  width: min(100%,190px);
+  background: #f0f2f4;
+  color: #7a858f
+}
+.wpbc_setup_wizard__working-interval-separator {
+  color: #64717d;
+  font-size: 20px;
+  text-align: center
+}
+.wpbc_setup_wizard__add-interval,
+.wpbc_setup_wizard__remove-interval {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  border: 0;
+  background: 0 0;
+  color: var(--wp-admin-theme-color,#2271b1);
+  cursor: pointer
+}
+.wpbc_setup_wizard__remove-interval {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  color: #52606d
+}
+.wpbc_setup_wizard__remove-interval:focus,
+.wpbc_setup_wizard__remove-interval:hover {
+  background: #f0f0f1;
+  color: #1d2327
+}
+.wpbc_setup_wizard__add-interval {
+  justify-self: end;
+  gap: 9px;
+  min-height: 40px;
+  padding: 4px 8px;
+  font-size: 14px
+}
+.wpbc_setup_wizard__add-interval .menu_icon {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 4px
+}
+.wpbc_setup_wizard__working-hours-panel [aria-invalid=true] {
+  border-color: #d63638;
+  box-shadow: 0 0 0 1px #d63638
+}
+[dir=rtl] .wpbc_setup_wizard__add-interval,
+[dir=rtl] .wpbc_setup_wizard__copy-schedule-toggle {
+  justify-self: start
+}
+[dir=rtl] .wpbc_setup_wizard__working-interval select,
+[dir=rtl] .wpbc_setup_wizard__working-unavailable {
+  padding-right: 12px;
+  padding-left: 30px
+}
+@media screen and (max-width:1160px) {
+  .wpbc_setup_wizard__working-day,
+  .wpbc_setup_wizard__working-hours-header {
+    grid-template-columns: 170px minmax(390px,1fr) 150px;
+    column-gap: 16px
+  }
+  .wpbc_setup_wizard__working-interval {
+    grid-template-columns: minmax(130px,1fr) 18px minmax(130px,1fr) 36px;
+    gap: 8px
+  }
+}
+@media screen and (max-width:782px) {
+  .wpbc_setup_wizard__working-hours-panel {
+    padding: 14px 16px 2px
+  }
+  .wpbc_setup_wizard__working-hours-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    padding-top: 16px
+  }
+  .wpbc_setup_wizard__working-hours-header > strong {
+    display: none
+  }
+  .wpbc_setup_wizard__copy-schedule-controls {
+    grid-template-columns: 1fr
+  }
+  .wpbc_setup_wizard__working-day {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 14px 2px
+  }
+  .wpbc_setup_wizard__working-day-toggle {
+    min-height: 32px
+  }
+  .wpbc_setup_wizard__working-interval {
+    grid-template-columns: minmax(0,1fr) 18px minmax(0,1fr) 36px
+  }
+  .wpbc_setup_wizard__add-interval,
+  [dir=rtl] .wpbc_setup_wizard__add-interval {
+    justify-self: start
+  }
+}
+@media screen and (max-width:480px) {
+  .wpbc_setup_wizard__working-interval {
+    grid-template-columns: minmax(0,1fr) 14px minmax(0,1fr) 32px;
+    gap: 5px
+  }
+}

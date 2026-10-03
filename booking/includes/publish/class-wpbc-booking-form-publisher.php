@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once dirname( __DIR__ ) . '/_functions/class-wpbc-environment-policy.php';
+
 /**
  * Publish one Booking Form shortcode into a new or existing WordPress page.
  *
@@ -22,84 +24,14 @@ final class WPBC_Booking_Form_Publisher {
 	/**
 	 * Determine whether page publishing must be blocked on this website.
 	 *
-	 * The configured WordPress home host is the canonical site identity for both
-	 * normal page loads and AJAX mutations. The request host is used only when a
-	 * canonical home host is unavailable, which keeps the decision stable without
-	 * trusting a client-controlled Host header over WordPress configuration.
-	 * Development hosts such as `beta` require no exception because only the
-	 * official wpbookingcalendar.com domain and its subdomains are restricted.
+	 * This compatibility method delegates to the shared environment policy. The
+	 * policy owns host identity, exact public-demo classification, internal test
+	 * exceptions, and the released publishing filter for every consumer.
 	 *
 	 * @return bool True when page discovery and page mutations must be blocked.
 	 */
 	public static function is_demo_restricted() {
-		$request_host       = self::get_request_host();
-  		// if ( $request_host === 'freetest.wpbookingcalendar.com' ) { return false; }
-		$site_host          = self::normalize_host( wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
-		$canonical_host     = '' !== $site_host ? $site_host : $request_host;
-		$official_demo_host = self::is_official_demo_host( $canonical_host );
-
-		/**
-		 * Filter whether neutral Booking Form publishing is restricted as a live demo.
-		 *
-		 * @since 11.6.0
-		 *
-		 * @param bool   $official_demo_host Whether the current host is restricted.
-		 * @param string $site_host          Normalized WordPress home URL host.
-		 * @param string $request_host       Normalized current request host used only as a fallback.
-		 */
-		return (bool) apply_filters( 'wpbc_publish_booking_form_is_demo_restricted', $official_demo_host, $site_host, $request_host );
-	}
-
-	/**
-	 * Read the current HTTP request host without trusting proxy-only headers.
-	 *
-	 * This value is a fallback for unusual environments where WordPress cannot
-	 * provide a configured home hostname. It never overrides a valid canonical
-	 * WordPress site host.
-	 *
-	 * @return string Normalized request host, or an empty string outside HTTP.
-	 */
-	private static function get_request_host() {
-		if ( empty( $_SERVER['HTTP_HOST'] ) ) {
-			return '';
-		}
-
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- normalize_host() validates and reduces this value to a hostname.
-		return self::normalize_host( wp_unslash( $_SERVER['HTTP_HOST'] ) );
-	}
-
-	/**
-	 * Normalize a URL or HTTP Host value to a lowercase hostname.
-	 *
-	 * @param mixed $host Hostname, optionally including a port.
-	 *
-	 * @return string Normalized hostname, or an empty string when invalid.
-	 */
-	private static function normalize_host( $host ) {
-		$host = trim( strtolower( (string) $host ) );
-		if ( '' === $host ) {
-			return '';
-		}
-
-		$normalized_host = wp_parse_url( 'http://' . ltrim( $host, '/' ), PHP_URL_HOST );
-		if ( ! is_string( $normalized_host ) ) {
-			return '';
-		}
-
-		return untrailingslashit( strtolower( rtrim( $normalized_host, '.' ) ) );
-	}
-
-	/**
-	 * Determine whether a normalized host belongs to the public demo network.
-	 *
-	 * @param string $host Normalized hostname.
-	 *
-	 * @return bool True for wpbookingcalendar.com and its subdomains.
-	 */
-	private static function is_official_demo_host( $host ) {
-		return 'wpbookingcalendar.com' === $host
-			|| ( strlen( $host ) > strlen( '.wpbookingcalendar.com' )
-				&& '.wpbookingcalendar.com' === substr( $host, -strlen( '.wpbookingcalendar.com' ) ) );
+		return WPBC_Environment_Policy::is_page_publishing_restricted();
 	}
 
 	/**

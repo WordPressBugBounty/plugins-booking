@@ -862,7 +862,8 @@
 		/**
 		 * @param {WPBC_Form_Builder} builder - The active builder instance.
 		 * @param {{ groupName?: string, animation?: number, ghostClass?: string, chosenClass?: string, dragClass?:
-		 *     string }} [opts={}] - Visual/behavior options.
+		 *     string, candidate_dwell_ms?: number, candidate_commit_distance?: number,
+		 *     candidate_dwell_distance?: number }} [opts={}] - Visual and drag-stability options.
 		 */
 		constructor( builder, opts = {} ) {
 			this.builder = builder;
@@ -874,6 +875,9 @@
 				ghostClass : 'wpbc_bfb__drag-ghost',
 				chosenClass: 'wpbc_bfb__highlight',
 				dragClass  : 'wpbc_bfb__drag-active',
+				candidate_dwell_ms        : 90,
+				candidate_commit_distance : 10,
+				candidate_dwell_distance  : 2,
 				...opts
 			};
 			/** @type {Set<HTMLElement>} */
@@ -885,6 +889,13 @@
 			 * @type {boolean}
 			 */
 			this._drag_fail_safe_bound = false;
+
+			/**
+			 * State for the current Form Builder canvas drag.
+			 *
+			 * @type {?Object}
+			 */
+			this._drag_state = null;
 
 			this._bind_drag_fail_safe();
 		}
@@ -898,7 +909,17 @@
 		 * @returns {void}
 		 */
 		_cleanup_drag_ui() {
-			this._dragState = null;
+			const drag_state = this._drag_state;
+
+			if ( drag_state?.item ) {
+				drag_state.item.classList.remove( 'wpbc_bfb__drop-indicator' );
+			}
+			if ( drag_state?.source_spacer?.parentNode ) {
+				drag_state.source_spacer.parentNode.removeChild( drag_state.source_spacer );
+			}
+			this._release_canvas_geometry_locks( drag_state );
+
+			this._drag_state = null;
 			this._toggle_dnd_root_flags( false );
 			this.builder?._remove_dragging_class?.();
 
@@ -909,6 +930,304 @@
 							el.parentNode.removeChild( el );
 						}
 					} );
+		}
+
+		/**
+		 * Capture the block size of every canvas layout container before drag reflow starts.
+		 *
+		 * SortableJS temporarily moves the real node between containers. That changes CSS
+		 * `:empty` matching and can otherwise shrink an empty destination row or grow a
+		 * populated destination by the insertion-line height. The captured values are
+		 * applied only for the active drag session and never become saved form data.
+		 *
+		 * @returns {Array<Object>} Restorable geometry-lock records for visible canvas containers.
+		 */
+		_capture_canvas_geometry_locks() {
+			const pages_container = this.builder?.pages_container;
+			if ( ! pages_container?.querySelectorAll ) {
+				return [];
+			}
+
+			const lock_selector = [
+				'.wpbc_bfb__form_preview_section_container',
+				'.wpbc_bfb__row',
+				'.wpbc_bfb__column'
+			].join( ', ' );
+			const block_size_property = '--wpbc-bfb-drag-locked-block-size';
+
+			return Array.from( pages_container.querySelectorAll( lock_selector ) )
+				.map( ( element ) => {
+					const block_size = element.getBoundingClientRect?.().height;
+					if ( ! Number.isFinite( block_size ) || block_size <= 0 ) {
+						return null;
+					}
+
+					return {
+						element                     : element,
+						block_size                  : Math.round( block_size * 1000 ) / 1000,
+						had_lock_class              : element.classList?.contains( 'wpbc_bfb__drag-geometry-lock' ),
+						previous_block_size         : element.style?.getPropertyValue?.( block_size_property ) || '',
+						previous_block_size_priority: element.style?.getPropertyPriority?.( block_size_property ) || ''
+					};
+				} )
+				.filter( Boolean );
+		}
+
+		/**
+		 * Freeze captured canvas container heights for the active SortableJS session.
+		 *
+		 * The lock is applied before global drag classes or the compact insertion marker
+		 * can change flex alignment and empty-container selectors.
+		 *
+		 * @returns {void}
+		 */
+		_apply_canvas_geometry_locks() {
+			const geometry_locks = this._drag_state?.geometry_locks || [];
+
+			geometry_locks.forEach( ( geometry_lock ) => {
+				geometry_lock.element.style?.setProperty(
+					'--wpbc-bfb-drag-locked-block-size',
+					`${geometry_lock.block_size}px`
+				);
+				geometry_lock.element.classList?.add( 'wpbc_bfb__drag-geometry-lock' );
+			} );
+		}
+
+		/**
+		 * Restore all inline state used by the drag-session geometry lock.
+		 *
+		 * @param {?Object} drag_state - Drag state whose geometry records must be restored.
+		 * @returns {void}
+		 */
+		_release_canvas_geometry_locks( drag_state ) {
+			const block_size_property = '--wpbc-bfb-drag-locked-block-size';
+			const geometry_locks      = drag_state?.geometry_locks || [];
+
+			geometry_locks.forEach( ( geometry_lock ) => {
+				if ( geometry_lock.previous_block_size ) {
+					geometry_lock.element.style?.setProperty(
+						block_size_property,
+						geometry_lock.previous_block_size,
+						geometry_lock.previous_block_size_priority
+					);
+				} else {
+					geometry_lock.element.style?.removeProperty?.( block_size_property );
+				}
+
+				if ( ! geometry_lock.had_lock_class ) {
+					geometry_lock.element.classList?.remove( 'wpbc_bfb__drag-geometry-lock' );
+				}
+			} );
+		}
+
+		/**
+		 * Capture the original canvas geometry before SortableJS applies its ghost class.
+		 *
+		 * The saved rectangle is later represented by a non-data spacer. This keeps the
+		 * source layout stable while the real dragged node becomes a compact insertion
+		 * indicator in another container.
+		 *
+		 * @param {Sortable.SortableEvent} evt - Sortable choose event.
+		 * @returns {void}
+		 */
+		_prepare_drag_state( evt ) {
+			if ( ! evt?.item || ! evt?.from ) {
+				this._drag_state = null;
+				return;
+			}
+
+			const source_rect  = evt.item.getBoundingClientRect();
+			const from_palette = !! this.builder?.palette_uls?.includes?.( evt.from );
+
+			this._drag_state = {
+				item                : evt.item,
+				from_palette        : from_palette,
+				source_parent       : evt.from,
+				source_next_sibling : evt.item.nextSibling,
+				source_rect         : {
+					width : source_rect.width,
+					height: source_rect.height
+				},
+				geometry_locks      : this._capture_canvas_geometry_locks(),
+				source_spacer       : null,
+				accepted_candidate  : null,
+				pending_candidate   : null,
+				pending_since       : 0,
+				pending_pointer     : null
+			};
+		}
+
+		/**
+		 * Create a measured, non-data footprint at the dragged item's source position.
+		 *
+		 * The spacer intentionally does not use field or section classes, so Form Builder
+		 * serialization and usage accounting cannot treat it as saved form content.
+		 *
+		 * @returns {void}
+		 */
+		_create_drag_source_spacer() {
+			const drag_state = this._drag_state;
+
+			if (
+				! drag_state ||
+				drag_state.from_palette ||
+				! drag_state.item ||
+				! drag_state.source_parent ||
+				drag_state.source_spacer
+			) {
+				return;
+			}
+
+			const spacer = document.createElement( 'div' );
+			const width  = Math.max( 1, drag_state.source_rect?.width || 1 );
+			const height = Math.max( 1, drag_state.source_rect?.height || 1 );
+
+			spacer.className = 'wpbc_bfb__drag-source-spacer';
+			spacer.setAttribute( 'aria-hidden', 'true' );
+			spacer.setAttribute( 'data-wpbc-bfb-drag-source-spacer', 'true' );
+			spacer.style.setProperty( '--wpbc-bfb-drag-source-inline-size', `${width}px` );
+			spacer.style.setProperty( '--wpbc-bfb-drag-source-block-size', `${height}px` );
+
+			const reference_node = drag_state.source_next_sibling?.parentNode === drag_state.source_parent
+				? drag_state.source_next_sibling
+				: null;
+
+			drag_state.source_parent.insertBefore( spacer, reference_node );
+			drag_state.source_spacer = spacer;
+		}
+
+		/**
+		 * Start the stable drag representation after SortableJS creates its off-flow mirror.
+		 *
+		 * @param {Sortable.SortableEvent} evt - Sortable start event.
+		 * @returns {void}
+		 */
+		_start_drag( evt ) {
+			if ( ! this._drag_state ) {
+				this._prepare_drag_state( evt );
+			}
+
+			this._apply_canvas_geometry_locks();
+			this.builder?._add_dragging_class?.();
+
+			const from_palette = !! this._drag_state?.from_palette;
+			this._toggle_dnd_root_flags( true, from_palette );
+			this._tag_drag_mirror( evt );
+
+			if ( ! from_palette && evt?.item ) {
+				this._create_drag_source_spacer();
+				evt.item.classList.add( 'wpbc_bfb__drop-indicator' );
+			}
+		}
+
+		/**
+		 * Finish a Form Builder drag and remove transient layout helpers.
+		 *
+		 * @returns {void}
+		 */
+		_finish_drag() {
+			this._cleanup_drag_ui();
+		}
+
+		/**
+		 * Check whether a SortableJS canvas candidate is stable enough to accept.
+		 *
+		 * The candidate includes the destination container, related sibling, and insertion
+		 * side. A new candidate must receive real pointer movement before it can replace
+		 * the accepted position, preventing layout movement alone from causing flip-flops.
+		 *
+		 * @param {Object} evt - Sortable move event.
+		 * @param {MouseEvent|PointerEvent|TouchEvent} original_event - Original pointer event.
+		 * @returns {boolean} Whether SortableJS may move the in-flow insertion indicator.
+		 */
+		_allow_canvas_move( evt, original_event ) {
+			const { to, from } = evt || {};
+			if ( ! to || ! from ) {
+				return true;
+			}
+
+			if ( ! to.closest( '.wpbc_bfb__panel--preview' ) ) {
+				return true;
+			}
+
+			const touch_event  = original_event?.touches?.[0] || original_event?.changedTouches?.[0];
+			const event_x      = touch_event?.clientX ?? original_event?.clientX;
+			const event_y      = touch_event?.clientY ?? original_event?.clientY;
+			const dragged_rect = evt.draggedRect || evt.dragged?.getBoundingClientRect?.();
+			const pointer_x    = Number.isFinite( event_x )
+				? event_x
+				: (dragged_rect ? dragged_rect.left + (dragged_rect.width / 2) : 0);
+			const pointer_y    = Number.isFinite( event_y )
+				? event_y
+				: (dragged_rect ? dragged_rect.top + (dragged_rect.height / 2) : 0);
+
+			// Cross-container column changes require a deliberate move inside the new column.
+			if ( to !== from && to.classList?.contains( 'wpbc_bfb__column' ) ) {
+				const container_rect = to.getBoundingClientRect();
+				const padding_x       = Core.WPBC_BFB_Sanitize.clamp( container_rect.width * 0.20, 12, 36 );
+				const padding_y       = Core.WPBC_BFB_Sanitize.clamp( container_rect.height * 0.10, 6, 16 );
+				const visually_empty  = ! to.querySelector(
+					':scope > .wpbc_bfb__field:not(.wpbc_bfb__drop-indicator), ' +
+					':scope > .wpbc_bfb__section:not(.wpbc_bfb__drop-indicator)'
+				) || container_rect.height < 64;
+				const inner_top       = container_rect.top + (visually_empty ? 4 : padding_y);
+				const inner_bottom    = container_rect.bottom - (visually_empty ? 4 : padding_y);
+				const inner_left      = container_rect.left + padding_x;
+				const inner_right     = container_rect.right - padding_x;
+
+				if ( pointer_x <= inner_left || pointer_x >= inner_right || pointer_y <= inner_top || pointer_y >= inner_bottom ) {
+					return false;
+				}
+			}
+
+			const drag_state = this._drag_state;
+			if ( ! drag_state ) {
+				return true;
+			}
+
+			const candidate = {
+				to                : to,
+				related           : evt.related || null,
+				will_insert_after : !! evt.willInsertAfter
+			};
+			const candidate_matches = ( first, second ) => !! first && !! second &&
+				first.to === second.to &&
+				first.related === second.related &&
+				first.will_insert_after === second.will_insert_after;
+
+			if ( candidate_matches( candidate, drag_state.accepted_candidate ) ) {
+				evt.dragged?.classList.add( 'wpbc_bfb__drop-indicator' );
+				return true;
+			}
+
+			const now = window.performance?.now?.() ?? Date.now();
+			if ( ! candidate_matches( candidate, drag_state.pending_candidate ) ) {
+				drag_state.pending_candidate = candidate;
+				drag_state.pending_since     = now;
+				drag_state.pending_pointer   = { x: pointer_x, y: pointer_y };
+				return false;
+			}
+
+			const pointer_distance = Math.hypot(
+				pointer_x - drag_state.pending_pointer.x,
+				pointer_y - drag_state.pending_pointer.y
+			);
+			const candidate_age            = now - drag_state.pending_since;
+			const crossed_commit_distance = pointer_distance >= this.opts.candidate_commit_distance;
+			const completed_dwell_move    = candidate_age >= this.opts.candidate_dwell_ms &&
+				pointer_distance >= this.opts.candidate_dwell_distance;
+
+			if ( ! crossed_commit_distance && ! completed_dwell_move ) {
+				return false;
+			}
+
+			drag_state.accepted_candidate = candidate;
+			drag_state.pending_candidate  = null;
+			drag_state.pending_since      = 0;
+			drag_state.pending_pointer    = null;
+			evt.dragged?.classList.add( 'wpbc_bfb__drop-indicator' );
+
+			return true;
 		}
 
 		/**
@@ -959,6 +1278,7 @@
 				const mirror = document.querySelector( '.sortable-fallback, .sortable-drag, .' + this.opts.dragClass );
 				if ( mirror ) {
 					mirror.setAttribute( 'data-drag-role', role );
+					mirror.setAttribute( 'aria-hidden', 'true' );
 				}
 			} );
 		}
@@ -1021,7 +1341,6 @@
 						this.builder?._remove_dragging_class?.();
 					}, 50 );
 					this._toggle_dnd_root_flags( false );
-					this._dragState = null;
 					this._cleanup_drag_ui();
 				}
 			};
@@ -1067,7 +1386,7 @@
 		 *
 		 *  -- Handle selectors: handle:  '.section-drag-handle, .wpbc_bfb__drag-handle, .wpbc_bfb__drag-anywhere,
 		 * [data-draggable="true"]'
-		 *  -- Draggable gate: draggable: '.wpbc_bfb__field:not([data-draggable="false"]), .wpbc_bfb__section'
+		 *  -- Draggable gate: draggable fields, sections, and the transient measured source spacer.
 		 *  -- Filter (overlay-safe):     ignore everything in overlay except the handle -
 		 * '.wpbc_bfb__overlay-controls
 		 * *:not(.wpbc_bfb__drag-handle):not(.section-drag-handle):not(.wpbc_icn_drag_indicator)'
@@ -1105,19 +1424,10 @@
 				fallbackOnBody   : true,
 				fallbackTolerance: 8,
 				removeCloneOnHide: true,
-				// Add body/html flags so you can style differently when dragging from palette.
-				onStart: (evt) => {
-					this.builder?._add_dragging_class?.();
-
-					const fromPalette = this.builder?.palette_uls?.includes?.( evt.from );
-					this._toggle_dnd_root_flags( true, fromPalette );  // set to root HTML document: html.wpbc_bfb__dnd-active.wpbc_bfb__drag-from-palette .
-
-					this._tag_drag_mirror( evt );                      // Add 'data-drag-role' attribute to  element under cursor.
-				},
-				onEnd  : () => {
-					setTimeout( () => { this.builder._remove_dragging_class(); }, 50 );
-					this._toggle_dnd_root_flags( false );
-				}
+				onChoose: (evt) => this._prepare_drag_state( evt ),
+				onStart : (evt) => this._start_drag( evt ),
+				onEnd   : () => this._finish_drag(),
+				onMove  : (evt, original_event) => this._allow_canvas_move( evt, original_event )
 			};
 
 			if ( role === 'palette' ) {
@@ -1133,6 +1443,8 @@
 			// role === 'canvas'.
 			Sortable.create( container, {
 				...common,
+				// Stable insertion geometry is preferable to animating hit-test targets.
+				animation: 0,
 				group    : {
 					name: this.opts.groupName,
 					pull: true,
@@ -1143,7 +1455,12 @@
 				},
 				// ---------- DnD Handlers --------------                // Grab anywhere on fields that opt-in with the class or attribute.  - Sections still require their dedicated handle.
 				handle   : '.section-drag-handle, .wpbc_bfb__drag-handle, .wpbc_bfb__drag-anywhere, [data-draggable="true"]',
-				draggable: '.wpbc_bfb__field:not([data-draggable="false"]), .wpbc_bfb__section',                        // Per-field opt-out with [data-draggable="false"] (e.g., while editing).
+				// The transient spacer participates in hit testing but never serialization.
+				draggable: [
+					'.wpbc_bfb__field:not([data-draggable="false"])',
+					'.wpbc_bfb__section',
+					'.wpbc_bfb__drag-source-spacer'
+				].join( ', ' ),
 				// ---------- Filters - No DnD ----------                // Declarative “no-drag zones”: anything inside these wrappers won’t start a drag.
 				filter: [
 					'.wpbc_bfb__no-drag-zone',
@@ -1163,83 +1480,6 @@
 				scroll               : true,
 				scrollSensitivity    : 40,
 				scrollSpeed          : 10,
-				/**
-				 * Enter/leave hysteresis for cross-column moves.    Only allow dropping into `to` when the pointer is
-				 * well inside it.
-				 */
-				onMove: (evt, originalEvent) => {
-
-					const { to, from } = evt;
-					if ( ! to || ! from ) {
-						return true;
-					}
-
-					const in_preview_canvas = !! to.closest( '.wpbc_bfb__panel--preview' );
-					if ( ! in_preview_canvas ) {
-						return true;
-					}
-
-					// Only gate columns (not page containers), and only for cross-column moves in the same row
-					const isColumn = to.classList?.contains( 'wpbc_bfb__column' );
-					if ( !isColumn ) return true;
-
-					const fromRow = from.closest( '.wpbc_bfb__row' );
-					const toRow   = to.closest( '.wpbc_bfb__row' );
-					if ( fromRow && toRow && fromRow !== toRow ) return true;
-
-					const rect = to.getBoundingClientRect();
-					const evtX = (originalEvent.touches?.[0]?.clientX) ?? originalEvent.clientX;
-					const evtY = (originalEvent.touches?.[0]?.clientY) ?? originalEvent.clientY;
-
-					// --- Edge fence (like you had), but clamped for tiny columns
-					const paddingX = Core.WPBC_BFB_Sanitize.clamp( rect.width * 0.20, 12, 36 );
-					const paddingY = Core.WPBC_BFB_Sanitize.clamp( rect.height * 0.10, 6, 16 );
-
-					// Looser Y if the column is visually tiny/empty
-					const isVisuallyEmpty = to.childElementCount === 0 || rect.height < 64;
-					const innerTop        = rect.top + (isVisuallyEmpty ? 4 : paddingY);
-					const innerBottom     = rect.bottom - (isVisuallyEmpty ? 4 : paddingY);
-					const innerLeft       = rect.left + paddingX;
-					const innerRight      = rect.right - paddingX;
-
-					const insideX = evtX > innerLeft && evtX < innerRight;
-					const insideY = evtY > innerTop && evtY < innerBottom;
-					if ( !(insideX && insideY) ) return false;   // stay in current column until well inside new one
-
-					// --- Sticky target commit distance: only switch if we’re clearly inside the new column
-					const ds = this._dragState;
-					if ( ds ) {
-						if ( ds.stickyTo && ds.stickyTo !== to ) {
-							// require a deeper penetration to switch columns
-							const commitX = Core.WPBC_BFB_Sanitize.clamp( rect.width * 0.25, 18, 40 );   // 25% or 18–40px
-							const commitY = Core.WPBC_BFB_Sanitize.clamp( rect.height * 0.15, 10, 28 );  // 15% or 10–28px
-
-							const deepInside =
-									  (evtX > rect.left + commitX && evtX < rect.right - commitX) &&
-									  (evtY > rect.top + commitY && evtY < rect.bottom - commitY);
-
-							if ( !deepInside ) return false;
-						}
-						// We accept the new target now.
-						ds.stickyTo     = to;
-						ds.lastSwitchTs = performance.now();
-					}
-
-					return true;
-				},
-				onStart: (evt) => {
-					this.builder?._add_dragging_class?.();
-					// Match the flags we set in common so CSS stays consistent on canvas drags too.
-					const fromPalette = this.builder?.palette_uls?.includes?.( evt.from );
-					this._toggle_dnd_root_flags( true, fromPalette );          // set to root HTML document: html.wpbc_bfb__dnd-active.wpbc_bfb__drag-from-palette .
-					this._tag_drag_mirror( evt );                             // Tag the mirror under cursor.
-					this._dragState = { stickyTo: null, lastSwitchTs: 0 };    // per-drag state.
-				},
-				onEnd  : () => {
-					setTimeout( () => { this.builder._remove_dragging_class(); }, 50 );
-					this._toggle_dnd_root_flags( false );                    // set to root HTML document without these classes: html.wpbc_bfb__dnd-active.wpbc_bfb__drag-from-palette .
-					this._dragState = null;
-				},
 				// ----------------------------------------
 				// onAdd: handlers.onAdd || this.builder.handle_on_add.bind( this.builder )
 				onAdd: (evt) => {

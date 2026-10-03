@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.8.4
+Stable tag: 11.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -315,9 +315,36 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 8. **Instant Booking Listing**: Search and filter bookings with results that update immediately without a full page reload.
 9. **Timeline View**: See your bookings and schedule at a glance in a clear calendar timeline.
 10. **Calendar Availability**: Mark dates available or unavailable in just three clicks.
-
+11. **Setup Wizard**: Setup Wizard starts with one practical question: how should customers book? After you choose the answer, it presents only the settings needed for that booking flow instead of asking you to configure every Booking Calendar option.
 
 == Changelog ==
+= 11.9 =
+- Changes in **all** versions:
+	* **New**: Introduced a redesigned Setup Wizard that starts with the way customers should book and then shows only the relevant Date Selection, Booking Resources or Services, time, availability, Booking Form, appearance, publishing, and review steps. Choose from Single full day, Multiple independent full days, Flexible date range, Fixed-length date range, Check-in & check-out changeover, Fixed time slots, Start & end time, Start time + duration, Repeat one time on multiple dates, First-date start & last-date end, or Guided appointment flow. Journey-aware recommendations, live previews, progressive saving, resumable setup, and a final Setup overview make initial configuration and later changes much easier.
+	* **Fix**: Completed the Setup Wizard routes for Repeat one time on multiple dates and First-date start & last-date end, including compatible multi-day selection, Start and End Times, matching Booking Form defaults, and automatic Working Hours deactivation for the first-date/last-date journey.
+	* **Improvement**: Added direct “change these settings later” links on each configurable Setup Wizard page, opening the matching Date Selection, Services, Resources, Availability, Booking Form, Appearance, or Publishing screen.
+	* **Improvement**: A first activation from the Plugins page now opens Setup Wizard directly, while a manual plugin update opens What's New on the next administration request. Automatic, command-line, and managed live-demo maintenance remains non-disruptive.
+	* **Improvement**: Refined Setup Wizard publishing so non-guided journeys start with a direct Booking Form page, Review links to the published page, and Test your booking pages places the configured result before separate starter examples.
+	* **New**: Added a two-step Appointment Services booking flow with a live date-and-time summary, duration and start-time choices, a responsive customer-details step, and safe defaults for newly created Appointment forms. Existing forms remain unchanged.
+	* **Improvement**: Added multiple non-overlapping Working Time intervals per weekday, including default and Resource-specific schedules, so breaks such as lunch remain unavailable without splitting the working day into separate rules.
+	* **New**: Added a visual Country List field to Form Builder, with a predefined country selector, validated default country, and synchronized Advanced Mode and Booking Data output.
+	* **Improvement**: Expanded visual Form Builder controls for Section spacing and overflow, reusable Static Text links and anchors, and more stable drag-and-drop editing.
+	* **Fix**: Setup Wizard now labels Fixed-length date range and Check-in & check-out changeover as Business Small+ choices, disables them in Free and Personal, and rejects unsupported submitted values on the server.
+	* **Fix**: Unified environment detection so internal Booking Calendar test sites retain Setup Wizard page publishing while exact managed public live demos remain protected.
+	* **Fix**: Corrected confirmation-page redirects in WPML language-directory setups so the booking hash remains in the URL and the new booking details are displayed.
+	* **Fix**: Clarified duplicate Booking Resource and outdated booking-form notices so hidden duplicate forms and stale page caches provide specific recovery steps instead of a generic expired-context warning.
+	* **Fix**: Separated the translation of range-end labels from email-recipient labels so date and time controls can use the correct wording.
+	* **Improvement**: Completed missing Czech translations and improved existing wording across booking forms, administration settings, and the Setup Wizard.
+	* **Compatibility**: Hardened activation and upgrades when Booking Calendar Free is installed with an older paid edition, preventing database queries from using paid-only Booking Resource columns before they exist.
+	* **Improvement**: Calendar-loading HTTP 409 errors now suggest clearing stale page, server, CDN, and optimized-file caches, while expanded browser-console diagnostics provide a stable support code and response details.
+	* **Security**: Resolved: CVE-2026-39601. Prevented simultaneous public requests from overbooking the same exclusive date or time slot on standard single-primary MySQL and MariaDB installations, while preserving booking creation on SQLite (e.g. WP Playgrounds).
+	* **Translations**: Completed 100% local translations: Spanish (Spain), Dutch, French (France), German, Italian, Japanese, Portuguese (Brazil), Ukrainian, Czech.
+- Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added an optional Unbookable date gaps setting under Booking Capacity that marks a bounded opening unavailable when no valid fixed or dynamic booking range can fit, while respecting changeovers, pending-date policy, conditional range rules, and capacity Resources.
+	* **Fix**: Range hover and selection now stay on the valid period containing the pointed date, preserve an existing first click after invalid ends, and apply conditional Season, weekday, and exact-date rules consistently.
+- Changes in **Business Large / MultiUser** versions:
+	* **New**: Added a visual Discount Coupon field to Form Builder, with configurable content and appearance, one-per-form protection, and synchronized Advanced Mode and Booking Data output.
+
 = 11.8.4 =
 - Changes in **all** versions:
 	* **Improvement**: Expanded Form Builder's Custom Shortcode field to accept one supported Booking Calendar shortcode with options and quoted values, including Coupon fields in editions that provide them, while rejecting malformed or unsafe input.
@@ -386,5 +413,8 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 [Full changelog](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 11.9 =
+Set up Booking Calendar faster with the redesigned Setup Wizard, tailored to each customer journey. Also adds split Working Time, a two-step Appointment Services flow, visual Country and Coupon fields, and paid-edition protection against unbookable date gaps. Fixed Race Condition issue. Completed 100% local translations for 9 languages.
+
 = 11.8 =
 Adds a multi-month-ready full-day form for new installs, streamlined Booking Modes and Setup, plus paid Availability and Searchable Resources catalogs. Security hardens booking creation, options, Timeline, form auto-fill, and time-slot rendering. MySQL 9.6+ compatibility; clear page/CDN caches.

@@ -98,7 +98,10 @@ final class WPBC_Catalog_Booking_Resource_Creator {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Explicit canonical Resource creation.
 			$inserted = $wpdb->insert( $wpdb->prefix . 'bookingtypes', $insert_values, $insert_formats );
 			if ( 1 !== $inserted || ! $wpdb->insert_id ) {
-				$this->rollback( $created_ids );
+				$compensated = $this->rollback( $created_ids );
+				if ( is_wp_error( $compensated ) ) {
+					return $compensated;
+				}
 
 				return new WP_Error( 'wpbc_catalog_resource_create_failed', __( 'The Booking Resources could not be created.', 'booking' ) );
 			}
@@ -106,7 +109,10 @@ final class WPBC_Catalog_Booking_Resource_Creator {
 			$created_ids[] = $resource_id;
 			$stored        = $this->content_store->save( $resource_id, $title, $validated['description'], $validated['picture_url'] );
 			if ( is_wp_error( $stored ) ) {
-				$this->rollback( $created_ids );
+				$compensated = $this->rollback( $created_ids );
+				if ( is_wp_error( $compensated ) ) {
+					return $compensated;
+				}
 
 				return $stored;
 			}
@@ -243,22 +249,54 @@ final class WPBC_Catalog_Booking_Resource_Creator {
 	 *
 	 * @param array<int,int> $resource_ids Created Resource IDs.
 	 *
-	 * @return void
+	 * @return true|WP_Error True after verified compensation or a safe recovery error.
 	 */
 	private function rollback( $resource_ids ) {
+		return $this->compensate_created_resources( $resource_ids );
+	}
+
+	/**
+	 * Remove only Resource rows created by a failed composed workflow.
+	 *
+	 * This narrow compensation API lets another authorized domain compose several
+	 * independent creates without duplicating Resource SQL or content cleanup.
+	 * Callers must pass only IDs returned by this creator in the same operation.
+	 *
+	 * @param array<int,int> $resource_ids Resource IDs created by this service.
+	 *
+	 * @return true|WP_Error True after verified compensation or a safe recovery error.
+	 */
+	public function compensate_created_resources( $resource_ids ) {
 		global $wpdb;
 
-		foreach ( array_map( 'absint', $resource_ids ) as $resource_id ) {
+		$resource_ids         = array_values( array_filter( array_map( 'absint', $resource_ids ) ) );
+		$removed_resource_ids = array();
+		$compensation_failed  = false;
+		foreach ( $resource_ids as $resource_id ) {
 			if ( ! $resource_id ) {
 				continue;
 			}
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Compensates only rows inserted by this request.
-			$wpdb->delete( $wpdb->prefix . 'bookingtypes', array( 'booking_type_id' => $resource_id ), array( '%d' ) );
-			$this->content_store->delete( $resource_id );
+			$deleted = $wpdb->delete( $wpdb->prefix . 'bookingtypes', array( 'booking_type_id' => $resource_id ), array( '%d' ) );
+			if ( false === $deleted ) {
+				$compensation_failed = true;
+				continue;
+			}
+			$removed_resource_ids[] = $resource_id;
+			$content_deleted        = $this->content_store->delete( $resource_id );
+			if ( is_wp_error( $content_deleted ) ) {
+				$compensation_failed = true;
+			}
 		}
+		WPBC_Catalog_Booking_Resource_Demo_Policy::unregister_resource_ids( $removed_resource_ids );
 		if ( function_exists( 'make_bk_action' ) ) {
 			make_bk_action( 'wpbc_reinit_booking_resource_cache' );
 		}
+		if ( $compensation_failed ) {
+			return new WP_Error( 'wpbc_catalog_resource_compensation_failed', __( 'A Booking Resource change could not be safely restored. Reload the page before making further changes.', 'booking' ) );
+		}
+
+		return true;
 	}
 
 	/**

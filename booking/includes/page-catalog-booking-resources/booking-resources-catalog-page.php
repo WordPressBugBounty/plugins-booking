@@ -20,47 +20,6 @@ function wpbc_catalog_booking_resources_is_page() {
 }
 
 /**
- * Map the established Booking Calendar minimum role to a capability.
- *
- * @param string $role_option Booking Calendar option containing a minimum role.
- *
- * @return string WordPress capability name.
- */
-function wpbc_catalog_booking_resources_get_role_capability( $role_option ) {
-	$minimum_role = get_bk_option( sanitize_key( $role_option ) );
-	$capabilities = array(
-		'administrator' => 'activate_plugins',
-		'editor'        => 'publish_pages',
-		'author'        => 'publish_posts',
-		'contributor'   => 'edit_posts',
-		'subscriber'    => 'read',
-	);
-
-	return isset( $capabilities[ $minimum_role ] ) ? $capabilities[ $minimum_role ] : 'manage_options';
-}
-
-/**
- * Return the capability required by the canonical Resources role setting.
- *
- * Free installations use the Settings role because they do not expose the
- * multi-resource role option. Paid editions use the Resources role so the
- * parallel page remains aligned with the established administration boundary.
- *
- * @return string WordPress capability name.
- */
-function wpbc_catalog_booking_resources_get_manage_capability() {
-	$role_option = class_exists( 'wpdev_bk_personal' ) ? 'booking_user_role_resources' : 'booking_user_role_settings';
-	$capability  = wpbc_catalog_booking_resources_get_role_capability( $role_option );
-
-	/**
-	 * Filter the capability required to view the independent Resources catalog.
-	 *
-	 * @param string $capability WordPress capability name.
-	 */
-	return (string) apply_filters( 'wpbc_catalog_booking_resources_manage_capability', $capability );
-}
-
-/**
  * Return allow-listed shared request overrides from the initial page URL.
  *
  * These values remain untrusted and are normalized by WPBC_UI_Catalog_Request.
@@ -98,6 +57,72 @@ function wpbc_catalog_booking_resources_get_initial_url_overrides() {
 	}
 
 	return $url_overrides;
+}
+
+/**
+ * Build the canonical per-Resource publishing URL used by external admin pages.
+ *
+ * The visible-column and filter arguments are read-only initial display
+ * overrides. They do not include the shared preference action, so opening this
+ * URL cannot replace the user's saved catalog view. The Resource catalog owns
+ * the launch intent and resolves the first publishable Resource from its
+ * authorized list DTO before opening its Actions menu and focusing Publish.
+ *
+ * @return string Canonical Resources URL with a request-local publishing view.
+ */
+function wpbc_catalog_booking_resources_get_publish_url() {
+	$catalog_url = function_exists( 'wpbc_booking_modes_get_canonical_page_url' )
+		? wpbc_booking_modes_get_canonical_page_url( 'wpbc-resources__resources' )
+		: '';
+	$catalog_url = is_string( $catalog_url ) && '' !== $catalog_url
+		? $catalog_url
+		: admin_url( 'admin.php?page=wpbc-resources&tab=resources' );
+	$configuration      = wpbc_catalog_booking_resources_get_config();
+	$allowed_columns    = isset( $configuration['columns']['allowed'] ) && is_array( $configuration['columns']['allowed'] )
+		? $configuration['columns']['allowed']
+		: array();
+	$publishing_columns = isset( $configuration['views']['definitions']['publishing']['fields'] ) && is_array( $configuration['views']['definitions']['publishing']['fields'] )
+		? array_values( array_intersect( $configuration['views']['definitions']['publishing']['fields'], $allowed_columns ) )
+		: array();
+
+	$catalog_url = add_query_arg(
+		array(
+			'catalog_page'                => 1,
+			'catalog_search'              => '',
+			'catalog_columns'             => implode( ',', $publishing_columns ),
+			'resource_type'               => 'all',
+			'wpbc_catalog_resource_action' => 'publish_resource',
+		),
+		$catalog_url
+	);
+
+	return $catalog_url . '#wpbc_catalog_booking_resources';
+}
+
+/**
+ * Return one allow-listed read-only catalog launch intent from the page URL.
+ *
+ * The intent grants no authority and carries no Resource ID. Browser code must
+ * resolve a Resource only from the authorized list response. Activating the
+ * focused action follows the normal domain handler and authorization checks.
+ *
+ * @return array<string,string> Browser-safe launch intent, or an empty array.
+ */
+function wpbc_catalog_booking_resources_get_launch_intent() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only presentation intent; inspector requests remain nonce protected.
+	$requested_action = isset( $_GET['wpbc_catalog_resource_action'] ) && is_scalar( $_GET['wpbc_catalog_resource_action'] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Sanitized and allow-listed immediately below.
+		? sanitize_key( wp_unslash( $_GET['wpbc_catalog_resource_action'] ) )
+		: '';
+
+	if ( 'publish_resource' !== $requested_action ) {
+		return array();
+	}
+
+	return array(
+		'action'          => 'publish_resource',
+		'query_parameter' => 'wpbc_catalog_resource_action',
+	);
 }
 
 /**
@@ -172,10 +197,11 @@ function wpbc_catalog_booking_resources_get_client_config() {
 		$initial_request,
 		$initial_response
 	);
-	$client_configuration['ajax_url'] = admin_url( 'admin-ajax.php' );
-	$client_configuration['auto_load'] = $auto_load;
-	$client_configuration['is_demo']   = function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo();
-	$client_configuration['nonce']     = wp_create_nonce( $configuration['nonce_name'] );
+	$client_configuration['ajax_url']      = admin_url( 'admin-ajax.php' );
+	$client_configuration['auto_load']     = $auto_load;
+	$client_configuration['is_demo']       = function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo();
+	$client_configuration['launch_intent'] = wpbc_catalog_booking_resources_get_launch_intent();
+	$client_configuration['nonce']         = wp_create_nonce( $configuration['nonce_name'] );
 	$client_configuration['details_action'] = 'WPBC_AJX_CATALOG_BOOKING_RESOURCE_DETAILS';
 	$client_configuration['inspector_create_schema_action'] = 'WPBC_AJX_CATALOG_BOOKING_RESOURCE_CREATE_SCHEMA';
 	$client_configuration['inspector_edit_schema_action']   = 'WPBC_AJX_CATALOG_BOOKING_RESOURCE_EDIT_SCHEMA';
@@ -209,6 +235,7 @@ function wpbc_catalog_booking_resources_get_client_config() {
 	if ( ! empty( $configuration['features']['resource_type_filter'] ) ) {
 		$client_configuration['url_parameters']['resource_type'] = 'resource_type';
 	}
+	$client_configuration['i18n']['publishing_launch_unavailable'] = __( 'No Booking Resource is available for publishing.', 'booking' );
 
 	return $client_configuration;
 }

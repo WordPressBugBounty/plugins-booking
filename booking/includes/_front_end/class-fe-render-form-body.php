@@ -122,7 +122,33 @@ class WPBC_FE_Form_Body_Renderer {
 		// 3. Postprocess Form Conent - regarding settings - e.g.:  $source_res['bfb_settings'] = [   options = [  booking_form_theme = "wpbc_theme_dark_1", .... ], ...
 		$wrapped = apply_filters( 'wpbc_booking_form__wrapped_html__before_inline_scripts', $wrapped, $source_res['bfb_settings'], $resource_id, $custom_booking_form );
 
-		$wrapped .= WPBC_FE_Inline_Scripts::collect( $resource_id );
+		/**
+		 * Filters whether the current booking form render should collect legacy
+		 * page-level inline scripts.
+		 *
+		 * Request-local administration previews initialize their returned markup
+		 * through an explicit bootstrap payload. They must not queue callbacks on
+		 * the parent administration page because the preview form can be replaced
+		 * before those callbacks run.
+		 *
+		 * @since 11.9.0
+		 *
+		 * @param bool   $should_collect      Whether legacy inline scripts should be collected.
+		 * @param int    $resource_id         Booking resource ID used by the rendered form.
+		 * @param string $custom_booking_form Booking form slug requested by the renderer.
+		 * @param string $form_status         Normalized renderer status such as published or preview.
+		 */
+		$should_collect_inline_scripts = (bool) apply_filters(
+			'wpbc_booking_form__should_collect_inline_scripts',
+			true,
+			$resource_id,
+			$custom_booking_form,
+			$form_status
+		);
+
+		if ( $should_collect_inline_scripts ) {
+			$wrapped .= WPBC_FE_Inline_Scripts::collect( $resource_id );
+		}
 
 		// Info: Hook for addons. Postprocess Form Conent - regarding settings - e.g.:  $source_res['bfb_settings'] = [   options = [  booking_form_theme = "wpbc_theme_dark_1", .... ], ...
 		$wrapped = apply_filters( 'wpbc_booking_form__wrapped_html__after_inline_scripts', $wrapped, $source_res['bfb_settings'], $resource_id, $custom_booking_form );

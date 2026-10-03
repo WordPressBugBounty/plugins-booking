@@ -1545,7 +1545,7 @@ if(1){
 				<div class="wpdvlp-sub-tabs wpbc_redirection_message"
 					 style="margin: 20px 0;padding: 1em;font-size: 14px;">
 					<a href="<?php
-					echo esc_url( wpbc_get_setup_wizard_page_url() ); ?>">Redirect</a> after <span
+					echo esc_url( wpbc_get_settings_url() ); ?>">Redirect</a> after <span
 						class="wpbc_countdown">1</span> second...
 				</div>
 				<?php
@@ -1576,19 +1576,10 @@ if(1){
 							            . '</a>';
 
 
-	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
-								            . esc_url( wpbc_get_settings_url()
-								            . '&wpbc_setup_wizard=reset&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'">'
-								            . 'Reset Setup Wizard'
-							            . '</a>';
-//	            if ( ( isset( $_GET['wpbc_setup_wizard'] ) ) && ( 'reset' === $_GET['wpbc_setup_wizard'] ) ) {
-//		            $my_system_buttons .= '<script type="text/javascript"> window.location.href = "' . esc_url( wpbc_get_setup_wizard_page_url() ) . '"; </script>';
-//	            }
-	            $my_system_buttons .=  ' <a class="button button-secondary" style="background:#fff9e6;" href="'
-								            . esc_url( wpbc_get_settings_url()
-								            . '&wpbc_setup_wizard=completed&_wpnonce='. wp_create_nonce( 'wpbc_settings_url_nonce' ) ) .'">'
-								            . 'Set Setup Wizard as Completed'
-							            . '</a>';
+	            $my_system_buttons .= ' <a class="button button-secondary" style="background:#fff9e6;" href="'
+											. esc_url( wpbc_get_setup_wizard_page_url() ) . '">'
+											. 'Open Setup Wizard'
+										. '</a>';
             }
 
             $this->fields['tools_section_buttons']['value'][] =

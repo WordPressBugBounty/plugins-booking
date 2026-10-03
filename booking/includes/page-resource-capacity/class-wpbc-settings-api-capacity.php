@@ -179,6 +179,17 @@ class WPBC_Settings_API_Capacity extends WPBC_Settings_API {
 							</td></tr>',
 			);
 		}
+
+		/**
+		 * Filters fields displayed and saved by the Booking Capacity settings page.
+		 *
+		 * Edition modules may append fields while the shared Settings API continues
+		 * to own rendering, checkbox normalization, and persistence mechanics.
+		 *
+		 * @param array $fields                 Registered settings fields.
+		 * @param array $default_options_values Default option names and values.
+		 */
+		$this->fields = apply_filters( 'wpbc_resource_capacity_settings_fields', $this->fields, $default_options_values );
 	}
 
 	/**

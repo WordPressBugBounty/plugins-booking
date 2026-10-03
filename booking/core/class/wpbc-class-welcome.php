@@ -242,19 +242,56 @@ class WPBC_Welcome {
         if ( $booking_activation_process == 'On' )
             return;
 
-        // Bail if no activation redirect transient is set
-		if ( ! get_transient( '_booking_activation_redirect' ) ) { // $.
+		if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+			return;
+		}
+
+		$legacy_redirect = get_transient( '_booking_activation_redirect' );
+		$redirect_intent = class_exists( 'WPBC_Setup_Wizard_First_Install_State' )
+			? get_transient( WPBC_Setup_Wizard_First_Install_State::ACTIVATION_INTENT_TRANSIENT )
+			: false;
+		$is_whats_new_intent = class_exists( 'WPBC_Setup_Wizard_First_Install_State' )
+			&& WPBC_Setup_Wizard_First_Install_State::is_whats_new_redirect_intent( $redirect_intent );
+
+		// A genuine first-install intent belongs exclusively to the earlier Setup Wizard redirect handler.
+		if (
+			class_exists( 'WPBC_Setup_Wizard_First_Install_State' )
+			&& WPBC_Setup_Wizard_First_Install_State::is_first_install_redirect_intent( $redirect_intent )
+		) {
+			return;
+		}
+
+		// Bail if neither the released boolean nor a current structured intent is set.
+		if ( ! $legacy_redirect && ! $is_whats_new_intent ) { // $.
+			return;
+		}
+		if (
+			$is_whats_new_intent
+			&& ! WPBC_Setup_Wizard_First_Install_State::is_redirect_intent_for_current_user( $redirect_intent )
+		) {
 			return;
 		}
 
         // Delete the redirect transient
         delete_transient( '_booking_activation_redirect' );
+		if ( class_exists( 'WPBC_Setup_Wizard_First_Install_State' ) ) {
+			delete_transient( WPBC_Setup_Wizard_First_Install_State::ACTIVATION_INTENT_TRANSIENT );
+		}
 
-        // Bail if DEMO or activating from network, or bulk, or within an iFrame.
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
-        if ( wpbc_is_this_demo() || is_network_admin() || isset( $_GET[ 'activate-multi' ] ) || defined( 'IFRAME_REQUEST' ) )
-            return;
+		// Bail for environments where automatic activation navigation is disabled.
+		$is_redirect_restricted = class_exists( 'WPBC_Setup_Wizard_First_Install_State' )
+			? WPBC_Setup_Wizard_First_Install_State::is_automatic_onboarding_restricted()
+			: (
+				wpbc_is_this_demo()
+				|| ( defined( 'WPBC_IS_PLAYGROUND' ) && true === WPBC_IS_PLAYGROUND )
+				|| is_network_admin()
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only activation context detection.
+				|| isset( $_GET['activate-multi'] )
+				|| defined( 'IFRAME_REQUEST' )
+			);
+		if ( $is_redirect_restricted ) {
+			return;
+		}
 
         // Set mark,  that  we already redirected to About screen               //FixIn: 5.4.5
         $redirect_for_version = get_bk_option( 'booking_activation_redirect_for_version' );
@@ -320,6 +357,7 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
+		wpbc_welcome_section_11_9( $this );
 		wpbc_welcome_section_11_8_1( $this );
 		wpbc_welcome_section_11_8( $this );
 		wpbc_welcome_section_11_7( $this );

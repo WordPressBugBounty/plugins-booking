@@ -104,6 +104,8 @@ function wpbc_settings__system_info__reset_booking_forms() {
  */
 function wpbc_settings__system_info__generate_php_from_pot() {
 
+	return;
+
 	if ( ! current_user_can( 'activate_plugins' ) ) {
 		return;
 	}

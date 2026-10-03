@@ -16,27 +16,6 @@
 .wpbc_page_top__header_tabs .wpdvlp-top-tabs .nav-tab.wpbc__container_place__steps_for_timeline{
     display: none;
 }
-    /**   // This Code for showing  'Timeline Steps' in the TOP menu bar   **
-
-         .wpbc__container_place__steps_for_timeline{
-            display: none;
-         }
-        .wpbc_page_top__header_tabs .wpdvlp-top-tabs .nav-tab.wpbc__container_place__steps_for_timeline{
-            display: flex;
-            margin: 0 30px auto;
-        }
-
-        @media screen and (max-width: 600px) {
-            .wpbc_page_top__header_tabs .wpdvlp-top-tabs .nav-tab.wpbc__container_place__steps_for_timeline {
-                display: none;
-            }
-            .wpbc_setup_wizard_page_container .wpbc__container_place__steps_for_timeline {
-                display: flex;
-            }
-        }
-    */
-
-
 .wpbc_steps_for_timeline_container {
     max-width: Min(400px, 100%);
     min-width: 200px;

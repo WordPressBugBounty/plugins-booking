@@ -173,7 +173,7 @@ abstract class WPBC_Install {
 
 			$links = array_merge( $links, array(
 					'<a class="wpbc_plugins_links__start_tour" title="' . esc_attr( sprintf( __('We\'ll guide you through the steps to set up WP Booking Calendar on your site.','booking'), '<strong>WP Booking Calendar</strong>' ) ) . '" href="'
-					 . esc_url( wpbc_get_settings_url() . '&wpbc_setup_wizard=reset&_wpnonce=' . wp_create_nonce( 'wpbc_settings_url_nonce' ) )
+					 . esc_url( wpbc_get_setup_wizard_page_url() )
 					//. esc_url( admin_url( add_query_arg( array( 'page' => 'wpbc-about' ), 'index.php' ) ) )
 					. '">' . esc_attr__( 'Start Setup Wizard', 'booking' ) . '</a>'
 				)
@@ -233,22 +233,26 @@ abstract class WPBC_Install {
 
 			}
 
-			// Add hook  for initial activation.
+			// Run the installed version's activation on the next request after files change.
 			if ( $is_make_activation ) {
-				// add_action( 'plugins_loaded', array( $this, 'wpbc_activate_initial' ), 1030 );
-				add_action( 'init', array( $this, 'wpbc_activate_initial' ), 1030 );
+				add_action( 'init', array( $this, 'wpbc_activate_detected_update' ), 1030 );
 			}
 		}
 	}
 
 
 	/**
-	 * Upgrade during bulk upgrade of plugins
+	 * Run activation work after WordPress successfully replaces this plugin.
 	 *
-	 * @param type $return_val
-	 * @param type $hook_extra
+	 * WordPress continues running the previously loaded PHP code during the
+	 * updater request. The completed-update context bridges that request to the
+	 * newly installed code so the next request can distinguish an interactive
+	 * Plugins-screen update from a non-interactive updater.
 	 *
-	 * @return type
+	 * @param bool|WP_Error $return_val Installation result.
+	 * @param array         $hook_extra WordPress upgrader context.
+	 *
+	 * @return bool|WP_Error Unchanged installation result.
 	 */
 	public function wpbc_install_in_bulk_upgrade( $return_val, $hook_extra ) {
 
@@ -256,13 +260,14 @@ abstract class WPBC_Install {
 			return $return_val;
 		}
 
-		if ( isset( $hook_extra ) ) {
-			if ( isset( $hook_extra['plugin'] ) ) {
-				$file_name = basename( WPBC_FILE );
-				$pos       = strpos( $hook_extra['plugin'], trim( $file_name ) );
-				if ( false !== $pos ) {
-					$this->wpbc_activate();
-				}
+		$updated_plugin = isset( $hook_extra['plugin'] ) && is_scalar( $hook_extra['plugin'] )
+			? plugin_basename( sanitize_text_field( (string) $hook_extra['plugin'] ) )
+			: '';
+		if ( plugin_basename( WPBC_FILE ) === $updated_plugin ) {
+			$this->wpbc_activate();
+
+			if ( class_exists( 'WPBC_Setup_Wizard_First_Install_State' ) ) {
+				WPBC_Setup_Wizard_First_Install_State::record_completed_plugin_update( WPBC_FILE, WP_BK_VERSION_NUM );
 			}
 		}
 
@@ -273,20 +278,109 @@ abstract class WPBC_Install {
 	/**
 	 * User clicked on "Activate" link at Plugins Menu.
 	 *
-	 * @return type
+	 * Genuine-install state is captured before activation creates canonical
+	 * tables and options. A dedicated versioned intent lets the following request
+	 * distinguish first-install onboarding from update/reactivation What's New,
+	 * while the released boolean redirect transient remains backward compatible.
+	 *
+	 * @return void
 	 */
 	public function wpbc_activate_initial() {
+		$is_initial_install = function_exists( 'wpbc_is_plugin_initial_install' )
+			? wpbc_is_plugin_initial_install()
+			: false;
 
 		// Activate the plugin.
 		$this->wpbc_activate();
 
-		// Bail if this demo or activating from network, or bulk.
-		if ( is_network_admin() || isset( $_GET['activate-multi'] ) || wpbc_is_this_demo() ) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing
+		$this->wpbc_schedule_activation_redirect( $is_initial_install, 'activation' );
+	}
+
+	/**
+	 * Run activation after the installed plugin version changes.
+	 *
+	 * A matching updater handoff suppresses navigation for automatic and other
+	 * non-interactive updates, while an interactive update opens What's New. When
+	 * no handoff exists, the files were replaced outside the standard upgrader
+	 * and retain the released one-time What's New behavior.
+	 *
+	 * @return void
+	 */
+	public function wpbc_activate_detected_update() {
+		$update_context = class_exists( 'WPBC_Setup_Wizard_First_Install_State' )
+			? WPBC_Setup_Wizard_First_Install_State::get_plugin_update_context( WPBC_FILE, WP_BK_VERSION_NUM )
+			: false;
+
+		$this->wpbc_activate();
+
+		if ( class_exists( 'WPBC_Setup_Wizard_First_Install_State' ) ) {
+			WPBC_Setup_Wizard_First_Install_State::clear_plugin_update_context( WPBC_FILE );
+		}
+
+		if (
+			is_array( $update_context )
+			&& WPBC_Setup_Wizard_First_Install_State::UPDATE_SOURCE_SUPPRESSED === $update_context['source']
+		) {
 			return;
 		}
 
-		// Add the transient to redirect - Showing Welcome screen.
-		set_transient( $this->init_option['transient-wpbc_activation_redirect'], true, 30 );
+		$is_manual_update = is_array( $update_context )
+			&& WPBC_Setup_Wizard_First_Install_State::UPDATE_SOURCE_MANUAL === $update_context['source'];
+		$redirect_user_id = $is_manual_update && isset( $update_context['user_id'] ) ? absint( $update_context['user_id'] ) : null;
+
+		$this->wpbc_schedule_activation_redirect(
+			false,
+			$is_manual_update ? 'manual_update' : 'detected_file_update',
+			$redirect_user_id,
+			$is_manual_update ? WPBC_Setup_Wizard_First_Install_State::MANUAL_UPDATE_INTENT_TTL : 30,
+			! $is_manual_update
+		);
+	}
+
+	/**
+	 * Schedule one allowed post-activation navigation intent.
+	 *
+	 * @param bool     $is_initial_install Whether activation began from an empty installation.
+	 * @param string   $source             Activation or update source identifier.
+	 * @param int|null $user_id            User who should receive the redirect, or null for the current user.
+	 * @param int      $intent_ttl          Structured redirect lifetime in seconds.
+	 * @param bool     $write_legacy        Whether to retain the released boolean redirect for older consumers.
+	 *
+	 * @return void
+	 */
+	private function wpbc_schedule_activation_redirect( $is_initial_install, $source, $user_id = null, $intent_ttl = 30, $write_legacy = true ) {
+		$is_restricted = class_exists( 'WPBC_Setup_Wizard_First_Install_State' )
+			? WPBC_Setup_Wizard_First_Install_State::is_automatic_onboarding_restricted()
+			: (
+				is_network_admin()
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only activation context detection.
+				|| isset( $_GET['activate-multi'] )
+				|| wpbc_is_this_demo()
+				|| ( defined( 'WPBC_IS_PLAYGROUND' ) && true === WPBC_IS_PLAYGROUND )
+				|| defined( 'IFRAME_REQUEST' )
+			);
+		if ( $is_restricted ) {
+			return;
+		}
+
+		if ( class_exists( 'WPBC_Setup_Wizard_First_Install_State' ) ) {
+			$redirect_intent = WPBC_Setup_Wizard_First_Install_State::create_activation_redirect_intent(
+				$is_initial_install,
+				WP_BK_VERSION_NUM,
+				$source,
+				$user_id
+			);
+			set_transient(
+				WPBC_Setup_Wizard_First_Install_State::ACTIVATION_INTENT_TRANSIENT,
+				$redirect_intent,
+				absint( $intent_ttl )
+			);
+		}
+
+		if ( $write_legacy ) {
+			// Keep the released boolean payload for older paid editions and Welcome consumers.
+			set_transient( $this->init_option['transient-wpbc_activation_redirect'], true, 30 );
+		}
 	}
 
 	// -----------------------------------------------------------------------------------------------------------------

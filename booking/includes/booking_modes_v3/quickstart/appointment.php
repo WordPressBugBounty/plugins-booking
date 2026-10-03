@@ -41,7 +41,7 @@ function wpbc_booking_modes_quickstart_ensure_appointment_form() {
 		return absint( $existing_form->booking_form_id );
 	}
 
-	$template_record = wpbc_get_bfb_template_record_by_key( 'appointments_services_flow' );
+	$template_record = wpbc_get_bfb_template_record_by_key( 'appointments_services_selection_summary' );
 
 	if ( empty( $template_record ) || ! is_array( $template_record ) ) {
 		return new WP_Error( 'wpbc_booking_modes_quickstart_form_template_missing', __( 'The bundled Appointment Booking Form template is not available.', 'booking' ) );

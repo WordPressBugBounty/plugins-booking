@@ -9,6 +9,73 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
+ * Extract a safe plain-text message from a recognized JSON AJAX error response.
+ *
+ * Only documented message properties are accepted. Callers must still render the returned value in text mode so an
+ * upstream response cannot inject markup into the public booking page.
+ *
+ * @param {jqXHR|null} jq_xhr jQuery XHR object, when available.
+ * @return {string} Bounded server message, or an empty string when the response is not recognized.
+ */
+function wpbc_front_end__get_safe_ajax_error_message( jq_xhr ) {
+	if (
+		! jq_xhr
+		|| ! jq_xhr.responseJSON
+		|| 'object' !== typeof jq_xhr.responseJSON
+		|| Array.isArray( jq_xhr.responseJSON )
+	) {
+		return '';
+	}
+
+	var response_json      = jq_xhr.responseJSON;
+	var message_candidates = [];
+
+	if ( 'string' === typeof response_json.message ) {
+		message_candidates.push( response_json.message );
+	}
+	if (
+		response_json.data
+		&& 'object' === typeof response_json.data
+		&& ! Array.isArray( response_json.data )
+		&& 'string' === typeof response_json.data.message
+	) {
+		message_candidates.push( response_json.data.message );
+	}
+
+	for ( var candidate_index = 0; candidate_index < message_candidates.length; candidate_index++ ) {
+		var server_message = message_candidates[ candidate_index ].trim();
+		if ( server_message ) {
+			return server_message.slice( 0, 1000 );
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Build a public-safe AJAX failure message with optional HTTP 409 cache troubleshooting guidance.
+ *
+ * @param {jqXHR|null} jq_xhr                    jQuery XHR object, when available.
+ * @param {string}     fallback_message          Localized fallback shown when no safe server message exists.
+ * @param {string}     http_conflict_cache_hint  Optional localized cache guidance for HTTP 409 responses.
+ * @return {string} Plain-text message including the HTTP status when available.
+ */
+function wpbc_front_end__get_ajax_error_message( jq_xhr, fallback_message, http_conflict_cache_hint ) {
+	var http_status         = jq_xhr && jq_xhr.status ? parseInt( jq_xhr.status, 10 ) : 0;
+	var safe_server_message = wpbc_front_end__get_safe_ajax_error_message( jq_xhr );
+	var error_message       = safe_server_message || String( fallback_message || '' ).trim();
+
+	if ( 409 === http_status && http_conflict_cache_hint ) {
+		error_message += ( error_message ? ' ' : '' ) + String( http_conflict_cache_hint ).trim();
+	}
+	if ( http_status ) {
+		error_message += ' (' + http_status + ')';
+	}
+
+	return error_message;
+}
+
+/**
  * Log an unexpected AJAX response for browser-console diagnostics.
  *
  * The response is intentionally kept out of frontend notices because it can contain a complete HTML error or login page.
@@ -27,18 +94,48 @@ function wpbc_front_end__log_unexpected_ajax_response( ajax_action, response_dat
 	}
 
 	try {
-		var content_type = '';
+		var content_type       = '';
+		var response_text      = 'string' === typeof response_data ? response_data : '';
+		var response_length    = response_text.length;
+		var response_format    = response_text ? 'text' : 'empty';
+		var http_status        = jq_xhr && jq_xhr.status ? parseInt( jq_xhr.status, 10 ) : 0;
+		var diagnostic_action  = String( ajax_action || 'AJAX' ).replace( /^WPBC_AJX_/, '' ).replace( /[^A-Za-z0-9]+/g, '-' ).toUpperCase();
+		var diagnostic_code    = 'WPBC-' + diagnostic_action + '-' + ( http_status || 'NETWORK' );
+		var response_headers   = {};
 		if ( jq_xhr && 'function' === typeof jq_xhr.getResponseHeader ) {
 			content_type = jq_xhr.getResponseHeader( 'content-type' ) || '';
+			response_headers = {
+				'server'           : jq_xhr.getResponseHeader( 'server' ) || '',
+				'cf_ray'           : jq_xhr.getResponseHeader( 'cf-ray' ) || '',
+				'x_cache'          : jq_xhr.getResponseHeader( 'x-cache' ) || '',
+				'x_cache_status'   : jq_xhr.getResponseHeader( 'x-cache-status' ) || '',
+				'x_litespeed_cache': jq_xhr.getResponseHeader( 'x-litespeed-cache' ) || '',
+				'x_request_id'     : jq_xhr.getResponseHeader( 'x-request-id' ) || ''
+			};
+		}
+		if ( jq_xhr && jq_xhr.responseJSON && 'object' === typeof jq_xhr.responseJSON ) {
+			response_format = 'json';
+			try {
+				response_length = JSON.stringify( jq_xhr.responseJSON ).length;
+			} catch ( response_json_error ) {
+				response_length = 0;
+			}
+		} else if ( -1 !== content_type.toLowerCase().indexOf( 'html' ) || /^\s*(?:<!doctype|<html)/i.test( response_text ) ) {
+			response_format = 'html';
 		}
 
 		window.console.error( '[WPBC][AJAX-UNEXPECTED-RESPONSE] ' + ajax_action, {
 			'action'          : ajax_action,
-			'http_status'     : jq_xhr && jq_xhr.status ? parseInt( jq_xhr.status, 10 ) : 0,
+			'diagnostic_code' : diagnostic_code,
+			'http_status'     : http_status,
 			'http_status_text': jq_xhr && jq_xhr.statusText ? jq_xhr.statusText : '',
 			'text_status'     : text_status || '',
 			'error'           : error_thrown || '',
 			'content_type'    : content_type,
+			'response_format' : response_format,
+			'response_length' : response_length,
+			'server_message'  : wpbc_front_end__get_safe_ajax_error_message( jq_xhr ),
+			'response_headers': response_headers,
 			'response'        : response_data
 		} );
 	} catch ( logging_error ) {

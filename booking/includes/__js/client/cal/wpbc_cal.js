@@ -148,6 +148,10 @@ function wpbc_calendar_show( resource_id ){
 	// -----------------------------------------------------------------------------------------------------------------
 	jQuery('#calendar_booking'+ resource_id).datepick(
 			{
+				beforeSelectDay: function ( js_date, inst ) {
+					return 'function' === typeof wpbc__calendar__before_select_days__bs
+						? wpbc__calendar__before_select_days__bs( js_date, resource_id, inst ) : true;
+				},
 				beforeShowDay: function ( js_date ){
 									return wpbc__calendar__apply_css_to_days( js_date, {'resource_id': resource_id}, this );
 							  },
@@ -272,6 +276,89 @@ function wpbc_calendar_show( resource_id ){
 
 
 	/**
+	 * Apply optional, one-way date constraints to a native availability result.
+	 *
+	 * Listeners receive only a new constraint object. No booking, availability,
+	 * season, or calendar parameter objects are exposed. Core availability stays
+	 * authoritative because the returned state can only change from selectable to
+	 * blocked; a listener cannot reopen a natively unavailable date.
+	 *
+	 * Event: wpbc_calendar__apply_date_constraints
+	 *
+	 * Constraint object:
+	 * {
+	 *     resource_id: resource_id,
+	 *     sql_date: sql_date,
+	 *     is_blocked: false,
+	 *     css_classes: []
+	 * }
+	 *
+	 * Listeners may set is_blocked to the boolean true and append individual,
+	 * valid CSS class names to css_classes. Core-owned availability classes are
+	 * ignored when supplied by listeners.
+	 *
+	 * @param {number|string} resource_id           Booking resource ID.
+	 * @param {string}        sql_date              Calendar date in YYYY-MM-DD format.
+	 * @param {boolean}       is_natively_selectable Whether core marked the date selectable.
+	 * @param {string[]}      native_css_classes    Core-generated CSS classes.
+	 * @returns {{is_selectable: boolean, css_classes: string[]}} Constrained result.
+	 */
+	function wpbc_calendar__evaluate_date_constraints( resource_id, sql_date, is_natively_selectable, native_css_classes ) {
+
+		var date_constraint = {
+			'resource_id': resource_id,
+			'sql_date': sql_date,
+			'is_blocked': false,
+			'css_classes': []
+		};
+		var result_css_classes = Array.isArray( native_css_classes ) ? native_css_classes.slice( 0 ) : [];
+		var constraint_class_index;
+		var constraint_css_class;
+
+		jQuery( 'body' ).trigger( 'wpbc_calendar__apply_date_constraints', [ date_constraint ] );
+
+		if ( true === date_constraint.is_blocked ) {
+			for ( constraint_class_index = result_css_classes.length - 1; constraint_class_index >= 0; constraint_class_index-- ) {
+				if ( 'date_available' === result_css_classes[ constraint_class_index ] ) {
+					result_css_classes.splice( constraint_class_index, 1 );
+				}
+			}
+
+			if ( -1 === result_css_classes.indexOf( 'date_user_unavailable' ) ) {
+				result_css_classes.push( 'date_user_unavailable' );
+			}
+		}
+
+		if ( Array.isArray( date_constraint.css_classes ) ) {
+			for ( constraint_class_index = 0; constraint_class_index < date_constraint.css_classes.length; constraint_class_index++ ) {
+				if ( 'string' !== typeof date_constraint.css_classes[ constraint_class_index ] ) {
+					continue;
+				}
+
+				constraint_css_class = date_constraint.css_classes[ constraint_class_index ].trim();
+				if (
+					   '' === constraint_css_class
+					|| 'date_available' === constraint_css_class
+					|| 'date_user_unavailable' === constraint_css_class
+					|| ! /^-?[_a-zA-Z]+[_a-zA-Z0-9-]*$/.test( constraint_css_class )
+				) {
+					continue;
+				}
+
+				if ( -1 === result_css_classes.indexOf( constraint_css_class ) ) {
+					result_css_classes.push( constraint_css_class );
+				}
+			}
+		}
+
+		return {
+			'is_selectable': Boolean( is_natively_selectable ) && true !== date_constraint.is_blocked,
+			'css_classes': result_css_classes
+		};
+	}
+
+
+	/**
 	 * Apply CSS to calendar date cells
 	 *
 	 * @param date										-  JavaScript Date Obj:  		Mon Dec 11 2023 00:00:00
@@ -319,14 +406,16 @@ function wpbc_calendar_show( resource_id ){
 		}
 
 
-		var is_day_selectable = false;
+		var is_day_selectable     = false;
+		var date_constraint_result;
 
 		// If something not defined,  then  this date closed --------------------------------------------------------------- // FixIn: 10.12.4.6.
 		if ( (false === date_bookings_obj) || ('undefined' === typeof (date_bookings_obj[resource_id])) ) {
 
 			css_classes__for_date.push( 'date_user_unavailable' );
+			date_constraint_result = wpbc_calendar__evaluate_date_constraints( resource_id, sql_class_day, is_day_selectable, css_classes__for_date );
 
-			return [ is_day_selectable, css_classes__for_date.join(' ')  ];
+			return [ date_constraint_result.is_selectable, date_constraint_result.css_classes.join( ' ' ) ];
 		}
 
 
@@ -484,7 +573,9 @@ function wpbc_calendar_show( resource_id ){
 			}
 		}
 
-		return [ is_day_selectable, css_classes__for_date.join( ' ' ) ];
+		date_constraint_result = wpbc_calendar__evaluate_date_constraints( resource_id, sql_class_day, is_day_selectable, css_classes__for_date );
+
+		return [ date_constraint_result.is_selectable, date_constraint_result.css_classes.join( ' ' ) ];
 	}
 
 
@@ -1572,42 +1663,65 @@ function wpbc_calendar_show( resource_id ){
 	}
 
 	/**
-	 * Is this date selectable in calendar (mainly it's means AVAILABLE date)
+	 * Determine native date selectability without optional date constraints.
 	 *
-	 * @param {int|string} resource_id		1
-	 * @param {string} sql_class_day		'2023-08-11'
-	 * @returns {boolean}					true | false
+	 * This helper exposes the canonical calendar result for algorithms, such as
+	 * gap discovery, that must not consume their own derived constraints. It does
+	 * not trigger wpbc_calendar__apply_date_constraints and must remain free of
+	 * optional-module state.
+	 *
+	 * @param {number|string} resource_id Booking resource ID.
+	 * @param {string}        sql_date    Calendar date in YYYY-MM-DD format.
+	 * @returns {boolean} True when core calendar data marks the date selectable.
 	 */
-	function wpbc_is_this_day_selectable( resource_id, sql_class_day ){
+	function wpbc_is_this_day_selectable__raw( resource_id, sql_date ){
 
 		// Get Data --------------------------------------------------------------------------------------------------------
-		var date_bookings_obj = _wpbc.bookings_in_calendar__get_for_date( resource_id, sql_class_day );
-		if ( ! date_bookings_obj || 'undefined' === typeof ( date_bookings_obj[ 'day_availability' ] ) ) {
-			return false;
-		}
+		var date_bookings_obj = _wpbc.bookings_in_calendar__get_for_date( resource_id, sql_date );
+		var is_day_selectable = false;
 
-		var is_day_selectable = ( parseInt( date_bookings_obj[ 'day_availability' ] ) > 0 );
+		if ( date_bookings_obj && 'undefined' !== typeof ( date_bookings_obj[ 'day_availability' ] ) ) {
+			is_day_selectable = ( parseInt( date_bookings_obj[ 'day_availability' ] ) > 0 );
 
-		if ( typeof (date_bookings_obj[ 'summary' ]) === 'undefined' ){
-			return is_day_selectable;
-		}
+			if ( 'undefined' !== typeof ( date_bookings_obj[ 'summary' ] ) && 'available' != date_bookings_obj[ 'summary']['status_for_day' ] ){
 
-		if ( 'available' != date_bookings_obj[ 'summary']['status_for_day' ] ){
+				var is_set_pending_days_selectable = _wpbc.calendar__get_param_value( resource_id, 'pending_days_selectable' );		// set pending days selectable          // FixIn: 8.6.1.18.
+				var booking_statuses_arr = wpbc_get_booking_statuses__as_arr( date_bookings_obj );
 
-			var is_set_pending_days_selectable = _wpbc.calendar__get_param_value( resource_id, 'pending_days_selectable' );		// set pending days selectable          // FixIn: 8.6.1.18.
-			var booking_statuses_arr = wpbc_get_booking_statuses__as_arr( date_bookings_obj );
-
-			if (
-				   ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending' ) )
-				|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_pending' ) )
-				|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_approved' ) )
-				|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved_pending' ) )
-			){
-				is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
+				if (
+					   ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending' ) )
+					|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_pending' ) )
+					|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'pending_approved' ) )
+					|| ( wpbc_booking_statuses__has( booking_statuses_arr, 'approved_pending' ) )
+				){
+					is_day_selectable = (is_day_selectable) ? true : is_set_pending_days_selectable;
+				}
 			}
 		}
 
-		return is_day_selectable;
+		return Boolean( is_day_selectable );
+	}
+
+	/**
+	 * Determine final date selectability after native and optional constraints.
+	 *
+	 * Native unavailability returns immediately. Optional modules may therefore
+	 * only block a natively selectable date and can never reopen a core-unavailable
+	 * date.
+	 *
+	 * @param {number|string} resource_id Booking resource ID.
+	 * @param {string}        sql_date    Calendar date in YYYY-MM-DD format.
+	 * @returns {boolean} True when the date remains selectable after constraints.
+	 */
+	function wpbc_is_this_day_selectable( resource_id, sql_date ){
+
+		var is_natively_selectable = wpbc_is_this_day_selectable__raw( resource_id, sql_date );
+
+		if ( ! is_natively_selectable ) {
+			return false;
+		}
+
+		return wpbc_calendar__evaluate_date_constraints( resource_id, sql_date, is_natively_selectable, [] ).is_selectable;
 	}
 
 	/**
@@ -2269,7 +2383,7 @@ function wpbc_auto_select_dates_in_calendar( resource_id, check_in_ymd, check_ou
 			wpbc_calendar__scroll_to( resource_id, inst.dates[ 0 ].getFullYear(), inst.dates[ 0 ].getMonth()+1 );
 		}
 
-		return inst.dates.length;
+		return wpbc_get__selected_dates_sql__as_arr( resource_id ).length;
 	}
 
 	return 0;

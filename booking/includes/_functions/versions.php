@@ -19,24 +19,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 // =====================================================================================================================
 
 /**
- * Check if this demo website
+ * Check whether the site is a managed public Booking Calendar live demo.
  *
- * @return bool
+ * This compatibility helper delegates to the shared environment policy so
+ * legacy consumers and newer capability checks cannot classify the same host
+ * differently.
+ *
+ * @return bool True for a managed public live demo.
  */
 function wpbc_is_this_demo() {
-
-//	return true;  //.
-
-	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
-		return false;        // If this is Booking Calendar Free version,  then it's not the demo.
-	}
-
-	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	if ( ( ( isset( $_SERVER['SCRIPT_FILENAME'] ) ) && ( strpos( $_SERVER['SCRIPT_FILENAME'], 'wpbookingcalendar.com' ) !== false ) ) || ( ( isset( $_SERVER['HTTP_HOST'] ) ) && ( strpos( $_SERVER['HTTP_HOST'], 'wpbookingcalendar.com' ) !== false ) ) ) {
-		return true;
-	} else {
-		return false;
-	}
+	return WPBC_Environment_Policy::is_live_demo();
 }
 
 

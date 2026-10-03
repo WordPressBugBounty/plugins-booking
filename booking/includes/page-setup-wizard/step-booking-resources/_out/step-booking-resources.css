@@ -1,0 +1,394 @@
+.wpbc_setup_wizard__booking-resources-layout {
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -ms-flex-align: stretch;
+  align-items: stretch
+}
+.wpbc_setup_wizard__booking-resources-list-panel,
+.wpbc_setup_wizard__resource-details-panel {
+  border: 1px solid var(--wpbc-wizard-border);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(25,35,45,.04);
+  box-sizing: border-box
+}
+.wpbc_setup_wizard__booking-resources-list-panel {
+  width: 31%;
+  min-width: 280px;
+  padding: 20px
+}
+.wpbc_setup_wizard__resource-details-panel {
+  width: 69%;
+  min-width: 0;
+  padding: 20px 24px
+}
+.wpbc_setup_wizard__booking-resources-list-panel h2,
+.wpbc_setup_wizard__resource-details-heading h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600
+}
+.wpbc_setup_wizard__resource-list-section {
+  margin-top: 20px
+}
+.wpbc_setup_wizard__resource-list-section--existing {
+  padding-top: 18px;
+  border-top: 1px solid var(--wpbc-wizard-border)
+}
+.wpbc_setup_wizard__resource-list-section h3 {
+  margin: 0 0 3px;
+  font-size: 15px
+}
+.wpbc_setup_wizard__add-resource-wrap > p,
+.wpbc_setup_wizard__resource-list-section > p {
+  margin: 0 0 12px;
+  color: var(--wpbc-wizard-muted);
+  font-size: 12px
+}
+.wpbc_setup_wizard__existing-resource-list,
+.wpbc_setup_wizard__new-resource-list {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 10px
+}
+.wpbc_setup_wizard__existing-resource-list {
+  max-height: 300px;
+  overflow: auto;
+  padding: 0 10px;
+  scrollbar-width: thin
+}
+.wpbc_setup_wizard__existing-resource-card,
+.wpbc_setup_wizard__resource-card {
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 72px;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--wpbc-wizard-border);
+  border-radius: 5px;
+  background: #fff;
+  box-sizing: border-box
+}
+.wpbc_setup_wizard__existing-resource-card {
+  padding: 10px 12px;
+  cursor: pointer
+}
+.wpbc_setup_wizard__existing-resource-card.is-selected,
+.wpbc_setup_wizard__existing-resource-card:focus-within,
+.wpbc_setup_wizard__existing-resource-card:hover,
+.wpbc_setup_wizard__resource-card.is-selected,
+.wpbc_setup_wizard__resource-card:focus-within,
+.wpbc_setup_wizard__resource-card:hover {
+  border-color: var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__existing-resource-card.is-selected,
+.wpbc_setup_wizard__resource-card.is-selected {
+  box-shadow: 0 0 0 1px var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__resource-card-selection {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  min-height: 70px;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px 10px 12px;
+  box-sizing: border-box;
+  cursor: pointer
+}
+.wpbc_setup_wizard__existing-resource-card.is-selected .wpbc_setup_wizard__radio-mark,
+.wpbc_setup_wizard__resource-card.is-selected .wpbc_setup_wizard__radio-mark {
+  border: 7px solid var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__resource-card-picture {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  -ms-flex: 0 0 42px;
+  flex: 0 0 42px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  outline: #d4d4d7 solid 1px;
+  background: #f0f0f1;
+  color: #8c8f94
+}
+.wpbc_setup_wizard__resource-card-picture img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover
+}
+.wpbc_setup_wizard__resource-card-picture > [hidden] {
+  display: none!important
+}
+.wpbc_setup_wizard__resource-card-copy {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 4px
+}
+.wpbc_setup_wizard__resource-card-copy strong {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.wpbc_setup_wizard__resource-card-title-row {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 7px
+}
+.wpbc_setup_wizard__resource-card-title-row strong {
+  min-width: 0;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto
+}
+.wpbc_setup_wizard__resource-status-badge {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  min-height: 20px;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap
+}
+.wpbc_setup_wizard__resource-status-badge.is-new {
+  background: #e7f0ff;
+  color: #174ea6
+}
+.wpbc_setup_wizard__resource-status-badge.is-existing {
+  background: #eef0f2;
+  color: #626c76
+}
+.wpbc_setup_wizard__resource-status-badge.is-changed {
+  background: #fcf0d4;
+  color: #7a3e00
+}
+.wpbc_setup_wizard__resource-card-copy span {
+  color: var(--wpbc-wizard-muted);
+  font-size: 12px
+}
+.wpbc_setup_wizard__resource-card-remove {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  -ms-flex: 0 0 34px;
+  flex: 0 0 34px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin-right: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: 0 0;
+  color: #646970;
+  cursor: pointer
+}
+.wpbc_setup_wizard__resource-card-remove:hover {
+  background: #fcf0f1;
+  color: #b32d2e
+}
+.wpbc_setup_wizard__resource-card-remove:focus {
+  outline: 0;
+  box-shadow: 0 0 0 1px #fff,0 0 0 3px var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__add-resource-wrap {
+  margin-top: 16px
+}
+.wpbc_setup_wizard__add-resource {
+  display: -ms-inline-flexbox!important;
+  display: inline-flex!important;
+  width: 100%;
+  min-height: 44px!important;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px
+}
+.wpbc_setup_wizard__edition-badge {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  min-height: 22px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e7f0ff;
+  color: #174ea6;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap
+}
+.wpbc_setup_wizard__add-resource-wrap > p {
+  margin: 8px 0 0;
+  text-align: center
+}
+.wpbc_setup_wizard__resource-details-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px
+}
+.wpbc_setup_wizard__resource-details-heading > span {
+  color: var(--wpbc-wizard-muted);
+  font-size: 12px
+}
+.wpbc_setup_wizard__resource-empty {
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 330px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--wpbc-wizard-muted);
+  text-align: center
+}
+.wpbc_setup_wizard__resource-details-fields[hidden],
+.wpbc_setup_wizard__resource-empty[hidden] {
+  display: none!important
+}
+.wpbc_setup_wizard__resource-details-fields {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 22px 24px
+}
+.wpbc_setup_wizard__resource-description-field,
+.wpbc_setup_wizard__resource-title-field {
+  width: calc(68% - 12px)
+}
+.wpbc_setup_wizard__resource-picture-field,
+.wpbc_setup_wizard__resource-price-field {
+  width: calc(32% - 12px)
+}
+.wpbc_setup_wizard__resource-details-panel .wpbc_setup_wizard__field input[type=number],
+.wpbc_setup_wizard__resource-details-panel .wpbc_setup_wizard__field input[type=text],
+.wpbc_setup_wizard__resource-details-panel .wpbc_setup_wizard__field textarea {
+  width: 100%;
+  max-width: none;
+  min-height: 42px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 12px;
+  border-color: #aeb6bf;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 15px
+}
+.wpbc_setup_wizard__resource-details-panel .wpbc_setup_wizard__field textarea {
+  min-height: 150px;
+  resize: vertical
+}
+.wpbc_setup_wizard__resource-picture-preview {
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: 130px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding: 4px;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  background: #fcfcfc;
+  box-sizing: border-box;
+  color: #507593
+}
+.wpbc_setup_wizard__resource-picture-preview .menu_icon::before {
+  font-size: 30px
+}
+.wpbc_setup_wizard__resource-picture-preview img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover
+}
+.wpbc_setup_wizard__resource-picture-preview > [hidden] {
+  display: none!important
+}
+.wpbc_setup_wizard__resource-picture-actions {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px
+}
+[dir=rtl] .wpbc_setup_wizard__resource-card-remove {
+  margin-right: 0;
+  margin-left: 7px
+}
+@media screen and (max-width:1160px) {
+  .wpbc_setup_wizard__booking-resources-list-panel {
+    width: 36%;
+    min-width: 245px
+  }
+  .wpbc_setup_wizard__resource-details-panel {
+    width: 64%
+  }
+  .wpbc_setup_wizard__resource-description-field,
+  .wpbc_setup_wizard__resource-picture-field,
+  .wpbc_setup_wizard__resource-price-field,
+  .wpbc_setup_wizard__resource-title-field {
+    width: 100%
+  }
+}
+@media screen and (max-width:782px) {
+  .wpbc_setup_wizard__booking-resources-layout {
+    -ms-flex-direction: column;
+    flex-direction: column
+  }
+  .wpbc_setup_wizard__booking-resources-list-panel,
+  .wpbc_setup_wizard__resource-details-panel {
+    width: 100%;
+    min-width: 0;
+    padding: 18px
+  }
+}

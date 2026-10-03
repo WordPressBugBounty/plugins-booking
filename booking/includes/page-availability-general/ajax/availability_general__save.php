@@ -26,6 +26,16 @@ function wpbc_availability_general_ajax_save() {
 	}
 
 	$cleaned_data = wpbc_availability_general__validate_data( $_POST ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
+	if ( is_wp_error( $cleaned_data ) ) {
+		wp_send_json_error(
+			array(
+				'code'    => $cleaned_data->get_error_code(),
+				'message' => $cleaned_data->get_error_message(),
+			),
+			422
+		);
+	}
+
 	wpbc_availability_general__update_settings( $cleaned_data );
 
 	wp_send_json_success(

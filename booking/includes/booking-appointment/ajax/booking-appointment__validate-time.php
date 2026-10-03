@@ -94,10 +94,11 @@ function wpbc_booking_appointment_get_preflight_start_times() {
  * @param string                   $start_time         Strict browser time value.
  * @param int                      $maximum_duration   Maximum allowed duration in minutes.
  * @param array<int,array<string,int>> $existing_intervals Existing Provider intervals.
+ * @param int                      $provider_id        Provider resource ID.
  *
  * @return array<string,mixed> Public, non-sensitive validation result.
  */
-function wpbc_booking_appointment_validate_one_start_time( $service, $dates, $start_time, $maximum_duration, $existing_intervals ) {
+function wpbc_booking_appointment_validate_one_start_time( $service, $dates, $start_time, $maximum_duration, $existing_intervals, $provider_id = 0 ) {
 	$start_seconds = wpbc_booking_appointment_get_preflight_start_seconds( $start_time );
 	if ( is_wp_error( $start_seconds ) ) {
 		return array( 'valid' => false, 'message' => $start_seconds->get_error_message(), 'code' => $start_seconds->get_error_code() );
@@ -106,6 +107,17 @@ function wpbc_booking_appointment_validate_one_start_time( $service, $dates, $st
 	$end_seconds = wpbc_appointment_services_resolve_end_seconds( $service, $start_seconds, $maximum_duration );
 	if ( is_wp_error( $end_seconds ) ) {
 		return array( 'valid' => false, 'message' => $end_seconds->get_error_message(), 'code' => $end_seconds->get_error_code() );
+	}
+
+	$working_time_check = wpbc_appointment_services_check_working_time( $service, $provider_id, $dates, array( $start_seconds, $end_seconds ) );
+	if ( is_wp_error( $working_time_check ) ) {
+		return array(
+			'valid'      => false,
+			'message'    => $working_time_check->get_error_message(),
+			'code'       => $working_time_check->get_error_code(),
+			'start_time' => sanitize_text_field( $start_time ),
+			'end_time'   => wpbc_transform__seconds__in__24_hours_his( $end_seconds ),
+		);
 	}
 
 	$buffer_check = wpbc_appointment_services_check_buffer_conflicts_in_intervals( $service, $dates, array( $start_seconds, $end_seconds ), $existing_intervals );
@@ -171,7 +183,7 @@ function wpbc_booking_appointment_ajax_validate_time() {
 
 		$slots = array();
 		foreach ( $start_times as $start_time ) {
-			$slots[ $start_time ] = wpbc_booking_appointment_validate_one_start_time( $service, $dates, $start_time, $maximum_duration, $existing_intervals );
+			$slots[ $start_time ] = wpbc_booking_appointment_validate_one_start_time( $service, $dates, $start_time, $maximum_duration, $existing_intervals, $provider_id );
 		}
 		wp_send_json_success(
 			array(
@@ -185,7 +197,7 @@ function wpbc_booking_appointment_ajax_validate_time() {
 	}
 
 	$start_time = isset( $_POST['start_time'] ) && ! is_array( $_POST['start_time'] ) ? sanitize_text_field( wp_unslash( $_POST['start_time'] ) ) : '';
-	$result     = wpbc_booking_appointment_validate_one_start_time( $service, $dates, $start_time, $maximum_duration, $existing_intervals );
+	$result     = wpbc_booking_appointment_validate_one_start_time( $service, $dates, $start_time, $maximum_duration, $existing_intervals, $provider_id );
 	if ( empty( $result['valid'] ) ) {
 		wp_send_json_success( $result );
 	}

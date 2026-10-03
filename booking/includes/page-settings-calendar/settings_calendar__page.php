@@ -812,11 +812,19 @@ function wpbc_settings_calendar__preview_options_pop( $previous_context ) {
  */
 function wpbc_settings_calendar__is_calendar_load_preview_request_allowed( $request_params ) {
 
-	return (
+	$is_settings_preview_allowed = (
 		! empty( $request_params['wpbc_settings_calendar_preview'] )
 		&& function_exists( 'wpbc_is_mu_user_can_be_here' )
 		&& wpbc_is_mu_user_can_be_here( 'only_super_admin' )
 		&& current_user_can( wpbc_settings_calendar__get_manage_cap() )
+	);
+	if ( $is_settings_preview_allowed ) {
+		return true;
+	}
+
+	return (
+		class_exists( 'WPBC_Setup_Wizard_Date_Selection' )
+		&& WPBC_Setup_Wizard_Date_Selection::is_calendar_preview_request_allowed( (array) $request_params )
 	);
 }
 

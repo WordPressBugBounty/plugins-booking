@@ -381,11 +381,16 @@ final class WPBC_Booking_Modes_V3_Definition_Validator {
 			return $normalized;
 		}
 
-		$this->validate_exact_keys( $path, $route, array( 'page', 'tab', 'subtab' ), array( 'page', 'tab' ) );
+		$this->validate_exact_keys( $path, $route, array( 'page', 'tab', 'subtab' ), array( 'page' ) );
 		$normalized['page'] = $this->validate_identifier( $path . '.page', isset( $route['page'] ) ? $route['page'] : null, false );
-		$normalized['tab']  = $this->validate_identifier( $path . '.tab', isset( $route['tab'] ) ? $route['tab'] : null, false );
+		if ( array_key_exists( 'tab', $route ) ) {
+			$normalized['tab'] = $this->validate_identifier( $path . '.tab', $route['tab'], true );
+		}
 		if ( array_key_exists( 'subtab', $route ) ) {
 			$normalized['subtab'] = $this->validate_identifier( $path . '.subtab', $route['subtab'], true );
+		}
+		if ( '' !== $normalized['subtab'] && '' === $normalized['tab'] ) {
+			$this->add_error( $path . '.subtab', 'A subtab route requires a tab identifier.' );
 		}
 
 		return $normalized;

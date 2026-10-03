@@ -73,6 +73,7 @@ div .wpbc_bfb_form .wpbc__row .wpbc__field,
 div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
   display: -ms-flexbox;
   display: flex;
+  box-sizing: border-box;
   -ms-flex-direction: var(--wpbc-bfb-col-dir,column);
   flex-direction: var(--wpbc-bfb-col-dir,column);
   -ms-flex-wrap: var(--wpbc-bfb-col-wrap,nowrap);
@@ -82,8 +83,85 @@ div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
   -ms-flex-align: var(--wpbc-bfb-col-ai,stretch);
   align-items: var(--wpbc-bfb-col-ai,stretch);
   gap: var(--wpbc-bfb-col-gap,0);
+  padding: var(--wpbc-bfb-col-padding,0);
   -ms-flex-item-align: var(--wpbc-bfb-col-aself,flex-start);
   align-self: var(--wpbc-bfb-col-aself,flex-start)
+}
+div .wpbc_bfb_form .wpbc__row .wpbc__field:not(.wpbc__cal),
+div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column {
+  margin: .7em 0
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-margin:"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-margin:"] {
+  margin: var(--wpbc-bfb-col-margin)
+}
+div .wpbc_bfb_form .wpbc_bfb__section[data-selected-col] > .wpbc_bfb__row > .wpbc_bfb__column.is-selected-column {
+  padding: var(--wpbc-bfb-col-padding,0);
+  padding-top: var(--wpbc-bfb-col-padding-top,var(--wpbc-bfb-col-padding,0));
+  padding-right: var(--wpbc-bfb-col-padding-right,var(--wpbc-bfb-col-padding,0));
+  padding-bottom: var(--wpbc-bfb-col-padding-bottom,var(--wpbc-bfb-col-padding,0));
+  padding-left: var(--wpbc-bfb-col-padding-left,var(--wpbc-bfb-col-padding,0))
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-padding-top"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-padding-top"] {
+  padding-top: var(--wpbc-bfb-col-padding-top)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-padding-right"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-padding-right"] {
+  padding-right: var(--wpbc-bfb-col-padding-right)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-padding-bottom"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-padding-bottom"] {
+  padding-bottom: var(--wpbc-bfb-col-padding-bottom)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-padding-left"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-padding-left"] {
+  padding-left: var(--wpbc-bfb-col-padding-left)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-margin-top"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-margin-top"] {
+  margin-top: var(--wpbc-bfb-col-margin-top)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-margin-right"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-margin-right"] {
+  margin-right: var(--wpbc-bfb-col-margin-right)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-margin-bottom"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-margin-bottom"] {
+  margin-bottom: var(--wpbc-bfb-col-margin-bottom)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-margin-left"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-margin-left"] {
+  margin-left: var(--wpbc-bfb-col-margin-left)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-max-width"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-max-width"] {
+  max-width: var(--wpbc-bfb-col-max-width)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-max-height"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-max-height"] {
+  max-height: var(--wpbc-bfb-col-max-height)
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-overflow:"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-overflow:"] {
+  overflow: var(--wpbc-bfb-col-overflow);
+  scrollbar-width: thin
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-overflow-x:"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-overflow-x:"] {
+  overflow-x: var(--wpbc-bfb-col-overflow-x);
+  scrollbar-width: thin
+}
+div .wpbc_bfb_form .wpbc__row > .wpbc__field[style*="--wpbc-bfb-col-overflow-y:"],
+div .wpbc_bfb_form .wpbc_bfb__section > .wpbc_bfb__row > .wpbc_bfb__column[style*="--wpbc-bfb-col-overflow-y:"] {
+  overflow-y: var(--wpbc-bfb-col-overflow-y);
+  scrollbar-width: thin
+}
+:is(div.wpbc_bfb_form.wpbc__row>.wpbc__field,div.wpbc_bfb_form.wpbc_bfb__section>.wpbc_bfb__row>.wpbc_bfb__column):is([style*="--wpbc-bfb-col-overflow-y:auto"],[style*="--wpbc-bfb-col-overflow-y: auto"],[style*="--wpbc-bfb-col-overflow-y:hidden"],[style*="--wpbc-bfb-col-overflow-y: hidden"]):not(:is([style*="--wpbc-bfb-col-overflow-x:auto"],[style*="--wpbc-bfb-col-overflow-x: auto"],[style*="--wpbc-bfb-col-overflow-x:hidden"],[style*="--wpbc-bfb-col-overflow-x: hidden"],[style*="--wpbc-bfb-col-overflow:auto"],[style*="--wpbc-bfb-col-overflow: auto"],[style*="--wpbc-bfb-col-overflow:hidden"],[style*="--wpbc-bfb-col-overflow: hidden"])) {
+  overflow-x: hidden
+}
+:is(div.wpbc_bfb_form.wpbc__row>.wpbc__field,div.wpbc_bfb_form.wpbc_bfb__section>.wpbc_bfb__row>.wpbc_bfb__column):is([style*="--wpbc-bfb-col-overflow-x:auto"],[style*="--wpbc-bfb-col-overflow-x: auto"],[style*="--wpbc-bfb-col-overflow-x:hidden"],[style*="--wpbc-bfb-col-overflow-x: hidden"]):not(:is([style*="--wpbc-bfb-col-overflow-y:auto"],[style*="--wpbc-bfb-col-overflow-y: auto"],[style*="--wpbc-bfb-col-overflow-y:hidden"],[style*="--wpbc-bfb-col-overflow-y: hidden"],[style*="--wpbc-bfb-col-overflow:auto"],[style*="--wpbc-bfb-col-overflow: auto"],[style*="--wpbc-bfb-col-overflow:hidden"],[style*="--wpbc-bfb-col-overflow: hidden"])) {
+  overflow-y: hidden
 }
 div .wpbc_bfb_form .wpbc__row .wpbc__field .bfb_element:has(:input),
 div .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc_bfb__column .wpbc_bfb__field {

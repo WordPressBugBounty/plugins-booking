@@ -265,7 +265,17 @@ function wpbc__calendar__load( $params = array() ) {
 		foreach ( $params['calendar_request_overrides'] as $override_key => $override_value ) {
 			if ( 'allow_past' === $override_key ) {
 				$params_for_request['allow_past'] = ! empty( $override_value ) ? 1 : 0;
-			} elseif ( 0 === strpos( (string) $override_key, 'wpbc_settings_calendar_preview' ) ) {
+			} elseif (
+				0 === strpos( (string) $override_key, 'wpbc_settings_calendar_preview' )
+				|| in_array(
+					(string) $override_key,
+					array(
+						'wpbc_setup_wizard_date_selection_preview',
+						'wpbc_setup_wizard_date_selection_preview_nonce',
+					),
+					true
+				)
+			) {
 				$params_for_request[ $override_key ] = $override_value;
 			}
 		}
@@ -403,7 +413,9 @@ function ajax_WPBC_AJX_CALENDAR_LOAD() {   // phpcs:ignore WordPress.NamingConve
 									'wpbc_settings_calendar_preview_cost_currency'    => array( 'validate' => 's', 'default' => '' ),
 									'wpbc_settings_calendar_preview_show_booked_details' => array( 'validate' => array( 'On', 'Off' ), 'default' => 'Off' ),
 									'wpbc_settings_calendar_preview_booked_details'   => array( 'validate' => 's', 'default' => '' ),
-																				 )
+									'wpbc_setup_wizard_date_selection_preview'       => array( 'validate' => 'd', 'default' => 0 ),
+									'wpbc_setup_wizard_date_selection_preview_nonce' => array( 'validate' => 'strong', 'default' => '' ),
+																	 )
 											)
 					);
 	$request_prefix = 'calendar_request_params';

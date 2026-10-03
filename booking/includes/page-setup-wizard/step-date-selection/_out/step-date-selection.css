@@ -1,0 +1,759 @@
+.wpbc_setup_wizard__date-selection-form {
+  display: grid;
+  gap: 14px
+}
+.wpbc_setup_wizard__date-selection-behavior,
+.wpbc_setup_wizard__date-selection-changeover,
+.wpbc_setup_wizard__date-selection-legend,
+.wpbc_setup_wizard__date-selection-modes,
+.wpbc_setup_wizard__date-selection-preview,
+.wpbc_setup_wizard__date-selection-settings {
+  margin: 0;
+  border: 1px solid var(--wpbc-wizard-border,#dcdcde);
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03)
+}
+.wpbc_setup_wizard__date-selection-modes {
+  padding: 14px 16px 16px
+}
+.wpbc_setup_wizard__date-selection-modes-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px 12px
+}
+.wpbc_setup_wizard__date-selection-compatibility-note {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+  color: var(--wpbc-wizard-muted,#646970);
+  font-size: 12px
+}
+.wpbc_setup_wizard__date-selection-compatibility-note .menu_icon {
+  color: var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__date-selection-journey-badge {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e8f0fe;
+  color: #135e96;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  white-space: normal
+}
+.wpbc_setup_wizard__date-selection-behavior h2,
+.wpbc_setup_wizard__date-selection-changeover h2,
+.wpbc_setup_wizard__date-selection-legend h2,
+.wpbc_setup_wizard__date-selection-modes > legend,
+.wpbc_setup_wizard__date-selection-preview h2,
+.wpbc_setup_wizard__date-selection-settings h2 {
+  margin: 0;
+  color: #1d2327;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4
+}
+.wpbc_setup_wizard__date-selection-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  margin-top: 9px
+}
+.wpbc_setup_wizard__date-selection-mode-option {
+  display: grid;
+  grid-template-rows: auto minmax(0,1fr);
+  min-width: 0
+}
+.wpbc_setup_wizard__date-selection-mode-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 92px minmax(0,1fr);
+  min-width: 0;
+  min-height: 98px;
+  height: 100%;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 11px;
+  margin: 0;
+  padding: 10px 16px;
+  border-right: 1px solid #dcdcde;
+  background: #fff;
+  box-sizing: border-box;
+  cursor: pointer
+}
+.wpbc_setup_wizard__date-selection-mode-option:first-child .wpbc_setup_wizard__date-selection-mode-card {
+  border-radius: 5px 0 0 5px
+}
+.wpbc_setup_wizard__date-selection-mode-option:last-child .wpbc_setup_wizard__date-selection-mode-card {
+  border-right: 0;
+  border-radius: 0 5px 5px 0
+}
+.wpbc_setup_wizard__date-selection-mode-card.is-selected {
+  background: color-mix(in srgb,var(--wp-admin-theme-color,#2271b1) 5%,#fff);
+  box-shadow: inset 0 0 0 2px var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__date-selection-mode-card:focus-within {
+  outline: 2px solid var(--wp-admin-theme-color,#2271b1);
+  outline-offset: -2px
+}
+.wpbc_setup_wizard__date-selection-mode-card.is-locked {
+  background: #f6f7f7;
+  color: #646970;
+  cursor: not-allowed
+}
+.wpbc_setup_wizard__date-selection-mode-card.is-locked .wpbc_setup_wizard__date-selection-mode-copy,
+.wpbc_setup_wizard__date-selection-mode-card.is-locked .wpbc_setup_wizard__date-selection-mode-icon {
+  opacity: .7
+}
+.wpbc_setup_wizard__date-selection-mode-card > input {
+  -ms-flex-item-align: center;
+  align-self: center;
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-mode-icon {
+  display: block;
+  -ms-flex-item-align: start;
+  align-self: start;
+  width: 92px;
+  min-height: 76px;
+  padding: 5px 7px;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  background: #fff;
+  box-sizing: border-box
+}
+.wpbc_setup_wizard__date-selection-mode-header {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 4px;
+  min-height: 12px;
+  margin: 0 0 6px
+}
+.wpbc_setup_wizard__date-selection-mode-year {
+  display: block;
+  margin: 0;
+  color: #3c434a;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: start
+}
+.wpbc_setup_wizard__date-selection-mode-navigation {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 1px;
+  color: #50575e;
+  line-height: 5px
+}
+.wpbc_setup_wizard__date-selection-mode-navigation .menu_icon {
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-mode-navigation .menu_icon::before {
+  font-size: 10px;
+  line-height: 5px
+}
+.wpbc_setup_wizard__date-selection-mode-icon .wpbc_setup_wizard__preview-calendar {
+  width: 100%
+}
+.wpbc_setup_wizard__date-selection-mode-copy {
+  display: grid;
+  align-self: start;
+  min-width: 0;
+  gap: 3px
+}
+.wpbc_setup_wizard__date-selection-mode-copy strong {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  line-height: 1.35
+}
+.wpbc_setup_wizard__date-selection-mode-copy .menu_icon::before {
+  font-size: 14px
+}
+.wpbc_setup_wizard__date-selection-mode-badges {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  min-height: 20px;
+  width: 100%;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 7px 5px;
+  box-sizing: border-box
+}
+.wpbc_setup_wizard__date-selection-mode-badge {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  max-width: 100%;
+  padding: 2px 7px;
+  border-radius: 999px;
+  box-sizing: border-box;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal
+}
+.wpbc_setup_wizard__date-selection-mode-badge.is-best {
+  background: #dff4dc;
+  color: #116329
+}
+.wpbc_setup_wizard__date-selection-mode-badge.is-supported {
+  background: #e8f0fe;
+  color: #135e96
+}
+.wpbc_setup_wizard__date-selection-mode-badge.is-locked {
+  background: #e5e5e5;
+  color: #50575e
+}
+.wpbc_setup_wizard__date-selection-review-journeys {
+  display: block;
+  margin: 12px 0 0 auto;
+  font-size: 12px
+}
+.wpbc_setup_wizard__date-selection-locked-note,
+.wpbc_setup_wizard__date-selection-mode-copy small,
+.wpbc_setup_wizard__date-selection-preview-help,
+.wpbc_setup_wizard__date-selection-settings-panel p {
+  color: var(--wpbc-wizard-muted,#646970);
+  font-size: 12px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__date-selection-locked-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--wpbc-wizard-warning-border);
+  border-inline-start: 4px solid var(--wpbc-wizard-warning-accent);
+  border-radius: 6px;
+  background: var(--wpbc-wizard-warning-background);
+  color: var(--wpbc-wizard-warning-text)
+}
+.wpbc_setup_wizard__date-selection-behavior :disabled,
+.wpbc_setup_wizard__date-selection-changeover :disabled,
+.wpbc_setup_wizard__date-selection-legend :disabled,
+.wpbc_setup_wizard__date-selection-settings :disabled {
+  cursor: not-allowed
+}
+.wpbc_setup_wizard__date-selection-step [data-wpbc-date-selection-disabled-tooltip-active="1"],
+.wpbc_setup_wizard__date-selection-step [data-wpbc-date-selection-disabled-tooltip-active="1"] .wpbc_ui__toggle_icon {
+  cursor: help
+}
+.wpbc_setup_wizard__date-selection-step [data-wpbc-date-selection-disabled-tooltip-active="1"]:focus {
+  border-radius: 999px;
+  outline: 2px solid var(--wp-admin-theme-color,#2271b1);
+  outline-offset: 2px
+}
+.wpbc_setup_wizard__edition-badge {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #f9d89c;
+  color: #7a3e00;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap
+}
+.wpbc_setup_wizard__date-selection-workspace {
+  display: grid;
+  grid-template-columns: minmax(0,1.9fr) minmax(330px,1fr);
+  gap: 14px
+}
+.wpbc_setup_wizard__date-selection-sidebar {
+  display: grid;
+  min-width: 0;
+  -ms-flex-line-pack: start;
+  align-content: start;
+  gap: 14px
+}
+.wpbc_setup_wizard__date-selection-preview {
+  position: sticky;
+  top: 0;
+  -ms-flex-item-align: start;
+  align-self: start
+}
+@media screen and (min-width:1181px) {
+  .wpbc_setup_wizard[data-step=date_selection] .wpbc_setup_wizard__main {
+    padding-top: 0
+  }
+  .wpbc_setup_wizard__stage--date_selection {
+    padding-top: 30px
+  }
+}
+.wpbc_setup_wizard__date-selection-preview,
+.wpbc_setup_wizard__date-selection-settings {
+  padding: 18px 20px
+}
+.wpbc_setup_wizard__date-selection-preview-help {
+  margin: 4px 0 12px
+}
+.wpbc_setup_wizard__date-selection-calendar {
+  padding: 8px;
+  border-radius: 5px;
+  background: #fff;
+  overflow: auto
+}
+.wpbc_setup_wizard__date-selection-calendar .datepick-inline,
+.wpbc_setup_wizard__date-selection-calendar .wpbc_cal_container,
+.wpbc_setup_wizard__date-selection-calendar .wpbc_calendar_wraper {
+  width: 100%!important;
+  max-width: 1023px!important
+}
+.wpbc_setup_wizard__date-selection-calendar .wpbc_cal_container {
+  margin: 0 auto
+}
+.wpbc_setup_wizard__date-selection-calendar .wpbc_calendar_wraper > .block_hints {
+  display: none!important
+}
+.wpbc_setup_wizard__date-selection-legend-preview {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 12px
+}
+.wpbc_setup_wizard__date-selection-legend-preview [hidden],
+.wpbc_setup_wizard__date-selection-legend-preview[hidden] {
+  display: none
+}
+.wpbc_setup_wizard__date-selection-legend-preview.is-vertical {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-direction: column;
+  flex-direction: column
+}
+.wpbc_setup_wizard__date-selection-legend-preview .block_hints {
+  display: block;
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-legend-preview .wpdev_hint_with_text {
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-settings {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  -ms-flex-direction: column;
+  flex-direction: column
+}
+.wpbc_setup_wizard__date-selection-settings-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 12px
+}
+.wpbc_setup_wizard__date-selection-settings-heading h2 {
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-settings-panel {
+  padding: 16px 0 0;
+  border-bottom: 0 solid #dcdcde;
+  font-size: 14px
+}
+.wpbc_setup_wizard__date-selection-changeover-controls[hidden],
+.wpbc_setup_wizard__date-selection-changeover-fields[hidden],
+.wpbc_setup_wizard__date-selection-changeover[hidden],
+.wpbc_setup_wizard__date-selection-option[hidden],
+.wpbc_setup_wizard__date-selection-settings-panel[hidden] {
+  display: none
+}
+.wpbc_setup_wizard__date-selection-number-intro {
+  margin: 0 0 10px
+}
+.wpbc_setup_wizard__date-selection-number-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px
+}
+.wpbc_setup_wizard__date-selection-number-field {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #dcdcde;
+  border-radius: 5px;
+  background: #f6f7f7
+}
+.wpbc_setup_wizard__date-selection-number-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 12px
+}
+.wpbc_setup_wizard__date-selection-number-heading label {
+  color: #1d2327;
+  font-weight: 600;
+  line-height: 1.35;
+  font-size: 12px
+}
+.wpbc_setup_wizard__date-selection-number-heading input[type=number] {
+  width: 76px;
+  min-width: 76px;
+  min-height: 36px;
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-range {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--wp-admin-theme-color,#2271b1)
+}
+.wpbc_setup_wizard__date-selection-number-help {
+  margin: 0
+}
+.wpbc_setup_wizard__date-selection-weekdays {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px
+}
+.wpbc_setup_wizard__date-selection-weekdays > div {
+  display: grid;
+  grid-template-columns: repeat(7,minmax(0,1fr));
+  gap: 6px
+}
+.wpbc_setup_wizard__date-selection-weekdays .button {
+  min-width: 0;
+  padding: 0 5px;
+  text-align: center
+}
+.wpbc_setup_wizard__date-selection-weekdays .button.is-selected {
+  border-color: var(--wp-admin-theme-color,#2271b1);
+  background: var(--wp-admin-theme-color,#2271b1);
+  color: #fff
+}
+.wpbc_setup_wizard__date-selection-specific {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__date-selection-specific > label {
+  color: #1d2327;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35
+}
+.wpbc_setup_wizard__date-selection-specific input[type=text] {
+  width: 100%;
+  min-height: 36px;
+  margin: 0;
+  font-size: 13px
+}
+.wpbc_setup_wizard__date-selection-specific-presets {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 2px 12px
+}
+.wpbc_setup_wizard__date-selection-specific-presets .button-link {
+  min-height: 24px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.4
+}
+.wpbc_setup_wizard__date-selection-specific .wpbc_setup_wizard__field-help {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__date-selection-behavior,
+.wpbc_setup_wizard__date-selection-changeover,
+.wpbc_setup_wizard__date-selection-legend {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px
+}
+.wpbc_setup_wizard__date-selection-changeover.is-locked {
+  opacity: .7
+}
+.wpbc_setup_wizard__date-selection-changeover-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 8px
+}
+.wpbc_setup_wizard__date-selection-changeover-toggle {
+  margin-left: auto
+}
+.wpbc_setup_wizard__date-selection-changeover-visual {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 12px;
+  border: 1px solid #dcdcde;
+  border-radius: 5px;
+  background: #f6f7f7
+}
+.wpbc_setup_wizard__date-selection-changeover-visual .wpbc_setup_wizard__preview-calendar {
+  grid-template-columns: repeat(7,minmax(0,1fr));
+  gap: 4px
+}
+.wpbc_setup_wizard__date-selection-changeover-visual .wpbc_setup_wizard__preview-calendar > span {
+  min-height: 24px;
+  aspect-ratio: auto
+}
+.wpbc_setup_wizard__date-selection-changeover-visual .wpbc_setup_wizard__preview-calendar > span:nth-child(-n+14),
+.wpbc_setup_wizard__date-selection-changeover-visual .wpbc_setup_wizard__preview-calendar > span:nth-child(n+22) {
+  display: none
+}
+.wpbc_setup_wizard__date-selection-changeover-help {
+  margin: -4px 0 0;
+  color: var(--wpbc-wizard-muted,#646970);
+  font-size: 12px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__date-selection-changeover-controls {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #cfe2f8;
+  border-radius: 5px;
+  background: #f5f9ff
+}
+.wpbc_setup_wizard__date-selection-changeover-fields {
+  display: grid;
+  gap: 10px
+}
+.wpbc_setup_wizard__date-selection-time-fields {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px
+}
+.wpbc_setup_wizard__date-selection-time-field {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  color: #1d2327;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4
+}
+.wpbc_setup_wizard__date-selection-time-field select {
+  width: 100%;
+  min-width: 0;
+  font-weight: 400
+}
+.wpbc_setup_wizard__date-selection-changeover-option {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__date-selection-changeover-option-toggle {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto
+}
+.wpbc_setup_wizard__date-selection-option {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 0 solid #dcdcde
+}
+.wpbc_setup_wizard__date-selection-option:last-of-type {
+  border-bottom: 0
+}
+.wpbc_setup_wizard__date-selection-option > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px
+}
+.wpbc_setup_wizard__date-selection-legend-item-heading > label,
+.wpbc_setup_wizard__date-selection-option label {
+  color: #1d2327;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4
+}
+.wpbc_setup_wizard__date-selection-option small,
+.wpbc_setup_wizard__date-selection-section-heading small {
+  color: var(--wpbc-wizard-muted,#646970);
+  font-size: 12px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__date-selection-option.is-locked {
+  opacity: .7
+}
+.wpbc_setup_wizard__date-selection-option > .wpbc_setup_wizard__edition-badge {
+  margin-left: auto
+}
+.wpbc_setup_wizard__date-selection-option-toggle {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  margin-left: auto
+}
+.wpbc_setup_wizard__date-selection-option > .wpbc_setup_wizard__edition-badge + .wpbc_setup_wizard__date-selection-option-toggle {
+  margin-left: 0
+}
+.wpbc_setup_wizard__date-selection-section-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 12px
+}
+.wpbc_setup_wizard__date-selection-section-heading > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px
+}
+.wpbc_setup_wizard__date-selection-section-toggle {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  margin-left: auto
+}
+.wpbc_setup_wizard__date-selection-legend-settings {
+  display: grid;
+  gap: 12px
+}
+.wpbc_setup_wizard__date-selection-legend-settings[hidden] {
+  display: none
+}
+.wpbc_setup_wizard__date-selection-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px
+}
+.wpbc_setup_wizard__date-selection-legend-item {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #dcdcde;
+  border-radius: 5px;
+  background: #f6f7f7
+}
+.wpbc_setup_wizard__date-selection-legend-item-heading {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 8px
+}
+.wpbc_setup_wizard__date-selection-legend-item input[type=text] {
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  margin: 0;
+  font-size: 12px
+}
+.wpbc_setup_wizard__date-selection-legend-options {
+  display: grid;
+  border-top: 1px solid #dcdcde
+}
+@media screen and (max-width:1180px) {
+  .wpbc_setup_wizard__date-selection-mode-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr))
+  }
+  .wpbc_setup_wizard__date-selection-mode-option:nth-child(2) .wpbc_setup_wizard__date-selection-mode-card {
+    border-right: 0
+  }
+  .wpbc_setup_wizard__date-selection-mode-option:nth-child(-n+2) .wpbc_setup_wizard__date-selection-mode-card {
+    border-bottom: 1px solid #dcdcde
+  }
+  .wpbc_setup_wizard__date-selection-workspace {
+    grid-template-columns: 1fr
+  }
+  .wpbc_setup_wizard__date-selection-preview {
+    position: static
+  }
+}
+@media screen and (max-width:782px) {
+  .wpbc_setup_wizard__date-selection-mode-grid {
+    grid-template-columns: 1fr
+  }
+  .wpbc_setup_wizard__date-selection-mode-card {
+    border-right: 0;
+    border-bottom: 1px solid #dcdcde
+  }
+  .wpbc_setup_wizard__date-selection-mode-option:last-child .wpbc_setup_wizard__date-selection-mode-card {
+    border-bottom: 0
+  }
+  .wpbc_setup_wizard__date-selection-behavior,
+  .wpbc_setup_wizard__date-selection-changeover,
+  .wpbc_setup_wizard__date-selection-legend,
+  .wpbc_setup_wizard__date-selection-preview,
+  .wpbc_setup_wizard__date-selection-settings {
+    padding: 14px
+  }
+  .wpbc_setup_wizard__date-selection-legend-grid,
+  .wpbc_setup_wizard__date-selection-number-grid,
+  .wpbc_setup_wizard__date-selection-time-fields {
+    grid-template-columns: 1fr
+  }
+}
+[dir=rtl] .wpbc_setup_wizard__date-selection-mode-card {
+  border-right: 0;
+  border-left: 1px solid #dcdcde
+}
+[dir=rtl] .wpbc_setup_wizard__date-selection-mode-option:last-child .wpbc_setup_wizard__date-selection-mode-card {
+  border-left: 0
+}
+[dir=rtl] .wpbc_setup_wizard__date-selection-changeover-toggle,
+[dir=rtl] .wpbc_setup_wizard__date-selection-option-toggle,
+[dir=rtl] .wpbc_setup_wizard__date-selection-option>.wpbc_setup_wizard__edition-badge,
+[dir=rtl] .wpbc_setup_wizard__date-selection-review-journeys,
+[dir=rtl] .wpbc_setup_wizard__date-selection-section-toggle {
+  margin-right: auto;
+  margin-left: 0
+}
+[dir=rtl] .wpbc_setup_wizard__date-selection-option > .wpbc_setup_wizard__edition-badge + .wpbc_setup_wizard__date-selection-option-toggle {
+  margin-right: 0
+}

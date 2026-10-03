@@ -1,0 +1,317 @@
+.wpbc_setup_wizard__time-choices-editor {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  gap: 20px
+}
+.wpbc_setup_wizard__time-list-panel {
+  padding: 24px 30px 22px;
+  border: 1px solid var(--wpbc-wizard-border);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(25,35,45,.04)
+}
+.wpbc_setup_wizard__time-list-toolbar {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  gap: 18px 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #dfe5eb
+}
+.wpbc_setup_wizard__time-list-heading {
+  -ms-flex: 0 0 250px;
+  flex: 0 0 250px
+}
+.wpbc_setup_wizard__time-list-heading h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  line-height: 1.2
+}
+.wpbc_setup_wizard__time-list-heading p {
+  margin: 0;
+  color: var(--wpbc-wizard-muted);
+  font-size: 14px;
+  line-height: 1.45
+}
+.wpbc_setup_wizard__time-generator {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  gap: 8px 12px;
+  font-size: 12px;
+  font-weight: 400
+}
+.wpbc_setup_wizard__time-generator label {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap
+}
+.wpbc_setup_wizard__time-generator select {
+  width: 112px;
+  min-width: 112px;
+  min-height: 42px;
+  margin: 0;
+  font-size: 13px
+}
+.wpbc_setup_wizard__time-generator span {
+  font-size: 12px
+}
+.wpbc_setup_wizard__time-generator button {
+  min-height: 30px!important
+}
+.wpbc_setup_wizard__time-generator label:nth-of-type(3) select {
+  width: 130px;
+  min-width: 130px
+}
+.wpbc_setup_wizard__add-time,
+.wpbc_setup_wizard__copy-start-times,
+.wpbc_setup_wizard__generate-times {
+  display: -ms-inline-flexbox!important;
+  display: inline-flex!important;
+  min-height: 42px!important;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px!important;
+  font-size: 13px!important;
+  white-space: nowrap
+}
+.wpbc_setup_wizard__time-list-body {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  -ms-flex-align: stretch;
+  align-items: stretch
+}
+.wpbc_setup_wizard__time-choice-list {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+  gap: 12px 15px;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  padding-block: 24px 4px;
+  padding-inline: 0 28px
+}
+.wpbc_setup_wizard__time-list-actions {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 0 0 250px;
+  flex: 0 0 250px;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 10px;
+  padding-block: 24px 4px;
+  padding-inline: 28px 0;
+  border-inline-start: 1px solid #dfe5eb
+}
+.wpbc_setup_wizard__time-list-actions .wpbc_setup_wizard__add-time {
+  width: 100%;
+  min-height: 48px!important;
+  font-size: 14px!important
+}
+.wpbc_setup_wizard__clear-times {
+  font-size: 13px;
+  line-height: 1.5
+}
+.wpbc_setup_wizard__time-choice {
+  display: -ms-flexbox;
+  display: flex;
+  min-width: 0;
+  max-width: 360px;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px;
+  border-radius: 5px;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+  gap: 2px;
+  background: #fafafa
+}
+.wpbc_setup_wizard__time-choice.is-dragging {
+  opacity: .45
+}
+.wpbc_setup_wizard__time-choice.is-drag-placeholder {
+  border: 1px dashed #8c9bab;
+  background: #f0f6fc;
+  opacity: .55
+}
+.wpbc_setup_wizard__time-choice select {
+  width: min(100%,120px);
+  max-width: 118px;
+  min-width: 0;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 42px;
+  margin: 0;
+  font-size: 14px
+}
+.wpbc_setup_wizard__time-choice-move,
+.wpbc_setup_wizard__time-choice-remove {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  -ms-flex: 0 0 34px;
+  flex: 0 0 34px;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: 0 0;
+  color: #34404c;
+  cursor: pointer
+}
+.wpbc_setup_wizard__time-choice-move i::before,
+.wpbc_setup_wizard__time-choice-remove i::before {
+  vertical-align: middle
+}
+.wpbc_setup_wizard__time-choice-move {
+  cursor: grab
+}
+.wpbc_setup_wizard__time-choice.is-dragging .wpbc_setup_wizard__time-choice-move {
+  cursor: grabbing
+}
+.wpbc_setup_wizard__time-choice-move:focus,
+.wpbc_setup_wizard__time-choice-move:hover,
+.wpbc_setup_wizard__time-choice-remove:focus,
+.wpbc_setup_wizard__time-choice-remove:hover {
+  background: #f0f2f4;
+  color: #1d2327
+}
+.wpbc_setup_wizard__time-copy-row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 22px
+}
+.wpbc_setup_wizard__time-copy-row > span {
+  height: 1px;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  background: #cfd8e2
+}
+.wpbc_setup_wizard__time-choice-list [aria-invalid=true],
+.wpbc_setup_wizard__time-list-panel [aria-invalid=true] {
+  border-color: #d63638;
+  box-shadow: 0 0 0 1px #d63638
+}
+@media screen and (max-width:1380px) {
+  .wpbc_setup_wizard__time-generator,
+  .wpbc_setup_wizard__time-list-toolbar {
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap
+  }
+  .wpbc_setup_wizard__time-generator {
+    -ms-flex-pack: start;
+    justify-content: flex-start
+  }
+  .wpbc_setup_wizard__time-choice {
+    max-width: none
+  }
+  .wpbc_setup_wizard__time-list-actions {
+    -ms-flex-preferred-size: 220px;
+    flex-basis: 220px
+  }
+}
+@media screen and (max-width:782px) {
+  .wpbc_setup_wizard__time-list-panel {
+    padding: 16px
+  }
+  .wpbc_setup_wizard__time-list-toolbar {
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap
+  }
+  .wpbc_setup_wizard__time-generator,
+  .wpbc_setup_wizard__time-list-heading {
+    width: 100%;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto
+  }
+  .wpbc_setup_wizard__time-generator,
+  .wpbc_setup_wizard__time-generator label {
+    -ms-flex-align: stretch;
+    align-items: stretch
+  }
+  .wpbc_setup_wizard__time-generator label {
+    -ms-flex: 1 1 150px;
+    flex: 1 1 150px;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap
+  }
+  .wpbc_setup_wizard__add-time,
+  .wpbc_setup_wizard__generate-times,
+  .wpbc_setup_wizard__time-generator select {
+    width: 100%
+  }
+  .wpbc_setup_wizard__time-list-body {
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap
+  }
+  .wpbc_setup_wizard__time-choice-list {
+    padding: 18px 0
+  }
+  .wpbc_setup_wizard__time-list-actions {
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    padding: 16px 0 0;
+    border-top: 1px solid #dfe5eb;
+    border-inline-start: 0
+  }
+  .wpbc_setup_wizard__time-choice {
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%
+  }
+  .wpbc_setup_wizard__time-choice select {
+    width: 100%;
+    max-width: none
+  }
+  .wpbc_setup_wizard__time-copy-row {
+    gap: 10px
+  }
+}
+[dir=rtl] .wpbc_setup_wizard__copy-start-times .menu_icon {
+  -ms-transform: scaleX(-1);
+  transform: scaleX(-1)
+}

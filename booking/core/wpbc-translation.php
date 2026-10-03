@@ -772,11 +772,13 @@ function wpbc_update_translations__from_wp() {
 		/**
 		 * Download translations from wpbookingcalendar.com,  unpack it to  the ../WPBC_PLUGIN_DIR/languages/'  folder
 		 *
+		 * @param WP_Upgrader_Skin|null $skin Optional authorized upgrader skin.
+		 *
 		 * @return array|bool|string|WP_Error  - result
 		 */
-		function wpbc_translation_download_from_wpbc(){
+		function wpbc_translation_download_from_wpbc( $skin = null ){
 
-			$my_upgrader = wpbc_get_translation_upgrader_obj();
+			$my_upgrader = wpbc_get_translation_upgrader_obj( $skin );
 
 			$result = $my_upgrader->run(  array(
 				'package'                     => 'https://wpbookingcalendar.com/download/languages/languages.zip', // Please always pass this.
@@ -795,9 +797,11 @@ function wpbc_update_translations__from_wp() {
 		/**
 		 * Get translation Upgrader object
 		 *
+		 * @param WP_Upgrader_Skin|null $skin Optional authorized upgrader skin.
+		 *
 		 * @return WP_Upgrader  obj
 		 */
-		function wpbc_get_translation_upgrader_obj(){
+		function wpbc_get_translation_upgrader_obj( $skin = null ){
 
 		    require_once ABSPATH . 'wp-admin/includes/file.php';
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -805,9 +809,11 @@ function wpbc_update_translations__from_wp() {
 			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 
 			require_once WPBC_PLUGIN_DIR . '/core/class/wpbc-class-upgrader-translation-skin.php';
-			$skin = new WPBC_Upgrader_Translation_Skin(
-				array( 'skip_header_footer' => true )
-			);
+			if ( ! ( $skin instanceof WP_Upgrader_Skin ) ) {
+				$skin = new WPBC_Upgrader_Translation_Skin(
+					array( 'skip_header_footer' => true )
+				);
+			}
 
 			$my_upgrader = new WP_Upgrader( $skin );
 
@@ -1453,7 +1459,7 @@ function wpbc_show_translation_status_from_wpbc( $is_echo = true, $params = arra
  *  Link: http://server.com/wp-admin/admin.php?page=wpbc-settings&system_info=show&pot=1#wpbc_general_settings_system_info_metabox
  */
 function wpbc_pot_to_php() {
-
+	return;
 /*
  *         $shortcode = 'wpml';
 

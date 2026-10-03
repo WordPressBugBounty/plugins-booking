@@ -35,6 +35,7 @@
 	var inspector_capacity_decrease_action = 'detach';
 	var inspector_capacity_target = 0;
 	var pending_highlight_ids = [];
+	var launch_intent_handled = false;
 	var inline_state = {
 		active: false,
 		changed_rows: [],
@@ -3230,6 +3231,121 @@
 	}
 
 	/**
+	 * Remove a consumed read-only launch parameter without changing navigation.
+	 *
+	 * This prevents a normal reload from reopening the guided action menu. The catalog's
+	 * other request-local display arguments remain in place and no preference
+	 * save action is introduced.
+	 *
+	 * @param {Object} config Catalog configuration.
+	 * @return {void}
+	 */
+	function consume_initial_launch_parameter( config ) {
+		var launch_intent = config && config.launch_intent ? config.launch_intent : {};
+		var query_parameter = String( launch_intent.query_parameter || '' );
+		var current_url;
+
+		if ( ! query_parameter || ! window.history || 'function' !== typeof window.history.replaceState || 'function' !== typeof window.URL ) {
+			return;
+		}
+
+		try {
+			current_url = new window.URL( window.location.href );
+			current_url.searchParams.delete( query_parameter );
+			window.history.replaceState( window.history.state, '', current_url.toString() );
+		} catch ( error ) {
+			// A malformed administration URL must not prevent normal catalog use.
+		}
+	}
+
+	/**
+	 * Determine whether one authorized Resource DTO exposes a named action.
+	 *
+	 * @param {Object} resource  Authorized Resource list DTO.
+	 * @param {string} action_id Stable domain action identifier.
+	 * @return {boolean} True when the server-authorized action is present.
+	 */
+	function resource_exposes_action( resource, action_id ) {
+		var action_items = resource && Array.isArray( resource.action_items ) ? resource.action_items : [];
+		var action_index;
+
+		for ( action_index = 0; action_index < action_items.length; action_index += 1 ) {
+			if ( action_id === String( action_items[ action_index ].id || '' ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Open one rendered Resource action menu and focus a named action.
+	 *
+	 * The shared controller owns menu mechanics. This domain adapter selects
+	 * only a Resource and action already authorized in the server response.
+	 *
+	 * @param {Object} config      Registered catalog configuration.
+	 * @param {number} resource_id Authorized Booking Resource ID.
+	 * @param {string} action_id   Authorized domain action identifier.
+	 * @return {boolean} True when the menu opened and the action received focus.
+	 */
+	function open_resource_action_menu( config, resource_id, action_id ) {
+		var mount_element = config && config.mount_id ? document.getElementById( config.mount_id ) : null;
+		var actions_controller = mount_element && mount_element._wpbc_ui_catalog_actions_controller
+			? mount_element._wpbc_ui_catalog_actions_controller
+			: null;
+
+		if ( ! actions_controller || 'function' !== typeof actions_controller.open_item ) {
+			return false;
+		}
+
+		return actions_controller.open_item( String( resource_id ), String( action_id || '' ) );
+	}
+
+	/**
+	 * Open the action menu for the first server-authorized Resource DTO.
+	 *
+	 * The URL carries presentation intent only. It never supplies a trusted
+	 * Resource ID. Activating the focused Publish action follows the normal
+	 * domain handler, which repeats capability and ownership checks before
+	 * opening publishing tools.
+	 *
+	 * @param {Object} config   Catalog configuration.
+	 * @param {Object} response Normalized authorized catalog response.
+	 * @return {void}
+	 */
+	function open_initial_launch_intent( config, response ) {
+		var action_id = config && config.launch_intent ? String( config.launch_intent.action || '' ) : '';
+		var resource;
+		var resource_index;
+
+		if ( launch_intent_handled || 'publish_resource' !== action_id || ! response || ! Array.isArray( response.items ) ) {
+			return;
+		}
+
+		launch_intent_handled = true;
+		consume_initial_launch_parameter( config );
+
+		for ( resource_index = 0; resource_index < response.items.length; resource_index += 1 ) {
+			if ( resource_exposes_action( response.items[ resource_index ], action_id ) ) {
+				resource = response.items[ resource_index ];
+				break;
+			}
+		}
+
+		if ( ! resource || ! Number( resource.id ) ) {
+			show_admin_message( config && config.i18n ? config.i18n.publishing_launch_unavailable || '' : '', 'error', 7000 );
+			return;
+		}
+
+		window.setTimeout( function () {
+			if ( ! open_resource_action_menu( config, Number( resource.id ), action_id ) ) {
+				show_admin_message( config && config.i18n ? config.i18n.publishing_launch_unavailable || '' : '', 'error', 7000 );
+			}
+		}, 0 );
+	}
+
+	/**
 	 * Handle completed shared renders for this Resource catalog only.
 	 *
 	 * @param {CustomEvent} event Shared catalog lifecycle event.
@@ -3248,6 +3364,7 @@
 		render_booking_resources_response( config, catalog_response );
 		render_inline_bar( config );
 		synchronize_inline_controls( config );
+		open_initial_launch_intent( config, catalog_response );
 		if ( inspector_resource_id ) {
 			mark_inspector_resource_row( inspector_resource_id );
 		}

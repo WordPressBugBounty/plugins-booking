@@ -20,12 +20,20 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 
 class WPBC_Upgrader_Translation_Skin extends WP_Upgrader_Skin {
 
+	/**
+	 * Installer error captured without exposing it to an AJAX response.
+	 *
+	 * @var WP_Error|null
+	 */
+	protected $installer_error = null;
+
 	function __construct( $args = array() ) {
 		$defaults      = array(
-			'url'     => '',
-			'nonce'   => '',
-			'title'   => '',
-			'context' => false,
+			'url'             => '',
+			'nonce'           => '',
+			'title'           => '',
+			'context'         => false,
+			'suppress_output' => false,
 		);
 		$this->options = wp_parse_args( $args, $defaults );
 	}
@@ -36,6 +44,25 @@ class WPBC_Upgrader_Translation_Skin extends WP_Upgrader_Skin {
 
 	function error( $error ) {
 		$this->installer_error = $error;
+	}
+
+	/**
+	 * Render or suppress one upgrader progress message.
+	 *
+	 * AJAX consumers use the silent mode because upgrader markup before a JSON
+	 * response makes a successful installation look like a failed request.
+	 * Existing Settings-page consumers retain the original visible feedback.
+	 *
+	 * @param string|array $feedback Message key, text, or structured feedback.
+	 * @param mixed        ...$args  Optional formatting arguments.
+	 * @return void
+	 */
+	public function feedback( $feedback, ...$args ) {
+		if ( ! empty( $this->options['suppress_output'] ) ) {
+			return;
+		}
+
+		parent::feedback( $feedback, ...$args );
 	}
 
 	function add_strings() {
@@ -62,12 +89,32 @@ class WPBC_Upgrader_Translation_Skin extends WP_Upgrader_Skin {
 	function before() {}
 
 	function after() {
+		if ( ! empty( $this->options['suppress_output'] ) ) {
+			return;
+		}
+
 		if ( ! empty( $this->installer_error ) ) {
 			if ( is_wp_error( $this->installer_error ) ) {
-				$message = $this->installer_error->get_error_message() . ' (' . $this->installer_error->get_error_data() . ')';
+				$message    = $this->installer_error->get_error_message();
+				$error_data = $this->installer_error->get_error_data();
+
+				if ( is_scalar( $error_data ) && '' !== (string) $error_data ) {
+					$message .= ' (' . (string) $error_data . ')';
+				}
 
 				echo wp_kses_post( $message );
 			}
 		}
+	}
+
+	/**
+	 * Return the error captured from WordPress's upgrader, when present.
+	 *
+	 * @return WP_Error|null Installer error or null.
+	 */
+	public function get_installer_error() {
+		return is_wp_error( $this->installer_error ) && ! empty( $this->installer_error->get_error_codes() )
+			? $this->installer_error
+			: null;
 	}
 }

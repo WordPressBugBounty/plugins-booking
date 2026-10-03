@@ -155,7 +155,7 @@ function wpbc_bfb_section_wptpl_print_templates( $page ) {
 					<div class="ui_container ui_container_small">
 						<div class="ui_group">
 							<div class="ui_element">
-								<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button" data-action="deselect" aria-label="<?php echo esc_attr__( 'Deselect', 'booking' ); ?>"><i class="menu_icon icon-1x wpbc_icn_remove_done"></i></button>
+								<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button" data-action="deselect" aria-label="<?php echo esc_attr__( 'Deselect', 'booking' ); ?>"><i class="menu_icon icon-1x wpbc_icn_rotate_270 wpbc_icn_near_me_disabled"></i></button>
 								<button type="button" class="button button-secondary wpbc_ui_control wpbc_ui_button" data-action="scrollto" aria-label="<?php echo esc_attr__( 'Scroll to section', 'booking' ); ?>"><i class="menu_icon icon-1x wpbc_icn_ads_click filter_center_focus"></i></button>
 							</div>
 							<div class="ui_element">
@@ -488,15 +488,253 @@ function wpbc_bfb_section_wptpl_print_templates( $page ) {
 						</div>
 					</div>
 
+					<#
+						var __box_spacing_groups = [
+							{ key: 'padding', label: '<?php echo esc_js( __( 'Column Padding', 'booking' ) ); ?>' },
+							{ key: 'margin', label: '<?php echo esc_js( __( 'Column Margin', 'booking' ) ); ?>' }
+						];
+						var __box_spacing_sides = [
+							{ key: 'top', label: '<?php echo esc_js( __( 'Top', 'booking' ) ); ?>' },
+							{ key: 'right', label: '<?php echo esc_js( __( 'Right', 'booking' ) ); ?>' },
+							{ key: 'bottom', label: '<?php echo esc_js( __( 'Bottom', 'booking' ) ); ?>' },
+							{ key: 'left', label: '<?php echo esc_js( __( 'Left', 'booking' ) ); ?>' }
+						];
+
+						for ( var __box_group_index = 0; __box_group_index < __box_spacing_groups.length; __box_group_index++ ) {
+							var __box_group = __box_spacing_groups[ __box_group_index ];
+							var __box_state_key = k + '_' + __box_group.key;
+							var __box_active_side = ( data.control_tabs && data.control_tabs[ __box_state_key ] ) || 'top';
+					#>
+						<div class="wpbc_bfb__column_control_group" data-column-control-tabs="{{ __box_group.key }}" data-column-control-tab-active="{{ __box_active_side }}" data-col-idx="{{ i }}">
+							<div class="wpbc_bfb__column_control_heading_row">
+								<h3 class="wpbc_bfb__column_control_heading">{{ __box_group.label }}</h3>
+								<button
+									type="button"
+									class="wpbc_bfb__column_help tooltip_left wpbc-bi-question-circle"
+									title="<?php echo esc_attr__( 'Set padding inside the column or margin outside the column independently for each side.', 'booking' ); ?>"
+									aria-label="<?php echo esc_attr__( 'Column spacing help', 'booking' ); ?>"
+								></button>
+							</div>
+							<div class="wpbc_bfb__column_control_tablist" role="tablist" aria-label="{{ __box_group.label }}">
+								<# for ( var __box_tab_index = 0; __box_tab_index < __box_spacing_sides.length; __box_tab_index++ ) {
+									var __box_tab_side = __box_spacing_sides[ __box_tab_index ];
+									var __box_tab_style_key = __box_group.key + '_' + __box_tab_side.key;
+									var __box_tab_default = ( 'margin' === __box_group.key && ( 'top' === __box_tab_side.key || 'bottom' === __box_tab_side.key ) ) ? '0.7em' : '0px';
+									var __box_tab_value = String( s[ __box_tab_style_key ] || __box_tab_default );
+									var __box_tab_changed = __box_tab_default !== __box_tab_value;
+									var __box_tab_active = __box_active_side === __box_tab_side.key;
+								#>
+									<button type="button"
+										id="bfb_col_{{ k }}_{{ __box_group.key }}_tab_{{ __box_tab_side.key }}"
+										class="wpbc_bfb__column_control_tab <# if ( __box_tab_changed ) { #>is-changed<# } #>"
+										data-column-control-tab-key="{{ __box_tab_side.key }}"
+										data-column-control-tab-style-keys="{{ __box_tab_style_key }}"
+										data-col-idx="{{ i }}"
+										role="tab"
+										aria-selected="<# if ( __box_tab_active ) { #>true<# } else { #>false<# } #>"
+										aria-controls="bfb_col_{{ k }}_{{ __box_group.key }}_panel_{{ __box_tab_side.key }}"
+										tabindex="<# if ( __box_tab_active ) { #>0<# } else { #>-1<# } #>"
+									>
+										<span>{{ __box_tab_side.label }}</span>
+										<span class="wpbc_bfb__column_control_tab_marker" data-column-control-tab-marker aria-hidden="true" <# if ( ! __box_tab_changed ) { #>hidden<# } #>></span>
+										<span class="wpbc_sr_only" data-column-control-tab-changed-text <# if ( ! __box_tab_changed ) { #>hidden<# } #>><?php echo esc_html__( 'Changed', 'booking' ); ?></span>
+									</button>
+								<# } #>
+							</div>
+							<# for ( var __box_panel_index = 0; __box_panel_index < __box_spacing_sides.length; __box_panel_index++ ) {
+								var __box_side = __box_spacing_sides[ __box_panel_index ];
+								var __box_control_key = __box_group.key + '_' + __box_side.key;
+								var __box_control_label = __box_group.label + ' ' + __box_side.label;
+								var __box_control_default = ( 'margin' === __box_group.key && ( 'top' === __box_side.key || 'bottom' === __box_side.key ) ) ? '0.7em' : '0px';
+								var __box_value = String( s[ __box_control_key ] || __box_control_default );
+								var __box_match = __box_value.match( /^(\d+(?:\.\d+)?)(px|rem|em|%)?$/ );
+								var __box_number = __box_match ? __box_match[1] : '0';
+								var __box_unit = ( __box_match && __box_match[2] ) ? __box_match[2] : 'px';
+								var __box_panel_active = __box_active_side === __box_side.key;
+							#>
+								<div class="wpbc_bfb__column_control_panel"
+									id="bfb_col_{{ k }}_{{ __box_group.key }}_panel_{{ __box_side.key }}"
+									data-column-control-tab-panel="{{ __box_side.key }}"
+									role="tabpanel"
+									aria-labelledby="bfb_col_{{ k }}_{{ __box_group.key }}_tab_{{ __box_side.key }}"
+									<# if ( ! __box_panel_active ) { #>hidden<# } #>
+								>
+									<div class="wpbc_len_group" data-len-group="{{ __box_control_key }}">
+										<div class="wpbc_inline_inputs">
+											<input
+												id="bfb_col_{{ k }}_{{ __box_control_key }}"
+												type="number" min="0" step="any" class="inspector__input"
+												data-style-key="{{ __box_control_key }}" data-style-part="value" data-len-value
+												data-col-idx="{{ i }}" value="{{ __box_number }}"
+												aria-label="{{ __box_control_label }}"
+											>
+											<select class="inspector__input"
+												data-style-key="{{ __box_control_key }}" data-style-part="unit" data-len-unit
+												data-col-idx="{{ i }}" aria-label="{{ __box_control_label }}"
+											>
+												<option value="px"  <# if ( __box_unit === 'px' )  { #>selected<# } #>>px</option>
+												<option value="rem" <# if ( __box_unit === 'rem' ) { #>selected<# } #>>rem</option>
+												<option value="em"  <# if ( __box_unit === 'em' )  { #>selected<# } #>>em</option>
+												<option value="%"   <# if ( __box_unit === '%' )   { #>selected<# } #>>%</option>
+											</select>
+										</div>
+										<input type="range" class="inspector__input"
+											data-style-key="{{ __box_control_key }}" data-style-part="value" data-len-range
+											data-col-idx="{{ i }}" aria-label="{{ __box_control_label }}"
+											min="0" max="128" step="1" value="{{ __box_number }}"
+										>
+									</div>
+									<button
+										type="button"
+										class="wpbc_bfb__column_reset_link"
+										data-action="colstyles-reset-keys"
+										data-style-keys="{{ __box_control_key }}"
+										data-col-idx="{{ i }}"
+									>
+										<?php echo esc_html__( 'Reset', 'booking' ); ?>
+									</button>
+								</div>
+							<# } #>
+						</div>
+					<# } #>
+					<div class="inspector__row wpbc_bfb__column_control_section_heading">
+						<h2><?php echo esc_js( __( 'Column Size & Overflow', 'booking' ) ); ?></h2>
+						<button
+							type="button"
+							class="wpbc_bfb__column_help tooltip_left wpbc-bi-question-circle"
+							title="<?php echo esc_attr__( 'Leave a maximum empty for no limit. Width Overflow controls horizontal excess; Height Overflow controls vertical excess. Auto adds a thin scrollbar when needed, while Hidden clips excess content. Visible does not add a scrollbar on that axis. If the other axis uses Auto or Hidden, mixed-axis excess is clipped because browsers cannot combine visible overflow with a perpendicular scroll container.', 'booking' ); ?>"
+							aria-label="<?php echo esc_attr__( 'Column size and overflow help', 'booking' ); ?>"
+						></button>
+					</div>
+					<#
+						var __maximum_controls = [
+							{
+								tab_key: 'width',
+								tab_label: '<?php echo esc_js( __( 'Width', 'booking' ) ); ?>',
+								key: 'max_width',
+								label: '<?php echo esc_js( __( 'Maximum Width', 'booking' ) ); ?>',
+								overflow_key: 'overflow_x',
+								overflow_label: '<?php echo esc_js( __( 'Width Overflow', 'booking' ) ); ?>'
+							},
+							{
+								tab_key: 'height',
+								tab_label: '<?php echo esc_js( __( 'Height', 'booking' ) ); ?>',
+								key: 'max_height',
+								label: '<?php echo esc_js( __( 'Maximum Height', 'booking' ) ); ?>',
+								overflow_key: 'overflow_y',
+								overflow_label: '<?php echo esc_js( __( 'Height Overflow', 'booking' ) ); ?>'
+							}
+						];
+						var __size_state_key = k + '_size';
+						var __size_active_tab = ( data.control_tabs && data.control_tabs[ __size_state_key ] ) || 'width';
+					#>
+					<div class="wpbc_bfb__column_control_group" data-column-control-tabs="size" data-column-control-tab-active="{{ __size_active_tab }}" data-col-idx="{{ i }}">
+						<div class="wpbc_bfb__column_control_tablist" role="tablist" aria-label="<?php echo esc_attr__( 'Column Size & Overflow', 'booking' ); ?>">
+							<# for ( var __maximum_tab_index = 0; __maximum_tab_index < __maximum_controls.length; __maximum_tab_index++ ) {
+								var __maximum_tab_control = __maximum_controls[ __maximum_tab_index ];
+								var __maximum_tab_changed = String( s[ __maximum_tab_control.key ] || 'none' ) !== 'none' || String( s[ __maximum_tab_control.overflow_key ] || 'visible' ) !== 'visible';
+								var __maximum_tab_active = __size_active_tab === __maximum_tab_control.tab_key;
+							#>
+								<button type="button"
+									id="bfb_col_{{ k }}_size_tab_{{ __maximum_tab_control.tab_key }}"
+									class="wpbc_bfb__column_control_tab <# if ( __maximum_tab_changed ) { #>is-changed<# } #>"
+									data-column-control-tab-key="{{ __maximum_tab_control.tab_key }}"
+									data-column-control-tab-style-keys="{{ __maximum_tab_control.key }} {{ __maximum_tab_control.overflow_key }}"
+									data-col-idx="{{ i }}"
+									role="tab"
+									aria-selected="<# if ( __maximum_tab_active ) { #>true<# } else { #>false<# } #>"
+									aria-controls="bfb_col_{{ k }}_size_panel_{{ __maximum_tab_control.tab_key }}"
+									tabindex="<# if ( __maximum_tab_active ) { #>0<# } else { #>-1<# } #>"
+								>
+									<span>{{ __maximum_tab_control.tab_label }}</span>
+									<span class="wpbc_bfb__column_control_tab_marker" data-column-control-tab-marker aria-hidden="true" <# if ( ! __maximum_tab_changed ) { #>hidden<# } #>></span>
+									<span class="wpbc_sr_only" data-column-control-tab-changed-text <# if ( ! __maximum_tab_changed ) { #>hidden<# } #>><?php echo esc_html__( 'Changed', 'booking' ); ?></span>
+								</button>
+							<# } #>
+						</div>
+						<#
+						for ( var __maximum_index = 0; __maximum_index < __maximum_controls.length; __maximum_index++ ) {
+							var __maximum_control = __maximum_controls[ __maximum_index ];
+							var __maximum_value = String( s[ __maximum_control.key ] || 'none' );
+							var __maximum_match = __maximum_value.match( /^(\d+(?:\.\d+)?)(px|rem|em|%|vh|vw)?$/ );
+							var __maximum_number = __maximum_match ? __maximum_match[1] : '';
+							var __maximum_unit = ( __maximum_match && __maximum_match[2] ) ? __maximum_match[2] : 'px';
+							var __maximum_panel_active = __size_active_tab === __maximum_control.tab_key;
+					#>
+							<div class="wpbc_bfb__column_control_panel"
+								id="bfb_col_{{ k }}_size_panel_{{ __maximum_control.tab_key }}"
+								data-column-control-tab-panel="{{ __maximum_control.tab_key }}"
+								role="tabpanel"
+								aria-labelledby="bfb_col_{{ k }}_size_tab_{{ __maximum_control.tab_key }}"
+								<# if ( ! __maximum_panel_active ) { #>hidden<# } #>
+							>
+								<div class="inspector__row">
+									<label class="inspector__label inspector__w_100" for="bfb_col_{{ k }}_{{ __maximum_control.key }}">{{ __maximum_control.label }}</label>
+									<div class="wpbc_len_group inspector__w_100" data-len-group="{{ __maximum_control.key }}" data-len-allow-empty>
+										<div class="wpbc_inline_inputs">
+											<input
+												id="bfb_col_{{ k }}_{{ __maximum_control.key }}"
+												type="number" min="0" step="any" class="inspector__input"
+												data-style-key="{{ __maximum_control.key }}" data-style-part="value" data-len-value
+												data-col-idx="{{ i }}" value="{{ __maximum_number }}"
+												placeholder="<?php echo esc_attr__( 'No limit', 'booking' ); ?>"
+												aria-label="{{ __maximum_control.label }}"
+											>
+											<select class="inspector__input"
+												data-style-key="{{ __maximum_control.key }}" data-style-part="unit" data-len-unit
+												data-col-idx="{{ i }}" aria-label="{{ __maximum_control.label }}"
+											>
+												<option value="px"  <# if ( __maximum_unit === 'px' )  { #>selected<# } #>>px</option>
+												<option value="rem" <# if ( __maximum_unit === 'rem' ) { #>selected<# } #>>rem</option>
+												<option value="em"  <# if ( __maximum_unit === 'em' )  { #>selected<# } #>>em</option>
+												<option value="%"   <# if ( __maximum_unit === '%' )   { #>selected<# } #>>%</option>
+												<option value="vh"  <# if ( __maximum_unit === 'vh' )  { #>selected<# } #>>vh</option>
+												<option value="vw"  <# if ( __maximum_unit === 'vw' )  { #>selected<# } #>>vw</option>
+											</select>
+										</div>
+										<input type="range" class="inspector__input"
+											data-style-key="{{ __maximum_control.key }}" data-style-part="value" data-len-range
+											data-col-idx="{{ i }}" aria-label="{{ __maximum_control.label }}"
+											min="0" max="1600" step="1" value="{{ __maximum_number || '0' }}"
+										>
+									</div>
+								</div>
+								<div class="inspector__row">
+									<label class="inspector__label inspector__w_40" for="bfb_col_{{ k }}_{{ __maximum_control.overflow_key }}">{{ __maximum_control.overflow_label }}</label>
+									<select
+										id="bfb_col_{{ k }}_{{ __maximum_control.overflow_key }}"
+										class="inspector__input inspector__w_55"
+										data-style-key="{{ __maximum_control.overflow_key }}"
+										data-col-idx="{{ i }}"
+									>
+										<option value="visible" <# if ( s[ __maximum_control.overflow_key ] === 'visible' ) { #>selected<# } #>><?php echo esc_html__( 'Visible (default)', 'booking' ); ?></option>
+										<option value="auto" <# if ( s[ __maximum_control.overflow_key ] === 'auto' ) { #>selected<# } #>><?php echo esc_html__( 'Auto', 'booking' ); ?></option>
+										<option value="hidden" <# if ( s[ __maximum_control.overflow_key ] === 'hidden' ) { #>selected<# } #>><?php echo esc_html__( 'Hidden', 'booking' ); ?></option>
+									</select>
+								</div>
+								<div class="wpbc_bfb__column_panel_reset">
+									<button
+										type="button"
+										class="wpbc_bfb__column_reset_link"
+										data-action="colstyles-reset-keys"
+										data-style-keys="{{ __maximum_control.key }} {{ __maximum_control.overflow_key }}"
+										data-col-idx="{{ i }}"
+									>
+										<?php echo esc_html__( 'Reset', 'booking' ); ?>
+									</button>
+								</div>
+							</div>
+					<# } #>
+					</div>
 				</div>
 			<# } #>
 
 			<# if ( active ) { #>
 				<div class="wpbc_tab__panel group__fields">
-					<div class="inspector__row">
+					<div class="inspector__row wpbc_bfb__column_reset_all">
 						<div class="inspector__control">
 							<button type="button" class="button button-secondary wpbc_ui_button" data-action="colstyles-reset">
-								<?php echo esc_html__( 'Reset', 'booking' ); ?>
+								<?php echo esc_html__( 'Reset All Column Styles', 'booking' ); ?>
 							</button>
 						</div>
 					</div>

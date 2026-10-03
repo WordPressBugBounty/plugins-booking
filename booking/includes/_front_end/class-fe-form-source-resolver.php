@@ -111,17 +111,17 @@ class WPBC_FE_Form_Source_Resolver {
 
 		// If BFB runtime is not present.
 		if ( ! class_exists( 'WPBC_BFB_Form_Loader' ) ) {
-			return self::missing_bfb_result( 'bfb_loader_missing' );
+			return self::filter_resolution( self::missing_bfb_result( 'bfb_loader_missing' ), $req );
 		}
 
 		// If storage is not available.
 		if ( ! class_exists( 'WPBC_BFB_Form_Storage' ) || ! method_exists( 'WPBC_BFB_Form_Storage', 'get_form_row_by_key' ) ) {
-			return self::missing_bfb_result( 'bfb_storage_missing' );
+			return self::filter_resolution( self::missing_bfb_result( 'bfb_storage_missing' ), $req );
 		}
 
 		// Optional: if table does not exist, return missing.
 		if ( function_exists( 'wpbc_is_table_exists' ) && ! wpbc_is_table_exists( 'booking_form_structures' ) ) {
-			return self::missing_bfb_result( 'bfb_table_missing' );
+			return self::filter_resolution( self::missing_bfb_result( 'bfb_table_missing' ), $req );
 		}
 
 		// ---------------------------------------------------------------------
@@ -204,16 +204,41 @@ class WPBC_FE_Form_Source_Resolver {
 				'fallback_chain'         => $fallback_chain,
 			);
 
-			/**
-			 * // Info: Hook for addons. Final override point (future scopes, preview rules, etc).
-			 *
-			 * @param array $result
-			 * @param array $req
-			 */
-			return (array) apply_filters( 'wpbc_fe_form_source_resolution', $result, $req );
+			return self::filter_resolution( $result, $req );
 		}
 
-		return self::missing_bfb_result( 'bfb_form_not_found', $fallback_chain );
+		return self::filter_resolution( self::missing_bfb_result( 'bfb_form_not_found', $fallback_chain ), $req );
+	}
+
+	/**
+	 * Apply the final source-resolution extension point to every outcome.
+	 *
+	 * Preview and other non-persistent sources may be authoritative even when a
+	 * matching database row does not exist. Applying the filter to both resolved
+	 * and missing results lets those sources participate without creating a
+	 * temporary Form Builder record.
+	 *
+	 * @param array $result Normalized resolver result.
+	 * @param array $req    Original normalized request context.
+	 *
+	 * @return array Filtered resolver result.
+	 */
+	private static function filter_resolution( $result, $req ) {
+
+		$result = is_array( $result ) ? $result : array();
+		$req    = is_array( $req ) ? $req : array();
+
+		/**
+		 * Filter the final booking-form source resolution.
+		 *
+		 * This hook runs for successful database resolutions and controlled missing
+		 * results so authenticated, non-persistent sources can provide a complete
+		 * replacement contract.
+		 *
+		 * @param array $result Normalized resolver result.
+		 * @param array $req    Source request context.
+		 */
+		return (array) apply_filters( 'wpbc_fe_form_source_resolution', $result, $req );
 	}
 
 	// ---------------------------------------------------------------------

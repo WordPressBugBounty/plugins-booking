@@ -759,6 +759,10 @@
 			}
 			return;
 		}
+		if ( typeof w.wpbc_hook__destroy_timeselector === 'function' ) {
+			w.wpbc_hook__destroy_timeselector( $preview.get( 0 ) );
+			return;
+		}
 
 		$preview.find( '.wpbc_times_selector' ).remove();
 		$preview.find( time_selectors ).show();

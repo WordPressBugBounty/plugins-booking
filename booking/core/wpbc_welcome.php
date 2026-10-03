@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 function wpbc_welcome_panel() {
 
-	if ( ! wpbc_is_user_can_access_wizard_page() ){
+	if ( ! class_exists( 'WPBC_Setup_Wizard_Access' ) || ! WPBC_Setup_Wizard_Access::current_user_can_access() ) {
 		return;
 	}
 

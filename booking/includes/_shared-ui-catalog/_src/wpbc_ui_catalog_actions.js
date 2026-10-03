@@ -13,6 +13,7 @@
 	var toggle_selector = '[data-wpbc-ui-catalog-action-toggle]';
 	var menu_selector = '[data-wpbc-ui-catalog-action-menu-list]';
 	var menu_item_selector = '[role="menuitem"]';
+	var menu_item_action_attribute = 'data-wpbc-ui-catalog-action-id';
 
 	/**
 	 * Return enabled menu items from one row-action menu.
@@ -140,6 +141,51 @@
 				menu_items[ 'last' === focus_direction ? menu_items.length - 1 : 0 ].focus();
 			}
 		}
+	}
+
+	/**
+	 * Open one item's action menu and focus an authorized action.
+	 *
+	 * This public interaction remains domain-neutral: callers identify a
+	 * rendered item and action while the shared controller owns menu state,
+	 * placement, and focus behavior.
+	 *
+	 * @param {Object} controller Action controller state.
+	 * @param {string} item_id    Rendered catalog item identifier.
+	 * @param {string} action_id  Rendered action identifier to focus.
+	 * @return {boolean} True when the menu opened and the action received focus.
+	 */
+	function open_item_menu( controller, item_id, action_id ) {
+		var action_item = null;
+		var menu;
+		var menu_items;
+		var root = null;
+
+		if ( ! controller || ! item_id || ! action_id ) {
+			return false;
+		}
+
+		controller.mount_element.querySelectorAll( root_selector ).forEach( function ( candidate_root ) {
+			if ( ! root && item_id === String( candidate_root.getAttribute( 'data-wpbc-ui-catalog-action-item' ) || '' ) ) {
+				root = candidate_root;
+			}
+		} );
+		menu = root ? root.querySelector( menu_selector ) : null;
+		menu_items = menu ? get_menu_items( menu ) : [];
+		menu_items.forEach( function ( menu_item ) {
+			if ( ! action_item && action_id === String( menu_item.getAttribute( menu_item_action_attribute ) || '' ) ) {
+				action_item = menu_item;
+			}
+		} );
+
+		if ( ! root || ! action_item ) {
+			return false;
+		}
+
+		open_menu( controller, root, '' );
+		action_item.focus();
+
+		return document.activeElement === action_item;
 	}
 
 	/**
@@ -347,6 +393,9 @@
 		controller.api = {
 			close_all: function ( restore_focus ) {
 				close_all_menus( controller, null, !! restore_focus );
+			},
+			open_item: function ( item_id, action_id ) {
+				return open_item_menu( controller, String( item_id || '' ), String( action_id || '' ) );
 			}
 		};
 		mount_element._wpbc_ui_catalog_actions_controller = controller.api;

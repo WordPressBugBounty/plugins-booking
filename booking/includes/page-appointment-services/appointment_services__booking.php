@@ -222,6 +222,11 @@ add_action( 'wpbc_enqueue_css_files', 'wpbc_appointment_services_enqueue_fronten
 /**
  * Persist an immutable Service snapshot after the core booking save succeeds.
  *
+ * The core save path invokes this handler before releasing its availability
+ * guard, and the released public hook invokes it again for compatibility. A
+ * request-local content key makes that duplicate call harmless while still
+ * allowing a later save with changed Service data in the same request.
+ *
  * @param int    $booking_id            Saved booking ID.
  * @param array  $create_params         Normalized booking creation parameters.
  * @param string $where_to_save_booking Booking save context supplied by core.
@@ -229,12 +234,30 @@ add_action( 'wpbc_enqueue_css_files', 'wpbc_appointment_services_enqueue_fronten
  * @return void
  */
 function wpbc_appointment_services_after_booking_save( $booking_id, $create_params, $where_to_save_booking ) {
+	static $persisted_snapshot_keys = array();
+
 	if ( empty( $create_params['appointment_service'] ) || empty( $create_params['resource_id'] ) ) {
 		return;
 	}
+
+	$booking_id   = absint( $booking_id );
+	$snapshot_key = $booking_id . ':' . md5(
+		wp_json_encode(
+			array(
+				'resource_id'        => absint( $create_params['resource_id'] ),
+				'appointment_service' => $create_params['appointment_service'],
+			)
+		)
+	);
+	if ( isset( $persisted_snapshot_keys[ $snapshot_key ] ) ) {
+		return;
+	}
+
 	$saved = wpbc_appointment_services_repository()->save_appointment_snapshot( $booking_id, $create_params['resource_id'], $create_params['appointment_service'] );
-	if ( ! $saved ) {
-		do_action( 'wpbc_appointment_snapshot_save_failed', absint( $booking_id ), $create_params, $where_to_save_booking );
+	if ( $saved ) {
+		$persisted_snapshot_keys[ $snapshot_key ] = true;
+	} else {
+		do_action( 'wpbc_appointment_snapshot_save_failed', $booking_id, $create_params, $where_to_save_booking );
 	}
 }
 
@@ -857,6 +880,142 @@ function wpbc_appointment_services_resolve_end_seconds( $service, $start_seconds
 	}
 
 	return $end_seconds;
+}
+
+/**
+ * Normalize Working Time intervals into continuous scheduling ranges.
+ *
+ * Setup Wizard can define several intervals for one weekday. Gaps remain
+ * scheduling boundaries, while touching or overlapping legacy intervals are
+ * merged so one continuous range is evaluated consistently.
+ *
+ * @param array<int,array<string,int>> $working_intervals Working Time intervals.
+ *
+ * @return array<int,array{start_second:int,end_second:int}> Normalized continuous intervals.
+ */
+function wpbc_appointment_services_normalize_working_intervals( $working_intervals ) {
+	$normalized_intervals = array();
+
+	foreach ( (array) $working_intervals as $working_interval ) {
+		if ( ! is_array( $working_interval ) || ! isset( $working_interval['start_second'], $working_interval['end_second'] ) ) {
+			continue;
+		}
+
+		$start_second = max( 0, min( DAY_IN_SECONDS, absint( $working_interval['start_second'] ) ) );
+		$end_second   = max( 0, min( DAY_IN_SECONDS, absint( $working_interval['end_second'] ) ) );
+		if ( $start_second >= $end_second ) {
+			continue;
+		}
+
+		$normalized_intervals[] = array(
+			'start_second' => $start_second,
+			'end_second'   => $end_second,
+		);
+	}
+
+	usort(
+		$normalized_intervals,
+		static function ( $left_interval, $right_interval ) {
+			return $left_interval['start_second'] - $right_interval['start_second'];
+		}
+	);
+
+	$continuous_intervals = array();
+	foreach ( $normalized_intervals as $normalized_interval ) {
+		$last_interval_index = count( $continuous_intervals ) - 1;
+		if ( $last_interval_index < 0 || $normalized_interval['start_second'] > $continuous_intervals[ $last_interval_index ]['end_second'] ) {
+			$continuous_intervals[] = $normalized_interval;
+			continue;
+		}
+
+		$continuous_intervals[ $last_interval_index ]['end_second'] = max(
+			$continuous_intervals[ $last_interval_index ]['end_second'],
+			$normalized_interval['end_second']
+		);
+	}
+
+	return $continuous_intervals;
+}
+
+/**
+ * Check one Service interval against Working Time intervals for a single day.
+ *
+ * The complete Provider-reserved interval must fit inside one continuous
+ * Working Time interval. This includes the Service's before and after buffers;
+ * a gap between two daily intervals cannot be crossed.
+ *
+ * @param array<string,mixed>          $service           Effective Service values.
+ * @param int[]                        $time_seconds       Exact appointment start and end seconds.
+ * @param array<int,array<string,int>> $working_intervals Working Time intervals for the date.
+ *
+ * @return true|WP_Error True when the reserved interval fits, otherwise an availability error.
+ */
+function wpbc_appointment_services_check_working_intervals( $service, $time_seconds, $working_intervals ) {
+	if ( empty( $service ) || ! is_array( $time_seconds ) || count( $time_seconds ) < 2 ) {
+		return true;
+	}
+
+	$appointment_start = (int) $time_seconds[0];
+	$appointment_end   = (int) $time_seconds[1];
+	if ( $appointment_start < 0 || $appointment_end <= $appointment_start || $appointment_end > DAY_IN_SECONDS ) {
+		return new WP_Error( 'appointment_service_duration_invalid', __( 'The selected Service duration is invalid. Please contact the website administrator.', 'booking' ) );
+	}
+
+	$reserved_start = $appointment_start - ( ( isset( $service['buffer_before_minutes'] ) ? absint( $service['buffer_before_minutes'] ) : 0 ) * MINUTE_IN_SECONDS );
+	$reserved_end   = $appointment_end + ( ( isset( $service['buffer_after_minutes'] ) ? absint( $service['buffer_after_minutes'] ) : 0 ) * MINUTE_IN_SECONDS );
+	foreach ( wpbc_appointment_services_normalize_working_intervals( $working_intervals ) as $working_interval ) {
+		if ( $reserved_start >= $working_interval['start_second'] && $reserved_end <= $working_interval['end_second'] ) {
+			return true;
+		}
+	}
+
+	return new WP_Error(
+		'appointment_service_outside_working_time',
+		__( "This start time is unavailable because the Service duration and required buffers do not fit within the Provider's Working Time. Please choose another time.", 'booking' )
+	);
+}
+
+/**
+ * Check a Service interval against the Provider's effective Working Time.
+ *
+ * Global Working Time disabled state and a Provider-specific disabled mode are
+ * deliberate opt-outs. Inherited and custom schedules use the canonical
+ * Working Time resolver, including every interval configured for a weekday.
+ *
+ * @param array<string,mixed> $service       Effective Service values.
+ * @param int                 $resource_id   Provider resource ID.
+ * @param string[]            $dates         Selected SQL dates.
+ * @param int[]               $time_seconds  Exact appointment start and end seconds.
+ *
+ * @return true|WP_Error True when Working Time is disabled or every date fits.
+ */
+function wpbc_appointment_services_check_working_time( $service, $resource_id, $dates, $time_seconds ) {
+	if ( empty( $service ) || ! absint( $resource_id ) || empty( $dates ) || ! function_exists( 'wpbc_working_time__get_effective_rule' ) ) {
+		return true;
+	}
+
+	if ( false === wpbc_working_time__get_effective_rule( $resource_id ) ) {
+		return true;
+	}
+
+	foreach ( (array) $dates as $date_value ) {
+		$date_value = sanitize_text_field( $date_value );
+		$date_parts = array_map( 'absint', explode( '-', $date_value ) );
+		if ( $date_value !== wpbc_sanitize_date( $date_value ) || 3 !== count( $date_parts ) || ! checkdate( $date_parts[1], $date_parts[2], $date_parts[0] ) ) {
+			return new WP_Error( 'appointment_dates_invalid', __( 'Select a valid appointment date and try again.', 'booking' ) );
+		}
+
+		$working_time_check = wpbc_appointment_services_check_working_intervals(
+			$service,
+			$time_seconds,
+			wpbc_working_time__get_working_intervals_for_date( $resource_id, $date_value )
+		);
+		if ( is_wp_error( $working_time_check ) ) {
+			return $working_time_check;
+		}
+	}
+
+	return true;
 }
 
 /**

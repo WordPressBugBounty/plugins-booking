@@ -165,6 +165,7 @@ function wpbc_get_localized_js_vars() {
 	$script .= "_wpbc.set_message( 'message_deleting', "                       . wp_json_encode( __( 'Deleting', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_updating', "                       . wp_json_encode( __( 'Updating', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_saving', "                         . wp_json_encode( __( 'Saving', 'booking' ) ) . " ); ";
+	$script .= "_wpbc.set_message( 'message_inline_preview_submission_disabled', " . wp_json_encode( __( 'This is a request-local preview. Booking submission is disabled, and no booking will be created.', 'booking' ) ) . " ); ";
 	$script .= "_wpbc.set_message( 'message_error_check_in_out_time', "        . wp_json_encode( __( 'Error! Please reset your check-in/check-out dates above.', 'booking' ) ) . " ); ";
 
 	// $script .= "console.log( '== WPBC VARS " . esc_attr( WP_BK_VERSION_NUM ) . ' [' . wpbc_get_version_type__and_mu() . "] LOADED ==' );";

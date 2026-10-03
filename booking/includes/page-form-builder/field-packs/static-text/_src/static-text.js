@@ -2,7 +2,7 @@
 // == Pack: Static Text (WP-template-less; schema-driven)
 // == File: /includes/page-form-builder/field-packs/static-text/_out/static-text.js
 // == Depends: WPBC_BFB_Field_Base, Field_Renderer_Registry, Core.Sanitize, Exporter API
-// == Version: 1.0.1  (09.11.2025)  — add base CSS class "wpbc_static_text" to preview & export
+// == Version: 1.1.0  (25.09.2026)  — add sanitized link tokens to preview & export
 // =================================================================================================
 (function (w, d) {
 	'use strict';
@@ -28,12 +28,13 @@
 
 		/**
 		 * Defaults (must mirror PHP schema).
-		 * @returns {{type:string,text:string,tag:string,align:string,bold:number,italic:number,html_allowed:number,nl2br:number,cssclass_extra:string,name:string,html_id:string,help:string,usage_key:string}}
+		 * @returns {{type:string,text:string,links:Array,tag:string,align:string,bold:number,italic:number,html_allowed:number,nl2br:number,cssclass_extra:string,name:string,html_id:string,help:string,usage_key:string}}
 		 */
 		static get_defaults() {
 			return {
 				type            : 'static_text',
 				text            : 'Add your message here…',
+				links           : [],
 				tag             : 'p',
 				align           : 'left',
 				bold            : 0,
@@ -134,7 +135,17 @@
 
 			// Content
 			var content = '';
-			if ( d_norm.html_allowed ) {
+			if ( w.WPBC_BFB_Static_Text_Links && 'function' === typeof w.WPBC_BFB_Static_Text_Links.build_content_html ) {
+				content = w.WPBC_BFB_Static_Text_Links.build_content_html(
+					d_norm.text,
+					d_norm.links,
+					{
+						allow_html  : !! d_norm.html_allowed,
+						nl2br       : !! d_norm.nl2br,
+						preview_only: true
+					}
+				);
+			} else if ( d_norm.html_allowed ) {
 				content = String( d_norm.text || '' );
 			} else {
 				content = this.escape_text( d_norm.text, !! d_norm.nl2br );
@@ -240,7 +251,17 @@
 
 			// Content: escape + nl2br when HTML is NOT allowed; raw when allowed.
 			var content;
-			if ( d.html_allowed ) {
+			if ( w.WPBC_BFB_Static_Text_Links && 'function' === typeof w.WPBC_BFB_Static_Text_Links.build_content_html ) {
+				content = w.WPBC_BFB_Static_Text_Links.build_content_html(
+					d.text,
+					d.links,
+					{
+						allow_html  : !! d.html_allowed,
+						nl2br       : !! d.nl2br,
+						preview_only: false
+					}
+				);
+			} else if ( d.html_allowed ) {
 				content = String( d.text || '' );
 			} else {
 				content = wpbc_bfb_field_static_text.escape_text( d.text, !! d.nl2br );

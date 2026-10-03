@@ -125,6 +125,14 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 					_wpbc.booking__set_param_value( response_data[ 'resource_id' ], 'aggregate_resource_id_arr', response_data[ 'ajx_data' ][ 'aggregate_resource_id_arr' ] );
 					// -------------------------------------------------------------------------------------------------
 
+					/**
+					 * Allow optional modules to calculate derived calendar state after canonical
+					 * AJAX data is stored and before the first refreshed calendar render.
+					 *
+					 * @param {number|string} resource_id Booking resource ID.
+					 */
+					jQuery( 'body' ).trigger( 'wpbc_calendar_ajx__before_update_look', [ response_data[ 'resource_id' ] ] );
+
 					// Update calendar
 					wpbc_calendar__update_look( response_data[ 'resource_id' ] );
 
@@ -169,10 +177,9 @@ console.log( ' == Response WPBC_AJX_CALENDAR_LOAD == ', response_data ); console
 					wpbc_balancer__completed( ajx_post_data__resource_id , 'wpbc_calendar__load_data__ajx' );
 					wpbc_calendar__loading__stop( ajx_post_data__resource_id );
 
-					var error_message = _wpbc.get_message( 'message_unexpected_server_response' ) || 'The server returned an unexpected response. Please reload the page and try again.';
-					if ( jqXHR.status ){
-						error_message += ' (' + parseInt( jqXHR.status, 10 ) + ')';
-					}
+					var fallback_error_message = _wpbc.get_message( 'message_unexpected_server_response' ) || 'The server returned an unexpected response. Please reload the page and try again.';
+					var conflict_cache_hint    = _wpbc.get_message( 'message_http_conflict_cache_hint' ) || 'A cached or optimized version of this page may be outdated. Clear the browser cache and reload the page. Website administrators should also purge page, server, and CDN caches and regenerate minified or optimized files.';
+					var error_message          = wpbc_front_end__get_ajax_error_message( jqXHR, fallback_error_message, conflict_cache_hint );
 					var message_show_delay = 3000;
 
 					var jq_node  = wpbc_get_calendar__jq_node__for_messages( this.data );

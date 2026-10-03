@@ -36,7 +36,18 @@ if ( ! is_admin() ) {
 $wpbc_booking_modes_v3_page               = wpbc_booking_modes_v3_get_bootstrap_request_key( 'page' );
 $wpbc_booking_modes_v3_action             = wpbc_booking_modes_v3_get_bootstrap_request_key( 'action' );
 $wpbc_booking_modes_v3_is_wpbc_page       = 0 === strpos( $wpbc_booking_modes_v3_page, 'wpbc' );
-$wpbc_booking_modes_v3_is_setup_request   = 'wpbc_ajx_setup_wizard_page' === $wpbc_booking_modes_v3_action;
+$wpbc_booking_modes_v3_setup_actions      = array(
+	'wpbc_ajx_setup_wizard_save_continue',
+	'wpbc_ajx_setup_wizard_back',
+	'wpbc_ajx_setup_wizard_edit',
+	'wpbc_ajx_setup_wizard_restart',
+	'wpbc_ajx_setup_wizard_skip',
+);
+$wpbc_booking_modes_v3_is_setup_request = in_array(
+	$wpbc_booking_modes_v3_action,
+	$wpbc_booking_modes_v3_setup_actions,
+	true
+);
 $wpbc_booking_modes_v3_is_switch_request  = 'wpbc_ajx_booking_mode_switch' === $wpbc_booking_modes_v3_action;
 $wpbc_booking_modes_v3_is_quickstart      = 'wpbc_ajx_booking_mode_quickstart' === $wpbc_booking_modes_v3_action;
 $wpbc_booking_modes_v3_is_landing_request = $wpbc_booking_modes_v3_is_wpbc_page
@@ -80,6 +91,7 @@ if ( $wpbc_booking_modes_v3_is_quickstart ) {
 unset(
 	$wpbc_booking_modes_v3_page,
 	$wpbc_booking_modes_v3_action,
+	$wpbc_booking_modes_v3_setup_actions,
 	$wpbc_booking_modes_v3_is_wpbc_page,
 	$wpbc_booking_modes_v3_is_setup_request,
 	$wpbc_booking_modes_v3_is_switch_request,

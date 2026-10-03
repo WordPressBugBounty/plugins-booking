@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 'is_default_full_screen'                    => false,                                                                   // true | false.     Default: false.
 'is_force_full_screen'                      => false,                                                                   // true | false.     Default: false.
+'is_force_normal_screen'                    => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__is_show'           => false,                                                                   // true | false.     Default: false.
 'right_vertical_sidebar__default_view_mode' => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'right_vertical_sidebar__content_click_collapse_mode' => '',                                                            // '' | 'min' | 'compact' | 'none'. Collapse or hide an expanded right sidebar when the page content is clicked. Default: ''.
@@ -462,11 +463,17 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	/**
 	 * Check whether the current page should open in fullscreen.
 	 *
-	 * Forced page mode wins, then the saved user preference, then the page default.
+	 * Forced normal mode wins first, followed by forced fullscreen, the saved user
+	 * preference, and finally the page default. This order lets passive pages leave
+	 * fullscreen without changing the administrator's preference for other pages.
 	 *
 	 * @return bool
 	 */
 	public function is_full_screen_mode_enabled() {
+
+		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_force_normal_screen' ) ) {
+			return false;
+		}
 
 		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_force_full_screen' ) ) {
 			return true;
@@ -493,11 +500,17 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	/**
 	 * Check whether the current page should save and restore the user fullscreen preference.
 	 *
+	 * Pages with either forced display mode are page-controlled and must not mutate
+	 * the administrator's reusable fullscreen preference.
+	 *
 	 * @return bool
 	 */
 	public function is_full_screen_user_mode_enabled() {
 
-		if ( $this->is_use_option__in_subtabs_or_tabs( 'is_force_full_screen' ) ) {
+		if (
+			$this->is_use_option__in_subtabs_or_tabs( 'is_force_normal_screen' )
+			|| $this->is_use_option__in_subtabs_or_tabs( 'is_force_full_screen' )
+		) {
 			return false;
 		}
 

@@ -52,7 +52,8 @@ class WPBC_Appointment_Services_Repository {
 		$where = array( '1=1' );
 		$args  = array();
 
-		if ( ! $this->can_view_all_owners() ) {
+		$force_current_owner = ! empty( $query['force_current_owner'] );
+		if ( $force_current_owner || ! $this->can_view_all_owners() ) {
 			$where[] = 's.owner_user_id = %d';
 			$args[]  = $this->owner_user_id();
 		}
@@ -105,6 +106,55 @@ class WPBC_Appointment_Services_Repository {
 	}
 
 	/**
+	 * Find a Service previously created by one Setup Wizard save operation.
+	 *
+	 * The progressive-save coordinator writes canonical data before it commits
+	 * checkpoint metadata. If that checkpoint commit fails, a request retry must
+	 * reuse the already-created Service instead of inserting a duplicate. The
+	 * lookup is always restricted to the current Setup Wizard owner, including
+	 * for administrators who may otherwise view every owner in the catalog.
+	 *
+	 * @param string $operation_id Stable Setup Wizard operation identifier.
+	 * @param string $draft_id     Stable Service draft identifier within the step.
+	 *
+	 * @return array<string,mixed>|null|WP_Error Matching Service, null when no
+	 *                                                marker exists, or a storage error.
+	 */
+	public function find_by_setup_operation( $operation_id, $draft_id ) {
+		global $wpdb;
+
+		if ( ! $this->is_ready() ) {
+			return wpbc_appointment_services_storage_error();
+		}
+
+		$operation_id = sanitize_key( (string) $operation_id );
+		$draft_id     = sanitize_key( (string) $draft_id );
+		if ( '' === $operation_id || '' === $draft_id ) {
+			return null;
+		}
+
+		$metadata_like = '%' . $wpdb->esc_like( '"wpbc_setup_wizard_operation_id":"' . $operation_id . '"' ) . '%';
+		$sql           = 'SELECT service_id, metadata FROM ' . wpbc_appointment_services_table_name( 'services' ) . ' WHERE owner_user_id = %d AND metadata LIKE %s ORDER BY service_id DESC LIMIT 50';
+		$rows          = (array) $wpdb->get_results(
+			$wpdb->prepare( $sql, $this->owner_user_id(), $metadata_like ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			ARRAY_A
+		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		foreach ( $rows as $row ) {
+			$metadata = wpbc_appointment_services_decode_metadata( isset( $row['metadata'] ) ? $row['metadata'] : array() );
+			if (
+				isset( $metadata['wpbc_setup_wizard_operation_id'], $metadata['wpbc_setup_wizard_draft_id'] )
+				&& hash_equals( $operation_id, (string) $metadata['wpbc_setup_wizard_operation_id'] )
+				&& hash_equals( $draft_id, (string) $metadata['wpbc_setup_wizard_draft_id'] )
+			) {
+				return $this->find( absint( $row['service_id'] ) );
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * List owner-visible Services matching search, status, and Provider filters.
 	 *
 	 * @param array<string,mixed> $query Search, status, resource_id, sorting, and pagination values.
@@ -153,6 +203,23 @@ class WPBC_Appointment_Services_Repository {
 		}
 		unset( $row );
 		return $rows;
+	}
+
+	/**
+	 * List Services owned by the effective Booking Calendar owner only.
+	 *
+	 * Setup workflows edit one owner context even when a MultiUser super
+	 * administrator may browse every owner in the catalog. The internal flag can
+	 * only narrow the normal repository scope and cannot expose another owner.
+	 *
+	 * @param array<string,mixed> $query Search, status, sorting, and pagination values.
+	 *
+	 * @return array<int,array<string,mixed>>|WP_Error Service rows or a storage error.
+	 */
+	public function list_items_for_current_owner( $query = array() ) {
+		$query['force_current_owner'] = true;
+
+		return $this->list_items( $query );
 	}
 
 	/**
@@ -223,7 +290,8 @@ class WPBC_Appointment_Services_Repository {
 		if ( ! $this->is_ready() ) { return wpbc_appointment_services_storage_error(); }
 		$raw_service = is_object( $service ) ? get_object_vars( $service ) : (array) $service;
 		$service     = wpbc_appointment_services_sanitize_payload( $raw_service );
-		$service_id  = absint( $service['service_id'] );
+		$service_id = absint( $service['service_id'] );
+		$is_new      = ! $service_id;
 		$metadata    = wpbc_appointment_services_decode_metadata( isset( $raw_service['metadata'] ) ? $raw_service['metadata'] : array() );
 		$existing    = array();
 
@@ -268,8 +336,235 @@ class WPBC_Appointment_Services_Repository {
 		}
 		if ( false === $result || ! $service_id ) { return new WP_Error( 'service_save_failed', __( 'The Service could not be saved.', 'booking' ) ); }
 		$result = $this->replace_resources( $service_id, $service['resource_ids'] );
-		if ( is_wp_error( $result ) ) { return $result; }
+		if ( is_wp_error( $result ) ) {
+			if ( $is_new ) {
+				$wpdb->delete( wpbc_appointment_services_table_name( 'service_resources' ), array( 'service_id' => $service_id ), array( '%d' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+				$wpdb->delete( wpbc_appointment_services_table_name( 'services' ), array( 'service_id' => $service_id ), array( '%d' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			}
+			return $result;
+		}
 		return $this->find( $service_id );
+	}
+
+	/**
+	 * Update Service-owned fields without changing Provider assignments.
+	 *
+	 * The Setup Wizard Services editor does not own Provider assignments. Using
+	 * {@see save()} for that editor would replace assignment rows, reactivate
+	 * inactive rows, and reorder priorities even when the user changed only a
+	 * Service title or duration. This narrow writer deliberately updates only the
+	 * canonical Service row after the normal owner and payload validation.
+	 *
+	 * @param array<string,mixed>|object $service Raw or normalized Service values.
+	 *
+	 * @return array<string,mixed>|WP_Error Saved Service or persistence error.
+	 */
+	public function update_details_preserving_assignments( $service ) {
+		global $wpdb;
+
+		if ( ! $this->is_ready() ) {
+			return wpbc_appointment_services_storage_error();
+		}
+
+		$raw_service = is_object( $service ) ? get_object_vars( $service ) : (array) $service;
+		$service     = wpbc_appointment_services_sanitize_payload( $raw_service );
+		$service_id  = absint( $service['service_id'] );
+		if ( ! $service_id ) {
+			return new WP_Error( 'service_not_found', __( 'Service not found.', 'booking' ) );
+		}
+
+		$existing = $this->find( $service_id );
+		if ( is_wp_error( $existing ) ) {
+			return $existing;
+		}
+
+		$metadata = wpbc_appointment_services_decode_metadata( isset( $existing['metadata'] ) ? $existing['metadata'] : array() );
+		if ( ! wpbc_appointment_services_is_pricing_available() ) {
+			// A downgrade must not erase a price that can become active after upgrading again.
+			$service['base_cost'] = isset( $existing['base_cost'] ) && is_numeric( $existing['base_cost'] )
+				? number_format( min( 9999999999.99, max( 0, (float) $existing['base_cost'] ) ), 2, '.', '' )
+				: '0.00';
+		}
+
+		if ( '' !== $service['picture_url'] ) {
+			$metadata['picture_url'] = $service['picture_url'];
+		} else {
+			unset( $metadata['picture_url'] );
+		}
+		$metadata['schema_version'] = max( 1, isset( $metadata['schema_version'] ) ? absint( $metadata['schema_version'] ) : 0 );
+		$encoded_metadata           = wp_json_encode( $metadata );
+		if ( false === $encoded_metadata ) {
+			return new WP_Error( 'service_metadata_invalid', __( 'The Service metadata could not be saved.', 'booking' ) );
+		}
+
+		$result = $wpdb->update(
+			wpbc_appointment_services_table_name( 'services' ),
+			array(
+				'title'                 => $service['title'],
+				'description'           => $service['description'],
+				'duration_minutes'      => $service['duration_minutes'],
+				'buffer_before_minutes' => $service['buffer_before_minutes'],
+				'buffer_after_minutes'  => $service['buffer_after_minutes'],
+				'base_cost'             => $service['base_cost'],
+				'booking_form_id'       => $service['booking_form_id'],
+				'status'                => $service['status'],
+				'metadata'              => $encoded_metadata,
+				'modified_by'           => get_current_user_id(),
+				'modification_date'     => current_time( 'mysql' ),
+			),
+			array( 'service_id' => $service_id ),
+			array( '%s', '%s', '%d', '%d', '%d', '%s', '%d', '%s', '%s', '%d', '%s' ),
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( false === $result ) {
+			return new WP_Error( 'service_save_failed', __( 'The Service could not be saved.', 'booking' ) );
+		}
+
+		return $this->find( $service_id );
+	}
+
+	/**
+	 * Move one owner-authorized Service to Draft without changing assignments.
+	 *
+	 * The Setup Wizard requires a narrow, retry-safe lifecycle transition. This
+	 * writer changes only the canonical status, the wizard operation marker, and
+	 * normal modification fields. Provider assignments, Booking Form assignment,
+	 * Service details, and unrelated metadata remain unchanged.
+	 *
+	 * @param int    $service_id  Canonical Service ID.
+	 * @param string $operation_id Stable sanitized Setup Wizard operation ID.
+	 *
+	 * @return array<string,mixed>|WP_Error Updated Service or persistence error.
+	 */
+	public function move_to_draft_preserving_assignments( $service_id, $operation_id ) {
+		global $wpdb;
+
+		if ( ! $this->is_ready() ) {
+			return wpbc_appointment_services_storage_error();
+		}
+
+		$service_id  = absint( $service_id );
+		$operation_id = sanitize_key( (string) $operation_id );
+		if ( ! $service_id || '' === $operation_id ) {
+			return new WP_Error( 'service_draft_transition_invalid', __( 'The Service Draft transition is invalid.', 'booking' ) );
+		}
+
+		$existing = $this->find( $service_id );
+		if ( is_wp_error( $existing ) ) {
+			return $existing;
+		}
+
+		$metadata = wpbc_appointment_services_decode_metadata( isset( $existing['metadata'] ) ? $existing['metadata'] : array() );
+		$metadata['wpbc_setup_wizard_inactive_operation_id'] = $operation_id;
+		$encoded_metadata = wp_json_encode( $metadata );
+		if ( false === $encoded_metadata ) {
+			return new WP_Error( 'service_metadata_invalid', __( 'The Service metadata could not be saved.', 'booking' ) );
+		}
+
+		$result = $wpdb->update(
+			wpbc_appointment_services_table_name( 'services' ),
+			array(
+				'status'            => 'inactive',
+				'metadata'          => $encoded_metadata,
+				'modified_by'       => get_current_user_id(),
+				'modification_date' => current_time( 'mysql' ),
+			),
+			array(
+				'service_id'    => $service_id,
+				'owner_user_id' => $this->owner_user_id(),
+				'status'        => 'active',
+			),
+			array( '%s', '%s', '%d', '%s' ),
+			array( '%d', '%d', '%s' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( false === $result ) {
+			return new WP_Error( 'service_save_failed', __( 'The Service could not be moved to Draft.', 'booking' ) );
+		}
+		if ( 0 === $result ) {
+			return new WP_Error( 'service_draft_transition_stale', __( 'The Service changed before it could be moved to Draft.', 'booking' ) );
+		}
+
+		return $this->find( $service_id );
+	}
+
+	/**
+	 * Assign one Booking Form without changing Service details or Providers.
+	 *
+	 * @param int $service_id     Service ID.
+	 * @param int $booking_form_id Canonical Booking Form ID, or zero to clear it.
+	 *
+	 * @return array<string,mixed>|WP_Error Updated Service or persistence error.
+	 */
+	public function update_booking_form_id( $service_id, $booking_form_id ) {
+		global $wpdb;
+
+		$service_id = absint( $service_id );
+		$existing   = $this->find( $service_id );
+		if ( is_wp_error( $existing ) ) {
+			return $existing;
+		}
+
+		$result = $wpdb->update(
+			wpbc_appointment_services_table_name( 'services' ),
+			array(
+				'booking_form_id'   => absint( $booking_form_id ),
+				'modified_by'       => get_current_user_id(),
+				'modification_date' => current_time( 'mysql' ),
+			),
+			array( 'service_id' => $service_id ),
+			array( '%d', '%d', '%s' ),
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( false === $result ) {
+			return new WP_Error( 'service_save_failed', __( 'The Service could not be saved.', 'booking' ) );
+		}
+
+		return $this->find( $service_id );
+	}
+
+	/**
+	 * Restore an authorized Service row without touching Provider assignments.
+	 *
+	 * This compensation writer accepts only a before-image produced by
+	 * {@see get_deletion_before_image()}. It is intentionally narrower than the
+	 * deletion restore because the Service must still exist and remain visible to
+	 * the current owner at compensation time.
+	 *
+	 * @param array<string,mixed> $before_image Canonical Service before-image.
+	 *
+	 * @return true|WP_Error True when the exact Service row was restored.
+	 */
+	public function restore_service_row( $before_image ) {
+		global $wpdb;
+
+		$service    = isset( $before_image['service'] ) && is_array( $before_image['service'] ) ? $before_image['service'] : array();
+		$service_id = isset( $service['service_id'] ) ? absint( $service['service_id'] ) : 0;
+		if ( ! $service_id || is_wp_error( $this->find( $service_id ) ) ) {
+			return new WP_Error( 'wpbc_service_compensation_failed', __( 'A previous Service value could not be restored.', 'booking' ) );
+		}
+
+		unset( $service['service_id'] );
+		$result = $wpdb->update(
+			wpbc_appointment_services_table_name( 'services' ),
+			$service,
+			array( 'service_id' => $service_id ),
+			null,
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( false === $result ) {
+			return new WP_Error( 'wpbc_service_compensation_failed', __( 'A previous Service value could not be restored.', 'booking' ) );
+		}
+
+		$restored = $this->get_deletion_before_image( $service_id );
+		if ( is_wp_error( $restored ) || $before_image !== $restored ) {
+			return new WP_Error( 'wpbc_service_compensation_failed', __( 'A previous Service value could not be verified after restoration.', 'booking' ) );
+		}
+
+		return true;
 	}
 
 	/**

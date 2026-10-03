@@ -570,7 +570,7 @@ function wpbc_get_activation_booking_form_page_configs() {
 			'create_page'  => false,
 		),
 		'appointment_services_booking' => array(
-			'template_key'                          => 'appointments_services_flow',
+			'template_key'                          => 'appointments_services_selection_summary',
 			'form_slug'                             => 'appointment_services_booking',
 			'form_title'                            => esc_html__( 'Appointment Services Booking Form', 'booking' ),
 			'create_page'                           => false,

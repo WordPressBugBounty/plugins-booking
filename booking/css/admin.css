@@ -211,7 +211,7 @@ select option.wpbc_child_resource{
 .wp-core-ui .wpbc_page input[type="datetime-local"],
 .wp-core-ui .wpbc_page input[type="email"],
 .wp-core-ui .wpbc_page input[type="month"],
-.wp-core-ui .wpbc_page input[type="number"],
+/*.wp-core-ui .wpbc_page input[type="number"],*/
 .wp-core-ui .wpbc_page input[type="search"],
 .wp-core-ui .wpbc_page input[type="tel"],
 .wp-core-ui .wpbc_page input[type="time"],

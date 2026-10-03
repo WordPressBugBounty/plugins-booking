@@ -247,7 +247,10 @@ div.wpbc_bfb_form .wpbc__row {
 .wpbc_bfb__section .wpbc_bfb__column:empty,
 .wpbc_bfb__section:hover .wpbc_bfb__column {
 	border: 1px solid #b0c2d9;
-	align-content:center;
+}
+/* Keep populated columns anchored at the top when drag outlines become visible. */
+.wpbc_bfb__dragging {
+	align-content: flex-start;
 }
 
 /* Empty column hint */
@@ -463,14 +466,6 @@ html.wpbc_bfb__dnd-active .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc
 /* Help: Visuals for ghost/placeholder/highlight during dragging                                      */
 /* ================================================================================================== */
 
-.wpbc_bfb__drag-ghost .wpbc_bfb__column {
-	border: 2px dashed #9af !important;
-	border-radius: 6px;
-}
-.wpbc_bfb__section.wpbc_bfb__drag-ghost .wpbc_bfb__column {
-	transform: scale(0.95);
-	transition: transform 0.15s ease;
-}
 .wpbc_bfb__drag-active {
 	opacity: 1 !important;
 }
@@ -478,10 +473,68 @@ html.wpbc_bfb__dnd-active .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc
 	border: var( --wpbc-bfb-accent-color, #327ab4 ) 2px dashed !important;
 }
 
-/* Keep sizes stable so lists don’t jump */
+/*
+ * Freeze rows and drop containers at their pre-drag border-box height.
+ * The insertion marker can then change DOM ownership without changing the
+ * destination geometry or triggering browser scroll anchoring.
+ */
+.wpbc_bfb__drag-geometry-lock {
+	box-sizing: border-box !important;
+	height: var( --wpbc-bfb-drag-locked-block-size ) !important;
+	min-height: var( --wpbc-bfb-drag-locked-block-size ) !important;
+	max-height: var( --wpbc-bfb-drag-locked-block-size ) !important;
+	overflow-anchor: none;
+}
+
+/* Preserve the exact source footprint while the real node moves through the canvas. */
+.wpbc_bfb__drag-source-spacer {
+	box-sizing: border-box;
+	display: block;
+	flex: 0 0 var( --wpbc-bfb-drag-source-inline-size, 100% );
+	width: var( --wpbc-bfb-drag-source-inline-size, 100% );
+	max-width: 100%;
+	height: var( --wpbc-bfb-drag-source-block-size, 1px );
+	min-height: var( --wpbc-bfb-drag-source-block-size, 1px );
+	margin: 0;
+	padding: 0;
+	border: 1px dashed rgba(50, 122, 180, 0.35);
+	border-radius: 4px;
+	background: rgba(50, 122, 180, 0.035);
+	overflow: hidden;
+	pointer-events: auto;
+}
+
+/* The real Sortable node is an in-flow insertion line, not a full-height ghost. */
+.wpbc_bfb__drag-ghost.wpbc_bfb__drop-indicator {
+	box-sizing: border-box !important;
+	display: block !important;
+	position: relative !important;
+	flex: 0 0 100% !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	height: 6px !important;
+	min-height: 6px !important;
+	max-height: 6px !important;
+	margin: 2px 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 3px !important;
+	outline: 0 !important;
+	background: var( --wpbc-bfb-accent-color, #327ab4 ) !important;
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9) !important;
+	opacity: 1 !important;
+	overflow: hidden !important;
+	pointer-events: none !important;
+	transform: none !important;
+	transition: none !important;
+}
+.wpbc_bfb__drag-ghost.wpbc_bfb__drop-indicator > * {
+	display: none !important;
+}
+
+/* Default ghost state before the stable insertion-line class is applied. */
 .wpbc_bfb__drag-ghost {
 	opacity: .9 !important;
-	min-height: 20px;
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -502,6 +555,7 @@ html.wpbc_bfb__dnd-active .wpbc_bfb_form .wpbc_bfb__section .wpbc_bfb__row .wpbc
 }
 .wpbc_bfb__simple_list_fallback {
 	opacity: 0.85;
+	padding: 10px !important;
 }
 /* ================================================================================================== */
 /* Booking Form (Client) Overrides                                                                    */
@@ -594,6 +648,20 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__field:hover .wpbc_bfb__overlay-contro
 	border: 1px solid var( --wpbc-bfb-accent-color, #327ab4 );
 }
 
+/* Keep Builder-only drag and settings controls inside columns that establish an overflow clipping context. */
+.wpbc_bfb__column:is([style*="--wpbc-bfb-col-overflow:"], [style*="--wpbc-bfb-col-overflow-x:"], [style*="--wpbc-bfb-col-overflow-y:"])
+	.wpbc_bfb__field > .wpbc_bfb__overlay-controls {
+	left: auto;
+	right: 2px;
+	top: 2px;
+	transform: none;
+}
+.wpbc_bfb__column:is([style*="--wpbc-bfb-col-overflow:"], [style*="--wpbc-bfb-col-overflow-x:"], [style*="--wpbc-bfb-col-overflow-y:"])
+	.wpbc_bfb__section > .wpbc_bfb__overlay-controls {
+	top: 2px;
+	transform: translate(-50%, 0);
+}
+
 /* Buttons inside the overlay */
 .wpbc_bfb__pages_panel .wpbc_bfb__panel .wpbc_bfb__overlay-controls > * {
 	padding: 10px;
@@ -622,6 +690,42 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__field:hover .wpbc_bfb__overlay-contro
 }
 .wpbc_bfb__overlay-controls button:hover {
 	opacity: 1;
+}
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn {
+	transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+/* Ovveride and compensate padding of 10px in .wpbc_bfb__pages_panel .wpbc_bfb__panel .wpbc_bfb__overlay-controls > *  */
+.wpbc_bfb__pages_panel .wpbc_bfb__panel .wpbc_bfb__overlay-controls  .wpbc_bfb__settings-btn {
+	padding: 6px;
+  	margin: 4px;
+	border-radius: 4px;
+}
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn:hover,
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn:focus-visible {
+	background: #eef5ff;
+	border-color: var( --wpbc-bfb-accent-color, #327ab4 );
+	color: var( --wpbc-bfb-accent-color, #327ab4 );
+	opacity: 1;
+}
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn:hover .menu_icon,
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn:focus-visible .menu_icon {
+	color: var( --wpbc-bfb-accent-color, #327ab4 ) !important;
+}
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn:focus-visible {
+	outline: 2px solid var( --wpbc-bfb-accent-color, #327ab4 );
+	outline-offset: 2px;
+}
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn[aria-pressed="true"] {
+	background: var( --wpbc-bfb-accent-color, #327ab4 );
+	border-color: var( --wpbc-bfb-accent-color, #327ab4 );
+	box-shadow: inset 0 0 0 1px rgba( 255, 255, 255, 0.35 );
+	color: #fff !important;
+	opacity: 1;
+}
+.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn[aria-pressed="true"] .menu_icon,
+.wpbc_bfb__pages_panel div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn[aria-pressed="true"],
+.wpbc_bfb__pages_panel div.wpbc_container.wpbc_form.wpbc_theme_dark_1 .wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn[aria-pressed="true"] .menu_icon {
+	color: #fff !important;
 }
 .wpbc_bfb__overlay-controls button:last-child {
 	font-size: 8px;
@@ -785,12 +889,12 @@ html:not(.wpbc_bfb__dnd-active) .wpbc_bfb__section.is-selected .wpbc_bfb__column
 	z-index: 999999;
 	pointer-events: none;                        /* don't accidentally interact with it */
 	transition: none !important;                 /* avoid jank while mirror follows the cursor */
-	padding: 10px !important;
-	height: auto !important;
+	box-sizing: border-box !important;
+	padding: 0 !important;
 }
 
 /* Only when dragging from the Palette. - Under cursor, dragging element from palette. */
-html.wpbc_bfb__dnd-active .wpbc_bfb__drag-active {
+html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	max-width: max-content;
 	min-width: min-content !important;
 	width: 200px !important;
@@ -801,7 +905,7 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	border: 1px dashed rgba(0, 0, 0, .25);
 	background: #f7f7f7;
 	border-radius: 8px;
-	padding: 6px 10px;
+	padding: 6px 10px !important;
 	max-width: 320px;          /* Optional: fixed dimensions for consistency */
 }
 /* Dim the source tile in the palette while dragging: */
@@ -898,6 +1002,156 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 /* Tabs selector */
 .wpbc_bfb__inspector .wpbc_ui_el__horis_top_bar__wrapper {
 	/*margin: 0;*/
+}
+
+/* Section column nested controls for spacing, size, and overflow. */
+.wpbc_bfb__column_control_group {
+	flex: 1 1 100%;
+	margin: 4px 0 12px;
+	min-width: 0;
+	width: 100%;
+}
+.wpbc_bfb__column_control_heading_row,
+.wpbc_bfb__column_control_section_heading {
+	align-items: center;
+	display: flex;
+	flex-flow: row nowrap;
+	gap: 6px;
+	justify-content: flex-start;
+}
+.wpbc_bfb__column_control_heading_row {
+	margin-bottom: 4px;
+}
+.wpbc_bfb__column_control_heading {
+	color: var(--wpbc_ui_horis_top_nav__a_color);
+	font-size: 14px;
+	margin: 0;
+}
+.wpbc_bfb__column_help {
+	align-items: center;
+	appearance: none;
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	color: var(--wpbc_ui_horis_top_nav__a_color);
+	cursor: help;
+	display: inline-flex;
+	flex: 0 0 auto;
+	font-size: 15px;
+	height: 28px;
+	justify-content: center;
+	line-height: 1;
+	margin: 0;
+	padding: 0;
+	width: 28px;
+}
+.wpbc_bfb__column_help:hover,
+.wpbc_bfb__column_help:focus-visible {
+	color: var(--wpbc_ui_horis_top_nav__hover_color);
+}
+.wpbc_bfb__column_help:focus-visible {
+	border-radius: 3px;
+	outline: 2px solid var(--wpbc_ui_horis_top_nav__hover_color);
+	outline-offset: 1px;
+}
+.wpbc_bfb__column_control_tablist {
+	border-bottom: 1px solid var(--wpbc_ui_horis_top_nav__normal_color);
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	width: 100%;
+}
+[data-column-control-tabs="size"] > .wpbc_bfb__column_control_tablist {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.wpbc_bfb__column_control_tab {
+	align-items: center;
+	appearance: none;
+	background: transparent;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	border-radius: 0;
+	box-shadow: none;
+	color: var(--wpbc_ui_horis_top_nav__a_color);
+	cursor: pointer;
+	display: inline-flex;
+	font-weight: 600;
+	gap: 5px;
+	justify-content: center;
+	margin: 0 0 -1px;
+	min-width: 0;
+	padding: 9px 4px;
+}
+.wpbc_bfb__column_control_tab:hover,
+.wpbc_bfb__column_control_tab:focus-visible {
+	border-bottom-color: var(--wpbc_ui_horis_top_nav__hover_color);
+	color: var(--wpbc_ui_horis_top_nav__hover_color);
+}
+.wpbc_bfb__column_control_tab:focus-visible {
+	outline: 2px solid var(--wpbc_ui_horis_top_nav__hover_color);
+	outline-offset: -2px;
+}
+.wpbc_bfb__column_control_tab[aria-selected="true"] {
+	border-bottom-color: var(--wpbc_ui_horis_top_nav__active_color);
+	color: var(--wpbc_ui_horis_top_nav__active_color);
+}
+.wpbc_bfb__column_control_tab_marker {
+	background: currentColor;
+	border-radius: 50%;
+	flex: 0 0 6px;
+	height: 6px;
+	width: 6px;
+}
+.wpbc_bfb__column_control_panel {
+	padding-top: 10px;
+}
+.wpbc_bfb__column_control_panel > .wpbc_len_group {
+	width: 100%;
+}
+.wpbc_bfb__column_control_panel > .wpbc_len_group > .wpbc_inline_inputs {
+	display: flex;
+	flex-flow: row nowrap;
+	gap: 5px;
+	margin: 5px 0;
+	width: 100%;
+}
+.wpbc_bfb__column_panel_reset {
+	display: flex;
+	justify-content: center;
+	margin-top: 5px;
+	width: 100%;
+}
+.wpbc_bfb__column_reset_link {
+	appearance: none;
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	color: var(--wpbc-bfb-accent-color, #2271b1);
+	cursor: pointer;
+	display: block;
+	font-size: 12px;
+	line-height: 1.5;
+	margin: 5px auto 0;
+	padding: 2px 5px;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.wpbc_bfb__column_reset_link:hover,
+.wpbc_bfb__column_reset_link:focus-visible {
+	color: var(--wpbc_ui_horis_top_nav__hover_color);
+	text-decoration-thickness: 2px;
+}
+.wpbc_bfb__column_reset_link:focus-visible {
+	border-radius: 3px;
+	outline: 2px solid var(--wpbc_ui_horis_top_nav__hover_color);
+	outline-offset: 1px;
+}
+.wpbc_bfb__column_reset_all,
+.wpbc_bfb__column_reset_all .inspector__control {
+	display: flex;
+	justify-content: center;
+}
+.wpbc_bfb__column_reset_all .inspector__control {
+	flex: 0 1 auto;
 }
 
 .inspector__row {
@@ -1175,6 +1429,9 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	animation: .48s ease-out both wpbc-bfb-ping
 }
 @media (prefers-reduced-motion: reduce) {
+	.wpbc_bfb__overlay-controls .wpbc_bfb__settings-btn {
+		transition: none;
+	}
 	.wpbc_bfb__highlight-pulse {
 		animation: none;
 		outline: 3px solid var(--wpbc-bfb-pulse-color);
@@ -1396,7 +1653,7 @@ html.wpbc_bfb__drag-from-palette .wpbc_bfb__drag-active {
 	margin-inline-start: 1em;
 	align-items: center;
 	white-space: nowrap;
-	max-width: 20em;
+	max-width: 10em;
 	overflow: hidden;
 }
 .wpbc_bfb__live_status__builder { color: #619d40; }

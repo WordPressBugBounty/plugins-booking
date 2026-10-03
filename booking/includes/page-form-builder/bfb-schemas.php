@@ -66,7 +66,7 @@ class WPBC_BFB_Schemas_Util {
 		// Allow extra prop/control types used by the Inspector Factory.
 		$allowed_prop_types = array( 'string', 'number', 'boolean', 'array', 'int', 'float', 'enum', 'color' );
 		// Expanded to support Factory extras and color control.
-		$allowed_control_types = array( 'text', 'number', 'checkbox', 'textarea', 'select', 'range_number', 'len', 'color' );
+		$allowed_control_types = array( 'text', 'number', 'checkbox', 'textarea', 'select', 'range_number', 'len', 'color', 'slot' );
 
 		// Validate prop meta.
 		foreach ( $pack['schema']['props'] as $prop_key => $meta ) {
@@ -106,6 +106,13 @@ class WPBC_BFB_Schemas_Util {
 					if ( empty( $control['key'] ) || empty( $control['type'] ) || ! in_array( $control['type'], $allowed_control_types, true ) ) {
 						unset( $group['controls'][ $c_i ] );
 						continue;
+					}
+					if ( 'slot' === $control['type'] ) {
+						$control['slot'] = isset( $control['slot'] ) ? sanitize_key( $control['slot'] ) : '';
+						if ( '' === $control['slot'] ) {
+							unset( $group['controls'][ $c_i ] );
+							continue;
+						}
 					}
 					// Remove objects in control meta.
 					foreach ( $control as $k => $v ) {

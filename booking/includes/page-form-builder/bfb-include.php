@@ -117,6 +117,8 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/radio/fi
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/checkbox/field-checkbox-wptpl.php';             // -- Checkbox --
 
 require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/accept-terms/field-accept-terms-wptpl.php';     // -- Terms --
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/country/field-country.php';                   // -- Country List --.
+require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/field-packs/coupon/field-coupon.php';                       // -- Discount Coupon --.
 
 // =====================================================================================================================
 // == Times Packs ==

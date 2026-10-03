@@ -169,8 +169,7 @@ $wpbc_booking_mode_canonical_pages = array(
 	),
 	'wpbc-setup__step_01' => array(
 		'page'  => 'wpbc-setup',
-		'tab'   => 'step_01',
-		'title' => 'Setup',
+		'title' => 'Setup Wizard',
 	),
 );
 

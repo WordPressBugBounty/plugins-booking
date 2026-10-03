@@ -4,6 +4,33 @@
 // @file: includes/__js/client/front_end_form/booking_form_submit.js
 
 /**
+ * Check whether a form belongs to a request-local booking preview.
+ *
+ * Signed iframe and new-window previews intentionally do not use this marker;
+ * they retain the complete Booking Calendar preview lifecycle.
+ *
+ * @param {HTMLFormElement} submit_form Booking form being submitted.
+ * @return {boolean} True when final submission must remain local and non-mutating.
+ */
+function wpbc_booking_form__is_inline_preview_submission( submit_form ) {
+	return 0 < jQuery( submit_form ).closest( '[data-wpbc-inline-booking-preview="1"]' ).length;
+}
+
+/**
+ * Explain below the form why a request-local preview cannot create a booking.
+ *
+ * @param {HTMLFormElement} submit_form Booking form being submitted.
+ * @return {void}
+ */
+function wpbc_booking_form__show_inline_preview_submission_notice( submit_form ) {
+	wpbc_front_end__show_message__warning_under_element(
+		submit_form,
+		_wpbc.get_message( 'message_inline_preview_submission_disabled' ),
+		'text'
+	);
+}
+
+/**
  * Check fields at form and then send request (legacy: mybooking_submit).
  *
  * @param {HTMLFormElement} submit_form
@@ -33,6 +60,11 @@ function wpbc_booking_form_submit( submit_form, resource_id, wpdev_active_locale
 		( jQuery( target_elm ).find( 'input[name="booking_form_show_summary"]' ).length > 0 ) &&
 		( 'pause_submit' === jQuery( target_elm ).find( 'input[name="booking_form_show_summary"]' ).val() )
 	) {
+		return false;
+	}
+
+	if ( wpbc_booking_form__is_inline_preview_submission( submit_form ) ) {
+		wpbc_booking_form__show_inline_preview_submission_notice( submit_form );
 		return false;
 	}
 

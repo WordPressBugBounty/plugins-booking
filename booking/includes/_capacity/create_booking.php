@@ -215,6 +215,90 @@ if (  is_admin() && ( defined( 'DOING_AJAX' ) ) && ( DOING_AJAX )  ) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
+ * Resolve and validate the final booking destination against current storage.
+ *
+ * This function contains the availability, Appointment working-time, and
+ * Appointment buffer checks that must be repeated if the database connection
+ * loses its advisory lock before persistence. The caller clears the relevant
+ * request-local cache before every invocation.
+ *
+ * @param array $local_params    Parsed booking parameters, passed by reference because force-save mode fixes capacity at one.
+ * @param array $cleaned_params  Sanitized booking request parameters.
+ * @param array $php_performance Performance measurements, passed by reference.
+ *
+ * @return array|WP_Error Validated storage destination, or a visitor-safe validation error.
+ */
+function wpbc_booking_validate_save_availability( &$local_params, $cleaned_params, &$php_performance ) {
+
+	// Privileged imports and other established integrations may intentionally force a save.
+	if ( ! empty( $cleaned_params['save_booking_even_if_unavailable'] ) ) {
+		$local_params['how_many_items_to_book'] = 1;
+		$dates_keys_arr                         = array_values( $local_params['dates_only_sql_arr'] );
+		$resources_in_dates                     = array_fill_keys( $dates_keys_arr, array( $local_params['initial_resource_id'] ) );
+		$where_to_save_booking                  = array(
+			'result'             => 'ok',
+			'resources_in_dates' => $resources_in_dates,
+			'time_to_book'       => $local_params['time_as_his_arr'],
+			'main__resource_id'  => $local_params['initial_resource_id'],
+		);
+	} else {
+		$php_performance = wpbc_php_performance_START( 'wpbc__where_to_save_booking', $php_performance );
+
+		$where_to_save_booking = wpbc__where_to_save_booking(
+			array(
+				'resource_id'                   => $local_params['initial_resource_id'],
+				'skip_booking_id'               => $local_params['skip_booking_id'],
+				'dates_only_sql_arr'            => $local_params['dates_only_sql_arr'],
+				'time_as_seconds_arr'           => $local_params['time_as_seconds_arr'],
+				'how_many_items_to_book'        => $local_params['how_many_items_to_book'],
+				'request_uri'                   => $cleaned_params['request_uri'],
+				'allow_past'                    => ! empty( $cleaned_params['allow_past'] ),
+				'is_use_booking_recurrent_time' => $local_params['is_use_booking_recurrent_time'],
+				'time_override_source'          => ! empty( $local_params['time_override_arr']['source'] ) ? $local_params['time_override_arr']['source'] : '',
+				'as_single_resource'            => false,
+				'aggregate_resource_id_arr'     => $local_params['aggregate_resource_id_arr'],
+				'aggregate_type'                => $cleaned_params['aggregate_type'],
+				'custom_form'                   => $cleaned_params['custom_form'],
+			)
+		);
+
+		if ( 'error' === $where_to_save_booking['result'] ) {
+			return new WP_Error( 'booking_can_not_save', $where_to_save_booking['message'] );
+		}
+
+		$php_performance = wpbc_php_performance_END( 'wpbc__where_to_save_booking', $php_performance );
+	}
+
+	if ( ! empty( $local_params['appointment_service'] ) && function_exists( 'wpbc_appointment_services_check_working_time' ) ) {
+		$working_time_check = wpbc_appointment_services_check_working_time(
+			$local_params['appointment_service'],
+			$where_to_save_booking['main__resource_id'],
+			array_keys( $where_to_save_booking['resources_in_dates'] ),
+			$local_params['time_as_seconds_arr']
+		);
+		if ( is_wp_error( $working_time_check ) ) {
+			return $working_time_check;
+		}
+	}
+
+	if ( ! empty( $local_params['appointment_service'] ) && function_exists( 'wpbc_appointment_services_check_buffer_conflicts' ) ) {
+		$buffer_check = wpbc_appointment_services_check_buffer_conflicts(
+			$local_params['appointment_service'],
+			$where_to_save_booking['main__resource_id'],
+			array_keys( $where_to_save_booking['resources_in_dates'] ),
+			$local_params['time_as_seconds_arr'],
+			$local_params['skip_booking_id']
+		);
+		if ( is_wp_error( $buffer_check ) ) {
+			return $buffer_check;
+		}
+	}
+
+	return $where_to_save_booking;
+}
+
+
+/**
  * Save Booking   -   ADD NEW   or   UPDATE exist    booking
  *
  * @param $request_params = [
@@ -531,7 +615,7 @@ function wpbc_booking_save( $request_params ){
 	if ( $is_public_booking_create_request && ! $has_verified_classic_context ) {
 		$ajx_data_arr['status']                          = 'error';
 		$ajx_data_arr['status_error']                    = 'classic_booking_context_required';
-		$ajx_data_arr['ajx_after_action_message']        = __( 'The booking form context has expired. Please reload the page and try again.', 'booking' );
+		$ajx_data_arr['ajx_after_action_message']        = wpbc_classic_booking_context_get_visitor_message( 'message_booking_form_context_required', $re_cleaned_params['resource_id'] );
 		$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
 		return array( 'ajx_data' => $ajx_data_arr );
 	}
@@ -620,141 +704,106 @@ function wpbc_booking_save( $request_params ){
 	// Here GO
 	// -----------------------------------------------------------------------------------------------------------------
 
-	//  Force   -   resource saving parameters,  instead of wpbc__where_to_save_booking()
-	if ( ! empty( $re_cleaned_params["save_booking_even_if_unavailable"] ) ) {
+	$availability_guard = wpbc_booking_availability_guard_acquire();
+	if ( is_wp_error( $availability_guard ) ) {
+		$ajx_data_arr['status']                          = 'error';
+		$ajx_data_arr['status_error']                    = $availability_guard->get_error_code();
+		$ajx_data_arr['ajx_after_action_message']        = $availability_guard->get_error_message();
+		$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
 
-		$local_params['how_many_items_to_book'] = 1;
-
-		$dates_keys_arr = array_values( $local_params['dates_only_sql_arr'] );                                          // [ '2023-09-23',  '2023-09-24' ]
-
-		$resources_in_dates = array_fill_keys(  $dates_keys_arr  , array( $local_params['initial_resource_id'] )  );    // [ 2023-09-23 = [ 2 ],  2023-09-24 = [ 2 ] ]
-
-		$where_to_save_booking = array();
-		$where_to_save_booking['result']             = 'ok';
-		$where_to_save_booking['resources_in_dates'] = $resources_in_dates;                                             // [ 2023-09-23 = [ 2, 10, 11 ],  2023-09-24 = [  2, 10, 11 ]
-		$where_to_save_booking['time_to_book']       = $local_params['time_as_his_arr'];                                // [ "00:00:00", "24:00:00" ]
-		$where_to_save_booking['main__resource_id']  = $local_params['initial_resource_id'];                            // here  edit or request (parent/single)  resource
-
-	} else {
-																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-		$php_performance = wpbc_php_performance_START( 'wpbc__where_to_save_booking' , $php_performance );
-																														// </editor-fold>
-
-		/**
-		 *  Get slots [] where we can save booking    =    [    'resources_in_dates' => [     2023-10-18 = [ 2, 12, 10, 11 ]
-		 *                                                                                    2023-10-19 = [ 2, 12, 10, 11 ]
-		 *                                                                                    2023-10-20 = [ 2, 12, 10, 11 ]
-		 *                                                                              ],
-		 *                                                       'time_to_book'      => [  "14:00:01"  ,  "12:00:01"  ],
-		 *                                                       'result'            => 'ok'
-		 *                                                       'main__resource_id' => 2
-		 *                                                 ]
-		 *                                            OR
-		 *                                                 [ 'result' => 'error', 'message' => 'Booking can not be saved ...' ]
-		 */
-		$where_to_save_booking = wpbc__where_to_save_booking( array(
-										'resource_id'                   => $local_params['initial_resource_id'],                // 2 //TODO: If edit booking. What to pass 'edit' or 'parent' resource ID?
-										'skip_booking_id'               => $local_params['skip_booking_id'],                    // '',            |  125 if edit booking
-										'dates_only_sql_arr'            => $local_params['dates_only_sql_arr'],                 // [ "2023-10-18", "2023-10-25", "2023-11-25" ]
-										'time_as_seconds_arr'           => $local_params['time_as_seconds_arr'],                // [ 36000, 39600 ]
-										'how_many_items_to_book'        => $local_params['how_many_items_to_book'],             // 1
-										'request_uri'                   => $re_cleaned_params['request_uri'],                   // 'http://beta/resource-id2/'
-										'allow_past'                    => ! empty( $re_cleaned_params['allow_past'] ),
-										'is_use_booking_recurrent_time' => $local_params['is_use_booking_recurrent_time'],      // true | false
-										'time_override_source'          => ! empty( $local_params['time_override_arr']['source'] ) ? $local_params['time_override_arr']['source'] : '',
-										'as_single_resource'            => false,                                                // false
-										'aggregate_resource_id_arr'     => $local_params['aggregate_resource_id_arr'],           // Optional  can  be ''
-										'aggregate_type'                => $re_cleaned_params['aggregate_type'],                 //TODO: this parameter does not transfer during saving, so here will be always default value 'bookings_only'        // FixIn: 10.0.0.7.
-										'custom_form'                   => $re_cleaned_params['custom_form']                     // FixIn: 10.0.0.10.
-								    ));
-		// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  NO SLOTS TO SAVE "  >
-		if ( 'error' == $where_to_save_booking['result'] ) {
-			$ajx_data_arr['status']                          = 'error';
-			$ajx_data_arr['status_error']                    = 'booking_can_not_save';
-			$ajx_data_arr['ajx_after_action_message']        = $where_to_save_booking['message'];
-			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
-			return array( 'ajx_data' => $ajx_data_arr );
-		}
-		// </editor-fold>
-
-																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-		$php_performance = wpbc_php_performance_END( 'wpbc__where_to_save_booking' , $php_performance );
-																														// </editor-fold>
-	}
-
-	if ( ! empty( $local_params['appointment_service'] ) && function_exists( 'wpbc_appointment_services_check_buffer_conflicts' ) ) {
-		$buffer_check = wpbc_appointment_services_check_buffer_conflicts(
-			$local_params['appointment_service'],
-			$where_to_save_booking['main__resource_id'],
-			array_keys( $where_to_save_booking['resources_in_dates'] ),
-			$local_params['time_as_seconds_arr'],
-			$local_params['skip_booking_id']
-		);
-		if ( is_wp_error( $buffer_check ) ) {
-			$ajx_data_arr['status']                          = 'error';
-			$ajx_data_arr['status_error']                    = 'appointment_service_buffer_conflict';
-			$ajx_data_arr['ajx_after_action_message']        = $buffer_check->get_error_message();
-			$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
-			return array( 'ajx_data' => $ajx_data_arr );
-		}
-	}
-
-
-	// Get parameters, from  REQUEST
-	$create_params                   = $local_params;
-	$create_params['resource_id']    = ( ! empty( $local_params['edit_resource_id'] ) )
-		? $local_params['edit_resource_id']                           // If we edit,  then  use original resource ???
-		: $where_to_save_booking['main__resource_id'];                // Here is important TIP, resource can be where is free,  and not where we submit
-	/**
-	 * TODO: I think  it's resolved!    Just  test about this situation,  when  we edit the booking - and it's means that we have   $local_params['edit_resource_id']
-	 *  but what, if  $where_to_save_booking        do not contain this $local_params['edit_resource_id'] as available resource.
-	 *  or even  we have        $local_params['edit_resource_id'] = 2      and      $where_to_save_booking  contain resources like [ 1, 2, 3, 4 ]
-	 *  we make booking for 3 slots
-	 *  in this case,  main  resource will be 2
-	 *  but then when  we loop  resources in wpbc_db__booking_save() we will  save child booking resources for dates like:   2, 3, 4  ( and it's wrong )
-	 *       "(205, '2023-10-04 00:00:00', 0, NULL)"        <-  main resource  '2'   e.g.   $local_params['edit_resource_id'] = 2
-	 *       "(205, '2023-10-04 00:00:00', 0, 2)"      ?    <-  child resource '2'   e.g.   [ .., 2, .. ] in $where_to_save_booking         WHICH IS WRONG
-	 */
-	$create_params['is_emails_send'] = $re_cleaned_params['is_emails_send'];
-	$create_params['custom_form']    = $re_cleaned_params['custom_form'];
-
-	make_bk_action( 'check_multiuser_params_for_client_side', $create_params['resource_id'] );                                 // Activate working with specific user in WP MU
-
-																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
-	$php_performance = wpbc_php_performance_START( 'wpbc_db__booking_save' , $php_performance );
-																														// </editor-fold>
-
-	// -----------------------------------------------------------------------------------------------------------------
-	// ==   CREATE_THE 'NEW_BOOKING'   ==
-	// -----------------------------------------------------------------------------------------------------------------
-	$create_booking_params = array(
-									'resource_id'                   => $create_params['resource_id'],
-									'custom_form'                   => $create_params['custom_form'],
-									'all_booking_data_arr'          => $create_params['all_booking_data_arr'],
-									'dates_only_sql_arr'            => $create_params['dates_only_sql_arr'],
-									'time_as_his_arr'               => $create_params['time_as_his_arr'],
-									'is_from_admin_panel'           => $create_params['is_from_admin_panel'],
-									'is_edit_booking'               => $create_params['is_edit_booking'],
-									'is_duplicate_booking'          => $create_params['is_duplicate_booking'],
-									'is_approve_booking'            => $create_params['is_approve_booking'],
-									'how_many_items_to_book'        => $create_params['how_many_items_to_book'],
-									'is_use_booking_recurrent_time' => $create_params['is_use_booking_recurrent_time']     // true | false
-								);
-	if ( ! empty( $create_params['appointment_service'] ) ) { $create_booking_params['appointment_service'] = $create_params['appointment_service']; }
-	if ( ! empty( $create_params['sync_gid'] ) ) { $create_booking_params['sync_gid'] = $create_params['sync_gid']; }
-
-	$booking_new_arr = wpbc_db__booking_save( $create_booking_params, $where_to_save_booking );
-
-	// <editor-fold     defaultstate="collapsed"                        desc=" :: ERROR :: <-  BOOKING CREATION "  >
-	if ( 'ok' !== $booking_new_arr['status'] ) {
-		$ajx_data_arr['status']                          = $booking_new_arr['status'];
-		$ajx_data_arr['status_error']                    = 'booking_can_not_save';
-		$ajx_data_arr['ajx_after_action_message']        = $booking_new_arr['message'];
-		$ajx_data_arr['ajx_after_action_message_status'] = 'error';
 		return array( 'ajx_data' => $ajx_data_arr );
 	}
-	// </editor-fold>
 
+	$guard_revalidation_attempts = 0;
+	try {
+		while ( true ) {
+			wpbc_cache__clear( 'wpbc__sql__get_booking_dates' );
+			$where_to_save_booking = wpbc_booking_validate_save_availability( $local_params, $re_cleaned_params, $php_performance );
+
+			if ( is_wp_error( $where_to_save_booking ) ) {
+				$ajx_data_arr['status']                          = 'error';
+				$ajx_data_arr['status_error']                    = $where_to_save_booking->get_error_code();
+				$ajx_data_arr['ajx_after_action_message']        = $where_to_save_booking->get_error_message();
+				$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+
+				return array( 'ajx_data' => $ajx_data_arr );
+			}
+
+			// Get parameters, from REQUEST.
+			$create_params                = $local_params;
+			$create_params['resource_id'] = ( ! empty( $local_params['edit_resource_id'] ) )
+				? $local_params['edit_resource_id']
+				: $where_to_save_booking['main__resource_id'];
+			$create_params['is_emails_send'] = $re_cleaned_params['is_emails_send'];
+			$create_params['custom_form']    = $re_cleaned_params['custom_form'];
+
+			make_bk_action( 'check_multiuser_params_for_client_side', $create_params['resource_id'] );
+
+			$create_booking_params = array(
+				'resource_id'                   => $create_params['resource_id'],
+				'custom_form'                   => $create_params['custom_form'],
+				'all_booking_data_arr'          => $create_params['all_booking_data_arr'],
+				'dates_only_sql_arr'            => $create_params['dates_only_sql_arr'],
+				'time_as_his_arr'               => $create_params['time_as_his_arr'],
+				'is_from_admin_panel'           => $create_params['is_from_admin_panel'],
+				'is_edit_booking'               => $create_params['is_edit_booking'],
+				'is_duplicate_booking'          => $create_params['is_duplicate_booking'],
+				'is_approve_booking'            => $create_params['is_approve_booking'],
+				'how_many_items_to_book'        => $create_params['how_many_items_to_book'],
+				'is_use_booking_recurrent_time' => $create_params['is_use_booking_recurrent_time'],
+			);
+			if ( ! empty( $create_params['appointment_service'] ) ) {
+				$create_booking_params['appointment_service'] = $create_params['appointment_service'];
+			}
+			if ( ! empty( $create_params['sync_gid'] ) ) {
+				$create_booking_params['sync_gid'] = $create_params['sync_gid'];
+			}
+
+			if ( ! wpbc_booking_availability_guard_is_owned( $availability_guard ) ) {
+				wpbc_booking_availability_guard_release( $availability_guard );
+				if ( 1 <= $guard_revalidation_attempts ) {
+					$availability_guard = wpbc_booking_availability_guard_get_busy_error();
+				} else {
+					++$guard_revalidation_attempts;
+					$availability_guard = wpbc_booking_availability_guard_acquire();
+				}
+
+				if ( is_wp_error( $availability_guard ) ) {
+					$ajx_data_arr['status']                          = 'error';
+					$ajx_data_arr['status_error']                    = $availability_guard->get_error_code();
+					$ajx_data_arr['ajx_after_action_message']        = $availability_guard->get_error_message();
+					$ajx_data_arr['ajx_after_action_message_status'] = 'warning';
+
+					return array( 'ajx_data' => $ajx_data_arr );
+				}
+
+				continue;
+			}
+
+			$php_performance = wpbc_php_performance_START( 'wpbc_db__booking_save', $php_performance );
+			$booking_new_arr = wpbc_db__booking_save( $create_booking_params, $where_to_save_booking );
+			if ( 'ok' !== $booking_new_arr['status'] ) {
+				$ajx_data_arr['status']                          = $booking_new_arr['status'];
+				$ajx_data_arr['status_error']                    = 'booking_can_not_save';
+				$ajx_data_arr['ajx_after_action_message']        = $booking_new_arr['message'];
+				$ajx_data_arr['ajx_after_action_message_status'] = 'error';
+
+				return array( 'ajx_data' => $ajx_data_arr );
+			}
+
+			// Appointment buffers must become visible before the serialized availability section ends.
+			if ( function_exists( 'wpbc_appointment_services_after_booking_save' ) ) {
+				wpbc_appointment_services_after_booking_save( $booking_new_arr['booking_id'], $create_booking_params, $where_to_save_booking );
+			}
+
+			break;
+		}
+	} finally {
+		wpbc_cache__clear( 'wpbc__sql__get_booking_dates' );
+		wpbc_booking_availability_guard_release( $availability_guard );
+	}
+
+	// Released compatibility hook: arbitrary callbacks must not extend the database lock duration.
 	do_action( 'wpbc_booking_after_save', $booking_new_arr['booking_id'], $create_booking_params, $where_to_save_booking );
 
 	// FixIn: 9.9.0.36.

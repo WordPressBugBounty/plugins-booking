@@ -899,3 +899,10 @@ table.datepick.wpbc_calendar{
   text-decoration: none !important;
   outline:0 !important;
 }
+/* Update colors for the change-over dates with  Unbookable Date Gaps */
+.wpbc_unbookable_date_gap span{
+  color:  var(--wpbc_cal-unavailable-text-color) !important;
+}
+.datepick-inline .wpbc_unbookable_date_gap .wpbc-cell-box, .block_hints .wpbc_unbookable_date_gap .wpbc-cell-box {
+  background: var(--wpbc_cal-unavailable-day-color) !important;;
+}

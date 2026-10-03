@@ -185,9 +185,9 @@ return array(
 		'users'                       => array(
 			'route' => array( 'page' => 'wpbc-settings', 'tab' => 'users' ),
 		),
-		// Setup. booking/includes/page-setup/setup__page.php:57.
+		// Production Setup Wizard.
 		'setup'                       => array(
-			'route' => array( 'page' => 'wpbc-setup', 'tab' => 'step_01' ),
+			'route' => array( 'page' => 'wpbc-setup' ),
 		),
 		// Log Off. booking-calendar-com/inc/_mu/admin/page-log_off.php:31.
 		// MultiUser impersonation exit. Preserve domain behavior; never preload this route.

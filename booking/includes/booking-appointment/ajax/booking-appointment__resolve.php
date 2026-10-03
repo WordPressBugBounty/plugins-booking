@@ -29,6 +29,21 @@ function wpbc_booking_appointment_ajax_resolve() {
 		wp_send_json_error( array( 'message' => $config->get_error_message(), 'code' => $config->get_error_code() ), 400 );
 	}
 
+	$is_preview_request = ! empty( $config['return_url'] ) && false !== strpos( (string) $config['return_url'], 'wpbc_bfb_preview=' );
+	if ( $is_preview_request ) {
+		$preview_activated = class_exists( 'WPBC_BFB_Preview_Service' )
+			&& WPBC_BFB_Preview_Service::get_instance()->activate_appointment_preview_from_url( $config['return_url'] );
+		if ( ! $preview_activated ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'This booking form preview expired. Refresh the preview and try again.', 'booking' ),
+					'code'    => 'appointment_preview_expired',
+				),
+				403
+			);
+		}
+	}
+
 	$service_id  = isset( $_POST['service_id'] ) && ! is_array( $_POST['service_id'] ) ? absint( wp_unslash( $_POST['service_id'] ) ) : 0;
 	$provider_id = isset( $_POST['provider_id'] ) && ! is_array( $_POST['provider_id'] ) ? absint( wp_unslash( $_POST['provider_id'] ) ) : 0;
 	$result      = wpbc_booking_appointment_resolve_stage( $config, $service_id, $provider_id );
