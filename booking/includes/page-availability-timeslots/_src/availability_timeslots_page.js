@@ -229,6 +229,7 @@
 
 		activeLoadRequest = $.post( settings.ajax_url, {
 			action: 'WPBC_AJX_AVAILABILITY_TIMESLOTS_READ',
+			nonce: settings.nonce,
 			resource_id: get_control( $page, 'resource' ).val(),
 			date_start: $dateRange.attr( 'data-wpbc-ts-start' ),
 			date_end: $dateRange.attr( 'data-wpbc-ts-end' )

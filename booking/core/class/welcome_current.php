@@ -4,6 +4,72 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
+ * Render the Booking Calendar 12.0 Timeline introduction.
+ *
+ * Phases 1 through 4 provide the isolated page, bounded read data, complete
+ * zoom axis, bounded adjacent date loading, local range selection, canonical
+ * booking handoff, and independently authorized Availability blocking.
+ *
+ * @param object $obj Welcome-page renderer and image loader.
+ *
+ * @return void
+ */
+function wpbc_welcome_section_12_0( $obj ) {
+
+	$section_parameters = array( 'version_num' => '12.0', 'show_expand' => false );
+	$obj->expand_section_start( $section_parameters );
+	?>
+	<div class="wpbc_wn_container">
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php esc_html_e( 'A New Zoomable and Selectable Timeline', 'booking' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__timeline_phase_4_selection_placeholder.png' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php esc_attr_e( 'Booking Calendar Timeline with Resource rows, zoom controls, booking cards, and an empty range selection preview', 'booking' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php esc_html_e( 'Open a dedicated Timeline page.', 'booking' ); ?></strong> <?php esc_html_e( 'Bookings, Timeline, and the mode-appropriate Add Booking or Add Appointment action share a clear navigation bar, the minimized side menu remains available from the top bar, and the Resource and date header remains visible as you scroll.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Choose a focused Timeline range and scale.', 'booking' ); ?></strong> <?php esc_html_e( 'Use one direct dropdown for 10 focused date-range and cell-scale combinations within the 25,000-bucket budget at the 50-Resource maximum. The default is 1 month — 1 day; clear separators and familiar scale icons keep the choices scannable. The combined date navigation opens the correct Start or End calendar, and the browser-only 30% to 300% Density slider remains beside the dropdown without changing booking precision.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'See when Timeline is loading.', 'booking' ); ?></strong> <?php esc_html_e( 'Date-range, cell-scale, navigation, Today, and reload requests now use the standard administration notice and Booking Resources spinner on a readable status surface in a lighter contained overlay, then restore the initiating control when the newest request completes.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Keep scrolling through bounded dates.', 'booking' ); ?></strong> <?php esc_html_e( 'Timeline opens at the current date or time with one previous period already loaded. Use the split Today control to return to the current instant or choose any date from the standard calendar; cached dates move immediately, while other dates safely load with the active range and scale. Approaching either outer edge then loads one authorized adjacent period while localized row placeholders, a persistent loading card with its date range and Cancel action, stable anchoring, retry controls, and a three-window memory limit keep the view predictable.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Review Resources and bookings together.', 'booking' ); ?></strong> <?php esc_html_e( 'The fixed white Resource pane shows authorized Resources, overflow-aware full-title tooltips, Catalog-aligned parent and child hierarchy, labelled blue Capacity badges, and base rates beside compact collision-aware cards for full-day, timed, overnight, recurrent, and clipped bookings.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Select and adjust an empty range.', 'booking' ); ?></strong> <?php esc_html_e( 'Use pointer, scroll-safe touch, or keyboard controls to draft a snapped range, adjust either boundary with draggable and keyboard-accessible handles, then review current Availability, capacity, overlaps, service and form context, and a clearly labelled Resource-only quote before choosing an authorized action.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Continue with canonical workflows.', 'booking' ); ?></strong> <?php esc_html_e( 'Open Add Booking or Add Appointment with the exact Resource, dates, times, and return position preserved, or apply a separately authorized full-day or timed Availability block without cancelling or hiding an existing booking.', 'booking' ); ?></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php esc_html_e( 'Reliable Changeover Date Ranges', 'booking' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__changeover_range_validation_placeholder.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php esc_attr_e( 'Booking calendar rejecting a range across an occupied one-night changeover booking and accepting a legal checkout-date start', 'booking' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php esc_html_e( 'Stop ranges at occupied stays.', 'booking' ); ?></strong> <?php esc_html_e( 'Fixed and Dynamic range selection now rejects a period that crosses an existing changeover booking before visitors continue to their details.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Keep legal turnover dates available.', 'booking' ); ?></strong> <?php esc_html_e( 'A new stay can still end on an existing check-in date or start on an existing checkout date when the boundary is available.', 'booking' ); ?></li>
+					<li><strong><?php esc_html_e( 'Recover immediately after rejection.', 'booking' ); ?></strong> <?php esc_html_e( 'An invalid second click clears the complete range and closes the open selection phase so the next available date starts a fresh range.', 'booking' ); ?></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<?php
+	$obj->expand_section_end( $section_parameters );
+}
+
+/**
  * Render Booking Calendar 11.9 What's New content.
  *
  * @param object $obj Welcome-page renderer and image loader.
@@ -199,7 +265,7 @@ function wpbc_welcome_section_11_9( $obj ) {
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
 				<ul>
 					<li><strong><?php echo( 'Keep hover and click together.' ); ?></strong> <?php echo( 'Fixed and Dynamic range selection now previews and selects the same valid period containing the date a visitor points to.' ); ?></li>
-					<li><strong><?php echo( 'Preserve the visitor\'s choice.' ); ?></strong> <?php echo( 'Invalid end dates leave the first Dynamic-range click in place, while conditional Season, weekday, and exact-date rules use the actual range start.' ); ?></li>
+					<li><strong><?php echo( 'Recover from an invalid range.' ); ?></strong> <?php echo( 'Invalid end dates clear the open Dynamic range so the next click starts again, while conditional Season, weekday, and exact-date rules use the actual range start.' ); ?></li>
 					<li><span><?php echo( 'Available in the  Booking Calendar Business Medium or igher versions' ); ?></span> <?php ?></li>
 				</ul>
 			</div>

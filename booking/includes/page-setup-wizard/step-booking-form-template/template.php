@@ -27,10 +27,9 @@ $preview_html        = isset( $step_data['preview_html'] ) ? (string) $step_data
 $preview_bootstrap   = isset( $step_data['preview_bootstrap'] ) && is_array( $step_data['preview_bootstrap'] ) ? $step_data['preview_bootstrap'] : array();
 $preview_error       = isset( $step_data['preview_error'] ) ? (string) $step_data['preview_error'] : '';
 $has_inline_preview  = 'inline' === $preview_kind && '' !== trim( $preview_html ) && ! empty( $preview_bootstrap );
-$applied_form_slug   = 'standard';
 $preview_shortcode   = 'appointment_flow' === $selected_usage
-	? sprintf( '[booking_appointment form_type="%s"]', $applied_form_slug )
-	: sprintf( '[booking form_type="%s"]', $applied_form_slug );
+	? '[booking_appointment]'
+	: '[booking]';
 ?>
 <section class="wpbc_setup_wizard__step-content wpbc_setup_wizard__booking-form-step" aria-labelledby="wpbc-setup-wizard-step-title">
 	<header class="wpbc_setup_wizard__step-heading">

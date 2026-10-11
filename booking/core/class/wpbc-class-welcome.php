@@ -357,6 +357,9 @@ class WPBC_Welcome {
 
 		$this->section_9_8_css();
 
+		if ( ( defined( 'WPBC_ENABLE_12_0_TIMELINE' ) ) && ( WPBC_ENABLE_12_0_TIMELINE ) ) {
+			wpbc_welcome_section_12_0( $this );
+		}
 		wpbc_welcome_section_11_9( $this );
 		wpbc_welcome_section_11_8_1( $this );
 		wpbc_welcome_section_11_8( $this );

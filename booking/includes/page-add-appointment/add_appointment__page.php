@@ -288,6 +288,12 @@ class WPBC_Page_Add_Appointment extends WPBC_Page_Structure {
 				),
 				function () {
 					$send_emails = get_bk_option( 'booking_send_emails_off_addbooking' ) !== 'On';
+					$handoff_intent = function_exists( 'wpbc_timeline_get_requested_email_intent' )
+						? wpbc_timeline_get_requested_email_intent( 'appointment_handoff' )
+						: null;
+					if ( null !== $handoff_intent ) {
+						$send_emails = $handoff_intent;
+					}
 					wpbc_render_admin_cost_correction_control(
 						array(
 							'input_id'      => 'wpbc_add_appointment_cost_correction',
@@ -489,13 +495,22 @@ class WPBC_Page_Add_Appointment extends WPBC_Page_Structure {
 		}
 
 		$settings = wpbc_add_appointment_page_get_settings();
+		$timeline_handoff = function_exists( 'wpbc_timeline_get_requested_handoff' )
+			? wpbc_timeline_get_requested_handoff( 'appointment_handoff' )
+			: null;
 		$config   = array(
 			'cal_count'            => $settings['calendar_months'],
 			'auto_select_provider' => $settings['auto_select_provider'],
 			'allow_past'           => $settings['allow_past'],
 		);
+		if ( is_array( $timeline_handoff ) && function_exists( 'wpbc_timeline_get_add_appointment_config' ) ) {
+			$config = array_merge( $config, wpbc_timeline_get_add_appointment_config( $timeline_handoff ) );
+		}
 		$config = (array) apply_filters( 'wpbc_admin_add_appointment_config', $config, $settings );
 		wpbc_add_appointment_page_print_booking_context( $settings['allow_past'] );
+		if ( is_array( $timeline_handoff ) && function_exists( 'wpbc_timeline_render_handoff_notice' ) ) {
+			wpbc_timeline_render_handoff_notice( $timeline_handoff );
+		}
 		?>
 		<div class="wpbc_add_appointment_page wpdevelop" data-wpbc-add-appointment-page="1">
 			<div class="wpbc_add_appointment__canvas">

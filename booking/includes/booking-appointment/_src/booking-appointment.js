@@ -367,7 +367,8 @@
 	function apply_available_start_times( $native, slots ) {
 		var selection = get_time_selection( $native );
 		var $start = selection.$start;
-		var selected_value = selection.start_time;
+		var initial_start_time = String( $native.attr( 'data-initial-start-time' ) || '' );
+		var selected_value = selection.start_time || initial_start_time;
 		var selected_message = '';
 		clear_appointment_disabled_times( $start );
 
@@ -386,7 +387,10 @@
 		if ( selected_message ) {
 			$start.val( '' );
 			show_time_notice( $native, selection, selected_message );
+		} else if ( initial_start_time && slots && slots[ initial_start_time ] && false !== slots[ initial_start_time ].valid ) {
+			$start.val( initial_start_time );
 		}
+		$native.removeAttr( 'data-initial-start-time' );
 		refresh_start_time_picker( $start );
 	}
 

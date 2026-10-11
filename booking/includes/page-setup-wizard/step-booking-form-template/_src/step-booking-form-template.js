@@ -142,8 +142,8 @@
 		 */
 		function get_preview_shortcode( booking_form_usage ) {
 			return 'appointment_flow' === booking_form_usage
-				? '[booking_appointment form_type="standard"]'
-				: '[booking form_type="standard"]';
+				? '[booking_appointment]'
+				: '[booking]';
 		}
 
 		/**

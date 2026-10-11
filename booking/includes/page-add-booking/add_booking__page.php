@@ -376,6 +376,12 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$form_name      = $this->get_selected_booking_form_name( $resource_id );
 		$days_mode      = $this->get_current_days_selection_mode();
 		$send_emails    = 'On' !== get_bk_option( 'booking_send_emails_off_addbooking' );
+		$handoff_intent = function_exists( 'wpbc_timeline_get_requested_email_intent' )
+			? wpbc_timeline_get_requested_email_intent( 'booking_handoff' )
+			: null;
+		if ( null !== $handoff_intent ) {
+			$send_emails = $handoff_intent;
+		}
 		$allow_past     = isset( $_GET['allow_past'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$enabled_label  = __( 'Enabled', 'booking' );
 		$disabled_label = __( 'Disabled', 'booking' );
@@ -923,6 +929,12 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$allow_past_url = esc_url_raw( wpbc_add_booking_page_get_allow_past_url( true ) );
 		$normal_url     = esc_url_raw( wpbc_add_booking_page_get_allow_past_url( false ) );
 		$send_emails    = 'On' !== get_bk_option( 'booking_send_emails_off_addbooking' );
+		$handoff_intent = function_exists( 'wpbc_timeline_get_requested_email_intent' )
+			? wpbc_timeline_get_requested_email_intent( 'booking_handoff' )
+			: null;
+		if ( null !== $handoff_intent ) {
+			$send_emails = $handoff_intent;
+		}
 		?>
 		<?php
 		wpbc_render_admin_cost_correction_control(
@@ -1120,18 +1132,31 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			return false;  // Define default booking resources for $_ GET and check if booking resource belong to user.
 		}
 
+		$timeline_handoff = function_exists( 'wpbc_timeline_get_requested_handoff' )
+			? wpbc_timeline_get_requested_handoff( 'booking_handoff' )
+			: null;
+		$handoff_args     = is_array( $timeline_handoff ) && function_exists( 'wpbc_timeline_get_add_booking_component_args' )
+			? wpbc_timeline_get_add_booking_component_args( $timeline_handoff )
+			: array();
+		if ( is_array( $timeline_handoff ) && function_exists( 'wpbc_timeline_render_handoff_notice' ) ) {
+			wpbc_timeline_render_handoff_notice( $timeline_handoff );
+		}
+
 		if ( wpbc_add_booking_page_is_inspector_enabled() ) {
 			?>
 			<div class="wpbc_add_booking_page" data-wpbc-add-booking-page="1">
 				<div class="wpbc_add_booking__canvas">
 					<?php
 					WPBC_Add_Booking_Component::render(
-						array(
+						array_merge(
+							$handoff_args,
+							array(
 							'is_toolbar_visible'            => false,
 							'is_show_before_content_spacer' => false,
 							'is_show_footer_email_toggle'   => false,
 							'content_css_class'             => 'add_booking_page_content wpbc_add_booking__form_content',
 							'content_style'                 => '',
+							)
 						)
 					);
 					?>
@@ -1139,7 +1164,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			</div>
 			<?php
 		} else {
-			WPBC_Add_Booking_Component::render();
+			WPBC_Add_Booking_Component::render( $handoff_args );
 		}
 
 		do_action( 'wpbc_hook_add_booking_page_footer', 'add_booking' );

@@ -96,17 +96,16 @@ final class WPBC_UI_Catalog {
 	}
 
 	/**
-	 * Enqueue shared catalog, hierarchy, selection, and row-action controllers.
+	 * Enqueue the domain-neutral catalog controller without optional mechanics.
 	 *
-	 * WordPress' `wp-util` package provides the allow-listed `wp.template()`
-	 * renderer used by every template-driven catalog. The catalog script also
-	 * exposes opt-in inline-workflow mechanics for sticky bars, busy controls,
-	 * and changed-row presentation. Hierarchy, selection, inline workflow, and
-	 * action menus do not perform domain reads or mutations.
+	 * Non-catalog administration modules may reuse focused shared mechanics,
+	 * such as rendered-overflow tooltips, without loading hierarchy, selection,
+	 * or action-menu controllers. Sortable remains a dependency of the shared
+	 * controller because catalog column ordering is implemented in that file.
 	 *
 	 * @return void
 	 */
-	public static function enqueue_scripts() {
+	public static function enqueue_controller() {
 		wp_enqueue_script(
 			'wpbc-ui-catalog-sortable',
 			wpbc_plugin_url( '/vendors/sortablejs/Sortable.min.js' ),
@@ -121,6 +120,21 @@ final class WPBC_UI_Catalog {
 			self::get_asset_version( 'wpbc_ui_catalog.js' ),
 			array( 'in_footer' => WPBC_JS_IN_FOOTER )
 		);
+	}
+
+	/**
+	 * Enqueue shared catalog, hierarchy, selection, and row-action controllers.
+	 *
+	 * WordPress' `wp-util` package provides the allow-listed `wp.template()`
+	 * renderer used by every template-driven catalog. The catalog script also
+	 * exposes opt-in inline-workflow mechanics for sticky bars, busy controls,
+	 * and changed-row presentation. Hierarchy, selection, inline workflow, and
+	 * action menus do not perform domain reads or mutations.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_scripts() {
+		self::enqueue_controller();
 		wp_enqueue_script(
 			'wpbc-ui-catalog-hierarchy',
 			trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/wpbc_ui_catalog_hierarchy.js',

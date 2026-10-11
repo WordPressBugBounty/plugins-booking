@@ -43,7 +43,7 @@ final class WPBC_Setup_Wizard_Publish_Integration {
 	const CONTENT_DIRECT_BOOKING_FORM  = 'direct_booking_form';
 	const CONTENT_AVAILABILITY_CALENDAR = 'availability_calendar';
 
-	/** Canonical form identity produced by every Setup Wizard Booking Form route. */
+	/** Canonical saved form identity retained for Setup Wizard compatibility contracts. */
 	const CANONICAL_FORM_SLUG = 'standard';
 
 	/** Backward-compatible alias for the former Guided-only constant name. */
@@ -201,14 +201,13 @@ final class WPBC_Setup_Wizard_Publish_Integration {
 	 * Return journey-aware page-content choices and exact shortcodes.
 	 *
 	 * @param string $customer_journey Selected customer journey identifier.
-	 * @param string $form_slug        Retained source-template slug. Publishing always targets the canonical Standard form.
+	 * @param string $form_slug        Retained source-template slug. Kept for compatibility; public shortcodes use their default form resolution.
 	 *
 	 * @return array<int,array<string,string>> Content option records with official help links.
 	 */
 	public function get_content_options( $customer_journey, $form_slug ) {
 		$customer_journey = sanitize_key( (string) $customer_journey );
-		$form_slug        = self::CANONICAL_FORM_SLUG;
-		$direct_shortcode = sprintf( '[booking form_type="%s"]', $form_slug );
+		$direct_shortcode = '[booking]';
 
 		$direct_booking_option = array(
 			'id'                   => self::CONTENT_DIRECT_BOOKING_FORM,
@@ -232,9 +231,7 @@ final class WPBC_Setup_Wizard_Publish_Integration {
 				'id'                   => self::CONTENT_APPOINTMENT_FLOW,
 				'label'                => __( 'Guided appointment flow', 'booking' ),
 				'description'          => __( 'Let customers choose a Service, Provider, date, and time.', 'booking' ),
-				'shortcode'            => '' !== $form_slug
-					? sprintf( '[booking_appointment form_type="%s"]', $form_slug )
-					: '[booking_appointment]',
+				'shortcode'            => '[booking_appointment]',
 				'shortcode_help_url'   => self::HELP_APPOINTMENT_SHORTCODE_URL,
 				'shortcode_help_label' => __( 'Appointment booking shortcode', 'booking' ),
 			);
@@ -369,7 +366,7 @@ final class WPBC_Setup_Wizard_Publish_Integration {
 	 * depends on a browser-provided shortcode or label.
 	 *
 	 * @param string $customer_journey Selected customer journey identifier.
-	 * @param string $form_slug        Retained source-template slug. Publishing resolves it to the canonical Standard form.
+	 * @param string $form_slug        Retained source-template slug. Kept for compatibility; public shortcodes use their default form resolution.
 	 * @param string $content_id       Proposed page-content identifier.
 	 *
 	 * @return array<string,string>|WP_Error Authorized content record or error.

@@ -100,6 +100,8 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 		'start_month_calendar'    => false,
 		'calendar_dates_start'    => '',
 		'calendar_dates_end'      => '',
+		'selected_dates_without_calendar' => '',
+		'initial_start_time'      => '',
 		'options'                 => '',
 		'form_type'               => '',
 		'auto_select_provider'    => false,
@@ -192,6 +194,12 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 		$date_value          = sanitize_text_field( (string) $config[ $date_key ] );
 		$config[ $date_key ] = preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_value ) ? $date_value : '';
 	}
+
+	$selected_date = sanitize_text_field( (string) $config['selected_dates_without_calendar'] );
+	$config['selected_dates_without_calendar'] = preg_match( '/^\d{2}\.\d{2}\.\d{4}$/', $selected_date ) ? $selected_date : '';
+
+	$initial_start_time = sanitize_text_field( (string) $config['initial_start_time'] );
+	$config['initial_start_time'] = preg_match( '/^(?:[01]\d|2[0-3]):[0-5]\d$/', $initial_start_time ) ? $initial_start_time : '';
 
 	$config['options']    = sanitize_text_field( (string) $config['options'] );
 	$config['form_type']  = sanitize_text_field( (string) $config['form_type'] );

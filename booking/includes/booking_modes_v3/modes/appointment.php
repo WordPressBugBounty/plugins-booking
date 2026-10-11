@@ -2,7 +2,7 @@
 /**
  * Appointment Booking Modes V3 declaration.
  *
- * This executable-free declaration contains presentation references only. It
+ * This side-effect-free declaration contains presentation references only. It
  * registers no hooks, loads no domain controller, and performs no mutation.
  *
  * @package Booking Calendar
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array<string,mixed> Validated Booking Modes V3 declaration.
  */
-return array(
+$wpbc_mode_definition = array(
 	'id'             => 'appointment',
 	'label'          => 'Appointments',
 	'description'    => 'Appointment administration.',
@@ -38,7 +38,7 @@ return array(
 			'horizontal_menu' => array(
 				'visible'       => true,
 				'title'         => 'Appointments',
-				'show_on_pages' => array( 'bookings', 'calendar', 'add_appointment' ),
+				'show_on_pages' => array( 'bookings', 'calendar', 'timeline', 'add_appointment' ),
 			),
 		),
 		// Timeline View. booking/core/admin/page-timeline.php:31.
@@ -54,6 +54,20 @@ return array(
 				'visible'       => true,
 				'title'         => 'Calendar',
 				'show_on_pages' => array( 'bookings', 'calendar', 'add_appointment' ),
+			),
+		),
+		// New isolated Timeline shell. The legacy Calendar route above remains unchanged.
+		'timeline'                    => array(
+			'route'           => array( 'page' => 'wpbc', 'tab' => 'timeline' ),
+			'page_options'    => array(
+				'is_show_top_path'                   => false,
+				'top_path_title'                     => 'Timeline',
+				'is_show_top_navigation'             => true,
+			),
+			'horizontal_menu' => array(
+				'visible'       => true,
+				'title'         => 'Timeline',
+				'show_on_pages' => array( 'timeline' ),
 			),
 		),
 		// Add booking. booking/includes/page-add-booking/add_booking__page.php:174.
@@ -74,7 +88,7 @@ return array(
 			'horizontal_menu' => array(
 				'visible'       => true,
 				'title'         => 'Add Appointment',
-				'show_on_pages' => array( 'bookings', 'calendar', 'add_appointment' ),
+				'show_on_pages' => array( 'bookings', 'calendar', 'timeline', 'add_appointment' ),
 			),
 		),
 		// Services. booking/includes/page-appointment-services/appointment_services__page.php:475.
@@ -388,3 +402,23 @@ return array(
 		),
 	),
 );
+
+if ( ! defined( 'WPBC_ENABLE_12_0_TIMELINE' ) || true !== WPBC_ENABLE_12_0_TIMELINE ) {
+	// Preserve the legacy Calendar page while pruning only the new Timeline host.
+	unset( $wpbc_mode_definition['pages']['timeline'] );
+
+	foreach ( $wpbc_mode_definition['pages'] as $page_id => $page_definition ) {
+		if (
+			empty( $page_definition['horizontal_menu']['show_on_pages'] )
+			|| ! is_array( $page_definition['horizontal_menu']['show_on_pages'] )
+		) {
+			continue;
+		}
+
+		$wpbc_mode_definition['pages'][ $page_id ]['horizontal_menu']['show_on_pages'] = array_values(
+			array_diff( $page_definition['horizontal_menu']['show_on_pages'], array( 'timeline' ) )
+		);
+	}
+}
+
+return $wpbc_mode_definition;

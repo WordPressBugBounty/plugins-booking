@@ -719,6 +719,7 @@ function wpbc_booking_appointment_render_booking_form( $service, $provider, $con
 		'shortcode_param__options'   => $config['options'],
 		'calendar_dates_start'       => $config['calendar_dates_start'],
 		'calendar_dates_end'         => $config['calendar_dates_end'],
+		'selected_dates_without_calendar' => $config['selected_dates_without_calendar'],
 		'booking_workflow'           => 'appointment',
 		'calendar_request_overrides' => $calendar_request_overrides,
 	);
@@ -758,7 +759,7 @@ function wpbc_booking_appointment_render_booking_form( $service, $provider, $con
 	$submission_context = wpbc_booking_appointment_encode_submission_context( $config, $service['service_id'], $provider_id );
 	$html  = wpbc_booking_appointment_render_progress( 3, $config );
 	$html .= wpbc_booking_appointment_render_booking_header( $service, $provider, $config );
-	$html .= '<div class="wpbc_booking_appointment__native_form" data-service-id="' . absint( $service['service_id'] ) . '" data-provider-id="' . $provider_id . '" data-service-title="' . esc_attr( $service['title'] ) . '" data-provider-title="' . esc_attr( $provider['title'] ) . '" data-duration="' . esc_attr( $duration_value ) . '" data-duration-label="' . esc_attr( wpbc_booking_appointment_format_duration( $duration_minutes ) ) . '" data-buffer-before="' . absint( $service['buffer_before_minutes'] ) . '" data-buffer-after="' . absint( $service['buffer_after_minutes'] ) . '" data-service-cost="' . esc_attr( $service_cost ) . '" data-service-cost-label="' . esc_attr( wpbc_booking_appointment_format_service_cost_text( $service_cost, $provider_id ) ) . '" data-form-slug="' . esc_attr( $form_slug ) . '" data-config-token="' . esc_attr( $config_token ) . '" data-appointment-context-token="' . esc_attr( $submission_context ) . '" data-allow-past="' . ( $allow_past ? '1' : '0' ) . '">';
+	$html .= '<div class="wpbc_booking_appointment__native_form" data-service-id="' . absint( $service['service_id'] ) . '" data-provider-id="' . $provider_id . '" data-service-title="' . esc_attr( $service['title'] ) . '" data-provider-title="' . esc_attr( $provider['title'] ) . '" data-duration="' . esc_attr( $duration_value ) . '" data-duration-label="' . esc_attr( wpbc_booking_appointment_format_duration( $duration_minutes ) ) . '" data-buffer-before="' . absint( $service['buffer_before_minutes'] ) . '" data-buffer-after="' . absint( $service['buffer_after_minutes'] ) . '" data-service-cost="' . esc_attr( $service_cost ) . '" data-service-cost-label="' . esc_attr( wpbc_booking_appointment_format_service_cost_text( $service_cost, $provider_id ) ) . '" data-form-slug="' . esc_attr( $form_slug ) . '" data-config-token="' . esc_attr( $config_token ) . '" data-appointment-context-token="' . esc_attr( $submission_context ) . '" data-allow-past="' . ( $allow_past ? '1' : '0' ) . '" data-initial-start-time="' . esc_attr( $config['initial_start_time'] ) . '">';
 	$html .= $form_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	$html .= '</div>';
 

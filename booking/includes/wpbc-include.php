@@ -359,6 +359,11 @@ require_once WPBC_PLUGIN_DIR . '/includes/page-form-builder/form-render/bfb-form
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// Isolated template-driven administration Timeline. The feature flag provides a single rollback boundary.
+if ( defined( 'WPBC_ENABLE_12_0_TIMELINE' ) && true === WPBC_ENABLE_12_0_TIMELINE ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/page-timeline/timeline.php';
+}
+
 // FixIn: 9.6.3.5.
 require_once WPBC_PLUGIN_DIR . '/core/admin/page-timeline.php';                      // Timeline.
 require_once WPBC_PLUGIN_DIR . '/includes/page-add-booking/add_booking__page.php';                           // Add New Booking page.

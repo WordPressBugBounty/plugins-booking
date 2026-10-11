@@ -1,6 +1,6 @@
 <?php
 /**
- * Time slots availability helpers and public read endpoint.
+ * Time slots availability helpers and protected administration read endpoint.
  *
  * @package Booking Calendar
  */
@@ -45,6 +45,46 @@ function wpbc_availability_timeslots__get_manage_cap() {
 }
 
 /**
+ * Check whether the current administrator may access one booking resource.
+ *
+ * The capability check protects the administration feature in every edition.
+ * Paid editions additionally resolve the resource through the current user's
+ * Resource cache, which applies the established MultiUser owner scope without
+ * trusting a request-supplied user ID.
+ *
+ * @param int $resource_id Booking Resource ID.
+ *
+ * @return bool True when the current user may access the Resource.
+ */
+function wpbc_availability_timeslots__current_user_can_access_resource( $resource_id ) {
+
+	$resource_id = absint( $resource_id );
+
+	if ( 0 >= $resource_id || ! current_user_can( wpbc_availability_timeslots__get_manage_cap() ) ) {
+		return false;
+	}
+
+	if ( ! class_exists( 'wpdev_bk_personal' ) ) {
+		return 1 === $resource_id;
+	}
+
+	if ( ! function_exists( 'wpbc_br_cache' ) ) {
+		return false;
+	}
+
+	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
+		$current_user_id = absint( wpbc_get_current_user_id() );
+		$is_super_admin  = (bool) apply_bk_filter( 'is_user_super_admin', false, $current_user_id );
+
+		if ( ! $is_super_admin && 'On' !== get_user_option( 'booking_is_active', $current_user_id ) ) {
+			return false;
+		}
+	}
+
+	return false !== wpbc_br_cache()->get_resource_attr( $resource_id );
+}
+
+/**
  * Sanitize SQL date.
  *
  * @param mixed $date Date value.
@@ -58,8 +98,11 @@ function wpbc_availability_timeslots__sanitize_date( $date ) {
 	}
 
 	$date = sanitize_text_field( wp_unslash( $date ) );
-	if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) && false !== strtotime( $date . ' 00:00:00' ) ) {
-		return $date;
+	if ( preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $date, $date_parts ) ) {
+		$is_valid_date = checkdate( (int) $date_parts[2], (int) $date_parts[3], (int) $date_parts[1] );
+		if ( $is_valid_date ) {
+			return $date;
+		}
 	}
 
 	return '';
@@ -891,23 +934,34 @@ function wpbc_availability_timeslots__add_working_time_bars( $bars, $dates, $res
 }
 
 /**
- * AJAX: read blocked time slots for a calendar/frontend request.
+ * AJAX: read the protected Time Slots Availability administration timeline.
  *
  * @return void
  */
 function wpbc_availability_timeslots_ajax_read() {
 
-	$resource_id = isset( $_REQUEST['resource_id'] ) ? intval( $_REQUEST['resource_id'] ) : wpbc_get_default_resource(); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$date_start  = isset( $_REQUEST['date_start'] ) ? wpbc_availability_timeslots__sanitize_date( $_REQUEST['date_start'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$date_end    = isset( $_REQUEST['date_end'] ) ? wpbc_availability_timeslots__sanitize_date( $_REQUEST['date_end'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$nonce_result = check_ajax_referer( 'wpbc_availability_timeslots_ajax_nonce', 'nonce', false );
+	if ( false === $nonce_result ) {
+		wp_send_json_error( array( 'message' => __( 'Security check failed.', 'booking' ) ), 403 );
+	}
 
-	$intervals = wpbc_availability_timeslots__get_intervals_for_resources(
-		array(
-			'resource_id' => $resource_id,
-			'date_start'  => $date_start,
-			'date_end'    => $date_end,
-		)
-	);
+	$resource_id = isset( $_POST['resource_id'] ) ? absint( $_POST['resource_id'] ) : 0;
+	$date_start  = isset( $_POST['date_start'] ) ? wpbc_availability_timeslots__sanitize_date( $_POST['date_start'] ) : '';
+	$date_end    = isset( $_POST['date_end'] ) ? wpbc_availability_timeslots__sanitize_date( $_POST['date_end'] ) : '';
+
+	if ( ! wpbc_availability_timeslots__current_user_can_access_resource( $resource_id ) ) {
+		wp_send_json_error( array( 'message' => __( 'You do not have permission to view this availability.', 'booking' ) ), 403 );
+	}
+
+	if ( '' === $date_start || '' === $date_end ) {
+		wp_send_json_error( array( 'message' => __( 'The requested date range is invalid.', 'booking' ) ), 400 );
+	}
+
+	if ( $date_start > $date_end ) {
+		$range_start = $date_end;
+		$date_end    = $date_start;
+		$date_start  = $range_start;
+	}
 
 	$dates_to_check  = wpbc_availability_timeslots__get_dates_in_range( $date_start, $date_end );
 	$availability    = wpbc_get_availability_per_days_arr(
@@ -926,10 +980,8 @@ function wpbc_availability_timeslots_ajax_read() {
 			'resource_id' => $resource_id,
 			'date_start'  => $date_start,
 			'date_end'    => $date_end,
-			'intervals'   => $intervals,
 			'bars'        => $timeline_bars,
 		)
 	);
 }
 add_action( 'wp_ajax_WPBC_AJX_AVAILABILITY_TIMESLOTS_READ', 'wpbc_availability_timeslots_ajax_read' );
-add_action( 'wp_ajax_nopriv_WPBC_AJX_AVAILABILITY_TIMESLOTS_READ', 'wpbc_availability_timeslots_ajax_read' );

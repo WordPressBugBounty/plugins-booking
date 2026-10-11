@@ -203,26 +203,29 @@ function wpbc_availability_timeslots__replace_intervals_for_date( $resource_id, 
 /**
  * Delete intervals by IDs.
  *
- * @param array $ids IDs.
+ * @param array $ids         IDs.
+ * @param int   $resource_id Booking Resource ID that must own every deleted interval.
  *
  * @return int
  */
-function wpbc_availability_timeslots__delete_by_ids( $ids ) {
+function wpbc_availability_timeslots__delete_by_ids( $ids, $resource_id ) {
 
 	global $wpdb;
 
-	$ids = array_values( array_filter( array_map( 'intval', $ids ) ) );
-	if ( empty( $ids ) ) {
+	$ids         = array_values( array_filter( array_map( 'intval', $ids ) ) );
+	$resource_id = absint( $resource_id );
+	if ( empty( $ids ) || 0 >= $resource_id ) {
 		return 0;
 	}
 
 	$table        = wpbc_availability_timeslots__table_name();
 	$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-	$query_values = $ids;
+	$query_values = array_merge( array( $resource_id ), $ids );
 
 	$sql = $wpdb->prepare(
 		"DELETE FROM {$table}
-		  WHERE timeslot_id IN ({$placeholders})",
+		  WHERE resource_id = %d
+		    AND timeslot_id IN ({$placeholders})",
 		$query_values
 	);
 
@@ -251,10 +254,14 @@ function wpbc_availability_timeslots_ajax_save() {
 	$intervals   = wpbc_availability_timeslots__get_posted_intervals();
 	$group_uid   = wp_generate_uuid4();
 
+	if ( ! wpbc_availability_timeslots__current_user_can_access_resource( $resource_id ) ) {
+		wp_send_json_error( array( 'message' => __( 'You do not have permission to change this availability.', 'booking' ) ), 403 );
+	}
+
 	if ( 'delete' === $mode ) {
 		$ids     = isset( $_POST['ids'] ) ? wp_unslash( $_POST['ids'] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$ids     = is_array( $ids ) ? $ids : json_decode( $ids, true );
-		$changed = wpbc_availability_timeslots__delete_by_ids( is_array( $ids ) ? $ids : array() );
+		$changed = wpbc_availability_timeslots__delete_by_ids( is_array( $ids ) ? $ids : array(), $resource_id );
 		wp_send_json_success(
 			array(
 				'changed' => $changed,

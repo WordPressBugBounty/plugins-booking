@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.9
+Stable tag: 11.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -318,6 +318,15 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 11. **Setup Wizard**: Setup Wizard starts with one practical question: how should customers book? After you choose the answer, it presents only the settings needed for that booking flow instead of asking you to configure every Booking Calendar option.
 
 == Changelog ==
+= 11.9.1 =
+- Changes in **all** versions:
+	* **Fix**: Simplified Setup Wizard publishing to use the default `[booking]` and `[booking_appointment]` shortcodes without the redundant Standard form parameter.
+	* **Security**: Restricted the Block Times administration timeline to authorized, nonce-verified users and prevented its booking and availability metadata from being read through logged-out AJAX requests.
+- Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Prevented Fixed and Dynamic date ranges from crossing occupied changeover stays, while preserving legal end-on-check-in and start-on-checkout boundaries, pending-date policy, and one-Resource capacity validation.
+- Changes in **Business Medium / Business Large / MultiUser** versions:
+	* **Fix**: Prevented fixed or percentage deposits from exceeding the final booking total after discounts or an administrator cost correction, avoiding negative balances and excessive payment requests.
+
 = 11.9 =
 - Changes in **all** versions:
 	* **New**: Introduced a redesigned Setup Wizard that starts with the way customers should book and then shows only the relevant Date Selection, Booking Resources or Services, time, availability, Booking Form, appearance, publishing, and review steps. Choose from Single full day, Multiple independent full days, Flexible date range, Fixed-length date range, Check-in & check-out changeover, Fixed time slots, Start & end time, Start time + duration, Repeat one time on multiple dates, First-date start & last-date end, or Guided appointment flow. Journey-aware recommendations, live previews, progressive saving, resumable setup, and a final Setup overview make initial configuration and later changes much easier.
@@ -341,7 +350,7 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 	* **Translations**: Completed 100% local translations: Spanish (Spain), Dutch, French (France), German, Italian, Japanese, Portuguese (Brazil), Ukrainian, Czech.
 - Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
 	* **New**: Added an optional Unbookable date gaps setting under Booking Capacity that marks a bounded opening unavailable when no valid fixed or dynamic booking range can fit, while respecting changeovers, pending-date policy, conditional range rules, and capacity Resources.
-	* **Fix**: Range hover and selection now stay on the valid period containing the pointed date, preserve an existing first click after invalid ends, and apply conditional Season, weekday, and exact-date rules consistently.
+	* **Fix**: Range hover and selection now stay on the valid period containing the pointed date, clear an invalid Dynamic range so the next click can start again, and apply conditional Season, weekday, and exact-date rules consistently.
 - Changes in **Business Large / MultiUser** versions:
 	* **New**: Added a visual Discount Coupon field to Form Builder, with configurable content and appearance, one-per-form protection, and synchronized Advanced Mode and Booking Data output.
 
