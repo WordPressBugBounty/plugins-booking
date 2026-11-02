@@ -170,6 +170,8 @@ class WPBC_Action_Set_Unavailable_Times {
 			return false;
 		}
 
+		$show_create_booking_action = ! ( function_exists( 'wpbc_timeline_is_page' ) && wpbc_timeline_is_page() );
+
 		?>
 		<span class="wpdevelop">
 			<div id="wpbc_modal__set_unavailable_times__section" class="modal wpbc_popup_modal wpbc_modal_in_listing wpbc_modal__availability_timeslots__section" tabindex="-1" role="dialog">
@@ -198,10 +200,12 @@ class WPBC_Action_Set_Unavailable_Times {
 							?>
 						</div>
 						<div class="modal-footer">
-							<a href="javascript:void(0)" class="button button-primary wpbc_ts_create_booking_button" data-wpbc-ts-create-booking="1">
-								<i class="menu_icon icon-1x wpbc-bi-calendar-plus"></i>&nbsp;
-								<?php esc_html_e( 'Create Booking for Selection', 'booking' ); ?>
-							</a>
+							<?php if ( $show_create_booking_action ) : ?>
+								<a href="javascript:void(0)" class="button button-primary wpbc_ts_create_booking_button" data-wpbc-ts-create-booking="1">
+									<i class="menu_icon icon-1x wpbc-bi-calendar-plus"></i>&nbsp;
+									<?php esc_html_e( 'Create Booking for Selection', 'booking' ); ?>
+								</a>
+							<?php endif; ?>
 							<?php wpbc_availability_timeslots__render_action_buttons( 'wpbc_ts_action_buttons_inline wpbc_ts_footer_action_buttons' ); ?>
 							<a href="javascript:void(0)" class="button button-secondary" data-dismiss="modal">
 								<?php esc_html_e( 'Close', 'booking' ); ?>

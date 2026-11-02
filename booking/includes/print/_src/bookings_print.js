@@ -18,6 +18,50 @@ function wpbc_print_dialog__show( booking_id_arr ){
 	}
 }
 
+/**
+ * Open the shared print dialog with content supplied by a non-Listing host.
+ *
+ * The caller owns which already-authorized DOM sections are printable. This
+ * controller owns only cloning those sections into the established print shell.
+ *
+ * @param {HTMLElement[]|NodeList|jQuery} source_elements Authorized source elements.
+ * @param {string} content_class Optional host-specific print class.
+ * @return {boolean} Whether the print dialog was opened.
+ */
+function wpbc_print_dialog__show_elements( source_elements, content_class ){
+
+	if ( 'function' !== typeof (jQuery( '#wpbc_ajx_print_modal' ).wpbc_my_modal) ){
+		return false;
+	}
+
+	wpbc_print_dialog__define_element_content( source_elements, content_class || '' );
+	jQuery( '#wpbc_ajx_print_modal' ).wpbc_my_modal( 'show' );
+
+	return true;
+}
+
+/**
+ * Clone host-provided sections into the established print frame.
+ *
+ * @param {HTMLElement[]|NodeList|jQuery} source_elements Authorized source elements.
+ * @param {string} content_class Optional host-specific print class.
+ * @return {void}
+ */
+function wpbc_print_dialog__define_element_content( source_elements, content_class ){
+	var print_frame = jQuery( '#wpbc__print_frame__inner' );
+
+	print_frame.empty().removeClass( 'wpbc__list__table wpbc_selectable_table wpbc_booking_inspector__print_content' );
+	if ( content_class ){
+		print_frame.addClass( content_class );
+	}
+	jQuery( source_elements ).each( function (){
+		if ( this && 1 === this.nodeType ){
+			print_frame.append( jQuery( this ).clone() );
+		}
+	} );
+	print_frame.find( '.wpbc_booking_inspector__footer, .wpbc_booking_inspector__tabs, .wpbc_booking_inspector__action_menu' ).remove();
+}
+
 function wpbc_print_dialog__define_content( booking_id_arr = [] ){
 	// Set content.
 	jQuery( '#wpbc__print_frame__inner' ).html( jQuery( '.wpbc__list__table' ).html() );

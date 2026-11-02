@@ -377,9 +377,10 @@ function wpbc_appointment_services_format_interval( $start_timestamp, $end_times
 	$time_format = get_bk_option( 'booking_time_format' );
 	$date_format = $date_format ? $date_format : 'm / d / Y, D';
 	$time_format = $time_format ? $time_format : 'h:i a';
-	$same_day    = wpbc_datetime__no_wp_timezone( 'Y-m-d', $start_timestamp ) === wpbc_datetime__no_wp_timezone( 'Y-m-d', $end_timestamp );
-	$start       = wpbc_datetime__no_wp_timezone( $same_day ? $time_format : $date_format . ' ' . $time_format, $start_timestamp );
-	$end         = wpbc_datetime__no_wp_timezone( $same_day ? $time_format : $date_format . ' ' . $time_format, $end_timestamp );
+	$timezone    = wp_timezone();
+	$same_day    = wp_date( 'Y-m-d', $start_timestamp, $timezone ) === wp_date( 'Y-m-d', $end_timestamp, $timezone );
+	$start       = wp_date( $same_day ? $time_format : $date_format . ' ' . $time_format, $start_timestamp, $timezone );
+	$end         = wp_date( $same_day ? $time_format : $date_format . ' ' . $time_format, $end_timestamp, $timezone );
 
 	return $start . ' - ' . $end;
 }
@@ -1019,22 +1020,50 @@ function wpbc_appointment_services_check_working_time( $service, $resource_id, $
 }
 
 /**
+ * Convert one stored local booking datetime to an exact site-timezone instant.
+ *
+ * Booking Calendar stores booking dates as local wall times without an offset.
+ * This helper keeps the WordPress site timezone authoritative instead of
+ * inheriting the PHP server timezone, which can differ from the site setting.
+ *
+ * @param string            $stored_datetime Stored SQL datetime in Y-m-d H:i:s format.
+ * @param DateTimeZone|null $timezone        Optional timezone. Defaults to the WordPress site timezone.
+ *
+ * @return int Exact Unix timestamp, or zero when the datetime is invalid.
+ */
+function wpbc_appointment_services_parse_stored_datetime( $stored_datetime, $timezone = null ) {
+	$timezone = $timezone instanceof DateTimeZone ? $timezone : wp_timezone();
+	$datetime = DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', (string) $stored_datetime, $timezone );
+
+	return $datetime instanceof DateTimeImmutable ? $datetime->getTimestamp() : 0;
+}
+
+/**
  * Convert Booking Calendar's stored boundary markers to exact interval times.
  *
  * Core stores timed starts with `+1` second and ends with `+2` seconds. An end
  * at midnight is represented as `23:59:52`. Buffer comparison must remove
  * those internal markers or adjacent zero-buffer Appointments look overlapped.
  *
- * @param string $starts_at Stored SQL start datetime.
- * @param string $ends_at   Stored SQL end datetime.
+ * Stored booking datetimes are local wall times in the WordPress site timezone.
+ * Parsing them through the PHP server timezone shifts Appointment buffers when
+ * the two timezones differ, so the site timezone must remain authoritative.
+ *
+ * @param string            $starts_at Stored SQL start datetime.
+ * @param string            $ends_at   Stored SQL end datetime.
+ * @param DateTimeZone|null $timezone  Optional timezone. Defaults to the WordPress site timezone.
  *
  * @return array{0:int,1:int} Exact start and end timestamps.
  */
-function wpbc_appointment_services_normalize_stored_interval( $starts_at, $ends_at ) {
-	$start_timestamp = wpbc_convert__sql_date__to_seconds( $starts_at, false );
-	$end_timestamp   = wpbc_convert__sql_date__to_seconds( $ends_at, false );
+function wpbc_appointment_services_normalize_stored_interval( $starts_at, $ends_at, $timezone = null ) {
+	$timezone        = $timezone instanceof DateTimeZone ? $timezone : wp_timezone();
 	$start_time      = substr( (string) $starts_at, -8 );
 	$end_time        = substr( (string) $ends_at, -8 );
+	$start_timestamp = wpbc_appointment_services_parse_stored_datetime( $starts_at, $timezone );
+	$end_timestamp   = wpbc_appointment_services_parse_stored_datetime( $ends_at, $timezone );
+	if ( ! $start_timestamp || ! $end_timestamp ) {
+		return array( 0, 0 );
+	}
 
 	if ( '01' === substr( $start_time, -2 ) ) {
 		$start_timestamp--;
@@ -1099,6 +1128,113 @@ function wpbc_appointment_services_has_buffer_conflict( $new_start, $new_end, $n
 	}
 
 	return false;
+}
+
+/**
+ * Load immutable Appointment buffer snapshots for several authorized Providers.
+ *
+ * The read uses one bounded query for the complete Resource collection. The
+ * 46-day margin covers the unsigned SMALLINT minute range used by Appointment
+ * duration and buffer snapshots. Callers must supply Resource IDs that were
+ * independently authorized for the current site and user.
+ *
+ * @param int[]  $resource_ids    Authorized Provider Resource IDs.
+ * @param string $range_start     Inclusive SQL start date in Y-m-d format.
+ * @param string $range_end       Inclusive SQL end date in Y-m-d format.
+ * @param int[]  $skip_booking_ids Optional booking IDs excluded during an update.
+ * @param int    $maximum_rows    Maximum snapshot rows accepted by the caller.
+ *
+ * @return array<int,array<int,array<string,int>>>|WP_Error Exact intervals keyed by Resource ID or a safe error.
+ */
+function wpbc_appointment_services_get_existing_buffer_intervals_for_resources( $resource_ids, $range_start, $range_end, $skip_booking_ids = array(), $maximum_rows = 50000 ) {
+	global $wpdb;
+
+	$resource_ids     = array_values( array_unique( array_filter( array_map( 'absint', (array) $resource_ids ) ) ) );
+	$skip_booking_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) $skip_booking_ids ) ) ) );
+	$range_start      = sanitize_text_field( (string) $range_start );
+	$range_end        = sanitize_text_field( (string) $range_end );
+	$maximum_rows     = max( 1, absint( $maximum_rows ) );
+	$start_parts      = array();
+	$end_parts        = array();
+	$valid_start      = 1 === preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $range_start, $start_parts )
+		&& checkdate( absint( $start_parts[2] ), absint( $start_parts[3] ), absint( $start_parts[1] ) );
+	$valid_end        = 1 === preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $range_end, $end_parts )
+		&& checkdate( absint( $end_parts[2] ), absint( $end_parts[3] ), absint( $end_parts[1] ) );
+
+	if ( empty( $resource_ids ) || ! $valid_start || ! $valid_end ) {
+		return array();
+	}
+	if (
+		! function_exists( 'wpbc_is_table_exists' )
+		|| ! wpbc_is_table_exists( 'booking_appointment_details' )
+	) {
+		return new WP_Error(
+			'wpbc_appointment_buffer_storage_unavailable',
+			__( 'Appointment buffer information is unavailable.', 'booking' )
+		);
+	}
+
+	$resource_placeholders = implode( ', ', array_fill( 0, count( $resource_ids ), '%d' ) );
+	$query_parameters      = array_merge( $resource_ids, array( $range_start, $range_end ) );
+	$skip_sql              = '';
+	if ( ! empty( $skip_booking_ids ) ) {
+		$skip_placeholders = implode( ', ', array_fill( 0, count( $skip_booking_ids ), '%d' ) );
+		$skip_sql          = " AND b.booking_id NOT IN ( {$skip_placeholders} )";
+		$query_parameters  = array_merge( $query_parameters, $skip_booking_ids );
+	}
+	$query_parameters[] = $maximum_rows + 1;
+
+	$sql = "SELECT ad.resource_id, b.booking_id, DATE(bd.booking_date) AS appointment_date, MIN(bd.booking_date) AS starts_at, MAX(bd.booking_date) AS ends_at,
+		COALESCE(ad.buffer_before_minutes,0) AS buffer_before_minutes,
+		COALESCE(ad.buffer_after_minutes,0) AS buffer_after_minutes
+		FROM {$wpdb->prefix}booking AS b
+		INNER JOIN {$wpdb->prefix}bookingdates AS bd ON bd.booking_id = b.booking_id
+		INNER JOIN " . wpbc_appointment_services_table_name( 'appointment_details' ) . " AS ad ON ad.booking_id = b.booking_id
+		WHERE b.trash = 0
+		AND ad.resource_id IN ( {$resource_placeholders} )
+		AND bd.booking_date >= DATE_SUB(%s, INTERVAL 46 DAY)
+		AND bd.booking_date < DATE_ADD(%s, INTERVAL 47 DAY)
+		{$skip_sql}
+		GROUP BY ad.resource_id, b.booking_id, DATE(bd.booking_date)
+		ORDER BY ad.resource_id ASC, starts_at ASC, b.booking_id ASC
+		LIMIT %d";
+	$sql = $wpdb->prepare( $sql, $query_parameters ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Placeholder counts and SQL structure are domain-owned.
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One prepared, bounded snapshot query prevents per-Provider reads.
+	$existing_rows = $wpdb->get_results( $sql, ARRAY_A );
+	if ( '' !== (string) $wpdb->last_error || ! is_array( $existing_rows ) ) {
+		return new WP_Error(
+			'wpbc_appointment_buffer_query_failed',
+			__( 'Appointment buffer information could not be loaded.', 'booking' )
+		);
+	}
+	if ( count( $existing_rows ) > $maximum_rows ) {
+		return new WP_Error(
+			'wpbc_appointment_buffer_rows_exceeded',
+			__( 'The selected Timeline range contains too many Appointment buffer records. Choose fewer Resources or a shorter range.', 'booking' )
+		);
+	}
+
+	$intervals = array();
+	foreach ( $existing_rows as $existing_row ) {
+		$resource_id = isset( $existing_row['resource_id'] ) ? absint( $existing_row['resource_id'] ) : 0;
+		if ( ! $resource_id ) {
+			continue;
+		}
+		list( $old_start, $old_end ) = wpbc_appointment_services_normalize_stored_interval( $existing_row['starts_at'], $existing_row['ends_at'] );
+		if ( $old_end <= $old_start ) {
+			continue;
+		}
+		$intervals[ $resource_id ][] = array(
+			'booking_id'            => absint( $existing_row['booking_id'] ),
+			'start'                 => $old_start,
+			'end'                   => $old_end,
+			'buffer_before_minutes' => absint( $existing_row['buffer_before_minutes'] ),
+			'buffer_after_minutes'  => absint( $existing_row['buffer_after_minutes'] ),
+		);
+	}
+
+	return $intervals;
 }
 
 /**
@@ -1171,8 +1307,8 @@ function wpbc_appointment_services_check_buffer_conflicts_in_intervals( $service
 	$new_after  = isset( $service['buffer_after_minutes'] ) ? absint( $service['buffer_after_minutes'] ) : 0;
 	foreach ( (array) $dates as $date_value ) {
 		$date_value = sanitize_text_field( $date_value );
-		$new_start  = wpbc_convert__sql_date__to_seconds( $date_value . ' ' . wpbc_transform__seconds__in__24_hours_his( $time_seconds[0] ), false );
-		$new_end    = wpbc_convert__sql_date__to_seconds( $date_value . ' ' . wpbc_transform__seconds__in__24_hours_his( $time_seconds[1] ), false );
+		$new_start  = wpbc_appointment_services_parse_stored_datetime( $date_value . ' ' . wpbc_transform__seconds__in__24_hours_his( $time_seconds[0] ) );
+		$new_end    = wpbc_appointment_services_parse_stored_datetime( $date_value . ' ' . wpbc_transform__seconds__in__24_hours_his( $time_seconds[1] ) );
 		if ( wpbc_appointment_services_has_buffer_conflict( $new_start, $new_end, $new_before, $new_after, $existing_intervals ) ) {
 			return new WP_Error( 'appointment_service_buffer_conflict', __( 'This start time is unavailable because the Service duration or required buffer overlaps another appointment. Please choose another time.', 'booking' ) );
 		}

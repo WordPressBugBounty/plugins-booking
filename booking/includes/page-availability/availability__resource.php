@@ -51,14 +51,15 @@ function wpbc_resource__get_unavailable_dates( $resource_id = 1 ){
  *
  * @param array $resource_id_arr            // [1, 13, 8, 6, 7]
  * @param mixed $search_dates               // 'CURDATE' | 'ALL' |  [ "2023-08-03" , "2023-08-04" , "2023-08-05" ]
+ * @param int   $maximum_rows Optional explicit result-row limit for bounded read projections.
  *
- * @return array   - array of unavailable dates:       array(   resource_A_ID => array( DATES_Y_M_D, .... ),
+ * @return array|WP_Error Array of unavailable dates or a bounded-read error: array( resource_A_ID => array( DATES_Y_M_D, .... ),
 																resource_B_ID => array( DATES_Y_M_D, .... ), ...
 											Example:
 													   array(    1 => array( "2023-08-03" , "2023-08-04" ),
 																 8 => array( "2023-08-03" ), ...
  */
-function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $search_dates = 'CURDATE' ) {                 // FixIn: 9.7.3.11.
+function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $search_dates = 'CURDATE', $maximum_rows = 0 ) {                 // FixIn: 9.7.3.11.
 
 	// Booking resources -----------------------------------------------------------------------------------------------
 	$resource_id_csd  = implode( ',', $resource_id_arr );       //  '9,13,5,6,7,1,2,10,11,12,3,4,8'
@@ -94,8 +95,12 @@ function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $searc
 		'calendar_date' => $search_dates_formated,                              // 'CURDATE' | 'ALL'
 		'prop_name'     => 'date_status',                                       // 'rate', 'allow_start_day_selection', 'allow_days_number_to_select', 'availability_count', ...
 		'prop_value'    => 'unavailable',                                       // 'unavailable', 'available', 'pending', 'approved'
-		'resource_id'   => $resource_id_csd                                     // int or dcv
+		'resource_id'   => $resource_id_csd,                                    // int or dcv
+		'maximum_rows'  => absint( $maximum_rows ),
 	) );
+	if ( is_wp_error( $resource_availability ) ) {
+		return $resource_availability;
+	}
 
 	// Formatted array  of unavailable booking resource dates ----------------------------------------------------------
 	$resource_unavailable_dates_arr = array();
@@ -125,7 +130,7 @@ function wpbc_for_resources_arr__get_unavailable_dates( $resource_id_arr, $searc
  *
  * 											    prop_name =  'date_status'		->	 	prop_value =  'unavailable', 'available', 'pending', 'approved'
  *
- * @return array of DB objects          array(
+ * @return array|WP_Error Array of database objects or a bounded-read error. array(
 												 0 = {stdClass} {
 																  ->booking_dates_prop_id = "1"
 																  ->resource_id = "4"
@@ -162,7 +167,8 @@ function wpbc_availability__get_dates_status__sql( $params ){
 						  'calendar_date' => 'CURDATE',                                 // 'CURDATE' | 'ALL'  | '2023-07-15 00:00:00,2023-07-21 00:00:00'           // FixIn: 9.7.3.11.
 		                  'prop_name'     => 'date_status',                             // 'rate', 'allow_start_day_selection', 'allow_days_number_to_select', 'availability_count', ...
 		                  'prop_value'    => 'unavailable',                             // 'unavailable', 'available', 'pending', 'approved'
-						  'resource_id'   => 1                                          // int or dcv
+						  'resource_id'   => 1,                                         // int or dcv
+						  'maximum_rows'  => 0                                          // int; zero preserves the released unbounded caller contract
 					);
 	$params   = wp_parse_args( $params, $defaults );
 
@@ -171,7 +177,8 @@ function wpbc_availability__get_dates_status__sql( $params ){
 							'calendar_date' => array( 'validate' => 's',            'default' => 'CURDATE' ) ,          // array( 'validate' => array(  'CURDATE', 'ALL' ),  'default' => 'CURDATE' ) ,
 							'prop_name'     => array( 'validate' => 's',            'default' => 'date_status' ) ,
 							'prop_value'    => array( 'validate' => 's',            'default' => 'unavailable' ) ,
-							'resource_id'   => array( 'validate' => 'digit_or_csd', 'default' => 1 )
+							'resource_id'   => array( 'validate' => 'digit_or_csd', 'default' => 1 ),
+							'maximum_rows'  => array( 'validate' => 'd',            'default' => 0 )
 						);
 	$params = wpbc_sanitize_params_in_arr( $params, $params_rules );
 	/**
@@ -251,6 +258,10 @@ function wpbc_availability__get_dates_status__sql( $params ){
 
 	// L I M I T
 	$sql['limit'] = '';
+	if ( ! empty( $params['maximum_rows'] ) ) {
+		$sql['limit'] = ' LIMIT %d ';
+		$sql_args[]   = absint( $params['maximum_rows'] ) + 1;
+	}
 	/**
 	 * $sql['limit'] = " LIMIT %d, %d ";
 		$sql_args[] = ( $params['page_num'] - 1 ) * $params['page_items_count'];
@@ -275,6 +286,18 @@ function wpbc_availability__get_dates_status__sql( $params ){
 	$sql_prepared = $wpdb->prepare( $sql['start_select'] . $sql['from'] . $sql['where'] . $sql['order'] . $sql['limit'], $sql_args );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	$bookings_sql_obj = $wpdb->get_results( $sql_prepared );
+	if ( ! is_array( $bookings_sql_obj ) ) {
+		return new WP_Error(
+			'wpbc_availability_date_query_failed',
+			__( 'Blocked dates could not be loaded for the selected range.', 'booking' )
+		);
+	}
+	if ( ! empty( $params['maximum_rows'] ) && count( $bookings_sql_obj ) > absint( $params['maximum_rows'] ) ) {
+		return new WP_Error(
+			'wpbc_availability_date_rows_exceeded',
+			__( 'The selected range contains too many blocked-date records. Choose fewer Resources or a shorter range.', 'booking' )
+		);
+	}
 
 	// CACHE - SAVE ::  ------------------------------------------------------------------------------------------------
 	$cache_result = wpbc_cache__save( 'wpbc_availability__get_dates_status__sql', $params_for_cache, $bookings_sql_obj );

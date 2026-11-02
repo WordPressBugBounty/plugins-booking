@@ -167,7 +167,9 @@
   float: left;
   width: auto;
   border: none;
-  cursor: pointer
+  cursor: pointer;
+  margin: 0 3px;
+  padding: 0 8px
 }
 #wpbc_deactivate-feedback-popup-wrapper .wpbc_deactivate-feedback-popup-inner .consent {
   font-size: 10px;

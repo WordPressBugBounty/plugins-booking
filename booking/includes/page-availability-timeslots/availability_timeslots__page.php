@@ -28,6 +28,10 @@ function wpbc_availability_timeslots__is_component_page() {
 		return true;
 	}
 
+	if ( function_exists( 'wpbc_timeline_is_page' ) && wpbc_timeline_is_page() ) {
+		return true;
+	}
+
 	if (
 		function_exists( 'wpbc_is_bookings_page' )
 		&& wpbc_is_bookings_page()

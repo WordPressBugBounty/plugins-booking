@@ -401,6 +401,59 @@ function wpbc_working_time__get_effective_rule( $resource_id ) {
 }
 
 /**
+ * Get effective Working Time rules for a bounded Resource collection.
+ *
+ * The settings option is loaded and normalized once. This batch form exists
+ * for read projections, such as Timeline availability, that must not repeat
+ * the same option read for every Resource or date.
+ *
+ * Callers are responsible for activating the correct MultiUser owner context
+ * before invoking this function. All supplied Resource IDs must belong to that
+ * already-authorized owner context.
+ *
+ * @param int[] $resource_ids Authorized Booking Resource IDs.
+ *
+ * @return array<int,array<string,mixed>|false> Effective rules keyed by Resource ID.
+ */
+function wpbc_working_time__get_effective_rules_for_resources( $resource_ids ) {
+
+	$resource_ids = array_values( array_unique( array_filter( array_map( 'absint', (array) $resource_ids ) ) ) );
+	$rules        = array();
+	$settings     = wpbc_working_time__get_settings();
+
+	foreach ( $resource_ids as $resource_id ) {
+		if ( 'On' !== $settings['enabled'] ) {
+			$rules[ $resource_id ] = false;
+			continue;
+		}
+
+		if ( ! empty( $settings['resources'][ $resource_id ] ) ) {
+			$resource_settings = $settings['resources'][ $resource_id ];
+
+			if ( 'disabled' === $resource_settings['mode'] ) {
+				$rules[ $resource_id ] = false;
+				continue;
+			}
+
+			if ( 'custom' === $resource_settings['mode'] ) {
+				$rules[ $resource_id ] = array(
+					'source'   => 'resource',
+					'weekdays' => $resource_settings['weekdays'],
+				);
+				continue;
+			}
+		}
+
+		$rules[ $resource_id ] = array(
+			'source'   => 'default',
+			'weekdays' => $settings['default']['weekdays'],
+		);
+	}
+
+	return $rules;
+}
+
+/**
  * Get working intervals for date/resource.
  *
  * @param int    $resource_id Resource ID.

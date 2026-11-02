@@ -191,19 +191,6 @@ function wpbc__where_to_save_booking( $local_params ){
 										 . wpbc_frontend_messages__get( 'message_cannot_save_in_one_resource', array(), $local_params['resource_id'] )
 							             . ' <br> '
 										 . wpbc_frontend_messages__get( 'message_choose_alternative_dates', array(), $local_params['resource_id'] )
-										 . ' <a href="javascript:void(0)" onclick="'
-							                             .'jQuery( this ).next().toggle();'
-							                             .'jQuery( this).hide();'
-														 .'jQuery( this ).parents(\'.wpbc_alert_message\').parent().on(\'hide\',function(even){jQuery(this).show();});'
-			                                    .'">'
-							             .    __( 'Show more details', 'booking' )
-							             . '</a>'
-							             . ' <div style="display:none;">'
-							                    . '<p><hr><code>'
-							                    . wp_json_encode( $available_slots )
-							                    . '</code></p>'
-							             . '</div>'
-							             . ' <div style="display:none;">' . wp_json_encode( $available_slots ) . '</div>'
 						);
 		}
 
@@ -238,23 +225,6 @@ function wpbc__where_to_save_booking( $local_params ){
 							'message' => wpbc_frontend_messages__get( 'message_dates_times_unavailable', array(), $local_params['resource_id'] )
 							             . ' <br> '
 										 . wpbc_frontend_messages__get( 'message_choose_alternative_dates', array(), $local_params['resource_id'] )
-										 . ' <a href="javascript:void(0)" onclick="'
-							                             .'jQuery( this ).next().toggle();'
-							                             .'jQuery( this).hide();'
-														 .'jQuery( this ).parents(\'.wpbc_alert_message\').parent().on(\'hide\',function(even){jQuery(this).show();});'
-			                                    .'">'
-							             .    __( 'Show more details', 'booking' )
-							             . '</a>'
-							             . ' <div style="display:none;">'
-							                    . '<p><strong>'
-									            /* translators: 1: ... */
-									            . sprintf( __( 'Booking can not be saved in this date %1$s, number of available (single or child) booking resource(s) (%2$d) less than required (%3$d).', 'booking' )
-															, $day_sql_key2, count( $available_res_in_day_arr ), $how_many_items_to_book )
-												. '</strong><hr><code>'
-							                    . wp_json_encode( $available_slots )
-							                    // . wp_json_encode( $local_params, $availability_per_days )
-							                    . '</code></p>'
-							             . '</div>'
 
 						);
 			}
@@ -389,25 +359,27 @@ function wpbc__where_to_save_booking( $local_params ){
 
 
 		/**
-		 * Get Merged Seconds Array from   object ->  $params['availability_per_days']['dates'][ $sql_class_day ][ $child_resource_id ]
+		 * Get merged booked intervals for one Resource date.
 		 *
-		 * @param $date_booking_obj - date_bookings_obj  from   $params['availability_per_days']['dates']
+		 * Capacity projection can mark a one-slot Resource date unavailable as soon
+		 * as any booking exists. Exact-time creation sources must still compare the
+		 * proposed interval with the actual booked intervals. Full-day requests and
+		 * every unrecognized source retain the conservative whole-day result.
 		 *
-		 * @return array            -  [
-		 *                                    'merged_seconds'  => $merged_seconds,
-		 *                                    'merged_readable' => $merged_readable
-		 *                             ]
+		 * @param object $date_booking_obj     Availability object for one Resource date.
+		 * @param string $time_override_source Authorized exact-time source identifier.
+		 * @return array{merged_seconds:array<int,array<int,int>>,merged_readable:array<int,string>} Merged booked intervals.
 		 */
 		function wpbc_get__booking_obj__merged_seconds_arr( $date_booking_obj, $time_override_source = '' ) {
 
-			$is_times_availability_full_day_status = (
-				   ( 'times_availability' === $time_override_source )
+			$is_exact_time_full_day_status = (
+				   in_array( $time_override_source, array( 'times_availability', 'booking_new_inspector_boundary' ), true )
 				&& ( ! empty( $date_booking_obj->is_day_unavailable ) )
 				&& ( ! empty( $date_booking_obj->_day_status ) )
 				&& ( 'full_day_booking' === $date_booking_obj->_day_status )
 			);
 
-			if ( $is_times_availability_full_day_status ) {
+			if ( $is_exact_time_full_day_status ) {
 				$merged_seconds_arr = wpbc_get__booking_obj__booked_details_seconds_arr( $date_booking_obj );
 				if ( ! empty( $merged_seconds_arr['merged_seconds'] ) ) {
 					return $merged_seconds_arr;

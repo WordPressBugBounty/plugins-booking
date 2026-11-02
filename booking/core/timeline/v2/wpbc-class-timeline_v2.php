@@ -2460,6 +2460,17 @@ if(1)
 														) ) );
 														echo ' ' . esc_attr( implode( ' ', $booking_css_class_arr ) );
 														?>"
+									<?php if ( ! $this->is_frontend && defined( 'WPBC_ENABLE_12_0_TIMELINE' ) && true === WPBC_ENABLE_12_0_TIMELINE ) { ?>
+										data-wpbc-booking-inspector-calendar-trigger
+										data-wpbc-booking-inspector-schedule-trigger
+										data-wpbc-booking-id="<?php echo esc_attr( $booking_id ); ?>"
+										data-wpbc-booking-inspector-trigger-id="<?php echo esc_attr( 'legacy-calendar-' . $booking_id . '-' . absint( $row_settings['real_date'] ) . '-' . absint( $tt ) ); ?>"
+										role="button"
+										tabindex="0"
+										aria-haspopup="dialog"
+										aria-expanded="false"
+										aria-label="<?php echo esc_attr( sprintf( __( 'View booking %d details', 'booking' ), absint( $booking_id ) ) ); ?>"
+									<?php } ?>
 												><?php
 
 													// Booking CELL background
@@ -3389,7 +3400,7 @@ if(1)
 
         // Notes
         if ( ! empty( $bookings[$bk_id]->remark ) ) {
-            $content_text .= '<div class=\'wpbc-popover-booking-notes\'>' . '<strong>' . esc_js( __('Note', 'booking') ). ':</strong> ' . esc_textarea( $bookings[$bk_id]->remark ) . '</div>'; //FixIn: 7.1.1.2		// FixIn: 7.1.1.3.
+			$content_text .= '<div class=\'wpbc-popover-booking-notes\'>' . '<strong>' . esc_js( __( 'Private note', 'booking' ) ) . ':</strong> ' . esc_textarea( $bookings[ $bk_id ]->remark ) . '</div>'; // FixIn: 12.0.0.
         }
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3783,6 +3794,32 @@ function wpbc_timeline_js_load_files( $where_to_load ) {
 							, array( 'in_footer' => WPBC_JS_IN_FOOTER )	//, $is_in_footer
 						);
 	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route selection for asset loading.
+	$is_calendar_overview = isset( $_REQUEST['tab'] ) && 'vm_calendar' === sanitize_key( wp_unslash( $_REQUEST['tab'] ) );
+	if (
+		! in_array( $where_to_load, array( 'admin', 'both' ), true )
+		|| ! $is_calendar_overview
+		|| ! defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+		|| true !== WPBC_ENABLE_12_0_TIMELINE
+		|| ! class_exists( 'WPBC_Booking_Inspector_Config' )
+	) {
+		return;
+	}
+
+	WPBC_Shared_UI_Inspector::enqueue_script();
+	WPBC_Booking_Inspector_Config::enqueue_script();
+	if ( class_exists( 'WPBC_Print' ) ) {
+		WPBC_Print::enqueue_script( WPBC_JS_IN_FOOTER );
+	}
+	wp_localize_script(
+		WPBC_Booking_Inspector_Config::HOSTS_SCRIPT_HANDLE,
+		'wpbc_booking_inspector_host_configurations',
+		array(
+			WPBC_Booking_Inspector_Config::SOURCE_CALENDAR => WPBC_Booking_Inspector_Config::get_browser_configuration( WPBC_Booking_Inspector_Config::SOURCE_CALENDAR ),
+			WPBC_Booking_Inspector_Config::SOURCE_SCHEDULE => WPBC_Booking_Inspector_Config::get_browser_configuration( WPBC_Booking_Inspector_Config::SOURCE_SCHEDULE ),
+		)
+	);
 }
 add_action( 'wpbc_enqueue_js_files',  'wpbc_timeline_js_load_files', 50 );
 
@@ -3801,6 +3838,22 @@ function wpbc_timeline_enqueue_css_files( $where_to_load ) {
 				, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/timeline_v2.1.css'                    			/* wpbc_plugin_url( '/src/css/code_mirror.css' ) */
 				, array()
 				, WP_BK_VERSION_NUM );
+		}
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route selection for asset loading.
+	$is_calendar_overview = isset( $_REQUEST['tab'] ) && 'vm_calendar' === sanitize_key( wp_unslash( $_REQUEST['tab'] ) );
+	if (
+		in_array( $where_to_load, array( 'admin', 'both' ), true )
+		&& $is_calendar_overview
+		&& defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+		&& true === WPBC_ENABLE_12_0_TIMELINE
+		&& class_exists( 'WPBC_Booking_Inspector_Config' )
+	) {
+		WPBC_Shared_UI_Inspector::enqueue_style();
+		WPBC_Booking_Inspector_Config::enqueue_style();
+		if ( class_exists( 'WPBC_Print' ) ) {
+			WPBC_Print::enqueue_style();
 		}
 	}
 }

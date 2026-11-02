@@ -41,8 +41,24 @@ $wpbc_mode_definition = array(
 				'show_on_pages' => array( 'bookings', 'calendar', 'timeline', 'add_appointment' ),
 			),
 		),
-		// Timeline View. booking/core/admin/page-timeline.php:31.
-		// Horizontal-only link: hidden separately in sidebar_menu; no independent native slug.
+		// New isolated Timeline shell. The legacy Calendar route below remains unchanged.
+		'timeline'                    => array(
+			'route'           => array( 'page' => 'wpbc', 'tab' => 'timeline' ),
+			'page_options'    => array(
+				'navigation_shell_context' => 'workspace',
+				'page_content_layout'       => 'flush',
+				'is_show_top_path'          => true,
+				'top_path_title'            => 'Timeline',
+				'is_show_top_navigation'    => true,
+				'is_show_page_heading'      => false,
+			),
+			'horizontal_menu' => array(
+				'visible'       => true,
+				'title'         => 'Timeline',
+				'show_on_pages' => array( 'bookings', 'timeline', 'calendar', 'add_appointment' ),
+			),
+		),
+		// Legacy Timeline. booking/core/admin/page-timeline.php:31.
 		'calendar'                    => array(
 			'route'           => array( 'page' => 'wpbc', 'tab' => 'vm_calendar' ),
 			'page_options'    => array(
@@ -53,21 +69,7 @@ $wpbc_mode_definition = array(
 			'horizontal_menu' => array(
 				'visible'       => true,
 				'title'         => 'Calendar',
-				'show_on_pages' => array( 'bookings', 'calendar', 'add_appointment' ),
-			),
-		),
-		// New isolated Timeline shell. The legacy Calendar route above remains unchanged.
-		'timeline'                    => array(
-			'route'           => array( 'page' => 'wpbc', 'tab' => 'timeline' ),
-			'page_options'    => array(
-				'is_show_top_path'                   => false,
-				'top_path_title'                     => 'Timeline',
-				'is_show_top_navigation'             => true,
-			),
-			'horizontal_menu' => array(
-				'visible'       => true,
-				'title'         => 'Timeline',
-				'show_on_pages' => array( 'timeline' ),
+				'show_on_pages' => array( 'bookings', 'timeline', 'calendar', 'add_appointment' ),
 			),
 		),
 		// Add booking. booking/includes/page-add-booking/add_booking__page.php:174.
@@ -110,33 +112,58 @@ $wpbc_mode_definition = array(
 		'searchable_resources'        => array(
 			'route'        => array( 'page' => 'wpbc-resources', 'tab' => 'searchable_resources' ),
 			'page_options' => array(
-				'top_path_title' => 'Searchable Providers',
+				'top_path_title'         => 'Searchable Providers',
+				'is_show_top_navigation' => true,
+				'is_show_page_heading'   => false,
 			),
 		),
 		// Searchable Resources leaf used by the flattened Search Availability sidebar group.
 		'searchable_resources_options' => array(
-			'route' => array( 'page' => 'wpbc-resources', 'tab' => 'searchable_resources', 'subtab' => 'searchable_resources_options' ),
-		),
-		// Block Dates. booking/includes/page-availability/availability__page.php:37.
-		'block_dates'                 => array(
-			'route' => array( 'page' => 'wpbc-availability', 'tab' => 'availability' ),
+			'route'           => array( 'page' => 'wpbc-resources', 'tab' => 'searchable_resources', 'subtab' => 'searchable_resources_options' ),
+			'horizontal_menu' => array(
+				'title'         => 'Searchable Resources',
+				'editions'      => array( 'business_large', 'multiuser' ),
+				'show_on_pages' => array( 'searchable_resources', 'search_settings' ),
+				'cross_root'    => true,
+			),
 		),
 		// Block Times. booking/includes/page-availability-timeslots/availability_timeslots__page.php:525.
 		'block_times'                 => array(
-			'route' => array( 'page' => 'wpbc-availability', 'tab' => 'time_slots_availability' ),
+			'route'           => array( 'page' => 'wpbc-availability', 'tab' => 'time_slots_availability' ),
+			'horizontal_menu' => array(
+				'show_on_pages' => array( 'block_dates', 'block_times', 'schedule_rules', 'seasonal_availability', 'legacy_availability_seasons' ),
+			),
 		),
 		// Schedule & Rules. booking/includes/page-availability/availability__page.php:424.
 		'schedule_rules'              => array(
-			'route' => array( 'page' => 'wpbc-availability', 'tab' => 'general_availability' ),
+			'route'           => array( 'page' => 'wpbc-availability', 'tab' => 'general_availability' ),
+			'horizontal_menu' => array(
+				'show_on_pages' => array( 'block_dates', 'block_times', 'schedule_rules', 'seasonal_availability', 'legacy_availability_seasons' ),
+			),
+		),
+		// Block Dates. booking/includes/page-availability/availability__page.php:37.
+		'block_dates'                 => array(
+			'route'           => array( 'page' => 'wpbc-availability', 'tab' => 'availability' ),
+			'horizontal_menu' => array(
+				'show_on_pages' => array( 'block_dates', 'block_times', 'schedule_rules', 'seasonal_availability', 'legacy_availability_seasons' ),
+			),
 		),
 		// Seasonal Availability. booking-calendar-com/inc/_bm/admin/page-availability.php:49.
 		'seasonal_availability'       => array(
-			'route' => array( 'page' => 'wpbc-availability', 'tab' => 'season_availability' ),
+			'route'           => array( 'page' => 'wpbc-availability', 'tab' => 'season_availability' ),
+			'horizontal_menu' => array(
+				'editions'      => array( 'business_medium', 'business_large', 'multiuser' ),
+				'show_on_pages' => array( 'block_dates', 'block_times', 'schedule_rules', 'seasonal_availability', 'legacy_availability_seasons' ),
+			),
 		),
 		// Seasons. booking-calendar-com/inc/_bm/admin/page-seasons.php:61.
 		// Legacy route: use only while its existing controller registers this tab.
 		'legacy_availability_seasons' => array(
-			'route' => array( 'page' => 'wpbc-availability', 'tab' => 'filter' ),
+			'route'           => array( 'page' => 'wpbc-availability', 'tab' => 'filter' ),
+			'horizontal_menu' => array(
+				'editions'      => array( 'business_medium', 'business_large', 'multiuser' ),
+				'show_on_pages' => array( 'block_dates', 'block_times', 'schedule_rules', 'seasonal_availability', 'legacy_availability_seasons' ),
+			),
 		),
 		// Prices. booking-calendar-com/inc/_bm/admin/page-costs_flexible.php:58.
 		'prices'                      => array(
@@ -173,16 +200,38 @@ $wpbc_mode_definition = array(
 		),
 		// Search Availability form and results settings.
 		'search_settings'             => array(
-			'route' => array( 'page' => 'wpbc-settings', 'tab' => 'search' ),
+			'route'        => array( 'page' => 'wpbc-settings', 'tab' => 'search' ),
+			'page_options' => array(
+				'is_show_top_navigation' => true,
+				'is_show_page_heading'   => false,
+			),
 		),
 		'search_form_layout'          => array(
-			'route' => array( 'page' => 'wpbc-settings', 'tab' => 'search', 'subtab' => 'search_form' ),
+			'route'           => array( 'page' => 'wpbc-settings', 'tab' => 'search', 'subtab' => 'search_form' ),
+			'horizontal_menu' => array(
+				'title'         => 'Search Form Layout',
+				'editions'      => array( 'business_large', 'multiuser' ),
+				'show_on_pages' => array( 'searchable_resources', 'search_settings' ),
+				'cross_root'    => true,
+			),
 		),
 		'search_results_layout'       => array(
-			'route' => array( 'page' => 'wpbc-settings', 'tab' => 'search', 'subtab' => 'search_results' ),
+			'route'           => array( 'page' => 'wpbc-settings', 'tab' => 'search', 'subtab' => 'search_results' ),
+			'horizontal_menu' => array(
+				'title'         => 'Search Results Layout',
+				'editions'      => array( 'business_large', 'multiuser' ),
+				'show_on_pages' => array( 'searchable_resources', 'search_settings' ),
+				'cross_root'    => true,
+			),
 		),
 		'search_options'              => array(
-			'route' => array( 'page' => 'wpbc-settings', 'tab' => 'search', 'subtab' => 'search_options' ),
+			'route'           => array( 'page' => 'wpbc-settings', 'tab' => 'search', 'subtab' => 'search_options' ),
+			'horizontal_menu' => array(
+				'title'         => 'Search Options',
+				'editions'      => array( 'business_large', 'multiuser' ),
+				'show_on_pages' => array( 'searchable_resources', 'search_settings' ),
+				'cross_root'    => true,
+			),
 		),
 		// Forms Builder. booking/includes/page-form-builder/builder-form-page.php:52.
 		// Promoted to a standalone sidebar link. The original Settings route stays unchanged.
@@ -246,10 +295,13 @@ $wpbc_mode_definition = array(
 					'page_id' => 'bookings',
 					'title'   => 'Appointments',
 				),
+				'timeline'        => array(
+					'page_id' => 'timeline',
+					'title'   => 'Timeline',
+				),
 				'calendar'        => array(
 					'page_id' => 'calendar',
 					'title'   => 'Calendar',
-					'visible' => false,
 				),
 				'add_appointment' => array(
 					'page_id' => 'add_appointment',
@@ -406,6 +458,7 @@ $wpbc_mode_definition = array(
 if ( ! defined( 'WPBC_ENABLE_12_0_TIMELINE' ) || true !== WPBC_ENABLE_12_0_TIMELINE ) {
 	// Preserve the legacy Calendar page while pruning only the new Timeline host.
 	unset( $wpbc_mode_definition['pages']['timeline'] );
+	unset( $wpbc_mode_definition['sidebar_menu']['wpbc']['items']['timeline'] );
 
 	foreach ( $wpbc_mode_definition['pages'] as $page_id => $page_definition ) {
 		if (

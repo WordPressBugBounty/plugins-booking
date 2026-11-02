@@ -311,6 +311,7 @@ function wpbc_booking_activate() {
 							booking_type bigint(10) NOT NULL default 1,
 
 							form TEXT,
+							public_note TEXT NULL,
 							hash TEXT,
 							booking_options TEXT,
 							status varchar(200) NOT NULL default '',
@@ -337,6 +338,11 @@ function wpbc_booking_activate() {
 
 			if ( wpbc_is_field_in_table_exists( 'booking', 'form' ) == 0 ) {
 				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN form TEXT";
+			}
+
+			// FixIn: 12.0.0. Public notes use NULL for never set and an empty string for explicitly cleared.
+			if ( wpbc_is_field_in_table_exists( 'booking', 'public_note' ) == 0 ) {
+				$wp_queries[] = "ALTER TABLE {$table_name} ADD COLUMN public_note TEXT NULL";
 			}
 
 			if ( wpbc_is_field_in_table_exists( 'booking', 'modification_date' ) == 0 ) {
@@ -1121,7 +1127,7 @@ if ( class_exists( 'wpdev_bk_biz_m' ) ) {
         $default_options['booking_is_email_modification_send_copy_to_admin'] = 'Off';
         $default_options['booking_resourses_num_per_page'] = '10';
      $mu_option4delete[]='booking_resourses_num_per_page';         
-        $default_options['booking_default_title_in_day_for_calendar_view_mode'] = '[id]: [name] [secondname]';
+        $default_options['booking_default_title_in_day_for_calendar_view_mode'] = '[id]: [firstname][name] [secondname]';
      $mu_option4delete[]='booking_default_title_in_day_for_calendar_view_mode';
 
 	// FixIn: 8.1.3.31.

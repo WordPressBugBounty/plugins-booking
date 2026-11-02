@@ -27,7 +27,7 @@ function wpbc_availability_timeslots__table_name() {
  */
 function wpbc_availability_timeslots__get_manage_cap() {
 
-	$min_user_role = get_bk_option( 'booking_user_role_settings' );
+	$min_user_role = get_bk_option( 'booking_user_role_availability' );
 
 	$capability = array(
 		'administrator' => 'activate_plugins',
@@ -74,7 +74,7 @@ function wpbc_availability_timeslots__current_user_can_access_resource( $resourc
 
 	if ( class_exists( 'wpdev_bk_multiuser' ) ) {
 		$current_user_id = absint( wpbc_get_current_user_id() );
-		$is_super_admin  = (bool) apply_bk_filter( 'is_user_super_admin', false, $current_user_id );
+		$is_super_admin  = (bool) apply_bk_filter( 'is_user_super_admin', $current_user_id );
 
 		if ( ! $is_super_admin && 'On' !== get_user_option( 'booking_is_active', $current_user_id ) ) {
 			return false;
@@ -276,7 +276,7 @@ function wpbc_availability_timeslots__get_date_bounds( $dates_to_check = 'CURDAT
  *
  * @param array $params Query params.
  *
- * @return array [date][resource_id][].
+ * @return array|WP_Error Intervals as [date][resource_id][] or a bounded-read error.
  */
 function wpbc_availability_timeslots__get_intervals_for_resources( $params = array() ) {
 
@@ -298,6 +298,7 @@ function wpbc_availability_timeslots__get_intervals_for_resources( $params = arr
 		'date_end'       => '',
 		'max_days_count' => 365,
 		'use_cache'      => true,
+		'maximum_rows'   => 0,
 	);
 	$params   = wp_parse_args( $params, $defaults );
 
@@ -324,9 +325,10 @@ function wpbc_availability_timeslots__get_intervals_for_resources( $params = arr
 	}
 
 	$cache_params = array(
-		'resource_id' => $resource_ids,
-		'date_start'  => $date_start,
-		'date_end'    => $date_end,
+		'resource_id'  => $resource_ids,
+		'date_start'   => $date_start,
+		'date_end'     => $date_end,
+		'maximum_rows' => absint( $params['maximum_rows'] ),
 	);
 
 	if ( $params['use_cache'] ) {
@@ -336,9 +338,15 @@ function wpbc_availability_timeslots__get_intervals_for_resources( $params = arr
 		}
 	}
 
-	$table                = wpbc_availability_timeslots__table_name();
+	$table                 = wpbc_availability_timeslots__table_name();
 	$resource_placeholders = implode( ',', array_fill( 0, count( $resource_ids ), '%d' ) );
-	$query_values          = array_merge( $resource_ids, array( $date_start, $date_end ) );
+	$query_values           = array_merge( $resource_ids, array( $date_start, $date_end ) );
+
+	$limit_sql = '';
+	if ( ! empty( $params['maximum_rows'] ) ) {
+		$limit_sql     = ' LIMIT %d';
+		$query_values[] = absint( $params['maximum_rows'] ) + 1;
+	}
 
 	$sql = $wpdb->prepare(
 		"SELECT timeslot_id, resource_id, block_date, start_second, end_second, group_uid, source, note
@@ -347,12 +355,24 @@ function wpbc_availability_timeslots__get_intervals_for_resources( $params = arr
 		    AND resource_id IN ({$resource_placeholders})
 		    AND block_date >= %s
 		    AND block_date <= %s
-		  ORDER BY block_date ASC, resource_id ASC, start_second ASC, end_second ASC",
+		  ORDER BY block_date ASC, resource_id ASC, start_second ASC, end_second ASC{$limit_sql}",
 		$query_values
 	);
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	$rows = $wpdb->get_results( $sql );
+	if ( ! is_array( $rows ) ) {
+		return new WP_Error(
+			'wpbc_availability_timeslot_query_failed',
+			__( 'Blocked times could not be loaded for the selected range.', 'booking' )
+		);
+	}
+	if ( ! empty( $params['maximum_rows'] ) && count( $rows ) > absint( $params['maximum_rows'] ) ) {
+		return new WP_Error(
+			'wpbc_availability_timeslot_rows_exceeded',
+			__( 'The selected range contains too many blocked-time records. Choose fewer Resources or a shorter range.', 'booking' )
+		);
+	}
 
 	$intervals = array();
 
@@ -496,6 +516,81 @@ function wpbc_availability_timeslots__is_some_timeslot_available( $timeslots_to_
 }
 
 /**
+ * Build tooltip intervals without joining different availability sources.
+ *
+ * Booking ranges use legacy boundary sentinel seconds, while Working Time and
+ * manually blocked ranges use exact seconds. Merging every source together can
+ * therefore make a booking that ends at a Working Time boundary appear to
+ * continue through the following outside-hours range. Availability calculations
+ * must keep using the complete merged busy intervals, but their presentation
+ * retains source boundaries so the tooltip does not imply a longer booking.
+ *
+ * @param object $availability_obj Availability object containing interval details.
+ *
+ * @return array<int,array<int,int>> Sorted tooltip intervals in seconds.
+ */
+function wpbc_availability_timeslots__get_tooltip_intervals( $availability_obj ) {
+
+	$details = (
+		isset( $availability_obj->__booked__times__details )
+		&& is_array( $availability_obj->__booked__times__details )
+	)
+		? $availability_obj->__booked__times__details
+		: array();
+
+	if ( empty( $details ) ) {
+		return isset( $availability_obj->booked_time_slots['merged_seconds'] )
+			? $availability_obj->booked_time_slots['merged_seconds']
+			: array();
+	}
+
+	$intervals_by_source = array();
+
+	foreach ( $details as $time_range_key => $interval_details ) {
+		$source_type = isset( $interval_details->source_type )
+			? sanitize_key( $interval_details->source_type )
+			: 'booking';
+		$source_type = empty( $source_type ) ? 'booking' : $source_type;
+		$time_range  = wpbc_availability_timeslots__time_key_to_seconds( $time_range_key );
+
+		if ( empty( $time_range ) || $time_range[0] >= $time_range[1] ) {
+			continue;
+		}
+
+		if ( ! isset( $intervals_by_source[ $source_type ] ) ) {
+			$intervals_by_source[ $source_type ] = array();
+		}
+
+		$intervals_by_source[ $source_type ][] = $time_range;
+	}
+
+	$tooltip_intervals = array();
+
+	foreach ( $intervals_by_source as $source_intervals ) {
+		foreach ( wpbc_merge_intersected_intervals( $source_intervals ) as $source_interval ) {
+			$tooltip_intervals[] = $source_interval;
+		}
+	}
+
+	usort(
+		$tooltip_intervals,
+		static function ( $first_interval, $second_interval ) {
+			if ( $first_interval[0] === $second_interval[0] ) {
+				if ( $first_interval[1] === $second_interval[1] ) {
+					return 0;
+				}
+
+				return ( $first_interval[1] < $second_interval[1] ) ? -1 : 1;
+			}
+
+			return ( $first_interval[0] < $second_interval[0] ) ? -1 : 1;
+		}
+	);
+
+	return $tooltip_intervals;
+}
+
+/**
  * Apply saved blocked intervals to one availability resource object.
  *
  * @param object $availability_obj Availability object.
@@ -590,12 +685,14 @@ function wpbc_availability_timeslots__apply_blocks_to_availability_obj( $availab
 
 	ksort( $availability_obj->pending_approved );
 
-	if ( ! empty( $availability_obj->booked_time_slots['merged_readable'] ) ) {
+	$tooltip_intervals = wpbc_availability_timeslots__get_tooltip_intervals( $availability_obj );
+
+	if ( ! empty( $tooltip_intervals ) ) {
 		$tooltip_content_arr = array_map(
 			function ( $item ) {
-				return '<div class="wpbc_tooltip_item">' . $item . '</div>';
+				return '<div class="wpbc_tooltip_item">' . wpbc_transform_timerange__seconds_arr__in__formated_hours( $item ) . '</div>';
 			},
-			$availability_obj->booked_time_slots['merged_readable']
+			$tooltip_intervals
 		);
 
 		$availability_obj->tooltips['times'] = '<div class="wpbc_tooltip_resource_container">' . implode( '', $tooltip_content_arr ) . '</div>';

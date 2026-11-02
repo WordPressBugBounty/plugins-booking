@@ -8,8 +8,6 @@
  * @email       info@wpbookingcalendar.com
  *
  * @since       11.0.x
- * @file        ../W:/w3/beta/www/wp-content/plugins/booking/includes/_front_end\class-custom-forms-helper.php.php
- *
  * @modified    2026-02-22 15:22
  */
 

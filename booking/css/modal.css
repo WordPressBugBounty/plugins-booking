@@ -39,6 +39,18 @@
 #wpbc_print_modal .modal-header {
     text-shadow: none;
 }
+.wpbc_booking_inspector__print_content textarea,
+.wpbc_booking_inspector__print_content select,
+.wpbc_booking_inspector__print_content input {
+	border: 0 !important;
+}
+.wpbc_booking_inspector__print_content .wpbc_booking_inspector__edit_link,
+.wpbc_booking_inspector__print_content .button {
+	display: none;
+}
+.wpbc_booking_inspector__print_content .wpbc_booking_inspector__summary_bottom {
+	margin: 20px 0 0;
+}
 
 /* Modal Google Calendar Events Import */
 .wpbc_modal__import_google_calendar__section span.description {

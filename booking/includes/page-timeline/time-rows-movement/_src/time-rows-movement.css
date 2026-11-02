@@ -1,0 +1,377 @@
+/**
+ * Expanded time-row movement eligibility and proposal presentation.
+ *
+ * Controls remain scoped to the module-owned host and retain the existing
+ * booking information and Inspector actions. Gesture geometry is applied only
+ * to a presentation-only ghost inside the current accepted Resource surface.
+ *
+ * @package Booking Calendar
+ * @since   12.0.0
+ */
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host {
+	display: block;
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+	z-index: 8;
+}
+
+/*
+ * Match the native Timeline eligibility signal while the two authoritative
+ * movement and resize reads are pending. Markers remain presentation-only and
+ * appear solely on true visible canonical boundaries.
+ */
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__eligibility_loading {
+	display: block;
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__eligibility_marker {
+	animation: wpbc_timeline_time_rows_movement_eligibility_pulse 250ms ease-in-out infinite alternate;
+	background: var(--wpbc-time-rows-primary);
+	block-size: 7px;
+	border-radius: 50%;
+	inline-size: 7px;
+	position: absolute;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__eligibility_marker {
+	inset-block-start: 50%;
+	transform: translateY(-50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__eligibility_marker.is-start {
+	inset-inline-start: -2.5px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__eligibility_marker.is-end {
+	inset-inline-end: -2.5px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__eligibility_marker {
+	inset-inline-start: 50%;
+	transform: translateX(-50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__eligibility_marker.is-start {
+	inset-block-start: -2.5px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__eligibility_marker.is-end {
+	inset-block-end: -2.5px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__grip,
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle {
+	align-items: center;
+	background: var(--wpbc-time-rows-surface);
+	border: 1px solid var(--wpbc-time-rows-primary);
+	box-sizing: border-box;
+	color: var(--wpbc-time-rows-primary);
+	display: inline-flex;
+	flex: 0 0 auto;
+	justify-content: center;
+	margin: 0;
+	min-block-size: 20px;
+	min-inline-size: 20px;
+	opacity: 1;
+	padding: 0;
+	pointer-events: auto;
+	position: absolute;
+	touch-action: none;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows__booking.is-time-rows-moving,
+.wpbc_timeline_page .wpbc_timeline_time_rows__booking.is-time-rows-resizing {
+	z-index: 9;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows__booking.is-time-rows-moving > :not(.wpbc_timeline_time_rows_movement__host),
+.wpbc_timeline_page .wpbc_timeline_time_rows__booking.is-time-rows-resizing > :not(.wpbc_timeline_time_rows_movement__host) {
+	opacity: 0.55;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__grip {
+	block-size: 20px;
+	border-radius: 3px;
+	inline-size: 20px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle {
+	appearance: none;
+	background: transparent;
+	block-size: 44px;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: none;
+	inline-size: 44px;
+	min-block-size: 44px;
+	min-inline-size: 44px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_idle_dot,
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_ready_ring {
+	background: var(--wpbc-time-rows-surface);
+	border-radius: 50%;
+	box-sizing: border-box;
+	inset: 50% auto auto 50%;
+	pointer-events: none;
+	position: absolute;
+	transform: translate(-50%, -50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_idle_dot {
+	block-size: 10px;
+	border: 2px solid currentColor;
+	inline-size: 10px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_ready_ring {
+	block-size: 26px;
+	border: 2px solid currentColor;
+	inline-size: 26px;
+	opacity: 0;
+	transform: translate(-50%, -50%) scale(0.72);
+	transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle.is-ready .wpbc_timeline_time_rows_movement__resize_ready_ring {
+	animation: wpbc_timeline_time_rows_movement_resize_ready_pulse 420ms ease-in-out 1;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle:hover .wpbc_timeline_time_rows_movement__resize_ready_ring,
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle:focus-visible .wpbc_timeline_time_rows_movement__resize_ready_ring {
+	opacity: 1;
+	transform: translate(-50%, -50%) scale(1);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle:focus-visible {
+	outline: 2px solid var(--wpbc-time-rows-primary);
+	outline-offset: 1px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handles {
+	display: block;
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+}
+
+/*
+ * Full-day projections retain the native horizontal selection language. Their
+ * canonical start and end boundaries use left/right handles while timed
+ * projections continue to use top/bottom handles.
+ */
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__grip {
+	inset-block-start: 50%;
+	inset-inline-start: 12px;
+	transform: translateY(-50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__resize_handle {
+	cursor: ew-resize;
+	inset-block-start: 50%;
+	transform: translateY(-50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__resize_handle.is-start {
+	inset-inline-start: -22px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-horizontal .wpbc_timeline_time_rows_movement__resize_handle.is-end {
+	inset-inline-end: -22px;
+}
+
+/*
+ * Timed projections rotate the same selection language onto the wall-time
+ * axis: true canonical boundaries are top/bottom, while the drag indicator
+ * sits outside the card above its start boundary. The separated controls keep
+ * the start handle reachable on short first-day fragments without overlapping
+ * its 44-pixel pointer target.
+ */
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__grip {
+	block-size: 20px;
+	cursor: grab;
+	inline-size: 27px;
+	inset-block-start: -24px;
+	inset-inline-start: 50%;
+	line-height: 1;
+	transform: translate(-50%, -100%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__grip:active {
+	cursor: grabbing;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__grip > .wpbc_icn_drag_indicator {
+	display: inline-block;
+	transform: rotate(90deg);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__grip > .wpbc_icn_drag_indicator::before {
+	font-size: 18px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__resize_handle {
+	cursor: ns-resize;
+	inset-inline-start: 50%;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__resize_handle.is-start {
+	inset-block-start: 0;
+	transform: translate(-50%, -50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__host.is-vertical .wpbc_timeline_time_rows_movement__resize_handle.is-end {
+	inset-block-end: 0;
+	transform: translate(-50%, 50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost {
+	align-items: center;
+	background: color-mix(in srgb, var(--wpbc-time-rows-primary) 12%, transparent);
+	border: 2px dashed var(--wpbc-time-rows-primary);
+	border-radius: 4px;
+	box-sizing: border-box;
+	color: var(--wpbc-time-rows-primary);
+	display: flex;
+	justify-content: center;
+	overflow: visible;
+	pointer-events: none;
+	position: absolute;
+	z-index: 10;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_label {
+	background: var(--wpbc-time-rows-surface);
+	border: 1px solid var(--wpbc-time-rows-primary);
+	border-radius: 999px;
+	box-sizing: border-box;
+	flex: 0 0 auto;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.2;
+	overflow: visible;
+	padding: 3px 6px;
+	white-space: nowrap;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_duration {
+	flex: 0 0 auto;
+	position: relative;
+	z-index: 1;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost.has-range-labels {
+	z-index: 11;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_endpoint {
+	inset-inline-start: 50%;
+	pointer-events: none;
+	position: absolute;
+	z-index: 2;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_endpoint.is-start {
+	inset-block-start: 0;
+	margin-block-start: 12px;
+	transform: translate(-50%, 0);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_endpoint.is-end {
+	inset-block-start: 100%;
+	margin-block-start: -12px;
+	transform: translate(-50%, -100%);
+}
+
+.wpbc_timeline_page[dir="rtl"] .wpbc_timeline_time_rows_movement__ghost_endpoint.is-start,
+[dir="rtl"] .wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_endpoint.is-start {
+	transform: translate(50%, 0);
+}
+
+.wpbc_timeline_page[dir="rtl"] .wpbc_timeline_time_rows_movement__ghost_endpoint.is-end,
+[dir="rtl"] .wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_endpoint.is-end {
+	transform: translate(50%, -100%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_boundary {
+	background: var(--wpbc-time-rows-surface);
+	block-size: 10px;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+	box-sizing: border-box;
+	inline-size: 10px;
+	inset-inline-start: 50%;
+	position: absolute;
+	transform: translateX(-50%);
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_boundary.is-start {
+	inset-block-start: -6px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost_boundary.is-end {
+	inset-block-end: -6px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost.is-resize {
+	min-block-size: 2px;
+	min-inline-size: 2px;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows__booking.is-time-rows-resizing .wpbc_timeline_time_rows_movement__resize_handle {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.wpbc_timeline_page .wpbc_timeline_time_rows__timed_surface.is-time-rows-movement-target,
+.wpbc_timeline_page .wpbc_timeline_time_rows__all_day_surface.is-time-rows-movement-target {
+	box-shadow: inset 0 0 0 2px var(--wpbc-time-rows-primary);
+}
+
+@media (pointer: coarse) {
+	.wpbc_timeline_page .wpbc_timeline_time_rows_movement__grip,
+	.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_handle {
+		min-block-size: 44px;
+		min-inline-size: 44px;
+	}
+}
+
+@keyframes wpbc_timeline_time_rows_movement_eligibility_pulse {
+	from {
+		opacity: 0.35;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes wpbc_timeline_time_rows_movement_resize_ready_pulse {
+	0%,
+	100% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0.72);
+	}
+
+	45% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1.12);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_timeline_page .wpbc_timeline_time_rows_movement__eligibility_marker {
+		animation: none;
+	}
+
+	.wpbc_timeline_page .wpbc_timeline_time_rows_movement__ghost,
+	.wpbc_timeline_page .wpbc_timeline_time_rows_movement__resize_ready_ring {
+		animation: none;
+		transition: none;
+	}
+}

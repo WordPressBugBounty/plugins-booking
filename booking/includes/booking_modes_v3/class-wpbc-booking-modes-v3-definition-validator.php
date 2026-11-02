@@ -136,16 +136,18 @@ final class WPBC_Booking_Modes_V3_Definition_Validator {
 	 * @return array<string,mixed> Normalized options.
 	 */
 	private function validate_page_options( $path, $options ) {
-		$normalized = array();
+		$normalized  = array();
 		$string_keys = array( 'page_title', 'page_description', 'top_path_title' );
-		$bool_keys   = array( 'is_show_top_path', 'is_show_top_navigation', 'top_navigation_use_subtabs' );
+		$bool_keys   = array( 'is_show_top_path', 'is_show_top_navigation', 'is_show_page_heading', 'top_navigation_use_subtabs' );
+		$context_key = 'navigation_shell_context';
+		$layout_key  = 'page_content_layout';
 
 		if ( ! is_array( $options ) ) {
 			$this->add_error( $path, 'Page options must be an array.' );
 			return $normalized;
 		}
 
-		$this->validate_exact_keys( $path, $options, array_merge( $string_keys, $bool_keys ), array() );
+		$this->validate_exact_keys( $path, $options, array_merge( $string_keys, $bool_keys, array( $context_key, $layout_key ) ), array() );
 		foreach ( $string_keys as $key ) {
 			if ( array_key_exists( $key, $options ) ) {
 				$normalized[ $key ] = $this->validate_text( $path . '.' . $key, $options[ $key ], self::MAX_TEXT_BYTES );
@@ -154,6 +156,22 @@ final class WPBC_Booking_Modes_V3_Definition_Validator {
 		foreach ( $bool_keys as $key ) {
 			if ( array_key_exists( $key, $options ) ) {
 				$normalized[ $key ] = $this->validate_boolean( $path . '.' . $key, $options[ $key ] );
+			}
+		}
+		if ( array_key_exists( $context_key, $options ) ) {
+			$context = $this->validate_identifier( $path . '.' . $context_key, $options[ $context_key ], false );
+			if ( '' !== $context && in_array( $context, array( 'workspace', 'settings', 'focused' ), true ) ) {
+				$normalized[ $context_key ] = $context;
+			} elseif ( '' !== $context ) {
+				$this->add_error( $path . '.' . $context_key, 'The navigation shell context is not supported.' );
+			}
+		}
+		if ( array_key_exists( $layout_key, $options ) ) {
+			$layout = $this->validate_identifier( $path . '.' . $layout_key, $options[ $layout_key ], false );
+			if ( '' !== $layout && in_array( $layout, array( 'standard', 'spacious', 'flush' ), true ) ) {
+				$normalized[ $layout_key ] = $layout;
+			} elseif ( '' !== $layout ) {
+				$this->add_error( $path . '.' . $layout_key, 'The page content layout is not supported.' );
 			}
 		}
 
@@ -176,7 +194,7 @@ final class WPBC_Booking_Modes_V3_Definition_Validator {
 			return $normalized;
 		}
 
-		$this->validate_exact_keys( $path, $definition, array( 'visible', 'title', 'font_icon', 'editions', 'show_on_pages' ), array() );
+		$this->validate_exact_keys( $path, $definition, array( 'visible', 'title', 'font_icon', 'editions', 'show_on_pages', 'cross_root' ), array() );
 		if ( array_key_exists( 'visible', $definition ) ) {
 			$normalized['visible'] = $this->validate_boolean( $path . '.visible', $definition['visible'] );
 		}
@@ -191,6 +209,9 @@ final class WPBC_Booking_Modes_V3_Definition_Validator {
 		}
 		if ( array_key_exists( 'show_on_pages', $definition ) ) {
 			$normalized['show_on_pages'] = $this->validate_identifier_list( $path . '.show_on_pages', $definition['show_on_pages'] );
+		}
+		if ( array_key_exists( 'cross_root', $definition ) ) {
+			$normalized['cross_root'] = $this->validate_boolean( $path . '.cross_root', $definition['cross_root'] );
 		}
 
 		return $normalized;
@@ -354,12 +375,27 @@ final class WPBC_Booking_Modes_V3_Definition_Validator {
 	 */
 	private function validate_horizontal_hosts( $pages ) {
 		foreach ( $pages as $page_id => $page_definition ) {
+			// A cross-root group must name every host rather than inheriting a broad root.
+			if (
+				! empty( $page_definition['horizontal_menu']['cross_root'] )
+				&& empty( $page_definition['horizontal_menu']['show_on_pages'] )
+			) {
+				$this->add_error( 'mode.pages.' . $page_id . '.horizontal_menu.cross_root', 'A cross-root horizontal peer must declare its host pages explicitly.' );
+			}
 			if ( ! isset( $page_definition['horizontal_menu']['show_on_pages'] ) ) {
 				continue;
 			}
 			foreach ( $page_definition['horizontal_menu']['show_on_pages'] as $host_page_id ) {
 				if ( ! isset( $pages[ $host_page_id ] ) ) {
 					$this->add_error( 'mode.pages.' . $page_id . '.horizontal_menu.show_on_pages', 'The horizontal host page reference is undefined: ' . $host_page_id . '.' );
+					continue;
+				}
+
+				if (
+					$page_definition['route']['page'] !== $pages[ $host_page_id ]['route']['page']
+					&& empty( $page_definition['horizontal_menu']['cross_root'] )
+				) {
+					$this->add_error( 'mode.pages.' . $page_id . '.horizontal_menu.show_on_pages', 'Horizontal peers must use the same root page as their host: ' . $host_page_id . '.' );
 				}
 			}
 		}

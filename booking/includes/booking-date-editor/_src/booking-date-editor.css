@@ -1,0 +1,449 @@
+/**
+ * Booking Date Editor presentation.
+ *
+ * @package Booking Calendar
+ * @since   12.0.0
+ */
+
+/* Booking date editor Step 1: presentation-only interaction contract. */
+.wpbc_booking_inspector__date_editor_layer {
+	--wpbc_booking_inspector__accent-color: var(--wpbc_admin-theme-color, #2271b1);
+	--wpbc_booking_inspector__border-color: var(--wpbc_shared_ui_inspector__border-color, #dcdcde);
+	--wpbc_booking_inspector__border-width: 1px;
+	--wpbc_booking_inspector__card-background: var(--wpbc_shared_ui_inspector__surface, #fff);
+	--wpbc_booking_inspector__date_editor-width: var(--wpbc_shared_ui_inspector__panel-width, 640px);
+	--wpbc_booking_inspector__font-size-small: 12px;
+	--wpbc_booking_inspector__radius: 4px;
+	--wpbc_booking_inspector__review-changed-color: #008a20;
+	--wpbc_booking_inspector__review-previous-changed-color: #b32d2e;
+	--wpbc_booking_inspector__spacing: var(--wpbc_shared_ui_inspector__spacing, 18px);
+	--wpbc_booking_inspector__status-error-background: #fffcfc;
+	--wpbc_booking_inspector__status-error-color: #b32d2e;
+	--wpbc_booking_inspector__status-warning-background: #fcf9e8;
+	--wpbc_booking_inspector__status-warning-color: #4f3737;
+	--wpbc_booking_inspector__subtle-background: #f6f6f7;
+	--wpbc_booking_inspector__text-muted-color: var(--wpbc_shared_ui_inspector__muted-color, #646970);
+	background: var(--wpbc_shared_ui_inspector__surface, #fff);
+	border-inline-end: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	box-shadow: -8px 0 24px rgba(0, 0, 0, 0.14);
+  border-inline-end:0;
+  box-shadow: -4px 0 20px rgba(0,0,0,.14);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	inline-size: min(
+		var(--wpbc_booking_inspector__date_editor-width),
+		calc(100vw - var(--wpbc_shared_ui_inspector__panel-width))
+	);
+	inset-block: var(--wpbc_shared_ui_inspector__admin-bar-height) 0;
+	inset-inline-end: var(--wpbc_shared_ui_inspector__panel-width);
+	min-inline-size: 0;
+	position: fixed;
+	z-index: 5;
+}
+
+.wpbc_booking_inspector__date_editor_layer[hidden],
+.wpbc_booking_inspector__date_editor_view[hidden],
+.wpbc_booking_inspector__date_editor_loading[hidden],
+.wpbc_booking_inspector__date_editor_time_fields[hidden],
+.wpbc_booking_inspector__date_editor_help[hidden] {
+	display: none;
+}
+#wpbc_booking_inspector_date_editor_selection_help,
+#wpbc_booking_inspector_date_editor_guidance {
+	display:none;
+}
+.wpbc_booking_inspector__date_editor_heading {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 4px;
+	min-inline-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_heading p,
+.wpbc_booking_inspector__date_editor_body h4,
+.wpbc_booking_inspector__date_editor_summary dl,
+.wpbc_booking_inspector__date_editor_selected_dates {
+	margin: 0;
+}
+
+.wpbc_booking_inspector__date_editor_heading p,
+.wpbc_booking_inspector__date_editor_help {
+	color: var(--wpbc_booking_inspector__text-muted-color);
+	font-size: var(--wpbc_booking_inspector__font-size-small);
+}
+
+.wpbc_booking_inspector__date_editor_status.is-visible:not(:empty) {
+	border-block-end: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	block-size: auto;
+	clip: auto;
+	clip-path: none;
+	color: var(--wpbc_booking_inspector__status-error-color);
+	inline-size: auto;
+	overflow: visible;
+	padding: 10px var(--wpbc_booking_inspector__spacing);
+	position: static;
+	border-inline-start: 3px solid currentColor;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.wpbc_booking_inspector__date_editor_status.is-warning {
+	background: var(--wpbc_booking_inspector__status-warning-background);
+	color: var(--wpbc_booking_inspector__status-warning-color);
+}
+
+.wpbc_booking_inspector__date_editor_status.is-error {
+	background: var(--wpbc_booking_inspector__status-error-background);
+	color: var(--wpbc_booking_inspector__status-error-color);
+}
+
+.wpbc_booking_inspector__date_editor_status.is-emphasized {
+	animation: wpbc_booking_date_editor_status_emphasis 0.55s ease-in-out 3;
+}
+
+@keyframes wpbc_booking_date_editor_status_emphasis {
+	0%,
+	100% {
+		box-shadow: inset 0 0 0 0 currentColor;
+	}
+
+	50% {
+		box-shadow: inset 0 0 0 2px currentColor;
+	}
+}
+
+.wpbc_booking_inspector__date_editor_error {
+	flex: 0 0 auto;
+}
+
+.wpbc_booking_inspector__date_editor_error[hidden],
+.wpbc_booking_inspector__date_editor_error_actions [hidden] {
+	display: none;
+}
+
+.wpbc_booking_inspector__date_editor_error_actions {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 8px;
+	padding-block-end: 12px;
+}
+
+.wpbc_booking_inspector__date_editor_view {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-block-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_body {
+	background: var(--wpbc_booking_inspector__subtle-background);
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 16px;
+	min-block-size: 0;
+	overflow-y: auto;
+	padding: var(--wpbc_booking_inspector__spacing);
+}
+
+.wpbc_booking_inspector__date_editor_fieldset,
+.wpbc_booking_inspector__date_editor_calendar,
+.wpbc_booking_inspector__date_editor_summary,
+.wpbc_booking_inspector__date_editor_review {
+	background: var(--wpbc_booking_inspector__card-background);
+	border: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	border-radius: var(--wpbc_booking_inspector__radius);
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column;
+	gap: 12px;
+	margin: 0;
+	min-inline-size: 0;
+	padding: 16px 18px;
+}
+
+.wpbc_booking_inspector__date_editor_fieldset legend {
+	font-size: 14px;
+	padding: 0 4px;
+}
+
+.wpbc_booking_inspector__date_editor_choices {
+	display: flex;
+	flex-flow: row wrap;
+	gap: 12px 28px;
+}
+
+.wpbc_booking_inspector__date_editor_choices label {
+	align-items: flex-start;
+	cursor: pointer;
+	display: flex;
+	flex: 0 1 auto;
+	gap: 9px;
+	line-height: 1.45;
+	min-inline-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_choices input[type="radio"] {
+	flex: 0 0 auto;
+	margin-block-start: 2px;
+}
+
+.wpbc_booking_inspector__date_editor_calendar_row {
+	align-items: stretch;
+	display: flex;
+	flex-flow: row nowrap;
+	gap: 16px;
+	min-inline-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_calendar {
+	flex: 1 1 auto;
+}
+
+.wpbc_booking_inspector__date_editor_calendar_host {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	min-block-size: 320px;
+	min-inline-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_time_fields {
+	display: flex;
+	flex-flow: row wrap;
+	gap: 12px;
+	padding-block-start: 4px;
+}
+
+.wpbc_booking_inspector__date_editor_time_fields label {
+	display: flex;
+	flex: 1 1 180px;
+	flex-direction: column;
+	font-weight: 600;
+	gap: 6px;
+	min-inline-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_time_fields input[type="time"] {
+	box-sizing: border-box;
+	inline-size: 100%;
+	min-block-size: 36px;
+}
+
+.wpbc_booking_inspector__date_editor_summary dl {
+	display: flex;
+	flex-direction: column;
+}
+
+.wpbc_booking_inspector__date_editor_summary {
+	flex: 0 0 194px;
+	max-inline-size: 40%;
+}
+
+.wpbc_booking_inspector__date_editor_summary dl > div {
+	align-items: baseline;
+	border-block-end: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	display: flex;
+	gap: 12px;
+	justify-content: space-between;
+	padding-block: 8px;
+}
+
+.wpbc_booking_inspector__date_editor_summary dl > div:last-child {
+	border-block-end: 0;
+}
+
+.wpbc_booking_inspector__date_editor_summary dt {
+	font-weight: 600;
+}
+
+.wpbc_booking_inspector__date_editor_summary dd {
+	margin: 0;
+	text-align: end;
+}
+
+.wpbc_booking_inspector__date_editor_selected_dates {
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.wpbc_booking_inspector__date_editor_selected_dates li {
+	align-items: baseline;
+	border-block-end: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	display: flex;
+	gap: 12px;
+	justify-content: space-between;
+	padding-block: 10px;
+}
+
+.wpbc_booking_inspector__date_editor_selected_dates li:last-child {
+	border-block-end: 0;
+}
+
+.wpbc_booking_inspector__date_editor_selected_date_meta {
+	color: var(--wpbc_booking_inspector__text-muted-color);
+	text-align: end;
+}
+
+.wpbc_booking_inspector__date_editor_review_fields,
+.wpbc_booking_inspector__date_editor_review_warnings {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin: 20px 0 0;
+}
+
+.wpbc_booking_inspector__date_editor_review_field {
+	border: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	border-radius: var(--wpbc_booking_inspector__radius);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 14px;
+}
+
+.wpbc_booking_inspector__date_editor_review_field h5,
+.wpbc_booking_inspector__date_editor_review_warnings h5,
+.wpbc_booking_inspector__date_editor_review_warnings ul {
+	margin: 0;
+}
+
+.wpbc_booking_inspector__date_editor_review_values {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 12px;
+}
+
+.wpbc_booking_inspector__date_editor_review_values .wpbc_icn_arrow_forward,
+.wpbc_booking_inspector__date_editor_review_values .wpbc-bi-arrow-right {
+  font-size: 18px;
+}
+
+.wpbc_booking_inspector__date_editor_review_values > div {
+	display: flex;
+	flex: 1 1 220px;
+	flex-direction: column;
+	gap: 4px;
+	min-inline-size: 0;
+}
+
+.wpbc_booking_inspector__date_editor_review_values > div > span {
+	color: var(--wpbc_booking_inspector__text-muted-color);
+	font-size: var(--wpbc_booking_inspector__font-size-small);
+}
+
+.wpbc_booking_inspector__date_editor_review_values strong {
+	overflow-wrap: anywhere;
+}
+
+.wpbc_booking_inspector__date_editor_review_value > strong.is-changed,
+.wpbc_booking_inspector__date_editor_review_part.is-changed {
+	color: var(--wpbc_booking_inspector__review-changed-color);
+}
+
+.wpbc_booking_inspector__date_editor_review_value > strong.is-previous-changed,
+.wpbc_booking_inspector__date_editor_review_part.is-previous-changed {
+	color: var(--wpbc_booking_inspector__review-previous-changed-color);
+}
+
+.wpbc_booking_inspector__date_editor_review_warnings {
+	background: #fcf9e8;
+	border-inline-start: 4px solid #dba617;
+	color: var(--wpbc_booking_inspector__status-warning-color);
+	padding: 12px 14px;
+}
+
+.wpbc_booking_inspector__date_editor_review_warnings ul {
+	padding-inline-start: 20px;
+}
+
+.wpbc_booking_inspector__date_editor_footer {
+	align-items: center;
+	background: var(--wpbc_booking_inspector__card-background);
+	border-block-start: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	display: flex;
+	flex: 0 0 auto;
+	gap: 10px;
+	justify-content: space-between;
+	min-block-size: 64px;
+	padding: 12px var(--wpbc_booking_inspector__spacing);
+}
+
+.wpbc_booking_inspector__date_editor_layer button:focus-visible,
+.wpbc_booking_inspector__date_editor_layer input:focus-visible {
+	box-shadow: 0 0 0 2px var(--wpbc_booking_inspector__accent-color);
+	outline: 2px solid transparent;
+}
+
+.wpbc_booking_inspector__date_editor_layer:focus {
+	outline: none;
+}
+
+[dir="rtl"] .wpbc_booking_inspector__date_editor_layer,
+body.rtl .wpbc_booking_inspector__date_editor_layer {
+	box-shadow: 8px 0 24px rgba(0, 0, 0, 0.14);
+}
+
+@media screen and (max-width: 1280px) {
+	.wpbc_booking_inspector__date_editor_layer {
+		inline-size: min(100%, var(--wpbc_booking_inspector__date_editor-width));
+		inset-inline-end: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_booking_inspector__date_editor_status.is-emphasized {
+		animation: none;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.wpbc_booking_inspector__date_editor_layer {
+		inline-size: 100%;
+	}
+
+	.wpbc_booking_inspector__date_editor_body,
+	.wpbc_booking_inspector__date_editor_footer {
+		padding-inline: 14px;
+	}
+
+	.wpbc_booking_inspector__date_editor_time_fields,
+	.wpbc_booking_inspector__date_editor_footer {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.wpbc_booking_inspector__date_editor_choices,
+	.wpbc_booking_inspector__date_editor_calendar_row {
+		flex-direction: column;
+	}
+
+	.wpbc_booking_inspector__date_editor_summary {
+		flex: 0 0 auto;
+		inline-size: 100%;
+		max-inline-size: none;
+	}
+
+	.wpbc_booking_inspector__date_editor_selected_dates li {
+		align-items: flex-start;
+		flex-flow: row wrap;
+	}
+
+	.wpbc_booking_inspector__date_editor_selected_date_meta {
+		margin-inline-start: auto;
+	}
+
+	.wpbc_booking_inspector__date_editor_footer .button {
+		justify-content: center;
+		inline-size: 100%;
+	}
+}
+

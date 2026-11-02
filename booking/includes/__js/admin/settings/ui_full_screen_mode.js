@@ -11,7 +11,7 @@
  *
  * @return {string[]} Unique absolute cookie paths.
  */
-function wpbc_admin_ui__full_screen__get_cookie_paths() {
+function wpbc_admin_ui__get_preference_cookie_paths() {
 	var cookie_paths = [ '/' ];
 	var admin_marker = '/wp-admin/';
 	var current_path = window.location && window.location.pathname ? window.location.pathname : '';
@@ -25,6 +25,15 @@ function wpbc_admin_ui__full_screen__get_cookie_paths() {
 	return cookie_paths.filter( function ( path, index ) {
 		return path && cookie_paths.indexOf( path ) === index;
 	} );
+}
+
+/**
+ * Return every cookie path used by the fullscreen preference bridge.
+ *
+ * @return {string[]} Unique absolute cookie paths.
+ */
+function wpbc_admin_ui__full_screen__get_cookie_paths() {
+	return wpbc_admin_ui__get_preference_cookie_paths();
 }
 
 /**
@@ -49,6 +58,24 @@ function wpbc_admin_ui__full_screen__set_cookie( value ) {
 }
 
 /**
+ * Apply the sidebar mode belonging to the fullscreen transition destination.
+ *
+ * The sidebar controller owns mode resolution and persistence. This adapter
+ * only tells it whether the destination is fullscreen, preserving compatibility
+ * with the live-state helper if an older cached sidebar asset is still active.
+ *
+ * @param {boolean} is_full_screen Whether the destination is fullscreen.
+ * @return {void}
+ */
+function wpbc_admin_ui__full_screen__apply_sidebar_context( is_full_screen ) {
+	if ( 'function' === typeof wpbc_admin_ui__sidebar_left__apply_full_screen_transition ) {
+		wpbc_admin_ui__sidebar_left__apply_full_screen_transition( is_full_screen );
+	} else if ( 'function' === typeof wpbc_admin_ui__sidebar_left__apply_live_scope_mode ) {
+		wpbc_admin_ui__sidebar_left__apply_live_scope_mode();
+	}
+}
+
+/**
  * Apply Full Screen mode from a user click.
  *
  * @param HTMLElement el                 Clicked control.
@@ -57,6 +84,7 @@ function wpbc_admin_ui__full_screen__set_cookie( value ) {
 function wpbc_admin_ui__full_screen__do_on( el, is_save_user_state ) {
 	jQuery( 'body' ).addClass( 'wpbc_admin_full_screen' );
 	wpbc_check_full_screen_mode();
+	wpbc_admin_ui__full_screen__apply_sidebar_context( true );
 
 	if ( is_save_user_state ) {
 		wpbc_admin_ui__full_screen__set_cookie( 'On' );
@@ -76,6 +104,7 @@ function wpbc_admin_ui__full_screen__do_on( el, is_save_user_state ) {
 function wpbc_admin_ui__full_screen__do_off( el, is_save_user_state ) {
 	jQuery( 'body' ).removeClass( 'wpbc_admin_full_screen' );
 	wpbc_check_full_screen_mode();
+	wpbc_admin_ui__full_screen__apply_sidebar_context( false );
 
 	if ( is_save_user_state ) {
 		wpbc_admin_ui__full_screen__set_cookie( 'Off' );

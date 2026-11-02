@@ -14,6 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+if ( defined( 'WPBC_ENABLE_12_0_TIMELINE' ) && true === WPBC_ENABLE_12_0_TIMELINE ) {
+	require_once dirname( __DIR__ ) . '/booking-inspector/booking-inspector.php';
+}
+
 class WPBC_AJX_Bookings {
 
 	/**
@@ -70,12 +74,47 @@ class WPBC_AJX_Bookings {
 	 * @return void
 	 */
 	public static function enqueue_js_files_now() {
+		static $assets_enqueued = false;
 
-		$in_footer = true;
+		if ( $assets_enqueued ) {
+			return;
+		}
+		$assets_enqueued = true;
 
-		wp_enqueue_script( 'wpbc-booking_ajx_listing', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js', array( 'wpbc_all', 'wp-util' ), WP_BK_VERSION_NUM, $in_footer );
+		$in_footer            = true;
+		$listing_dependencies = array( 'wpbc_all', 'wp-util' );
+		$inspector_enabled    = defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+			&& true === WPBC_ENABLE_12_0_TIMELINE
+			&& class_exists( 'WPBC_Shared_UI_Inspector' )
+			&& class_exists( 'WPBC_Booking_Inspector_Config' );
+
+		if ( $inspector_enabled ) {
+			WPBC_Shared_UI_Inspector::enqueue_style();
+			WPBC_Booking_Inspector_Config::enqueue_style();
+			WPBC_Shared_UI_Inspector::enqueue_script();
+			WPBC_Booking_Inspector_Config::enqueue_script();
+			$listing_dependencies[] = WPBC_Booking_Inspector_Config::HOSTS_SCRIPT_HANDLE;
+		}
+
+		wp_enqueue_script( 'wpbc-booking_ajx_listing', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.js', $listing_dependencies, WP_BK_VERSION_NUM, $in_footer );
+		if ( $inspector_enabled ) {
+			wp_localize_script(
+				'wpbc-booking_ajx_listing',
+				'wpbc_booking_listing_inspector_config',
+				WPBC_Booking_Inspector_Config::get_browser_configuration( WPBC_Booking_Inspector_Config::SOURCE_BOOKING_LISTING )
+			);
+		}
 		wp_enqueue_script( 'wpbc-booking_ajx_toolbar_hooks', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__hooks.js', array( 'wpbc-booking_ajx_listing', 'wpbc-ui-chosen-filter' ), WP_BK_VERSION_NUM, $in_footer );
 		wp_enqueue_script( 'wpbc-booking_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
+		wp_localize_script(
+			'wpbc-booking_ajx_actions',
+			'wpbc_booking_actions_i18n',
+			array(
+				'error_label'      => __( 'Error!', 'booking' ),
+				'invalid_response' => __( 'The server returned an invalid response. Refresh the page and try again.', 'booking' ),
+				'request_failed'   => __( 'The booking action failed. Try again.', 'booking' ),
+			)
+		);
 		wp_enqueue_script( 'wpbc-boo_listing_ajx_actions', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/boo_listing__actions.js', array( 'wpbc-booking_ajx_listing' ), WP_BK_VERSION_NUM, $in_footer );
 	}
 
@@ -88,6 +127,19 @@ class WPBC_AJX_Bookings {
 	 * @return void
 	 */
 	public function enqueue_css_files( $where_to_load ) {
+		if ( ! is_admin() || ! wpbc_is_bookings_page() || ! in_array( $where_to_load, array( 'admin', 'both' ), true ) ) {
+			return;
+		}
+
+		if (
+			defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+			&& true === WPBC_ENABLE_12_0_TIMELINE
+			&& class_exists( 'WPBC_Shared_UI_Inspector' )
+			&& class_exists( 'WPBC_Booking_Inspector_Config' )
+		) {
+			WPBC_Shared_UI_Inspector::enqueue_style();
+			WPBC_Booking_Inspector_Config::enqueue_style();
+		}
 	}
 
 	// </editor-fold>
@@ -109,6 +161,15 @@ class WPBC_AJX_Bookings {
 			wpbc_template__booking_listing_header();
 			wpbc_template__booking_listing_footer();
 			wpbc_template__booking_listing_row();
+			if (
+				defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+				&& true === WPBC_ENABLE_12_0_TIMELINE
+				&& class_exists( 'WPBC_Shared_UI_Inspector' )
+				&& class_exists( 'WPBC_Booking_Inspector_Config' )
+			) {
+				WPBC_Shared_UI_Inspector::print_template();
+				WPBC_Booking_Inspector_Config::print_template();
+			}
 
 			$this->template__content_data();
 		}

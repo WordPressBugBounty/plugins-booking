@@ -9,6 +9,7 @@
  * @param action_param
  */
 function wpbc_ajx_booking_ajax_action_request( action_param = {} ){
+	var action_i18n = window.wpbc_booking_actions_i18n || {};
 
 console.groupCollapsed( 'WPBC_AJX_BOOKING_ACTIONS' ); console.log( ' == Ajax Actions :: Params == ', action_param );
 //is_this_action = true;
@@ -38,6 +39,8 @@ console.groupCollapsed( 'WPBC_AJX_BOOKING_ACTIONS' ); console.log( ' == Ajax Act
 		delete action_post_params.action_params.search_params;
 	}
 
+	wpbc_ajx_booking_action_dispatch_start( action_param );
+
 	// Start Ajax
 	jQuery.post( wpbc_url_ajax ,
 
@@ -51,45 +54,65 @@ console.groupCollapsed( 'WPBC_AJX_BOOKING_ACTIONS' ); console.log( ' == Ajax Act
 				 * @param jqXHR				-	Object
 				 */
 				function ( response_data, textStatus, jqXHR ) {
+					var response_params = response_data && 'object' === typeof response_data[ 'ajx_after_action_result_all_params_arr' ]
+						? response_data[ 'ajx_after_action_result_all_params_arr' ]
+						: null;
+					var is_action_success;
+					var action_message;
 
 console.log( ' == Ajax Actions :: Response WPBC_AJX_BOOKING_ACTIONS == ', response_data ); console.groupEnd();
 
 					// Probably Error
-					if ( (typeof response_data !== 'object') || (response_data === null) ){
-						jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();	 												// FixIn: 9.6.1.5.
-						jQuery( wpbc_ajx_booking_listing.get_other_param( 'listing_container' ) ).html(
-																	'<div class="wpbc-settings-notice notice-warning" style="text-align:left">' +
-																		response_data +
-																	'</div>'
-															);
+					if (
+						( typeof response_data !== 'object' )
+						|| ( response_data === null )
+						|| ( 'string' !== typeof response_data[ 'ajx_after_action_message' ] )
+						|| ( 'undefined' === typeof response_data[ 'ajx_after_action_result' ] )
+						|| ! response_params
+					){
+						wpbc_booking_listing_reload_button__spin_pause();
+						action_message = '<strong>' + ( action_i18n.error_label || '' ) + '</strong> ' + ( action_i18n.invalid_response || '' );
+						wpbc_admin_show_message(
+							action_message,
+							'error',
+							10000
+						);
+						wpbc_ajx_booking_action_dispatch_complete( action_param, false, action_message );
+						if ( action_param[ 'ui_clicked_element_id' ] ) {
+							wpbc_button__remove_spin( action_param[ 'ui_clicked_element_id' ] );
+						}
 						return;
 					}
 
 					wpbc_booking_listing_reload_button__spin_pause();
+					is_action_success = '1' == response_data[ 'ajx_after_action_result' ];
+					action_message = response_data[ 'ajx_after_action_message' ];
 
 					wpbc_admin_show_message(
-												  response_data[ 'ajx_after_action_message' ].replace( /\n/g, "<br />" )
-												, ( '1' == response_data[ 'ajx_after_action_result' ] ) ? 'success' : 'error'
-												, ( ( 'undefined' === typeof(response_data[ 'ajx_after_action_result_all_params_arr' ][ 'after_action_result_delay' ]) )
+											  action_message.replace( /\n/g, "<br />" )
+												, is_action_success ? 'success' : 'error'
+												, ( ( 'undefined' === typeof( response_params[ 'after_action_result_delay' ] ) )
 													? 10000
-													: response_data[ 'ajx_after_action_result_all_params_arr' ][ 'after_action_result_delay' ] )
+													: response_params[ 'after_action_result_delay' ] )
 											);
 
+					wpbc_ajx_booking_action_dispatch_complete( action_param, is_action_success, action_message );
+
 					// Success response
-					if ( '1' == response_data[ 'ajx_after_action_result' ] ){
+					if ( is_action_success ){
 
 						var is_reload_ajax_listing = true;
 
 						// After Google Calendar import show imported bookings and reload the page for toolbar parameters update
-						if ( false !== response_data[ 'ajx_after_action_result_all_params_arr' ][ 'new_listing_params' ] ){
+						if ( response_params[ 'new_listing_params' ] && 'object' === typeof response_params[ 'new_listing_params' ] ){
 
-							wpbc_ajx_booking_send_search_request_with_params( response_data[ 'ajx_after_action_result_all_params_arr' ][ 'new_listing_params' ] );
+							wpbc_ajx_booking_send_search_request_with_params( response_params[ 'new_listing_params' ] );
 
 							var closed_timer = setTimeout( function (){
 
 									if ( wpbc_booking_listing_reload_button__is_spin() ){
-										if ( undefined != response_data[ 'ajx_after_action_result_all_params_arr' ][ 'new_listing_params' ][ 'reload_url_params' ] ){
-											document.location.href = response_data[ 'ajx_after_action_result_all_params_arr' ][ 'new_listing_params' ][ 'reload_url_params' ];
+										if ( undefined != response_params[ 'new_listing_params' ][ 'reload_url_params' ] ){
+											document.location.href = response_params[ 'new_listing_params' ][ 'reload_url_params' ];
 										} else {
 											document.location.reload();
 										}
@@ -100,19 +123,23 @@ console.log( ' == Ajax Actions :: Response WPBC_AJX_BOOKING_ACTIONS == ', respon
 						}
 
 						// Start download exported CSV file
-						if ( undefined != response_data[ 'ajx_after_action_result_all_params_arr' ][ 'export_csv_url' ] ){
-							wpbc_ajx_booking__export_csv_url__download( response_data[ 'ajx_after_action_result_all_params_arr' ][ 'export_csv_url' ] );
+						if ( undefined != response_params[ 'export_csv_url' ] ){
+							wpbc_ajx_booking__export_csv_url__download( response_params[ 'export_csv_url' ] );
 							is_reload_ajax_listing = false;
 						}
 
-						if ( is_reload_ajax_listing ){
+						if ( is_reload_ajax_listing && jQuery( '.wpbc__list__table' ).length ){
 							wpbc_ajx_booking__actual_listing__show();	//	Sending Ajax Request	-	with parameters that  we early  defined in "wpbc_ajx_booking_listing" Obj.
 						}
 
 					}
 
 					// Remove spin icon from  button and Enable this button.
-					wpbc_button__remove_spin( response_data[ 'ajx_cleaned_params' ][ 'ui_clicked_element_id' ] )
+					wpbc_button__remove_spin(
+						response_data[ 'ajx_cleaned_params' ] && response_data[ 'ajx_cleaned_params' ][ 'ui_clicked_element_id' ]
+							? response_data[ 'ajx_cleaned_params' ][ 'ui_clicked_element_id' ]
+							: action_param[ 'ui_clicked_element_id' ]
+					);
 
 					// Hide modals
 					wpbc_popup_modals__hide();
@@ -120,18 +147,92 @@ console.log( ' == Ajax Actions :: Response WPBC_AJX_BOOKING_ACTIONS == ', respon
 					jQuery( '#ajax_respond' ).html( response_data );		// For ability to show response, add such DIV element to page
 				}
 			  ).fail( function ( jqXHR, textStatus, errorThrown ) {    if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
+					wpbc_booking_listing_reload_button__spin_pause();
 					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														// FixIn: 9.6.1.5.
-					var error_message = '<strong>' + 'Error!' + '</strong> ' + errorThrown ;
-					if ( jqXHR.responseText ){
-						error_message += jqXHR.responseText;
+					var error_message = '<strong>' + ( action_i18n.error_label || '' ) + '</strong> ' + ( errorThrown || action_i18n.request_failed || '' );
+					if ( jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message ) {
+						error_message = String( jqXHR.responseJSON.data.message );
 					}
 					error_message = error_message.replace( /\n/g, "<br />" );
 
-					wpbc_ajx_booking_show_message( error_message );
+					wpbc_admin_show_message( error_message, 'error', 10000 );
+					wpbc_ajx_booking_action_dispatch_complete( action_param, false, error_message );
+					if ( action_param[ 'ui_clicked_element_id' ] ) {
+						wpbc_button__remove_spin( action_param[ 'ui_clicked_element_id' ] );
+					}
 			  })
 	          // .done(   function ( data, textStatus, jqXHR ) {   if ( window.console && window.console.log ){ console.log( 'second success', data, textStatus, jqXHR ); }    })
 			  // .always( function ( data_jqXHR, textStatus, jqXHR_errorThrown ) {   if ( window.console && window.console.log ){ console.log( 'always finished', data_jqXHR, textStatus, jqXHR_errorThrown ); }     })
 			  ;  // End Ajax
+}
+
+/**
+ * Notify Inspector and other hosts when a canonical booking action starts.
+ *
+ * The event deliberately contains only the stable booking identifier and
+ * action name. Hosts may retain that identity across their own view teardown,
+ * but authorization and persistence remain owned by the canonical request.
+ *
+ * @param {Object} action_param Submitted booking action parameters.
+ * @return {void}
+ */
+function wpbc_ajx_booking_action_dispatch_start( action_param ){
+	if ( 'function' !== typeof window.CustomEvent ) {
+		return;
+	}
+	window.dispatchEvent( new window.CustomEvent( 'wpbc:booking-action:start', {
+		detail: {
+			booking_id: action_param.booking_id || 0,
+			action: action_param.booking_action || ''
+		}
+	} ) );
+}
+
+/**
+ * Convert one canonical Booking Action message to plain text for host UIs.
+ *
+ * The page-level notice retains its established limited HTML presentation.
+ * Host components receive text only, so response markup is never copied into
+ * another presentation boundary.
+ *
+ * @param {string} action_message Canonical Booking Action result message.
+ * @return {string} Normalized plain-text message.
+ */
+function wpbc_ajx_booking_action_message_to_text( action_message ){
+	var message_decoder = document.createElement( 'textarea' );
+	var message_text = String( action_message || '' )
+		.replace( /<br\s*\/?\s*>/gi, '\n' )
+		.replace( /<[^>]*>/g, ' ' );
+
+	message_decoder.innerHTML = message_text;
+	return String( message_decoder.value || '' )
+		.replace( /\u00a0/g, ' ' )
+		.replace( /[ \t]+\n/g, '\n' )
+		.replace( /\n[ \t]+/g, '\n' )
+		.replace( /[ \t]{2,}/g, ' ' )
+		.trim();
+}
+
+/**
+ * Notify Inspector and other hosts when a canonical booking action completes.
+ *
+ * @param {Object} action_param Submitted booking action parameters.
+ * @param {boolean} is_success Whether persistence completed successfully.
+ * @param {string} action_message Canonical Booking Action result message.
+ * @return {void}
+ */
+function wpbc_ajx_booking_action_dispatch_complete( action_param, is_success, action_message ){
+	if ( 'function' !== typeof window.CustomEvent ) {
+		return;
+	}
+	window.dispatchEvent( new window.CustomEvent( 'wpbc:booking-action:complete', {
+		detail: {
+			booking_id: action_param.booking_id || 0,
+			action: action_param.booking_action || '',
+			success: Boolean( is_success ),
+			message: wpbc_ajx_booking_action_message_to_text( action_message )
+		}
+	} ) );
 }
 
 

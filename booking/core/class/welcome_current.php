@@ -4,11 +4,10 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
- * Render the Booking Calendar 12.0 Timeline introduction.
+ * Render the Booking Calendar 12.0 feature introduction.
  *
- * Phases 1 through 4 provide the isolated page, bounded read data, complete
- * zoom axis, bounded adjacent date loading, local range selection, canonical
- * booking handoff, and independently authorized Availability blocking.
+ * The release overview intentionally uses English-only strings because this
+ * content changes frequently while a release is being prepared.
  *
  * @param object $obj Welcome-page renderer and image loader.
  *
@@ -18,49 +17,242 @@ function wpbc_welcome_section_12_0( $obj ) {
 
 	$section_parameters = array( 'version_num' => '12.0', 'show_expand' => false );
 	$obj->expand_section_start( $section_parameters );
+	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
 	?>
 	<div class="wpbc_wn_container">
+
 		<div class="wpbc_wn_section" style="gap: 10px 32px;">
-			<h2><?php esc_html_e( 'A New Zoomable and Selectable Timeline', 'booking' ); ?></h2>
+			<h2><?php echo esc_html( 'Meet the New Timeline' ); ?></h2>
+
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<p><?php echo esc_html( 'Booking Calendar 12.0 introduces a completely redesigned administration Timeline for seeing Resources, bookings, working time, and unavailable periods in one responsive workspace. The previous Timeline remains available as Timeline Legacy while you become familiar with the new view.' ); ?></p>
 				<img
-					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__timeline_phase_4_selection_placeholder.png' ) ); ?>"
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__timeline_overview_placeholder_4.png' ) ); ?>"
 					width="1600"
 					height="900"
 					loading="lazy"
-					alt="<?php esc_attr_e( 'Booking Calendar Timeline with Resource rows, zoom controls, booking cards, and an empty range selection preview', 'booking' ); ?>"
+					alt="<?php echo esc_attr( 'New Booking Calendar Timeline showing Resource rows, booking cards, date controls, and unavailable-time backgrounds' ); ?>"
 					style="margin:10px 0;width:98%;height:auto;"
 				/>
 			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'Expand a Resource into a Detailed Time Section' ); ?></h2>
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
 				<ul>
-					<li><strong><?php esc_html_e( 'Open a dedicated Timeline page.', 'booking' ); ?></strong> <?php esc_html_e( 'Bookings, Timeline, and the mode-appropriate Add Booking or Add Appointment action share a clear navigation bar, the minimized side menu remains available from the top bar, and the Resource and date header remains visible as you scroll.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Choose a focused Timeline range and scale.', 'booking' ); ?></strong> <?php esc_html_e( 'Use one direct dropdown for 10 focused date-range and cell-scale combinations within the 25,000-bucket budget at the 50-Resource maximum. The default is 1 month — 1 day; clear separators and familiar scale icons keep the choices scannable. The combined date navigation opens the correct Start or End calendar, and the browser-only 30% to 300% Density slider remains beside the dropdown without changing booking precision.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'See when Timeline is loading.', 'booking' ); ?></strong> <?php esc_html_e( 'Date-range, cell-scale, navigation, Today, and reload requests now use the standard administration notice and Booking Resources spinner on a readable status surface in a lighter contained overlay, then restore the initiating control when the newest request completes.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Keep scrolling through bounded dates.', 'booking' ); ?></strong> <?php esc_html_e( 'Timeline opens at the current date or time with one previous period already loaded. Use the split Today control to return to the current instant or choose any date from the standard calendar; cached dates move immediately, while other dates safely load with the active range and scale. Approaching either outer edge then loads one authorized adjacent period while localized row placeholders, a persistent loading card with its date range and Cancel action, stable anchoring, retry controls, and a three-window memory limit keep the view predictable.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Review Resources and bookings together.', 'booking' ); ?></strong> <?php esc_html_e( 'The fixed white Resource pane shows authorized Resources, overflow-aware full-title tooltips, Catalog-aligned parent and child hierarchy, labelled blue Capacity badges, and base rates beside compact collision-aware cards for full-day, timed, overnight, recurrent, and clipped bookings.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Select and adjust an empty range.', 'booking' ); ?></strong> <?php esc_html_e( 'Use pointer, scroll-safe touch, or keyboard controls to draft a snapped range, adjust either boundary with draggable and keyboard-accessible handles, then review current Availability, capacity, overlaps, service and form context, and a clearly labelled Resource-only quote before choosing an authorized action.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Continue with canonical workflows.', 'booking' ); ?></strong> <?php esc_html_e( 'Open Add Booking or Add Appointment with the exact Resource, dates, times, and return position preserved, or apply a separately authorized full-day or timed Availability block without cancelling or hiding an existing booking.', 'booking' ); ?></li>
+					<li><strong><?php echo esc_html( 'See each day vertically by time.' ); ?></strong> <?php echo esc_html( 'Expand any authorized Resource to show an All day band and a vertical time schedule beneath the normal Timeline row.  Appointment mode opens the first authorized Resource automatically, making exact-time bookings and availability easier to understand.' ); ?></li>
+				</ul>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 50%;margin: 0;padding: 0;"> <!--src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_times_section_navigation_01.gif' ) ); ?>" -->
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__timeline__times_section__1.png' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Timeline date navigation and Resource selector with search, ordering, page size, and Resource title settings' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 30%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Focus on the working hours you need.' ); ?></strong> <?php echo esc_html( 'Use Auto, working-day presets, Full day, precise start and end sliders, and Time zoom to adjust the visible hours without changing booking data or reloading the Timeline.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Work with exact timed bookings.' ); ?></strong> <?php echo esc_html( 'Read overlapping appointments, unavailable intervals, and booking boundaries against an hour-and-minute scale. Select empty time, move eligible bookings, or resize supported time boundaries with the same Review and Apply protections used by the main Timeline.' ); ?></li>
 				</ul>
 			</div>
 		</div>
+
+
 		<div class="wpbc_wn_section" style="gap: 10px 32px;">
-			<h2><?php esc_html_e( 'Reliable Changeover Date Ranges', 'booking' ); ?></h2>
-			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+			<h2><?php echo esc_html( 'Drag, Resize, and Review Schedule Changes' ); ?></h2>
+
+			<p><strong><?php echo esc_html( 'Move a booking to another date or Resource.' ); ?></strong> <?php echo esc_html( 'Select an eligible booking and use its drag grip to move the complete schedule within the same Resource or to another visible authorized Resource. Full-day, timed, overnight, recurrent, and discontinuous schedules keep their duration and spacing.' ); ?></p>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 50%;margin: 0;padding: 0;">
 				<img
-					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__changeover_range_validation_placeholder.gif' ) ); ?>"
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_booking_resize_and_move_01.gif' ) ); ?>"
 					width="1600"
 					height="900"
 					loading="lazy"
-					alt="<?php esc_attr_e( 'Booking calendar rejecting a range across an occupied one-night changeover booking and accepting a legal checkout-date start', 'booking' ); ?>"
+					alt="<?php echo esc_attr( 'New Booking Calendar Timeline showing navigation process' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 30%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Adjust supported start and end boundaries.' ); ?></strong> <?php echo esc_html( 'Accessible boundary controls provide a dashed preview for supported full-day and timed bookings. Exact saved minutes remain intact until a deliberate snapped change is released.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Confirm every change before it is saved.' ); ?></strong> <?php echo esc_html( 'A Previous-to-Proposed Review shows the new Resource, dates, times, and duration. Apply repeats authorization, availability before refreshing Timeline.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'Scroll, Navigate, and Organize Resources Faster' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Create your own Resource workspace.' ); ?></strong> <?php echo esc_html( 'Search and select authorized Resources, sort them by standard order, name, or ID, and choose 10, 20, 30, or 50 Resources per page. Business Large keeps parent groups together and shows checked, mixed, and unchecked group selection.' ); ?></li>
+				</ul>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_resources_preferences_01.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Timeline date navigation and Resource selector with search, ordering, page size, and Resource title settings' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Move through dates naturally.' ); ?></strong> <?php echo esc_html( 'Use Previous, Next, Today, or the date picker to reach an exact date. Scrolling toward either edge loads the neighboring period while keeping the visible date anchored and retaining a bounded cache for quick return navigation.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Remember the view per administrator and site.' ); ?></strong> <?php echo esc_html( 'Timeline restores the last successful date, range, scale, density, Resource selection, ordering, paging, and expanded Time Sections. Reset returns to the configured defaults without changing bookings.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Set booking titles per Resource.' ); ?></strong> <?php echo esc_html( 'Each Resource can inherit the global Timeline booking-title template or use its own authorized title template, with the Timeline refreshed immediately after saving.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'Create New Bookings Directly from Timeline' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_new_booking_01.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Timeline empty-range selection and Add New Booking Inspector with Resource, schedule, form, cost preview, and Review action' ); ?>"
 					style="margin:10px 0;width:98%;height:auto;"
 				/>
 			</div>
 			<div class="wpbc_wn_col" style="flex: 1 1 100%;margin: 0;padding: 0;">
 				<ul>
-					<li><strong><?php esc_html_e( 'Stop ranges at occupied stays.', 'booking' ); ?></strong> <?php esc_html_e( 'Fixed and Dynamic range selection now rejects a period that crosses an existing changeover booking before visitors continue to their details.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Keep legal turnover dates available.', 'booking' ); ?></strong> <?php esc_html_e( 'A new stay can still end on an existing check-in date or start on an existing checkout date when the boundary is available.', 'booking' ); ?></li>
-					<li><strong><?php esc_html_e( 'Recover immediately after rejection.', 'booking' ); ?></strong> <?php esc_html_e( 'An invalid second click clears the complete range and closes the open selection phase so the next available date starts a fresh range.', 'booking' ); ?></li>
+					<li><strong><?php echo esc_html( 'Select an empty date or time range.' ); ?></strong> <?php echo esc_html( 'Drag across a Resource row with a mouse, pen, or scroll-safe touch, or use the keyboard. Adjust either boundary, then review the Resource, exact dates and times, duration, availability, overlaps, capacity, and estimated Resource cost.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Complete the booking in a focused Inspector.' ); ?></strong> <?php echo esc_html( 'The Add New Booking Inspector keeps the selected Resource and schedule, lets you choose the authorized Booking Form, validates required fields, and shows a server-checked Review before creation.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Return to the updated schedule automatically.' ); ?></strong> <?php echo esc_html( 'After creation, Timeline reloads the authoritative booking and availability data, restores the working position, and closes the Inspector only after the new booking is visible.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Use the same workflow in every edition.' ); ?></strong> <?php echo esc_html( 'Free and Personal can create bookings from Timeline. Cost preview and cost correction are available in Business Small or higher, and the full Add Booking page remains available as a fallback.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'Preview and Edit Bookings without Losing Context' ); ?></h2>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_booking_details_01.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Timeline booking with a quick Booking Overview and the full Booking Inspector showing Details, Dates, Costs, and Activity' ); ?>"
+					style="margin:10px 0 50px;width:98%;height:auto;"
+				/>
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_booking_reschedule_01.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Timeline booking with a quick Booking Overview and the full Booking Inspector showing Details, Dates, Costs, and Activity' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Open quick Booking Overviews.' ); ?></strong> <?php echo esc_html( 'Use a booking card information button to open a compact schedule and customer summary. Several Overviews can remain open, and a pinned Overview can be moved, resized, and kept in place while Timeline scrolls.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Use one consistent Booking Inspector.' ); ?></strong> <?php echo esc_html( 'Timeline, Booking Listing, Calendar, and Schedule now share the same Inspector with Booking Details, Dates, Costs where supported, and paginated Activity. The Inspector reproduces the form and field order saved with the booking, including Public and Private notes.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Change dates with a clear before-and-after Review.' ); ?></strong> <?php echo esc_html( 'The Date Editor restores the booking’s saved dates, supports current booking rules or individual dates, and handles full-day, first-date/last-date, and repeated-time schedules. Apply rechecks current availability, capacity, Seasons, changeovers, Appointment rules, and conflicts.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Reschedule without dragging.' ); ?></strong> <?php echo esc_html( 'Choose another authorized Resource, new dates, and exact times in the full Reschedule dialog. This keyboard-friendly workflow is also the fallback for booking shapes that cannot be changed directly on Timeline.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'Choose the right level of detail' ); ?></h2>
+			<p><strong><?php echo esc_html( 'See the whole schedule clearly.' ); ?></strong> <?php echo esc_html( 'A fixed Resource pane stays aligned with compact booking cards for full-day, timed, overnight, recurrent, and multi-day bookings. Overlapping bookings use separate lanes, while clipped bookings show that their schedule continues outside the loaded dates.' ); ?></p>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__timeline_navigation_03.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'New Booking Calendar Timeline showing navigation process' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Choose the right level of detail.' ); ?></strong> <?php echo esc_html( 'Switch between focused day, week, two-week, and month combinations, adjust visual density from 30% to 300%, and keep the Resource and date headers visible while you work.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Read availability without opening another page.' ); ?></strong> <?php echo esc_html( 'Striped backgrounds and a labelled legend distinguish blocked dates and times, unavailable weekdays, Working Time, Seasonal Availability, booking buffers, and Appointment buffers without relying on color alone.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'A Clearer Add Booking Workspace' ); ?></h2>
+
+			<p><strong><?php echo esc_html( 'Choose the Resource and form first.' ); ?></strong> <?php echo esc_html( 'Booking Resource and Booking Form choices now share a clear section above the form while preserving edition, ownership, and reload behavior.' ); ?></p>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__admin_add_new_booking_1.png' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Add Booking workspace with Booking Resource and Booking Form choices above the form and the Settings Inspector on the right' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Keep important tools together.' ); ?></strong> <?php echo esc_html( 'The Settings Inspector retains the familiar Date selection and Calendar view controls, while Booking tools groups cost correction where supported with the temporary past-date option.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Keep email delivery visible.' ); ?></strong> <?php echo esc_html( 'Emails sending remains at the end of the Add Booking navigation and is also reflected in the Settings summary.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'Cleaner Navigation across Booking Calendar' ); ?></h2>
+			<p><strong><?php echo esc_html( 'Give daily work more room.' ); ?></strong> <?php echo esc_html( 'Normal work pages begin with the Booking Calendar side menu minimized when no preference has been saved, while Settings starts expanded. Work, Settings, and fullscreen remember their choices independently.' ); ?></p>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/video/wp_booking_calendar__menu_expand_fullscreen_normal_view_01.gif' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Booking Calendar work page with a minimized side menu, horizontal navigation, breadcrumbs, and page actions' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'Use one consistent page header.' ); ?></strong> <?php echo esc_html( 'Authorized peer pages share a clear horizontal menu, current-page marker, breadcrumbs, version information, and responsive spacing without redundant one-link navigation rows.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Reach Booking Forms quickly.' ); ?></strong> <?php echo esc_html( 'Booking Forms now appears directly in the native WordPress Booking Calendar submenu in Classic, Appointments, and Rentals, immediately before Settings.' ); ?></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpbc_wn_section" style="gap: 10px 32px;">
+			<h2><?php echo esc_html( 'More Useful Improvements' ); ?></h2>
+			<p><strong><?php echo esc_html( 'Duplicate Seasons.' ); ?></strong> <?php echo esc_html( 'Business Medium or higher can create an independent copy of a Conditional or Specific-date Season. In MultiUser, a super administrator can assign the copy to another activated owner without changing the source Season.' ); ?></p>
+
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<img
+					src="<?php echo esc_attr( $obj->section_img_url( '12.0/wp_booking_calendar__duplicate_season_placeholder.png' ) ); ?>"
+					width="1600"
+					height="900"
+					loading="lazy"
+					alt="<?php echo esc_attr( 'Seasons Inspector with Duplicate Season, owner selection, Cancel, and Save changes actions' ); ?>"
+					style="margin:10px 0;width:98%;height:auto;"
+				/>
+			</div>
+			<div class="wpbc_wn_col" style="flex: 1 1 40%;margin: 0;padding: 0;">
+				<ul>
+					<li><strong><?php echo esc_html( 'See accurate adjusted-cost hints.' ); ?></strong> <?php echo esc_html( 'Form Option Cost hints remain correct when Early Booking or Last-minute adjustments apply, so fixed additional costs are no longer reduced or displayed as zero.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Keep customer-facing errors private.' ); ?></strong> <?php echo esc_html( 'Booking conflict messages no longer expose internal per-date Resource or capacity diagnostics, and booking-date database lookups now normalize Booking IDs at the shared query boundary.' ); ?></li>
+					<li><strong><?php echo esc_html( 'Translations' ); ?></strong> <?php echo esc_html( 'Completed 100% local translations: Spanish (Spain), Dutch, French (France), German, Italian, Japanese, Portuguese (Brazil), Ukrainian, Czech.' ); ?></li>
 				</ul>
 			</div>
 		</div>
@@ -68,7 +260,6 @@ function wpbc_welcome_section_12_0( $obj ) {
 	<?php
 	$obj->expand_section_end( $section_parameters );
 }
-
 /**
  * Render Booking Calendar 11.9 What's New content.
  *
@@ -78,7 +269,7 @@ function wpbc_welcome_section_12_0( $obj ) {
  */
 function wpbc_welcome_section_11_9( $obj ) {
 
-	$section_parameters = array( 'version_num' => '11.9', 'show_expand' => false );
+	$section_parameters = array( 'version_num' => '11.9', 'show_expand' => true );
 	$obj->expand_section_start( $section_parameters );
 	// $obj->asset_path = 'http://beta/assets/'; // TODO: comment this in production.
 	?>

@@ -174,6 +174,224 @@
 		} );
 	}
 
+	/**
+	 * Normalize the one-date seed accepted by the Appointment calendar.
+	 *
+	 * Appointment duration remains Service-owned, so the handoff seeds only the
+	 * start date and lets the existing availability request validate its time.
+	 *
+	 * @param {*} calendar_dates Candidate JSON date collection.
+	 * @return {Array<string>} Zero or one valid ISO calendar date.
+	 */
+	function normalize_initial_calendar_dates( calendar_dates ) {
+		var normalized_dates = [];
+
+		if ( ! Array.isArray( calendar_dates ) ) {
+			return normalized_dates;
+		}
+
+		calendar_dates.some( function ( calendar_date ) {
+			var normalized_date = String( calendar_date || '' );
+			var date_parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec( normalized_date );
+			var native_date;
+
+			if ( ! date_parts ) {
+				return false;
+			}
+
+			native_date = new Date(
+				parseInt( date_parts[1], 10 ),
+				parseInt( date_parts[2], 10 ) - 1,
+				parseInt( date_parts[3], 10 )
+			);
+			if (
+				native_date.getFullYear() !== parseInt( date_parts[1], 10 ) ||
+				native_date.getMonth() !== parseInt( date_parts[2], 10 ) - 1 ||
+				native_date.getDate() !== parseInt( date_parts[3], 10 )
+			) {
+				return false;
+			}
+
+			normalized_dates.push( normalized_date );
+			return true;
+		} );
+
+		return normalized_dates;
+	}
+
+	/**
+	 * Read the signed, server-normalized calendar seed rendered for one form.
+	 *
+	 * @param {jQuery} $native Native Appointment form wrapper.
+	 * @return {Object|null} Provider and date seed, or null without a handoff.
+	 */
+	function get_initial_calendar_context( $native ) {
+		var provider_id = Number( $native.data( 'provider-id' ) || 0 );
+		var calendar_dates = [];
+
+		if ( '1' !== String( $native.attr( 'data-preselect-calendar-dates' ) || '' ) || provider_id <= 0 ) {
+			return null;
+		}
+
+		try {
+			calendar_dates = JSON.parse( String( $native.attr( 'data-initial-calendar-dates' ) || '[]' ) );
+		} catch ( error ) {
+			calendar_dates = [];
+		}
+		calendar_dates = normalize_initial_calendar_dates( calendar_dates );
+
+		return calendar_dates.length ? {
+			provider_id: provider_id,
+			initial_dates: calendar_dates
+		} : null;
+	}
+
+	/**
+	 * Return isolated one-time calendar hydration state for a native form.
+	 *
+	 * The state prevents delayed datepicker initialization from overwriting a
+	 * date that the administrator selected manually after the form rendered.
+	 *
+	 * @param {jQuery} $native Native Appointment form wrapper.
+	 * @return {Object} Mutable hydration state owned by the native form element.
+	 */
+	function get_initial_calendar_state( $native ) {
+		var native_element = $native.get( 0 );
+
+		if ( ! native_element.wpbc_appointment_initial_calendar_state ) {
+			native_element.wpbc_appointment_initial_calendar_state = {
+				applied: false,
+				cancelled: false,
+				applying: false,
+				calendar_data_loaded: false,
+				attempts: 0,
+				scheduled: false
+			};
+		}
+
+		return native_element.wpbc_appointment_initial_calendar_state;
+	}
+
+	/**
+	 * Seed the visible native calendar after its availability data is ready.
+	 *
+	 * The canonical calendar helper selects through the Datepick interaction
+	 * path, preserving availability rules, visual selection, and the normal
+	 * date-selected event. Waiting for the core AJAX completion prevents its
+	 * later calendar redraw from removing the visible selected date.
+	 *
+	 * @param {jQuery} $native Native Appointment form wrapper.
+	 * @return {boolean} True after the requested date was applied.
+	 */
+	function apply_initial_calendar_dates( $native ) {
+		var initial_context = get_initial_calendar_context( $native );
+		var state = get_initial_calendar_state( $native );
+		var $date_field;
+		var selected_dates_count = 0;
+
+		if ( state.applied || state.cancelled || ! state.calendar_data_loaded || ! initial_context ) {
+			return state.applied;
+		}
+		if ( ! document.documentElement.contains( $native.get( 0 ) ) ) {
+			state.cancelled = true;
+			return false;
+		}
+		if ( 'function' !== typeof window.wpbc_auto_select_dates_in_calendar ) {
+			return false;
+		}
+
+		$date_field = $native.find( '#date_booking' + initial_context.provider_id ).first();
+		if ( ! $date_field.length ) {
+			return false;
+		}
+
+		if ( String( $date_field.val() || '' ).trim() ) {
+			state.cancelled = true;
+			return false;
+		}
+
+		state.applying = true;
+		try {
+			selected_dates_count = window.wpbc_auto_select_dates_in_calendar(
+				initial_context.provider_id,
+				initial_context.initial_dates[0]
+			);
+			state.applied = 0 < selected_dates_count;
+		} finally {
+			state.applying = false;
+		}
+
+		return state.applied;
+	}
+
+	/**
+	 * Retry calendar hydration only while the matching native form is live.
+	 *
+	 * The Booking Calendar datepicker can initialize after the Appointment stage
+	 * markup, so the signed seed is retried for a bounded period without polling
+	 * after the form has been replaced or the administrator has chosen a date.
+	 *
+	 * @param {jQuery} $native Native Appointment form wrapper.
+	 * @return {void}
+	 */
+	function schedule_initial_calendar_dates( $native ) {
+		var state = get_initial_calendar_state( $native );
+
+		if (
+			state.applied ||
+			state.cancelled ||
+			state.scheduled ||
+			! state.calendar_data_loaded ||
+			! get_initial_calendar_context( $native )
+		) {
+			return;
+		}
+
+		state.scheduled = true;
+		window.requestAnimationFrame( function () {
+			state.scheduled = false;
+			state.attempts++;
+			if ( apply_initial_calendar_dates( $native ) || state.cancelled || state.attempts >= 12 ) {
+				return;
+			}
+
+			window.setTimeout( function () {
+				schedule_initial_calendar_dates( $native );
+			}, 100 );
+		} );
+	}
+
+	/**
+	 * Attach one-time seed behavior while preserving a faster manual choice.
+	 *
+	 * @param {jQuery} $native Native Appointment form wrapper.
+	 * @return {void}
+	 */
+	function initialize_initial_calendar_dates( $native ) {
+		var initial_context = get_initial_calendar_context( $native );
+
+		if ( ! initial_context ) {
+			return;
+		}
+
+		$native.off( 'date_selected.wpbc_booking_appointment_initial_dates' ).on(
+			'date_selected.wpbc_booking_appointment_initial_dates',
+			function ( event, provider_id ) {
+				var state = get_initial_calendar_state( $native );
+
+				if (
+					Number( provider_id || 0 ) === initial_context.provider_id &&
+					! state.applying &&
+					! state.applied &&
+					get_selected_dates( $native ).length
+				) {
+					state.cancelled = true;
+				}
+			}
+		);
+		schedule_initial_calendar_dates( $native );
+	}
+
 	/** Read the current date/start selection and its stable request signature. */
 	function get_time_selection( $native ) {
 		var $start = get_start_time_field( $native );
@@ -658,6 +876,7 @@
 		}
 
 		initialize_time_preflight( $native );
+		initialize_initial_calendar_dates( $native );
 
 		return true;
 	}
@@ -971,6 +1190,27 @@
 		params.appointment_service_id = context.service_id;
 		params.appointment_context_token = context.context_token;
 	} );
+
+	/** Retry a matching seed when the core calendar finishes AJAX hydration. */
+	$( 'body' ).off( 'wpbc_calendar_ajx__loaded_data.wpbc_booking_appointment_initial_dates' ).on(
+		'wpbc_calendar_ajx__loaded_data.wpbc_booking_appointment_initial_dates',
+		function ( event, loaded_resource_id ) {
+			$( '.wpbc_booking_appointment__native_form' ).each( function () {
+				var $native = $( this );
+				var initial_context = get_initial_calendar_context( $native );
+				var state;
+
+				if ( ! initial_context || initial_context.provider_id !== Number( loaded_resource_id || 0 ) ) {
+					return;
+				}
+
+				state = get_initial_calendar_state( $native );
+				state.calendar_data_loaded = true;
+				state.attempts = 0;
+				schedule_initial_calendar_dates( $native );
+			} );
+		}
+	);
 
 	$( function () {
 		$( '.wpbc_booking_appointment' ).each( function () {

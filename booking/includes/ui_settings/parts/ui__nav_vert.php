@@ -495,10 +495,8 @@ function wpbc_ui__vert_left_bar__do_min() {
 	$el_arr                    = array();
 	$el_arr['container_style'] = '';
 	$el_arr['container_class'] = '';// 'wpbc_ui__top_nav__btn_hide_left_vertical_nav';
-	// User Save Preferences of other pages (saved collapsed left  menu).
-	// $el_arr['onclick']         = 'event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min( true ); ';
-	// Do NOT  - Save User Preferences of other pages (not save collapsed left  menu).
-	$el_arr['onclick']         = 'event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min(); ';
+	// Save only to the context-specific preference declared by the shell policy.
+	$el_arr['onclick']         = 'event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min( true ); ';
 	$el_arr['font_icon']       = 'wpbc_icn_close'; //'wpbc_icn_minimize';
 	$el_arr['hint']            = array(
 		'title'    => __( 'Hide', 'booking' ),
@@ -901,11 +899,7 @@ function wpbc_ui__vert_left_bar__side_button__do_compact() {
 
 	?>
 	<button type="button" class="wpbc_ui__left_sidebar__side_button wpbc_ui__top_nav__btn_hide_left_vertical_nav"
-			<?php /* Save user preferences ?>
- 			onclick="event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min( true ); return false;"
- 			<?php /**/ ?>
-			<?php /* Not Save user preferences - collpased left  menu */ ?>
-			onclick="event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min(); return false;"
+			onclick="event.stopPropagation(); wpbc_admin_ui__sidebar_left__do_min( true ); return false;"
 			title="<?php esc_attr_e( 'Minimize side menu', 'booking' ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 			<path fill="#6B6B6B" d="M16.5 22a1.003 1.003 0 0 1-.71-.29l-9-9a1 1 0 0 1 0-1.42l9-9a1.004 1.004 0 1 1 1.42 1.42L8.91 12l8.3 8.29A.999.999 0 0 1 16.5 22Z"></path>

@@ -2,9 +2,6 @@
 .wpbc_admin {
   --wpbc-bfb-accent-color: var(--wpbc_admin-theme-color, #327ab4 )
 }
-body[class*=page_wpbc] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
-  margin: 2px 40px
-}
 .wpbc_bfb__container {
   display: -ms-flexbox;
   display: flex;

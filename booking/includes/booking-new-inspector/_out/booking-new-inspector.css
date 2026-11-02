@@ -1,0 +1,629 @@
+.wpbc_booking_new_inspector {
+  --wpbc_booking_new_inspector__border: var(--wpbc_shared_ui_inspector__border-color, #dcdcde);
+  --wpbc_booking_new_inspector__muted: var(--wpbc_shared_ui_inspector__muted-color, #646970);
+  --wpbc_booking_new_inspector__spacing: var(--wpbc_shared_ui_inspector__spacing, 18px);
+  --wpbc_booking_new_inspector__subtle: #f6f7f7;
+  block-size: 100%;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  isolation: isolate;
+  max-block-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+  position: relative
+}
+.wpbc_booking_new_inspector[hidden] {
+  display: none
+}
+.wpbc_shared_ui_inspector[data-wpbc-booking-new-inspector-state=applying],
+.wpbc_shared_ui_inspector[data-wpbc-booking-new-inspector-state=review],
+.wpbc_shared_ui_inspector[data-wpbc-shared-ui-inspector=wpbc_booking_new_inspector] {
+  --wpbc_shared_ui_inspector__panel-width: 640px
+}
+.wpbc_shared_ui_inspector__content[data-wpbc-booking-new-inspector-content] {
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  min-block-size: 0;
+  overflow: hidden;
+  padding: 0
+}
+.wpbc_booking_new_inspector__body,
+.wpbc_booking_new_inspector__calendar,
+.wpbc_booking_new_inspector__calendar_row,
+.wpbc_booking_new_inspector__card,
+.wpbc_booking_new_inspector__choice_row,
+.wpbc_booking_new_inspector__control,
+.wpbc_booking_new_inspector__cost_controls,
+.wpbc_booking_new_inspector__date_overview,
+.wpbc_booking_new_inspector__field,
+.wpbc_booking_new_inspector__fields,
+.wpbc_booking_new_inspector__footer_actions,
+.wpbc_booking_new_inspector__footer_primary_actions,
+.wpbc_booking_new_inspector__header,
+.wpbc_booking_new_inspector__header_text,
+.wpbc_booking_new_inspector__notes,
+.wpbc_booking_new_inspector__notes > div,
+.wpbc_booking_new_inspector__options,
+.wpbc_booking_new_inspector__schedule_choices,
+.wpbc_booking_new_inspector__section_heading,
+.wpbc_booking_new_inspector__state,
+.wpbc_booking_new_inspector__state_actions,
+.wpbc_booking_new_inspector__time_row {
+  display: -ms-flexbox;
+  display: flex
+}
+.wpbc_booking_new_inspector__header {
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__body,
+.wpbc_booking_new_inspector__calendar,
+.wpbc_booking_new_inspector__card,
+.wpbc_booking_new_inspector__control,
+.wpbc_booking_new_inspector__date_overview,
+.wpbc_booking_new_inspector__field,
+.wpbc_booking_new_inspector__fields,
+.wpbc_booking_new_inspector__header_text,
+.wpbc_booking_new_inspector__notes,
+.wpbc_booking_new_inspector__notes > div,
+.wpbc_booking_new_inspector__schedule_choices,
+.wpbc_booking_new_inspector__state {
+  -ms-flex-direction: column;
+  flex-direction: column
+}
+.wpbc_booking_new_inspector__header_text {
+  gap: 2px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__card h4,
+.wpbc_booking_new_inspector__cost p,
+.wpbc_booking_new_inspector__date_overview p,
+.wpbc_booking_new_inspector__header h2,
+.wpbc_booking_new_inspector__header p,
+.wpbc_booking_new_inspector__section_heading h3,
+.wpbc_booking_new_inspector__section_heading p,
+.wpbc_booking_new_inspector__state h3,
+.wpbc_booking_new_inspector__state p {
+  margin: 0
+}
+.wpbc_booking_new_inspector__header h2 {
+  font-size: 18px;
+  line-height: 1.35
+}
+.wpbc_booking_new_inspector__cost p,
+.wpbc_booking_new_inspector__header p,
+.wpbc_booking_new_inspector__section_heading p {
+  color: var(--wpbc_booking_new_inspector__muted);
+  font-size: 12px
+}
+.wpbc_booking_new_inspector__body {
+  background: var(--wpbc_booking_new_inspector__subtle);
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  gap: 14px;
+  min-block-size: 0;
+  -ms-scroll-chaining: none;
+  overscroll-behavior: contain;
+  overflow-y: auto;
+  padding: var(--wpbc_booking_new_inspector__spacing);
+  position: relative;
+  z-index: 0
+}
+.wpbc_booking_new_inspector__card {
+  background: #fff;
+  border: 1px solid var(--wpbc_booking_new_inspector__border);
+  border-radius: 4px;
+  gap: 14px;
+  min-inline-size: 0;
+  padding: 16px
+}
+.wpbc_booking_new_inspector__section_heading {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 10px;
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_booking_new_inspector__section_heading > div {
+  -ms-flex: 1 1 220px;
+  flex: 1 1 220px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__resource_summary {
+  background: var(--wpbc_booking_new_inspector__subtle);
+  border-radius: 999px;
+  font-size: 12px;
+  max-inline-size: 100%;
+  overflow: hidden;
+  padding: 4px 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.wpbc_booking_new_inspector__choice_row,
+.wpbc_booking_new_inspector__time_row {
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 12px
+}
+.wpbc_booking_new_inspector__control {
+  -ms-flex: 1 1 180px;
+  flex: 1 1 180px;
+  gap: 5px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__control label,
+.wpbc_booking_new_inspector__field > label,
+.wpbc_booking_new_inspector__field legend,
+.wpbc_booking_new_inspector__schedule_choices legend {
+  font-weight: 600
+}
+.wpbc_booking_new_inspector__control input,
+.wpbc_booking_new_inspector__control select,
+.wpbc_booking_new_inspector__field input[type=email],
+.wpbc_booking_new_inspector__field input[type=text],
+.wpbc_booking_new_inspector__field select,
+.wpbc_booking_new_inspector__field textarea {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%
+}
+.wpbc_booking_new_inspector__fields {
+  gap: 14px
+}
+.wpbc_booking_new_inspector__notes {
+  background: var(--wpbc_booking_new_inspector__subtle);
+  border-radius: 4px;
+  gap: 10px;
+  padding: 12px
+}
+.wpbc_booking_new_inspector__notes > div {
+  gap: 3px
+}
+.wpbc_booking_new_inspector__notes > div > span {
+  color: var(--wpbc_booking_new_inspector__muted);
+  font-size: 12px
+}
+.wpbc_booking_new_inspector__notes textarea {
+  background: #fff;
+  border: 1px solid var(--wpbc_booking_new_inspector__border);
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: 76px;
+  overflow-wrap: anywhere;
+  padding: 8px;
+  resize: vertical;
+  white-space: pre-wrap
+}
+.wpbc_booking_new_inspector__notes textarea:focus {
+  border-color: var(--wpbc_shared_ui_inspector__accent-color,#3858e9);
+  box-shadow: 0 0 0 1px var(--wpbc_shared_ui_inspector__accent-color,#3858e9);
+  outline: transparent solid 2px
+}
+.wpbc_booking_new_inspector__field {
+  gap: 6px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__field fieldset,
+.wpbc_booking_new_inspector__schedule_choices {
+  border: 0;
+  gap: 10px;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0
+}
+.wpbc_booking_new_inspector__schedule_choices .wpbc_booking_new_inspector__options {
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  gap: 10px
+}
+.wpbc_booking_new_inspector__schedule_choices .wpbc_booking_new_inspector__options label {
+  line-height: 1.5;
+  min-block-size: 28px;
+  padding-block: 2px
+}
+.wpbc_booking_new_inspector__options {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 8px 18px
+}
+.wpbc_booking_new_inspector__options label {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 7px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__options input[type=checkbox],
+.wpbc_booking_new_inspector__options input[type=radio] {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  margin: 0
+}
+.wpbc_booking_new_inspector__options label > span {
+  line-height: 1.4;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__field_error,
+.wpbc_booking_new_inspector__required {
+  color: #b32d2e;
+  font-weight: 600;
+  line-height: 1.4
+}
+.wpbc_booking_new_inspector__review_error {
+  margin: 0
+}
+.wpbc_booking_new_inspector__field input[aria-invalid=true],
+.wpbc_booking_new_inspector__field select[aria-invalid=true],
+.wpbc_booking_new_inspector__field textarea[aria-invalid=true] {
+  border-color: #d63638;
+  box-shadow: 0 0 0 1px #d63638
+}
+.wpbc_booking_new_inspector__field_error[hidden],
+.wpbc_booking_new_inspector__review_error[hidden],
+.wpbc_booking_new_inspector__schedule_error[hidden],
+.wpbc_booking_new_inspector__time_row[hidden],
+[data-wpbc-booking-new-inspector-readback-retry][hidden] {
+  display: none!important
+}
+.wpbc_booking_new_inspector__calendar_row {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 14px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__calendar {
+  -ms-flex: 1 1 250px;
+  flex: 1 1 250px;
+  gap: 10px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__calendar_host {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-block-size: 280px;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__date_overview {
+  background: var(--wpbc_booking_new_inspector__subtle);
+  -ms-flex: 0 1 180px;
+  flex: 0 1 180px;
+  gap: 8px;
+  min-inline-size: 150px;
+  padding: 12px
+}
+.wpbc_booking_new_inspector__date_overview ol {
+  margin: 0;
+  max-block-size: 180px;
+  overflow-y: auto;
+  padding-inline-start: 24px
+}
+.wpbc_booking_new_inspector__schedule_status:not(:empty) {
+  color: var(--wpbc_booking_new_inspector__muted);
+  font-size: 12px
+}
+.wpbc_booking_new_inspector__cost {
+  gap: 16px
+}
+.wpbc_booking_new_inspector__cost_heading {
+  display: block
+}
+.wpbc_booking_new_inspector__cost_heading > div {
+  inline-size: 100%
+}
+.wpbc_booking_new_inspector__cost_upgrade_heading {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  gap: 16px;
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_booking_new_inspector__cost_upgrade_heading > div {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__cost_upgrade_dismiss {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  min-block-size: 32px;
+  padding: 0 4px
+}
+.wpbc_booking_new_inspector__cost_heading h3 {
+  font-size: 18px;
+  line-height: 1.35
+}
+.wpbc_booking_new_inspector__cost_heading p {
+  line-height: 1.45;
+  margin-block-start: 4px
+}
+.wpbc_booking_new_inspector__cost_validation_messages {
+  color: #b32d2e;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+  padding-inline-start: 20px
+}
+.wpbc_booking_new_inspector__cost_validation_messages li + li {
+  margin-block-start: 4px
+}
+.wpbc_booking_new_inspector__cost_controls {
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 12px;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__cost_placeholder {
+  -ms-flex-align: center;
+  align-items: center;
+  background: var(--wpbc_booking_new_inspector__subtle);
+  border-radius: 4px;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 600;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-block-size: 40px;
+  min-inline-size: 100px;
+  padding-inline: 12px;
+  text-align: center
+}
+.wpbc_booking_new_inspector__cost_editor {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex: 0 1 140px;
+  flex: 0 1 140px;
+  margin-left: auto;
+  gap: 6px;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  min-inline-size: 0
+}
+.wpbc_booking_new_inspector__cost_editor input[type=number] {
+  block-size: 32px;
+  box-sizing: border-box;
+  -ms-flex: 1 1 150px;
+  flex: 1 1 150px;
+  font-size: 13px;
+  font-weight: 600;
+  inline-size: 150px;
+  max-inline-size: 100%;
+  min-block-size: 32px;
+  min-inline-size: 90px;
+  text-align: end;
+  letter-spacing: .25px
+}
+.wpbc_booking_new_inspector__cost_editor > span:not(.screen-reader-text) {
+  color: var(--wpbc_booking_new_inspector__muted);
+  font-size: 12px
+}
+.wpbc_booking_new_inspector__cost_actions,
+.wpbc_booking_new_inspector__cost_lines,
+.wpbc_booking_new_inspector__review_summary {
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px
+}
+.wpbc_booking_new_inspector__cost_lines,
+.wpbc_booking_new_inspector__review_summary {
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  margin: 0
+}
+.wpbc_booking_new_inspector__cost_lines {
+  background: var(--wpbc_booking_new_inspector__subtle);
+  border-radius: 4px;
+  gap: 12px;
+  line-height: 1.35;
+  padding: 14px 16px
+}
+.wpbc_booking_new_inspector__cost_lines > div,
+.wpbc_booking_new_inspector__review_summary > div {
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 16px;
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_booking_new_inspector__cost_lines dd,
+.wpbc_booking_new_inspector__cost_lines dt,
+.wpbc_booking_new_inspector__review_summary dd,
+.wpbc_booking_new_inspector__review_summary dt {
+  margin: 0
+}
+.wpbc_booking_new_inspector__review_summary dt small {
+  display: block;
+  font-weight: 400;
+  margin-block-start: 2px
+}
+.wpbc_booking_new_inspector__cost_lines dd {
+  font-weight: 600
+}
+.wpbc_booking_new_inspector__review_summary dt {
+  color: var(--wpbc_booking_new_inspector__muted);
+  -ms-flex: 0 0 36%;
+  flex: 0 0 36%
+}
+.wpbc_booking_new_inspector__review_summary dd {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 3px;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  text-align: end
+}
+.wpbc_booking_new_inspector__review_limitations,
+.wpbc_booking_new_inspector__review_warnings {
+  color: var(--wpbc_booking_new_inspector__muted);
+  font-size: 12px;
+  margin-block: 4px 0;
+  padding-inline-start: 20px
+}
+.wpbc_booking_new_inspector__review_warnings {
+  color: #996800
+}
+.wpbc_booking_new_inspector__cost_actions {
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start
+}
+.wpbc_booking_new_inspector__cost_actions .button {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  line-height: 1.2;
+  min-block-size: 40px;
+  padding-block: 0
+}
+.wpbc_booking_new_inspector__footer {
+  background: #fff;
+  border-block-start: 1px solid var(--wpbc_booking_new_inspector__border);
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  padding: 12px var(--wpbc_booking_new_inspector__spacing);
+  position: relative;
+  z-index: 1
+}
+.wpbc_booking_new_inspector__footer_actions,
+.wpbc_booking_new_inspector__state_actions {
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 8px;
+  -ms-flex-pack: end;
+  justify-content: flex-end
+}
+.wpbc_booking_new_inspector__footer_actions {
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_booking_new_inspector__footer_fallback {
+  margin-inline-end: auto
+}
+.wpbc_booking_new_inspector__footer_primary_actions {
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  gap: 8px;
+  -ms-flex-pack: end;
+  justify-content: flex-end
+}
+.wpbc_booking_new_inspector__apply_status,
+.wpbc_booking_new_inspector__disabled_reason {
+  color: var(--wpbc_booking_new_inspector__muted);
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%;
+  font-size: 12px;
+  margin: 0;
+  -ms-flex-order: -1;
+  order: -1
+}
+.wpbc_booking_new_inspector__state {
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-block-size: 240px;
+  padding: 24px;
+  text-align: center;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto
+}
+.wpbc_booking_new_inspector__state_loader {
+  block-size: auto;
+  gap: 14px;
+  min-block-size: 30px
+}
+.wpbc_booking_new_inspector__state_loader > .wpbc_booking_form_spin_loader {
+  block-size: 24px;
+  -ms-flex: 0 0 24px;
+  flex: 0 0 24px;
+  inline-size: 24px
+}
+.wpbc_booking_new_inspector__state_loader > h3 {
+  margin: 0
+}
+.wpbc_booking_new_inspector__state_actions {
+  -ms-flex-pack: center;
+  justify-content: center
+}
+.wpbc_booking_new_inspector__empty_inline {
+  color: var(--wpbc_booking_new_inspector__muted)
+}
+@media screen and (max-width:782px) {
+  .wpbc_booking_new_inspector__body {
+    padding: 12px
+  }
+  .wpbc_booking_new_inspector__calendar,
+  .wpbc_booking_new_inspector__control,
+  .wpbc_booking_new_inspector__cost_actions,
+  .wpbc_booking_new_inspector__cost_editor,
+  .wpbc_booking_new_inspector__date_overview {
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%
+  }
+  .wpbc_booking_new_inspector__cost_actions .button {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+  }
+  .wpbc_booking_new_inspector__footer_actions .button,
+  .wpbc_booking_new_inspector__footer_primary_actions {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    text-align: center
+  }
+  .wpbc_booking_new_inspector__footer_primary_actions .button {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+  }
+}

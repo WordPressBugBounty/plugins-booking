@@ -1,0 +1,249 @@
+.wpbc_shared_ui_date_range_navigation,
+body > #datepick-div[data-wpbc-shared-ui-date-range-navigation-datepick] {
+  --wpbc_shared_ui_date_range_navigation__border-color: var(--wpbc_shared_ui__border-subtle-color, #dcdcde);
+  --wpbc_shared_ui_date_range_navigation__control-background: var(--wpbc_shared_ui__surface-color, #fff);
+  --wpbc_shared_ui_date_range_navigation__control-border-color: var(--wpbc_shared_ui__border-color, rgba(0,0,0,.1882352941) );
+  --wpbc_shared_ui_date_range_navigation__control-border-active-color: var(--wpbc_shared_ui__accent-color, #2271b1);
+  --wpbc_shared_ui_date_range_navigation__control-text-color: var(--wpbc_shared_ui__text-color, #2c3338);
+  --wpbc_shared_ui_date_range_navigation__control-disabled-background: var(--wpbc_shared_ui__disabled-background, #f0f0f1);
+  --wpbc_shared_ui_date_range_navigation__control-disabled-color: var(--wpbc_shared_ui__disabled-color, #a7aaad);
+  --wpbc_shared_ui_date_range_navigation__control-focus-color: var(--wpbc_shared_ui__focus-color, #2271b1);
+  --wpbc_shared_ui_date_range_navigation__danger-color: var(--wpbc_shared_ui__danger-color, #d63638);
+  --wpbc_shared_ui_date_range_navigation__focus-ring-width: var(--wpbc_shared_ui__focus-ring-width, 1px);
+  --wpbc_shared_ui_date_range_navigation__outline-width: var(--wpbc_shared_ui__outline-width, 2px);
+  --wpbc_shared_ui_date_range_navigation__border-width: var(--wpbc_shared_ui__border-width, 1px);
+  --wpbc_shared_ui_date_range_navigation__control-height: var(--wpbc_shared_ui__control-height, 36px);
+  --wpbc_shared_ui_date_range_navigation__control-radius: var(--wpbc_shared_ui__radius, 4px);
+  --wpbc_shared_ui_date_range_navigation__control-gap: var(--wpbc_shared_ui__connected-control-gap, 0px);
+  --wpbc_shared_ui_date_range_navigation__control-overlap: var(--wpbc_shared_ui__control-overlap, -1px);
+  --wpbc_shared_ui_date_range_navigation__shift-group-gap: var(--wpbc_shared_ui__control-group-gap, 8px);
+  --wpbc_shared_ui_date_range_navigation__control-padding-block: var(--wpbc_shared_ui__control-padding-block, 5px);
+  --wpbc_shared_ui_date_range_navigation__control-padding-inline-end: var(--wpbc_shared_ui__control-padding-inline-end, 10px);
+  --wpbc_shared_ui_date_range_navigation__control-padding-inline-start: var(--wpbc_shared_ui__control-padding-inline-start, 12px);
+  --wpbc_shared_ui_date_range_navigation__control-font-weight: var(--wpbc_shared_ui__control-font-weight, 400);
+  --wpbc_shared_ui_date_range_navigation__trigger-min-width: var(--wpbc_shared_ui__date-range-trigger-min-width, 220px);
+  --wpbc_shared_ui_date_range_navigation__panel-width: var(--wpbc_shared_ui__date-range-panel-width, 270px);
+  --wpbc_shared_ui_date_range_navigation__viewport-gutter: var(--wpbc_shared_ui__viewport-block-gutter, 16px);
+  --wpbc_shared_ui_date_range_navigation__panel-padding: var(--wpbc_shared_ui__date-range-panel-padding, 18px);
+  --wpbc_shared_ui_date_range_navigation__heading-font-size: var(--wpbc_shared_ui__date-range-heading-font-size, 15px);
+  --wpbc_shared_ui_date_range_navigation__heading-font-weight: var(--wpbc_shared_ui__heading-font-weight, 600);
+  --wpbc_shared_ui_date_range_navigation__heading-line-height: var(--wpbc_shared_ui__date-range-heading-line-height, 1.4);
+  --wpbc_shared_ui_date_range_navigation__heading-margin: var(--wpbc_shared_ui__date-range-heading-margin, 14px);
+  --wpbc_shared_ui_date_range_navigation__fields-gap: var(--wpbc_shared_ui__date-range-fields-gap, 8px);
+  --wpbc_shared_ui_date_range_navigation__field-gap: var(--wpbc_shared_ui__field-gap-relaxed, 5px);
+  --wpbc_shared_ui_date_range_navigation__label-font-size: var(--wpbc_shared_ui__small-font-size, 12px);
+  --wpbc_shared_ui_date_range_navigation__input-height: var(--wpbc_shared_ui__input-height, 40px);
+  --wpbc_shared_ui_date_range_navigation__input-padding-inline: var(--wpbc_shared_ui__input-padding-inline, 10px);
+  --wpbc_shared_ui_date_range_navigation__separator-padding: var(--wpbc_shared_ui__date-range-separator-padding, 8px);
+  --wpbc_shared_ui_date_range_navigation__actions-gap: var(--wpbc_shared_ui__actions-gap, 8px);
+  --wpbc_shared_ui_date_range_navigation__actions-margin: var(--wpbc_shared_ui__date-range-actions-margin, 14px);
+  --wpbc_shared_ui_date_range_navigation__actions-padding: var(--wpbc_shared_ui__date-range-actions-padding, 14px);
+  --wpbc_shared_ui_date_range_navigation__button-gap: var(--wpbc_shared_ui__button-gap, 6px);
+  --wpbc_shared_ui_date_range_navigation__status-font-size: var(--wpbc_shared_ui__small-font-size, 12px);
+  --wpbc_shared_ui_date_range_navigation__status-margin: var(--wpbc_shared_ui__status-margin, 10px);
+  --wpbc_shared_ui_date_range_navigation__datepicker-width: var(--wpbc_shared_ui__datepicker-width, 300px);
+  --wpbc_shared_ui_date_range_navigation__datepicker-day-height: var(--wpbc_shared_ui__datepicker-day-height, 40px);
+  --wpbc_shared_ui_date_range_navigation__datepicker-z-index: var(--wpbc_shared_ui__datepicker-z-index, 100130)
+}
+.wpbc_shared_ui_date_range_navigation {
+  -ms-flex-align: center;
+  align-items: center;
+  column-gap: var(--wpbc_shared_ui_date_range_navigation__control-gap);
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  min-width: 0
+}
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__shift,
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__trigger {
+  -ms-flex-align: center;
+  align-items: center;
+  appearance: none;
+  background: var(--wpbc_shared_ui_date_range_navigation__control-background);
+  border: var(--wpbc_shared_ui_date_range_navigation__border-width) solid var(--wpbc_shared_ui_date_range_navigation__control-border-color);
+  border-radius: 0;
+  box-sizing: border-box;
+  color: var(--wpbc_shared_ui_date_range_navigation__control-text-color);
+  cursor: pointer;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font: inherit;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-block-size: var(--wpbc_shared_ui_date_range_navigation__control-height);
+  padding: var(--wpbc_shared_ui_date_range_navigation__control-padding-block) var(--wpbc_shared_ui_date_range_navigation__control-padding-inline-end) var(--wpbc_shared_ui_date_range_navigation__control-padding-block) var(--wpbc_shared_ui_date_range_navigation__control-padding-inline-start)
+}
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__popover.is-open .wpbc_shared_ui_date_range_navigation__trigger,
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__shift:hover,
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__trigger:hover {
+  background: var(--wpbc_shared_ui_date_range_navigation__control-background);
+  border-color: var(--wpbc_shared_ui_date_range_navigation__control-border-active-color);
+  color: var(--wpbc_shared_ui_date_range_navigation__control-text-color)
+}
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__shift:focus-visible,
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__trigger:focus-visible {
+  box-shadow: 0 0 0 var(--wpbc_shared_ui_date_range_navigation__focus-ring-width) var(--wpbc_shared_ui_date_range_navigation__control-focus-color);
+  outline: var(--wpbc_shared_ui_date_range_navigation__outline-width) solid transparent
+}
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__shift:disabled,
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__trigger:disabled {
+  background: var(--wpbc_shared_ui_date_range_navigation__control-disabled-background);
+  border-color: var(--wpbc_shared_ui_date_range_navigation__border-color);
+  color: var(--wpbc_shared_ui_date_range_navigation__control-disabled-color);
+  cursor: default
+}
+.wpbc_shared_ui_date_range_navigation .wpbc_shared_ui_date_range_navigation__shift {
+  -ms-flex: 0 0 var(--wpbc_shared_ui_date_range_navigation__control-height);
+  flex: 0 0 var(--wpbc_shared_ui_date_range_navigation__control-height);
+  min-width: var(--wpbc_shared_ui_date_range_navigation__control-height);
+  padding: 0
+}
+.wpbc_shared_ui_date_range_navigation > .wpbc_shared_ui_date_range_navigation__shift {
+  margin-inline-start: var(--wpbc_shared_ui_date_range_navigation__control-overlap)
+}
+.wpbc_shared_ui_date_range_navigation > .wpbc_shared_ui_date_range_navigation__shift[data-wpbc-shared-ui-date-range-shift=previous] {
+  margin-inline-start: var(--wpbc_shared_ui_date_range_navigation__shift-group-gap)
+}
+.wpbc_shared_ui_date_range_navigation > .wpbc_shared_ui_date_range_navigation__shift[data-wpbc-shared-ui-date-range-shift=next] {
+  border-end-end-radius: var(--wpbc_shared_ui_date_range_navigation__control-radius);
+  border-start-end-radius: var(--wpbc_shared_ui_date_range_navigation__control-radius)
+}
+.wpbc_shared_ui_date_range_navigation__popover {
+  margin-inline: 0
+}
+.wpbc_shared_ui_date_range_navigation__trigger {
+  border-end-start-radius: var(--wpbc_shared_ui_date_range_navigation__control-radius);
+  border-start-start-radius: var(--wpbc_shared_ui_date_range_navigation__control-radius);
+  font-weight: var(--wpbc_shared_ui_date_range_navigation__control-font-weight);
+  min-inline-size: var(--wpbc_shared_ui_date_range_navigation__trigger-min-width);
+  white-space: nowrap
+}
+.wpbc_shared_ui_date_range_navigation__panel {
+  inline-size: min(var(--wpbc_shared_ui_date_range_navigation__panel-width),100vw - var(--wpbc_shared_ui_date_range_navigation__viewport-gutter));
+  max-inline-size: calc(100vw - var(--wpbc_shared_ui_date_range_navigation__viewport-gutter));
+  padding: var(--wpbc_shared_ui_date_range_navigation__panel-padding)
+}
+.wpbc_shared_ui_date_range_navigation__panel .wpbc_shared_ui_popover__heading {
+  font-size: var(--wpbc_shared_ui_date_range_navigation__heading-font-size);
+  font-weight: var(--wpbc_shared_ui_date_range_navigation__heading-font-weight);
+  line-height: var(--wpbc_shared_ui_date_range_navigation__heading-line-height);
+  margin-block-end: var(--wpbc_shared_ui_date_range_navigation__heading-margin)
+}
+.wpbc_shared_ui_date_range_navigation__fields {
+  -ms-flex-align: end;
+  align-items: flex-end;
+  display: -ms-flexbox;
+  display: flex;
+  gap: var(--wpbc_shared_ui_date_range_navigation__fields-gap)
+}
+.wpbc_shared_ui_date_range_navigation__field {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 0px;
+  flex: 1 1 0;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: var(--wpbc_shared_ui_date_range_navigation__field-gap);
+  min-width: 0
+}
+.wpbc_shared_ui_date_range_navigation__field label {
+  font-size: var(--wpbc_shared_ui_date_range_navigation__label-font-size);
+  font-weight: var(--wpbc_shared_ui_date_range_navigation__heading-font-weight)
+}
+.wpbc_shared_ui_date_range_navigation__field input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-height: var(--wpbc_shared_ui_date_range_navigation__input-height);
+  padding-inline: var(--wpbc_shared_ui_date_range_navigation__input-padding-inline)
+}
+.wpbc_shared_ui_date_range_navigation__field input[aria-invalid=true] {
+  border-color: var(--wpbc_shared_ui_date_range_navigation__danger-color);
+  box-shadow: 0 0 0 var(--wpbc_shared_ui_date_range_navigation__focus-ring-width) var(--wpbc_shared_ui_date_range_navigation__danger-color)
+}
+.wpbc_shared_ui_date_range_navigation__separator {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  padding-block-end: var(--wpbc_shared_ui_date_range_navigation__separator-padding)
+}
+.wpbc_shared_ui_date_range_navigation__actions {
+  -ms-flex-align: center;
+  align-items: center;
+  border-block-start: var(--wpbc_shared_ui_date_range_navigation__border-width) solid var(--wpbc_shared_ui_date_range_navigation__border-color);
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: var(--wpbc_shared_ui_date_range_navigation__actions-gap);
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  margin-block-start: var(--wpbc_shared_ui_date_range_navigation__actions-margin);
+  padding-block-start: var(--wpbc_shared_ui_date_range_navigation__actions-padding)
+}
+.wpbc_shared_ui_date_range_navigation__actions .button {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: var(--wpbc_shared_ui_date_range_navigation__button-gap);
+  min-height: var(--wpbc_shared_ui_date_range_navigation__control-height)
+}
+.wpbc_shared_ui_date_range_navigation__actions .wpbc_shared_ui_date_range_navigation__reset {
+  margin-inline-end: auto
+}
+.wpbc_shared_ui_date_range_navigation__status {
+  color: var(--wpbc_shared_ui_date_range_navigation__danger-color);
+  font-size: var(--wpbc_shared_ui_date_range_navigation__status-font-size);
+  margin: var(--wpbc_shared_ui_date_range_navigation__status-margin) 0 0
+}
+.wpbc_shared_ui_date_range_navigation__status:empty {
+  display: none
+}
+body > #datepick-div[data-wpbc-shared-ui-date-range-navigation-datepick] {
+  box-sizing: border-box;
+  max-width: calc(100vw - var(--wpbc_shared_ui_date_range_navigation__viewport-gutter))!important;
+  width: var(--wpbc_shared_ui_date_range_navigation__datepicker-width)!important;
+  z-index: var(--wpbc_shared_ui_date_range_navigation__datepicker-z-index)!important
+}
+body > #datepick-div[data-wpbc-shared-ui-date-range-navigation-datepick] .datepick-one-month {
+  width: 100%
+}
+#datepick-div[data-wpbc-shared-ui-date-range-navigation-datepick] .datepick-control {
+  display: none
+}
+#datepick-div[data-wpbc-shared-ui-date-range-navigation-datepick] .datepick-days-cell {
+  height: var(--wpbc_shared_ui_date_range_navigation__datepicker-day-height)!important
+}
+#datepick-div[data-wpbc-shared-ui-date-range-navigation-datepick] table.datepick tr td {
+  padding: 0!important
+}
+@media (max-width:782px) {
+  .wpbc_shared_ui_date_range_navigation {
+    width: 100%
+  }
+  .wpbc_shared_ui_date_range_navigation__popover {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+  }
+  .wpbc_shared_ui_date_range_navigation__trigger {
+    min-inline-size: 0;
+    width: 100%
+  }
+  .wpbc_shared_ui_date_range_navigation__fields {
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    -ms-flex-direction: column;
+    flex-direction: column
+  }
+  .wpbc_shared_ui_date_range_navigation__separator {
+    display: none
+  }
+  .wpbc_shared_ui_date_range_navigation__actions .button {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+  }
+}
+[dir=rtl] .wpbc_shared_ui_date_range_navigation__shift [class*=wpbc-bi-chevron-] {
+  -ms-transform: scaleX(-1);
+  transform: scaleX(-1)
+}

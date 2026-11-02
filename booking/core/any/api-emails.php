@@ -469,12 +469,13 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
 	/**
 	 * Make Email Sending by using wp_mail standard function.
 	 *
-	 * @param string $to      - Email
-	 * @param array  $replace - accociated array  of values to  replace in email Body and Subject. Exmaple: array( 'name' => 'Jo', 'secondname' => 'Smith' )
+	 * @param string     $to                   Email recipient.
+	 * @param array      $replace              Associated values to replace in the primary email body and subject.
+	 * @param array|null $copy_replacements    Optional replacement set used only while rendering an enabled administrator copy.
 	 *
 	 * @return boolean Sent or Failed to send.
 	 */
-	public function send( $to = '', $replace = array() ) {
+	public function send( $to = '', $replace = array(), $copy_replacements = null ) {
 
 		$return = false;
 
@@ -513,9 +514,27 @@ abstract class WPBC_Emails_API extends WPBC_Settings_API  {
              && ( $this->fields_values['copy_to_admin'] == 'On' ) 
             ){
             
-            $this->sending = true;    
-            
-            $subject = __('Email copy to', 'booking') . ' ' . str_replace( array( '<', '>' ), '', $to) . ' - ' . $subject;
+            $this->sending = true;
+
+			/*
+			 * A customer template can contain administrator-only shortcodes. When
+			 * the caller supplies a dedicated copy context, render the copy again
+			 * instead of reusing the customer body. The legacy reuse path remains
+			 * unchanged for every existing caller that omits the third argument.
+			 */
+			if ( is_array( $copy_replacements ) ) {
+				$this->set_replace( $copy_replacements );
+				$copy_subject     = $this->get_subject();
+				$copy_message     = $this->get_content();
+				$copy_attachments = $this->get_attachments();
+				$copy_attachments = apply_filters( 'wpbc_email_attachments', $copy_attachments, $this->id, $copy_replacements );
+			} else {
+				$copy_subject     = $subject;
+				$copy_message     = $message;
+				$copy_attachments = $attachments;
+			}
+
+			$subject = __( 'Email copy to', 'booking' ) . ' ' . str_replace( array( '<', '>' ), '', $to ) . ' - ' . $copy_subject;
              
             $headers = $this->get_headers( array( 'reply' => $to ) );
 
@@ -573,7 +592,7 @@ if ( ! empty( $this->fields_values['to'] ) ) {
             	$to = apply_filters( 'wpbc_email_api_send_copy_field_to', $to );                                        // FixIn: 8.1.3.1.
 	            // FixIn: 8.5.2.22.
 	            if ( ! empty( $to ) ) {
-		            $return_copy = wp_mail( $to, $subject, $message, $headers, $attachments );
+		            $return_copy = wp_mail( $to, $subject, $copy_message, $headers, $copy_attachments );
 	            }
             }
             

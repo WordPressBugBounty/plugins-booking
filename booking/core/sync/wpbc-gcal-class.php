@@ -640,7 +640,10 @@ class WPBC_Google_Calendar {
 					$this->events[$key]['id'] = $booking_id;
 
 					// Add notes to the booking relative source of imported booking
-					if ( class_exists( 'wpdev_bk_personal' ) ) {
+					if (
+						class_exists( 'wpdev_bk_personal' )
+						&& ( ! function_exists( 'wpbc_booking_activity_table_exists' ) || ! wpbc_booking_activity_table_exists() )
+					) {
 						/* translators: 1: ... */
 						$remark_text = '[' . wpbc_datetime_localized( gmdate( 'Y-m-d H:i:s' ), 'Y-m-d H:i:s' ) . '] ' . sprintf( __( 'Imported from %s ', 'booking' ), 'Google Calendar' );
 						$remark_text = str_replace( '%', '&#37;', $remark_text );

@@ -787,6 +787,17 @@ class WPBC_Page_SettingsGeneral extends WPBC_Page_Structure {
 									<?php wpbc_customer_access_render_rate_limit_reset_tool(); ?>
 								<?php } ?>
 
+								<?php
+								/**
+								 * Render optional, domain-owned controls in Advanced Settings Tools.
+								 *
+								 * Extensions must perform their own capability and environment checks.
+								 *
+								 * @since 12.0.0
+								 */
+								do_action( 'wpbc_settings_tools_after_fields' );
+								?>
+
 								<?php wpbc_close_meta_box_section(); ?>
 							<?php } ?>
 

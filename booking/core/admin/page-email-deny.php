@@ -963,6 +963,9 @@ function wpbc__get_replace_shortcodes__email_deny( $booking_id, $bktype, $formda
 	// -----------------------------------------------------------------------------------------------------------------
 	// Get additional  replace paramaters to the email shortcodes
 	$replace = apply_filters( 'wpbc_replace_params_for_booking', $replace, $booking_id, $bktype, $formdata );			// FixIn: 8.0.1.7.
+	if ( function_exists( 'wpbc_booking_notes_add_email_shortcodes' ) ) {
+		$replace = wpbc_booking_notes_add_email_shortcodes( $replace, $booking_id, 'customer' );
+	}
 
 
     return $replace;
@@ -1081,7 +1084,15 @@ function wpbc_send_email_deny( $deny_id_str, $is_send_emeils, $denyreason = '' )
 
 
 	    if ( wpbc_is_not_blank_email( $to, $replace['content'] ) ) {
-		    $email_result = $mail_api->send( $to, $replace );
+			$copy_replacements = null;
+			if (
+				! empty( $mail_api->fields_values['copy_to_admin'] )
+				&& 'On' === $mail_api->fields_values['copy_to_admin']
+				&& function_exists( 'wpbc_booking_notes_add_email_shortcodes' )
+			) {
+				$copy_replacements = wpbc_booking_notes_add_email_shortcodes( $replace, $booking_id, 'administrator' );
+			}
+		    $email_result = $mail_api->send( $to, $replace, $copy_replacements );
 	    }
 
 	    make_bk_action( 'wpbc_mu_set_environment_for_user', $previous_active_user );     // MU

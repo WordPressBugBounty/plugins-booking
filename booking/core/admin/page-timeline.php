@@ -12,6 +12,28 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;                                             // Exit if accessed directly
 
+if ( defined( 'WPBC_ENABLE_12_0_TIMELINE' ) && true === WPBC_ENABLE_12_0_TIMELINE ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/booking-inspector/booking-inspector.php';
+}
+
+/**
+ * Resolve the Inspector host represented by the legacy Calendar route.
+ *
+ * The one-day, time-slotted presentation is the Schedule host; broader
+ * Calendar ranges retain the Calendar source. The value is presentation
+ * context only and never grants access to a booking.
+ *
+ * @return string Allow-listed Booking Inspector source identifier.
+ */
+function wpbc_calendar_overview_get_inspector_source() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only view selection; authorization remains server-side in the Inspector endpoint.
+	$view_days_number = isset( $_REQUEST['view_days_num'] ) ? absint( $_REQUEST['view_days_num'] ) : 0;
+
+	return 1 === $view_days_number
+		? WPBC_Booking_Inspector_Config::SOURCE_SCHEDULE
+		: WPBC_Booking_Inspector_Config::SOURCE_CALENDAR;
+}
+
 
 
 /**
@@ -123,7 +145,20 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
 
 			$this->timeline->admin_init();                                      // Define all REQUEST parameters and get bookings
 
-			$this->timeline->show_timeline();
+			$inspector_enabled = defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+				&& true === WPBC_ENABLE_12_0_TIMELINE
+				&& class_exists( 'WPBC_Booking_Inspector_Config' );
+			if ( $inspector_enabled ) {
+				$inspector_source = wpbc_calendar_overview_get_inspector_source();
+				?>
+				<div data-wpbc-booking-inspector-host-root="<?php echo esc_attr( $inspector_source ); ?>">
+					<?php $this->timeline->show_timeline(); ?>
+					<div data-wpbc-booking-inspector-host-shell></div>
+				</div>
+				<?php
+			} else {
+				$this->timeline->show_timeline();
+			}
 
 			// FixIn: 9.9.0.18.
 			if ( 'UTC' !== $server_zone ) {                                                                                     // Back  to  previos state,  if it was changed.
@@ -141,6 +176,20 @@ class WPBC_Page_CalendarOverview extends WPBC_Page_Structure {
 
 		if ( class_exists( 'WPBC_Add_Booking_Modal' ) ) {
 			WPBC_Add_Booking_Modal::template_for_modal();
+		}
+
+		if (
+			defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+			&& true === WPBC_ENABLE_12_0_TIMELINE
+			&& class_exists( 'WPBC_Shared_UI_Inspector' )
+			&& class_exists( 'WPBC_Booking_Inspector_Config' )
+		) {
+			WPBC_Shared_UI_Inspector::print_template();
+			WPBC_Booking_Inspector_Config::print_template();
+		}
+		do_action( 'wpbc_hook_booking_template__hidden_templates' );
+		if ( class_exists( 'WPBC_Print' ) ) {
+			WPBC_Print::print_modal();
 		}
     }
 

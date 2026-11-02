@@ -30,12 +30,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 'right_vertical_sidebar__content_click_collapse_mode' => '',                                                            // '' | 'min' | 'compact' | 'none'. Collapse or hide an expanded right sidebar when the page content is clicked. Default: ''.
 'left_navigation__default_view_mode'        => 'max',                                                                   // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
 'left_navigation__force_view_mode'          => '',                                                                      // '' | 'min' | 'compact' | 'max' | 'none'.     Default: ''.
+'navigation_shell_context'                  => 'workspace',                                                             // 'workspace' | 'settings' | 'focused'. Derived from route when omitted.
 'right_vertical_sidebar_compact__is_show'   => false,                                                                   // true | false.     Default: false.
 
 // TODO: recheck functionality  and ability to use:
 
 	'is_show_top_path'                          => true,                                                                    // true | false.  By default value is: true.
 	'is_show_top_navigation'                    => false,                                                                   // true | false.  By default value is: false.
+	'is_show_page_heading'                      => true,                                                                    // true | false. Derived from horizontal navigation when omitted.
 	'title'                                     => __( 'Booking Form Builder', 'booking' ),                                 // Title of TAB //FixIn: 9.8.15.2.2.
 	'hint'                                      => __( 'Define available days', 'booking' ),                                // Hint.
 	'page_title'                                => __( 'Booking Form Builder', 'booking' ),                                 // Title of Page.
@@ -372,92 +374,147 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	}
 
 	/**
-	 * Get allowed left sidebar mode.
+	 * Return the merged active tab and subtab options used by shell policy.
 	 *
-	 * @param string $mode Sidebar mode.
+	 * Unlike the legacy option helpers, this method preserves explicit false
+	 * values. Active subtab options take precedence over their parent tab.
 	 *
-	 * @return string
+	 * @return array<string,mixed> Merged active page options.
 	 */
-	private function get_valid_left_navigation_mode( $mode ) {
+	private function get_admin_navigation_page_options() {
+		$tab_options    = isset( $this->current_page_params['tab'] ) && is_array( $this->current_page_params['tab'] )
+			? $this->current_page_params['tab']
+			: array();
+		$subtab_options = isset( $this->current_page_params['subtab'] ) && is_array( $this->current_page_params['subtab'] )
+			? $this->current_page_params['subtab']
+			: array();
 
-		$mode          = strval( $mode );
-		$allowed_modes = array( '', 'min', 'compact', 'max', 'none' );
-
-		return in_array( $mode, $allowed_modes, true ) ? $mode : '';
+		return array_replace( $tab_options, $subtab_options );
 	}
 
 	/**
-	 * Get page-defined left sidebar mode before user preferences.
+	 * Resolve the complete active administration navigation policy.
 	 *
-	 * @return string
+	 * The page-structure layer owns runtime integration: it supplies the active
+	 * page configuration, fullscreen state, and current user's scoped sidebar
+	 * preference to the data-only policy resolver.
+	 *
+	 * @return array<string,mixed> Normalized navigation policy.
 	 */
-	private function get_page_left_navigation_default_mode() {
+	public function get_admin_navigation_policy() {
+		$page_options     = $this->get_admin_navigation_page_options();
+		$page_slug        = $this->get_top_path_page_tag();
+		$is_full_screen   = $this->is_full_screen_mode_enabled();
+		$shell_context    = WPBC_Admin_Navigation_Policy::resolve_shell_context( $page_slug, $page_options );
+		$preference_scope = WPBC_Admin_Navigation_Policy::resolve_preference_scope( $shell_context, $is_full_screen );
+		$preference_name  = WPBC_Admin_Navigation_Policy::get_preference_name( $preference_scope );
+		$saved_mode       = '';
 
-		return $this->get_valid_left_navigation_mode( $this->is_use_option__in_subtabs_or_tabs( 'left_navigation__default_view_mode' ) );
+		if ( '' !== $preference_name && class_exists( 'WPBC_Admin_Navigation_Preferences' ) ) {
+			$saved_mode = WPBC_Admin_Navigation_Preferences::get_effective_mode(
+				wpbc_get_current_user_id(),
+				$preference_scope
+			);
+		}
+
+		return WPBC_Admin_Navigation_Policy::resolve(
+			array(
+				'page_slug'          => $page_slug,
+				'page_options'       => $page_options,
+				'is_full_screen'     => $is_full_screen,
+				'saved_sidebar_mode' => $saved_mode,
+			)
+		);
 	}
 
 	/**
-	 * Get forced left sidebar mode, if the current page must not use the user preference.
+	 * Resolve the active administration page content layout.
 	 *
-	 * @return string
+	 * The layout policy consumes the same merged tab/subtab options as navigation,
+	 * preserving explicit subtab overrides while keeping CSS values out of page
+	 * definitions.
+	 *
+	 * @return array<string,string> Resolved content layout policy.
 	 */
-	private function get_forced_left_navigation_mode() {
-
-		return $this->get_valid_left_navigation_mode( $this->is_use_option__in_subtabs_or_tabs( 'left_navigation__force_view_mode' ) );
+	public function get_admin_shell_layout_policy() {
+		return WPBC_Admin_Shell_Layout_Policy::resolve( $this->get_admin_navigation_page_options() );
 	}
 
 	/**
-	 * Check whether the current page should save and restore the user left sidebar preference.
+	 * Check whether the current page may save and restore a sidebar preference.
 	 *
-	 * @return bool
+	 * @return bool True when the active policy has a reusable preference scope.
 	 */
 	public function is_left_navigation_user_mode_enabled() {
+		$policy = $this->get_admin_navigation_policy();
 
-		$forced_mode = $this->get_forced_left_navigation_mode();
-
-		if ( ! empty( $forced_mode ) ) {
-			return false;
-		}
-
-		if ( 'none' === $this->get_page_left_navigation_default_mode() ) {
-			return false;
-		}
-
-		return true;
+		return ! empty( $policy['is_left_sidebar_user_mode_enabled'] );
 	}
 
 	/**
-	 * Resolve the initial left sidebar mode.
+	 * Return the resolved initial left sidebar mode.
 	 *
-	 * Forced page mode wins, then the saved user preference, then the page default.
-	 *
-	 * @return string
+	 * @return string One of min, compact, max, or structural none.
 	 */
 	public function get_left_navigation_default_view_mode() {
+		$policy = $this->get_admin_navigation_policy();
 
-		$forced_mode = $this->get_forced_left_navigation_mode();
+		return (string) $policy['left_sidebar_mode'];
+	}
 
-		if ( ! empty( $forced_mode ) ) {
-			return $forced_mode;
-		}
+	/**
+	 * Return the current sidebar preference scope.
+	 *
+	 * @return string Workspace, settings, fullscreen, or none.
+	 */
+	public function get_left_navigation_preference_scope() {
+		$policy = $this->get_admin_navigation_policy();
 
-		$page_default_mode = $this->get_page_left_navigation_default_mode();
+		return (string) $policy['left_sidebar_preference_scope'];
+	}
 
-		if ( 'none' === $page_default_mode ) {
-			return 'none';
-		}
+	/**
+	 * Return the current sidebar preference storage key.
+	 *
+	 * @return string User-data key, or an empty string when persistence is disabled.
+	 */
+	public function get_left_navigation_preference_name() {
+		$policy = $this->get_admin_navigation_policy();
 
-		$saved_user_mode = '';
-		if ( class_exists( 'WPBC_User_Custom_Data_Saver' ) ) {
-			$saved_user_mode = WPBC_User_Custom_Data_Saver::get_user_data_value( wpbc_get_current_user_id(), 'left_sidebar_view_mode' );
-			$saved_user_mode = $this->get_valid_left_navigation_mode( $saved_user_mode );
-		}
+		return (string) $policy['left_sidebar_preference_name'];
+	}
 
-		if ( ! empty( $saved_user_mode ) && ( 'none' !== $saved_user_mode ) ) {
-			return $saved_user_mode;
-		}
+	/**
+	 * Return the resolved administration shell context.
+	 *
+	 * @return string Workspace, settings, or focused.
+	 */
+	public function get_admin_navigation_shell_context() {
+		$policy = $this->get_admin_navigation_policy();
 
-		return $page_default_mode;
+		return (string) $policy['shell_context'];
+	}
+
+	/**
+	 * Check whether the horizontal page navigation should be rendered.
+	 *
+	 * @return bool True when horizontal navigation is visible.
+	 */
+	public function is_horizontal_navigation_enabled() {
+		$policy = $this->get_admin_navigation_policy();
+
+		return ! empty( $policy['is_horizontal_navigation_visible'] );
+	}
+
+	/**
+	 * Check whether the page title and description should be rendered.
+	 *
+	 * @return bool True when the page heading is visible.
+	 */
+	public function is_page_heading_enabled() {
+		$policy = $this->get_admin_navigation_policy();
+
+		return ! empty( $policy['is_page_heading_visible'] );
 	}
 
 	/**
@@ -586,16 +643,9 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	 * @return bool
 	 */
 	public function is_top_path_enabled() {
+		$policy = $this->get_admin_navigation_policy();
 
-		if ( isset( $this->current_page_params['subtab'] ) && array_key_exists( 'is_show_top_path', $this->current_page_params['subtab'] ) ) {
-			return ( false !== $this->current_page_params['subtab']['is_show_top_path'] );
-		}
-
-		if ( isset( $this->current_page_params['tab'] ) && array_key_exists( 'is_show_top_path', $this->current_page_params['tab'] ) ) {
-			return ( false !== $this->current_page_params['tab']['is_show_top_path'] );
-		}
-
-		return true;
+		return ! empty( $policy['is_top_path_visible'] );
 	}
 
 	/**
@@ -604,14 +654,9 @@ abstract class WPBC_Page_Structure extends WPBC_Menu_Structure {
 	 * @return bool
 	 */
 	public function is_top_path_show_version() {
+		$policy = $this->get_admin_navigation_policy();
 
-		$top_path_config = $this->is_use_option__in_subtabs_or_tabs( 'top_path' );
-
-		if ( is_array( $top_path_config ) && array_key_exists( 'show_version', $top_path_config ) ) {
-			return (bool) $top_path_config['show_version'];
-		}
-
-		return true;
+		return ! empty( $policy['is_version_visible'] );
 	}
 
 	/**

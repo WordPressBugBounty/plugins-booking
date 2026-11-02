@@ -83,6 +83,36 @@ function wpbc_booking_appointment_normalize_css_width( $raw_width ) {
 }
 
 /**
+ * Normalize the optional one-day seed for the native Appointment calendar.
+ *
+ * Appointment duration is owned by the selected Service, so a Timeline
+ * handoff may seed only its start date. The canonical Appointment availability
+ * request remains responsible for deciding whether that date can be booked.
+ *
+ * @param mixed $calendar_dates Candidate ISO date collection.
+ *
+ * @return string[] Zero or one valid date in `Y-m-d` format.
+ */
+function wpbc_booking_appointment_normalize_initial_calendar_dates( $calendar_dates ) {
+	$normalized_dates = array();
+
+	foreach ( is_array( $calendar_dates ) ? $calendar_dates : array() as $calendar_date ) {
+		$calendar_date = sanitize_text_field( wp_unslash( (string) $calendar_date ) );
+		if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $calendar_date, $date_parts ) ) {
+			continue;
+		}
+		if ( ! checkdate( (int) $date_parts[2], (int) $date_parts[3], (int) $date_parts[1] ) ) {
+			continue;
+		}
+
+		$normalized_dates[] = $calendar_date;
+		break;
+	}
+
+	return $normalized_dates;
+}
+
+/**
  * Normalize shortcode attributes into the stable AJAX configuration contract.
  *
  * @param mixed $attributes Raw shortcode attributes or decoded configuration.
@@ -92,19 +122,21 @@ function wpbc_booking_appointment_normalize_css_width( $raw_width ) {
 function wpbc_booking_appointment_normalize_config( $attributes ) {
 	$attributes = is_array( $attributes ) ? $attributes : array();
 	$defaults   = array(
-		'service_id'              => 0,
-		'provider_id'             => 0,
-		'service_ids'             => array(),
-		'provider_ids'            => array(),
-		'cal_count'               => 1,
-		'start_month_calendar'    => false,
-		'calendar_dates_start'    => '',
-		'calendar_dates_end'      => '',
+		'service_id'                     => 0,
+		'provider_id'                    => 0,
+		'service_ids'                    => array(),
+		'provider_ids'                   => array(),
+		'cal_count'                      => 1,
+		'start_month_calendar'           => false,
+		'calendar_dates_start'           => '',
+		'calendar_dates_end'             => '',
 		'selected_dates_without_calendar' => '',
-		'initial_start_time'      => '',
-		'options'                 => '',
-		'form_type'               => '',
-		'auto_select_provider'    => false,
+		'preselect_calendar_dates'        => false,
+		'initial_calendar_dates'          => array(),
+		'initial_start_time'              => '',
+		'options'                         => '',
+		'form_type'                       => '',
+		'auto_select_provider'            => false,
 		'catalog_layout'            => 'grid',
 		'show_resource_filters'     => false,
 		'show_resource_image'       => true,
@@ -117,19 +149,19 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 		'show_resource_hierarchy'   => true,
 		'show_availability'         => true,
 		'show_starting_price'       => true,
-		'show_progress'           => true,
-		'progress_item_1_title'   => null,
-		'progress_item_1_number'  => null,
-		'progress_item_2_title'   => null,
-		'progress_item_2_number'  => null,
-		'progress_item_3_title'   => null,
-		'progress_item_3_number'  => null,
-		'screen_1_title'          => null,
-		'screen_1_description'    => null,
-		'screen_2_title'          => null,
-		'screen_2_description'    => null,
-		'allow_past'              => false,
-		'return_url'              => '',
+		'show_progress'                  => true,
+		'progress_item_1_title'          => null,
+		'progress_item_1_number'         => null,
+		'progress_item_2_title'          => null,
+		'progress_item_2_number'         => null,
+		'progress_item_3_title'          => null,
+		'progress_item_3_number'         => null,
+		'screen_1_title'                 => null,
+		'screen_1_description'           => null,
+		'screen_2_title'                 => null,
+		'screen_2_description'           => null,
+		'allow_past'                     => false,
+		'return_url'                     => '',
 	);
 
 	// Decode the public shortcode aliases only before values enter the signed token.
@@ -188,7 +220,9 @@ function wpbc_booking_appointment_normalize_config( $attributes ) {
 	} else {
 		$start_month = false;
 	}
-	$config['start_month_calendar'] = $start_month;
+	$config['start_month_calendar']     = $start_month;
+	$config['initial_calendar_dates']   = wpbc_booking_appointment_normalize_initial_calendar_dates( $config['initial_calendar_dates'] );
+	$config['preselect_calendar_dates'] = wpbc_booking_appointment_normalize_boolean( $config['preselect_calendar_dates'] ) && ! empty( $config['initial_calendar_dates'] );
 
 	foreach ( array( 'calendar_dates_start', 'calendar_dates_end' ) as $date_key ) {
 		$date_value          = sanitize_text_field( (string) $config[ $date_key ] );

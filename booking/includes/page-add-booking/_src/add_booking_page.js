@@ -4,6 +4,189 @@
 
 	var active_days_selection_override = '';
 	var days_selection_enforcement_timers = [];
+	var initial_calendar_dates_applied = false;
+	var initial_calendar_dates_cancelled = false;
+	var is_applying_initial_calendar_dates = false;
+	var initial_calendar_dates_attempts = 0;
+	var initial_calendar_dates_max_attempts = 12;
+	var initial_calendar_dates_event = 'wpbc_calendar_ajx__loaded_data.wpbc_add_booking_initial_dates';
+
+	/**
+	 * Normalize a JSON-safe list of ISO calendar dates.
+	 *
+	 * @param {*} calendar_dates Candidate date list.
+	 * @return {Array<string>} Unique valid dates in their original order.
+	 */
+	function normalize_initial_calendar_dates( calendar_dates ) {
+		var normalized_dates = [];
+		var seen_dates = {};
+
+		if ( ! Array.isArray( calendar_dates ) ) {
+			return normalized_dates;
+		}
+
+		calendar_dates.forEach( function ( calendar_date ) {
+			var normalized_date = String( calendar_date || '' );
+			var date_parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec( normalized_date );
+			var native_date;
+
+			if ( ! date_parts ) {
+				return;
+			}
+
+			native_date = new Date(
+				parseInt( date_parts[1], 10 ),
+				parseInt( date_parts[2], 10 ) - 1,
+				parseInt( date_parts[3], 10 )
+			);
+			if (
+				native_date.getFullYear() !== parseInt( date_parts[1], 10 ) ||
+				native_date.getMonth() !== parseInt( date_parts[2], 10 ) - 1 ||
+				native_date.getDate() !== parseInt( date_parts[3], 10 ) ||
+				seen_dates[ normalized_date ]
+			) {
+				return;
+			}
+
+			seen_dates[ normalized_date ] = true;
+			normalized_dates.push( normalized_date );
+		} );
+
+		return normalized_dates;
+	}
+
+	/**
+	 * Convert one validated ISO date into a local JavaScript Date.
+	 *
+	 * @param {string} calendar_date Date in `Y-m-d` format.
+	 * @return {Date} Local calendar date.
+	 */
+	function parse_initial_calendar_date( calendar_date ) {
+		var date_parts = calendar_date.split( '-' );
+
+		return new Date(
+			parseInt( date_parts[0], 10 ),
+			parseInt( date_parts[1], 10 ) - 1,
+			parseInt( date_parts[2], 10 )
+		);
+	}
+
+	/**
+	 * Read the explicit one-time calendar seed from the rendered component.
+	 *
+	 * @return {Object|null} Normalized handoff context, or null outside a handoff.
+	 */
+	function get_initial_calendar_context() {
+		var component_context = window.wpbc_add_booking_component_context || {};
+		var resource_id = parseInt( component_context.resource_id, 10 );
+		var initial_dates = normalize_initial_calendar_dates( component_context.initial_calendar_dates );
+
+		if ( 1 !== parseInt( component_context.preselect_calendar_dates, 10 ) || resource_id <= 0 || ! initial_dates.length ) {
+			return null;
+		}
+
+		return {
+			resource_id: resource_id,
+			initial_dates: initial_dates
+		};
+	}
+
+	/**
+	 * Seed the normal native calendar once from signed Timeline handoff context.
+	 *
+	 * Direct instance synchronization avoids replaying clicks through stale
+	 * availability markup. It changes only the browser selection; the canonical
+	 * create endpoint remains authoritative for availability and persistence.
+	 *
+	 * @return {boolean} True after the exact initial selection was applied.
+	 */
+	function apply_initial_calendar_dates() {
+		var initial_context = get_initial_calendar_context();
+		var calendar_instance;
+		var native_dates;
+		var $date_field;
+		var formatted_dates;
+
+		if ( initial_calendar_dates_applied || initial_calendar_dates_cancelled || ! initial_context ) {
+			return initial_calendar_dates_applied;
+		}
+		if ( 'function' !== typeof window.wpbc_calendar__get_inst || ! $.datepick || 'function' !== typeof $.datepick._updateDatepick ) {
+			return false;
+		}
+
+		calendar_instance = window.wpbc_calendar__get_inst( initial_context.resource_id );
+		$date_field = $( '#date_booking' + initial_context.resource_id );
+		if ( ! calendar_instance || ! $date_field.length ) {
+			return false;
+		}
+
+		if ( String( $date_field.val() || '' ).trim() ) {
+			initial_calendar_dates_cancelled = true;
+			$( 'body' ).off( initial_calendar_dates_event );
+			return false;
+		}
+
+		native_dates = initial_context.initial_dates.map( parse_initial_calendar_date );
+		formatted_dates = native_dates.map( function ( selected_date ) {
+			if ( 'function' === typeof $.datepick._formatDate ) {
+				return $.datepick._formatDate( calendar_instance, selected_date );
+			}
+
+			return ( '0' + selected_date.getDate() ).slice( -2 ) + '.' +
+				( '0' + ( selected_date.getMonth() + 1 ) ).slice( -2 ) + '.' +
+				selected_date.getFullYear();
+		} ).join( ', ' );
+
+		is_applying_initial_calendar_dates = true;
+		calendar_instance.stayOpen = false;
+		calendar_instance.dates = native_dates;
+		$date_field.val( formatted_dates );
+		$.datepick._updateDatepick( calendar_instance );
+
+		if ( 'function' === typeof window.wpbc_calendar__scroll_to ) {
+			window.wpbc_calendar__scroll_to(
+				initial_context.resource_id,
+				native_dates[0].getFullYear(),
+				native_dates[0].getMonth() + 1
+			);
+		}
+		if ( 'function' === typeof window.wpbc_disable_time_fields_in_booking_form ) {
+			window.wpbc_disable_time_fields_in_booking_form( initial_context.resource_id );
+		}
+
+		initial_calendar_dates_applied = true;
+		$( 'body' ).off( initial_calendar_dates_event );
+		try {
+			$( '.booking_form_div' ).trigger(
+				'date_selected',
+				[ initial_context.resource_id, formatted_dates, initial_context.initial_dates.slice( 0 ) ]
+			);
+		} finally {
+			is_applying_initial_calendar_dates = false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Retry initial hydration only while the matching native calendar mounts.
+	 *
+	 * @return {void}
+	 */
+	function schedule_initial_calendar_dates() {
+		if ( initial_calendar_dates_applied || initial_calendar_dates_cancelled || ! get_initial_calendar_context() ) {
+			return;
+		}
+
+		window.requestAnimationFrame( function () {
+			initial_calendar_dates_attempts++;
+			if ( apply_initial_calendar_dates() || initial_calendar_dates_attempts >= initial_calendar_dates_max_attempts ) {
+				return;
+			}
+
+			window.setTimeout( schedule_initial_calendar_dates, 100 );
+		} );
+	}
 
 	/**
 	 * Show the panel controlled by one compact right-sidebar tab.
@@ -24,6 +207,27 @@
 		$tab.attr( 'aria-selected', 'true' );
 		$panels.attr( { hidden: true, 'aria-hidden': 'true' } );
 		$( '#' + panel_id ).removeAttr( 'hidden' ).attr( 'aria-hidden', 'false' );
+	}
+
+	/**
+	 * Scroll one page-owned control into view and move keyboard focus to it.
+	 *
+	 * @param {string} focus_selector Control selector.
+	 * @return {void}
+	 */
+	function focus_page_control( focus_selector ) {
+		var $control = focus_selector ? $( focus_selector ).first() : $();
+
+		if ( ! $control.length ) {
+			return;
+		}
+
+		window.requestAnimationFrame( function () {
+			$control.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'center' } );
+			window.setTimeout( function () {
+				$control.trigger( 'focus' );
+			}, 250 );
+		} );
 	}
 
 	/**
@@ -67,9 +271,7 @@
 		window.requestAnimationFrame( function () {
 			$group.get( 0 ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
 			if ( focus_selector ) {
-				window.setTimeout( function () {
-					$( focus_selector ).first().trigger( 'focus' );
-				}, 250 );
+				focus_page_control( focus_selector );
 			}
 		} );
 	}
@@ -410,11 +612,31 @@
 	} );
 
 	$( document ).on( 'click', '.wpbc_add_booking__setup_summary_link', function ( event ) {
+		var group_name = $( this ).attr( 'data-wpbc-add-booking-open-group' ) || '';
+		var focus_selector = $( this ).attr( 'data-wpbc-add-booking-focus' ) || '';
+
 		event.preventDefault();
-		open_settings_group( $( this ).attr( 'data-wpbc-add-booking-open-group' ), $( this ).attr( 'data-wpbc-add-booking-focus' ) || '' );
+		if ( group_name ) {
+			open_settings_group( group_name, focus_selector );
+		} else {
+			focus_page_control( focus_selector );
+		}
 	} );
 
 	$( document ).on( 'change', '#is_send_email_for_pending, #is_allow_bookings_in_past', refresh_booking_tools_summary );
+	$( document ).on( 'date_selected.wpbc_add_booking_initial_dates', '.booking_form_div', function () {
+		if ( ! is_applying_initial_calendar_dates && ! initial_calendar_dates_applied ) {
+			initial_calendar_dates_cancelled = true;
+			$( 'body' ).off( initial_calendar_dates_event );
+		}
+	} );
+	$( 'body' ).off( initial_calendar_dates_event ).on( initial_calendar_dates_event, function ( event, loaded_resource_id ) {
+		var initial_context = get_initial_calendar_context();
+
+		if ( initial_context && initial_context.resource_id === parseInt( loaded_resource_id, 10 ) ) {
+			schedule_initial_calendar_dates();
+		}
+	} );
 	$( document ).on( 'input', '#wpbc_add_booking_cost_correction', synchronize_cost_correction_range );
 	$( document ).on( 'input', '.wpbc_add_booking__cost_correction [data-wpbc-admin-cost-correction-range="1"]', synchronize_cost_correction_number );
 	$( 'body' ).on( 'wpbc_before_booking_create.wpbc_add_booking_cost_correction', add_cost_correction_to_booking_request );
@@ -426,4 +648,5 @@
 	$( refresh_booking_tools_summary );
 	$( synchronize_cost_correction_range );
 	$( schedule_days_selection_synchronization );
+	$( schedule_initial_calendar_dates );
 }( jQuery ) );

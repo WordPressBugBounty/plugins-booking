@@ -369,14 +369,14 @@ function wpbc_ui__create_full_screen_mode_cookie_value( $mode, $issued_timestamp
 }
 
 /**
- * Return every server-side cookie path used by Booking Calendar administration.
+ * Return every server-side preference-cookie path used by Booking Calendar administration.
  *
  * Multiple paths are updated together to replace legacy cookies created by
  * root, subdirectory, or WordPress administration requests.
  *
  * @return string[] Unique absolute cookie paths.
  */
-function wpbc_ui__get_full_screen_mode_cookie_paths() {
+function wpbc_ui__get_admin_preference_cookie_paths() {
 
 	$cookie_paths = array( '/' );
 
@@ -389,6 +389,18 @@ function wpbc_ui__get_full_screen_mode_cookie_paths() {
 	}
 
 	return array_values( array_unique( array_filter( $cookie_paths ) ) );
+}
+
+/**
+ * Return every server-side cookie path used by the fullscreen bridge.
+ *
+ * This compatibility wrapper preserves the released helper while sharing the
+ * path contract with other short-lived administration preferences.
+ *
+ * @return string[] Unique absolute cookie paths.
+ */
+function wpbc_ui__get_full_screen_mode_cookie_paths() {
+	return wpbc_ui__get_admin_preference_cookie_paths();
 }
 
 /**

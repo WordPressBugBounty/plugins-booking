@@ -939,6 +939,9 @@ function wpbc__get_replace_shortcodes__email_new_visitor( $booking_id, $bktype, 
 	// -----------------------------------------------------------------------------------------------------------------
 	// Get additional  replace paramaters to the email shortcodes
 	$replace = apply_filters( 'wpbc_replace_params_for_booking', $replace, $booking_id, $bktype, $formdata );			// FixIn: 8.0.1.7.
+	if ( function_exists( 'wpbc_booking_notes_add_email_shortcodes' ) ) {
+		$replace = wpbc_booking_notes_add_email_shortcodes( $replace, $booking_id, 'customer' );
+	}
 
 
     return $replace;

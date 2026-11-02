@@ -837,28 +837,11 @@ class WPBC_FE_Inline_Scripts {
 			return '';
 		}
 
-		$is_use_auto_fill_for_logged = get_bk_option( 'booking_is_use_autofill_4_logged_user' );
-		if ( 'On' !== $is_use_auto_fill_for_logged ) {
+		$autofill_resolver = new WPBC_Booking_Logged_User_Autofill();
+		$fill_values       = $autofill_resolver->get_fill_values();
+		if ( empty( $fill_values ) ) {
 			return '';
 		}
-
-		$curr_user = wpbc_get_current_user();
-		if ( empty( $curr_user ) || ( (int) $curr_user->ID <= 0 ) ) {
-			return '';
-		}
-
-		$user_nick_name = get_user_meta( $curr_user->ID, 'nickname' );
-		$user_nick_name = ( empty( $user_nick_name ) ) ? '' : $user_nick_name[0];
-
-		$fill_values = array(
-			'nickname'   => (string) $user_nick_name,
-			'last_name'  => (string) $curr_user->last_name,
-			'first_name' => (string) $curr_user->first_name,
-			'email'      => (string) $curr_user->user_email,
-			'phone'      => (string) $curr_user->phone_number,
-			'nb_enfant'  => (string) $curr_user->nb_enfant,
-			'url'        => (string) $curr_user->user_url,
-		);
 
 		// IMPORTANT: return body only (no <script>, no ready wrapper).
 		$js_body = 'if ( window.WPBC_FE && ( typeof window.WPBC_FE.autofill_booking_form_fields === "function" ) ) {';

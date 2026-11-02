@@ -1,0 +1,119 @@
+.wpbc_shared_ui_date_jump,
+body > #datepick-div[data-wpbc-shared-ui-date-jump-datepick] {
+  --wpbc_shared_ui_date_jump__background: var(--wpbc_shared_ui__surface-color, #fff);
+  --wpbc_shared_ui_date_jump__border-color: var(--wpbc_shared_ui__border-color, rgba(0,0,0,.1882352941));
+  --wpbc_shared_ui_date_jump__border-active-color: var(--wpbc_shared_ui__accent-color, #2271b1);
+  --wpbc_shared_ui_date_jump__disabled-background: var(--wpbc_shared_ui__disabled-background, #f0f0f1);
+  --wpbc_shared_ui_date_jump__disabled-color: var(--wpbc_shared_ui__disabled-color, #a7aaad);
+  --wpbc_shared_ui_date_jump__focus-color: var(--wpbc_shared_ui__focus-color, #2271b1);
+  --wpbc_shared_ui_date_jump__text-color: var(--wpbc_shared_ui__text-color, #2c3338);
+  --wpbc_shared_ui_date_jump__border-width: var(--wpbc_shared_ui__border-width, 1px);
+  --wpbc_shared_ui_date_jump__control-height: var(--wpbc_shared_ui__control-height, 36px);
+  --wpbc_shared_ui_date_jump__control-overlap: var(--wpbc_shared_ui__control-overlap, -1px);
+  --wpbc_shared_ui_date_jump__focus-ring-width: var(--wpbc_shared_ui__focus-ring-width, 1px);
+  --wpbc_shared_ui_date_jump__outline-width: var(--wpbc_shared_ui__outline-width, 2px);
+  --wpbc_shared_ui_date_jump__padding-block: var(--wpbc_shared_ui__control-padding-block, 5px);
+  --wpbc_shared_ui_date_jump__padding-inline: var(--wpbc_shared_ui__control-padding-inline, 12px);
+  --wpbc_shared_ui_date_jump__radius: var(--wpbc_shared_ui__radius, 4px);
+  --wpbc_shared_ui_date_jump__datepicker-width: var(--wpbc_shared_ui__datepicker-width, 300px);
+  --wpbc_shared_ui_date_jump__datepicker-day-height: var(--wpbc_shared_ui__datepicker-day-height, 40px);
+  --wpbc_shared_ui_date_jump__datepicker-z-index: var(--wpbc_shared_ui__datepicker-z-index, 100130);
+  --wpbc_shared_ui_date_jump__popup-gap: var(--wpbc_shared_ui__popover-gap, 6px);
+  --wpbc_shared_ui_date_jump__viewport-edge-gap: var(--wpbc_shared_ui__viewport-edge-gap, 8px);
+  --wpbc_shared_ui_date_jump__viewport-gutter: var(--wpbc_shared_ui__viewport-block-gutter, 16px)
+}
+.wpbc_shared_ui_date_jump {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  position: relative
+}
+.wpbc_shared_ui_date_jump__action,
+.wpbc_shared_ui_date_jump__toggle {
+  -ms-flex-align: center;
+  align-items: center;
+  appearance: none;
+  background: var(--wpbc_shared_ui_date_jump__background);
+  border: var(--wpbc_shared_ui_date_jump__border-width) solid var(--wpbc_shared_ui_date_jump__border-color);
+  box-sizing: border-box;
+  color: var(--wpbc_shared_ui_date_jump__text-color);
+  cursor: pointer;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font: inherit;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-block-size: var(--wpbc_shared_ui_date_jump__control-height)
+}
+.wpbc_shared_ui_date_jump__action {
+  border-end-start-radius: var(--wpbc_shared_ui_date_jump__radius);
+  border-start-start-radius: var(--wpbc_shared_ui_date_jump__radius);
+  padding: var(--wpbc_shared_ui_date_jump__padding-block) var(--wpbc_shared_ui_date_jump__padding-inline)
+}
+.wpbc_shared_ui_date_jump__toggle {
+  border-end-end-radius: var(--wpbc_shared_ui_date_jump__radius);
+  border-start-end-radius: var(--wpbc_shared_ui_date_jump__radius);
+  -ms-flex: 0 0 var(--wpbc_shared_ui_date_jump__control-height);
+  flex: 0 0 var(--wpbc_shared_ui_date_jump__control-height);
+  margin-inline-start: var(--wpbc_shared_ui_date_jump__control-overlap);
+  min-inline-size: var(--wpbc_shared_ui_date_jump__control-height);
+  padding: 0
+}
+.wpbc_shared_ui_date_jump.is-open .wpbc_shared_ui_date_jump__toggle,
+.wpbc_shared_ui_date_jump__action:hover,
+.wpbc_shared_ui_date_jump__toggle:hover {
+  background: var(--wpbc_shared_ui_date_jump__background);
+  border-color: var(--wpbc_shared_ui_date_jump__border-active-color);
+  color: var(--wpbc_shared_ui_date_jump__text-color);
+  position: relative;
+  z-index: 1
+}
+.wpbc_shared_ui_date_jump__action:focus-visible,
+.wpbc_shared_ui_date_jump__toggle:focus-visible {
+  box-shadow: 0 0 0 var(--wpbc_shared_ui_date_jump__focus-ring-width) var(--wpbc_shared_ui_date_jump__focus-color);
+  outline: var(--wpbc_shared_ui_date_jump__outline-width) solid transparent;
+  position: relative;
+  z-index: 2
+}
+.wpbc_shared_ui_date_jump__action:disabled,
+.wpbc_shared_ui_date_jump__toggle:disabled {
+  background: var(--wpbc_shared_ui_date_jump__disabled-background);
+  border-color: var(--wpbc_shared_ui_date_jump__border-color);
+  color: var(--wpbc_shared_ui_date_jump__disabled-color);
+  cursor: default
+}
+.wpbc_shared_ui_date_jump__input {
+  block-size: 1px;
+  border: 0;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inline-size: 1px;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  pointer-events: none;
+  position: absolute
+}
+body > #datepick-div[data-wpbc-shared-ui-date-jump-datepick] {
+  box-sizing: border-box;
+  max-width: calc(100vw - var(--wpbc_shared_ui_date_jump__viewport-gutter))!important;
+  width: var(--wpbc_shared_ui_date_jump__datepicker-width)!important;
+  z-index: var(--wpbc_shared_ui_date_jump__datepicker-z-index)!important
+}
+body > #datepick-div[data-wpbc-shared-ui-date-jump-datepick] .datepick-one-month {
+  width: 100%
+}
+#datepick-div[data-wpbc-shared-ui-date-jump-datepick] .datepick-control {
+  display: none
+}
+#datepick-div[data-wpbc-shared-ui-date-jump-datepick] .datepick-days-cell {
+  height: var(--wpbc_shared_ui_date_jump__datepicker-day-height)!important
+}
+#datepick-div[data-wpbc-shared-ui-date-jump-datepick] table.datepick tr td {
+  padding: 0!important
+}
+[dir=rtl] .wpbc_shared_ui_date_jump__toggle .wpbc-bi-chevron-down {
+  -ms-transform: none;
+  transform: none
+}

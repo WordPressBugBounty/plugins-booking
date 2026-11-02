@@ -1201,6 +1201,138 @@
 	}
 
 	/**
+	 * Remove the keyboard focus proxy previously owned by one overflow tooltip.
+	 *
+	 * Overflow text may live inside an existing interactive control. The helper
+	 * reuses that control's focus instead of inserting a nested tab stop, and it
+	 * must release the proxy before rebuilding or destroying the Tippy instance.
+	 *
+	 * @param {HTMLElement} text_element Overflow-tooltip text element.
+	 * @return {void}
+	 */
+	function clear_overflow_tooltip_focus_proxy( text_element ) {
+		var focus_proxy = text_element && text_element._wpbc_ui_catalog_overflow_focus_proxy;
+
+		if ( ! focus_proxy ) {
+			return;
+		}
+		focus_proxy.owner.removeEventListener( 'focus', focus_proxy.show );
+		focus_proxy.owner.removeEventListener( 'blur', focus_proxy.hide );
+		delete text_element._wpbc_ui_catalog_overflow_focus_proxy;
+	}
+
+	/**
+	 * Find an existing interactive ancestor that can own keyboard tooltip focus.
+	 *
+	 * @param {HTMLElement} text_element Overflow-tooltip text element.
+	 * @return {HTMLElement|null} Existing focus owner, or null when the helper
+	 *                            should make the text itself keyboard focusable.
+	 */
+	function get_overflow_tooltip_focus_owner( text_element ) {
+		var focus_owner;
+
+		if ( ! text_element || 'function' !== typeof text_element.closest ) {
+			return null;
+		}
+		focus_owner = text_element.closest(
+			[
+				'a[href]',
+				'button:not([disabled])',
+				'input:not([disabled]):not([type="hidden"])',
+				'select:not([disabled])',
+				'textarea:not([disabled])',
+				'summary',
+				'[contenteditable="true"]',
+				'[tabindex]:not([tabindex="-1"])'
+			].join( ', ' )
+		);
+
+		return focus_owner && focus_owner !== text_element ? focus_owner : null;
+	}
+
+	/**
+	 * Return the bounded pointer delay requested by one overflow-tooltip owner.
+	 *
+	 * For focus-enabled tooltips, keyboard focus remains immediate. The value
+	 * configures only Tippy's pointer-hover delay and is bounded so a malformed
+	 * template attribute cannot make authorized text effectively unreachable.
+	 *
+	 * @param {HTMLElement} text_element Overflow-tooltip text element.
+	 * @return {number} Pointer show delay in milliseconds between zero and 2000.
+	 */
+	function get_overflow_tooltip_pointer_delay( text_element ) {
+		var delay_attribute = text_element
+			? text_element.getAttribute( 'data-wpbc-ui-catalog-overflow-tooltip-delay-ms' ) || ''
+			: '';
+
+		if ( ! /^\d+$/.test( delay_attribute ) ) {
+			return 0;
+		}
+
+		return Math.min( 2000, parseInt( delay_attribute, 10 ) );
+	}
+
+	/**
+	 * Report whether one overflow tooltip is intentionally pointer-only.
+	 *
+	 * Some text is nested in a control whose accessible name already exposes the
+	 * complete value. Those templates can keep the visual hover aid without
+	 * reopening it when the owning control receives focus for another action.
+	 *
+	 * @param {HTMLElement} text_element Overflow-tooltip text element.
+	 * @return {boolean} True when keyboard focus must not activate this tooltip.
+	 */
+	function is_overflow_tooltip_pointer_only( text_element ) {
+		return Boolean(
+			text_element
+			&& 'pointer-only' === text_element.getAttribute( 'data-wpbc-ui-catalog-overflow-tooltip-focus' )
+		);
+	}
+
+	/**
+	 * Reuse an existing interactive ancestor for keyboard tooltip activation.
+	 *
+	 * Pointer hover remains scoped to the clipped text itself. Keyboard users
+	 * receive the same full-text Tippy when the existing owner receives focus,
+	 * without invalid nested controls or an extra stop in the tab order.
+	 *
+	 * @param {HTMLElement} text_element Overflow-tooltip text element.
+	 * @return {boolean} True when an ancestor focus proxy was registered.
+	 */
+	function bind_overflow_tooltip_focus_proxy( text_element ) {
+		var focus_owner = get_overflow_tooltip_focus_owner( text_element );
+		var show_tooltip;
+		var hide_tooltip;
+
+		clear_overflow_tooltip_focus_proxy( text_element );
+		if ( is_overflow_tooltip_pointer_only( text_element ) || ! focus_owner || ! text_element._tippy ) {
+			return false;
+		}
+		show_tooltip = function () {
+			if ( text_element._tippy && 'function' === typeof text_element._tippy.show ) {
+				text_element._tippy.show();
+			}
+		};
+		hide_tooltip = function () {
+			if ( text_element._tippy && 'function' === typeof text_element._tippy.hide ) {
+				text_element._tippy.hide();
+			}
+		};
+		focus_owner.addEventListener( 'focus', show_tooltip );
+		focus_owner.addEventListener( 'blur', hide_tooltip );
+		text_element._wpbc_ui_catalog_overflow_focus_proxy = {
+			owner: focus_owner,
+			show: show_tooltip,
+			hide: hide_tooltip
+		};
+		if ( document.activeElement === focus_owner ) {
+			show_tooltip();
+		}
+
+		return true;
+	}
+
+	/**
 	 * Add full-text tooltips only to catalog text that is visually clipped.
 	 *
 	 * The helper owns the domain-neutral overflow measurement, keyboard focus,
@@ -1221,9 +1353,11 @@
 		catalog_mount.querySelectorAll( '[data-wpbc-ui-catalog-overflow-tooltip]' ).forEach( function ( text_element ) {
 			var full_text = text_element.getAttribute( 'data-wpbc-ui-catalog-overflow-tooltip' ) || '';
 			var static_title = text_element.getAttribute( 'data-wpbc-ui-catalog-static-title' ) || '';
+			var focus_owner;
 			var is_overflowing = text_element.scrollWidth > text_element.clientWidth + 1
 				|| text_element.scrollHeight > text_element.clientHeight + 1;
 
+			clear_overflow_tooltip_focus_proxy( text_element );
 			if ( text_element._tippy && 'function' === typeof text_element._tippy.destroy ) {
 				text_element._tippy.destroy();
 			}
@@ -1236,9 +1370,10 @@
 			}
 
 			if ( full_text && is_overflowing ) {
+				focus_owner = get_overflow_tooltip_focus_owner( text_element );
 				text_element.setAttribute( 'data-original-title', full_text );
 				text_element.classList.add( 'tooltip_top', 'wpbc_ui_listing__overflow_tooltip' );
-				if ( ! text_element.hasAttribute( 'tabindex' ) ) {
+				if ( ! is_overflow_tooltip_pointer_only( text_element ) && ! focus_owner && ! text_element.hasAttribute( 'tabindex' ) ) {
 					text_element.setAttribute( 'tabindex', '0' );
 					text_element.setAttribute( 'data-wpbc-ui-catalog-tooltip-tabindex', '1' );
 				}
@@ -1250,6 +1385,14 @@
 
 		tooltip_selector = catalog_mount.id ? '#' + catalog_mount.id + ' .wpbc_ui_listing__overflow_tooltip' : '';
 		if ( has_overflowing_text && tooltip_selector && 'function' === typeof window.wpbc_define_tippy_tooltips && window.wpbc_define_tippy_tooltips( tooltip_selector ) ) {
+			catalog_mount.querySelectorAll( '.wpbc_ui_listing__overflow_tooltip' ).forEach( function ( text_element ) {
+				var pointer_delay = get_overflow_tooltip_pointer_delay( text_element );
+
+				if ( 0 < pointer_delay && text_element._tippy && 'function' === typeof text_element._tippy.setProps ) {
+					text_element._tippy.setProps( { delay: [ pointer_delay, 0 ] } );
+				}
+				bind_overflow_tooltip_focus_proxy( text_element );
+			} );
 			return;
 		}
 		catalog_mount.querySelectorAll( '.wpbc_ui_listing__overflow_tooltip' ).forEach( function ( text_element ) {

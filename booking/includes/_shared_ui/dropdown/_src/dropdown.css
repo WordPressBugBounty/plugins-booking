@@ -1,0 +1,225 @@
+/**
+ * Domain-neutral shared administration dropdown presentation.
+ *
+ * @package Booking Calendar
+ * @since   12.0.0
+ */
+
+.wpbc_shared_ui_dropdown {
+	--wpbc_shared_ui_dropdown__background: var(--wpbc_shared_ui__surface-color, #fff);
+	--wpbc_shared_ui_dropdown__border-color: var(--wpbc_shared_ui__border-color, rgba(0,0,0,.1882352941) );
+	--wpbc_shared_ui_dropdown__border-subtle-color: var(--wpbc_shared_ui__border-subtle-color, #dcdcde);
+	--wpbc_shared_ui_dropdown__border-active-color: var(--wpbc_shared_ui__accent-color, #2271b1);
+	--wpbc_shared_ui_dropdown__text-color: var(--wpbc_shared_ui__text-color, #2c3338);
+	--wpbc_shared_ui_dropdown__muted-color: var(--wpbc_shared_ui__muted-color, #646970);
+	--wpbc_shared_ui_dropdown__selected-background: var(--wpbc_shared_ui__selected-background, #50575e);
+	--wpbc_shared_ui_dropdown__selected-color: var(--wpbc_shared_ui__selected-color, #fff);
+	--wpbc_shared_ui_dropdown__hovering-background: var(--wpbc_shared_ui__hover-background, #e9e9e9);
+	--wpbc_shared_ui_dropdown__hovering-color: var(--wpbc_shared_ui_dropdown__text-color);
+	--wpbc_shared_ui_dropdown__danger-color: var(--wpbc_shared_ui__danger-color, #d63638);
+	--wpbc_shared_ui_dropdown__focus-color: var(--wpbc_shared_ui__focus-color, #2271b1);
+	--wpbc_shared_ui_dropdown__disabled-background: var(--wpbc_shared_ui__disabled-background, #f0f0f1);
+	--wpbc_shared_ui_dropdown__disabled-color: var(--wpbc_shared_ui__disabled-color, #a7aaad);
+	--wpbc_shared_ui_dropdown__border-width: var(--wpbc_shared_ui__border-width, 1px);
+	--wpbc_shared_ui_dropdown__focus-ring-width: var(--wpbc_shared_ui__focus-ring-width, 1px);
+	--wpbc_shared_ui_dropdown__outline-width: var(--wpbc_shared_ui__outline-width, 2px);
+	--wpbc_shared_ui_dropdown__control-height: var(--wpbc_shared_ui__control-height, 36px);
+	--wpbc_shared_ui_dropdown__trigger-gap: var(--wpbc_shared_ui__control-gap, 10px);
+	--wpbc_shared_ui_dropdown__trigger-padding-block: var(--wpbc_shared_ui__control-padding-block, 5px);
+	--wpbc_shared_ui_dropdown__trigger-padding-inline-end: var(--wpbc_shared_ui__control-padding-inline-end, 10px);
+	--wpbc_shared_ui_dropdown__trigger-padding-inline-start: var(--wpbc_shared_ui__control-padding-inline-start, 12px);
+	--wpbc_shared_ui_dropdown__caret-size: var(--wpbc_shared_ui__caret-size, 11px);
+	--wpbc_shared_ui_dropdown__panel-min-width: var(--wpbc_shared_ui__menu-min-width, 220px);
+	--wpbc_shared_ui_dropdown__panel-max-width: var(--wpbc_shared_ui__menu-max-width, 420px);
+	--wpbc_shared_ui_dropdown__panel-max-height: var(--wpbc_shared_ui__menu-max-height, 360px);
+	--wpbc_shared_ui_dropdown__panel-offset: var(--wpbc_shared_ui__popover-offset, 4px);
+	--wpbc_shared_ui_dropdown__viewport-inline-gutter: var(--wpbc_shared_ui__viewport-inline-gutter, 32px);
+	--wpbc_shared_ui_dropdown__available-block-size: calc(100vh - var(--wpbc_shared_ui__viewport-block-gutter, 16px));
+	--wpbc_shared_ui_dropdown__panel-border-total: var(--wpbc_shared_ui__panel-border-total, 2px);
+	--wpbc_shared_ui_dropdown__radius: var(--wpbc_shared_ui__radius, 4px);
+	--wpbc_shared_ui_dropdown__option-radius: var(--wpbc_shared_ui__option-radius, 3px);
+	--wpbc_shared_ui_dropdown__shadow: var(--wpbc_shared_ui__shadow, 0 3px 12px rgba(0, 0, 0, 0.16));
+	--wpbc_shared_ui_dropdown__z-index: var(--wpbc_shared_ui__menu-z-index, 100100);
+	--wpbc_shared_ui_dropdown__list-padding: var(--wpbc_shared_ui__menu-padding, 6px);
+	--wpbc_shared_ui_dropdown__list-gap: var(--wpbc_shared_ui__menu-item-gap, 3px);
+	--wpbc_shared_ui_dropdown__option-gap: var(--wpbc_shared_ui__option-gap, 14px);
+	--wpbc_shared_ui_dropdown__option-height: var(--wpbc_shared_ui__option-height, 34px);
+	--wpbc_shared_ui_dropdown__option-padding-block: var(--wpbc_shared_ui__option-padding-block, 8px);
+	--wpbc_shared_ui_dropdown__option-padding-inline: var(--wpbc_shared_ui__option-padding-inline, 12px);
+	--wpbc_shared_ui_dropdown__heading-font-size: var(--wpbc_shared_ui__small-font-size, 12px);
+	--wpbc_shared_ui_dropdown__heading-font-weight: var(--wpbc_shared_ui__heading-font-weight, 600);
+	--wpbc_shared_ui_dropdown__heading-padding-block-start: var(--wpbc_shared_ui__heading-padding-block-start, 8px);
+	--wpbc_shared_ui_dropdown__heading-padding-block-end: var(--wpbc_shared_ui__heading-padding-block-end, 5px);
+	--wpbc_shared_ui_dropdown__heading-padding-inline: var(--wpbc_shared_ui__heading-padding-inline, 12px);
+	--wpbc_shared_ui_dropdown__separator-margin-block: var(--wpbc_shared_ui__separator-margin-block, 6px);
+	--wpbc_shared_ui_dropdown__separator-margin-inline: var(--wpbc_shared_ui__separator-margin-inline, 4px);
+	display: inline-flex;
+	max-width: 100%;
+	min-width: 0;
+	position: relative;
+}
+
+.wpbc_shared_ui_dropdown__trigger {
+	align-items: center;
+	appearance: none;
+	background: var(--wpbc_shared_ui_dropdown__background);
+	border: var(--wpbc_shared_ui_dropdown__border-width) solid var(--wpbc_shared_ui_dropdown__border-color);
+	border-radius: var(--wpbc_shared_ui_dropdown__radius);
+	box-sizing: border-box;
+	color: var(--wpbc_shared_ui_dropdown__text-color);
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	gap: var(--wpbc_shared_ui_dropdown__trigger-gap);
+	justify-content: space-between;
+	min-block-size: var(--wpbc_shared_ui_dropdown__control-height);
+	min-width: 0;
+	padding: var(--wpbc_shared_ui_dropdown__trigger-padding-block) var(--wpbc_shared_ui_dropdown__trigger-padding-inline-end) var(--wpbc_shared_ui_dropdown__trigger-padding-block) var(--wpbc_shared_ui_dropdown__trigger-padding-inline-start);
+	text-align: start;
+	width: 100%;
+}
+
+.wpbc_shared_ui_dropdown__trigger:hover,
+.wpbc_shared_ui_dropdown.is-open .wpbc_shared_ui_dropdown__trigger {
+	border-color: var(--wpbc_shared_ui_dropdown__border-active-color);
+}
+
+.wpbc_shared_ui_dropdown__trigger:focus-visible,
+.wpbc_shared_ui_dropdown__option:focus-visible {
+	box-shadow: 0 0 0 var(--wpbc_shared_ui_dropdown__focus-ring-width) var(--wpbc_shared_ui_dropdown__focus-color);
+	outline: var(--wpbc_shared_ui_dropdown__outline-width) solid transparent;
+}
+
+.wpbc_shared_ui_dropdown__trigger:disabled {
+	background: var(--wpbc_shared_ui_dropdown__disabled-background);
+	border-color: var(--wpbc_shared_ui_dropdown__border-subtle-color);
+	color: var(--wpbc_shared_ui_dropdown__disabled-color);
+	cursor: default;
+}
+
+.wpbc_shared_ui_dropdown__value {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_shared_ui_dropdown__caret {
+	flex: 0 0 auto;
+	font-size: var(--wpbc_shared_ui_dropdown__caret-size);
+}
+
+.wpbc_shared_ui_dropdown__panel {
+	background: var(--wpbc_shared_ui_dropdown__background);
+	border: var(--wpbc_shared_ui_dropdown__border-width) solid var(--wpbc_shared_ui_dropdown__border-subtle-color);
+	border-radius: var(--wpbc_shared_ui_dropdown__radius);
+	box-shadow: var(--wpbc_shared_ui_dropdown__shadow);
+	inset-block-start: calc(100% + var(--wpbc_shared_ui_dropdown__panel-offset));
+	inset-inline-start: 0;
+	max-width: min(var(--wpbc_shared_ui_dropdown__panel-max-width), calc(100vw - var(--wpbc_shared_ui_dropdown__viewport-inline-gutter)));
+	max-block-size: var(--wpbc_shared_ui_dropdown__available-block-size);
+	min-width: max(100%, var(--wpbc_shared_ui_dropdown__panel-min-width));
+	overflow: hidden;
+	position: absolute;
+	z-index: var(--wpbc_shared_ui_dropdown__z-index);
+}
+
+.wpbc_shared_ui_dropdown__panel[hidden] {
+	display: none;
+}
+
+.wpbc_shared_ui_dropdown__listbox {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wpbc_shared_ui_dropdown__list-gap);
+	box-sizing: border-box;
+	max-height: min(
+		var(--wpbc_shared_ui_dropdown__panel-max-height),
+		calc(var(--wpbc_shared_ui_dropdown__available-block-size) - var(--wpbc_shared_ui_dropdown__panel-border-total))
+	);
+	overscroll-behavior: contain;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	padding: var(--wpbc_shared_ui_dropdown__list-padding);
+}
+
+.wpbc_shared_ui_dropdown__option {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: var(--wpbc_shared_ui_dropdown__option-radius);
+	color: var(--wpbc_shared_ui_dropdown__text-color);
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	gap: var(--wpbc_shared_ui_dropdown__option-gap);
+	justify-content: space-between;
+	min-height: var(--wpbc_shared_ui_dropdown__option-height);
+	padding: var(--wpbc_shared_ui_dropdown__option-padding-block) var(--wpbc_shared_ui_dropdown__option-padding-inline);
+	text-align: start;
+	width: 100%;
+}
+
+.wpbc_shared_ui_dropdown__option:hover,
+.wpbc_shared_ui_dropdown__option:focus-visible,
+.wpbc_shared_ui_dropdown__option.is-selected {
+	background: var(--wpbc_shared_ui_dropdown__hovering-background);
+	color: var(--wpbc_shared_ui_dropdown__hovering-color);
+}
+.wpbc_shared_ui_dropdown__option.is-selected {
+	background: var(--wpbc_shared_ui_dropdown__selected-background);
+	color: var(--wpbc_shared_ui_dropdown__selected-color);
+}
+.wpbc_shared_ui_dropdown__option:disabled {
+	background: transparent;
+	color: var(--wpbc_shared_ui_dropdown__disabled-color);
+	cursor: default;
+}
+
+.wpbc_shared_ui_dropdown__option.is-destructive:not(:hover):not(:focus-visible) {
+	color: var(--wpbc_shared_ui_dropdown__danger-color);
+}
+
+.wpbc_shared_ui_dropdown__option_label {
+	min-width: 0;
+}
+
+.wpbc_shared_ui_dropdown__option_icon,
+.wpbc_shared_ui_dropdown__icon {
+	flex: 0 0 auto;
+}
+
+.wpbc_shared_ui_dropdown__heading {
+	color: var(--wpbc_shared_ui_dropdown__muted-color);
+	font-size: var(--wpbc_shared_ui_dropdown__heading-font-size);
+	font-weight: var(--wpbc_shared_ui_dropdown__heading-font-weight);
+	padding: var(--wpbc_shared_ui_dropdown__heading-padding-block-start) var(--wpbc_shared_ui_dropdown__heading-padding-inline) var(--wpbc_shared_ui_dropdown__heading-padding-block-end);
+	text-transform: uppercase;
+}
+
+.wpbc_shared_ui_dropdown__separator {
+	border-top: var(--wpbc_shared_ui_dropdown__border-width) solid var(--wpbc_shared_ui_dropdown__border-subtle-color);
+	margin: var(--wpbc_shared_ui_dropdown__separator-margin-block) var(--wpbc_shared_ui_dropdown__separator-margin-inline);
+}
+
+[dir="rtl"] .wpbc_shared_ui_dropdown__panel {
+	inset-inline-end: 0;
+	inset-inline-start: auto;
+}
+
+.wpbc_shared_ui_dropdown.is-panel-edge-left .wpbc_shared_ui_dropdown__panel {
+	inset-inline: auto;
+	left: 0;
+	right: auto;
+}
+
+.wpbc_shared_ui_dropdown.is-panel-edge-right .wpbc_shared_ui_dropdown__panel {
+	inset-inline: auto;
+	left: auto;
+	right: 0;
+}
+
+.wpbc_shared_ui_dropdown.is-panel-edge-top .wpbc_shared_ui_dropdown__panel {
+	inset-block-end: calc(100% + var(--wpbc_shared_ui_dropdown__panel-offset));
+	inset-block-start: auto;
+}

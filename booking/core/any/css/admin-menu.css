@@ -200,6 +200,18 @@
 	margin: 10px auto 0;
 	display: block;
 }
+.wpbc_navigation_version_label {
+	margin-inline-start: 2px;
+	font-size: 0.72em;
+	font-weight: 600;
+	line-height: 1;
+}
+.wpbc_navigation_version_label--new {
+	color: #008a20;
+}
+.wpbc_navigation_version_label--legacy {
+	color: #6b7b91;
+}
 a.wpbc_pro_label,
 a.wpbc_pro_label:hover {
 	text-underline-offset: 4px;

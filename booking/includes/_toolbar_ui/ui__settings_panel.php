@@ -146,22 +146,31 @@ function wpbc_ui_settings__top_path( $page_structure_obj = false ) {
 
 	?>
 	<div class="wpbc_settings_path">
-		<?php /* ?><div class="wpbc_settings_path_el" style="border: 1px solid #d0d0d0;margin-right: 15px;border-radius: 50%;aspect-ratio: 1 / 1;text-align: center;display: none;"> <a><i class="menu_icon icon-1x wpbc_icn_navigate_before"></i></a></div><?php */ ?>
-		<?php foreach ( $items as $item_index => $item ) : ?>
-			<?php if ( 0 < $item_index ) : ?>
-				<div class="wpbc_settings_path_el"><i class="menu_icon icon-1x wpbc_icn_navigate_next"></i></div>
-			<?php endif; ?>
-			<div class="wpbc_settings_path_el<?php echo ( ! empty( $item['active'] ) ) ? ' wpbc_settings_path_el_active' : ''; ?>">
-				<a
-					<?php if ( ! empty( $item['onclick'] ) ) : ?>
-						onclick="javascript:<?php echo $item['onclick']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>"
-						href="javascript:void(0);"
-					<?php else : ?>
-						href="<?php echo esc_url( ! empty( $item['url'] ) ? $item['url'] : '#' ); ?>"
+		<nav
+			class="wpbc_settings_path__breadcrumbs"
+			aria-label="<?php esc_attr_e( 'Booking Calendar breadcrumbs', 'booking' ); ?>"
+		>
+			<?php foreach ( $items as $item_index => $item ) : ?>
+				<span class="wpbc_settings_path__breadcrumb">
+					<?php if ( 0 < $item_index ) : ?>
+						<span class="wpbc_settings_path_el wpbc_settings_path__separator" aria-hidden="true"><i class="menu_icon icon-1x wpbc_icn_navigate_next"></i></span>
 					<?php endif; ?>
-				><?php echo esc_html( $item['title'] ); ?></a>
-			</div>
-		<?php endforeach; ?>
+					<span class="wpbc_settings_path_el<?php echo ( ! empty( $item['active'] ) ) ? ' wpbc_settings_path_el_active' : ''; ?>">
+						<a
+							<?php if ( ! empty( $item['active'] ) ) : ?>
+								aria-current="page"
+							<?php endif; ?>
+							<?php if ( ! empty( $item['onclick'] ) ) : ?>
+								onclick="javascript:<?php echo $item['onclick']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>"
+								href="javascript:void(0);"
+							<?php else : ?>
+								href="<?php echo esc_url( ! empty( $item['url'] ) ? $item['url'] : '#' ); ?>"
+							<?php endif; ?>
+						><?php echo esc_html( $item['title'] ); ?></a>
+					</span>
+				</span>
+			<?php endforeach; ?>
+		</nav>
 		<?php
 		if ( $is_show_version ) {
 			wpbc_ui_settings_panel__top_path__version();
@@ -2071,8 +2080,8 @@ function wpbc_ui_settings__panel__statistic(){
 	 *
 	 * @return void
 	 */
-	function wpbc_ui_settings_panel__top_path__version(){
-		// Version ---------------------------------------------------------------------------------------------------------
+	function wpbc_ui_settings_panel__top_path__version() {
+		// Version.
 
 		$version_title = '';
 
@@ -2081,36 +2090,27 @@ function wpbc_ui_settings__panel__statistic(){
 		}
 		if ( wpbc_is_this_demo() ) {
 			$version_title .= ' (Demo)';
-		} else {
-			if ( 'free' != wpbc_dashboard_info_get_version_type() ) {
+		} elseif ( 'free' !== wpbc_dashboard_info_get_version_type() ) {
 				$version_title .= ' (' . __( 'for', 'booking' ) . ' ' . trim( wpbc_dashboard_info_get_version_type_sites() ) . ')';
-			}
 		}
 
-		?><style type="text/css">
-			.wpbc_settings_path_el .wpbc_icn_numbers::before{
-				font-size: 12px;
-  				vertical-align: -.19em;
-			}
-		</style>
-		<div class="wpbc_settings_path_el wpbc_ui_settings__flex_container" style="margin-left:auto;flex-flow: row nowrap;">
-				<a class="" href="https://wpbookingcalendar.com/changelog/#<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo  wpbc_get_slug_format( trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() .  '_' . esc_attr( WP_BK_VERSION_NUM ) ) ); ?>">
-					<span class="wpbc_ui_settings__text_color__green"><i class="menu_icon icon-1x wpbc_icn_numbers -bi-balloon-heart bi-activity"></i> <?php
-						// echo esc_attr( WP_BK_VERSION_NUM );
-						echo esc_attr( wpbc_get_wpbc_versions_numbers() );
-					?></span>
-				</a>
-				<a  class="wpbc_ui_settings__text_color__purple2" style="margin-left:1em;"
-					href="https://wpbookingcalendar.com/faq/difference-single-developer-multi-site/#<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo  wpbc_get_slug_format( trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() .  '_' . esc_attr( WP_BK_VERSION_NUM ) ) ); ?>"
-				><?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $version_title
-				?></a>
-		</div><?php
+		$version_slug = wpbc_get_slug_format(
+			trim( wpbc_dashboard_info_get_version_type_readable() . '_' . wpbc_dashboard_info_get_version_type_sites() . '_' . WP_BK_VERSION_NUM )
+		);
+		?>
+		<div class="wpbc_settings_path_el wpbc_ui_settings__flex_container wpbc_settings_path__status">
+			<a
+				class="wpbc_settings_path__version-link"
+				href="<?php echo esc_url( 'https://wpbookingcalendar.com/changelog/#' . $version_slug ); ?>"
+			>
+				<span class="wpbc_ui_settings__text_color__green"><i class="menu_icon icon-1x wpbc_icn_numbers -bi-balloon-heart bi-activity"></i> <?php echo esc_html( wpbc_get_wpbc_versions_numbers() ); ?></span>
+			</a>
+			<a
+				class="wpbc_settings_path__edition-link wpbc_ui_settings__text_color__purple2"
+				href="<?php echo esc_url( 'https://wpbookingcalendar.com/faq/difference-single-developer-multi-site/#' . $version_slug ); ?>"
+			><?php echo esc_html( $version_title ); ?></a>
+		</div>
+		<?php
 	}
 
 	/**

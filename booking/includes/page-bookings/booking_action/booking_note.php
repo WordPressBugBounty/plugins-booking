@@ -35,10 +35,10 @@ class WPBC_Action_Booking_Note {
 					href=\"javascript:void(0)\" 
 					onclick=\"wpbc_boo_listing__click__set_booking_note( {{data['parsed_fields']['booking_id']}}, jQuery( '#set_booking_note_text_{{data.parsed_fields.booking_id}}').val() );\"
 				>" .
-					'<# if ( \'\' == data.parsed_fields.remark.trim() ) { #>' .
-						esc_js( __( 'Add notes', 'booking' ) ) .
+					'<# if ( \'\' === String( data.parsed_fields.remark || \'\' ).trim() ) { #>' .
+						esc_js( __( 'Add private note', 'booking' ) ) .
 					'<# } else { #>' .
-						esc_js( __( 'Edit note', 'booking' ) ) .
+						esc_js( __( 'Edit private note', 'booking' ) ) .
 					'<# } #>' .
 					"<i class='menu_icon icon-1x wpbc_icn_mode_comment'></i>" .
 				'</a>';
@@ -65,12 +65,12 @@ class WPBC_Action_Booking_Note {
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title"><?php esc_html_e( 'Edit note', 'booking' ); ?><sup class="wpbc_modal__set_booking_note__booking_id wpbc_modal__booking_id__in_title"></sup></h4>
+							<h4 class="modal-title"><?php esc_html_e( 'Edit private note', 'booking' ); ?><sup class="wpbc_modal__set_booking_note__booking_id wpbc_modal__booking_id__in_title"></sup></h4>
 						</div>
 						<div class="modal-body">
 							<textarea id="wpbc_modal__set_booking_note__value" name="wpbc_modal__set_booking_note__value" cols="87" rows="5"></textarea>
 							<input type="hidden" id="wpbc_modal__set_booking_note__booking_id" value=""/>
-							<label class="help-block"><?php esc_html_e( 'Add notes for the booking', 'booking' ); ?></label>
+							<label class="help-block"><?php esc_html_e( 'Add a private administrator note for the booking', 'booking' ); ?></label>
 						</div>
 						<div class="modal-footer">
 							<a  id="wpbc_modal__set_booking_note__button_send" class="button button-primary"

@@ -1,0 +1,449 @@
+.wpbc_timeline__resource_header {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_timeline__resource_header h2 {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-width: 0
+}
+.wpbc_timeline_resource_navigation__pane_toggle[hidden],
+.wpbc_timeline_resource_navigation__pane_toggle_host {
+  display: none
+}
+.wpbc_timeline__resource_header.has-open-resource-selector {
+  z-index: 5
+}
+.wpbc_timeline_resource_navigation__selector {
+  --wpbc_shared_ui_popover__panel-max-width: 420px;
+  --wpbc_shared_ui_popover__panel-min-width: 400px;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto
+}
+.wpbc_timeline_resource_navigation__trigger {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 6px;
+  max-width: 150px
+}
+.wpbc_timeline_resource_navigation__trigger [data-wpbc-timeline-resource-selector-label] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.wpbc_timeline_resource_navigation__panel {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 12px;
+  max-block-size: var(--wpbc_shared_ui_popover__available-block-size,620px);
+  min-block-size: 0;
+  overflow: hidden;
+  padding: 14px
+}
+.wpbc_timeline_resource_navigation__drawer_backdrop,
+.wpbc_timeline_resource_navigation__drawer_handle,
+.wpbc_timeline_resource_navigation__panel[hidden] {
+  display: none
+}
+.wpbc_timeline_resource_navigation__search_controls {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 8px
+}
+.wpbc_timeline_resource_navigation__preference_controls {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 8px;
+  -ms-flex-pack: end;
+  justify-content: flex-end
+}
+.wpbc_timeline_resource_navigation__search {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #8c8f94;
+  border-radius: 4px;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 8px;
+  min-height: 40px;
+  padding-inline: 10px
+}
+.wpbc_timeline_resource_navigation__search:focus-within {
+  border-color: var(--wpbc_shared_ui__focus-color,var(--wp-admin-theme-color,#3858e9));
+  box-shadow: inset 0 0 0 var(--wpbc_shared_ui__focus-ring-width,1px) var(--wpbc_shared_ui__focus-color,var(--wp-admin-theme-color,#3858e9))
+}
+.wpbc_timeline_resource_navigation__search > [class*=wpbc_icn_] {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  line-height: 1
+}
+.wp-core-ui .wpbc_timeline_resource_navigation__search > input[type=search],
+.wp-core-ui .wpbc_timeline_resource_navigation__search > input[type=search]:focus {
+  appearance: none;
+  background: 0 0;
+  border: 0;
+  box-shadow: none;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  margin: 0;
+  min-height: 38px;
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+  width: 100%
+}
+.wp-core-ui .wpbc_timeline_resource_navigation__sort {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  margin: 0;
+  min-height: 40px
+}
+.wp-core-ui .wpbc_timeline_resource_navigation__page_size {
+  -ms-flex: 0 1 142px;
+  flex: 0 1 142px;
+  margin: 0;
+  max-width: 142px;
+  min-height: 40px
+}
+.wpbc_timeline_resource_navigation__footer,
+.wpbc_timeline_resource_navigation__pagination,
+.wpbc_timeline_resource_navigation__selection_actions,
+.wpbc_timeline_resource_navigation__selection_toolbar {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex
+}
+.wpbc_timeline_resource_navigation__selection_toolbar {
+  gap: 12px;
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_timeline_resource_navigation__selection_actions {
+  gap: 16px
+}
+.wpbc_timeline_resource_navigation__status {
+  -ms-flex-align: center;
+  align-items: center;
+  color: #646970;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 12px;
+  gap: 8px;
+  min-height: 18px
+}
+.wpbc_timeline_resource_navigation__status[hidden] {
+  display: none
+}
+.wpbc_timeline_resource_navigation__status .wpbc_booking_form_spin_loader {
+  margin: 0
+}
+.wpbc_timeline_resource_navigation__status.is-error,
+.wpbc_timeline_resource_navigation__validation {
+  color: #b32d2e
+}
+.wpbc_timeline_resource_navigation__rows {
+  border-block: 1px solid #dcdcde;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin
+}
+.wpbc_timeline_resource_navigation__rows:empty {
+  border-block-end: 0
+}
+.wpbc_timeline_resource_navigation__row {
+  -ms-flex-align: center;
+  align-items: center;
+  border-block-end: 1px solid #f0f0f1;
+  cursor: pointer;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  min-height: 58px;
+  padding: 7px 8px;
+  padding-inline-start: calc(8px + var(--wpbc-timeline-resource-depth,0) * 20px)
+}
+.wpbc_timeline_resource_navigation__row:last-child {
+  border-block-end: 0
+}
+.wpbc_timeline_resource_navigation__row:focus-within,
+.wpbc_timeline_resource_navigation__row:hover {
+  background: #f6f7f7
+}
+.wpbc_timeline_resource_navigation__thumbnail {
+  -ms-flex-align: center;
+  align-items: center;
+  background: #f0f0f1;
+  border-radius: 50%;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex: 0 0 40px;
+  flex: 0 0 40px;
+  height: 40px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 40px
+}
+.wpbc_timeline_resource_navigation__thumbnail img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%
+}
+.wpbc_timeline_resource_navigation__row_text {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0
+}
+.wpbc_timeline_resource_navigation__row_text span,
+.wpbc_timeline_resource_navigation__row_text strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+.wpbc_timeline_resource_navigation__row_text span {
+  color: #646970;
+  font-size: 12px
+}
+.wpbc_timeline_resource_navigation__pagination {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  gap: 12px;
+  -ms-flex-pack: justify;
+  justify-content: space-between
+}
+.wpbc_timeline_resource_navigation__pagination .button {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  gap: 4px;
+  -ms-flex-pack: center;
+  justify-content: center
+}
+.wpbc_timeline_resource_navigation__pagination.is-main {
+  border-block-start: 1px solid #dcdcde;
+  padding: 12px
+}
+.wpbc_timeline_resource_navigation__pagination.is-main .button {
+  -ms-flex: 1 1 0px;
+  flex: 1 1 0
+}
+.wpbc_timeline_resource_navigation__page_status {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums
+}
+.wpbc_timeline_resource_navigation__validation {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 6px;
+  margin: 0
+}
+.wpbc_timeline_resource_navigation__validation[hidden] {
+  display: none
+}
+.wpbc_timeline_resource_navigation__footer {
+  border-block-start: 1px solid #dcdcde;
+  gap: 10px;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  margin: 0 -14px -14px;
+  padding: 12px 14px;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto
+}
+[dir=rtl] .wpbc_timeline_resource_navigation__row {
+  text-align: right
+}
+@media (max-width:782px) {
+  .wpbc_timeline__resource_header {
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 6px;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 8px 54px 8px 10px
+  }
+  .wpbc_timeline_resource_navigation__selector,
+  .wpbc_timeline_resource_navigation__trigger {
+    max-width: none;
+    width: 100%
+  }
+  .wpbc_timeline_resource_navigation__pane_toggle_host {
+    display: -ms-flexbox;
+    display: flex;
+    inset-block-start: 8px;
+    inset-inline-end: 4px;
+    position: absolute
+  }
+  .wpbc_timeline_resource_navigation__pane_toggle {
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    inline-size: 44px;
+    -ms-flex-pack: center;
+    justify-content: center;
+    min-block-size: 44px;
+    padding: 0
+  }
+  .wpbc_timeline.is-resource-pane-collapsed {
+    --wpbc-timeline-resource-width: 44px
+  }
+  .wpbc_timeline.is-resource-pane-collapsed .wpbc_timeline__resource_header {
+    -ms-flex-align: center;
+    align-items: center;
+    gap: 0;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 0
+  }
+  .wpbc_timeline.is-resource-pane-collapsed .wpbc_timeline_resource_navigation__pane_toggle_host {
+    position: static
+  }
+  .wpbc_timeline.is-resource-pane-collapsed .wpbc_timeline__resource_header > [data-wpbc-timeline-resource-selector-host],
+  .wpbc_timeline.is-resource-pane-collapsed .wpbc_timeline__resource_header > h2,
+  .wpbc_timeline.is-resource-pane-collapsed .wpbc_timeline__resources > * {
+    display: none
+  }
+  .wpbc_timeline_resource_navigation__selector {
+    --wpbc_shared_ui_popover__panel-min-width: 0
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__drawer_backdrop {
+    background: rgba(0,0,0,.36);
+    display: block;
+    inset: 0;
+    position: fixed;
+    z-index: 100119
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__drawer_backdrop[hidden] {
+    display: none
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__panel {
+    animation: 160ms ease-out wpbc_timeline_resource_drawer_enter;
+    border-block-end: 0;
+    border-radius: 12px 12px 0 0;
+    bottom: var(--wpbc-timeline-resource-mobile-bottom-inset,0);
+    inset-inline: 0;
+    inset-block-start: auto;
+    inline-size: 100%;
+    margin: 0;
+    max-block-size: calc(var(--wpbc-timeline-resource-mobile-viewport-height,100dvh) - 16px);
+    max-inline-size: none;
+    min-block-size: min(420px,var(--wpbc-timeline-resource-mobile-viewport-height,100dvh) - 16px);
+    min-inline-size: 0;
+    position: fixed;
+    z-index: 100120
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__drawer_handle {
+    background: #c3c4c7;
+    border-radius: 999px;
+    display: block;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    block-size: 4px;
+    inline-size: 44px;
+    margin: -6px auto 0
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__rows {
+    -ms-scroll-chaining: none;
+    overscroll-behavior: contain;
+    -ms-touch-action: pan-y;
+    touch-action: pan-y
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .button,
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .button-link,
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer input[type=search],
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer select {
+    min-block-size: 44px
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer input[type=checkbox] {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    min-block-size: 0
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__row {
+    min-block-size: 56px;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__footer,
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__pagination,
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__selection_toolbar {
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap
+  }
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__page_status,
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__selection_toolbar > *,
+  .wpbc_timeline_resource_navigation__selector.is-mobile-drawer .wpbc_timeline_resource_navigation__validation {
+    min-inline-size: 0;
+    overflow-wrap: anywhere
+  }
+  .wpbc_timeline_resource_navigation__pagination.is-main .button span:not([class*=wpbc_icn_]) {
+    display: none
+  }
+}
+@media (max-width:480px) {
+  .wpbc_timeline_resource_navigation__panel {
+    inset-inline-start: 0;
+    max-inline-size: calc(100vw - 24px);
+    min-inline-size: calc(100vw - 24px)
+  }
+  .wpbc_timeline_resource_navigation__preference_controls {
+    -ms-flex-direction: column;
+    flex-direction: column
+  }
+  .wp-core-ui .wpbc_timeline_resource_navigation__page_size,
+  .wp-core-ui .wpbc_timeline_resource_navigation__sort {
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    max-width: none;
+    width: 100%
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .wpbc_timeline_resource_navigation__panel {
+    animation: none!important;
+    scroll-behavior: auto
+  }
+}
+@keyframes wpbc_timeline_resource_drawer_enter {
+  from {
+    transform: translateY(24px)
+  }
+  to {
+    transform: translateY(0)
+  }
+}

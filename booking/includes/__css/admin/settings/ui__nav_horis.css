@@ -1,147 +1,205 @@
-/*! = Left Horisontal Navigation Bar = */
+/*! = Shared Horizontal Navigation Bar = */
 .wpbc_admin {
 	--wpbc_ui_horis_top_nav__font-size: 13px;
-	--wpbc_ui_horis_top_nav__margin: 10px 0 20px;
-	--wpbc_ui_horis_top_nav__background-color: transparent;
-
-	--wpbc_ui_horis_top_nav__a_color: var(--wpbc_ui__gen__text-color);
+	/* Compatibility tokens used by released non-navigation admin components. */
 	--wpbc_ui_horis_top_nav__border-width: 2px;
-	/* Default */
 	--wpbc_ui_horis_top_nav__normal_color: #ccc;
-	/* Hover */
 	--wpbc_ui_horis_top_nav__hover_color: #d54e21;
-	/* Active */
 	--wpbc_ui_horis_top_nav__active_color: #64aa45;
+	--wpbc_ui_horis_top_nav__min-height: 45px;
+	--wpbc_ui_horis_top_nav__margin: 1px 0 0;
+	--wpbc_ui_horis_top_nav__padding-inline: var(--wpbc_admin_page__shell-gutter-inline, 30px);
+	--wpbc_ui_horis_top_nav__item-gap: 4px;
+	--wpbc_ui_horis_top_nav__background-color: var(--wpbc_ui__gen__panel_background-color, #fff);
+	--wpbc_ui_horis_top_nav__a_color: var(--wpbc_ui__gen__text-color, #555);
+	--wpbc_ui_horis_top_nav__border-color: #dcdcde;
+	--wpbc_ui_horis_top_nav__hover-background-color: #f9f9fa;
+	--wpbc_ui_horis_top_nav__hover-color: #1d2327;
+	--wpbc_ui_horis_top_nav__active-color: var(--wpbc_admin-theme-color, #2271b1);
+	--wpbc_ui_horis_top_nav__focus-color: var(--wp-admin-theme-color, #2271b1);
+	--wpbc_ui_horis_top_nav__active-border-width: 2px;
 }
+
 .wpbc_ui_el__horis_top_bar__wrapper {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: flex-start;
-	align-items: baseline;
-
-	width: 100%;
-	max-width: 100%;
-
+	align-items: stretch;
 	background: var(--wpbc_ui_horis_top_nav__background-color);
 	border: 0;
+	border-radius: 0;
 	box-shadow: none;
-	transition: all .25s ease-in-out;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row nowrap;
 	font-size: var(--wpbc_ui_horis_top_nav__font-size);
 	line-height: 1.2;
-	border-radius: 0;
-	padding: 0;
 	margin: var(--wpbc_ui_horis_top_nav__margin);
-	box-sizing: border-box;
-
+	max-width: 100%;
+	min-width: 0;
 	overflow: visible;
-	/*box-shadow: var(--wpbc_ui__gen__panel_box-shadow);*/
+	padding: 0;
+	width: 100%;
 }
-.wpbc_ui_el__horis_top_bar__content {
-	flex: 1 1 100%;
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: flex-start;
-	align-items: center;
-	border-bottom: 1px solid var(--wpbc_ui_horis_top_nav__normal_color);
-}
-/* -- Responsive Sizes: < 600px (less top icons), < 782px (no wp left bar), < 960px (wp left bar colapse) ----------- */
-/* More than > 782px -- Left Bar Expanded */
-@media screen and (max-width: 782px) {
-	.wpbc_ui_el__horis_top_bar__wrapper .wpbc_ui_el__horis_nav_title {
-		display:none;
-	}
-	div.wpbc_settings_page_wrapper .wpbc_ui_el__horis_top_bar__wrapper .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon {
-		margin: 0 8px;
-	}
-}
-/* -- End Responsive Sizes ------------------------------------------------------------------------------------------ */
 
-/* A */
-.wpbc_ui_el__horis_nav_item a {
+.wpbc_ui_el__horis_top_bar__content {
+	align-items: stretch;
+	background: var(--wpbc_ui_horis_top_nav__background-color);
+	border-bottom: 1px solid var(--wpbc_ui_horis_top_nav__border-color);
+	box-sizing: border-box;
+	display: flex;
 	flex: 1 1 100%;
-	margin: 0 5px -1px 0;
-	padding: 10px 15px;
-	border: none;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	min-height: var(--wpbc_ui_horis_top_nav__min-height);
+	min-width: 0;
+	padding-inline-start: var(--wpbc_ui_horis_top_nav__padding-inline);
+}
+
+.wpbc_ui_el__horis_top_bar__navigation {
+	align-items: stretch;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row nowrap;
+	gap: var(--wpbc_ui_horis_top_nav__item-gap);
+	justify-content: flex-start;
+	min-width: 0;
+	overflow-x: auto;
+	overflow-y: hidden;
+	overscroll-behavior-inline: contain;
+	scroll-snap-type: inline proximity;
+	scrollbar-width: thin;
+	-webkit-overflow-scrolling: touch;
+}
+
+.wpbc_ui_el__horis_top_bar__actions {
+	align-items: stretch;
+	align-self: stretch;
+	background: var(--wpbc_ui_horis_top_nav__background-color);
+	border-inline-start: 1px solid var(--wpbc_ui_horis_top_nav__border-color);
+	display: flex;
+	flex: 0 0 auto;
+	margin-inline-start: auto;
+	padding-inline: 16px;
+}
+
+.wpbc_ui_el__horis_top_bar__actions:empty {
+	border-inline-start: 0;
+	padding-inline: 0;
+}
+
+.wpbc_ui_el__horis_top_bar__actions > .wpbc_ajx_toolbar {
+	align-items: center;
+	align-self: stretch;
+	display: flex;
+	flex: 0 0 auto;
+	margin: 0;
+}
+
+.wpbc_ui_el__horis_top_bar__actions .wpbc_ui__is_send_emails_toggle {
+	align-items: center;
+	border: 0;
+	display: flex;
+	font-size: var(--wpbc_ui_horis_top_nav__font-size);
+	line-height: 1.4;
+	margin: 0;
+	min-height: 30px;
+	padding: 0;
+}
+
+.wpbc_ui_el__horis_nav_item {
+	align-items: stretch;
+	border: 0;
+	display: flex;
+	flex: 0 0 auto;
+	margin: 0;
+	position: relative;
+	scroll-snap-align: start;
+}
+
+.wpbc_ui_el__horis_nav_item a {
+	align-items: center;
+	background: var(--wpbc_ui_horis_top_nav__background-color);
+	border: 0;
+	border-bottom: var(--wpbc_ui_horis_top_nav__active-border-width) solid transparent;
 	border-radius: 0;
-	text-shadow: none;
+	box-shadow: none;
+	box-sizing: border-box;
+	color: var(--wpbc_ui_horis_top_nav__a_color);
+	display: flex;
+	flex: 1 1 100%;
+	flex-flow: row nowrap;
 	font-size: var(--wpbc_ui_horis_top_nav__font-size);
 	font-weight: 600;
-	text-transform: capitalize;
-	text-decoration: none;
-	outline: none;
-	color: var(--wpbc_ui_horis_top_nav__a_color);
-
-	display: flex;
-	flex-flow: row;
 	justify-content: flex-start;
-	align-items: center;
+	margin: 0;
+	min-height: var(--wpbc_ui_horis_top_nav__min-height);
+	outline: 0;
+	padding-block: 8px;
+	padding-inline: 15px;
+	text-decoration: none;
+	text-shadow: none;
+	text-transform: capitalize;
+	white-space: nowrap;
+}
 
-	border-bottom: var(--wpbc_ui_horis_top_nav__border-width) solid transparent;
-	box-shadow: none;
-}
-/*Hover,  focus*/
 .wpbc_ui_el__horis_nav_item a:hover,
+.wpbc_ui_el__horis_nav_item.active a:hover {
+	background: var(--wpbc_ui_horis_top_nav__hover-background-color);
+	color: var(--wpbc_ui_horis_top_nav__hover-color);
+	border-bottom: var(--wpbc_ui_horis_top_nav__active-border-width) solid transparent;
+	border-bottom-color: #ccc;
+}
+.wpbc_ui_el__horis_nav_item.active a:hover {
+	border-bottom-color: var(--wpbc_ui_horis_top_nav__active-color);
+}
 .wpbc_ui_el__horis_nav_item a:focus,
-.wpbc_ui_el__horis_nav_item.active a:hover,
-.wpbc_ui_el__horis_nav_item.active a:focus {
-	color: var(--wpbc_ui_horis_top_nav__hover_color);
-	border-bottom-color: var(--wpbc_ui_horis_top_nav__hover_color);
-	box-shadow: none;
-	outline:0;
+.wpbc_ui_el__horis_nav_item a:focus-visible {
+	box-shadow: inset 0px 1px 0px 1px var(--wpbc_ui_horis_top_nav__focus-color);
+	box-shadow: inset 0 0.5px 0 .75px var(--wpbc_ui_horis_top_nav__focus-color);
+	border-bottom: var(--wpbc_ui_horis_top_nav__active-border-width) solid var(--wpbc_ui_horis_top_nav__active-color);
+	color: var(--wpbc_ui_horis_top_nav__hover-color);
+	outline: 2px solid transparent;
+	outline-offset: -2px;
+	position: relative;
+	z-index: 1;
 }
-/* Active */
+
+.wpbc_ui_el__horis_nav_item a[aria-current="page"],
 .wpbc_ui_el__horis_nav_item a[aria-selected="true"],
-.wpbc_ui_el__horis_nav_item.active a{
-	border-bottom-color: var(--wpbc_ui_horis_top_nav__active_color);
-	box-shadow: none;
-	outline:0;
+.wpbc_ui_el__horis_nav_item.active a {
+	border-bottom-color: var(--wpbc_ui_horis_top_nav__active-color);
+	/*color: var(--wpbc_ui_horis_top_nav__hover-color);*/
 }
-/* Right side */
+
 .wpbc_ui_el__horis_nav_item.align_right {
-	margin-left: auto;
+	margin-inline-start: auto;
 }
-/* Debug tab */
+
 .wpbc_ui_el__horis_nav_item.small_debug_tab a.wpbc_ui_el__horis_nav_item__a {
 	font-size: 10px;
 	line-height: 19px;
 }
-/* Icons */
-.wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon{
-	margin:0;
+
+.wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon {
+	margin: 0;
+	margin-inline-end: 8px;
 }
-.wpbc_settings_page_wrapper .wpbc_ui_el__horis_top_bar__wrapper .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon{
-	margin: 0 8px  0 0;
-}
+
 .wpbc_ui_el__horis_nav_item a .wpbc_ui_el__horis_nav_icon::before {
 	font-size: 16px;
 	line-height: 17px;
 }
-/* Icons in Sub elements */
+
 .wpbc_ui_el__horis_nav_item.wpbc_ui_el__horis_nav_item_sub a .wpbc_ui_el__horis_nav_icon::before {
-  font-size: 14px;
-}
-/* Text */
-.wpbc_ui_el__horis_nav_item a span {
+	font-size: 14px;
 }
 
-/* -- Horisontal  Menu  items  ---------------------------------------------------------------------------------------- */
-/* -- Items  -------------------------------------------------------------------------------------------------------- */
-.wpbc_ui_el__horis_nav_item__a {
-
-}
-.wpbc_ui_el__horis_nav_item__a *{
+.wpbc_ui_el__horis_nav_item__a * {
 	flex: 0 1 auto;
 }
-	/* Left Icon */
-	.wpbc_ui_el__horis_nav_item__a .wpbc_ui_el__horis_nav_icon{
 
-	}
-	/* title */
-	.wpbc_ui_el__horis_nav_item__a .wpbc_ui_el__horis_nav_title{
+.wpbc_ui_el__horis_nav_item__a .wpbc_ui_el__horis_nav_title {
+	display: inline;
+}
 
-	}
-	/* Right Icon */
-	.wpbc_ui_el__horis_nav_item__a .wpbc_ui_el__horis_nav_icon_right{
-		margin-left:auto;
-	}
-/* -- End Items  ---------------------------------------------------------------------------------------------------- */
+.wpbc_ui_el__horis_nav_item__a .wpbc_ui_el__horis_nav_icon_right {
+	margin-inline-start: auto;
+}

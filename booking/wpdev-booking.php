@@ -7,7 +7,7 @@ Author: wpdevelop, oplugins
 Author URI: https://wpbookingcalendar.com/
 Text Domain: booking
 Domain Path: /languages/
-Version: 11.9.1
+Version: 12.0
 License: GPLv2 or later
 */
 
@@ -34,13 +34,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 if ( ! defined( 'WP_BK_VERSION_NUM' ) ) {
-	define( 'WP_BK_VERSION_NUM', '11.9.1' );
+	define( 'WP_BK_VERSION_NUM', '12.0' );
 }
 if ( ! defined( 'WP_BK_PRO_BFB_ONLY_VERSION' ) ) {
 	define( 'WP_BK_PRO_BFB_ONLY_VERSION', '11.4' );                                                                     // First Pro version that no longer loads legacy Booking Form settings pages.
 }
 if ( ! defined( 'WP_BK_MINOR_UPDATE' ) ) {
-	define( 'WP_BK_MINOR_UPDATE',  true );
+	define( 'WP_BK_MINOR_UPDATE',  ! true );
 }
 
 /**
@@ -78,7 +78,9 @@ if ( ! defined( 'WPBC_ENABLE_11_6_FEATURES' ) ) {
  * @var bool
  */
 if ( ! defined( 'WPBC_ENABLE_12_0_TIMELINE' ) ) {
-	define( 'WPBC_ENABLE_12_0_TIMELINE', ! true );
+	define( 'WPBC_ENABLE_12_0_TIMELINE', true );
+	define( 'WPBC_ENABLE_TIMELINE_TIME_ROWS_DEV', true );
+	define( 'WPBC_ENABLE_12_0_BOOKING_NEW_INSPECTOR', true );
 }
 
 /**
@@ -149,12 +151,24 @@ if ( true ) {
 	// :: LIVE
 	if ( ! defined( 'WP_BK_BETA_DATA_FILL' ) ) {
 		define( 'WP_BK_BETA_DATA_FILL', 0 );
-	}                                                                                                                   // Set 0 for no filling or 2 for 241 bookings or more for more.
+	}                                                                                                                   // A positive value enables the internal activation fixture; dedicated constants control booking counts.
 } else {
 	// :: DEBUG
 	define( 'WP_BK_BETA_DATA_FILL', 1 );                                                                                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-	define( 'WP_BK_BETA_DATA_FILL_AS', 'BL' );                                                                          // BL - Dates   ,   MU - Times.
+	define( 'WP_BK_BETA_DATA_FILL_AS', 'BL' );                                                                          // Legacy BL value maps to changeover property bookings.
+	if ( ! defined( 'WPBC_BETA_DATA_PROPERTY_BOOKINGS_PER_RESOURCE' ) ) {
+		define( 'WPBC_BETA_DATA_PROPERTY_BOOKINGS_PER_RESOURCE', 10 );
+	}
+	if ( ! defined( 'WPBC_BETA_DATA_STANDARD_ROOM_BOOKINGS' ) ) {
+		define( 'WPBC_BETA_DATA_STANDARD_ROOM_BOOKINGS', 24 );
+	}
+	if ( ! defined( 'WPBC_BETA_DATA_APPOINTMENT_BOOKINGS_PER_PROVIDER' ) ) {
+		define( 'WPBC_BETA_DATA_APPOINTMENT_BOOKINGS_PER_PROVIDER', 14 );
+	}
+	if ( ! defined( 'WPBC_BETA_DATA_PROPERTY_BOOKING_MODE' ) ) {
+		define( 'WPBC_BETA_DATA_PROPERTY_BOOKING_MODE', 'changeover' );
+	}
 }
 
 

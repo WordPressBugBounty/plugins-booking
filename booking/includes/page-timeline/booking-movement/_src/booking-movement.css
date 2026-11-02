@@ -1,0 +1,288 @@
+/**
+ * Timeline booking-movement source presentation.
+ *
+ * This file is compiler input. PHP enqueues only the corresponding `_out`
+ * asset after the normal project build has generated it.
+ */
+/*
+ * Fail closed before the browser adapter registers the segment. The base
+ * Timeline marker is decorative and cannot imply server-approved movement.
+ */
+.wpbc_timeline_page .wpbc_timeline__booking_accessory.wpbc_timeline__booking_drag_indicator:not([data-wpbc-timeline-booking-movement-grip]) {
+	display: none;
+}
+
+/*
+ * Base Timeline selection reserves leading content space for its decorative
+ * marker. Movement hides that marker until canonical eligibility succeeds, so
+ * reserve the space only after the authorized grip and movable state exist.
+ */
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-selected:not([data-wpbc-timeline-booking-movable="true"]) {
+	--wpbc-timeline-booking-drag-indicator-space: 0px;
+}
+
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-selected[data-wpbc-timeline-booking-movable="true"] {
+	--wpbc-timeline-booking-drag-indicator-space: calc(var(--wpbc_timeline_general__booking-drag-indicator-size) + var(--wpbc_timeline_general__booking-accessory-gap));
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__grip {
+	cursor: grab;
+	touch-action: none;
+}
+
+/*
+ * The base Timeline indicator is deliberately pointer-transparent because it
+ * is decorative. An authorized movement grip retains that class for identical
+ * geometry, so the movement module must explicitly restore pointer ownership.
+ */
+.wpbc_timeline_page .wpbc_timeline__booking_accessory.wpbc_timeline__booking_drag_indicator.wpbc_timeline_booking_movement__grip {
+	cursor: grab;
+	pointer-events: auto;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__grip:active {
+	cursor: grabbing;
+}
+
+.wpbc_timeline_page.is-booking-movement-active,
+.wpbc_timeline_page.is-booking-movement-active * {
+	cursor: grabbing;
+}
+
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-timeline-toolbar],
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-timeline-resource-pane],
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-timeline-booking-resize-host],
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-booking-overview-info-trigger],
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-timeline-booking-details-action],
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-timeline-booking-select] {
+	pointer-events: none;
+}
+
+/*
+ * Segment hosts are pointer-transparent for empty-range selection by default.
+ * The grip-owned active state temporarily makes every rendered Resource host,
+ * including an empty host, available to Sortable and deterministic hit-testing.
+ */
+.wpbc_timeline_page.is-booking-movement-active [data-wpbc-timeline-segments] {
+	overflow: visible;
+	pointer-events: auto;
+}
+
+/*
+ * Canonical Review is authoritative and may take several seconds. Keep the
+ * restored card visibly busy and prevent another Timeline operation until the
+ * exact request settles or is cancelled.
+ */
+.wpbc_timeline_page.is-booking-movement-review-loading,
+.wpbc_timeline_page.is-booking-movement-review-loading * {
+	cursor: wait;
+}
+
+.wpbc_timeline_page.is-booking-movement-review-loading [data-wpbc-timeline-toolbar],
+.wpbc_timeline_page.is-booking-movement-review-loading [data-wpbc-timeline-resource-pane],
+.wpbc_timeline_page.is-booking-movement-review-loading [data-wpbc-timeline-canvas] {
+	pointer-events: none;
+}
+
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-movement-review-loading {
+	isolation: isolate;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__loading {
+	align-items: center;
+	background: rgba(255, 255, 255, 0.74);
+	border-radius: inherit;
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	pointer-events: none;
+	position: absolute;
+	z-index: 8;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__loading .wpbc_booking_form_spin_loader {
+	block-size: 24px;
+	inline-size: 24px;
+	position: relative;
+}
+
+.wpbc_timeline_page [data-wpbc-timeline-segments].is-booking-movement-candidate {
+	box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__origin {
+	filter: saturate(0.3);
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+.wpbc_timeline_booking_movement__mirror,
+.wpbc_timeline_booking_movement__sortable-fallback {
+	box-sizing: border-box;
+	pointer-events: none !important;
+	visibility: hidden;
+}
+
+.wpbc_timeline_booking_movement__sortable-ghost {
+	visibility: hidden;
+}
+
+.wpbc_timeline_booking_movement__sortable-chosen {
+	outline: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_timeline_page .wpbc_timeline_booking_movement__loading .wpbc_one_spin_loader_mini2 {
+		animation: none;
+	}
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__ghost {
+	align-items: center;
+	background: color-mix(in srgb, var(--wpbc_timeline_general__surface-color) 82%, transparent);
+	border: 2px dashed var(--wpbc_timeline_general__primary-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-sizing: border-box;
+	color: var(--wpbc_timeline_general__text-color);
+	display: flex;
+	gap: 8px;
+	justify-content: space-between;
+	min-block-size: var(--wpbc_timeline_general__booking-card-height);
+	overflow: hidden;
+	padding: 6px 10px;
+	pointer-events: none;
+	position: absolute;
+	z-index: 7;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__ghost_title,
+.wpbc_timeline_page .wpbc_timeline_booking_movement__ghost_duration {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__ghost_title {
+	font-weight: 600;
+	min-inline-size: 0;
+}
+
+.wpbc_timeline_page .wpbc_timeline_booking_movement__ghost_duration {
+	color: var(--wpbc_timeline_general__text-secondary-color);
+	flex: 0 1 auto;
+}
+
+.wpbc_timeline_booking_movement__review_host {
+	--wpbc_shared_ui_inspector__panel-width: 680px;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.35);
+	box-sizing: border-box;
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	padding: 24px;
+	position: fixed;
+	z-index: 100160;
+}
+
+.wpbc_timeline_booking_movement__review.wpbc_booking_inspector__date_editor_layer {
+	block-size: min(820px, calc(100vh - 48px));
+	border: 0;
+	border-radius: 4px;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+	color: #1d2327;
+	display: flex;
+	flex: 0 1 680px;
+	flex-direction: column;
+	inline-size: min(100%, 680px);
+	inset: auto;
+	max-block-size: calc(100vh - 48px);
+	max-inline-size: 680px;
+	min-block-size: 0;
+	overflow: hidden;
+	position: relative;
+}
+
+.wpbc_timeline_booking_movement__review_header {
+	background: var(--wpbc_shared_ui_inspector__surface, #fff);
+}
+
+.wpbc_timeline_booking_movement__review_view,
+.wpbc_timeline_booking_movement__canonical_review {
+	min-block-size: 0;
+	min-inline-size: 0;
+}
+
+.wpbc_timeline_booking_movement__review_body {
+	gap: 16px;
+}
+
+.wpbc_timeline_booking_movement__review_status {
+	align-items: center;
+	background: var(--wpbc_shared_ui_inspector__hover-background, #f0f6fc);
+	border-inline-start: 4px solid var(--wpbc_booking_inspector__accent-color, #2271b1);
+	color: var(--wpbc_shared_ui_inspector__text-color, #1d2327);
+	display: flex;
+	flex: 0 0 auto;
+	gap: 10px;
+	padding: 12px 14px;
+}
+
+.wpbc_timeline_booking_movement__review_spinner {
+	animation: 700ms linear infinite wpbc_timeline_booking_movement_review_spin;
+	block-size: 16px;
+	border: 2px solid #c3c4c7;
+	border-block-start-color: var(--wp-admin-theme-color, #3858e9);
+	border-radius: 50%;
+	box-sizing: border-box;
+	flex: 0 0 auto;
+	inline-size: 16px;
+}
+
+.wpbc_timeline_booking_movement__review_status p,
+.wpbc_timeline_booking_movement__canonical_review > .wpbc_booking_rescheduling__review {
+	margin: 0;
+}
+
+.wpbc_timeline_booking_movement__review_actions {
+	justify-content: flex-start;
+}
+
+.wpbc_timeline_booking_movement__review_actions .button-primary {
+	margin-inline-start: auto;
+}
+
+.wpbc_timeline_page.is-booking-movement-apply-pending,
+.wpbc_timeline_page.is-booking-movement-apply-pending * {
+	cursor: wait;
+}
+
+@keyframes wpbc_timeline_booking_movement_review_spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_timeline_booking_movement__review_spinner {
+		animation: none;
+	}
+}
+
+@media (max-width: 782px) {
+	.wpbc_timeline_booking_movement__review_host {
+		padding: 0;
+	}
+
+	.wpbc_timeline_booking_movement__review.wpbc_booking_inspector__date_editor_layer {
+		block-size: 100%;
+		border-radius: 0;
+		max-block-size: 100%;
+		max-inline-size: 100%;
+	}
+}
+
+[dir="rtl"] .wpbc_timeline_booking_movement__review .wpbc_booking_inspector__date_editor_review_values > .wpbc_icn_arrow_forward,
+body.rtl .wpbc_timeline_booking_movement__review .wpbc_booking_inspector__date_editor_review_values > .wpbc_icn_arrow_forward {
+	transform: scaleX(-1);
+}

@@ -1,0 +1,2505 @@
+/**
+ * Administration Timeline Phases 1 through 4 presentation.
+ *
+ * @package Booking Calendar
+ * @since   12.0.0
+ */
+
+.wpbc_admin.wpbc_admin_page__tab__timeline {
+	/* Timeline presentation tokens. Override this scoped set to provide a color scheme. */
+	--wpbc_timeline_general__font-size: 13px;
+	--wpbc_timeline_general__font-size-small: 12px;
+	--wpbc_timeline_general__font-size-x-small: 11px;
+	--wpbc_timeline_general__font-size-xx-small: 10px;
+	--wpbc_timeline_general__font-size-day: 16px;
+	--wpbc_timeline_general__font-size-heading: 16px;
+	--wpbc_timeline_general__font-size-resource-heading: 14px;
+	--wpbc_timeline_general__font-size-state-icon: 28px;
+	--wpbc_timeline_general__text-color: #1d2327;
+	--wpbc_timeline_general__text-muted-color: #646970;
+	--wpbc_timeline_general__text-secondary-color: #50575e;
+	--wpbc_timeline_general__surface-color: #fff;
+	--wpbc_timeline_general__page-background-color: #f3f4f5;
+	--wpbc_timeline_general__alternate-row-background-color: #fafafa;
+	--wpbc_timeline_general__today-background-color: #f0f6fc;
+	--wpbc_timeline_general__weekend-header-background-color: var(--wpbc_timeline_general__weekend-background-color);
+	--wpbc_timeline_general__weekend-background-color: #f7f9fc;
+	--wpbc_timeline_general__row-hover-background-color: #f1f5ff;
+	--wpbc_timeline_general__primary-color: var(--wp-admin-theme-color, #3858e9);
+	--wpbc_timeline_general__today-color: #0a73e8;
+	--wpbc_timeline_general__approved-color: #00a32a;
+	--wpbc_timeline_general__pending-color: #dba617;
+	--wpbc_timeline_general__avatar-background-color: #eef4ff;
+	--wpbc_timeline_general__avatar-text-color: #1d4ed8;
+	--wpbc_timeline_general__parent-badge-background-color: #e7f1ff;
+	--wpbc_timeline_general__parent-badge-text-color: #135e96;
+	--wpbc_timeline_general__capacity-badge-background-color: #2271b1;
+	--wpbc_timeline_general__capacity-badge-border-color: #2271b1;
+	--wpbc_timeline_general__capacity-badge-text-color: #fff;
+	--wpbc_timeline_general__border-color: #e4e6e9;
+	--wpbc_timeline_general__border-strong-color: #d8d8d8;
+	--wpbc_timeline_general__cell-border-color: #0a73e8;
+	--wpbc_timeline_general__guide-color: #d5d9de;
+	--wpbc_timeline_general__image-outline-color: #d4d4d7;
+	--wpbc_timeline_general__placeholder-color: #8c8f94;
+	--wpbc_timeline_general__edge-placeholder-background-color: #f6f7f7;
+	--wpbc_timeline_general__edge-placeholder-skeleton-color: #dcdcde;
+	--wpbc_timeline_general__state-overlay-color: rgba(240, 240, 241, 0.96);
+	--wpbc_timeline_general__request-overlay-color: rgba(240, 240, 241, 0.56);
+	--wpbc_timeline_availability__stripe-size: 7px;
+	--wpbc_timeline_availability__stripe-width: 2px;
+	--wpbc_timeline_availability__fallback-color: rgba(100, 116, 139, 0.58);
+	--wpbc_timeline_availability__fallback-background-color: rgba(100, 116, 139, 0.08);
+	--wpbc_timeline_availability__blocked-date-color: rgba(156, 9, 9, 0.16);
+	--wpbc_timeline_availability__blocked-date-background-color: rgba(154, 18, 18, 0.02);
+	--wpbc_timeline_availability__blocked-time-color: rgba(234, 88, 12, 0.62);
+	--wpbc_timeline_availability__blocked-time-background-color: rgba(234, 88, 12, 0.08);
+	--wpbc_timeline_availability__unavailable-weekday-color: rgba(71, 85, 105, 0.6);
+	--wpbc_timeline_availability__unavailable-weekday-background-color: rgba(71, 85, 105, 0.08);
+	--wpbc_timeline_availability__working-time-color: rgba(37, 99, 235, 0.6);
+	--wpbc_timeline_availability__working-time-background-color: rgba(37, 99, 235, 0.08);
+	--wpbc_timeline_availability__seasonal-color: rgba(126, 34, 206, 0.6);
+	--wpbc_timeline_availability__seasonal-background-color: rgba(126, 34, 206, 0.08);
+	--wpbc_timeline_availability__booking-buffer-color: rgba(202, 138, 4, 0.06);
+	--wpbc_timeline_availability__booking-buffer-background-color: rgba(202, 138, 4, 0.04);
+	--wpbc_timeline_availability__appointment-buffer-color: rgba(13, 148, 136, 0.38);
+	--wpbc_timeline_availability__appointment-buffer-background-color: rgba(13, 148, 136, 0.05);
+	--wpbc-timeline-selection-overflow-margin: 22px;
+	--wpbc_timeline_general__selection-color: #3858e9;
+	--wpbc_timeline_general__selection-background-color: rgba(56, 88, 233, 0.1);
+	--wpbc_timeline_general__selection-warning-background-color: #fcf0c3;
+	--wpbc_timeline_general__selection-error-color: #b32d2e;
+	--wpbc_timeline_general__card-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+	--wpbc_timeline_general__popover-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+	--wpbc_timeline_general__resource-column-shadow: 0 0 8px 1px #1c1c1c24;
+	--wpbc_timeline_general__resource-header-shadow: 3px 1px 3px 0 rgba(28, 28, 28, 0.07);
+	--wpbc_timeline_general__axis-header-shadow: 3px 0 4px 0 rgba(28, 28, 28, 0.07);
+	--wpbc_timeline_general__border-width: 1px;
+	--wpbc_timeline_general__focus-ring-size: 2px;
+	--wpbc_timeline_general__today-marker-size: 2px;
+	--wpbc_timeline_general__radius-small: 3px;
+	--wpbc_timeline_general__radius-medium: 4px;
+	--wpbc_timeline_general__radius-big: 8px;
+	--wpbc_timeline_general__radius-card: 6px;
+	--wpbc_timeline_general__radius-pill: 999px;
+	--wpbc_timeline_general__cell-width: 96px;
+	--wpbc_timeline_general__resource-width: clamp(220px, 24vw, 320px);
+	--wpbc_timeline_general__resource-image-size: 40px;
+	--wpbc_timeline_general__resource-control-size: 18px;
+	--wpbc_timeline_general__resource-control-gap: 2px;
+	--wpbc_timeline_general__resource-row-gap: 6px;
+	--wpbc_timeline_general__resource-row-padding-block: 10px;
+	--wpbc_timeline_general__resource-row-padding-inline: 8px;
+	--wpbc_timeline_general__resource-tree-gap: 10px;
+	--wpbc_timeline_general__resource-tree-junction-offset: calc(var(--wpbc_timeline_general__resource-row-padding-block) + (var(--wpbc_timeline_general__resource-image-size) / 2));
+	--wpbc_timeline_general__toolbar-height: 52px;
+	--wpbc_timeline_general__visual-zoom-range-width: 150px;
+	--wpbc_timeline_general__visual-zoom-status-width: 46px;
+	--wpbc_timeline_general__month-height: 32px;
+	--wpbc_timeline_general__day-height: 60px;
+	--wpbc_timeline_general__compact-time-label-gap: 3px;
+	--wpbc_timeline_general__compact-time-label-padding: 4px 2px;
+	--wpbc_timeline_general__compact-time-label-clearance: 8px;
+	--wpbc_timeline_general__today-label-overhang: 0px;
+	--wpbc_timeline_general__today-label-offset: 9px;
+	--wpbc_timeline_general__today-label-font-size: 12px;
+	--wpbc_timeline_general__today-label-line-height: 20px;
+	--wpbc_timeline_general__today-label-padding-block: 2px;
+	--wpbc_timeline_general__today-label-padding-inline: 9px;
+	--wpbc_timeline_general__current-time-badge-height: 20px;
+	--wpbc_timeline_general__current-time-badge-offset: 4px;
+	--wpbc_timeline_general__current-time-badge-padding-inline: 8px;
+	--wpbc_timeline_general__resource-header-height: calc(var(--wpbc_timeline_general__month-height) + var(--wpbc_timeline_general__day-height) + var(--wpbc_timeline_general__today-label-overhang));
+	--wpbc_timeline_general__lane-height: 50px;
+	--wpbc_timeline_general__booking-lane-offset: 9px;
+	--wpbc_timeline_general__booking-card-height: 44px;
+	--wpbc_timeline_general__booking-card-min-width: 38px;
+	--wpbc_timeline_general__booking-inspector-selection-width: 2px;
+	--wpbc_timeline_general__booking-inspector-selection-color: var(--wpbc_timeline_general__primary-color);
+	--wpbc_timeline_general__booking-selection-width: 2px;
+	--wpbc_timeline_general__booking-selection-color: var(--wpbc_timeline_general__primary-color);
+	--wpbc_timeline_general__booking-accessory-size: 28px;
+	--wpbc_timeline_general__booking-drag-indicator-size: 20px;
+	--wpbc_timeline_general__booking-accessory-gap: 4px;
+	--wpbc_timeline_general__booking-accessory-padding: 4px;
+	--wpbc_timeline_general__booking-status-width: 5px;
+	--wpbc_timeline_general__booking-avatar-size: 26px;
+	--wpbc_timeline_general__booking-details-max-width: 220px;
+	--wpbc_timeline_general__booking-details-sticky-inset: 8px;
+	--wpbc_timeline_general__booking-continuation-width: 28px;
+	--wpbc_timeline_general__booking-continuation-icon-size: 24px;
+	--wpbc_timeline_general__booking-continuation-background-color: var(--wpbc_timeline_general__surface-color);
+	--wpbc_timeline_general__booking-continuation-color: var(--wpbc_timeline_general__text-secondary-color);
+	--wpbc_timeline_general__legend-height: 42px;
+	--wpbc_timeline_general__edge-placeholder-cells: 3;
+	--wpbc_timeline_general__edge-status-width: 320px;
+	--wpbc_timeline_general__edge-status-gap: 10px;
+	--wpbc_timeline_general__edge-status-padding: 10px 12px;
+	--wpbc_timeline_general__edge-status-sticky-gap: 18px;
+	--wpbc_timeline_general__request-overlay-status-width: 360px;
+	--wpbc_timeline_general__selection-popover-width: 340px;
+	--wpbc_timeline_general__selection-handle-size: 14px;
+	--wpbc_timeline_general__selection-handle-hit-size: 32px;
+	--wpbc_timeline_general__axis-sticky-offset: calc(var(--wpbc_ui_top_nav__wp_top_menu_height, 32px) + var(--wpbc_ui_top_nav__height, 48px));
+	--wpbc_timeline_general__axis-sticky-z-index: 100;
+	--wpbc_timeline_general__request-overlay-z-index: 110;
+	--wpbc_timeline_general__transition-fast: 120ms;
+	--wpbc_ui_left_vert_nav__width_min: 0;
+	background: var(--wpbc_timeline_general__page-background-color);
+	box-sizing: border-box;
+	max-width: 100%;
+	min-width: 0;
+	overflow-x: clip;
+	width: 100%;
+}
+
+html.wpbc_timeline_scroll_contained,
+body.wpbc_timeline_scroll_contained {
+	overscroll-behavior-x: contain;
+	overscroll-behavior-inline: contain;
+}
+
+.wpbc_admin_page__tab__timeline .wpbc_settings_page_content,
+.wpbc_admin_page__tab__timeline .wpbc_admin_page {
+	background: var(--wpbc_timeline_general__page-background-color);
+	max-width: 100%;
+	min-width: 0;
+}
+
+.wpbc_admin_page__tab__timeline .wpbc_settings_page_wrapper {
+	max-width: 100%;
+	min-width: 0;
+	overflow-x: clip;
+	width: 100%;
+}
+
+.wpbc_admin_page__tab__timeline .wpbc_settings_page_content {
+	contain: inline-size;
+	flex: 1 1 0;
+	overflow-x: clip;
+	overflow-y: visible;
+}
+
+.wpbc_timeline_page {
+	--wpbc-timeline-cell-width: var(--wpbc_timeline_general__cell-width);
+	--wpbc-timeline-resource-width: var(--wpbc_timeline_general__resource-width);
+	box-sizing: border-box;
+	display: flex;
+	font-size: var(--wpbc_timeline_general__font-size);
+	flex-direction: column;
+	max-width: 100%;
+	min-height: calc(100vh - var(--wpbc_ui_top_nav__wp_top_menu_height, 32px) - var(--wpbc_ui_top_nav__height, 48px) - var(--wpbc_timeline_general__legend-height));
+	padding: 16px 18px 0 30px;
+	width: 100%;
+}
+
+.wpbc_timeline_page *,
+.wpbc_timeline_page *::before,
+.wpbc_timeline_page *::after {
+	box-sizing: border-box;
+}
+
+.wpbc_timeline__mount {
+	display: flex;
+	flex: 1 1 auto;
+	min-height: 0;
+	min-width: 0;
+	width: 100%;
+}
+
+.wpbc_timeline {
+	color: var(--wpbc_timeline_general__text-color);
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 480px;
+	min-width: 0;
+	overflow: hidden;
+	overflow: clip;
+	width: 100%;
+}
+
+.wpbc_timeline__viewport {
+	border-left: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-right: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+}
+
+.wpbc_timeline__legend_host {
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-radius: 0 0 var(--wpbc_timeline_general__radius-big) var(--wpbc_timeline_general__radius-big);
+	background: var(--wpbc_timeline_general__alternate-row-background-color);
+}
+
+.wpbc_timeline__request_overlay[hidden] {
+	display: none;
+}
+
+.wpbc_timeline__request_overlay {
+	background: var(--wpbc_timeline_general__request-overlay-color);
+	display: block;
+	inset: 0;
+	pointer-events: auto;
+	position: absolute;
+	z-index: var(--wpbc_timeline_general__request-overlay-z-index);
+}
+
+.wpbc_timeline__request_overlay_status {
+	background: var(--wpbc_timeline_general__surface-color);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-shadow: var(--wpbc_timeline_general__card-shadow);
+	color: var(--wpbc_timeline_general__text-color);
+	margin: 48px auto 0;
+	max-width: calc(100% - 32px);
+	padding-inline: 20px;
+	position: sticky;
+	top: calc(var(--wpbc_timeline_general__axis-sticky-offset) + var(--wpbc_timeline_general__resource-header-height) + 18px);
+	width: var(--wpbc_timeline_general__request-overlay-status-width);
+}
+
+.wpbc_timeline__toolbar {
+	--wpbc_timeline_toolbar__control-height: 36px;
+	--wpbc_timeline_toolbar__group-gap: 8px;
+	--wpbc_timeline_toolbar__standalone-action-gap: 12px;
+	--wpbc_shared_ui__accent-color: var(--wpbc_timeline_general__primary-color);
+	--wpbc_shared_ui__border-color: var(--wpbc_timeline_general__border-strong-color);
+	--wpbc_shared_ui__border-subtle-color: var(--wpbc_timeline_general__border-color);
+	--wpbc_shared_ui__control-height: var(--wpbc_timeline_toolbar__control-height);
+	--wpbc_shared_ui__disabled-background: var(--wpbc_timeline_general__alternate-row-background-color);
+	--wpbc_shared_ui__disabled-color: var(--wpbc_timeline_general__placeholder-color);
+	--wpbc_shared_ui__focus-color: var(--wpbc_timeline_general__primary-color);
+	--wpbc_shared_ui__radius: var(--wpbc_timeline_general__radius-medium);
+	--wpbc_shared_ui__surface-color: var(--wpbc_timeline_general__surface-color);
+	--wpbc_shared_ui__text-color: var(--wpbc_timeline_general__text-color);
+	align-items: center;
+	background: var(--wpbc_timeline_general__page-background-color);
+	border-bottom: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	justify-content: space-between;
+	min-height: var(--wpbc_timeline_general__toolbar-height);
+	padding: 0 0 20px;
+}
+
+.wpbc_timeline__toolbar_group {
+	align-items: center;
+	display: flex;
+	flex: 1 1 160px;
+	gap: var(--wpbc_timeline_toolbar__group-gap);
+	min-width: 0;
+}
+
+.wpbc_timeline__toolbar_group--end {
+	gap: var(--wpbc_timeline_toolbar__standalone-action-gap);
+	justify-content: flex-end;
+}
+
+.wpbc_timeline__toolbar_group--start {
+	flex-wrap: nowrap;
+}
+
+.wpbc_timeline__reset_preferences {
+	display: flex;
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__shared_dropdown {
+	flex: 0 1 150px;
+	min-width: 120px;
+}
+
+.wpbc_timeline__shared_dropdown--advanced-combination {
+	flex-basis: 250px;
+}
+
+.wpbc_timeline__shared_dropdown .wpbc_shared_ui_dropdown {
+	display: flex;
+	width: 100%;
+}
+
+.wpbc_timeline__visual_zoom {
+	align-items: center;
+	display: flex;
+	flex: 0 1 auto;
+	gap: 10px;
+	min-height: var(--wpbc_timeline_toolbar__control-height);
+	min-width: 0;
+	padding-inline: 4px;
+}
+
+.wpbc_timeline__visual_zoom_label {
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__visual_zoom_control {
+	align-items: center;
+	display: flex;
+	gap: 7px;
+	min-width: 0;
+}
+
+.wpbc_timeline__visual_zoom_control > [class*="wpbc-bi-"] {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__visual_zoom_range {
+	accent-color: var(--wpbc_timeline_general__primary-color);
+	cursor: pointer;
+	flex: 0 1 var(--wpbc_timeline_general__visual-zoom-range-width);
+	inline-size: auto;
+	margin: 0;
+	min-inline-size: 90px;
+}
+
+.wpbc_timeline__visual_zoom_range:disabled {
+	cursor: default;
+	opacity: 0.55;
+}
+
+.wpbc_timeline__visual_zoom_range:focus-visible {
+	outline: var(--wpbc_timeline_general__focus-ring-size) solid var(--wpbc_timeline_general__primary-color);
+	outline-offset: 2px;
+}
+
+.wpbc_timeline__visual_zoom_status {
+	color: var(--wpbc_timeline_general__text-secondary-color);
+	flex: 0 0 var(--wpbc_timeline_general__visual-zoom-status-width);
+	font-variant-numeric: tabular-nums;
+	min-inline-size: var(--wpbc_timeline_general__visual-zoom-status-width);
+	text-align: end;
+}
+
+.wpbc_timeline__date_range_navigation {
+	display: flex;
+	margin-inline-start: auto;
+	min-width: 0;
+}
+
+.wpbc_timeline__viewport {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 360px;
+	min-width: 0;
+	position: relative;
+}
+
+.wpbc_timeline__sticky_header {
+	background: transparent;
+	display: flex;
+	flex: 0 0 var(--wpbc_timeline_general__resource-header-height);
+	min-width: 0;
+	position: sticky;
+	top: var(--wpbc_timeline_general__axis-sticky-offset);
+	z-index: var(--wpbc_timeline_general__axis-sticky-z-index);
+}
+
+.wpbc_timeline__body {
+	display: flex;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.wpbc_timeline__axis_header_viewport {
+	background: transparent;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-anchor: none;
+	overflow: hidden;
+	scroll-behavior: auto;
+}
+
+.wpbc_timeline__axis_header_track {
+	display: flex;
+	min-width: 100%;
+	width: max-content;
+}
+
+.wpbc_timeline__axis_header_content,
+.wpbc_timeline__canvas_axis_content {
+	flex: 0 0 calc(var(--wpbc-timeline-cell-width) * var(--wpbc-timeline-cells));
+	min-width: calc(var(--wpbc-timeline-cell-width) * var(--wpbc-timeline-cells));
+}
+
+/*
+ * Keep every rendered axis primitive subordinate to the shared mathematical
+ * cell width. Flex items otherwise retain an automatic minimum content width;
+ * compact bold time labels can then widen only the header cells and create
+ * cumulative drift from the canvas guides at narrow visual zoom levels.
+ */
+.wpbc_timeline__month,
+.wpbc_timeline__date_group {
+	flex: 0 0 calc(var(--wpbc-timeline-cell-width) * var(--wpbc-timeline-axis-span));
+	inline-size: calc(var(--wpbc-timeline-cell-width) * var(--wpbc-timeline-axis-span));
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__day,
+.wpbc_timeline__canvas_backdrop_day,
+.wpbc_timeline__canvas_cell,
+.wpbc_timeline__edge_preview_cell,
+.wpbc_timeline__edge_placeholder_cell {
+	inline-size: var(--wpbc-timeline-cell-width);
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__resources {
+	background: var(--wpbc_timeline_general__surface-color);
+	/*border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-strong-color);*/
+	border-inline-end: 0px;
+	display: flex;
+	flex: 0 0 var(--wpbc-timeline-resource-width);
+	flex-direction: column;
+	min-width: 0;
+	position: relative;
+	z-index: 2;
+}
+
+.wpbc_timeline__resource_header {
+	align-items: center;
+	background: var(--wpbc_timeline_general__surface-color);
+	border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-strong-color);
+	border-inline-end: 0px;
+	display: flex;
+	flex: 0 0 var(--wpbc-timeline-resource-width);
+	min-height: var(--wpbc_timeline_general__resource-header-height);
+	min-width: 0;
+	padding: 12px 16px;
+	position: relative;
+}
+
+.wpbc_timeline__resource_header::after {
+	border-block-start: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	content: "";
+	inset-block-end: var(--wpbc_timeline_general__today-label-overhang);
+	inset-inline: 0;
+	pointer-events: none;
+	position: absolute;
+}
+
+.wpbc_timeline__resource_header h2 {
+	font-size: var(--wpbc_timeline_general__font-size-resource-heading);
+	margin: 0;
+}
+
+.wpbc_timeline__resource_rows,
+.wpbc_timeline__canvas_rows {
+	display: flex;
+	flex-direction: column;
+}
+
+.wpbc_timeline__resource_rows {
+	background: var(--wpbc_timeline_general__surface-color);
+	flex: 1 1 auto;
+}
+
+.wpbc_timeline__resource_upgrade {
+	align-items: flex-start;
+	display: flex;
+	flex: 1 1 auto;
+	justify-content: center;
+	padding: 40px 16px 0;
+}
+
+.wpbc_timeline__resources.has-resource-upgrade .wpbc_timeline__resource_rows {
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__resource_upgrade .wpbc_catalog_booking_resources__upgrade_button sup {
+	font-size: 11px;
+	font-weight: 400;
+	margin-left: 2px;
+}
+
+.wp-core-ui .wpbc_timeline__resource_upgrade .button {
+	box-sizing: content-box;
+	font-size: 14px;
+	font-weight: 600;
+	padding: 4px 20px 8px;
+}
+
+.wpbc_catalog_booking_resources__upgrade_modal .modal-title {
+	font-weight: 600;
+}
+
+.wpbc_catalog_booking_resources__upgrade_modal .modal-body p {
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+.wpbc_timeline__resource_rows,
+.wpbc_timeline__resource_header {
+	box-shadow: var(--wpbc_timeline_general__resource-column-shadow);
+	z-index: 1;
+}
+.wpbc_timeline__resource_header {
+	box-shadow: var(--wpbc_timeline_general__resource-header-shadow);
+}
+.wpbc_timeline__axis_header_viewport {
+	box-shadow: var(--wpbc_timeline_general__axis-header-shadow);
+}
+.wpbc_timeline__canvas {
+	background: var(--wpbc_timeline_general__page-background-color);
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	isolation: isolate;
+	min-width: 0;
+	overflow-anchor: none;
+	overflow-x: auto;
+	overflow-y: hidden;
+	overscroll-behavior-x: contain;
+	overscroll-behavior-inline: contain;
+	position: relative;
+	scroll-behavior: auto;
+}
+
+.wpbc_timeline__axis_header,
+.wpbc_timeline__canvas_backdrop,
+.wpbc_timeline__canvas_rows {
+	min-width: calc(var(--wpbc-timeline-cell-width) * var(--wpbc-timeline-cells));
+}
+
+.wpbc_timeline__axis_header {
+	background: transparent;
+	block-size: var(--wpbc_timeline_general__resource-header-height);
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column;
+	padding-block-end: var(--wpbc_timeline_general__today-label-overhang);
+	position: relative;
+}
+
+.wpbc_timeline__month_band,
+.wpbc_timeline__date_band,
+.wpbc_timeline__day_band {
+	display: flex;
+	min-width: 100%;
+}
+
+.wpbc_timeline__month_band,
+.wpbc_timeline__date_band {
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__day_band {
+	flex: 1 1 auto;
+}
+
+.wpbc_timeline__date_group {
+	align-items: stretch;
+	background: var(--wpbc_timeline_general__surface-color);
+	border-bottom: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	display: flex;
+	min-height: 34px;
+	position: relative;
+}
+
+.wpbc_timeline__date_label {
+	align-items: center;
+	display: flex;
+	gap: 6px;
+	inline-size: max-content;
+	inset-inline-start: 0;
+	max-inline-size: 100%;
+	padding: 6px 12px;
+	position: sticky;
+	white-space: nowrap;
+	z-index: 1;
+}
+
+.wpbc_timeline__date_group.is-weekend,
+.wpbc_timeline__day.is-weekend {
+	background: var(--wpbc_timeline_general__weekend-header-background-color);
+}
+
+.wpbc_timeline__day.is-time-cell {
+	min-height: 52px;
+	padding: 4px;
+}
+
+.wpbc_timeline__time_label,
+.wpbc_timeline__offset_label {
+	display: block;
+	max-inline-size: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__time_label {
+	font-size: var(--wpbc_timeline_general__font-size-x-small);
+}
+
+.wpbc_timeline__offset_label {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-xx-small);
+}
+
+/*
+ * Localized time labels switch only when their horizontal form is clipped.
+ * Vertical writing participates in layout, unlike a transformed element, and
+ * therefore remains centered without changing the mathematical cell width.
+ */
+.wpbc_timeline.has-vertical-time-labels .wpbc_timeline__day.is-time-cell {
+	flex-direction: row;
+	gap: var(--wpbc_timeline_general__compact-time-label-gap);
+	padding: var(--wpbc_timeline_general__compact-time-label-padding);
+}
+
+.wpbc_timeline.has-vertical-time-labels .wpbc_timeline__time_label,
+.wpbc_timeline.has-vertical-time-labels .wpbc_timeline__offset_label {
+	line-height: 1;
+	max-inline-size: calc(var(--wpbc_timeline_general__day-height) - var(--wpbc_timeline_general__compact-time-label-clearance));
+	text-orientation: sideways;
+	writing-mode: vertical-rl;
+}
+
+.wpbc_timeline__day:focus-visible {
+	box-shadow: inset 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color);
+	outline: 0;
+}
+
+.wpbc_timeline__month {
+	background: var(--wpbc_timeline_general__surface-color);
+	border-bottom: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-inline-end: 0;
+	font-weight: 600;
+	min-height: var(--wpbc_timeline_general__month-height);
+	padding: 0;
+	position: relative;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__month_label {
+	display: block;
+	inline-size: max-content;
+	inset-inline-start: 0;
+	max-inline-size: 100%;
+	padding: 6px 12px;
+	position: sticky;
+	z-index: 1;
+	box-shadow: inset 1px 0px 0px 0px var(--wpbc_timeline_general__today-color, #0a73e8);
+	font-size: 16px;
+}
+
+.wpbc_timeline__day {
+	align-items: center;
+	background: var(--wpbc_timeline_general__surface-color);
+	border-bottom: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	display: flex;
+	flex: 0 0 var(--wpbc-timeline-cell-width);
+	flex-direction: column;
+	justify-content: center;
+	min-height: var(--wpbc_timeline_general__day-height);
+	padding: 6px;
+	position: relative;
+}
+
+.wpbc_timeline__day.is-today {
+	/*background: var(--wpbc_timeline_general__today-background-color);*/
+}
+
+.wpbc_timeline__day.is-weekend {
+	background: var(--wpbc_timeline_general__weekend-header-background-color);
+}
+
+.wpbc_timeline__weekday {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-x-small);
+}
+
+.wpbc_timeline__day_number {
+	font-size: var(--wpbc_timeline_general__font-size-day);
+	line-height: 1.25;
+}
+
+.wpbc_timeline__today_label {
+	background: var(--wpbc_timeline_general__today-color);
+	border-radius: var(--wpbc_timeline_general__radius-pill);
+	bottom: var(--wpbc_timeline_general__today-label-offset);
+	color: var(--wpbc_timeline_general__surface-color);
+	font-size: var(--wpbc_timeline_general__today-label-font-size);
+	font-weight: 600;
+	line-height: var(--wpbc_timeline_general__today-label-line-height);
+	padding: var(--wpbc_timeline_general__today-label-padding-block) var(--wpbc_timeline_general__today-label-padding-inline);
+	position: absolute;
+	white-space: nowrap;
+	z-index: 4;
+}
+.wpbc_timeline__today_label::after {
+	background: var(--wpbc_timeline_general__today-color);
+	block-size: var(--wpbc_timeline_general__today-label-offset);
+	content: "";
+	inset-block-start: 100%;
+	inset-inline-start: 50%;
+	inline-size: var(--wpbc_timeline_general__today-marker-size);
+	position: absolute;
+}
+.wpbc_timeline__day.is-today .wpbc_timeline__day_number {
+	visibility: hidden;
+}
+
+.wpbc_timeline__canvas_body {
+	background: var(--wpbc_timeline_general__page-background-color);
+	display: flex;
+	flex: 1 0 auto;
+	flex-direction: row;
+	min-height: 300px;
+	min-width: 100%;
+	position: relative;
+	width: max-content;
+}
+
+.wpbc_timeline__canvas_axis_content {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+.wpbc_timeline__axis_header_track > [data-wpbc-timeline-edge-header],
+.wpbc_timeline__canvas_body > [data-wpbc-timeline-edge-canvas] {
+	display: flex;
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__edge_buffer {
+	background-color: var(--wpbc_timeline_general__edge-placeholder-background-color);
+	border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 calc(var(--wpbc-timeline-cell-width) * var(--wpbc_timeline_general__edge-placeholder-cells));
+	min-width: calc(var(--wpbc-timeline-cell-width) * var(--wpbc_timeline_general__edge-placeholder-cells));
+	position: relative;
+}
+
+.wpbc_timeline__edge_buffer.is-header {
+	align-items: stretch;
+	min-height: var(--wpbc_timeline_general__resource-header-height);
+}
+
+.wpbc_timeline__edge_buffer.is-canvas {
+	align-self: stretch;
+	flex-direction: column;
+}
+
+.wpbc_timeline__edge_preview_header {
+	display: flex;
+	min-width: 100%;
+	width: 100%;
+}
+
+.wpbc_timeline__edge_preview_cell {
+	align-items: center;
+	border-inline-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	box-sizing: border-box;
+	color: var(--wpbc_timeline_general__text-muted-color);
+	display: flex;
+	flex: 0 0 var(--wpbc-timeline-cell-width);
+	flex-direction: column;
+	font-size: var(--wpbc_timeline_general__font-size-small);
+	gap: 4px;
+	justify-content: flex-end;
+	padding: 10px 4px 14px;
+}
+
+.wpbc_timeline__edge_preview_cell.is-weekend {
+	background: var(--wpbc_timeline_general__weekend-background-color);
+}
+
+.wpbc_timeline__edge_preview_cell strong {
+	color: var(--wpbc_timeline_general__text-color);
+	font-size: var(--wpbc_timeline_general__font-size);
+	line-height: 1;
+}
+
+.wpbc_timeline__edge_placeholder_rows {
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column;
+	width: 100%;
+}
+
+.wpbc_timeline__edge_placeholder_row {
+	border-block-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__edge_placeholder_cell {
+	align-items: center;
+	border-inline-end: var(--wpbc_timeline_general__border-width) dashed var(--wpbc_timeline_general__guide-color);
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 var(--wpbc-timeline-cell-width);
+	justify-content: center;
+}
+
+.wpbc_timeline__edge_placeholder_cell i {
+	background: var(--wpbc_timeline_general__edge-placeholder-skeleton-color);
+	border-radius: var(--wpbc_timeline_general__radius-pill);
+	display: block;
+	height: 10px;
+	max-width: 64px;
+	width: 54%;
+}
+
+.wpbc_timeline__edge_status {
+	align-items: center;
+	background: var(--wpbc_timeline_general__surface-color);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-shadow: var(--wpbc_timeline_general__card-shadow);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	gap: var(--wpbc_timeline_general__edge-status-gap);
+	inset-block-start: var(--wpbc-timeline-edge-status-offset, var(--wpbc_timeline_general__edge-status-sticky-gap));
+	inset-inline-start: 50%;
+	max-width: calc(100% - 20px);
+	padding: var(--wpbc_timeline_general__edge-status-padding);
+	position: absolute;
+	transform: translateX(-50%);
+	width: min(var(--wpbc_timeline_general__edge-status-width), calc(100% - 20px));
+	z-index: 3;
+}
+
+.wpbc_timeline__shared_spinner {
+	display: inline-block;
+	flex: 0 0 20px;
+	height: 20px;
+	position: relative;
+	width: 20px;
+}
+
+.wpbc_timeline__edge_status_copy {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-width: 0;
+	flex: 1 1 50%;
+}
+
+.wpbc_timeline__edge_status .button {
+  margin: 10px auto 0;
+}
+
+.wpbc_timeline__edge_status_copy > span {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-small);
+}
+
+.wpbc_timeline__edge_status_copy strong,
+.wpbc_timeline__edge_status_copy > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__edge_status .button {
+	flex: 0 0 auto;
+	white-space: nowrap;
+}
+
+body.rtl .wpbc_timeline__edge_status,
+[dir="rtl"] .wpbc_timeline__edge_status {
+	transform: translateX(50%);
+}
+
+.wpbc_timeline__canvas_backdrop {
+	display: flex;
+	inset: 0;
+	position: absolute;
+}
+
+.wpbc_timeline__canvas_backdrop_day {
+	background: var(--wpbc_timeline_general__page-background-color);
+	border-inline-end: var(--wpbc_timeline_general__border-width) dashed var(--wpbc_timeline_general__guide-color);
+	flex: 0 0 var(--wpbc-timeline-cell-width);
+	position: relative;
+}
+
+.wpbc_timeline__canvas_backdrop_day.is-weekend {
+	background: var(--wpbc_timeline_general__weekend-background-color);
+}
+
+.wpbc_timeline__canvas_backdrop_day.is-today::after {
+	background: var(--wpbc_timeline_general__today-color);
+	content: "";
+	inset-block: 0;
+	inset-inline-start: 50%;
+	position: absolute;
+	width: var(--wpbc_timeline_general__today-marker-size);
+}
+
+.wpbc_timeline__current_time_marker,
+.wpbc_timeline__current_time_header {
+	background: var(--wpbc_timeline_general__today-color);
+	inline-size: var(--wpbc_timeline_general__today-marker-size);
+	position: absolute;
+	z-index: 3;
+}
+
+.wpbc_timeline__current_time_marker {
+	inset-block: 0;
+}
+
+.wpbc_timeline__current_time_header {
+	block-size: var(--wpbc_timeline_general__current-time-badge-offset);
+	inset-block-end: 0;
+}
+
+.wpbc_timeline__current_time_badge {
+	align-items: center;
+	background: var(--wpbc_timeline_general__today-color);
+	border-radius: var(--wpbc_timeline_general__radius-pill);
+	color: var(--wpbc_timeline_general__surface-color);
+	display: flex;
+	font-size: var(--wpbc_timeline_general__font-size-xx-small);
+	font-weight: 600;
+	inset-block-end: var(--wpbc_timeline_general__current-time-badge-offset);
+	inset-inline-start: 50%;
+	min-block-size: var(--wpbc_timeline_general__current-time-badge-height);
+	padding-inline: var(--wpbc_timeline_general__current-time-badge-padding-inline);
+	position: absolute;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+body.rtl .wpbc_timeline__current_time_badge,
+[dir="rtl"] .wpbc_timeline__current_time_badge {
+	transform: translateX(50%);
+}
+
+
+/* Highlight hovering row */
+.wpbc_timeline__canvas_rows .wpbc_timeline__canvas_row:hover .wpbc_timeline__canvas_cell {
+	background: var(--wpbc_timeline_general__row-hover-background-color);
+	/*cursor: pointer;*/
+}
+
+.wpbc_timeline__canvas_rows {
+	flex: 1 0 auto;
+	min-height: 100%;
+	position: relative;
+	z-index: 1;
+}
+
+.wpbc_timeline__resource_row,
+.wpbc_timeline__canvas_row {
+	display: flex;
+	min-height: calc(14px + (var(--wpbc-timeline-lanes, 1) * var(--wpbc_timeline_general__lane-height)));
+	flex-flow: row wrap;
+}
+
+/*
+ * Keep surplus synchronized height after the presentation content instead of
+ * distributing it between wrapped flex lines. The browser controller aligns
+ * matching neutral hosts before it equalizes the complete paired row height.
+ */
+.wpbc_timeline__resource_row.has-open-row-presentation,
+.wpbc_timeline__canvas_row.has-open-row-presentation {
+	align-content: flex-start;
+}
+
+/*
+ * A row presentation is the second flex line beneath the compact native row.
+ * Keeping the neutral host at the complete row width makes its percentage
+ * geometry use the same composed axis as the native canvas track. Without an
+ * explicit flex basis, intrinsic sizing can collapse several cached windows
+ * into the visible viewport when scrolling to an edge.
+ */
+.wpbc_timeline__row_presentation_host {
+	box-sizing: border-box;
+	flex: 0 0 100%;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__resource_row {
+	border-bottom: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	align-items: flex-start;
+	background: var(--wpbc_timeline_general__surface-color);
+	gap: var(--wpbc_timeline_general__resource-row-gap);
+	padding: var(--wpbc_timeline_general__resource-row-padding-block) var(--wpbc_timeline_general__resource-row-padding-inline);
+	position: relative;
+}
+
+.wpbc_timeline__resource_row[hidden],
+.wpbc_timeline__canvas_row[hidden] {
+	display: none;
+}
+
+.wpbc_timeline__row_controls {
+	align-items: center;
+	align-self: flex-start;
+	display: flex;
+	flex: 0 0 auto;
+	gap: var(--wpbc_timeline_general__resource-control-gap);
+	height: var(--wpbc_timeline_general__resource-image-size);
+	min-width: 0;
+}
+
+.wpbc_timeline__row_toggle,
+.wpbc_timeline__row_presentation_toggle,
+.wpbc_timeline__hierarchy_toggle {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	cursor: pointer;
+	display: flex;
+	flex: 0 0 var(--wpbc_timeline_general__resource-control-size);
+	height: var(--wpbc_timeline_general__resource-control-size);
+	justify-content: center;
+	padding: 0;
+	width: var(--wpbc_timeline_general__resource-control-size);
+}
+
+.wpbc_timeline__row_toggle:focus-visible,
+.wpbc_timeline__row_presentation_toggle:focus-visible,
+.wpbc_timeline__hierarchy_toggle:focus-visible {
+	box-shadow: 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color);
+	outline: 0;
+}
+
+.wpbc_timeline__row_presentation_toggle [class*="wpbc-bi-chevron-"] {
+	font-size: 12px;
+}
+
+.wpbc_timeline__row_presentation_text_toggle {
+	align-self: flex-start;
+	background: transparent;
+	border: 0;
+	color: var(--wpbc_timeline_general__primary-color);
+	cursor: pointer;
+	font-size: 9px;
+	line-height: 1.5;
+	margin-block-start: 3px;
+	padding: 0 0px;
+	text-decoration-line: underline;
+	text-decoration-style: dashed;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 5px;
+}
+
+.wpbc_timeline__row_presentation_text_toggle:hover {
+	text-decoration-style: solid;
+}
+
+.wpbc_timeline__row_presentation_text_toggle:focus-visible {
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	box-shadow: 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color);
+	outline: 0;
+}
+
+.wpbc_timeline__row_presentation_text_toggle_close,
+.wpbc_timeline__row_presentation_text_toggle[aria-expanded="true"] .wpbc_timeline__row_presentation_text_toggle_open {
+	display: none;
+}
+
+.wpbc_timeline__row_presentation_text_toggle[aria-expanded="true"] .wpbc_timeline__row_presentation_text_toggle_close {
+	display: inline;
+}
+
+.wpbc_timeline__resource_details_toggle {
+	color: var(--wpbc_timeline_general__text-muted-color);
+}
+
+.wpbc_timeline__row_toggle .wpbc-bi-chevron-right {
+	transition: transform var(--wpbc_timeline_general__transition-fast) ease-in-out;
+}
+
+.wpbc_timeline__resource_row.is-expanded .wpbc_timeline__row_toggle .wpbc-bi-chevron-right {
+	transform: rotate(90deg);
+}
+
+[dir="rtl"] .wpbc_timeline__resource_row.is-expanded .wpbc_timeline__row_toggle .wpbc-bi-chevron-right {
+	transform: rotate(-90deg);
+}
+
+.wpbc_timeline__hierarchy_spacer,
+.wpbc_timeline__tree_connector {
+	flex: 0 0 var(--wpbc_timeline_general__resource-control-size);
+	min-height: var(--wpbc_timeline_general__resource-image-size);
+	position: relative;
+}
+
+.wpbc_timeline__tree_connector {
+	block-size: 100%;
+	inset-block: 0;
+	inset-inline-start: calc(
+		var(--wpbc_timeline_general__resource-row-padding-inline)
+		+ var(--wpbc_timeline_general__resource-control-size)
+		+ var(--wpbc_timeline_general__resource-control-gap)
+	);
+	pointer-events: none;
+	position: absolute;
+	width: var(--wpbc_timeline_general__resource-control-size);
+}
+
+.wpbc_timeline__tree_connector::before,
+.wpbc_timeline__tree_connector::after {
+	background: var(--wpbc_timeline_general__border-strong-color);
+	content: "";
+	position: absolute;
+}
+
+.wpbc_timeline__tree_connector::before {
+	inset-block: 0;
+	inset-inline-start: 50%;
+	inline-size: 1px;
+}
+
+.wpbc_timeline__tree_connector.is-last-child::before {
+	inset-block-end: calc(100% - var(--wpbc_timeline_general__resource-tree-junction-offset));
+}
+
+.wpbc_timeline__tree_connector::after {
+	block-size: 1px;
+	inset-block-start: var(--wpbc_timeline_general__resource-tree-junction-offset);
+	inset-inline-start: 50%;
+	inline-size: calc(50% + 5px);
+}
+
+.wpbc_timeline__resource_identity {
+	align-items: flex-start;
+	display: flex;
+	flex: 1 1 55%;
+	gap: 10px;
+	min-width: 0;
+}
+
+.wpbc_timeline__resource_row--child .wpbc_timeline__resource_identity {
+	padding-inline-start: calc(var(--wpbc_timeline_general__resource-control-size) + var(--wpbc_timeline_general__resource-tree-gap));
+}
+
+.wpbc_timeline__resource_identity img,
+.wpbc_timeline__resource_image_placeholder {
+	background: var(--wpbc_timeline_general__page-background-color);
+	border: 2px solid var(--wpbc_timeline_general__surface-color);
+	border-radius: 50%;
+	display: block;
+	flex: 0 0 var(--wpbc_timeline_general__resource-image-size);
+	height: var(--wpbc_timeline_general__resource-image-size);
+	object-fit: cover;
+	outline: var(--wpbc_timeline_general__image-outline-color) solid var(--wpbc_timeline_general__border-width);
+	overflow: hidden;
+	width: var(--wpbc_timeline_general__resource-image-size);
+}
+
+.wpbc_timeline__resource_image_placeholder {
+	align-items: center;
+	color: var(--wpbc_timeline_general__placeholder-color);
+	display: flex;
+	justify-content: center;
+}
+
+.wpbc_timeline__resource_text {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.wpbc_timeline__resource_text > strong {
+	align-items: center;
+	display: flex;
+	gap: 7px;
+	max-width: 100%;
+	min-width: 0;
+}
+
+.wpbc_timeline__resource_text strong,
+.wpbc_timeline__resource_text span {
+	overflow-wrap: anywhere;
+}
+
+.wpbc_timeline__resource_title {
+	display: block;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	overflow-wrap: normal;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 15px;
+	line-height: 1.4;
+}
+
+.wpbc_timeline__resource_labels {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-block-start: 4px;
+	max-inline-size: 100%;
+	min-width: 0;
+}
+
+.wpbc_timeline__parent_badge {
+	background: var(--wpbc_timeline_general__parent-badge-background-color);
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	color: var(--wpbc_timeline_general__parent-badge-text-color);
+	display: inline-flex;
+	font-size: var(--wpbc_timeline_general__font-size-x-small);
+	flex: 0 0 auto;
+	font-weight: 500;
+	line-height: 1;
+	padding: 4px 6px;
+}
+
+.wpbc_timeline__capacity_badge {
+	background: var(--wpbc_timeline_general__capacity-badge-background-color);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__capacity-badge-border-color);
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	color: var(--wpbc_timeline_general__capacity-badge-text-color);
+	display: inline-flex;
+	font-size: var(--wpbc_timeline_general__font-size-x-small);
+	flex: 0 0 auto;
+	font-weight: 500;
+	line-height: 1;
+	padding: 4px 6px;
+}
+
+.wpbc_timeline__resource_text > span,
+.wpbc_timeline__resource_details {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-small);
+}
+
+.wpbc_timeline__resource_details {
+	flex: 1 0 100%;
+	padding-block-start: 8px;
+}
+
+.wpbc_timeline__resource_details span {
+	display: block;
+}
+
+.wpbc_timeline__resource_description {
+	overflow-wrap: anywhere;
+	white-space: pre-line;
+}
+
+.wpbc_timeline__resource_row.is-expanded {
+	flex-wrap: wrap;
+}
+
+.wpbc_timeline__canvas_track {
+	display: flex;
+	min-height: 63px;
+	min-width: calc(var(--wpbc-timeline-cell-width) * var(--wpbc-timeline-cells));
+	position: relative;
+}
+
+.wpbc_timeline__canvas_track:focus-visible {
+	box-shadow: inset 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color);
+	outline: 0;
+}
+
+.wpbc_timeline__canvas_cell {
+	border-inline-end: var(--wpbc_timeline_general__border-width) dashed var(--wpbc_timeline_general__cell-border-color);
+	flex: 0 0 var(--wpbc-timeline-cell-width);
+	position: relative;
+}
+
+/*
+ * Advertise native empty-range drafting only while its controller is active.
+ * Booking cards and overflow controls own separate pointer surfaces above these
+ * cells, so their established action cursors remain authoritative.
+ */
+.wpbc_timeline_page .wpbc_timeline__mount[data-wpbc-timeline-empty-range-selection-ready="true"] [data-wpbc-timeline-selection-track] > .wpbc_timeline__canvas_cell {
+	cursor: crosshair;
+}
+
+.wpbc_timeline__canvas_cell.is-selection-cursor::before {
+	background: var(--wpbc_timeline_general__selection-color);
+	block-size: 4px;
+	content: "";
+	inset-block-end: 0;
+	inset-inline: 3px;
+	position: absolute;
+}
+
+.wpbc_timeline__canvas_row.is-odd .wpbc_timeline__canvas_cell {
+	background: var(--wpbc_timeline_general__surface-color);
+}
+
+.wpbc_timeline__canvas_row.is-even .wpbc_timeline__canvas_cell {
+	background: var(--wpbc_timeline_general__alternate-row-background-color);
+}
+
+.wpbc_timeline__canvas_row .wpbc_timeline__canvas_cell.is-weekend {
+	background: var(--wpbc_timeline_general__weekend-background-color);
+}
+
+.wpbc_timeline__canvas_cell.is-today::after {
+	background: var(--wpbc_timeline_general__today-color);
+	content: "";
+	inset-block: 0;
+	inset-inline-start: 50%;
+	position: absolute;
+	width: var(--wpbc_timeline_general__today-marker-size);
+}
+
+.wpbc_timeline__canvas_track > [data-wpbc-timeline-segments] {
+	inset: 0;
+	/* Detached narrow-card docks may paint outside a card, never outside the axis. */
+	overflow: clip;
+	overflow-clip-margin: var(--wpbc-timeline-selection-overflow-margin);
+	pointer-events: none;
+	position: absolute;
+}
+
+/*
+ * Availability is a presentation-only layer between the cell surfaces and
+ * booking segments. Absolute logical geometry preserves row sizing and RTL,
+ * while pointer transparency leaves the track, cards, and controls as the
+ * only interaction owners.
+ */
+.wpbc_timeline__availability_layer {
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	position: absolute;
+	z-index: 1;
+}
+
+.wpbc_timeline__availability_interval,
+.wpbc_timeline__legend_marker.is-unavailable {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__fallback-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__fallback-background-color);
+	background-color: var(--wpbc-timeline-availability-background-color);
+	background-image: repeating-linear-gradient(
+		135deg,
+		var(--wpbc-timeline-availability-stripe-color) 0,
+		var(--wpbc-timeline-availability-stripe-color) var(--wpbc_timeline_availability__stripe-width),
+		transparent var(--wpbc_timeline_availability__stripe-width),
+		transparent var(--wpbc_timeline_availability__stripe-size)
+	);
+}
+
+.wpbc_timeline__availability_interval {
+	inset-block: 0;
+	inset-inline-start: var(--wpbc-timeline-availability-inline-start);
+	inline-size: var(--wpbc-timeline-availability-inline-size);
+	pointer-events: none;
+	position: absolute;
+}
+
+/*
+ * Booking-owned buffers reuse the related rendered card's measured lane and
+ * height. A missing relation intentionally retains the conservative full-row
+ * background instead of implying that the unavailable interval is available.
+ */
+.wpbc_timeline__availability_interval[data-wpbc-timeline-buffer-aligned="true"] {
+	block-size: var(--wpbc-timeline-availability-block-size);
+	inset-block-end: auto;
+	inset-block-start: var(--wpbc-timeline-availability-block-start);
+}
+
+body.rtl .wpbc_timeline__availability_interval,
+[dir="rtl"] .wpbc_timeline__availability_interval,
+body.rtl .wpbc_timeline__legend_marker.is-unavailable,
+[dir="rtl"] .wpbc_timeline__legend_marker.is-unavailable {
+	background-image: repeating-linear-gradient(
+		45deg,
+		var(--wpbc-timeline-availability-stripe-color) 0,
+		var(--wpbc-timeline-availability-stripe-color) var(--wpbc_timeline_availability__stripe-width),
+		transparent var(--wpbc_timeline_availability__stripe-width),
+		transparent var(--wpbc_timeline_availability__stripe-size)
+	);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="blocked_date"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="blocked_date"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__blocked-date-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__blocked-date-background-color);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="blocked_time"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="blocked_time"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__blocked-time-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__blocked-time-background-color);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="unavailable_weekday"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="unavailable_weekday"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__unavailable-weekday-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__unavailable-weekday-background-color);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="working_time"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="working_time"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__working-time-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__working-time-background-color);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="seasonal_availability"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="seasonal_availability"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__seasonal-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__seasonal-background-color);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="booking_buffer"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="booking_buffer"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__booking-buffer-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__booking-buffer-background-color);
+}
+
+.wpbc_timeline__availability_interval[data-wpbc-timeline-availability-source="appointment_buffer"],
+.wpbc_timeline__legend_marker[data-wpbc-timeline-availability-source="appointment_buffer"] {
+	--wpbc-timeline-availability-stripe-color: var(--wpbc_timeline_availability__appointment-buffer-color);
+	--wpbc-timeline-availability-background-color: var(--wpbc_timeline_availability__appointment-buffer-background-color);
+}
+
+.wpbc_timeline__selection_host {
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+	/* Keep the active selection and its popover above the expanded-hours toolbar. */
+	z-index: 12;
+}
+
+.wpbc_timeline__selection {
+	background: var(--wpbc_timeline_general__selection-background-color);
+	border: 2px dashed var(--wpbc_timeline_general__selection-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-sizing: border-box;
+	display: flex;
+	height: var(--wpbc_timeline_general__booking-card-height);
+	inset-block-start: var(--wpbc_timeline_general__booking-lane-offset);
+	justify-content: center;
+	min-width: var(--wpbc_timeline_general__booking-card-min-width);
+	pointer-events: none;
+	position: absolute;
+}
+
+.wpbc_timeline__selection_handle {
+	background: transparent;
+	border: 0;
+	border-radius: 50%;
+	block-size: var(--wpbc_timeline_general__selection-handle-hit-size);
+	box-sizing: border-box;
+	cursor: ew-resize;
+	inset-block-start: 50%;
+	outline: 0;
+	pointer-events: auto;
+	position: absolute;
+	touch-action: none;
+	transform: translateY(-50%);
+	width: var(--wpbc_timeline_general__selection-handle-hit-size);
+}
+
+.wpbc_timeline__selection_handle::before {
+	background: var(--wpbc_timeline_general__surface-color);
+	border: 2px solid var(--wpbc_timeline_general__selection-color);
+	border-radius: 50%;
+	block-size: var(--wpbc_timeline_general__selection-handle-size);
+	box-sizing: border-box;
+	content: "";
+	inset: 50% auto auto 50%;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	width: var(--wpbc_timeline_general__selection-handle-size);
+}
+
+.wpbc_timeline__selection_handle:focus-visible {
+	outline: 2px solid var(--wpbc_timeline_general__selection-color);
+	outline-offset: 1px;
+}
+
+.wpbc_timeline__selection_handle.is-active {
+	outline: 2px solid var(--wpbc_timeline_general__selection-color);
+	outline-offset: 1px;
+}
+
+.wpbc_timeline__selection_handle[aria-disabled="true"] {
+	cursor: default;
+}
+
+.wpbc_timeline__selection_handle--start {
+	inset-inline-start: calc(var(--wpbc_timeline_general__selection-handle-hit-size) / -2);
+}
+
+.wpbc_timeline__selection_handle--end {
+	inset-inline-end: calc(var(--wpbc_timeline_general__selection-handle-hit-size) / -2);
+}
+
+.wpbc_timeline__selection_duration {
+	align-self: center;
+	background: var(--wpbc_timeline_general__surface-color);
+	border-radius: var(--wpbc_timeline_general__radius-pill);
+	color: var(--wpbc_timeline_general__selection-color);
+	font-size: var(--wpbc_timeline_general__font-size-x-small);
+	font-weight: 600;
+	max-width: calc(100% - 16px);
+	overflow: hidden;
+	padding: 3px 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__selection_popover {
+	--wpbc-timeline-selection-popover-shift: 0px;
+	background: var(--wpbc_timeline_general__surface-color);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-strong-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-shadow: var(--wpbc_timeline_general__popover-shadow);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	inset-block-start: calc(var(--wpbc_timeline_general__booking-lane-offset) + var(--wpbc_timeline_general__booking-card-height) + 8px);
+	max-block-size: var(--wpbc-timeline-selection-popover-max-block-size, none);
+	max-width: calc(100vw - 32px);
+	overflow: hidden;
+	pointer-events: auto;
+	position: absolute;
+	transform: translateX(calc(-50% + var(--wpbc-timeline-selection-popover-shift)));
+	width: var(--wpbc_timeline_general__selection-popover-width);
+	z-index: 30;
+}
+
+.wpbc_timeline__selection_popover[data-wpbc-timeline-selection-popover-state="ready"] {
+	inline-size: min(560px, calc(100vw - 32px));
+	max-inline-size: calc(100vw - 32px);
+	min-block-size: min(150px, calc(100vh - 16px));
+	width: auto;
+}
+
+.wpbc_timeline__selection_popover[data-wpbc-timeline-selection-popover-placement="above"] {
+	inset-block-end: calc(100% - var(--wpbc_timeline_general__booking-lane-offset) + 8px);
+	inset-block-start: auto;
+}
+
+[dir="rtl"] .wpbc_timeline__selection_popover {
+	transform: translateX(calc(50% + var(--wpbc-timeline-selection-popover-shift)));
+}
+
+.wpbc_timeline__selection_popover > header,
+.wpbc_timeline__selection_popover > footer,
+.wpbc_timeline__selection_popover_body,
+.wpbc_timeline__selection_actions,
+.wpbc_timeline__selection_progress {
+	align-items: center;
+	display: flex;
+}
+
+.wpbc_timeline__selection_popover > header {
+	border-block-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	justify-content: space-between;
+	padding: 10px 12px;
+	font-size:1.1em;
+}
+.wpbc_timeline__selection_popover > header .button-link {
+	font-size: 22px;
+	text-decoration: none
+}
+.wpbc_timeline__selection_popover_body {
+	align-items: stretch;
+	flex-direction: column;
+	gap: 8px;
+	min-block-size: 0;
+	overflow-y: auto;
+	padding: 12px;
+}
+
+.wpbc_timeline__selection_popover_body p {
+	margin: 0;
+}
+
+.wpbc_timeline__selection_actions {
+	align-items: flex-start;
+	flex-wrap: nowrap;
+	gap: 8px;
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__selection_action_buttons {
+	align-items: center;
+	display: flex;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+	gap: 8px;
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__selection_actions .button-link.wpbc_timeline__selection_popover_close {
+  text-decoration: none;
+}
+
+.wpbc_timeline__selection_action_buttons .button {
+	max-inline-size: 100%;
+	white-space: normal;
+}
+
+.wpbc_timeline__selection_popover_body--ready {
+	gap: 12px;
+}
+
+.wpbc_timeline__selection_popover_body--ready .wpbc_timeline__selection_actions {
+	border-block-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	padding-block-end: 12px;
+}
+
+.wpbc_timeline__selection_popover_close {
+	align-items: center;
+	align-self: flex-start;
+	display: inline-flex;
+	flex: 0 0 30px;
+	font-size: 22px;
+	justify-content: center;
+	line-height: 1;
+	margin-inline-start: auto;
+	min-block-size: 30px;
+	min-inline-size: 30px;
+	padding: 0 4px;
+	text-decoration: none;
+}
+
+.wpbc_timeline__selection_popover_close:hover,
+.wpbc_timeline__selection_popover_close:focus,
+.wpbc_timeline__selection_popover_close:active {
+	text-decoration: none;
+}
+
+.wpbc_timeline__selection_summary {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.wpbc_timeline__selection_resource_title {
+	font-size: 1.1em;
+}
+
+.wpbc_timeline__selection_summary_meta {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+	justify-content: space-between;
+}
+
+.wpbc_timeline__selection_summary_meta > span:first-child {
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+
+.wpbc_timeline__selection_summary_separator {
+	margin-inline: 12px;
+}
+
+.wpbc_timeline__selection_quote {
+	margin-inline-start: auto;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__selection_quote_note {
+	color: var(--wpbc_timeline_general__text-muted-color);
+}
+
+.wpbc_timeline__selection_progress {
+	gap: 8px;
+}
+
+/*
+ * The shared mini spinner retains a legacy five-pixel inline offset. Center it
+ * inside this row's reserved 20-pixel flex item so the declared gap remains
+ * visible without changing other shared spinner consumers.
+ */
+.wpbc_timeline__selection_progress .wpbc_one_spin_loader_mini2 {
+	left: 0;
+	margin-left: -10px;
+}
+
+.wpbc_timeline__selection_warning {
+	background: var(--wpbc_timeline_general__selection-warning-background-color);
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	padding: 8px;
+}
+
+.wpbc_timeline__selection_error {
+	color: var(--wpbc_timeline_general__selection-error-color);
+}
+
+.wpbc_timeline__selection_popover > footer {
+	border-block-start: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	justify-content: flex-end;
+	padding: 8px 12px;
+}
+
+.wpbc_timeline__booking_segment {
+	--wpbc-timeline-booking-drag-indicator-space: 0px;
+	--wpbc-timeline-booking-details-action-space: 0px;
+	--wpbc-timeline-booking-selection-edge-reserve: 4px;
+	--wpbc-timeline-booking-start-content-inset: calc(var(--wpbc-timeline-booking-start-rail-reserve, var(--wpbc_timeline_general__booking-accessory-padding)) + var(--wpbc-timeline-booking-selection-edge-reserve) + var(--wpbc-timeline-booking-drag-indicator-space));
+	min-block-size: var(--wpbc_timeline_general__booking-card-height);
+	min-inline-size: 0;
+	overflow: visible;
+	pointer-events: auto;
+	position: absolute;
+	z-index: 2;
+}
+
+/*
+ * At a one-day step, a same-date time slot receives one readable semantic
+ * day card. Exact instants remain visible as text and as the selection/resize
+ * boundary positions; only the card's presentation surface spans the cell.
+ */
+.wpbc_timeline__booking_segment.is-day-time-slot .wpbc_timeline__booking_avatar {
+	display: none;
+}
+
+.wpbc_timeline__booking_segment.is-day-time-slot .wpbc_timeline__booking_secondary {
+	align-items: center;
+	display: flex;
+	gap: 4px;
+}
+
+.wpbc_timeline__booking_segment.is-day-time-slot .wpbc_timeline__booking_secondary [class*="wpbc_icn_"] {
+	flex: 0 0 auto;
+}
+
+.wpbc_timeline__booking_selection {
+	align-items: center;
+	appearance: none;
+	background: var(--wpbc_timeline_general__surface-color);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-shadow: var(--wpbc_timeline_general__card-shadow);
+	box-sizing: border-box;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	gap: 8px;
+	inline-size: 100%;
+	margin: 0;
+	min-block-size: var(--wpbc_timeline_general__booking-card-height);
+	min-inline-size: 100%;
+	/* The body clips card content while sibling selection chrome remains visible. */
+	overflow: hidden;
+	overflow: clip;
+	padding: 0;
+	text-align: start;
+}
+
+.wpbc_timeline__booking_selection:focus-visible {
+	box-shadow: 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color), var(--wpbc_timeline_general__card-shadow);
+	outline: 0;
+}
+
+.wpbc_timeline__booking_segment.is-booking-details-open .wpbc_timeline__booking_selection {
+	border-color: var(--wpbc_timeline_general__booking-inspector-selection-color);
+	box-shadow: inset 0 0 0 var(--wpbc_timeline_general__booking-inspector-selection-width) var(--wpbc_timeline_general__booking-inspector-selection-color), var(--wpbc_timeline_general__card-shadow);
+}
+
+.wpbc_timeline__booking_segment.is-booking-details-open {
+	z-index: 3;
+}
+
+.wpbc_timeline__booking_segment.is-booking-details-open .wpbc_timeline__booking_selection:focus-visible {
+	box-shadow: inset 0 0 0 var(--wpbc_timeline_general__booking-inspector-selection-width) var(--wpbc_timeline_general__booking-inspector-selection-color), 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color), var(--wpbc_timeline_general__card-shadow);
+}
+
+.wpbc_timeline__booking_status {
+	align-self: stretch;
+	background: var(--wpbc_timeline_general__approved-color);
+	flex: 0 0 var(--wpbc_timeline_general__booking-status-width);
+}
+
+.wpbc_timeline__booking_segment.is-pending .wpbc_timeline__booking_status {
+	background: var(--wpbc_timeline_general__pending-color);
+}
+
+.wpbc_timeline__booking_segment.is-compact .wpbc_timeline__booking_selection {
+	gap: 4px;
+	justify-content: space-between;
+}
+
+.wpbc_timeline__booking_segment.is-compact .wpbc_timeline__booking_avatar,
+.wpbc_timeline__booking_segment.is-compact .wpbc_timeline__booking_secondary {
+	display: none;
+}
+
+.wpbc_timeline__booking_segment.is-clipped-start .wpbc_timeline__booking_selection {
+	border-end-start-radius: 0;
+	border-start-start-radius: 0;
+}
+
+.wpbc_timeline__booking_segment.is-clipped-end .wpbc_timeline__booking_selection {
+	border-start-end-radius: 0;
+	border-end-end-radius: 0;
+	padding-inline-end: var(--wpbc_timeline_general__booking-continuation-width);
+}
+
+.wpbc_timeline__continuation {
+	align-items: center;
+	background: var(--wpbc_timeline_general__booking-continuation-background-color);
+	color: var(--wpbc_timeline_general__booking-continuation-color);
+	display: flex;
+	font-size: var(--wpbc_timeline_general__booking-continuation-icon-size);
+	height: 100%;
+	justify-content: center;
+	line-height: 1;
+	top: 0;
+	width: var(--wpbc_timeline_general__booking-continuation-width);
+	z-index: 2;
+}
+
+.wpbc_timeline__continuation > [class*="wpbc_icn_keyboard_double_arrow_"] {
+	display: inline-flex;
+	font-size: inherit;
+	line-height: inherit;
+}
+.wpbc_timeline__continuation > [class*="wpbc_icn_keyboard_double_arrow_"]::before {
+	font-size:21px;
+}
+
+.wpbc_timeline__continuation--start {
+	inset-inline-start: 0;
+}
+
+.wpbc_timeline__continuation--end {
+	inset-inline-end: 0;
+}
+
+.wpbc_timeline__booking_segment.is-clipped-start .wpbc_timeline__booking_status {
+	margin-inline-start: var(--wpbc_timeline_general__booking-continuation-width);
+}
+
+[dir="rtl"] .wpbc_timeline__continuation > [class*="wpbc_icn_keyboard_double_arrow_"] {
+	transform: scaleX(-1);
+}
+
+.wpbc_timeline__booking_copy {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-width: 0;
+	padding-block: 5px;
+	padding-inline-end: calc(var(--wpbc-timeline-booking-end-rail-reserve, var(--wpbc_timeline_general__booking-accessory-padding)) + var(--wpbc-timeline-booking-selection-edge-reserve) + var(--wpbc_timeline_general__booking-accessory-size) + var(--wpbc_timeline_general__booking-accessory-gap) + var(--wpbc-timeline-booking-details-action-space));
+	padding-inline-start: var(--wpbc-timeline-booking-start-content-inset);
+	/*  Intentionaly customize for showing avatar. */
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 14px;
+}
+
+.wpbc_timeline__booking_details {
+	align-self: flex-start;
+	background: var(--wpbc_timeline_general__surface-color);
+	display: flex;
+	flex-direction: column;
+	inline-size: fit-content;
+	inset-inline-start: max(var(--wpbc_timeline_general__booking-details-sticky-inset), var(--wpbc-timeline-booking-start-content-inset));
+	justify-content: center;
+	max-inline-size: min(100%, var(--wpbc_timeline_general__booking-details-max-width));
+	min-inline-size: 0;
+	position: sticky;
+	z-index: 1;
+}
+
+.wpbc_timeline__booking_title {
+	align-items: center;
+	display: flex;
+	/*gap: var(--wpbc_timeline_general__booking-accessory-gap);*/
+	/*  Intentionaly  here set  gap  as 10px */
+	gap: 10px;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__booking_details strong,
+.wpbc_timeline__booking_secondary {
+	max-inline-size: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__booking_details strong {
+	flex: 0 1 auto;
+	font-size: var(--wpbc_timeline_general__font-size-small);
+	min-inline-size: 0;
+}
+
+.wpbc_timeline__booking_secondary {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-xx-small);
+}
+
+.wpbc_timeline__booking_segment.is-booking-info-condensed .wpbc_timeline__booking_avatar,
+.wpbc_timeline__booking_segment.is-booking-info-condensed .wpbc_timeline__booking_secondary,
+.wpbc_timeline__booking_segment.is-booking-info-minimal .wpbc_timeline__booking_details strong {
+	display: none;
+}
+
+.wpbc_timeline__booking_segment.is-booking-info-minimal .wpbc_timeline__booking_copy {
+	padding-inline: 0;
+}
+
+.wpbc_timeline__booking_segment.is-booking-info-minimal .wpbc_timeline__booking_details {
+	inline-size: 100%;
+}
+
+.wpbc_timeline__booking_avatar {
+	align-items: center;
+	background: var(--wpbc_timeline_general__avatar-background-color);
+	border-radius: 50%;
+	color: var(--wpbc_timeline_general__avatar-text-color);
+	display: flex;
+	flex: 0 0 var(--wpbc_timeline_general__booking-avatar-size);
+	font-size: 9px;
+	font-weight: 600;
+	height: var(--wpbc_timeline_general__booking-avatar-size);
+	justify-content: center;
+	width: var(--wpbc_timeline_general__booking-avatar-size);
+}
+
+.wpbc_timeline__booking_accessory_dock {
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+	z-index: 5;
+}
+
+.wpbc_timeline__booking_control_rail {
+	align-items: center;
+	box-sizing: border-box;
+	display: flex;
+	gap: var(--wpbc_timeline_general__booking-accessory-gap);
+	inset: 0;
+	padding: 0;
+	pointer-events: none;
+	position: absolute;
+	z-index: 5;
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay {
+	background: rgba(255, 255, 255, 0.96);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-strong-color);
+	border-radius: var(--wpbc_timeline_general__radius-pill);
+	box-shadow: var(--wpbc_timeline_general__card-shadow);
+	gap: var(--wpbc_timeline_general__booking-accessory-gap);
+	inset: auto;
+	inset-block-start: var(--wpbc-timeline-booking-rail-block-start, 0px);
+	inline-size: max-content;
+	min-block-size: var(--wpbc_timeline_general__booking-accessory-size);
+	padding: 3px;
+	z-index: 8;
+}
+
+/*
+ * A real narrow segment keeps its dock on the shared percentage axis. Density
+ * and horizontal scrolling therefore move it in the browser's native layout
+ * pass instead of waiting for a JavaScript pixel-position correction.
+ */
+.wpbc_timeline__booking_control_rail.is-row-overlay.is-docked-inline-end {
+	inset-inline-start: calc(var(--wpbc-timeline-booking-segment-inline-start) + var(--wpbc-timeline-booking-segment-inline-size) + var(--wpbc-timeline-booking-rail-gap, var(--wpbc_timeline_general__booking-accessory-gap)));
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay.is-docked-inline-start {
+	inset-inline-end: calc(100% - var(--wpbc-timeline-booking-segment-inline-start) + var(--wpbc-timeline-booking-rail-gap, var(--wpbc_timeline_general__booking-accessory-gap)));
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay.is-docked-clamped {
+	inset-inline-end: auto;
+	inset-inline-start: var(--wpbc-timeline-booking-rail-clamped-inline-start, 0px);
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay::before {
+	background: var(--wpbc_timeline_general__border-strong-color);
+	block-size: 1px;
+	content: "";
+	inline-size: var(--wpbc_timeline_general__booking-accessory-gap);
+	inset-block-start: 50%;
+	position: absolute;
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay.is-docked-inline-end::before {
+	inset-inline-start: calc(var(--wpbc_timeline_general__booking-accessory-gap) * -1);
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay.is-docked-inline-start::before {
+	inset-inline-end: calc(var(--wpbc_timeline_general__booking-accessory-gap) * -1);
+}
+
+.wpbc_timeline__booking_accessory {
+	align-items: center;
+	appearance: none;
+	background: rgba(255, 255, 255, 0.94);
+	border: var(--wpbc_timeline_general__border-width) solid transparent;
+	box-sizing: border-box;
+	color: var(--wpbc_timeline_general__primary-color);
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	justify-content: center;
+	margin: 0;
+	padding: 0;
+	pointer-events: auto;
+	position: absolute;
+}
+
+.wpbc_timeline__booking_accessory {
+	block-size: var(--wpbc_timeline_general__booking-accessory-size);
+	border-radius: 50%;
+	flex: 0 0 var(--wpbc_timeline_general__booking-accessory-size);
+	inline-size: var(--wpbc_timeline_general__booking-accessory-size);
+}
+
+.wpbc_timeline__booking_accessory:hover {
+	background: var(--wpbc_timeline_general__today-background-color);
+	border-color: var(--wpbc_timeline_general__primary-color);
+}
+
+.wpbc_timeline__booking_accessory:focus-visible {
+	box-shadow: 0 0 0 var(--wpbc_timeline_general__focus-ring-size) var(--wpbc_timeline_general__primary-color);
+	outline: 0;
+}
+
+.wpbc_timeline__booking_accessory.wpbc_timeline__booking_drag_indicator {
+	background: var(--wpbc_timeline_general__surface-color);
+	border-color: transparent;
+	border-radius: var(--wpbc_timeline_general__radius-medium);
+	cursor: default;
+	display: none;
+	flex: 0 0 var(--wpbc_timeline_general__booking-drag-indicator-size);
+	font-size: 18px;
+	inset: auto;
+	inset-inline-start: calc(var(--wpbc-timeline-booking-start-rail-reserve, var(--wpbc_timeline_general__booking-accessory-padding)) + var(--wpbc-timeline-booking-selection-edge-reserve));
+	inline-size: var(--wpbc_timeline_general__booking-drag-indicator-size);
+	margin-inline-start: calc(var(--wpbc-timeline-booking-start-rail-reserve, var(--wpbc_timeline_general__booking-accessory-padding)) + var(--wpbc-timeline-booking-selection-edge-reserve));
+	pointer-events: none;
+	position: sticky;
+}
+
+.wpbc_timeline__booking_drag_indicator > .wpbc_icn_drag_indicator {
+	align-items: center;
+	display: inline-flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	line-height: 1;
+}
+
+.wpbc_timeline__booking_segment.is-booking-selected .wpbc_timeline__booking_drag_indicator,
+.wpbc_timeline__booking_control_rail.is-booking-selected .wpbc_timeline__booking_drag_indicator {
+	display: inline-flex;
+}
+
+.wpbc_timeline__booking_end_controls {
+	align-items: center;
+	display: flex;
+	flex: 0 0 auto;
+	gap: var(--wpbc_timeline_general__booking-accessory-gap);
+	inset-inline-end: calc(var(--wpbc-timeline-booking-end-rail-reserve, var(--wpbc_timeline_general__booking-accessory-padding)) + var(--wpbc-timeline-booking-selection-edge-reserve));
+	margin-inline-end: calc(var(--wpbc-timeline-booking-end-rail-reserve, var(--wpbc_timeline_general__booking-accessory-padding)) + var(--wpbc-timeline-booking-selection-edge-reserve));
+	margin-inline-start: auto;
+	pointer-events: none;
+	position: sticky;
+}
+
+.wpbc_timeline__booking_info,
+.wpbc_timeline__booking_details_action {
+	font-size: 16px;
+	inset: auto;
+	margin: 0;
+	position: relative;
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay .wpbc_timeline__booking_accessory {
+	inset: auto;
+	position: relative;
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay .wpbc_timeline__booking_end_controls {
+	inset: auto;
+	margin-inline-end: 0;
+	margin-inline-start: auto;
+	position: relative;
+}
+
+.wpbc_timeline__booking_control_rail.is-row-overlay .wpbc_timeline__booking_drag_indicator {
+	margin-inline-start: 0;
+}
+
+.wpbc_timeline__booking_selection_chrome {
+	border: var(--wpbc_timeline_general__booking-selection-width) solid var(--wpbc_timeline_general__booking-selection-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	display: none;
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+	/* Keep edge dots legible when an intentionally adjacent narrow-card dock is used. */
+	z-index: 9;
+}
+
+.wpbc_timeline__booking_segment.is-booking-selected {
+	--wpbc-timeline-booking-drag-indicator-space: calc(var(--wpbc_timeline_general__booking-drag-indicator-size) + var(--wpbc_timeline_general__booking-accessory-gap));
+	--wpbc-timeline-booking-details-action-space: calc(var(--wpbc_timeline_general__booking-accessory-size) + var(--wpbc_timeline_general__booking-accessory-gap));
+	--wpbc-timeline-booking-selection-edge-reserve: 8px;
+	z-index: 4;
+}
+
+.wpbc_timeline__booking_segment.is-booking-selected .wpbc_timeline__booking_selection_chrome {
+	display: block;
+}
+
+.wpbc_timeline__booking_selection_dot {
+	background: var(--wpbc_timeline_general__surface-color);
+	border: var(--wpbc_timeline_general__booking-selection-width) solid var(--wpbc_timeline_general__booking-selection-color);
+	border-radius: 50%;
+	block-size: 12px;
+	inset-block-start: 50%;
+	position: absolute;
+	transform: translateY(-50%);
+	inline-size: 12px;
+}
+
+.wpbc_timeline__booking_selection_dot--start {
+	inset-inline-start: -7px;
+}
+
+.wpbc_timeline__booking_selection_dot--end {
+	inset-inline-end: -7px;
+}
+
+/*
+ * Dense time slots use no more than three total rows. When overflow exists,
+ * the first two cards remain visible and the third row opens the remaining
+ * authorized summaries without changing canonical booking geometry.
+ */
+.wpbc_timeline__time_slot_overflow {
+	min-block-size: var(--wpbc_timeline_general__booking-card-height);
+	pointer-events: auto;
+	position: absolute;
+	z-index: 3;
+}
+
+.wpbc_timeline__time_slot_more {
+	block-size: var(--wpbc_timeline_general__booking-card-height);
+	inline-size: calc(100% - 8px);
+	margin-inline: 4px;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__time_slot_popover[hidden] {
+	display: none;
+}
+
+.wpbc_timeline__time_slot_popover.is-portaled {
+	background: var(--wpbc_timeline_general__surface-color);
+	border: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	border-radius: var(--wpbc_timeline_general__radius-card);
+	box-shadow: var(--wpbc_timeline_general__popover-shadow, 0 8px 24px rgba(0, 0, 0, 0.18));
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	inline-size: min(340px, calc(100vw - 16px));
+	max-block-size: min(420px, calc(100vh - 16px));
+	position: fixed;
+	z-index: 100100;
+}
+
+.wpbc_timeline__time_slot_popover > header {
+	align-items: center;
+	border-block-end: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	display: flex;
+	gap: 12px;
+	justify-content: space-between;
+	padding: 10px 12px;
+}
+
+.wpbc_timeline__time_slot_popover > header .button-link {
+	align-items: center;
+	display: inline-flex;
+	flex: 0 0 auto;
+	justify-content: center;
+	min-block-size: 28px;
+	min-inline-size: 28px;
+}
+
+.wpbc_timeline__time_slot_list {
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	margin: 0;
+	overflow: auto;
+	padding: 4px;
+}
+
+.wpbc_timeline__time_slot_list > li {
+	margin: 0;
+}
+
+.wpbc_timeline__time_slot_item {
+	align-items: flex-start;
+	appearance: none;
+	background: transparent;
+	border: 0;
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	font: inherit;
+	inline-size: 100%;
+	padding: 8px;
+	text-align: start;
+}
+
+.wpbc_timeline__time_slot_item:hover,
+.wpbc_timeline__time_slot_item:focus-visible {
+	background: var(--wpbc_timeline_general__today-background-color);
+	outline: 2px solid var(--wpbc_timeline_general__primary-color);
+	outline-offset: -2px;
+}
+
+.wpbc_timeline__time_slot_item > strong,
+.wpbc_timeline__time_slot_item > span {
+	max-inline-size: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__time_slot_item > span {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-xx-small);
+}
+
+.wpbc_timeline__booking_selection_badge {
+	background: var(--wpbc_timeline_general__booking-selection-color);
+	border-radius: var(--wpbc_timeline_general__radius-small);
+	color: #fff;
+	font-size: var(--wpbc_timeline_general__font-size-xx-small);
+	font-weight: 600;
+	inset-block-start: calc(100% + 3px);
+	inset-inline-start: 10px;
+	line-height: 18px;
+	padding-inline: 8px;
+	position: absolute;
+	white-space: nowrap;
+}
+
+.wpbc_timeline__canvas_details {
+	border-top: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__page-background-color);
+	min-height: 32px;
+	padding: 8px 12px;
+}
+
+.wpbc_timeline__state_host[hidden] {
+	display: none;
+}
+
+.wpbc_timeline__state_host:not([hidden]) {
+	align-items: center;
+	background: var(--wpbc_timeline_general__state-overlay-color);
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	position: absolute;
+	z-index: 5;
+}
+
+.wpbc_timeline__state {
+	align-items: flex-start;
+	display: flex;
+	gap: 14px;
+	justify-content: center;
+	min-height: 150px;
+	padding: 34px 20px;
+	text-align: start;
+	width: 100%;
+}
+
+.wpbc_timeline__state > [class*="wpbc-bi-"] {
+	color: var(--wpbc_timeline_general__text-muted-color);
+	font-size: var(--wpbc_timeline_general__font-size-state-icon);
+	margin-top: 2px;
+}
+
+.wpbc_timeline__state h2 {
+	font-size: var(--wpbc_timeline_general__font-size-heading);
+	margin: 0 0 6px;
+}
+
+.wpbc_timeline__state p {
+	color: var(--wpbc_timeline_general__text-secondary-color);
+	margin: 0;
+	max-width: 620px;
+}
+
+.wpbc_timeline__state_actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 14px;
+}
+
+.wpbc_timeline__legend {
+	align-items: stretch;
+	border-top: var(--wpbc_timeline_general__border-width) solid var(--wpbc_timeline_general__border-color);
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0;
+	min-height: var(--wpbc_timeline_general__legend-height);
+	padding: 8px 14px;
+}
+
+.wpbc_timeline__legend_row,
+.wpbc_timeline__legend_items {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 20px;
+	list-style: none;
+	margin: 0;
+	min-width: 0;
+	padding: 0;
+}
+
+.wpbc_timeline__legend_row--unavailable {
+	gap: 7px 20px;
+}
+
+.wpbc_timeline__legend_items {
+	flex: 1 1 auto;
+}
+
+.wpbc_timeline__legend_item {
+	align-items: center;
+	display: flex;
+	font-size: var(--wpbc_timeline_general__font-size-small);
+	gap: 7px;
+	margin: 0;
+}
+
+.wpbc_timeline__legend_group_label {
+	flex: 0 0 auto;
+	font-size: var(--wpbc_timeline_general__font-size-small);
+	font-weight: 600;
+}
+
+.wpbc_timeline__legend_marker {
+	background: var(--wpbc_timeline_general__border-strong-color);
+	border: 1px solid transparent;
+	border-radius: 50%;
+	display: inline-block;
+	height: 11px;
+	width: 11px;
+}
+
+.wpbc_timeline__legend_marker.is-approved {
+	background: var(--wpbc_timeline_general__approved-color);
+}
+
+.wpbc_timeline__legend_marker.is-pending {
+	background: var(--wpbc_timeline_general__pending-color);
+}
+
+.wpbc_timeline__legend_marker.is-available {
+	background: var(--wpbc_timeline_general__surface-color);
+	border-color: var(--wpbc_timeline_general__placeholder-color);
+}
+
+.wpbc_timeline__legend_marker.is-unavailable {
+	block-size: 12px;
+	border-color: var(--wpbc-timeline-availability-stripe-color);
+	border-radius: 2px;
+	flex: 0 0 20px;
+	inline-size: 20px;
+}
+
+@media (max-width: 782px) {
+	.wpbc_timeline_page {
+		--wpbc-timeline-resource-width: clamp(240px, 72vw, 280px);
+		padding: 10px 10px 0;
+	}
+
+	.wpbc_timeline__toolbar_group--start {
+		flex-wrap: wrap;
+	}
+
+	.wpbc_timeline__toolbar_group--end {
+		flex-basis: 100%;
+		flex-wrap: wrap;
+	}
+
+	.wpbc_timeline__date_range_navigation {
+		flex: 1 1 100%;
+		min-width: 0;
+		order: -1;
+	}
+
+	.wpbc_timeline__resource_header {
+		padding-inline: 10px;
+	}
+
+	.wpbc_timeline__resource_row {
+		--wpbc_timeline_general__resource-control-size: 24px;
+		--wpbc_timeline_general__resource-image-size: 36px;
+		--wpbc_timeline_general__resource-row-gap: 4px;
+		--wpbc_timeline_general__resource-row-padding-inline: 8px;
+	}
+
+	.wpbc_timeline__row_controls {
+		gap: 0;
+	}
+
+	.wpbc_timeline__resource_identity {
+		flex: 1 1 0;
+		gap: 8px;
+	}
+
+	.wpbc_timeline__resource_row--child .wpbc_timeline__resource_identity {
+		padding-inline-start: 0;
+	}
+
+	.wpbc_timeline__resource_text > span {
+		overflow: hidden;
+		overflow-wrap: normal;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.wpbc_timeline__parent_badge,
+	.wpbc_timeline__capacity_badge {
+		padding: 3px 5px;
+	}
+
+	.wpbc_timeline__state {
+		justify-content: flex-start;
+	}
+}
+
+@media (max-width: 600px) {
+	.wpbc_timeline__sticky_header {
+		position: static;
+		top: auto;
+	}
+
+	.wpbc_timeline__resource_identity img,
+	.wpbc_timeline__resource_image_placeholder {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wpbc_timeline__row_toggle .wpbc-bi-chevron-right {
+		transition: none;
+	}
+}

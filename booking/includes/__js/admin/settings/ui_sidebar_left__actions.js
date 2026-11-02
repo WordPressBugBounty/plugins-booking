@@ -4,20 +4,123 @@
 // =====================================================================================================================
 
 /**
- * Save user's preferred left sidebar mode.
+ * Return the normal-screen preference scope declared by the shell.
  *
- * @param string mode
+ * @return {string} Workspace or settings.
  */
-function wpbc_admin_ui__sidebar_left__save_mode( mode ) {
-	var allowed_modes = [ 'min', 'compact', 'max' ];
+function wpbc_admin_ui__sidebar_left__get_normal_preference_scope() {
+	var shell_context = jQuery( '.wpbc_settings_page_wrapper' ).first().attr( 'data-wpbc-navigation-context' ) || '';
 
-	if ( allowed_modes.indexOf( mode ) === -1 ) {
-		return;
+	return 'settings' === shell_context ? 'settings' : 'workspace';
+}
+
+/**
+ * Return the preference scope represented by the live shell state.
+ *
+ * Fullscreen can change without a page reload, so the rendered server scope
+ * is not sufficient after the user enters or exits fullscreen.
+ *
+ * @return {string} Workspace, settings, or fullscreen.
+ */
+function wpbc_admin_ui__sidebar_left__get_live_preference_scope() {
+	if ( jQuery( 'body' ).hasClass( 'wpbc_admin_full_screen' ) ) {
+		return 'fullscreen';
 	}
 
-	var $saver = jQuery( '#wpbc_left_sidebar_view_mode_saver' );
+	return wpbc_admin_ui__sidebar_left__get_normal_preference_scope();
+}
 
-	if ( ! $saver.length ) {
+/**
+ * Return the rendered saver contract for one allow-listed sidebar scope.
+ *
+ * @param {string} preference_scope Workspace, settings, or fullscreen.
+ * @return {Object} Matching jQuery collection, which may be empty.
+ */
+function wpbc_admin_ui__sidebar_left__get_scope_saver( preference_scope ) {
+	var allowed_scopes   = [ 'workspace', 'settings', 'fullscreen' ];
+	var $saver_container = jQuery( '#wpbc_left_sidebar_view_mode_saver' );
+
+	if ( allowed_scopes.indexOf( preference_scope ) === -1 || ! $saver_container.length ) {
+		return jQuery();
+	}
+
+	return $saver_container.find(
+		'.wpbc_left_sidebar_view_mode_saver__scope[data-wpbc-navigation-preference-scope="' + preference_scope + '"]'
+	).first();
+}
+
+/**
+ * Resolve and apply the mode belonging to one sidebar preference scope.
+ *
+ * A rendered saver carries the scoped saved/default mode. Focused pages do
+ * not render savers, so their centrally resolved structural or page-exception
+ * mode is read from the wrapper instead. This presentation-only operation
+ * deliberately does not save a preference or write the navigation cookie.
+ *
+ * @param {string} preference_scope Workspace, settings, or fullscreen.
+ * @return {string} Applied mode, or an empty string when no mode was available.
+ */
+function wpbc_admin_ui__sidebar_left__apply_scope_mode( preference_scope ) {
+	var $saver            = wpbc_admin_ui__sidebar_left__get_scope_saver( preference_scope );
+	var mode              = $saver.length
+		? ( $saver.attr( 'data-wpbc-u-save-value' ) || '' )
+		: ( jQuery( '.wpbc_settings_page_wrapper' ).first().attr( 'data-wpbc-left-sidebar-resolved-mode' ) || '' );
+
+	if ( 'max' === mode ) {
+		wpbc_admin_ui__sidebar_left__do_max();
+	} else if ( 'compact' === mode ) {
+		wpbc_admin_ui__sidebar_left__do_compact();
+	} else if ( 'min' === mode ) {
+		wpbc_admin_ui__sidebar_left__do_min();
+	} else if ( 'none' === mode ) {
+		wpbc_admin_ui__sidebar_left__do_hide();
+	} else {
+		return '';
+	}
+
+	return mode;
+}
+
+/**
+ * Apply the saved/default or structural mode for a fullscreen transition.
+ *
+ * @param {boolean} is_full_screen Whether the destination is fullscreen.
+ * @return {string} Applied mode, or an empty string.
+ */
+function wpbc_admin_ui__sidebar_left__apply_full_screen_transition( is_full_screen ) {
+	var preference_scope = is_full_screen
+		? 'fullscreen'
+		: wpbc_admin_ui__sidebar_left__get_normal_preference_scope();
+
+	return wpbc_admin_ui__sidebar_left__apply_scope_mode( preference_scope );
+}
+
+/**
+ * Apply the resolved mode belonging to the current live shell context.
+ *
+ * @return {string} Applied mode, or an empty string.
+ */
+function wpbc_admin_ui__sidebar_left__apply_live_scope_mode() {
+	return wpbc_admin_ui__sidebar_left__apply_scope_mode(
+		wpbc_admin_ui__sidebar_left__get_live_preference_scope()
+	);
+}
+
+/**
+ * Save user's preferred left sidebar mode.
+ *
+ * @param {string} mode User-selected sidebar mode.
+ * @return {void}
+ */
+function wpbc_admin_ui__sidebar_left__save_mode( mode ) {
+	var allowed_modes      = [ 'min', 'compact', 'max' ];
+	var allowed_preferences = {
+		workspace: 'left_sidebar_view_mode__workspace',
+		settings: 'left_sidebar_view_mode__settings',
+		fullscreen: 'left_sidebar_view_mode__fullscreen'
+	};
+
+	if ( allowed_modes.indexOf( mode ) === -1 ) {
 		return;
 	}
 
@@ -25,10 +128,59 @@ function wpbc_admin_ui__sidebar_left__save_mode( mode ) {
 		return;
 	}
 
+	var preference_scope = wpbc_admin_ui__sidebar_left__get_live_preference_scope();
+	var $saver            = wpbc_admin_ui__sidebar_left__get_scope_saver( preference_scope );
+
+	if ( ! $saver.length ) {
+		return;
+	}
+
+	var preference_name  = $saver.attr( 'data-wpbc-u-save-name' ) || '';
+
+	if (
+		! Object.prototype.hasOwnProperty.call( allowed_preferences, preference_scope )
+		|| allowed_preferences[ preference_scope ] !== preference_name
+	) {
+		return;
+	}
+
 	$saver.data( 'wpbc-u-save-value', mode );
 	$saver.attr( 'data-wpbc-u-save-value', mode );
+	wpbc_admin_ui__sidebar_left__set_navigation_cookie( preference_scope, mode );
 
 	wpbc_save_custom_user_data_from_element( $saver.get( 0 ) );
+}
+
+/**
+ * Write a short-lived, presentation-only sidebar navigation cookie.
+ *
+ * The cookie bridges an explicit click to the next administration request
+ * while the user-option AJAX save is pending. PHP independently allow-lists
+ * and expires the value; it must never be used for authorization.
+ *
+ * @param {string} preference_scope Workspace, settings, or fullscreen.
+ * @param {string} mode             Min, compact, or max.
+ * @return {void}
+ */
+function wpbc_admin_ui__sidebar_left__set_navigation_cookie( preference_scope, mode ) {
+	var allowed_scopes = [ 'workspace', 'settings', 'fullscreen' ];
+	var allowed_modes  = [ 'min', 'compact', 'max' ];
+
+	if ( allowed_scopes.indexOf( preference_scope ) === -1 || allowed_modes.indexOf( mode ) === -1 ) {
+		return;
+	}
+
+	if ( 'function' !== typeof wpbc_admin_ui__get_preference_cookie_paths ) {
+		return;
+	}
+
+	var max_age      = 5 * 60;
+	var issued_at    = Math.floor( Date.now() / 1000 );
+	var cookie_value = encodeURIComponent( preference_scope + '|' + mode + '|' + issued_at );
+
+	wpbc_admin_ui__get_preference_cookie_paths().forEach( function ( cookie_path ) {
+		document.cookie = 'wpbc_admin_left_sidebar=' + cookie_value + '; path=' + cookie_path + '; max-age=' + max_age + '; SameSite=Lax';
+	} );
 }
 
 /**
@@ -264,7 +416,7 @@ jQuery( document ).ready( function () {
 function wpbc_admin_ui__sidebar_right__collapse_from_content_click( event ) {
 	var event_target = event.target && 1 === event.target.nodeType ? event.target : null;
 	var content_element = event_target && 'function' === typeof event_target.closest
-		? event_target.closest( '.wpbc_settings_page_wrapper[data-wpbc-right-sidebar-content-click-collapse-mode] > .wpbc_settings_page_content' )
+		? event_target.closest( '[data-wpbc-admin-page-content]' )
 		: null;
 	var $content;
 	var $wrapper;
@@ -410,7 +562,7 @@ function wpbc_admin_ui__do_expand_section() {
 			jQuery( section_id_to_show ).show();
 
 			// Show all other sections,  if provided in URL: ..?page=wpbc-settings#do_expand__wpbc_general_settings_capacity_metabox#wpbc_general_settings_capacity_upgrade_metabox .
-			for ( let i = 1; i < anchors_arr_length; i++ ) {
+			for ( var i = 1; i < anchors_arr_length; i++ ) {
 				jQuery( '#' + anchors_arr[i] ).show();
 			}
 

@@ -58,12 +58,12 @@
   flex: 1 1 100%;
   gap: 20px;
   min-width: 0;
-  padding-right: 18px
+  padding-inline-end: 18px
 }
 .wpbc_ui_settings__panel__welcome_header .wpbc_settings_path_el {
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
-  margin-left: auto!important;
+  margin-inline-start: auto!important;
   white-space: nowrap
 }
 .wpbc_ui_settings__panel__welcome .wpbc_ajx_toolbar .ui_container.ui_container_small .ui_group .ui_element .wpbc_ui_button {
@@ -145,14 +145,14 @@
     -ms-flex-direction: column;
     flex-direction: column;
     gap: 0;
-    padding: 0 16px 14px
+    padding-block: 0 14px;
+    padding-inline: 16px
   }
   .wpbc_ui_settings__panel__welcome .about-description {
-    padding-left: 0;
-    padding-right: 0
+    padding-inline: 0
   }
   .wpbc_ui_settings__panel__welcome_header .wpbc_settings_path_el {
-    margin-left: 0!important
+    margin-inline-start: 0!important
   }
   .wp-core-ui .wpbc_page .wpbc_ui_settings__panel__welcome .wpbc_admin_button {
     width: 100%

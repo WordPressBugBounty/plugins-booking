@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;                                             
 
 class WPBC_Print {
 
+	/** @var bool Whether the shared print modal has already been rendered. */
+	private static $modal_printed = false;
+
 	/**
 	 * Define HOOKs for loading CSS and  JavaScript files
 	 */
@@ -40,8 +43,7 @@ class WPBC_Print {
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
 
-			wp_enqueue_script( 'wpbc-booking_ajx_print', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings_print.js'         /* wpbc_plugin_url( '/_out/js/code_mirror.js' ) */
-												   , array( 'wpbc_all' ), WP_BK_VERSION_NUM, $in_footer );
+			self::enqueue_script( $in_footer );
 			/**
 			wp_enqueue_script( 'wpbc-booking_ajx_actions'
 				, trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__actions.js'         // wpbc_plugin_url( '/_out/js/code_mirror.js' )
@@ -64,7 +66,7 @@ class WPBC_Print {
 
 		if ( ( is_admin() ) && ( in_array( $where_to_load, array( 'admin', 'both' ) ) ) ) {
 
-			wp_enqueue_style( 'wpbc-booking_ajx_print_css', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings_print.css', array(), WP_BK_VERSION_NUM );
+			self::enqueue_style();
 			//wp_enqueue_style( 'wpbc-listing_ajx_booking', trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings__listing.css' , array(), WP_BK_VERSION_NUM );
 
 		}
@@ -81,12 +83,51 @@ class WPBC_Print {
 
 		// page=wpbc&tab=vm_booking_listing
 		if ( 'wpbc-ajx_booking'  === $page ) {		// it's from >>	do_action( 'wpbc_hook_settings_page_footer', 'wpbc-ajx_booking' );
-			$this->wpbc_write_content_for_modal_print();
+			self::print_modal();
 		}
 	}
 
-    /** Print Layout - Modal Window structure */
-    private function wpbc_write_content_for_modal_print() {
+	/**
+	 * Enqueue the reusable print browser controller.
+	 *
+	 * @param bool $in_footer Whether WordPress should print the script in the footer.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_script( $in_footer = true ) {
+		wp_enqueue_script(
+			'wpbc-booking_ajx_print',
+			trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings_print.js',
+			array( 'wpbc_all' ),
+			WP_BK_VERSION_NUM,
+			$in_footer
+		);
+	}
+
+	/**
+	 * Enqueue the reusable print presentation stylesheet.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_style() {
+		wp_enqueue_style(
+			'wpbc-booking_ajx_print_css',
+			trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/bookings_print.css',
+			array(),
+			WP_BK_VERSION_NUM
+		);
+	}
+
+	/**
+	 * Print the shared modal once for Listing or Inspector hosts.
+	 *
+	 * @return void
+	 */
+	public static function print_modal() {
+		if ( self::$modal_printed ) {
+			return;
+		}
+		self::$modal_printed = true;
 
 		?><span class="wpdevelop"><?php
 
@@ -121,7 +162,7 @@ class WPBC_Print {
 			<?php
 
 		?></span><?php
-    }
+	}
 }
 
 

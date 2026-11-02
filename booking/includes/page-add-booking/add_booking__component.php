@@ -155,6 +155,8 @@ class WPBC_Add_Booking_Component {
 			'calendar_months_count'           => null,
 			'shortcode_param__options'        => null,
 			'selected_dates_without_calendar' => null,
+			'preselect_calendar_dates'        => 0,
+			'initial_calendar_dates'          => array(),
 			'start_month_calendar'            => false,
 			'calendar_dates_start'            => '',
 			'calendar_dates_end'              => '',
@@ -194,6 +196,8 @@ class WPBC_Add_Booking_Component {
 		$args['shortcode_param__options'] = $calendar_params['shortcode_param__options'];
 
 		$args['selected_dates_without_calendar'] = ( null !== $args['selected_dates_without_calendar'] ) ? (string) $args['selected_dates_without_calendar'] : '';
+		$args['initial_calendar_dates']          = self::normalize_initial_calendar_dates( $args['initial_calendar_dates'] );
+		$args['preselect_calendar_dates']        = ! empty( $args['preselect_calendar_dates'] ) && ! empty( $args['initial_calendar_dates'] ) ? 1 : 0;
 		$args['calendar_dates_start']            = (string) $args['calendar_dates_start'];
 		$args['calendar_dates_end']              = (string) $args['calendar_dates_end'];
 		$args['booking_hash']                    = ( '' !== (string) $args['booking_hash'] ) ? sanitize_text_field( wp_unslash( (string) $args['booking_hash'] ) ) : ( isset( $_GET['booking_hash'] ) ? sanitize_text_field( wp_unslash( $_GET['booking_hash'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -207,6 +211,41 @@ class WPBC_Add_Booking_Component {
 		$args['time_override_end']               = sanitize_text_field( wp_unslash( (string) $args['time_override_end'] ) );
 
 		return $args;
+	}
+
+
+	/**
+	 * Normalize dates that should seed one rendered administrator calendar.
+	 *
+	 * These values are presentation context only. The canonical booking endpoint
+	 * still validates the submitted selection, availability, and permissions.
+	 *
+	 * @param mixed $calendar_dates Candidate ISO date list.
+	 *
+	 * @return array<int,string> Unique, valid dates in `Y-m-d` format.
+	 */
+	private static function normalize_initial_calendar_dates( $calendar_dates ) {
+
+		$normalized_dates = array();
+		$seen_dates       = array();
+
+		foreach ( is_array( $calendar_dates ) ? $calendar_dates : array() as $calendar_date ) {
+			$calendar_date = sanitize_text_field( wp_unslash( (string) $calendar_date ) );
+			if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $calendar_date, $date_parts ) ) {
+				continue;
+			}
+			if ( ! checkdate( (int) $date_parts[2], (int) $date_parts[3], (int) $date_parts[1] ) ) {
+				continue;
+			}
+			if ( isset( $seen_dates[ $calendar_date ] ) ) {
+				continue;
+			}
+
+			$seen_dates[ $calendar_date ] = true;
+			$normalized_dates[]           = $calendar_date;
+		}
+
+		return $normalized_dates;
 	}
 
 
@@ -225,6 +264,8 @@ class WPBC_Add_Booking_Component {
 		$context              = array(
 			'resource_id'                     => absint( $args['resource_id'] ),
 			'selected_dates_without_calendar' => (string) $args['selected_dates_without_calendar'],
+			'preselect_calendar_dates'        => absint( $args['preselect_calendar_dates'] ),
+			'initial_calendar_dates'          => $args['initial_calendar_dates'],
 			'selected_dates'                  => (string) $args['selected_dates'],
 			'selected_date'                   => (string) $args['selected_date'],
 			'selected_time'                   => (string) $args['selected_time'],

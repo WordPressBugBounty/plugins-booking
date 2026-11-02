@@ -223,30 +223,74 @@ a.wpbc_ui_settings__text_pro:hover {
 
 /* Top Path in Settings  */
 .wpbc_settings_path {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 10px 2px;
+	align-items: center;
+	column-gap: 16px;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	margin-block: 10px;
+	margin-inline: 2px;
+	min-width: 0;
+	row-gap: 4px;
+}
+.wpbc_settings_path__breadcrumbs {
+	align-items: center;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row wrap;
+	min-width: 0;
+}
+.wpbc_settings_path__breadcrumb {
+	align-items: center;
+	display: inline-flex;
+	flex: 0 1 auto;
+	min-width: 0;
 }
 .wpbc_settings_path_el {
-  margin: 0 5px 0 0;
-  font-size: 13px;
-  height: 22px;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-flow: row nowrap;
+	font-size: 13px;
+	justify-content: center;
+	margin: 0;
+	min-height: 22px;
 }
-.wpbc_settings_path a{
+.wpbc_settings_path__separator {
+	flex: 0 0 auto;
+	margin-inline: 5px;
+}
+.rtl .wpbc_settings_path__separator .wpbc_icn_navigate_next::before {
+	display: inline-block;
+	transform: scaleX(-1);
+}
+.wpbc_settings_path__status.wpbc_ui_settings__flex_container {
+	align-items: center;
+	column-gap: 1em;
+	display: flex;
+	flex: 0 1 auto;
+	flex-flow: row wrap;
+	justify-content: flex-end;
+	margin-inline-start: auto;
+	max-width: 100%;
+	row-gap: 4px;
+}
+.wpbc_settings_path__status .wpbc_icn_numbers::before {
+	font-size: 12px;
+	vertical-align: -0.19em;
+}
+.wpbc_settings_path__status a {
+	white-space: nowrap;
+}
+.wpbc_settings_path a {
+	overflow-wrap: anywhere;
 	text-decoration: none;
 }
 .wpbc_settings_path a:hover,
 .wpbc_settings_path a:active,
-.wpbc_settings_path a:focus{
-	text-decoration: underline;
+.wpbc_settings_path a:focus {
 	box-shadow: none;
-  	outline: 0;
+	outline: 0;
+	text-decoration: underline;
 }
 /* Ovveride header margin under top  menu  only  at  the WP Booking Calendar > Settings General page,  because of Top Path */
 .wpbc_page_tab__general.wpbc_page .wpbc_admin_page .wpbc_header_margin {

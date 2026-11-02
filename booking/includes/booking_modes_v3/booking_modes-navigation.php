@@ -159,9 +159,111 @@ function wpbc_booking_modes_v3_filter_wordpress_submenu() {
 		is_array( $filtered ) ? $filtered : $compiled,
 		$compiled
 	);
-	$submenu['wpbc'] = wpbc_booking_modes_v3_add_native_upgrade_action( $authorized_submenu );
+	$authorized_submenu = wpbc_booking_modes_v3_add_native_booking_forms_action( $authorized_submenu, $definition );
+	$submenu['wpbc']     = wpbc_booking_modes_v3_add_native_upgrade_action( $authorized_submenu );
 }
 add_action( 'admin_menu', 'wpbc_booking_modes_v3_filter_wordpress_submenu', 9999 );
+
+/**
+ * Add the canonical Booking Forms route to an authorized native submenu.
+ *
+ * Booking Forms remains a Settings tab and does not register a duplicate page
+ * controller. The alias copies the capability from the source-authorized
+ * Settings row, so WordPress and the existing Settings controller retain the
+ * complete access policy. The row is inserted immediately before Settings to
+ * match the shared Booking Calendar navigation order.
+ *
+ * @since 12.0.0
+ *
+ * @param array $native_submenu Authorized native Booking Calendar submenu rows.
+ * @param array $definition     Selected validated Booking Modes definition.
+ *
+ * @return array Native submenu rows with the Booking Forms alias when available.
+ */
+function wpbc_booking_modes_v3_add_native_booking_forms_action( $native_submenu, $definition ) {
+	if ( ! is_array( $native_submenu ) || empty( $native_submenu ) || ! is_array( $definition ) ) {
+		return is_array( $native_submenu ) ? $native_submenu : array();
+	}
+
+	$booking_form_route = isset( $definition['pages']['booking_form']['route'] ) && is_array( $definition['pages']['booking_form']['route'] )
+		? $definition['pages']['booking_form']['route']
+		: array();
+	if (
+		'wpbc-settings' !== ( isset( $booking_form_route['page'] ) ? $booking_form_route['page'] : '' )
+		|| 'builder_booking_form' !== ( isset( $booking_form_route['tab'] ) ? $booking_form_route['tab'] : '' )
+	) {
+		return $native_submenu;
+	}
+
+	$booking_forms_url = wpbc_booking_modes_get_canonical_page_url( 'wpbc-settings__builder_booking_form' );
+	if ( '' === $booking_forms_url ) {
+		return $native_submenu;
+	}
+
+	$settings_row_index = null;
+	$settings_capability = '';
+	foreach ( $native_submenu as $row_index => $native_submenu_row ) {
+		if ( ! is_array( $native_submenu_row ) || ! isset( $native_submenu_row[2] ) || ! is_scalar( $native_submenu_row[2] ) ) {
+			continue;
+		}
+
+		if ( $booking_forms_url === (string) $native_submenu_row[2] ) {
+			return $native_submenu;
+		}
+
+		if ( 'wpbc-settings' === sanitize_key( (string) $native_submenu_row[2] ) ) {
+			$settings_row_index  = $row_index;
+			$settings_capability = isset( $native_submenu_row[1] ) && is_string( $native_submenu_row[1] )
+				? $native_submenu_row[1]
+				: '';
+			break;
+		}
+	}
+
+	if ( null === $settings_row_index || '' === $settings_capability ) {
+		return $native_submenu;
+	}
+
+	$booking_forms_row = array(
+		esc_html__( 'Booking Forms', 'booking' ),
+		$settings_capability,
+		$booking_forms_url,
+	);
+	array_splice( $native_submenu, (int) $settings_row_index, 0, array( $booking_forms_row ) );
+
+	return $native_submenu;
+}
+
+/**
+ * Mark the native Booking Forms alias as active on the Forms Builder route.
+ *
+ * WordPress otherwise highlights the broader Settings row because both links
+ * use the same controller. Returning the exact canonical alias URL keeps the
+ * native menu's visual state aligned with the page being shown.
+ *
+ * @since 12.0.0
+ *
+ * @param string $submenu_file Current WordPress submenu file.
+ * @param string $parent_file  Current WordPress parent menu file.
+ *
+ * @return string Booking Forms alias URL on its route, otherwise the original value.
+ */
+function wpbc_booking_modes_v3_filter_native_booking_forms_submenu_file( $submenu_file, $parent_file ) {
+	$context = wpbc_booking_modes_get_context();
+	if (
+		'wpbc' !== $parent_file
+		|| ! is_array( $context )
+		|| 'wpbc-settings' !== ( isset( $context['page'] ) ? $context['page'] : '' )
+		|| 'builder_booking_form' !== ( isset( $context['tab'] ) ? $context['tab'] : '' )
+	) {
+		return $submenu_file;
+	}
+
+	$booking_forms_url = wpbc_booking_modes_get_canonical_page_url( 'wpbc-settings__builder_booking_form' );
+
+	return '' !== $booking_forms_url ? $booking_forms_url : $submenu_file;
+}
+add_filter( 'submenu_file', 'wpbc_booking_modes_v3_filter_native_booking_forms_submenu_file', 10, 2 );
 
 /**
  * Check whether the native WordPress submenu should show the Free upgrade action.

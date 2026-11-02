@@ -315,6 +315,11 @@ function wpbc_booking_validate_save_availability( &$local_params, $cleaned_param
  *								'sync_gid'           => 'ghjgjgjgh5f5f45f'                                              // Really Optional:  can be passed only during import .ics
  *                              'is_approve_booking' => 0                                                               // Really Optional:   0 | 1
  *                              'save_booking_even_if_unavailable' => 0                                                 // Really Optional:   0 | 1,  if 1 then force save booking even if dates unavailable.
+ *                              'wpbc_server_creation_context' => array(                                               // Internal administrator orchestration only; removed before scalar request sanitization.
+ *                                  'idempotency_marker' => 'sha256-hex',
+ *                                  'purpose'            => 'booking_new_inspector_apply',
+ *                                  'notes'              => array( 'public' => '...', 'private' => '...' ),
+ *                              ),
  *                          ]
  *
  * @return []   ok:       [
@@ -340,6 +345,11 @@ function wpbc_booking_validate_save_availability( &$local_params, $cleaned_param
  *
  */
 function wpbc_booking_save( $request_params ){
+	$server_creation_context = array();
+	if ( isset( $request_params['wpbc_server_creation_context'] ) && is_array( $request_params['wpbc_server_creation_context'] ) ) {
+		$server_creation_context = $request_params['wpbc_server_creation_context'];
+	}
+	unset( $request_params['wpbc_server_creation_context'] );
 																														// <editor-fold defaultstate="collapsed" desc=" = PERFORMANCE = "  >
 	$php_performance = wpbc_php_performance_START( 'total', array() );
 																														// </editor-fold>
@@ -464,6 +474,26 @@ function wpbc_booking_save( $request_params ){
 	// -----------------------------------------------------------------------------------------------------------------
 	$local_params                        = array();
 	$is_authorized_admin_booking_request = wpbc_is_authorized_admin_booking_request( $re_cleaned_params['wpbc_admin_booking_nonce'] );
+	if ( $is_authorized_admin_booking_request && ! empty( $server_creation_context ) ) {
+		$context_marker = isset( $server_creation_context['idempotency_marker'] ) && is_scalar( $server_creation_context['idempotency_marker'] )
+			? strtolower( trim( (string) $server_creation_context['idempotency_marker'] ) )
+			: '';
+		$context_purpose = isset( $server_creation_context['purpose'] ) && is_scalar( $server_creation_context['purpose'] )
+			? sanitize_key( (string) $server_creation_context['purpose'] )
+			: '';
+		if ( preg_match( '/^[a-f0-9]{64}$/', $context_marker ) && 'booking_new_inspector_apply' === $context_purpose ) {
+			$local_params['server_creation_context'] = array(
+				'idempotency_marker' => $context_marker,
+				'purpose'            => $context_purpose,
+			);
+			$context_notes = wpbc_booking_new_inspector_normalize_creation_notes(
+				isset( $server_creation_context['notes'] ) ? $server_creation_context['notes'] : null
+			);
+			if ( is_array( $context_notes ) ) {
+				$local_params['server_creation_context']['notes'] = $context_notes;
+			}
+		}
+	}
 	$local_params['is_from_admin_panel'] = $is_authorized_admin_booking_request;
 	$local_params['user_id']             = $re_cleaned_params['user_id'];                                               // 1
 	$local_params['sync_gid']            = $re_cleaned_params['sync_gid'];                                              // ''
@@ -487,9 +517,13 @@ function wpbc_booking_save( $request_params ){
 	/**
 	 * Get parsed booking form:                 = [ name = "John", secondname = "Smith", email = "john.smith@server.com", visitors = "2",... ]
 	 */
+	// Parse the selected dates before the optional time override so multi-date boundary ordering can be validated exactly.
+	$local_params['dates_only_sql_arr'] = wpbc_convert_dates_str__dd_mm_yyyy__to__yyyy_mm_dd( $re_cleaned_params["dates_ddmmyy_csv"] );
+	$local_params['dates_only_sql_arr'] = explode( ',', $local_params['dates_only_sql_arr'] );
+
 	$local_params['structured_booking_data_arr'] = wpbc_get_parsed_booking_data_arr( $re_cleaned_params["form_data"], $re_cleaned_params["resource_id"], array( 'get' => 'value' ) );
 	$local_params['all_booking_data_arr']        = wpbc_get_parsed_booking_data_arr( $re_cleaned_params["form_data"], $re_cleaned_params["resource_id"] );
-	$local_params['time_override_arr']           = wpbc_get_booking_time_override__as_arr( $re_cleaned_params );
+	$local_params['time_override_arr']           = wpbc_get_booking_time_override__as_arr( $re_cleaned_params, $local_params['dates_only_sql_arr'] );
 	if ( ! empty( $local_params['time_override_arr'] ) ) {
 		unset( $local_params['structured_booking_data_arr']['rangetime'], $local_params['structured_booking_data_arr']['durationtime'] );
 		$local_params['structured_booking_data_arr']['starttime'] = $local_params['time_override_arr']['start'];
@@ -584,10 +618,6 @@ function wpbc_booking_save( $request_params ){
 													wpbc_transform__seconds__in__24_hours_his( $time_as_seconds_arr[0] ),
 													wpbc_transform__seconds__in__24_hours_his( $time_as_seconds_arr[1] )
 											);
-	// [ '2023-09-10', '2023-09-11' ]
-	$local_params['dates_only_sql_arr'] = wpbc_convert_dates_str__dd_mm_yyyy__to__yyyy_mm_dd( $re_cleaned_params["dates_ddmmyy_csv"] );
-	$local_params['dates_only_sql_arr'] = explode( ',', $local_params['dates_only_sql_arr'] );
-
 	$classic_context              = array();
 	$has_verified_classic_context = false;
 	if ( ! empty( $re_cleaned_params['classic_booking_context_token'] ) && function_exists( 'wpbc_classic_booking_context_validate_submission' ) ) {
@@ -758,6 +788,9 @@ function wpbc_booking_save( $request_params ){
 			if ( ! empty( $create_params['sync_gid'] ) ) {
 				$create_booking_params['sync_gid'] = $create_params['sync_gid'];
 			}
+			if ( ! empty( $create_params['server_creation_context'] ) ) {
+				$create_booking_params['server_creation_context'] = $create_params['server_creation_context'];
+			}
 
 			if ( ! wpbc_booking_availability_guard_is_owned( $availability_guard ) ) {
 				wpbc_booking_availability_guard_release( $availability_guard );
@@ -810,6 +843,7 @@ function wpbc_booking_save( $request_params ){
 	if (
 		   ( 0 !== $create_params['is_edit_booking'] )               // If edit booking
 		&& ( 1 != $create_params['is_duplicate_booking'] )          // If not duplicate
+		&& ( ! function_exists( 'wpbc_booking_activity_table_exists' ) || ! wpbc_booking_activity_table_exists() )
 	) {
 			// Log the cost  info.
 			$is_add_timezone_offset = true;
@@ -1330,6 +1364,59 @@ function wpbc_db__booking_save( &$create_params, &$where_to_save_booking ) {
 			'value' => gmdate( 'Y-m-d H:i:s' ),
 		);
 
+		$booking_options = array();
+		$creation_notes  = isset( $create_params['server_creation_context']['notes'] ) && is_array( $create_params['server_creation_context']['notes'] )
+			? $create_params['server_creation_context']['notes']
+			: array();
+		if ( array_key_exists( 'public', $creation_notes ) ) {
+			$sql_field_arr[] = array(
+				'name'  => 'public_note',
+				'type'  => '%s',
+				'value' => $creation_notes['public'],
+			);
+		}
+		if ( array_key_exists( 'private', $creation_notes ) ) {
+			$sql_field_arr[] = array(
+				'name'  => 'remark',
+				'type'  => '%s',
+				'value' => $creation_notes['private'],
+			);
+		}
+
+		// Freeze the exact creation-time form definition. Normal booking updates
+		// intentionally never write this booking-options key.
+		if ( class_exists( 'WPBC_Booking_Inspector_Form_Snapshot_Builder' ) ) {
+			$form_snapshot_builder = new WPBC_Booking_Inspector_Form_Snapshot_Builder();
+			$form_snapshot_context = function_exists( 'wpbc_get_request_form_context' )
+				? wpbc_get_request_form_context()
+				: array();
+			$form_snapshot         = $form_snapshot_builder->build_snapshot(
+				$create_params['resource_id'],
+				isset( $create_params['custom_form'] ) ? $create_params['custom_form'] : '',
+				$form_data,
+				$form_snapshot_context
+			);
+			if ( ! empty( $form_snapshot ) ) {
+				$booking_options[ WPBC_Booking_Inspector_Form_Snapshot_Builder::OPTION_KEY ] = $form_snapshot;
+			}
+		}
+		if (
+			! empty( $create_params['server_creation_context']['idempotency_marker'] )
+			&& preg_match( '/^[a-f0-9]{64}$/', (string) $create_params['server_creation_context']['idempotency_marker'] )
+		) {
+			$booking_options['wpbc_creation_idempotency'] = array(
+				'marker'  => (string) $create_params['server_creation_context']['idempotency_marker'],
+				'purpose' => 'booking_new_inspector_apply',
+			);
+		}
+		if ( ! empty( $booking_options ) ) {
+			$sql_field_arr[] = array(
+				'name'  => 'booking_options',
+				'type'  => '%s',
+				'value' => maybe_serialize( $booking_options ),
+			);
+		}
+
 		$sql_prepare_arr = array();
 		$sql_prepare_arr['name']  = array_map( function ( $value ) { return $value['name']; },  $sql_field_arr );
 		$sql_prepare_arr['type']  = array_map( function ( $value ) { return $value['type']; },  $sql_field_arr );
@@ -1706,6 +1793,65 @@ function wpbc_clear_request_form_context() {
 
 
 	/**
+	 * Authorize and normalize notes from the internal New Booking Inspector context.
+	 *
+	 * This helper is intentionally unavailable to ordinary public booking values.
+	 * Its caller has already verified the administration nonce and orchestration
+	 * purpose; the helper repeats current edit permissions and storage checks so a
+	 * stale reviewed plan cannot add a note type that the user can no longer edit.
+	 *
+	 * @param mixed $raw_notes Candidate public/private note map.
+	 *
+	 * @return array<string,string>|null Exact normalized note map, or null when invalid.
+	 */
+	function wpbc_booking_new_inspector_normalize_creation_notes( $raw_notes ) {
+
+		if ( ! is_array( $raw_notes ) || ( ! empty( $raw_notes ) && array_values( $raw_notes ) === $raw_notes ) ) {
+			return null;
+		}
+		if (
+			! function_exists( 'wpbc_is_user_can' )
+			|| ! function_exists( 'wpbc_get_current_user_id' )
+			|| ! wpbc_is_user_can( 'edit_booking', wpbc_get_current_user_id() )
+			|| ! function_exists( 'wpbc_booking_notes_column_exists' )
+		) {
+			return empty( $raw_notes ) ? array() : null;
+		}
+
+		$allowed_note_types = array();
+		if ( wpbc_booking_notes_column_exists( 'public_note' ) ) {
+			$allowed_note_types[] = 'public';
+		}
+		if (
+			wpbc_booking_notes_column_exists( 'remark' )
+			&& wpbc_is_user_can( 'set_booking_note', wpbc_get_current_user_id() )
+		) {
+			$allowed_note_types[] = 'private';
+		}
+
+		$actual_note_types = array_keys( $raw_notes );
+		sort( $actual_note_types );
+		sort( $allowed_note_types );
+		if ( $actual_note_types !== $allowed_note_types ) {
+			return null;
+		}
+
+		$max_note_bytes   = class_exists( 'WPBC_Booking_New_Inspector_Config' )
+			? WPBC_Booking_New_Inspector_Config::MAX_NOTE_VALUE_BYTES
+			: 10000;
+		$normalized_notes = array();
+		foreach ( $allowed_note_types as $note_type ) {
+			if ( ! is_scalar( $raw_notes[ $note_type ] ) || $max_note_bytes < strlen( (string) $raw_notes[ $note_type ] ) ) {
+				return null;
+			}
+			$normalized_notes[ $note_type ] = sanitize_textarea_field( (string) $raw_notes[ $note_type ] );
+		}
+
+		return $normalized_notes;
+	}
+
+
+	/**
 	 * Determine whether a booking-create request is an authorized administration workflow.
 	 *
 	 * The public booking action is intentionally available to signed-out visitors. A
@@ -1853,11 +1999,12 @@ function wpbc_clear_request_form_context() {
 	/**
 	 * Get explicit admin-selected time override from Add Booking modal request.
 	 *
-	 * @param array $request_params Sanitized booking request params.
+	 * @param array $request_params     Sanitized booking request params.
+	 * @param array $selected_dates_arr Canonical selected dates used to distinguish a multi-date boundary from a same-day interval.
 	 *
 	 * @return array Empty array or array with start/end HH:MM values.
 	 */
-	function wpbc_get_booking_time_override__as_arr( $request_params ) {
+	function wpbc_get_booking_time_override__as_arr( $request_params, $selected_dates_arr = array() ) {
 
 		if ( empty( $request_params['wpbc_time_override_enabled'] ) ) {
 			return array();
@@ -1865,11 +2012,19 @@ function wpbc_clear_request_form_context() {
 
 		$start_time = wpbc_sanitize_booking_time_override__hm( isset( $request_params['wpbc_time_override_start'] ) ? $request_params['wpbc_time_override_start'] : '' );
 		$end_time   = wpbc_sanitize_booking_time_override__hm( isset( $request_params['wpbc_time_override_end'] ) ? $request_params['wpbc_time_override_end'] : '' );
+		$source     = isset( $request_params['wpbc_time_override_source'] ) ? sanitize_key( $request_params['wpbc_time_override_source'] ) : '';
+
+		$selected_dates_arr = is_array( $selected_dates_arr ) ? $selected_dates_arr : array();
+		$selected_dates_arr = array_values( array_unique( array_filter( array_map( 'strval', $selected_dates_arr ) ) ) );
+		$is_multi_date_boundary = 'booking_new_inspector_boundary' === $source && count( $selected_dates_arr ) > 1;
 
 		if (
 			   ( '' === $start_time )
 			|| ( '' === $end_time )
-			|| ( wpbc_booking_time_override__hm_to_seconds( $start_time ) >= wpbc_booking_time_override__hm_to_seconds( $end_time ) )
+			|| (
+				! $is_multi_date_boundary
+				&& wpbc_booking_time_override__hm_to_seconds( $start_time ) >= wpbc_booking_time_override__hm_to_seconds( $end_time )
+			)
 		) {
 			return array();
 		}
@@ -1877,7 +2032,7 @@ function wpbc_clear_request_form_context() {
 		return array(
 			'start'  => $start_time,
 			'end'    => $end_time,
-			'source' => isset( $request_params['wpbc_time_override_source'] ) ? sanitize_key( $request_params['wpbc_time_override_source'] ) : '',
+			'source' => $source,
 		);
 	}
 

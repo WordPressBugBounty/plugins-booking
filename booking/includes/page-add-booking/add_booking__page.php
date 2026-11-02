@@ -72,10 +72,10 @@ function wpbc_add_booking_page_get_allow_past_url( $allow_past ) {
 
 
 /**
- * Resolve a generated page asset, with a source fallback for development.
+ * Resolve a generated page asset from the runtime output directory.
  *
- * Release packages use `_out`. The fallback keeps the page usable immediately
- * after a source checkout and disappears automatically after asset compilation.
+ * Source files are never enqueued directly. This keeps development and release
+ * requests on the same compiled asset contract.
  *
  * @param string $file_name Asset file name without a directory.
  *
@@ -84,14 +84,78 @@ function wpbc_add_booking_page_get_allow_past_url( $allow_past ) {
 function wpbc_add_booking_page_get_asset_url( $file_name ) {
 
 	$file_name = sanitize_file_name( $file_name );
-	$folder    = file_exists( __DIR__ . '/_out/' . $file_name ) ? '_out' : '_src';
 
-	return trailingslashit( plugins_url( '', __FILE__ ) ) . $folder . '/' . $file_name;
+	return trailingslashit( plugins_url( '', __FILE__ ) ) . '_out/' . $file_name;
 }
 
 
 /**
- * Enqueue source-built styles for the Add Booking inspector page only.
+ * Get the effective email-notification choice for the Add Booking page.
+ *
+ * A Timeline handoff may carry an explicit, authorized user intent. Otherwise
+ * the established Add Booking option remains authoritative. Keeping this rule
+ * in one function prevents the top navigation toggle and inspector summary
+ * from presenting different values.
+ *
+ * @return bool True when the created Booking should send normal notifications.
+ */
+function wpbc_add_booking_page_is_email_sending_enabled() {
+
+	$send_emails    = 'On' !== get_bk_option( 'booking_send_emails_off_addbooking' );
+	$handoff_intent = function_exists( 'wpbc_timeline_get_requested_email_intent' )
+		? wpbc_timeline_get_requested_email_intent( 'booking_handoff' )
+		: null;
+
+	return null === $handoff_intent ? $send_emails : (bool) $handoff_intent;
+}
+
+
+/**
+ * Render the Add Booking email toggle in the shared horizontal action slot.
+ *
+ * The control retains its released ID because the canonical booking submit
+ * client reads it directly. The shared navigation renderer owns only the
+ * neutral action slot; this page remains responsible for the Booking-specific
+ * label, default value, and submission contract.
+ *
+ * @param string $active_page Active root page slug.
+ * @param string $active_tab  Active page tab slug.
+ *
+ * @return void
+ */
+function wpbc_add_booking_page_render_navigation_email_toggle( $active_page, $active_tab ) {
+
+	if (
+		'wpbc' !== $active_page
+		|| 'add-booking' !== $active_tab
+		|| ! wpbc_add_booking_page_is_inspector_enabled()
+		|| ! WPBC_Add_Booking_Component::current_user_can_add_booking()
+		|| ! wpbc_is_mu_user_can_be_here( 'activated_user' )
+	) {
+		return;
+	}
+	?>
+	<div class="wpbc_add_booking__navigation_email" data-wpbc-add-booking-navigation-email="1">
+		<?php
+		wpbc_flex_toggle(
+			array(
+				'id'       => 'is_send_email_for_pending',
+				'name'     => 'is_send_email_for_pending',
+				'label'    => array( 'title' => __( 'Emails sending', 'booking' ) ),
+				'value'    => 'On',
+				'selected' => wpbc_add_booking_page_is_email_sending_enabled(),
+				'legend'   => __( 'Send email notifications for this Booking', 'booking' ),
+			)
+		);
+		?>
+	</div>
+	<?php
+}
+add_action( 'hook__wpbc_ui__top_horisontal_nav__end', 'wpbc_add_booking_page_render_navigation_email_toggle', 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+
+
+/**
+ * Enqueue generated runtime styles for the Add Booking inspector page only.
  *
  * @param string $where_to_load Booking Calendar asset context.
  *
@@ -280,7 +344,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render all controls formerly shown in the Add Booking top toolbar.
+	 * Render the Add Booking actions, summary, and page-local inspector controls.
 	 *
 	 * Native inspector markup preserves the established IDs, reload URLs, AJAX
 	 * save endpoint, MultiUser visibility rules, and commercial behavior.
@@ -301,15 +365,6 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			</div>
 			<?php $this->render_booking_setup_summary(); ?>
 			<?php
-			WPBC_UI_Sidebar_Panels::render_collapsible_group(
-				array(
-					'id'    => 'wpbc_add_booking_setup_group',
-					'group' => 'add-booking-setup',
-					'title' => __( 'Booking setup', 'booking' ),
-					'open'  => false,
-				),
-				array( $this, 'render_booking_setup_controls' )
-			);
 			WPBC_UI_Sidebar_Panels::render_collapsible_group(
 				array(
 					'id'    => 'wpbc_add_booking_date_selection_group',
@@ -345,45 +400,64 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render resource and Booking Form selectors.
+	 * Render the Booking resource and Booking Form panel above the form.
+	 *
+	 * The selectors retain their canonical option providers and reload URLs.
+	 * Only their page-level presentation moves out of the inspector so setup is
+	 * visible before an administrator starts selecting dates or entering details.
 	 *
 	 * @return void
 	 */
-	public function render_booking_setup_controls() {
+	public function render_booking_setup_panel() {
+		?>
+		<section class="wpbc_add_booking__setup_panel" aria-labelledby="wpbc_add_booking__setup_panel_title">
+			<h2 id="wpbc_add_booking__setup_panel_title" class="screen-reader-text"><?php esc_html_e( 'Booking setup', 'booking' ); ?></h2>
+			<div class="wpbc_add_booking__setup_fields">
+				<?php $this->render_booking_setup_controls( 'panel' ); ?>
+			</div>
+		</section>
+		<?php
+	}
 
-		$is_resource_rendered = $this->render_booking_resource_control();
-		$is_form_rendered     = $this->render_booking_form_control();
+
+	/**
+	 * Render resource and Booking Form selectors in an approved page context.
+	 *
+	 * @param string $layout Presentation context: `panel` or `inspector`.
+	 *
+	 * @return void
+	 */
+	public function render_booking_setup_controls( $layout = 'panel' ) {
+
+		$layout = 'inspector' === $layout ? 'inspector' : 'panel';
+
+		$is_resource_rendered = $this->render_booking_resource_control( $layout );
+		$is_form_rendered     = $this->render_booking_form_control( $layout );
 
 		if ( ! $is_resource_rendered && ! $is_form_rendered ) {
 			?><p class="wpbc_add_booking__empty_setup"><?php esc_html_e( 'This Booking uses the default Booking resource and Standard Booking Form.', 'booking' ); ?></p><?php
 		}
-		do_action( 'wpbc_admin_add_booking_setup_panel', $this );
+		do_action( 'wpbc_admin_add_booking_setup_panel', $this, $layout );
 	}
 
 
 	/**
 	 * Render a compact summary of the current manual Booking configuration.
 	 *
-	 * Available settings are rendered as links that expand the correct inspector
-	 * group and move keyboard focus to the corresponding control.
+	 * Available settings are rendered as links that move keyboard focus to the
+	 * corresponding page or inspector control.
 	 *
 	 * @return void
 	 */
 	private function render_booking_setup_summary() {
 
-		$resource_id      = $this->get_selected_booking_resource_id();
-		$resource_title = function_exists( 'wpbc_get_resource_title' ) ? wpbc_get_resource_title( $resource_id ) : '';
-		$form_name      = $this->get_selected_booking_form_name( $resource_id );
-		$days_mode      = $this->get_current_days_selection_mode();
-		$send_emails    = 'On' !== get_bk_option( 'booking_send_emails_off_addbooking' );
-		$handoff_intent = function_exists( 'wpbc_timeline_get_requested_email_intent' )
-			? wpbc_timeline_get_requested_email_intent( 'booking_handoff' )
-			: null;
-		if ( null !== $handoff_intent ) {
-			$send_emails = $handoff_intent;
-		}
-		$allow_past     = isset( $_GET['allow_past'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$enabled_label  = __( 'Enabled', 'booking' );
+		$resource_id     = $this->get_selected_booking_resource_id();
+		$resource_title  = function_exists( 'wpbc_get_resource_title' ) ? wpbc_get_resource_title( $resource_id ) : '';
+		$form_name       = $this->get_selected_booking_form_name( $resource_id );
+		$days_mode       = $this->get_current_days_selection_mode();
+		$send_emails     = wpbc_add_booking_page_is_email_sending_enabled();
+		$allow_past      = isset( $_GET['allow_past'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$enabled_label   = __( 'Enabled', 'booking' );
 		$disabled_label = __( 'Disabled', 'booking' );
 
 		if ( '' === trim( (string) $resource_title ) ) {
@@ -399,7 +473,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			<div class="wpbc_add_booking__setup_summary_item">
 				<span class="wpbc_add_booking__setup_summary_label"><?php esc_html_e( 'Booking resource', 'booking' ); ?></span>
 				<?php if ( $this->is_booking_resource_selector_available() || $this->is_booking_resource_upgrade_visible() ) : ?>
-					<a href="#select_booking_resource" class="wpbc_add_booking__setup_summary_link" data-wpbc-add-booking-open-group="add-booking-setup" data-wpbc-add-booking-focus="#select_booking_resource"><?php echo esc_html( $resource_title ); ?></a>
+					<a href="#select_booking_resource" class="wpbc_add_booking__setup_summary_link" data-wpbc-add-booking-focus="#select_booking_resource"><?php echo esc_html( $resource_title ); ?></a>
 				<?php else : ?>
 					<strong><?php echo esc_html( $resource_title ); ?></strong>
 				<?php endif; ?>
@@ -407,7 +481,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			<div class="wpbc_add_booking__setup_summary_item">
 				<span class="wpbc_add_booking__setup_summary_label"><?php esc_html_e( 'Booking Form', 'booking' ); ?></span>
 				<?php if ( ! empty( $this->get_available_booking_forms() ) ) : ?>
-					<a href="#select_booking_form" class="wpbc_add_booking__setup_summary_link" data-wpbc-add-booking-open-group="add-booking-setup" data-wpbc-add-booking-focus="#select_booking_form"><?php echo esc_html( $form_title ); ?></a>
+					<a href="#select_booking_form" class="wpbc_add_booking__setup_summary_link" data-wpbc-add-booking-focus="#select_booking_form"><?php echo esc_html( $form_title ); ?></a>
 				<?php else : ?>
 					<strong><?php echo esc_html( $form_title ); ?></strong>
 				<?php endif; ?>
@@ -423,9 +497,8 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			</div>
 			<div class="wpbc_add_booking__setup_summary_item">
 				<span class="wpbc_add_booking__setup_summary_label"><?php esc_html_e( 'Email notifications', 'booking' ); ?></span>
-				<a href="#wpbc_add_booking_tools_group"
+				<a href="#is_send_email_for_pending"
 					class="wpbc_add_booking__setup_summary_link"
-					data-wpbc-add-booking-open-group="add-booking-tools"
 					data-wpbc-add-booking-focus="#is_send_email_for_pending"
 					data-wpbc-add-booking-summary="emails"
 					aria-label="<?php esc_attr_e( 'Change email notification setting', 'booking' ); ?>"><?php echo esc_html( $send_emails ? $enabled_label : $disabled_label ); ?></a>
@@ -662,18 +735,20 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render the commercial Booking resource selector as a native inspector row.
+	 * Render the commercial Booking resource selector in an approved page layout.
 	 *
 	 * The legacy resource option provider remains the source of truth for parent,
 	 * child, MultiUser, and edition-specific resource visibility. Only its toolbar
 	 * HTML renderer is bypassed on this page.
 	 *
+	 * @param string $layout Presentation context: `panel` or `inspector`.
+	 *
 	 * @return bool True when a resource selector was rendered.
 	 */
-	private function render_booking_resource_control() {
+	private function render_booking_resource_control( $layout = 'panel' ) {
 
 		if ( $this->is_booking_resource_upgrade_visible() ) {
-			return $this->render_booking_resource_upgrade_control();
+			return $this->render_booking_resource_upgrade_control( $layout );
 		}
 
 		// A resource cannot be switched while editing an existing Booking.
@@ -688,13 +763,14 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 		$link_base = wpbc_get_new_booking_url__base( array( 'booking_type', 'booking_form', 'parent_res' ) ) . '&booking_type=';
 
-		$this->render_inspector_select_row(
+		$this->render_select_row(
 			array(
 				'id'        => 'select_booking_resource',
 				'name'      => 'select_booking_resource',
 				'label'     => __( 'Booking resource', 'booking' ),
 				'options'   => $resource_options,
 				'on_change' => 'window.location.href = ' . wp_json_encode( $link_base ) . ' + this.value;',
+				'layout'    => $layout,
 			)
 		);
 
@@ -705,16 +781,21 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 	/**
 	 * Render the Free-version resource explanation in place of the selector.
 	 *
-	 * @return bool True after the inspector control has been rendered.
+	 * @param string $layout Presentation context: `panel` or `inspector`.
+	 *
+	 * @return bool True after the control has been rendered.
 	 */
-	private function render_booking_resource_upgrade_control() {
+	private function render_booking_resource_upgrade_control( $layout = 'panel' ) {
 
-		$dismiss_id = 'wpbc_add_booking_resource_upgrade';
-		$is_demo    = function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo();
+		$dismiss_id    = 'wpbc_add_booking_resource_upgrade';
+		$is_demo       = function_exists( 'wpbc_is_this_demo' ) && wpbc_is_this_demo();
+		$row_class     = 'inspector' === $layout ? 'inspector__row' : 'wpbc_add_booking__setup_field';
+		$label_class   = 'inspector' === $layout ? 'inspector__label' : 'wpbc_add_booking__setup_label';
+		$control_class = 'inspector' === $layout ? 'inspector__control' : 'wpbc_add_booking__setup_control';
 		?>
-		<div class="inspector__row wpbc_add_booking__resource_upgrade_row" id="<?php echo esc_attr( $dismiss_id ); ?>">
-			<span class="inspector__label"><?php esc_html_e( 'Booking resource', 'booking' ); ?></span>
-			<div class="inspector__control" id="select_booking_resource" tabindex="-1">
+		<div class="<?php echo esc_attr( $row_class ); ?> wpbc_add_booking__resource_upgrade_row" id="<?php echo esc_attr( $dismiss_id ); ?>">
+			<span class="<?php echo esc_attr( $label_class ); ?>"><?php esc_html_e( 'Booking resource', 'booking' ); ?></span>
+			<div class="<?php echo esc_attr( $control_class ); ?>" id="select_booking_resource" tabindex="-1">
 				<div class="wpbc_add_booking__resource_upgrade_hint">
 					<a class="wpbc_pro_label" href="<?php echo esc_url( 'https://wpbookingcalendar.com/features/' ); ?>" target="_blank" rel="noopener noreferrer">Pro</a>
 					<?php if ( ! $is_demo && function_exists( 'wpbc_is_dismissed' ) ) : ?>
@@ -742,14 +823,16 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render the available Booking Forms as a native inspector row.
+	 * Render the available Booking Forms in an approved page layout.
 	 *
 	 * This follows the same MultiUser access rule and resource-default selection
 	 * used by the legacy toolbar selector without mutating request data.
 	 *
+	 * @param string $layout Presentation context: `panel` or `inspector`.
+	 *
 	 * @return bool True when a Booking Form selector was rendered.
 	 */
-	private function render_booking_form_control() {
+	private function render_booking_form_control( $layout = 'panel' ) {
 
 		$booking_forms = $this->get_available_booking_forms();
 
@@ -791,13 +874,14 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 		$link_base = wpbc_get_new_booking_url__base( array( 'booking_form' ) ) . '&booking_form=';
 
-		$this->render_inspector_select_row(
+		$this->render_select_row(
 			array(
 				'id'        => 'select_booking_form',
 				'name'      => 'select_booking_form',
 				'label'     => __( 'Booking Form', 'booking' ),
 				'options'   => $form_options,
 				'on_change' => 'window.location.href = ' . wp_json_encode( $link_base ) . ' + this.value;',
+				'layout'    => $layout,
 				'after'     => function () use ( $form_name ) {
 					$this->render_booking_form_edit_link( $form_name );
 				},
@@ -838,7 +922,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render one select field using the shared Builder-style inspector markup.
+	 * Render one select field for the setup panel or Builder-style inspector.
 	 *
 	 * Option arrays may contain the Booking Calendar toolbar option keys
 	 * `title`, `class`, `disabled`, `selected`, and `optgroup`.
@@ -848,7 +932,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 	 *
 	 * @return void
 	 */
-	private function render_inspector_select_row( $args ) {
+	private function render_select_row( $args ) {
 
 		$args = wp_parse_args(
 			$args,
@@ -860,18 +944,23 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 				'value'     => null,
 				'on_change' => '',
 				'after'     => null,
+				'layout'    => 'inspector',
 			)
 		);
+		$is_panel      = 'panel' === $args['layout'];
+		$row_class     = $is_panel ? 'wpbc_add_booking__setup_field' : 'inspector__row';
+		$label_class   = $is_panel ? 'wpbc_add_booking__setup_label' : 'inspector__label';
+		$control_class = $is_panel ? 'wpbc_add_booking__setup_control' : 'inspector__control';
 		?>
-		<div class="inspector__row">
-			<label for="<?php echo esc_attr( $args['id'] ); ?>" class="inspector__label"><?php echo esc_html( $args['label'] ); ?></label>
-			<div class="inspector__control">
+		<div class="<?php echo esc_attr( $row_class ); ?>">
+			<label for="<?php echo esc_attr( $args['id'] ); ?>" class="<?php echo esc_attr( $label_class ); ?>"><?php echo esc_html( $args['label'] ); ?></label>
+			<div class="<?php echo esc_attr( $control_class ); ?>">
 				<select id="<?php echo esc_attr( $args['id'] ); ?>"
 						name="<?php echo esc_attr( $args['name'] ); ?>"
-						class="inspector__input"
+						class="<?php echo esc_attr( $is_panel ? 'wpbc_add_booking__setup_select' : 'inspector__input' ); ?>"
 						<?php echo '' !== $args['on_change'] ? 'onchange="' . esc_attr( $args['on_change'] ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						autocomplete="off">
-					<?php $this->render_inspector_select_options( $args['options'], $args['value'] ); ?>
+					<?php $this->render_select_options( $args['options'], $args['value'] ); ?>
 				</select>
 				<?php
 				if ( is_callable( $args['after'] ) ) {
@@ -892,7 +981,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 	 *
 	 * @return void
 	 */
-	private function render_inspector_select_options( $options, $selected_value = null ) {
+	private function render_select_options( $options, $selected_value = null ) {
 
 		foreach ( (array) $options as $option_value => $option_definition ) {
 			$option_definition = is_array( $option_definition ) ? $option_definition : array( 'title' => $option_definition );
@@ -919,7 +1008,10 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 
 
 	/**
-	 * Render email and past-date controls.
+	 * Render cost correction, past-date mode, and extension-owned Booking tools.
+	 *
+	 * Email sending is intentionally rendered in the horizontal navigation action
+	 * slot, where it remains visible while an administrator completes the form.
 	 *
 	 * @return void
 	 */
@@ -928,13 +1020,6 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$allow_past     = isset( $_GET['allow_past'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$allow_past_url = esc_url_raw( wpbc_add_booking_page_get_allow_past_url( true ) );
 		$normal_url     = esc_url_raw( wpbc_add_booking_page_get_allow_past_url( false ) );
-		$send_emails    = 'On' !== get_bk_option( 'booking_send_emails_off_addbooking' );
-		$handoff_intent = function_exists( 'wpbc_timeline_get_requested_email_intent' )
-			? wpbc_timeline_get_requested_email_intent( 'booking_handoff' )
-			: null;
-		if ( null !== $handoff_intent ) {
-			$send_emails = $handoff_intent;
-		}
 		?>
 		<?php
 		wpbc_render_admin_cost_correction_control(
@@ -949,23 +1034,6 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 			)
 		);
 		?>
-		<div class="inspector__row inspector__row--toggle">
-			<div class="inspector__control">
-				<?php
-				wpbc_flex_toggle(
-					array(
-						'id'       => 'is_send_email_for_pending',
-						'name'     => 'is_send_email_for_pending',
-						'label'    => array( 'title' => __( 'Emails sending', 'booking' ) ),
-						'value'    => 'On',
-						'selected' => $send_emails,
-						'legend'   => __( 'Send email notifications for this Booking', 'booking' ),
-					)
-				);
-				?>
-				<p class="inspector__help"><?php esc_html_e( 'Send the normal Booking Calendar notifications when this Booking is created.', 'booking' ); ?></p>
-			</div>
-		</div>
 		<div class="inspector__row inspector__row--toggle">
 			<div class="inspector__control">
 				<?php
@@ -999,7 +1067,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		$month_options         = array_combine( range( 1, 12 ), range( 1, 12 ) );
 		$months_per_row        = array( 0 => __( 'All', 'booking' ) ) + $month_options;
 
-		$this->render_inspector_select_row(
+		$this->render_select_row(
 			array(
 				'id'      => 'calendar_months_count',
 				'name'    => 'calendar_months_count',
@@ -1008,7 +1076,7 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 				'value'   => isset( $user_calendar_options['calendar_months_count'] ) ? absint( $user_calendar_options['calendar_months_count'] ) : 1,
 			)
 		);
-		$this->render_inspector_select_row(
+		$this->render_select_row(
 			array(
 				'id'      => 'calendar_months_num_in_1_row',
 				'name'    => 'calendar_months_num_in_1_row',
@@ -1088,14 +1156,14 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		<div class="wpbc_bfb__inspector__body wpbc_bfb__inspector__body--content wpbc_add_booking__help_body">
 			<div class="wpbc_add_booking__hint">
 				<span class="wpbc_icn_info_outline" aria-hidden="true"></span>
-				<p><?php esc_html_e( 'Choose the Booking resource and form first. Changing either selector reloads this page so every field and calendar keeps the correct resource ID.', 'booking' ); ?></p>
+				<p><?php esc_html_e( 'Choose the Booking resource and form in the setup panel above the Booking Form. Changing either selector reloads this page so every field and calendar keeps the correct resource ID.', 'booking' ); ?></p>
 			</div>
 			<div class="wpbc_add_booking__help_section">
 				<h4><?php esc_html_e( 'Recommended workflow', 'booking' ); ?></h4>
 				<ol>
 					<li><?php esc_html_e( 'Select the Booking resource and Booking Form.', 'booking' ); ?></li>
 					<li><?php esc_html_e( 'Choose an available date or time and complete the customer fields.', 'booking' ); ?></li>
-					<li><?php esc_html_e( 'Review email sending, then click Add booking.', 'booking' ); ?></li>
+					<li><?php esc_html_e( 'Review Emails sending in the top navigation, then click Add booking.', 'booking' ); ?></li>
 				</ol>
 			</div>
 			<div class="wpbc_add_booking__help_actions">
@@ -1145,17 +1213,18 @@ class WPBC_Page_AddNewBooking extends WPBC_Page_Structure {
 		if ( wpbc_add_booking_page_is_inspector_enabled() ) {
 			?>
 			<div class="wpbc_add_booking_page" data-wpbc-add-booking-page="1">
+				<?php $this->render_booking_setup_panel(); ?>
 				<div class="wpbc_add_booking__canvas">
 					<?php
 					WPBC_Add_Booking_Component::render(
 						array_merge(
 							$handoff_args,
 							array(
-							'is_toolbar_visible'            => false,
-							'is_show_before_content_spacer' => false,
-							'is_show_footer_email_toggle'   => false,
-							'content_css_class'             => 'add_booking_page_content wpbc_add_booking__form_content',
-							'content_style'                 => '',
+								'is_toolbar_visible'            => false,
+								'is_show_before_content_spacer' => false,
+								'is_show_footer_email_toggle'   => false,
+								'content_css_class'             => 'add_booking_page_content wpbc_add_booking__form_content',
+								'content_style'                 => '',
 							)
 						)
 					);

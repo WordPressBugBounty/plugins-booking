@@ -1,0 +1,144 @@
+/**
+ * Timeline per-Resource action menus and settings inspector.
+ *
+ * @package Booking Calendar
+ * @since   12.0.0
+ */
+
+.wpbc_timeline__resource_actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-inline-start: auto;
+}
+
+.wpbc_timeline_resource_settings__menu .wpbc_shared_ui_dropdown__trigger {
+	min-inline-size: 34px;
+	block-size: 34px;
+	justify-content: center;
+	padding: 0;
+	border-color: transparent;
+	background: transparent;
+}
+
+.wpbc_timeline_resource_settings__menu .wpbc_shared_ui_dropdown__value,
+.wpbc_timeline_resource_settings__menu .wpbc_shared_ui_dropdown__caret {
+	display: none;
+}
+
+.wpbc_timeline_resource_settings__menu .wpbc_shared_ui_dropdown__panel {
+	min-inline-size: 190px;
+}
+
+.wpbc_timeline_resource_settings__heading {
+	margin: 0;
+	font-size: 18px;
+	line-height: 1.35;
+}
+
+.wpbc_timeline_resource_settings__form,
+.wpbc_timeline_resource_settings__section,
+.wpbc_timeline_resource_settings__choice,
+.wpbc_timeline_resource_settings__choice > span,
+.wpbc_timeline_resource_settings__custom,
+.wpbc_timeline_resource_settings__footer,
+.wpbc_timeline_resource_settings__footer_actions,
+.wpbc_timeline_resource_settings__tokens {
+	display: flex;
+}
+
+.wpbc_timeline_resource_settings__form,
+.wpbc_timeline_resource_settings__section,
+.wpbc_timeline_resource_settings__choice > span,
+.wpbc_timeline_resource_settings__custom {
+	flex-direction: column;
+}
+
+.wpbc_timeline_resource_settings__form {
+	min-block-size: 100%;
+}
+
+.wpbc_timeline_resource_settings__section {
+	gap: 16px;
+	padding: 24px;
+}
+
+.wpbc_timeline_resource_settings__section h3,
+.wpbc_timeline_resource_settings__section p {
+	margin: 0;
+}
+
+.wpbc_timeline_resource_settings__choice {
+	align-items: baseline;
+	gap: 10px;
+}
+
+.wpbc_timeline_resource_settings__choice > span {
+	gap: 4px;
+}
+
+.wpbc_timeline_resource_settings__choice small {
+	color: #646970;
+}
+
+.wpbc_timeline_resource_settings__inherited,
+.wpbc_timeline_resource_settings__stored_state {
+	padding: 12px;
+	border-radius: 4px;
+	background: #f0f0f1;
+}
+
+.wpbc_timeline_resource_settings__inherited code {
+	display: block;
+	margin-block-start: 6px;
+	white-space: normal;
+	word-break: break-word;
+}
+
+.wpbc_timeline_resource_settings__custom {
+	gap: 8px;
+}
+
+.wpbc_timeline_resource_settings__custom.is-disabled {
+	opacity: 0.6;
+}
+
+.wpbc_timeline_resource_settings__tokens {
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.wpbc_timeline_resource_settings__footer {
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-block-start: auto;
+	padding: 16px 24px;
+	border-block-start: 1px solid #dcdcde;
+	background: #fff;
+}
+
+.wpbc_timeline_resource_settings__footer_actions {
+	gap: 8px;
+}
+
+[dir="rtl"] .wpbc_timeline_resource_settings__menu .wpbc_shared_ui_dropdown__panel {
+	inset-inline-start: auto;
+	inset-inline-end: 0;
+}
+
+@media (max-width: 782px) {
+	.wpbc_timeline_resource_settings__section {
+		padding: 20px;
+	}
+
+	.wpbc_timeline_resource_settings__footer {
+		align-items: stretch;
+		flex-direction: column;
+		padding: 16px 20px;
+	}
+
+	.wpbc_timeline_resource_settings__footer_actions {
+		justify-content: flex-end;
+	}
+}

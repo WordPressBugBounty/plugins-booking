@@ -1,0 +1,426 @@
+.wpbc_timeline_page .wpbc_timeline_booking_resize__host {
+  display: block;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 4
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-loading .wpbc_timeline_booking_resize__host,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-ready .wpbc_timeline_booking_resize__host {
+  z-index: 10
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-ready .wpbc_timeline__booking_accessory_dock {
+  z-index: 11
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resizing {
+  z-index: 13
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resizing .wpbc_timeline_booking_resize__host {
+  z-index: 12
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-dragging .wpbc_timeline__booking_selection_dot,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-dragging .wpbc_timeline_booking_resize__idle_dot,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-dragging .wpbc_timeline_booking_resize__ready_ring {
+  opacity: 0;
+  visibility: hidden
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-dragging .wpbc_timeline_booking_resize__handle.is-booking-resize-active-boundary .wpbc_timeline_booking_resize__idle_dot {
+  opacity: 1;
+  visibility: visible
+}
+.wpbc_timeline_page .wpbc_timeline__mount.is-booking-resize-pointer-active,
+.wpbc_timeline_page .wpbc_timeline__mount.is-booking-resize-pointer-active * {
+  cursor: ew-resize
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-end-ready .wpbc_timeline__booking_selection_dot--end,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-loading .wpbc_timeline__booking_selection_dot,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-start-ready .wpbc_timeline__booking_selection_dot--start {
+  visibility: hidden
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-end-unavailable .wpbc_timeline__booking_selection_dot--end,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-start-unavailable .wpbc_timeline__booking_selection_dot--start {
+  background: #fff;
+  block-size: 12px;
+  border-color: #d63638;
+  color: #d63638;
+  inline-size: 12px
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-end-unavailable .wpbc_timeline__booking_selection_dot--end::after,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-end-unavailable .wpbc_timeline__booking_selection_dot--end::before,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-start-unavailable .wpbc_timeline__booking_selection_dot--start::after,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-start-unavailable .wpbc_timeline__booking_selection_dot--start::before {
+  background: currentColor;
+  block-size: 1.5px;
+  border-radius: 1px;
+  content: "";
+  inline-size: 6px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translate(-50%,-50%) rotate(45deg);
+  transform: translate(-50%,-50%) rotate(45deg)
+}
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-end-unavailable .wpbc_timeline__booking_selection_dot--end::after,
+.wpbc_timeline_page .wpbc_timeline__booking_segment.is-booking-resize-start-unavailable .wpbc_timeline__booking_selection_dot--start::after {
+  -ms-transform: translate(-50%,-50%) rotate(-45deg);
+  transform: translate(-50%,-50%) rotate(-45deg)
+}
+.wpbc_timeline_page .wpbc_timeline__mount.is-booking-resize-denied .wpbc_timeline__booking_segment.is-booking-selected .wpbc_timeline__booking_selection_dot {
+  visibility: hidden
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handles,
+.wpbc_timeline_page .wpbc_timeline_booking_resize__host > [data-wpbc-timeline-booking-resize-visual-host],
+.wpbc_timeline_page .wpbc_timeline_booking_resize__loading {
+  display: block;
+  inset: 0;
+  pointer-events: none;
+  position: absolute
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__host > [data-wpbc-timeline-booking-resize-visual-host] {
+  z-index: 2
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__loading_marker {
+  animation: 250ms ease-in-out infinite alternate wpbc_timeline_booking_resize_loading_pulse;
+  background: var(--wp-admin-theme-color,#3858e9);
+  block-size: 7px;
+  border-radius: 50%;
+  inline-size: 7px;
+  inset-block-start: 50%;
+  position: absolute;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%)
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__loading_marker--start {
+  inset-inline-start: -2.5px
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__loading_marker--end {
+  inset-inline-end: -2.5px
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handle {
+  -ms-flex-align: center;
+  align-items: center;
+  appearance: none;
+  background: 0 0;
+  block-size: 44px;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  color: var(--wp-admin-theme-color,#3858e9);
+  cursor: ew-resize;
+  display: -ms-flexbox;
+  display: flex;
+  inline-size: 44px;
+  inset-block-start: 50%;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0;
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding: 0;
+  pointer-events: auto;
+  position: absolute;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  -ms-touch-action: pan-y;
+  touch-action: pan-y
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handle--start {
+  inset-inline-start: -21px;
+  transform: translate3d(var(--wpbc-timeline-booking-resize-start-offset,0),-50%,0)
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handle--end {
+  inset-inline-end: -21px;
+  transform: translate3d(var(--wpbc-timeline-booking-resize-end-offset,0),-50%,0)
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handle:focus-visible {
+  box-shadow: 0 0 0 2px #fff,0 0 0 4px currentColor;
+  outline: transparent solid 2px
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__idle_dot {
+  background: #fff;
+  block-size: 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+  inline-size: 10px;
+  position: absolute
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__ready_ring {
+  animation: 420ms ease-in-out wpbc_timeline_booking_resize_ready_pulse;
+  background: #fff;
+  block-size: 26px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+  inline-size: 26px;
+  opacity: 0;
+  position: absolute;
+  -ms-transform: scale(.72);
+  transform: scale(.72);
+  transition: opacity 120ms,transform 120ms
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handle:focus-visible .wpbc_timeline_booking_resize__ready_ring,
+.wpbc_timeline_page .wpbc_timeline_booking_resize__handle:hover .wpbc_timeline_booking_resize__ready_ring {
+  opacity: 1;
+  -ms-transform: scale(1);
+  transform: scale(1)
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__ghost {
+  -ms-flex-align: center;
+  align-items: center;
+  background: rgba(56,88,233,.07);
+  border: 2px dashed var(--wp-admin-theme-color,#3858e9);
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-block-size: 44px;
+  pointer-events: none;
+  position: absolute;
+  z-index: auto
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__ghost_host {
+  display: block;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1
+}
+.wpbc_timeline_page .wpbc_timeline_booking_resize__ghost_duration {
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  font-weight: 600;
+  inset-inline: 12px;
+  padding: 4px 10px;
+  position: sticky;
+  white-space: nowrap;
+  z-index: 2
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #dcdcde;
+  border-radius: 6px;
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14);
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  gap: 0;
+  inline-size: min(580px,var(--wpbc-timeline-booking-resize-review-max-inline-size,calc(100vw - 32px)));
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  max-block-size: calc(100vh - 16px);
+  max-inline-size: min(580px,var(--wpbc-timeline-booking-resize-review-max-inline-size,calc(100vw - 32px)));
+  overflow: auto
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review--busy {
+  inline-size: min(560px,var(--wpbc-timeline-booking-resize-review-max-inline-size,calc(100vw - 32px)))
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review--error,
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review--refresh_error {
+  inline-size: min(580px,var(--wpbc-timeline-booking-resize-review-max-inline-size,calc(100vw - 32px)))
+}
+.wpbc_timeline_booking_resize__review_portal {
+  display: block;
+  inset: auto;
+  pointer-events: auto;
+  position: fixed;
+  z-index: 120
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_spinner {
+  animation: .7s linear infinite wpbc_timeline_booking_resize_review_spin;
+  block-size: 16px;
+  border: 2px solid #c3c4c7;
+  border-block-start-color: var(--wp-admin-theme-color,#3858e9);
+  border-radius: 50%;
+  box-sizing: border-box;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  inline-size: 16px
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review--busy .wpbc_timeline_booking_resize__review_summary {
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-direction: row;
+  flex-direction: row
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_error {
+  color: #b32d2e
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_actions,
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_summary {
+  -ms-flex-align: start;
+  align-items: flex-start;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 8px
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_summary {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-inline-size: 0;
+  padding: 16px
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_comparison {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 100%;
+  flex: 1 1 100%;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  gap: 16px;
+  inline-size: 100%
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 220px;
+  flex: 1 1 220px;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 3px;
+  min-inline-size: 0
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_transition {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1 248px;
+  flex: 1 1 248px;
+  gap: 8px;
+  min-inline-size: 0
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_transition > .wpbc_timeline_booking_resize__review_period {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_label {
+  color: #646970;
+  font-size: 12px
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_parts {
+  overflow-wrap: anywhere
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_part.is-previous-changed {
+  color: #b32d2e
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_part.is-changed {
+  color: #008a20
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_transition > .wpbc_icn_arrow_forward {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  font-size: 18px
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_actions {
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  border-inline-start: 1px solid #dcdcde;
+  box-sizing: border-box;
+  -ms-flex: 0 1 180px;
+  flex: 0 1 180px;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  inline-size: 180px;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-inline-size: 180px;
+  min-inline-size: 140px;
+  padding: 12px;
+  white-space: normal
+}
+.wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_actions .button {
+  -ms-flex-align: center;
+  align-items: center;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  inline-size: 100%;
+  -ms-flex-pack: center;
+  justify-content: center;
+  line-height: 1.75;
+  margin: 0;
+  min-block-size: 0;
+  overflow-wrap: anywhere;
+  padding: 4px 6px;
+  text-align: center;
+  white-space: normal
+}
+@keyframes wpbc_timeline_booking_resize_loading_pulse {
+  from {
+    opacity: .42;
+    transform: translateY(-50%) scale(.82)
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.08)
+  }
+}
+@keyframes wpbc_timeline_booking_resize_ready_pulse {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(.72)
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.12)
+  }
+}
+@keyframes wpbc_timeline_booking_resize_review_spin {
+  to {
+    transform: rotate(360deg)
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_spinner,
+  .wpbc_timeline_page .wpbc_timeline_booking_resize__loading_marker,
+  .wpbc_timeline_page .wpbc_timeline_booking_resize__ready_ring {
+    animation: none;
+    transition: none
+  }
+}
+@media (max-width:782px) {
+  .wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review {
+    -ms-flex-direction: column;
+    flex-direction: column
+  }
+  .wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_period_comparison {
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 8px
+  }
+  .wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_actions {
+    border-block-start: 1px solid #dcdcde;
+    border-inline-start: 0;
+    box-sizing: border-box;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    inline-size: 100%;
+    max-inline-size: none;
+    min-inline-size: 0;
+    padding: 12px 16px
+  }
+  .wpbc_timeline_booking_resize__review_portal .wpbc_timeline_booking_resize__review_actions .button {
+    -ms-flex: 1 1 50%;
+    flex: 1 1 50%
+  }
+}

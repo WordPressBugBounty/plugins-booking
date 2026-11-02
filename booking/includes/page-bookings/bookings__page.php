@@ -144,6 +144,9 @@ class WPBC_Page_AJX_Bookings extends WPBC_Page_Structure {
 				?>
 			</form>
 		</span>
+		<?php if ( defined( 'WPBC_ENABLE_12_0_TIMELINE' ) && true === WPBC_ENABLE_12_0_TIMELINE ) { ?>
+			<div data-wpbc-booking-inspector-booking-listing-host></div>
+		<?php } ?>
 		<?php
 
 		do_action( 'wpbc_hook_settings_page_footer', 'wpbc-ajx_booking' );

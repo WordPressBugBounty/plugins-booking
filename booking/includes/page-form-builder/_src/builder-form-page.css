@@ -8,11 +8,6 @@
 .wpbc_admin {
 	--wpbc-bfb-accent-color: var(--wpbc_admin-theme-color, #327ab4 );
 }
-/* Admin page margins in WP */
-body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
-	margin: 2px 40px;
-}
-
 /* Two-pane builder layout (palette + pages) */
 .wpbc_bfb__container {
 	display: flex;

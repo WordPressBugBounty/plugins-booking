@@ -857,9 +857,6 @@
     flex: 1 1 auto
   }
 }
-body[class*=page_wpbc] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
-  margin: 2px 30px
-}
 #datepick-div,
 .datepick-popup {
   z-index: 1000010!important

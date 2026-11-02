@@ -46,10 +46,22 @@
 	margin: 15px 0;
 	min-height: 550px;
 }
-/* Exception for the Booking Listing to show correctly the Bulk Actions - Long Dropdown menu*/
+/* Keep the listing shrinkable while allowing long action menus to overlay. */
 .wpbc_admin.wpbc_admin_page__tab__vm_booking_listing .wpbc_settings_page_content {
 	min-width: 0;
 	overflow: visible;
+}
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing .wpbc_admin_page__content,
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing #toolbar_booking_listing,
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing #toolbar_booking_listing > div,
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing #toolbar_booking_listing .ui_container,
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing #toolbar_booking_listing .ui_group,
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing .wpbc__wrap__booking_listing {
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+.wpbc_admin.wpbc_admin_page__tab__vm_booking_listing #toolbar_booking_listing .ui_group__keyword {
+	flex: 1 1 24rem;
 }
 .wpbc__list__table,
 .wpbc__list__table .wpbc__list__head,
@@ -860,9 +872,10 @@
 	}
 }
 /* -- Input Fields -------------------------------------------------------------------------------------------------- */
-.wpbc_page .wpbc_modal_in_listing input[type=text],
-.wpbc_page .wpbc_modal_in_listing select,
-.wpbc_page .wpbc_modal_in_listing textarea{
+/* Action templates are printed in admin_footer on Timeline, outside the Booking Listing .wpbc_page wrapper. */
+.wpbc_modal_in_listing input[type=text],
+.wpbc_modal_in_listing select,
+.wpbc_modal_in_listing textarea{
 	width: 100%;
 	max-width: 100%;
 	font-size: 15px;

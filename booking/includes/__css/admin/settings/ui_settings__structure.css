@@ -1,55 +1,140 @@
 /*! = Settings Page Structure = */
+.wpbc_admin {
+	--wpbc_admin_page__shell-gutter-inline: 30px;
+	--wpbc_admin_page__content-gutter-inline: var(--wpbc_admin_page__shell-gutter-inline);
+}
+
 .wpbc_settings_page_wrapper {
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: flex-start;
 	align-items: stretch;
-
+	max-width: 100%;
+	min-width: 0;
 	margin-top: calc(var(--wpbc_ui_top_nav__height) - 1px);
 }
 .wp-toolbar .wpbc_admin_full_screen .wpbc_settings_page_wrapper {
 	margin-top: calc(var(--wpbc_ui_top_nav__height) - 1px - 32px);
 }
-.wpbc_settings_page_content {
-	/*flex: 1 1 auto;*/
-	/*max-width: calc( 100% - var(--wpbc_ui_left_vert_nav__width_max) );*/
+.wpbc_admin_workspace {
+	display: flex;
 	flex: 1 1 1%;
-	overflow: hidden;
+	flex-flow: column nowrap;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+.wpbc_admin_workspace__header {
+	box-sizing: border-box;
+	flex: 0 0 auto;
+	inline-size: 100%;
+	min-inline-size: 0;
+}
+.wpbc_admin_workspace__body {
+	align-items: stretch;
+	display: flex;
+	flex: 1 1 auto;
+	flex-flow: row nowrap;
+	inline-size: 100%;
+	min-inline-size: 0;
+}
+.wpbc_settings_page_content {
+	flex: 1 1 0;
+	max-width: 100%;
+	min-width: 0;
+	overflow: visible;
+}
+
+body[class*="page_wpbc"] #wpcontent .wpbc_admin_workspace > .wrap.wpbc_page,
+.wpbc_admin_workspace .wpbc_admin_page,
+.wpbc_admin_workspace__header,
+.wpbc_admin_workspace__body,
+.wpbc_settings_page_content,
+.wpbc_settings_page_content .wpbc_admin_page__content {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+}
+
+.wpbc_settings_page_content .wpbc_admin_page__content {
+	padding-inline: var(--wpbc_admin_page__content-gutter-inline);
+}
+
+.wpbc_settings_page_content .wpbc_admin_page__content--standard {
+	--wpbc_admin_page__content-gutter-inline: var(--wpbc_admin_page__shell-gutter-inline);
+}
+
+.wpbc_settings_page_content .wpbc_admin_page__content--spacious {
+	--wpbc_admin_page__content-gutter-inline: 40px;
+}
+
+.wpbc_settings_page_content .wpbc_admin_page__content--flush {
+	--wpbc_admin_page__content-gutter-inline: 0px;
 }
 /* ??? */
 .wpbc_settings_flex_container_right {
 	max-width:100%;
 }
 /* Header Title */
-.wpbc_settings_page_content .wpbc_settings_page_header_title {
+.wpbc_admin_workspace__heading {
+	box-sizing: border-box;
+	inline-size: 100%;
+	min-inline-size: 0;
+	padding-inline: var(--wpbc_admin_page__shell-gutter-inline);
+}
+.wpbc_admin_workspace__header .wpbc_settings_page_header_title {
 	font-size: 25px;
 	font-weight: 600;
 	margin: 0;
 	padding: 0;
 	line-height: 1.8;
-	min-width: 300px;
+	max-width: 100%;
+	min-width: 0;
+	overflow-wrap: anywhere;
 }
 /* Header Title Description*/
-.wpbc_settings_page_content .wpbc_settings_page_header_title_description {
+.wpbc_admin_workspace__header .wpbc_settings_page_header_title_description {
 	font-size: 13px;
 	line-height: 1.5;
 	margin: 0 0 20px;
-	min-width: 300px;
+	max-width: 100%;
+	min-width: 0;
+	overflow-wrap: anywhere;
 }
 
-/* Wrap padding */
-body[class*="page_wpbc"] #wpcontent .wpbc_settings_page_content .wrap.wpbc_page {
+/* The outer page is full width. Shell rows and content own their own gutters. */
+body[class*="page_wpbc"] #wpcontent .wpbc_admin_workspace > .wrap.wpbc_page {
 	padding: 0;
-	margin: 2px 30px 2px 30px;
+	margin: 0;
 }
 
-.wpbc_settings_page_content .wpbc_settings_path {
-	margin:0 0 5px;
-	min-width:300px;
+.wpbc_admin_workspace__header .wpbc_settings_path {
+	box-sizing: border-box;
+	inline-size: 100%;
+	margin-block: 5px 20px;
+	margin-inline: 0;
+	min-width: 0;
+	padding-inline: var(--wpbc_admin_page__shell-gutter-inline);
 }
-.wpbc_settings_page_content .wpbc_settings_path .wpbc_settings_path_el{
+.wpbc_admin_workspace__header .wpbc_settings_path .wpbc_settings_path_el{
 	font-size: 11px;
 }
-.wpbc_settings_page_content .wpbc_settings_path .wpbc_settings_path_el .wpbc_icn_navigate_next::before{
+.wpbc_admin_workspace__header .wpbc_settings_path .wpbc_settings_path_el .wpbc_icn_navigate_next::before{
 	font-size: 13px;
+}
+
+@media (max-width: 782px) {
+	.wpbc_admin {
+		--wpbc_admin_page__shell-gutter-inline: 16px;
+	}
+
+	.wpbc_settings_page_content .wpbc_admin_page__content--spacious {
+		--wpbc_admin_page__content-gutter-inline: var(--wpbc_admin_page__shell-gutter-inline);
+	}
+}
+
+@media (max-width: 480px) {
+	.wpbc_admin {
+		--wpbc_admin_page__shell-gutter-inline: 12px;
+	}
 }

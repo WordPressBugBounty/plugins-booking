@@ -1422,6 +1422,62 @@
 		);
 	}
 
+	/**
+	 * Notify active administration hosts after an authoritative time-slot save.
+	 *
+	 * The notification is data-only and intentionally grants no mutation or
+	 * authorization authority. Hosts such as Timeline may use it to invalidate
+	 * their own read caches and request canonical data again.
+	 *
+	 * @param {Object} response_data Successful server response data.
+	 * @return {void}
+	 */
+	function dispatch_availability_timeslots_changed( response_data ) {
+		var resource_id;
+		var mode;
+		var dates;
+		var changed_event;
+
+		if ( ! response_data || 'function' !== typeof document.dispatchEvent ) {
+			return;
+		}
+
+		resource_id = parseInt( response_data.resource_id, 10 ) || 0;
+		mode = String( response_data.mode || '' );
+		if ( 1 > resource_id || [ 'block', 'unblock' ].indexOf( mode ) === -1 ) {
+			return;
+		}
+
+		dates = Array.isArray( response_data.dates ) ? response_data.dates.filter( function ( date_value ) {
+			return /^\d{4}-\d{2}-\d{2}$/.test( String( date_value || '' ) );
+		} ).map( function ( date_value ) {
+			return String( date_value );
+		} ) : [];
+
+		if ( 'function' === typeof window.CustomEvent ) {
+			changed_event = new window.CustomEvent( 'wpbc:availability-timeslots:changed', {
+				detail: {
+					schema_version: 1,
+					resource_id: resource_id,
+					mode: mode,
+					dates: dates
+				}
+			} );
+		} else if ( document.createEvent ) {
+			changed_event = document.createEvent( 'CustomEvent' );
+			changed_event.initCustomEvent( 'wpbc:availability-timeslots:changed', false, false, {
+				schema_version: 1,
+				resource_id: resource_id,
+				mode: mode,
+				dates: dates
+			} );
+		}
+
+		if ( changed_event ) {
+			document.dispatchEvent( changed_event );
+		}
+	}
+
 	function run_command( $page, mode ) {
 		var settings = window.wpbc_availability_timeslots_page || {};
 		var labels = settings.i18n || {};
@@ -1444,6 +1500,9 @@
 			return;
 		}
 
+		if ( window.wpbc_admin_show_message_processing ) {
+			wpbc_admin_show_message_processing( '' );
+		}
 		set_timeline_loading( $page, true, labels.saving || 'Saving' );
 		set_action_buttons_busy( $page, true );
 
@@ -1455,6 +1514,7 @@
 			intervals: JSON.stringify( payload )
 		} ).done( function ( response ) {
 			if ( response && response.success ) {
+				dispatch_availability_timeslots_changed( response.data || {} );
 				if ( window.wpbc_admin_show_message ) {
 					wpbc_admin_show_message( 'block' === mode ? ( labels.block_success || 'Selected time ranges have been blocked.' ) : ( labels.unblock_success || 'Selected time ranges have been unblocked.' ), 'success', 5000 );
 				}

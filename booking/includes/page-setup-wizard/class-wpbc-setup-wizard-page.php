@@ -51,6 +51,7 @@ final class WPBC_Setup_Wizard_Page extends WPBC_Page_Structure {
 		if ( $this->is_completed_checkpoint() ) {
 			return array(
 				'overview' => array(
+					'navigation_shell_context'            => WPBC_Admin_Navigation_Policy::CONTEXT_WORKSPACE,
 					'is_force_full_screen'              => false,
 					'is_force_normal_screen'             => true,
 					'is_default_full_screen'             => false,
@@ -58,6 +59,7 @@ final class WPBC_Setup_Wizard_Page extends WPBC_Page_Structure {
 					'left_navigation__force_view_mode'   => '',
 					'is_show_top_path'                   => true,
 					'is_show_top_navigation'             => false,
+					'is_show_page_heading'               => true,
 					'top_path_title'                     => __( 'Setup overview', 'booking' ),
 					'title'                              => __( 'Setup overview', 'booking' ),
 					'page_title'                         => __( 'Setup overview', 'booking' ),
@@ -75,11 +77,13 @@ final class WPBC_Setup_Wizard_Page extends WPBC_Page_Structure {
 
 		return array(
 			'wizard' => array(
+				'navigation_shell_context'            => WPBC_Admin_Navigation_Policy::CONTEXT_FOCUSED,
 				'is_force_full_screen'              => true,
-				'left_navigation__default_view_mode' => 'none',
+				'left_navigation__default_view_mode' => '',
 				'left_navigation__force_view_mode'   => 'none',
 				'is_show_top_path'                   => false,
 				'is_show_top_navigation'             => false,
+				'is_show_page_heading'               => false,
 				'title'                              => __( 'Setup Wizard', 'booking' ),
 				'page_title'                         => false,
 				'default'                            => true,

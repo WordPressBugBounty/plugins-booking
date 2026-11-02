@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/booking-resources-catalog-config.php';
 require_once __DIR__ . '/booking-resources-domain.php';
+require_once __DIR__ . '/booking-resource-upgrade-ui.php';
 require_once __DIR__ . '/class-wpbc-catalog-booking-resources-request.php';
 require_once __DIR__ . '/class-wpbc-catalog-booking-resource-dto.php';
 require_once __DIR__ . '/class-wpbc-catalog-booking-resource-details-dto.php';

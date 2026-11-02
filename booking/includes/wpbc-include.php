@@ -150,6 +150,9 @@ require_once WPBC_PLUGIN_DIR . '/core/any/class-admin-settings-api.php';     // 
 
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-settings-page-parts.php';                                   // Settings Template - "Settins Parts", which used in the class-page-structure.php .
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-menu-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2025-02-09.
+require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-admin-navigation-policy.php';                               // Shared administration navigation policy.
+require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-admin-shell-layout-policy.php';                             // Shared administration shell content layout policy.
+require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-admin-navigation-preferences.php';                          // Scoped sidebar preferences and navigation-cookie bridge.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-page-structure.php';                                        // Abstract. Page Structure in Admin Panel    // 2024-12-23.
 require_once WPBC_PLUGIN_DIR . '/includes/ui_settings/class-sidebar-panels.php';                                       // Common right sidebar panels and collapsible groups.
 
@@ -239,6 +242,19 @@ require_once WPBC_PLUGIN_DIR . '/includes/_capacity/get_times_fields.php';      
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/aggregate.php';                      // Aggregate functions  for 'aggregate' parameter in shortcode.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/where_to_save.php';                  // Check  where to  save booking.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/booking_availability_guard.php';      // Serialize final availability validation and booking persistence on supported databases.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-inspector/class-wpbc-booking-inspector-form-definition-repository.php'; // Exact BFB/Advanced Mode form definitions for immutable booking provenance.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-inspector/class-wpbc-booking-inspector-structured-field-resolver.php'; // Data-only structured customer-field resolution.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-inspector/class-wpbc-booking-inspector-form-snapshot-builder.php'; // Immutable booking-form provenance for all canonical creation paths.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-domain/class-wpbc-booking-logged-user-autofill.php'; // Canonical logged-in-user Booking Form auto-fill values and field-name rules.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-notes/booking-notes.php'; // Canonical Public and legacy Private note storage contracts.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-activity/booking-activity.php'; // Immutable typed activity shared by every booking administration host.
+require_once WPBC_PLUGIN_DIR . '/includes/booking-modified-notification/booking-modified-notification.php'; // Canonical post-commit Modified-email boundary for booking mutations.
+if ( defined( 'WPBC_ENABLE_12_0_TIMELINE' ) && true === WPBC_ENABLE_12_0_TIMELINE ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/booking-inspector/booking-inspector.php'; // Inspector, Date Editor, and booking-owned rescheduling endpoints.
+}
+if ( defined( 'WPBC_ENABLE_12_0_BOOKING_NEW_INSPECTOR' ) && true === WPBC_ENABLE_12_0_BOOKING_NEW_INSPECTOR ) {
+	require_once WPBC_PLUGIN_DIR . '/includes/booking-new-inspector/booking-new-inspector.php'; // Default-off Add New Booking Inspector read domain.
+}
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/create_booking.php';                 // Functions to create new bookings.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/confirmation.php';                   // Confirmation section - get data.
 require_once WPBC_PLUGIN_DIR . '/includes/_capacity/confirmation_page.php';              // Confirmation Page.

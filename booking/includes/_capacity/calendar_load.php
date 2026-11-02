@@ -165,8 +165,10 @@ function wpbc__calendar__set_js_params__before_show( $params ) {
 
 			// A fixed one-click range remains Business Small+. On downgrade, preserve the Range choice but use Free's unrestricted two-click mode.
 			if ( ( ! class_exists( 'wpdev_bk_biz_s' ) ) && ( in_array( $data_arr['days_select_mode'], array( 'dynamic', 'fixed' ), true ) ) ) {
-				$data_arr['days_select_mode'] = 'dynamic';
+				$data_arr['days_select_mode']             = 'dynamic';
 				$data_arr['dynamic__days_min']         = 1;
+				// Zero is the canonical sentinel for an unrestricted two-click range.
+				$data_arr['dynamic__days_max']         = 0;
 				$data_arr['dynamic__days_specific']    = '';
 				$data_arr['dynamic__week_days__start'] = '-1';
 			}

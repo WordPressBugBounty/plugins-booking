@@ -2031,6 +2031,8 @@ function wpbc_bs_javascript_tooltips() {
     ?><script type="text/javascript">
 
 		function wpbc_define_tippy_tooltips( parent_class ){
+			// Keep tooltips above fixed navigation, inspectors, drawers, tours, and their backdrops.
+			var wpbc_admin_tooltip_z_index = 1000011;
 
 			if ( 'function' !== typeof( wpbc_tippy ) ){
 				console.log( 'WPBC Error. JavaScript library "wpbc_tippy" was not defined.' );
@@ -2061,36 +2063,56 @@ function wpbc_bs_javascript_tooltips() {
 			}
 
 			wpbc_tippy( parent_class + '.tooltip_top', {
+				appendTo( reference ){
+					return reference.ownerDocument.body;
+				},
 				content( reference ){
 					return wpbc_get_tippy_tooltip_title_text( reference );
 				},
 				placement: 'top-start',
+				zIndex: wpbc_admin_tooltip_z_index,
 			} );
 			wpbc_tippy( parent_class + '.tooltip_bottom', {
+				appendTo( reference ){
+					return reference.ownerDocument.body;
+				},
 				content( reference ){
 					return wpbc_get_tippy_tooltip_title_text( reference );
 				},
 				placement: 'bottom-start',
+				zIndex: wpbc_admin_tooltip_z_index,
 			} );
 			wpbc_tippy( parent_class + '.tooltip_right', {
+				appendTo( reference ){
+					return reference.ownerDocument.body;
+				},
 				content( reference ){
 					return wpbc_get_tippy_tooltip_title_text( reference );
 				},
 				placement: 'right',
+				zIndex: wpbc_admin_tooltip_z_index,
 			} );
 			// FixIn: 10.11.5.8.
 			wpbc_tippy( parent_class + '.tooltip_right_offset', {
+				appendTo( reference ){
+					return reference.ownerDocument.body;
+				},
 				content( reference ){
 					return wpbc_get_tippy_tooltip_title_text( reference );
 				},
 				offset: [0, 25],
 				placement: 'right',
+				zIndex: wpbc_admin_tooltip_z_index,
 			} );
 			wpbc_tippy( parent_class + '.tooltip_left', {
+				appendTo( reference ){
+					return reference.ownerDocument.body;
+				},
 				content( reference ){
 					return wpbc_get_tippy_tooltip_title_text( reference );
 				},
 				placement: 'left-start',
+				zIndex: wpbc_admin_tooltip_z_index,
 			} );
 
 			return true;

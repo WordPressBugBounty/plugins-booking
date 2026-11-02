@@ -1580,13 +1580,25 @@ function wpbc_auto_cancel_booking( $booking_id, $email_reason = '' ) {
 	// <editor-fold     defaultstate="collapsed"                        desc="  ==  Logs for Notes / remarks  ==  "  >
 
 		/**
-		 * Add Log info  to  Notes of bookings
+		 * Record released log calls through the current activity boundary.
 		 *
-		 * @param array | int $booking_id_arr
-		 * @param string $message
+		 * Structured activity receives only a safe inferred event type. Before the
+		 * activity schema is available, the released option-controlled Private-note
+		 * append remains as the upgrade compatibility fallback.
+		 *
+		 * @param array<int,int>|int $booking_id_arr Booking IDs.
+		 * @param string             $message        Legacy free-form message used only for safe type inference after cutover.
+		 *
+		 * @return void
 		 */
 		function wpbc_db__add_log_info( $booking_id_arr, $message ) {
 
+			if ( function_exists( 'wpbc_booking_activity_table_exists' ) && wpbc_booking_activity_table_exists() ) {
+				if ( function_exists( 'wpbc_booking_activity_queue_legacy_log' ) ) {
+					wpbc_booking_activity_queue_legacy_log( $booking_id_arr, $message );
+				}
+				return;
+			}
 			if ( get_bk_option( 'booking_log_booking_actions' ) !== 'On' ) {
 				return;
 			}

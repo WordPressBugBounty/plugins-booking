@@ -5,7 +5,7 @@ Tags: booking calendar, appointment booking, online booking, availability calend
 Requires at least: 5.3
 Requires PHP: 5.6
 Tested up to: 7.1
-Stable tag: 11.9.1
+Stable tag: 12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -308,24 +308,46 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 1. **Direct Booking Forms**: Let visitors book full days or available time slots immediately on your website.
 2. **Guided Booking Flows**: Let visitors choose a service, provider, or booking resource before continuing to the matching booking form.
 3. **Drag-and-Drop Booking Form Builder**: Create and arrange booking forms visually without editing form code or complex shortcodes.
-4. **Full-Day Booking Flow (Free)**: Watch visitors select check-in and check-out dates, enter their details, and submit a booking.
-5. **Time-Slot Booking Flow (Free)**: See how visitors choose a date and available time slot before completing their booking request.
-6. **Appointment Booking Flow**: Follow the guided journey from choosing a service and provider to selecting a date and time and submitting an appointment.
-7. **Booking Management**: Search, filter, review, approve, and manage all your bookings from one clear administration screen.
-8. **Instant Booking Listing**: Search and filter bookings with results that update immediately without a full page reload.
-9. **Timeline View**: See your bookings and schedule at a glance in a clear calendar timeline.
-10. **Calendar Availability**: Mark dates available or unavailable in just three clicks.
-11. **Setup Wizard**: Setup Wizard starts with one practical question: how should customers book? After you choose the answer, it presents only the settings needed for that booking flow instead of asking you to configure every Booking Calendar option.
+4. **Full-Day Bookings in the Timeline (Pro Example)**: View full-day and multi-day bookings at a glance, distinguish approved and pending reservations, and see unavailable dates. Open a booking overview to check guest details, dates, and duration without leaving the Timeline. Shown with multiple resources in Pro; the Free version is limited to one resource.
+5. **Timeline for Full Day Bookings**: This example uses the Pro version with multiple resources; the Free version’s Timeline is limited to one resource. Watch how to navigate your schedule, drag bookings to new dates or resources, resize booking durations, and select dates to create a new booking.
+6. **Full-Day Booking Flow (Free)**: Watch visitors select check-in and check-out dates, enter their details, and submit a booking.
+7. **Timeline for Hourly Bookings and Appointment**: See timed bookings and appointments at a glance. Expand a resource’s hourly schedule, adjust visible hours and zoom, and select a time range to create a booking or block and unblock times.
+8. **Manage Time Bookings in the Timeline**: Watch how easily you can drag bookings to a new date and time, select a time range to create a booking, and block unavailable hours—all from the Timeline.
+9. **Appointment Booking Flow**: Follow the guided journey from choosing a service and provider to selecting a date and time and submitting an appointment.
+10. **Booking Management**: Search, filter, review, approve, and manage all your bookings from one clear administration screen.
+11. **Calendar Availability**: Mark dates available or unavailable in just three clicks.
+12. **Setup Wizard**: Setup Wizard starts with one practical question: how should customers book? After you choose the answer, it presents only the settings needed for that booking flow instead of asking you to configure every Booking Calendar option.
 
 == Changelog ==
+= 12.0 =
+- Changes in **all** versions:
+	* **New**: Introduced a redesigned administration Timeline with a fixed Resource pane, compact collision-aware booking cards, responsive day-to-month views, zoom and density controls, site-local time markers, keyboard navigation, mobile and RTL support, and clear unavailable-time backgrounds. The previous Timeline remains available as Timeline Legacy.
+	* **Improvement**: Added smooth date navigation with Previous, Next, Today, and date-jump controls, plus bounded earlier and later period loading while scrolling. Timeline preserves the visible date, reports loading and retry states, and caches nearby periods for quick return navigation.
+	* **New**: Added a per-user Timeline Resource workspace with authorized search and selection, saved ordering and page size, Business Large group-safe pagination, mobile Resource selection, and per-Resource booking-title preferences.
+	* **New**: Added empty-range selection with pointer, touch, or keyboard controls. Review the exact Resource, dates, times, duration, availability, capacity, overlaps, and estimated Resource cost before creating a booking or using an authorized Block or Unblock action.
+	* **New**: Added the Timeline Add New Booking Inspector with authorized Resource and Booking Form choices, exact full-day or timed schedules, field validation, server-checked Review, cost preview in supported editions, normal booking creation, and automatic Timeline refresh. Free and Personal can create bookings without the paid cost tools.
+	* **New**: Added quick Booking Overviews and a reusable Booking Inspector shared by Timeline, Booking Listing, Calendar, and Schedule. The Inspector provides Booking Details, exact Dates, Costs where supported, Public and Private notes, Booking Actions, and paginated Activity while preserving the form and field order saved with each booking.
+	* **New**: Added reviewed booking schedule changes from Timeline: drag eligible bookings to another date or visible authorized Resource, resize supported start or end boundaries, change dates with the native calendar, or use the keyboard-friendly Reschedule dialog. Every Apply repeats current authorization, availability, capacity, hierarchy, Appointment, and conflict checks before canonical refresh.
+	* **New**: Added expandable Time Sections for authorized Resources with an All day band, vertical hour-and-minute schedule, visible-hours presets and sliders, Time zoom, overlapping timed bookings, unavailable intervals, empty-time selection, and supported booking movement or resizing. Appointment mode opens the first authorized Resource automatically; Classic and Rentals begin collapsed.
+	* **Improvement**: Added labelled unavailable-time backgrounds for blocked dates and times, unavailable weekdays, Working Time, Seasonal Availability, booking buffers, and Appointment buffers, including exact site-timezone handling around daylight-saving changes.
+	* **Improvement**: Reorganized Add Booking so Booking Resource and Booking Form choices appear together above the form, Emails sending remains easy to reach, and the Settings Inspector groups Date selection, Booking tools, and Calendar view without changing established validation or edition rules.
+	* **Improvement**: Made Booking Calendar administration navigation context-aware, with independent side-menu preferences for work pages, Settings, and fullscreen, consistent horizontal navigation and breadcrumbs, responsive page spacing, and a native WordPress submenu link to Booking Forms.
+	* **Improvement**: Added privacy-aware booking Activity for successful booking, date, Resource, note, cost, and payment changes, with WordPress privacy export and erasure support and bounded background cleanup.
+	* **Security**: Strengthened reusable Booking Inspector authorization and MultiUser or multisite isolation, removed internal Resource and capacity diagnostics from customer-facing conflict messages, and normalized Booking IDs at the shared booking-date database query boundary.
+	* **Fix**: Kept Timeline, Booking Overview, Booking Inspector, Activity, and unavailable backgrounds synchronized after booking creation, editing, dragging, resizing, rescheduling, status changes, duplication, or removal without repeating a successful mutation.
+	* **Fix**: Kept Appointment Service buffer backgrounds at their exact saved times in both Timeline layouts when the WordPress site timezone differs from the web server timezone.
+	* **Fix**: Prevented Timeline from showing a destination preview where cross-Resource movement is unavailable, and added specific guidance when an Appointment cannot be dragged to another Provider.
+	* **Translations**: Completed 100% local translations: German, Dutch, Spanish (Spain), French (France), Italian, Norwegian (Bokmål), Danish, Belgian (nl_BE), Japanese, Portuguese (Brazil), Ukrainian, Polish, Czech.
+- Changes in **Business Medium / Business Large / MultiUser** versions:
+	* **New**: Added Duplicate Season for creating an independent copy of a Conditional or Specific-date Season. An authorized MultiUser super administrator can assign the copy to another activated owner without changing the source Season.
+	* **Fix**: Restored complete multi-date selection in calendar-only administration views for conditional form and cost rules.
+	* **Fix**: Kept `[additional_cost_hint]` accurate when Early Booking or Last-minute adjustments apply, so fixed Form Option Costs are no longer reduced or displayed as zero while the final total remains correct.
+	* **Fix**: Restored Block Times timeline access for authorized administrators and Availability managers while retaining Resource and MultiUser ownership checks.
+
 = 11.9.1 =
 - Changes in **all** versions:
 	* **Fix**: Simplified Setup Wizard publishing to use the default `[booking]` and `[booking_appointment]` shortcodes without the redundant Standard form parameter.
 	* **Security**: Restricted the Block Times administration timeline to authorized, nonce-verified users and prevented its booking and availability metadata from being read through logged-out AJAX requests.
-- Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Prevented Fixed and Dynamic date ranges from crossing occupied changeover stays, while preserving legal end-on-check-in and start-on-checkout boundaries, pending-date policy, and one-Resource capacity validation.
-- Changes in **Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Prevented fixed or percentage deposits from exceeding the final booking total after discounts or an administrator cost correction, avoiding negative balances and excessive payment requests.
 
 = 11.9 =
 - Changes in **all** versions:
@@ -354,74 +376,12 @@ If you have some questions, which you haven't found at [FAQ](https://wpbookingca
 - Changes in **Business Large / MultiUser** versions:
 	* **New**: Added a visual Discount Coupon field to Form Builder, with configurable content and appearance, one-per-form protection, and synchronized Advanced Mode and Booking Data output.
 
-= 11.8.4 =
-- Changes in **all** versions:
-	* **Improvement**: Expanded Form Builder's Custom Shortcode field to accept one supported Booking Calendar shortcode with options and quoted values, including Coupon fields in editions that provide them, while rejecting malformed or unsafe input.
-	* **Security**: Hardened form auto-fill and time-slot rendering to prevent crafted links from injecting scripts into administrator booking pages.
-
-= 11.8.3 =
-- Changes in **all** versions:
-	* **Improvement**: Completed Ukrainian translations.
-	* **Security**: Restricted Form Builder option requests to explicitly registered Booking Calendar settings with fixed server-defined nonces and server-owned multi-option allowlists, preventing access to core or unrelated WordPress options.
-	* **Security**: Hardened public Timeline navigation with mandatory request tokens, allow-listed Resource-link options, and JavaScript-safe response serialization to prevent reflected script injection.
-
-= 11.8.2 =
-- Changes in **all** versions:
-	* **Improvement**: Added a Custom Shortcode field to Form Builder so supported display tokens, including custom Form Options Cost hints in Business Medium or higher, can be placed without editing Advanced form code.
-	* **Improvement**: Added the `wpbc-hidden-on-frontend` Form Builder CSS class for hiding selected elements on public forms while keeping them visible and editable in the Builder canvas.
-	* **Fix**: Prevented the date-range guidance message from shifting centered calendars or leaving excessive blank space when hidden.
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Restored public bookings that aggregate availability from additional Booking Resources while retaining exact signed Resource validation.
-- Changes in **Business Medium / Business Large / MultiUser** versions:
-	* **New**: Form Options Costs now support `if()` conditions and `min()`, `max()`, `abs()`, `round()`, `ceil()`, `floor()`, and `clamp()` functions, including nested formulas.
-	* **Security**: Hardened Form Options Costs with mutation-time permission checks, published Booking Form validation, strict cost-type and expression allow lists, bounded parser input, and finite scalar runtime values.
-- Changes in **Business Large / MultiUser** versions:
-	* **Fix**: Restored Form Builder selection fields with a saved default, such as Adults, in the Capacity Rules Quantity field list.
-	* **Fix**: Booking Listing now summarizes multi-Resource dates once and shows each expanded date period with its reserved Resources instead of hiding or repeating child Resource labels.
-
-= 11.8.1 =
-- Changes in **all** versions:
-	* **Improvement**: Added a two-column, two-step Time Slots booking template with live date, start-time, and end-time summary. It appears first in Form Builder when initially added, and clean installations use it for the starter Time Slots page; updates preserve existing forms, pages, and custom URLs.
-	* **Improvement**: Added a two-step, one-time welcome flow on Booking Listing after a clean installation: start guided Setup, then test valid starter booking pages through full, uncropped previews. Clean installations now also receive a Resource Selection page for trying the resource-first workflow. The starter-pages window uses complete Booking Calendar branding and can be reopened manually from the welcome panel after automatic dismissal; updates never add these prompts, pages, the reopen action, or the initial Setup menu.
-	* **Improvement**: Refined first-run administration presentation with consistent blue and green admin actions, responsive three-, two-, and one-column starter-page cards, and a live-demo welcome section that does not save shared dismissal state.
-	* **Fix**: Corrected the first-install welcome prompt so it opens reliably through Booking Calendar's built-in dialog on the Booking Listing page.
-	* **Fix**: Corrected the starter-page window so every card displays its page title, description, and open-page button instead of template placeholders.
-	* **Fix**: Ordered the top Booking Calendar menu links as Full day, Appointment, Time slots, Resource selection, and Contact booking forms, followed by the Home page; unavailable starter pages remain omitted.
-	* **Fix**: Kept Appointment and Rental QuickStart notices out of Form Builder so they no longer cover or compete with the editing workspace.
-	* **Fix**: On fresh template insertion, Full-Day / 2 Columns / Date Summary now appears before Full-Day / Vertical / Date Summary in the Full Days library while Time-Slots remains first overall. Existing template records are not reordered.
-	* **Fix**: Restricted automatic page creation to the first installation of the edition that owns each page. Installing Personal can add its customer booking pages once, and installing Business Small or higher can add its payment result pages once; normal updates, reactivation, and downgrades preserve existing pages and content.
-	* **Improvement**: Standardized page addresses created by newly eligible Free and paid installations under the readable `booking-calendar-` prefix. Existing page addresses and custom payment URLs remain unchanged, and updates do not recreate deleted pages.
-- Changes in **Personal / Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Prevented a missing Booking Resources table warning during the first Pro activation.
-- Changes in **Business Small / Business Medium / Business Large / MultiUser** versions:
-	* **Fix**: Successful payment pages now include the booking confirmation, and all payment gateways use the generated success and failure page addresses when their original placeholders are unchanged. Custom gateway URLs remain untouched.
-	* **Fix**: Restored administrator **Cost correction** on the full Add Booking page, dedicated Booking edit page, and Add Appointment page after the 11.8 booking-security update, while retaining the strengthened authorization checks.
-
-= 11.8 =
-- Changes in **all** versions:
-	* **New**: Added the spacious **Full-Day / Vertical / Date Summary** Form Builder template with a wide two-month preview, live date summary, guest counts, and customer details. New installations use it as the Standard form; upgrades and existing forms remain unchanged.
-	* **Improvement**: Choosing **Full day** during initial Setup now opens Form Builder with the new vertical full-day template selected. Published calendar month counts remain controlled by the booking block or shortcode.
-	* **New**: Added the optional **Full-Day / 2 Columns / Date Summary** Form Builder template with a calendar, live Check-in, Check-out, and Days summary, customer details, and a bundled preview for full-day and changeover bookings. Applying it does not replace other existing forms.
-	* **Improvement**: Refined the Classic, Appointments, and Rentals administration modes with edition-aware navigation, consistent Availability page names, easier access to Seasons, and safer page retention when switching modes. Existing bookings, resources, forms, settings, and supported integrations remain supported.
-	* **Improvement**: Simplified initial Setup to five guided steps ending in Form Builder. The legacy floating Setup Bar is now disabled by default to prevent it from overlapping other administration pages.
-	* **Improvement**: New installations now use the compact **j M Y** date format, such as **19 Oct 2026**, when WordPress uses **F j, Y**. Existing saved Booking Calendar date formats are preserved.
-	* **Fix**: Check-in, Check-out, and day-count hints now consistently show **...** until dates are selected, including after the initial paid-edition calculation refresh.
-	* **Security**: Hardened public booking creation so unauthorized requests cannot activate administrator-only CAPTCHA, approval, payment, email, or confirmation behavior, or switch signed Appointment and Resource Selector forms into another booking workflow. Visitor-facing database errors no longer reveal SQL queries, server paths, or submitted customer details.
-	* **Compatibility**: After updating to 11.8, clear all page and CDN caches so public Booking Forms receive the new security context required for booking creation.
-	* **Compatibility**: Booking creation, activation, and security-hash updates no longer depend on the optional database `MD5()` function, improving compatibility with MySQL 9.6 and newer.
-- Changes in **Business Medium / Business Large / MultiUser** versions:
-	* **New**: Added a redesigned **Seasonal Availability** catalog for managing each Resource's default availability and Season exceptions through a clear overview, a focused Resource inspector, and reviewed inline or bulk editing.
-	* **Improvement**: Added twelve-month Seasonal Availability previews with clear Available and Unavailable states, unique matching-date counts, per-Season highlighting, authorized owner information, and direct links to edit the selected Season.
-	* **Compatibility**: Existing Resource and Season settings are preserved. The **Use legacy catalog pages** option can temporarily restore the previous Seasonal Availability listing, and removing an exception from a Resource never deletes the Season itself.
-	* **Security**: Seasonal Availability changes recheck the current user, ownership, site, Resource, Season, and saved settings before applying protected single or batch updates.
-- Changes in **Business Large / MultiUser** versions:
-	* **New**: Added the **Searchable Resources Catalog** with search-status filters, focused table views, compact rows, Cards, and reviewed editing for search visibility, result presentation, landing pages, and supported search criteria.
-	* **Improvement**: Added direct navigation to **Searchable Resources**, **Search Form Layout**, **Search Results Layout**, and **Search Options**, with a separate **MultiUser Settings** section for authorized administrators.
-	* **Compatibility**: Existing Search Availability settings, historical criteria, frontend result presentation, Resource ownership, and multisite configuration are preserved. The optional legacy catalog remains available.
-
 [Full changelog](https://wpbookingcalendar.com/changelog/)
 
 == Upgrade Notice ==
+= 12.0 =
+Introduces the redesigned Timeline with scrolling date navigation, saved Resource workspaces, booking creation, Booking Overview and Inspector, drag-and-drop movement, resizing, reviewed date or Resource changes, and expandable Time Sections. Also improves Add Booking and administration navigation. Timeline Legacy remains available.
+
 = 11.9 =
 Set up Booking Calendar faster with the redesigned Setup Wizard, tailored to each customer journey. Also adds split Working Time, a two-step Appointment Services flow, visual Country and Coupon fields, and paid-edition protection against unbookable date gaps. Fixed Race Condition issue. Completed 100% local translations for 9 languages.
 

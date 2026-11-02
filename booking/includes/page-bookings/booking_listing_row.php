@@ -430,10 +430,12 @@ function wpbc_template__booking_listing_row__section_col__note_readonly(){
 		'style'           => '',
 		'class'           => "{$booking_action}_text",
 		'disabled'        => ! false,
-		'attr'            => array(),
+		'attr'            => array(
+			'aria-label' => __( 'Private note', 'booking' ),
+		),
 		'rows'            => '3',
 		'cols'            => '50',
-		'placeholder'     => '',
+		'placeholder'     => __( 'No private note', 'booking' ),
 		'value'           => '{{{data.parsed_fields.remark}}}',
 		'is_escape_value' => true,
 		//, 'onfocus' =>  "console.log( 'ON FOCUS:',  jQuery( this ).val() , 'in element:' , jQuery( this ) );"					// JavaScript code.
@@ -443,15 +445,13 @@ function wpbc_template__booking_listing_row__section_col__note_readonly(){
     ?>
 	<div class="wpbc_listing_col wpbc_col_note_readonly">
 		<div class="content_text">
-			<div class="ui_remark_section ui_remark_section__note_readonly  is_expand_remarks_<?php //echo ($is_expand_remarks) ? 'on' : 'off'; ?>"
-			   style="<# if ( 'Off' === wpbc_ajx_booking_listing.search_get_param('ui_usr__is_expand_remarks') ) { #>display0: none;<# } #><# if ( '' == data.parsed_fields.remark.trim() ) { #>display: none;<# } #>"
-				>
-					<label><?php esc_html_e( 'Notes', 'booking' ); ?></label>
+			<# var private_note_value = String( data.parsed_fields.remark || '' ); #>
+			<div class="ui_remark_section ui_remark_section__note_readonly <# if ( '' === private_note_value.trim() ) { #>is-empty<# } else { #>has-value<# } #>">
+					<label for="<?php echo esc_attr( $params_textarea['id'] ); ?>"><?php esc_html_e( 'Private note', 'booking' ); ?></label>
 					<a href="javascript:void(0)"
 					   onclick="javascript:wpbc_boo_listing__click__set_booking_note( {{data.parsed_fields.booking_id}}, jQuery( '#set_booking_note_text_{{data.parsed_fields.booking_id}}').val() );"
-					   style="text-de"
 					>
-						<span><?php esc_html_e('Edit note','booking'); ?>&nbsp;</span>
+						<span><# if ( '' === private_note_value.trim() ) { #><?php esc_html_e( 'Add private note', 'booking' ); ?><# } else { #><?php esc_html_e( 'Edit private note', 'booking' ); ?><# } #>&nbsp;</span>
 						<i class="menu_icon icon-1x wpbc_icn_edit"></i>
 					</a>
 					<?php
@@ -534,21 +534,46 @@ function wpbc_template__booking_listing_row__section_col__action_button() {
 // Action Button
 // ---------------------------------------------------------------------------------------------------------------------
 
-function wpbc_template__booking_listing__el__btn_action(){
+/**
+ * Render the canonical booking-actions dropdown for one booking.
+ *
+ * Booking Listing remains the action registry. The optional Inspector context
+ * changes only the trigger presentation and omits the action that would reopen
+ * the Inspector which is already active. Authorization, edition checks,
+ * extension filters, and action handlers remain shared with Booking Listing.
+ *
+ * @param string $action_context Rendering context. Accepts `booking_listing`
+ *                               or `booking_inspector`; unknown values retain
+ *                               the Booking Listing presentation.
+ *
+ * @return void
+ */
+function wpbc_template__booking_listing__el__btn_action( $action_context = 'booking_listing' ) {
+
+	$is_booking_inspector = ( 'booking_inspector' === $action_context );
 
 	$el_arr = array(
-		'title'           => '',
-		'font_icon'       => 'wpbc_icn_more_vert',
-		'position'        => 'right',
-		'has_down_arrow'  => false,
-		'container_style' => 'position:absolute;',
+		'title'           => $is_booking_inspector ? esc_html__( 'Booking Actions', 'booking' ) : '',
+		'font_icon'       => $is_booking_inspector ? 'wpbc_icn_adjust' : 'wpbc_icn_more_vert',
+		'position'        => $is_booking_inspector ? 'left' : 'right',
+		'has_down_arrow'  => $is_booking_inspector,
+		'has_border'      => $is_booking_inspector,
+		'container_class' => $is_booking_inspector ? 'wpbc_booking_inspector__actions_dropdown' : '',
+		'container_style' => $is_booking_inspector ? '' : 'position:absolute;',
 		'items'           => array(),
 	);
 
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_approved() );
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_pending() );
 	$el_arr['items'][] = array( 'type' => 'divider' );
-	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_edit_booking() );
+	if (
+		! $is_booking_inspector
+		&& defined( 'WPBC_ENABLE_12_0_TIMELINE' )
+		&& true === WPBC_ENABLE_12_0_TIMELINE
+	) {
+		$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_view_details() );
+	}
+	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_edit_booking( $action_context ) );
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => WPBC_Action_Booking_Note::get_button() );
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_print() );
 	if ( class_exists( 'wpdev_bk_biz_s' ) ) {
@@ -569,7 +594,17 @@ function wpbc_template__booking_listing__el__btn_action(){
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_trash_restore() );
 	$el_arr['items'][] = array( 'type' => 'html', 'html' => wpbc_template__booking_listing__action_delete() );
 
-	$el_arr = apply_filters( 'wpbc_template__booking_listing__el__btn_action' , $el_arr );
+	/**
+	 * Filter the canonical dropdown configuration for one booking action host.
+	 *
+	 * Existing callbacks that accept only the first argument remain compatible.
+	 * The context allows extensions to distinguish the Listing-row trigger from
+	 * the Inspector trigger without creating another action registry.
+	 *
+	 * @param array  $el_arr         Dropdown presentation and action items.
+	 * @param string $action_context Rendering context.
+	 */
+	$el_arr = apply_filters( 'wpbc_template__booking_listing__el__btn_action', $el_arr, $action_context );
 
 	wpbc_ui_el__dropdown_menu( $el_arr );
 }
@@ -577,6 +612,35 @@ function wpbc_template__booking_listing__el__btn_action(){
 // ---------------------------------------------------------------------------------------------------------------------
 // -- Action for Options in Dropdown Menu
 // ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Return the Booking Inspector action for one authorized Listing row.
+ *
+ * The browser receives only the booking ID and a stable focus identity. The
+ * shared booking-domain endpoint resolves the Resource and repeats every
+ * capability and ownership check before returning details.
+ *
+ * @return string Booking Listing action template markup.
+ */
+function wpbc_template__booking_listing__action_view_details() {
+	if ( ! defined( 'WPBC_ENABLE_12_0_TIMELINE' ) || true !== WPBC_ENABLE_12_0_TIMELINE ) {
+		return '';
+	}
+
+	$html_for_drop_down_option  = "<# if ( '1' !== data['parsed_fields']['trash'] ) { #>";
+	$html_for_drop_down_option .= '<a href="#wpbc-booking-details"'
+		. ' class="ul_dropdown_menu_li_action"'
+		. ' data-wpbc-booking-inspector-listing-trigger'
+		. ' data-wpbc-booking-id="{{data.parsed_fields.booking_id}}"'
+		. ' data-wpbc-booking-inspector-trigger-id="booking-listing-{{data.parsed_fields.booking_id}}"'
+		. ' aria-haspopup="dialog" aria-expanded="false">'
+		. esc_js( __( 'View booking details', 'booking' ) )
+		. "<i class='menu_icon icon-1x wpbc_icn_visibility' aria-hidden='true'></i>"
+		. '</a>';
+	$html_for_drop_down_option .= '<# } #>';
+
+	return $html_for_drop_down_option;
+}
 
 /**
  * -- Approve -- Option for "Actions Dropdown Menu"
@@ -641,11 +705,21 @@ function wpbc_template__booking_listing__action_pending() {
 /**
  * -- Edit Booking -- Option for "Actions Dropdown Menu"
  *
- * @return string
+ * The Booking Inspector always uses the canonical Add Booking editor because
+ * the Listing popup depends on row-specific state that is not owned by the
+ * Inspector. The default Booking Listing context retains the configured popup
+ * or dedicated-page behavior.
+ *
+ * @param string $action_context Rendering context. The `booking_inspector`
+ *                               context always links to Add Booking; all other
+ *                               values retain the Booking Listing preference.
+ *
+ * @return string|false Booking action template markup, or false when unauthorized.
  */
-function wpbc_template__booking_listing__action_edit_booking() {
+function wpbc_template__booking_listing__action_edit_booking( $action_context = 'booking_listing' ) {
 
-	$booking_action = 'edit_booking';
+	$booking_action       = 'edit_booking';
+	$is_booking_inspector = ( 'booking_inspector' === $action_context );
 
 	if ( ! wpbc_is_user_can( $booking_action, wpbc_get_current_user_id() ) ) {
 		return false;
@@ -660,7 +734,7 @@ function wpbc_template__booking_listing__action_edit_booking() {
 							. " '{{data.parsed_fields.wpbc_custom_booking_form}}'"
 							. ' );';
 
-	if ( wpbc_is_booking_admin_edit_page_enabled() ) {
+	if ( $is_booking_inspector || wpbc_is_booking_admin_edit_page_enabled() ) {
 		$edit_booking_url     = '{{{data.parsed_fields.admin_edit_url}}}';
 		$edit_booking_onclick = "if ( '' == '{{data.parsed_fields.hash}}' ) { return false; }";
 	}

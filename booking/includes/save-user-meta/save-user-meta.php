@@ -117,6 +117,24 @@ class WPBC_User_Custom_Data_Saver {
 				: sanitize_text_field( $val );
 		}
 
+		/**
+		 * Filters sanitized Booking Calendar user data before it is stored.
+		 *
+		 * Return a WP_Error to reject a domain-specific preference without
+		 * changing the generic saver or any previously stored value.
+		 *
+		 * @param array<string,mixed> $sanitized_data Sanitized pending user data.
+		 * @param string              $data_name      Sanitized preference name.
+		 * @param int                 $user_id        Verified current user ID.
+		 */
+		$sanitized_data = apply_filters( 'wpbc_user_custom_data_before_save', $sanitized_data, $data_name, $user_id );
+		if ( is_wp_error( $sanitized_data ) ) {
+			wp_send_json_error( array( 'message' => $sanitized_data->get_error_message() ) );
+		}
+		if ( ! is_array( $sanitized_data ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid preference data.', 'booking' ) ) );
+		}
+
 		$option_name = self::$user_option_prefix . $data_name;
 		update_user_option( $user_id, $option_name, $sanitized_data );
 

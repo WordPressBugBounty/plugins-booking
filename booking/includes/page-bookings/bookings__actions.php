@@ -1049,7 +1049,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 	}
 
 	/**
-	 * Action: save booking   Remark
+	 * Action: save legacy private booking note (remark).
 	 *
 	 * @param $booking_id_arr	array or int	of booking ID
 	 * @param $params			array			array of parameters: 		array(	'user_id' => 1, 'remark' => 'Because...')
@@ -1072,8 +1072,8 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 		// Get remark --------------------------------------------------------------------------------------------------
 		$remark_text = $params['remark'];	// stripslashes( $params['reason_of_action'] ); // translate words like don\'t to don't
 
-		// Is send email  for this action ------------------------------------------------------------------------------
-		// $is_send_emeils = wpbc_ajx__user_request_option__is_send_emails( $params['user_id']  );
+		// Is send email for this action --------------------------------------------------------------------------------
+		$is_send_emails = wpbc_ajx__user_request_option__is_send_emails( $params['user_id'] );
 
 
 		// -----------------------------------------------------------------------------------------------------------------
@@ -1084,18 +1084,44 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 		} else {
 			$after_action_result   = true;
-			$after_action_message = __( 'Note has been saved', 'booking' )
+			$after_action_message = __( 'Private note has been saved', 'booking' )
 									. ' <span style="font-size:0.9em;">( ID = <strong>' . $booking_id_csd . '</strong> )</span>';
-			//    SQL    ---------------------------------------------------------------------------------------------------
-			global $wpdb;
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$prepared_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET remark = %s WHERE booking_id IN ({$booking_id_csd})", $remark_text );
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-			$after_action_result = $wpdb->query( $prepared_sql );
-			if ( false === $after_action_result ) {
-				$after_action_message = 'Error during updating to DB. File:' . __FILE__ . ' on line: ' . __LINE__;
+			$notes_service       = new WPBC_Booking_Notes_Service();
+			$normalized_note     = sanitize_textarea_field( (string) $remark_text );
+			$changed_booking_ids = array();
+			foreach ( explode( ',', $booking_id_csd ) as $selected_booking_id ) {
+				$current_notes = $notes_service->get_booking_notes( absint( $selected_booking_id ), class_exists( 'wpdev_bk_personal' ) );
+				if (
+					is_array( $current_notes )
+					&& isset( $current_notes['private'] )
+					&& (
+						! array_key_exists( 'value', $current_notes['private'] )
+						|| null === $current_notes['private']['value']
+						|| (string) $current_notes['private']['value'] !== $normalized_note
+					)
+				) {
+					$changed_booking_ids[] = absint( $selected_booking_id );
+				}
+			}
+			$note_update_result  = $notes_service->update_private_note(
+				explode( ',', $booking_id_csd ),
+				$remark_text,
+				class_exists( 'wpdev_bk_personal' )
+			);
+			if ( is_wp_error( $note_update_result ) ) {
+				$after_action_result  = false;
+				$after_action_message = $note_update_result->get_error_message();
 			} else {
 				$after_action_result = true;
+
+				// Preserve the released private-note hook and its two-argument signature.
+				do_action( 'wpbc_booking_action__note_saved', $booking_id_csd, $remark_text );
+				if ( ! empty( $is_send_emails ) ) {
+					$notification_service = new WPBC_Booking_Modified_Notification_Service();
+					foreach ( $changed_booking_ids as $changed_booking_id ) {
+						$notification_service->send( $changed_booking_id, true );
+					}
+				}
 			}
 
 			// LOG ---------------------------------------------------------------------------------------------------------
@@ -1107,15 +1133,6 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 									 );
 			}
 
-			// Just  action  hook  for some other addons
-			do_action( 'wpbc_booking_action__note_saved', $booking_id_csd, $remark_text );
-
-			// Emails ------------------------------------------------------------------------------------------------------
-			if ( 0 ) {
-				if ( ! empty( $is_send_emeils ) ) {
-					wpbc_send_email_approved( $booking_id_csd, $is_send_emeils, $remark_text );
-				}
-			}
 		}
 
 		return array(
@@ -1198,7 +1215,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 					// Emails ------------------------------------------------------------------------------------------------------
 					if ( ! empty( $is_send_emeils ) ) {
-						wpbc_send_email_modified( $selected_booking_id, $selected_resource_id, $formdata_new );
+						( new WPBC_Booking_Modified_Notification_Service() )->send( $selected_booking_id, true );
 					}
 				}
 			}
@@ -1715,6 +1732,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				} else {
 					$old_pay_status = $result_bk[0]->pay_status;
 				}
+				$payment_status_changed = (string) $old_pay_status !== (string) $selected_payment_status;
 				// FixIn: 10.12.1.5.
 				$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET pay_status= %s WHERE booking_id= %d ", $selected_payment_status, $selected_booking_id );
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
@@ -1747,8 +1765,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 					// Emails ------------------------------------------------------------------------------------------------------
 					if ( ! empty( $is_send_emeils ) ) {
-						// 	We are sending emails about the new booking,  if we have created it.
-						//	wpbc_send_email_modified( $selected_booking_id, $selected_resource_id, $formdata_new );
+						( new WPBC_Booking_Modified_Notification_Service() )->send( $selected_booking_id, $payment_status_changed );
 					}
 				}
 			}
@@ -1846,6 +1863,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 				} else {
 					$old_booking_cost = $result_bk[0]->cost;
 				}
+				$booking_cost_changed = (float) $old_booking_cost !== (float) $booking_cost;
 
 				$update_sql = $wpdb->prepare( "UPDATE {$wpdb->prefix}booking SET cost = %f WHERE booking_id = %d ", $booking_cost, $selected_booking_id );  // FixIn: 10.12.1.5.
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
@@ -1878,11 +1896,7 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 
 					// Emails ------------------------------------------------------------------------------------------------------
 					if ( ! empty( $is_send_emeils ) ) {
-
-						if ( get_bk_option( 'booking_send_email_on_cost_change' ) == 'On' ) {                                    // FixIn: 8.1.3.30.
-							$booking_data = apply_bk_filter( 'wpbc_get_booking_data', $selected_booking_id );
-							wpbc_send_email_modified( $selected_booking_id, $booking_data['type'], $booking_data['form'] );
-						}
+						( new WPBC_Booking_Modified_Notification_Service() )->send( $selected_booking_id, $booking_cost_changed );
 					}
 
 				}
@@ -1997,16 +2011,6 @@ function wpbc_ajax_WPBC_AJX_BOOKING_ACTIONS() {
 					// Just  action  hook  for some other addons
 					do_action( 'wpbc_booking_action__send_payment_request', $selected_booking_id, $reason_of_action , $old_booking_cost );
 
-					// Emails ------------------------------------------------------------------------------------------------------
-					/*
-					if ( ! empty( $is_send_emeils ) ) {
-
-						if ( get_bk_option( 'booking_send_email_on_cost_change' ) == 'On' ) {
-							$booking_data = apply_bk_filter( 'wpbc_get_booking_data', $selected_booking_id );
-							wpbc_send_email_modified( $selected_booking_id, $booking_data['type'], $booking_data['form'] );
-						}
-					}
-					*/
 				}
 			}
 

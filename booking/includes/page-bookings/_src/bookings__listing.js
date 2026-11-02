@@ -91,15 +91,109 @@ var wpbc_ajx_booking_listing = (function ( obj, $) {
 	return obj;
 }( wpbc_ajx_booking_listing || {}, jQuery ));
 
+var wpbc_booking_listing_inspector_adapter = null;
+var wpbc_booking_listing_inspector_refresh_generation = 0;
+
+/**
+ * Restore the current Listing selection after canonical rows are replaced.
+ *
+ * @param {Array<number>} booking_ids Selected booking identifiers captured before refresh.
+ * @return {void}
+ */
+function wpbc_booking_listing_restore_selected_rows( booking_ids ) {
+	booking_ids.forEach( function ( booking_id ) {
+		var row = document.getElementById( 'row_id_' + Number( booking_id ) );
+		var checkbox = row ? row.querySelector( '.check-column input[type="checkbox"]' ) : null;
+
+		if ( checkbox ) {
+			jQuery( checkbox ).prop( 'checked', true ).trigger( 'change' );
+		}
+	} );
+}
+
+/**
+ * Reload Booking Listing through its canonical search request after an
+ * Inspector save completes in this host.
+ *
+ * @param {CustomEvent} event Booking Inspector save-completion event.
+ * @return {void}
+ */
+function wpbc_booking_listing_inspector_handle_saved( event ) {
+	var event_detail = event && event.detail ? event.detail : {};
+	var refresh_generation = Number( event_detail.refresh_generation || 0 );
+	var selected_booking_ids = 'function' === typeof wpbc_get_selected_row_id ? wpbc_get_selected_row_id() : [];
+
+	if ( 'booking_listing' !== event_detail.source ) {
+		return;
+	}
+	if ( refresh_generation && refresh_generation <= wpbc_booking_listing_inspector_refresh_generation ) {
+		return;
+	}
+	wpbc_booking_listing_inspector_refresh_generation = refresh_generation || wpbc_booking_listing_inspector_refresh_generation + 1;
+
+	wpbc_ajx_booking_ajax_search_request( { preserve_selection_ids: selected_booking_ids } );
+}
+
+/**
+ * Initialize the Booking Listing facade over the reusable booking-domain Inspector.
+ *
+ * Listing owns only its originating action and focus lifecycle. Authorization,
+ * DTO loading, templates, field resolution, notes, and activity remain in the
+ * Booking Inspector domain.
+ *
+ * @return {void}
+ */
+function wpbc_booking_listing_inspector_initialize() {
+	var listing_root = document.querySelector( '.wpbc__wrap__booking_listing' );
+	var shell_host = document.querySelector( '[data-wpbc-booking-inspector-booking-listing-host]' );
+
+	if (
+		! listing_root || ! shell_host ||
+		'undefined' === typeof wpbc_booking_listing_inspector_config ||
+		! window.wpbc_booking_inspector_hosts ||
+		'function' !== typeof window.wpbc_booking_inspector_hosts.create_booking_listing
+	) {
+		return;
+	}
+
+	if ( ! wpbc_booking_listing_inspector_adapter ) {
+		wpbc_booking_listing_inspector_adapter = window.wpbc_booking_inspector_hosts.create_booking_listing(
+			listing_root,
+			shell_host,
+			wpbc_booking_listing_inspector_config
+		);
+	}
+	if ( ! listing_root.wpbc_booking_inspector_save_refresh_bound ) {
+		listing_root.addEventListener( 'wpbc:booking-inspector:saved', wpbc_booking_listing_inspector_handle_saved );
+		listing_root.wpbc_booking_inspector_save_refresh_bound = true;
+	}
+}
+
+jQuery( document ).ready( wpbc_booking_listing_inspector_initialize );
+
 
 /**
  *   Ajax  ------------------------------------------------------------------------------------------------------ */
 
 /**
- * Send Ajax search request
- * for searching specific Keyword and other params
+ * Send the canonical Booking Listing search request.
+ *
+ * Serial generations prevent a slower obsolete response from replacing newer
+ * host state. Inspector refreshes may also preserve the current row selection.
+ *
+ * @param {Object} request_options Optional host-refresh behavior.
+ * @return {jqXHR} Abortable canonical Listing request.
  */
-function wpbc_ajx_booking_ajax_search_request(){
+function wpbc_ajx_booking_ajax_search_request( request_options ){
+	var options = request_options && 'object' === typeof request_options ? request_options : {};
+	var preserve_selection_ids = Array.isArray( options.preserve_selection_ids ) ? options.preserve_selection_ids.slice( 0 ) : [];
+	var request_generation = Number( wpbc_ajx_booking_ajax_search_request.request_generation || 0 ) + 1;
+	var ajax_request;
+
+	wpbc_ajx_booking_ajax_search_request.request_generation = request_generation;
+	if ( wpbc_ajx_booking_ajax_search_request.active_request && 'function' === typeof wpbc_ajx_booking_ajax_search_request.active_request.abort ) {
+		wpbc_ajx_booking_ajax_search_request.active_request.abort();
+	}
 
 console.groupCollapsed('AJX_BOOKING_LISTING'); console.log( ' == Before Ajax Send - search_get_all_params() == ' , wpbc_ajx_booking_listing.search_get_all_params() );
 
@@ -123,7 +217,7 @@ if ( ! is_this_action ){
 is_this_action = false;
 */
 	// Start Ajax
-	jQuery.post( wpbc_url_ajax,
+	ajax_request = jQuery.post( wpbc_url_ajax,
 				{
 					action          : 'WPBC_AJX_BOOKING_LISTING',
 					wpbc_ajx_user_id: wpbc_ajx_booking_listing.get_secure_param( 'user_id' ),
@@ -140,6 +234,9 @@ is_this_action = false;
 				 * @param jqXHR				-	Object
 				 */
 				function ( response_data, textStatus, jqXHR ) {
+					if ( request_generation !== wpbc_ajx_booking_ajax_search_request.request_generation ) {
+						return;
+					}
 //FixIn: forVideo
 //jQuery( '#wpbc_loading_section' ).wpbc_my_modal( 'hide' );
 
@@ -172,6 +269,7 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					if ( response_data[ 'ajx_count' ] > 0 ){
 
 						wpbc_ajx_booking_show_listing( response_data[ 'ajx_items' ], response_data[ 'ajx_search_params' ], response_data[ 'ajx_booking_resources' ] );
+						wpbc_booking_listing_restore_selected_rows( preserve_selection_ids );
 
 						wpbc_pagination_echo(
 							wpbc_ajx_booking_listing.get_other_param( 'pagination_container' ),
@@ -221,7 +319,11 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					wpbc_booking_listing_reload__message_hide();
 }
 				}
-			  ).fail( function ( jqXHR, textStatus, errorThrown ) {    if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
+			  ).fail( function ( jqXHR, textStatus, errorThrown ) {
+					if ( 'abort' === textStatus || request_generation !== wpbc_ajx_booking_ajax_search_request.request_generation ) {
+						return;
+					}
+					if ( window.console && window.console.log ){ console.log( 'Ajax_Error', jqXHR, textStatus, errorThrown ); }
 					jQuery( '.wpbc_ajx_under_toolbar_row' ).hide();														// FixIn: 9.6.1.5.
 					wpbc_booking_listing_reload_button__spin_pause();
 					wpbc_booking_listing_reload__message_hide();
@@ -232,10 +334,16 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
 					error_message = error_message.replace( /\n/g, "<br />" );
 
 					wpbc_ajx_booking_show_message( error_message );
-			  })
+			  }).always( function () {
+					if ( ajax_request === wpbc_ajx_booking_ajax_search_request.active_request ) {
+						wpbc_ajx_booking_ajax_search_request.active_request = null;
+					}
+			  } )
 	          // .done(   function ( data, textStatus, jqXHR ) {   if ( window.console && window.console.log ){ console.log( 'second success', data, textStatus, jqXHR ); }    })
 			  // .always( function ( data_jqXHR, textStatus, jqXHR_errorThrown ) {   if ( window.console && window.console.log ){ console.log( 'always finished', data_jqXHR, textStatus, jqXHR_errorThrown ); }     })
 			  ;  // End Ajax
+	wpbc_ajx_booking_ajax_search_request.active_request = ajax_request;
+	return ajax_request;
 }
 
 
@@ -249,6 +357,8 @@ console.log( ' == Response WPBC_AJX_BOOKING_LISTING == ', response_data ); conso
  * @param json_search_params	- JSON object with Search
  */
 function wpbc_ajx_booking_show_listing( json_items_arr, json_search_params, json_booking_resources ){
+
+	wpbc_booking_listing_inspector_initialize();
 
 	wpbc_ajx_define_templates__resource_manipulation( json_items_arr, json_search_params, json_booking_resources );
 
@@ -281,6 +391,9 @@ console.groupCollapsed( 'LISTING_ROWS' );																				// LISTING_ROWS
 console.groupEnd(); 																									// LISTING_ROWS
 
 	wpbc_define_gmail_checkbox_selection( jQuery );						// Redefine Hooks for clicking at Checkboxes
+	if ( wpbc_booking_listing_inspector_adapter ) {
+		wpbc_booking_listing_inspector_adapter.refresh();
+	}
 }
 
 

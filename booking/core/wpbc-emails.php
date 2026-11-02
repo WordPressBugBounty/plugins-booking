@@ -270,6 +270,12 @@ function wpbc_get_email_help_shortcodes( $skip_shortcodes = array() , $email_exa
 			$fields[] = sprintf( $icn, '<code>[cost]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( '%s - inserting the cost of  booking ', 'booking' ), '[cost]' ) ) );
 		}
 	}
+
+	// Booking Notes email integrations.
+	/* translators: 1: email shortcode. */
+	$fields[] = sprintf( $icn, '<code>[public_note]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( '%s - inserting the Public note when it has been explicitly added to this email template', 'booking' ), '[public_note]' ) ) );
+	/* translators: 1: email shortcode. */
+	$fields[] = sprintf( $icn, '<code>[private_note]</code>', wpbc_tooltip_help__fix_quote( sprintf( __( '%s - inserting the Private administrator note in administrator emails and enabled administrator copies only; customer and visitor messages receive an empty value', 'booking' ), '[private_note]' ) ) );
     
     $fields[] = '<hr/>';   
 

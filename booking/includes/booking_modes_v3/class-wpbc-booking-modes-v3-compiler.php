@@ -374,9 +374,8 @@ final class WPBC_Booking_Modes_V3_Compiler {
 			return $source_navigation;
 		}
 
-		$compiled_host  = array();
-		$reserved_routes = array();
-		$has_overrides   = false;
+		$compiled_host = array();
+		$has_overrides  = false;
 		foreach ( $definition['pages'] as $page_id => $page_definition ) {
 			if ( ! isset( $page_definition['horizontal_menu'] ) ) {
 				continue;
@@ -390,8 +389,11 @@ final class WPBC_Booking_Modes_V3_Compiler {
 			}
 
 			$has_overrides = true;
-			$route_key = WPBC_Booking_Modes_V3_Source_Index::get_route_key( $page_definition['route'] );
-			$reserved_routes[ $route_key ] = true;
+			// Cross-root peers remain opt-in presentation links to source-registered routes.
+			$is_cross_root_peer = ! empty( $horizontal['cross_root'] );
+			if ( $page_definition['route']['page'] !== $active_page && ! $is_cross_root_peer ) {
+				continue;
+			}
 			if ( ! $this->is_surface_visible( $horizontal, $edition_id ) ) {
 				continue;
 			}
@@ -400,7 +402,7 @@ final class WPBC_Booking_Modes_V3_Compiler {
 				continue;
 			}
 
-			$node = $record['node'];
+			$node = $this->prepare_horizontal_source_node( $record['node'] );
 			if ( array_key_exists( 'title', $horizontal ) ) {
 				$node['title'] = $horizontal['title'];
 			}
@@ -411,19 +413,17 @@ final class WPBC_Booking_Modes_V3_Compiler {
 			$node['is_active'] = $page_definition['route']['page'] === $active_page
 				&& $page_definition['route']['tab'] === $active_tab
 				&& ( '' === $page_definition['route']['subtab'] || $page_definition['route']['subtab'] === $active_subtab );
-			$node_key = isset( $compiled_host[ $record['tab'] ] ) ? $page_id : $record['tab'];
+			$node_key = $is_cross_root_peer || isset( $compiled_host[ $record['tab'] ] ) ? $page_id : $record['tab'];
 			$compiled_host[ $node_key ] = $node;
 		}
 
 		if ( ! $has_overrides ) {
-			$this->cache[ $cache_key ] = $source_navigation;
-			return $source_navigation;
-		}
+			foreach ( $source_navigation[ $active_page ] as $tab_key => $source_node ) {
+				if ( ! $this->is_source_visible( $source_node ) ) {
+					continue;
+				}
 
-		foreach ( $source_navigation[ $active_page ] as $tab_key => $source_node ) {
-			$route = array( 'page' => $active_page, 'tab' => $tab_key, 'subtab' => '' );
-			if ( ! isset( $reserved_routes[ WPBC_Booking_Modes_V3_Source_Index::get_route_key( $route ) ] ) && $this->is_source_visible( $source_node ) ) {
-				$compiled_host[ $tab_key ] = $source_node;
+				$compiled_host[ $tab_key ] = $this->prepare_horizontal_source_node( $source_node );
 			}
 		}
 
@@ -432,6 +432,38 @@ final class WPBC_Booking_Modes_V3_Compiler {
 		$this->cache[ $cache_key ]            = $compiled_navigation;
 
 		return $compiled_navigation;
+	}
+
+	/**
+	 * Filter hidden descendants without changing an authorized source node.
+	 *
+	 * Horizontal declarations may intentionally expose a root node that is
+	 * hidden from another navigation surface, so only its descendants are
+	 * filtered here. This preserves URLs, callbacks, labels, capabilities, and
+	 * active state while preventing hidden or disabled subtabs from appearing
+	 * when a page uses subtabs as its horizontal peers.
+	 *
+	 * @param array<string,mixed> $source_node Registered source navigation node.
+	 *
+	 * @return array<string,mixed> Source node with presentable subtabs only.
+	 */
+	private function prepare_horizontal_source_node( $source_node ) {
+		if ( empty( $source_node['subtabs'] ) || ! is_array( $source_node['subtabs'] ) ) {
+			return $source_node;
+		}
+
+		$visible_subtabs = array();
+		foreach ( $source_node['subtabs'] as $subtab_key => $subtab_node ) {
+			if ( ! $this->is_source_visible( $subtab_node ) ) {
+				continue;
+			}
+
+			$visible_subtabs[ $subtab_key ] = $this->prepare_horizontal_source_node( $subtab_node );
+		}
+
+		$source_node['subtabs'] = $visible_subtabs;
+
+		return $source_node;
 	}
 
 	/**

@@ -276,7 +276,10 @@ function wpbc_booking_confirmation( $params_arr ){
 		$cost_booking_note = wp_strip_all_tags( $cost_booking_note );
 		$cost_booking_note = str_replace( array( '  ', "\n " ), array( ' ', "\n" ), $cost_booking_note );
 
-		if ( ! empty( $params_arr['gateway_rows'] ) ) {
+		if (
+			! empty( $params_arr['gateway_rows'] )
+			&& ( ! function_exists( 'wpbc_booking_activity_table_exists' ) || ! wpbc_booking_activity_table_exists() )
+		) {
 
 			$is_add_timezone_offset = true;
 			$booking_note = wpbc_date_localized( gmdate( 'Y-m-d H:i:s' ), '[Y-m-d H:i]', $is_add_timezone_offset ) . ' ';

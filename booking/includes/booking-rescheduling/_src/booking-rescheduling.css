@@ -1,0 +1,130 @@
+/**
+ * Accessible Booking Rescheduling dialog additions.
+ *
+ * The established Date Editor owns the shared panel and native-calendar
+ * presentation. This file contains only rescheduling-domain additions.
+ *
+ * @package Booking Calendar
+ * @since   12.0.0
+ */
+
+.wpbc_booking_rescheduling__layer[hidden],
+.wpbc_booking_rescheduling__layer [hidden] {
+	display: none;
+}
+
+.wpbc_booking_rescheduling__resource_control {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wpbc_booking_rescheduling__resource_control select {
+	box-sizing: border-box;
+	inline-size: 100%;
+	max-inline-size: 100%;
+}
+
+.wpbc_booking_rescheduling__review,
+.wpbc_booking_rescheduling__allocation,
+.wpbc_booking_rescheduling__implications {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.wpbc_booking_rescheduling__review_fields {
+	margin-block-start: 0;
+}
+
+.wpbc_booking_rescheduling__review_date_list {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.wpbc_booking_rescheduling__review_date_list li {
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.wpbc_booking_rescheduling__review_date_list li.is-changed {
+	color: var(--wpbc_booking_inspector__review-changed-color);
+}
+
+.wpbc_booking_rescheduling__review_date_list li.is-previous-changed {
+	color: var(--wpbc_booking_inspector__review-previous-changed-color);
+}
+
+.wpbc_booking_rescheduling__allocation,
+.wpbc_booking_rescheduling__implications {
+	border: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	border-radius: var(--wpbc_booking_inspector__radius);
+	padding: 14px;
+}
+
+.wpbc_booking_rescheduling__status_list {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+}
+
+.wpbc_booking_rescheduling__status_list > div,
+.wpbc_booking_rescheduling__allocation_list li {
+	align-items: baseline;
+	border-block-end: var(--wpbc_booking_inspector__border-width) solid var(--wpbc_booking_inspector__border-color);
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	padding-block: 7px;
+}
+
+.wpbc_booking_rescheduling__status_list > div:last-child,
+.wpbc_booking_rescheduling__allocation_list li:last-child {
+	border-block-end: 0;
+}
+
+.wpbc_booking_rescheduling__status_list dd {
+	font-weight: 600;
+	margin: 0;
+	text-align: end;
+}
+
+.wpbc_booking_rescheduling__allocation_list,
+.wpbc_booking_rescheduling__implications ul,
+.wpbc_booking_rescheduling__warnings ul {
+	margin: 0;
+}
+
+.wpbc_booking_rescheduling__allocation_list {
+	list-style: none;
+	padding: 0;
+}
+
+.wpbc_booking_rescheduling__review h3,
+.wpbc_booking_rescheduling__review h4,
+.wpbc_booking_rescheduling__review p,
+.wpbc_booking_rescheduling__review ul {
+	margin: 0;
+}
+
+.wpbc_booking_rescheduling__layer :focus-visible {
+	box-shadow: 0 0 0 2px var(--wpbc_admin-theme-color, #2271b1);
+	outline: 2px solid transparent;
+}
+
+@media screen and (max-width: 782px) {
+	.wpbc_booking_rescheduling__status_list > div,
+	.wpbc_booking_rescheduling__allocation_list li {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.wpbc_booking_rescheduling__status_list dd {
+		text-align: start;
+	}
+}

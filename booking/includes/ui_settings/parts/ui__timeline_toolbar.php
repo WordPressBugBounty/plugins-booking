@@ -67,7 +67,7 @@ function wpbc_timeline__is_send_emails_toggle(){
 							, 'style'    => '' 					// CSS of select element
 							, 'class'    => '' 					// CSS Class of select element
 							, 'disabled' => false
-							, 'attr'     => array() 							// Any  additional attributes, if this radio | checkbox element
+							, 'attr'     => array( 'data-wpbc-send-modified-email' => '1' )	// Current operation notification intent.
 							, 'legend'   => ''									// aria-label parameter
 							, 'value'    => $el_value 							// Some Value from optins array that selected by default
 							, 'selected' => ( ( 'On' == $el_value ) ? true : false )		// Selected or not

@@ -53,6 +53,8 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 
 		$tabs = array();
 		$tabs['builder_booking_form'] = array(
+			'navigation_shell_context'                 => WPBC_Admin_Navigation_Policy::CONTEXT_FOCUSED,
+			'page_content_layout'                       => WPBC_Admin_Shell_Layout_Policy::LAYOUT_SPACIOUS,
 			'is_default_full_screen'                    => true,                             // true | false.  By default value is: false.
 			'is_force_full_screen'                      => true,                             // true | false. Force full screen independently from user preference.
 			'is_show_top_path'                          => true,                              // true | false.  By default value is: true.
@@ -60,10 +62,8 @@ class WPBC_Page_Builder_Booking_Form extends WPBC_Page_Structure {
 			'right_vertical_sidebar__is_show'           => true,                             // true | false.  By default value is: false.
 			'right_vertical_sidebar__default_view_mode' => '',                               // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
 			'right_vertical_sidebar_compact__is_show'   => true,                             // true | false.  By default value is: false.
-//			'left_navigation__default_view_mode'        => 'compact',                        // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
-//			'left_navigation__force_view_mode'          => 'compact',                        // '' | 'min' | 'compact' | 'max' | 'none'. Force sidebar mode independently from user preference.
-			'left_navigation__default_view_mode'        => 'max',                        // '' | 'min' | 'compact' | 'max' | 'none'.  By default value is: ''.
-			'left_navigation__force_view_mode'          => 'max',                        // '' | 'min' | 'compact' | 'max' | 'none'. Force sidebar mode independently from user preference.
+			'left_navigation__default_view_mode'        => 'min',                            // Form Builder starts minimized but remains available for navigation.
+			'left_navigation__force_view_mode'          => '',                               // The page exception supplies the initial mode without structural hiding.
 
 			'top_path_title'                            => __( 'Forms Builder', 'booking' ),
 			'title' 									=> __( 'Forms Builder', 'booking' ),                            // Title of TAB.
